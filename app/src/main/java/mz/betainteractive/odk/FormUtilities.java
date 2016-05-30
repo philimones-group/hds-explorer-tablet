@@ -1,6 +1,6 @@
 package mz.betainteractive.odk;
 
-import net.manhica.verbalautopsy.R;
+
 import mz.betainteractive.odk.listener.OdkFormLoadListener;
 import mz.betainteractive.odk.model.FilledForm;
 import mz.betainteractive.odk.task.OdkGeneratedFormLoadTask;
@@ -12,6 +12,8 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.util.Log;
+
+import net.manhica.clip.explorer.R;
 
 public class FormUtilities {
 	private Context mContext;

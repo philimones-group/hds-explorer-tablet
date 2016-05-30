@@ -1,16 +1,44 @@
 <resources>
     <string name="app_name">CLIPExplorer</string>
+    <string name="server_url">https://sap.manhica.net:4442/manhica-dbsync</string>
+    <string name="server_url_not_secure">http://sap.manhica.net:4780/manhica-dbsync</string>
+
+    <!-- Sync Tasks -->
+    <string name="sync_downloading_lbl">Downloading</string>
+    <string name="sync_saving_lbl">Saving data</string>
+    <string name="sync_modules_lbl">Modules</string>
+    <string name="sync_forms_lbl">ODK Forms</string>
+    <string name="sync_users_lbl">Users</string>
+    <string name="sync_households_lbl">Households</string>
+    <string name="sync_members_lbl">Members</string>
+    <string name="sync_saved_lbl">Saved</string>
+    <string name="sync_records_lbl">records</string>
+    <string name="sync_failure_file_not_found_lbl">Couldnt find file on the Server to Download</string>
+    <string name="sync_failure_unknow_lbl">Couldnt download file from the Server</string>
+
+    <!-- Sync Activity -->
+    <string name="server_sync_status_lbl">Status</string>
+    <string name="server_sync_status_notsynced_lbl">Not Synced</string>
+    <string name="server_sync_status_synced_lbl">Last Sync on</string>
+    <string name="server_sync_status_sync_error_lbl">Error during last Sync on</string>
+    <string name="server_sync_bt_modules_lbl">Download Modules</string>
+    <string name="server_sync_bt_forms_lbl">Download Forms</string>
+    <string name="server_sync_bt_users_lbl">Download Users</string>
+    <string name="server_sync_bt_households_lbl">Download Households</string>
+    <string name="server_sync_bt_members_lbl">Download Members</string>
 
     <!-- Strings related to login -->
-    <string name="prompt_email">Email</string>
-    <string name="prompt_password">Password (optional)</string>
-    <string name="action_sign_in">Sign in or register</string>
-    <string name="action_sign_in_short">Sign in</string>
+    <string name="login_username_lbl">Username</string>
+    <string name="login_password_lbl">Password</string>
+    <string name="login_button_lbl">Login</string>
+    <string name="login_password_short_lbl">Log in</string>
+    <string name="login_synchronize_lbl">Sinchronize Database</string>
     <string name="error_invalid_email">This email address is invalid</string>
     <string name="error_invalid_password">This password is too short</string>
     <string name="error_incorrect_password">This password is incorrect</string>
     <string name="error_field_required">This field is required</string>
-    <string name="permission_rationale">"Contacts permissions are needed for providing email
-        completions."
-    </string>
+    <string name="permission_rationale">"Contacts permissions are needed for providing email completions.</string>
+    <string name="couldnt_open_xform_lbl">Couldnt open Verbal Autopsy ODK Form</string>
+    <string name="warning_lbl">Warning</string>
+    <string name="title_activity_synchronization">SynchronizationActivity</string>
 </resources>

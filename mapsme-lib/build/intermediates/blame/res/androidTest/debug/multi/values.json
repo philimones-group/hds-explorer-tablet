@@ -1,0 +1,85 @@
+[
+    {
+        "outputFile": "/home/paul/local/workspace/clip/clip-explorer-tablet/mapsme-lib/build/intermediates/res/merged/androidTest/debug/values/values.xml",
+        "map": [
+            {
+                "to": {
+                    "startLine": 2,
+                    "startColumn": 4,
+                    "startOffset": 55,
+                    "endColumn": 53,
+                    "endOffset": 104
+                },
+                "from": {
+                    "file": "/home/paul/local/workspace/clip/clip-explorer-tablet/mapsme-lib/build/intermediates/bundles/debug/res/values/values.xml",
+                    "position": {
+                        "startLine": 2,
+                        "startColumn": 4,
+                        "startOffset": 55,
+                        "endColumn": 53,
+                        "endOffset": 104
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 3,
+                    "startColumn": 4,
+                    "startOffset": 109,
+                    "endColumn": 212,
+                    "endOffset": 317
+                },
+                "from": {
+                    "file": "/home/paul/local/workspace/clip/clip-explorer-tablet/mapsme-lib/build/intermediates/bundles/debug/res/values/values.xml",
+                    "position": {
+                        "startLine": 3,
+                        "startColumn": 4,
+                        "startOffset": 109,
+                        "endColumn": 212,
+                        "endOffset": 317
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 4,
+                    "startColumn": 4,
+                    "startOffset": 322,
+                    "endColumn": 54,
+                    "endOffset": 372
+                },
+                "from": {
+                    "file": "/home/paul/local/workspace/clip/clip-explorer-tablet/mapsme-lib/build/intermediates/bundles/debug/res/values/values.xml",
+                    "position": {
+                        "startLine": 4,
+                        "startColumn": 4,
+                        "startOffset": 322,
+                        "endColumn": 54,
+                        "endOffset": 372
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 5,
+                    "startColumn": 4,
+                    "startOffset": 377,
+                    "endLine": 11,
+                    "endColumn": 12,
+                    "endOffset": 732
+                },
+                "from": {
+                    "file": "/home/paul/local/workspace/clip/clip-explorer-tablet/mapsme-lib/build/intermediates/bundles/debug/res/values/values.xml",
+                    "position": {
+                        "startLine": 5,
+                        "startColumn": 4,
+                        "startOffset": 377,
+                        "endLine": 11,
+                        "endColumn": 12,
+                        "endOffset": 732
+                    }
+                }
+            }
+        ]
+    }
+]

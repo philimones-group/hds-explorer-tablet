@@ -1,0 +1,2 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merger version="3"><dataSet config="debug"><source path="/home/paul/local/workspace/clip/clip-explorer-tablet/mapsme-lib/build/intermediates/bundles/debug/assets"/></dataSet><dataSet config="main"><source path="/home/paul/local/workspace/clip/clip-explorer-tablet/mapsme-lib/src/androidTest/assets"/><source path="/home/paul/local/workspace/clip/clip-explorer-tablet/mapsme-lib/build/generated/assets/shaders/androidTest/debug"/></dataSet></merger>

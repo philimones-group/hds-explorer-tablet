@@ -41,7 +41,7 @@ import mz.betainteractive.utilities.StringUtil;
  * incrementally, by downloading parts of the data one at a time. For example,
  * it gets all locations and then retrieves all individuals. Ordering is
  * somewhat important here, because the database has a few foreign key
- * references that must be satisfied (e.g. individual references a location
+ * references that must be satisfied (e.g. member references a location
  * location)
  */
 public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
@@ -662,6 +662,8 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 
 		parser.nextTag();
 
+		database.open();
+
 		while (notEndOfXmlDoc("members", parser)) {
 			count++;
 
@@ -670,230 +672,261 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 			parser.nextTag(); //process extId
 			parser.next();
 			table.setExtId(parser.getText());
-			Log.d(count+"-extId", "value="+ parser.getText());
+			//Log.d(count+"-extId", "value="+ parser.getText());
 
 			parser.nextTag(); //process permId
 			parser.nextTag();
 			parser.next();
 			table.setPermId(parser.getText());
-			Log.d(count+"-permId", "value="+ parser.getText());
+			//Log.d(count+"-permId", "value="+ parser.getText());
 
 			parser.nextTag(); //process name
 			parser.nextTag();
 			parser.next();
 			table.setName(parser.getText());
-			Log.d(count+"-name", "value="+ parser.getText());
+			//Log.d(count+"-name", "value="+ parser.getText());
 
 			parser.nextTag(); //process gender
 			parser.nextTag();
 			parser.next();
 			table.setGender(parser.getText());
-			Log.d(count+"-gender", "value="+ parser.getText());
+			//Log.d(count+"-gender", "value="+ parser.getText());
 
 			parser.nextTag(); //process dob
 			parser.nextTag();
 			parser.next();
 			table.setDob(parser.getText());
-			Log.d(count+"-dob", "value="+ parser.getText());
+			//Log.d(count+"-dob", "value="+ parser.getText());
 
 			parser.nextTag(); //process age
 			parser.nextTag();
 			parser.next();
 			table.setAge(Integer.parseInt(parser.getText()));
-			Log.d(count+"-age", "value="+ parser.getText());
+			//Log.d(count+"-age", "value="+ parser.getText());
 
 			parser.nextTag(); //process motherExtId
 			parser.nextTag();
 			parser.next();
 			table.setMotherExtId(parser.getText());
-			Log.d(count+"-motherExtId", "value="+ parser.getText());
+			//Log.d(count+"-motherExtId", "value="+ parser.getText());
 
 			parser.nextTag(); //process motherName
 			parser.nextTag();
 			parser.next();
 			table.setMotherName(parser.getText());
-			Log.d(count+"-motherName", "value="+ parser.getText());
+			//Log.d(count+"-motherName", "value="+ parser.getText());
 
 			parser.nextTag(); //process motherPermId
 			parser.nextTag();
 			parser.next();
 			table.setMotherPermId(parser.getText());
-			Log.d(count+"-motherPermId", "value="+ parser.getText());
+			//Log.d(count+"-motherPermId", "value="+ parser.getText());
 
 			parser.nextTag(); //process fatherExtId
 			parser.nextTag();
 			parser.next();
 			table.setFatherExtId(parser.getText());
-			Log.d(count+"-fatherExtId", "value="+ parser.getText());
+			//Log.d(count+"-fatherExtId", "value="+ parser.getText());
 
 			parser.nextTag(); //process fatherName
 			parser.nextTag();
 			parser.next();
 			table.setFatherName(parser.getText());
-			Log.d(count+"-fatherName", "value="+ parser.getText());
+			//Log.d(count+"-fatherName", "value="+ parser.getText());
 
 			parser.nextTag(); //process fatherPermId
 			parser.nextTag();
 			parser.next();
 			table.setFatherPermId(parser.getText());
-			Log.d(count+"-fatherPermId", "value="+ parser.getText());
+			//Log.d(count+"-fatherPermId", "value="+ parser.getText());
 
 			parser.nextTag(); //process hhExtId
 			parser.nextTag();
 			parser.next();
 			table.setHhExtId(parser.getText());
-			Log.d(count+"-hhExtId", "value="+ parser.getText());
+			//Log.d(count+"-hhExtId", "value="+ parser.getText());
 
 			parser.nextTag(); //process hhNumber
 			parser.nextTag();
 			parser.next();
 			table.setHhNumber(parser.getText());
-			Log.d(count+"-hhNumber", "value="+ parser.getText());
+			//Log.d(count+"-hhNumber", "value="+ parser.getText());
 
 			parser.nextTag(); //process hhStartType
 			parser.nextTag();
 			parser.next();
 			table.setHhStartType(parser.getText());
-			Log.d(count+"-hhStartType", "value="+ parser.getText());
+			//Log.d(count+"-hhStartType", "value="+ parser.getText());
 
 			parser.nextTag(); //process hhStartDate
 			parser.nextTag();
 			parser.next();
 			table.setHhStartDate(parser.getText());
-			Log.d(count+"-hhStartDate", "value="+ parser.getText());
+			//Log.d(count+"-hhStartDate", "value="+ parser.getText());
 
 			parser.nextTag(); //process hhEndType
 			parser.nextTag();
 			parser.next();
 			table.setHhEndType(parser.getText());
-			Log.d(count+"-hhEndType", "value="+ parser.getText());
+			//Log.d(count+"-hhEndType", "value="+ parser.getText());
 
 			if (parser.getText()!=null)
 			parser.nextTag(); //process hhEndDate
 			parser.nextTag();
 			parser.next();
 			table.setHhEndDate(parser.getText());
-			Log.d(count+"-hhEndDate", "value="+ parser.getText());
+			//Log.d(count+"-hhEndDate", "value="+ parser.getText());
+
+			if (parser.getText()!=null)
+			parser.nextTag(); //process gps-accuracy
+			parser.nextTag();
+			parser.next();
+			table.setGpsAccuracy(parser.getText());
+			//Log.d(count+"-Accuracy", "value="+ parser.getText());
+
+			if (parser.getText()!=null)
+			parser.nextTag(); //process gps-altitude
+			parser.nextTag();
+			parser.next();
+			table.setGpsAltitude(parser.getText());
+			//Log.d(count+"-Altitude", "value="+ parser.getText());
+
+			if (parser.getText()!=null)
+			parser.nextTag(); //process gps-latitude
+			parser.nextTag();
+			parser.next();
+			table.setGpsLatitude(parser.getText());
+			//Log.d(count+"-Latitude", "value="+ parser.getText());
+
+			if (parser.getText()!=null)
+			parser.nextTag(); //process gps-longitude
+			parser.nextTag();
+			parser.next();
+			table.setGpsLongitude(parser.getText());
+			//Log.d(count+"-Longitude", "value="+ parser.getText());
 
 			if (parser.getText()!=null)
 			parser.nextTag(); //process nrPregnancies
 			parser.nextTag();
 			parser.next();
 			table.setNrPregnancies(Integer.parseInt(parser.getText()));
-			Log.d(count+"-nrPregnancies", "value="+ parser.getText());
+			//Log.d(count+"-nrPregnancies", "value="+ parser.getText());
 
 			if (parser.getText()!=null)
 			parser.nextTag(); //process hasDelivered
 			parser.nextTag();
 			parser.next();
 			table.setHasDelivered(Boolean.parseBoolean(parser.getText()));
-			Log.d(count+"-hasDelivered", "value="+ parser.getText());
+			//Log.d(count+"-hasDelivered", "value="+ parser.getText());
 
 			if (parser.getText()!=null)
 			parser.nextTag(); //process isPregnant
 			parser.nextTag();
 			parser.next();
 			table.setPregnant(Boolean.parseBoolean(parser.getText()));
-			Log.d(count+"-isPregnant", "value="+ parser.getText());
+			//Log.d(count+"-isPregnant", "value="+ parser.getText());
 
 			if (parser.getText()!=null)
 			parser.nextTag(); //process clip_id_1
 			parser.nextTag();
 			parser.next();
 			table.setClip_id_1(parser.getText());
-			Log.d(count+"-clip_id_1", "value="+ parser.getText());
+			//Log.d(count+"-clip_id_1", "value="+ parser.getText());
 
 			if (parser.getText()!=null)
 			parser.nextTag(); //process clip_id_2
 			parser.nextTag();
 			parser.next();
 			table.setClip_id_2(parser.getText());
-			Log.d(count+"-clip_id_2", "value="+ parser.getText());
+			//Log.d(count+"-clip_id_2", "value="+ parser.getText());
 
 			if (parser.getText()!=null)
 			parser.nextTag(); //process clip_id_3
 			parser.nextTag();
 			parser.next();
 			table.setClip_id_3(parser.getText());
-			Log.d(count+"-clip_id_3", "value="+ parser.getText());
+			//Log.d(count+"-clip_id_3", "value="+ parser.getText());
 
 			if (parser.getText()!=null)
 			parser.nextTag(); //process clip_id_4
 			parser.nextTag();
 			parser.next();
 			table.setClip_id_4(parser.getText());
-			Log.d(count+"-clip_id_4", "value="+ parser.getText());
+			//Log.d(count+"-clip_id_4", "value="+ parser.getText());
 
 			if (parser.getText()!=null)
 			parser.nextTag(); //process clip_id_5
 			parser.nextTag();
 			parser.next();
 			table.setClip_id_5(parser.getText());
-			Log.d(count+"-clip_id_5", "value="+ parser.getText());
+			//Log.d(count+"-clip_id_5", "value="+ parser.getText());
 
 			if (parser.getText()!=null)
 			parser.nextTag(); //process clip_id_6
 			parser.nextTag();
 			parser.next();
 			table.setClip_id_6(parser.getText());
-			Log.d(count+"-clip_id_6", "value="+ parser.getText());
+			//Log.d(count+"-clip_id_6", "value="+ parser.getText());
 
 			if (parser.getText()!=null)
 			parser.nextTag(); //process clip_id_7
 			parser.nextTag();
 			parser.next();
 			table.setClip_id_7(parser.getText());
-			Log.d(count+"-clip_id_7", "value="+ parser.getText());
+			//Log.d(count+"-clip_id_7", "value="+ parser.getText());
 
 			if (parser.getText()!=null)
 			parser.nextTag(); //process clip_id_8
 			parser.nextTag();
 			parser.next();
 			table.setClip_id_8(parser.getText());
-			Log.d(count+"-clip_id_8", "value="+ parser.getText());
+			//Log.d(count+"-clip_id_8", "value="+ parser.getText());
 
 			if (parser.getText()!=null)
 			parser.nextTag(); //process clip_id_9
 			parser.nextTag();
 			parser.next();
 			table.setClip_id_9(parser.getText());
-			Log.d(count+"-clip_id_9", "value="+ parser.getText());
+			//Log.d(count+"-clip_id_9", "value="+ parser.getText());
 
 			if (parser.getText()!=null)
 			parser.nextTag(); //process onPom
 			parser.nextTag();
 			parser.next();
 			table.setOnPom(Boolean.parseBoolean(parser.getText()));
-			Log.d(count+"-onPom", "value="+ parser.getText());
+			//Log.d(count+"-onPom", "value="+ parser.getText());
 
 			if (parser.getText()!=null)
 			parser.nextTag(); //process onFacility
 			parser.nextTag();
 			parser.next();
 			table.setOnFacility(Boolean.parseBoolean(parser.getText()));
-			Log.d(count+"-onFacility", "value="+ parser.getText());
+			//Log.d(count+"-onFacility", "value="+ parser.getText());
 
 			if (parser.getText()!=null)
 			parser.nextTag(); //process onSurveillance
 			parser.nextTag();
 			parser.next();
 			table.setOnSurveillance(Boolean.parseBoolean(parser.getText()));
-			Log.d(count+"-onSurveillance", "value="+ parser.getText());
+			//Log.d(count+"-onSurveillance", "value="+ parser.getText());
 
 
 			parser.nextTag();
 			parser.nextTag();
 			parser.next();
 
-			values.add(table);
+			//values.add(table);
+
+			database.insert(table);
+
 			publishProgress(count);
 
 		}
 
-		state = State.SAVING;
-		entity = Entity.MEMBERS;
+		//state = State.SAVING;
+		//entity = Entity.MEMBERS;
 
-		database.open();
+		/*
 		if (!values.isEmpty()) {
 			count = 0;
 			for (Table t : values){
@@ -902,6 +935,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 				publishProgress(count);
 			}
 		}
+		*/
 		database.close();
 
 		updateSyncReport(SyncReport.REPORT_MEMBERS, new Date(), SyncReport.STATUS_SYNCED);

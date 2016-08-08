@@ -1,7 +1,7 @@
 package net.manhica.clip.explorer.main;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -18,7 +18,7 @@ import java.util.List;
 
 import mz.betainteractive.utilities.StringUtil;
 
-public class ServerSyncActivity extends AppCompatActivity implements SyncDatabaseListener {
+public class ServerSyncActivity extends Activity implements SyncDatabaseListener {
 
     private Button btSyncModules;
     private Button btSyncForms;

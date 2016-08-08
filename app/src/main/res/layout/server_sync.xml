@@ -28,6 +28,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_weight="0.04"
+                android:background="@drawable/btsync"
                 android:text="@string/server_sync_bt_modules_lbl" />
 
             <LinearLayout
@@ -63,6 +64,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_weight="0.04"
+                android:background="@drawable/btsync"
                 android:text="@string/server_sync_bt_forms_lbl" />
 
             <LinearLayout
@@ -98,6 +100,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_weight="0.04"
+                android:background="@drawable/btsync"
                 android:text="@string/server_sync_bt_users_lbl" />
 
             <LinearLayout
@@ -133,6 +136,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_weight="0.04"
+                android:background="@drawable/btsync"
                 android:text="@string/server_sync_bt_households_lbl" />
 
             <LinearLayout
@@ -168,6 +172,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_weight="0.04"
+                android:background="@drawable/btsync"
                 android:text="@string/server_sync_bt_members_lbl" />
 
             <LinearLayout

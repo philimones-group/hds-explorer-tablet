@@ -12,6 +12,13 @@
     tools:context=".main.LoginActivity">
 
     <!-- Login progress -->
+    <ImageView
+        android:layout_width="218dp"
+        android:layout_height="190dp"
+        android:id="@+id/imageView"
+        android:layout_gravity="center_horizontal"
+        android:background="@mipmap/clip_explorer_icon" />
+
     <ProgressBar
         android:id="@+id/login_progress"
         style="?android:attr/progressBarStyleLarge"
@@ -23,13 +30,15 @@
     <ScrollView
         android:id="@+id/login_form"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/activity_vertical_margin">
 
         <LinearLayout
             android:id="@+id/login_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
+
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
@@ -71,7 +80,12 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:text="@string/login_button_lbl"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:textColor="@android:color/background_light"
+                android:background="@drawable/drawed"
+                android:shadowColor="@android:color/transparent"
+
+                />
 
             <Button
                 android:id="@+id/synchronize_button"
@@ -80,7 +94,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:text="@string/login_synchronize_lbl"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:background="@android:color/holo_green_light"
+                />
 
         </LinearLayout>
     </ScrollView>

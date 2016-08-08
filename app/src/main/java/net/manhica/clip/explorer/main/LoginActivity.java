@@ -2,14 +2,18 @@ package net.manhica.clip.explorer.main;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+
 import android.annotation.TargetApi;
+import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+
 import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
@@ -29,6 +33,7 @@ import net.manhica.clip.explorer.database.Converter;
 import net.manhica.clip.explorer.database.Database;
 import net.manhica.clip.explorer.database.DatabaseHelper;
 import net.manhica.clip.explorer.io.SyncDatabaseListener;
+import net.manhica.clip.explorer.model.Module;
 import net.manhica.clip.explorer.model.User;
 
 import org.mindrot.jbcrypt.BCrypt;
@@ -39,7 +44,7 @@ import java.net.URL;
 /**
  * A login screen that offers login via email/password.
  */
-public class LoginActivity extends AppCompatActivity implements SyncDatabaseListener{
+public class LoginActivity extends Activity implements SyncDatabaseListener{
 
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
@@ -53,6 +58,7 @@ public class LoginActivity extends AppCompatActivity implements SyncDatabaseList
     private View mProgressView;
     private View mLoginFormView;
     private ProgressDialog progressDialog;
+    private AlertDialog alertDialog;
 
     private User loggedUser;
     private String adminUser;
@@ -98,8 +104,8 @@ public class LoginActivity extends AppCompatActivity implements SyncDatabaseList
 
         this.progressDialog = new ProgressDialog(this);
 
-        txtUsername.setText("admin");
-        txtPassword.setText("admin");
+        txtUsername.setText("FWCT1");
+        txtPassword.setText("test");
 
         initdb();
     }
@@ -263,13 +269,6 @@ public class LoginActivity extends AppCompatActivity implements SyncDatabaseList
         @Override
         protected User doInBackground(Void... params) {
 
-            try {
-                // Simulate network access.
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                return null;
-            }
-
             User user = null;
 
             Database db = new Database(LoginActivity.this);
@@ -359,7 +358,7 @@ public class LoginActivity extends AppCompatActivity implements SyncDatabaseList
                 HttpURLConnection connection = null;
                 String basicAuth = "Basic " + new String(Base64.encode((this.mUsername+":"+this.mPassword).getBytes(),Base64.NO_WRAP ));
 
-                URL url = new URL(LoginActivity.this.getString(R.string.server_url)+"/api/clip-explorer/users");
+                URL url = new URL(LoginActivity.this.getString(R.string.server_url_not_secure)+"/api/clip-explorer/users");
 
                 connection = (HttpURLConnection) url.openConnection();
                 connection.setRequestMethod("GET");
@@ -417,8 +416,61 @@ public class LoginActivity extends AppCompatActivity implements SyncDatabaseList
     }
 
     private void launchModulesSelector(){
-        Toast.makeText(this, "Sucessfull Login", Toast.LENGTH_LONG);
-        Log.d("logged","logged");
+        //Toast.makeText(this, "Sucessfull Login", Toast.LENGTH_LONG);
+        Log.d("logged","logged"+loggedUser.getModules());
+
+        Intent intent = null;
+
+        String[] modules = loggedUser.getModules().split(",");
+
+        if (loggedUser.getModules()==null && loggedUser.getModules().isEmpty()){
+            createAlertDialog(getString(R.string.error_lbl), getString(R.string.error_no_modules_permission));
+            return;
+        }
+
+        if (modules.length > 1){
+            intent = new Intent(this, ModuleSelectorActivity.class); //open Modules Selector
+        }
+
+        if (modules.length==1 && modules[0].equals(Module.CLIP_FACILITY_MODULE)){
+            intent = new Intent(this, FacilityActivity.class); //
+        }
+
+        if (modules.length==1 && modules[0].equals(Module.CLIP_POM_MODULE)){
+            intent = new Intent(this, POMActivity.class); //
+        }
+
+        if (modules.length==1 && modules[0].equals(Module.CLIP_SURVEY_MODULE)){
+            intent = new Intent(this, SurveyActivity.class); //
+        }
+
+        if (modules.length==1 && modules[0].equals(Module.CLIP_OTHERS)){
+            createAlertDialog("Exception", "Not yet Implemented");
+            return;
+        }
+
+        intent.putExtra("user", loggedUser);
+        startActivity(intent);
+    }
+
+    private void createAlertDialog(String title, String message) {
+
+        alertDialog = null;
+
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+        alertDialogBuilder.setTitle(title);
+        alertDialogBuilder.setMessage(message);
+        alertDialogBuilder.setCancelable(true);
+
+        alertDialogBuilder.setNeutralButton(getString(R.string.bt_ok_lbl), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+
+        alertDialog = alertDialogBuilder.create();
+        alertDialog.show();
     }
 }
 

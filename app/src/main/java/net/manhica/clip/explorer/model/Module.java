@@ -12,10 +12,10 @@ import java.io.Serializable;
  */
 public class Module implements Serializable, Table {
 
-    final static String CLIP_POM_MODULE = "CLIP-POM";
-    final static String CLIP_SURVEY_MODULE = "CLIP-SURVEY";
-    final static String CLIP_FACILITY_MODULE = "CLIP-FACILITY";
-    final static String CLIP_OTHERS = "CLIP-ANY";
+    public final static String CLIP_POM_MODULE = "CLIP-POM";
+    public final static String CLIP_SURVEY_MODULE = "CLIP-SURVEY";
+    public final static String CLIP_FACILITY_MODULE = "CLIP-FACILITY";
+    public final static String CLIP_OTHERS = "CLIP-ANY";
 
     private String code;
     private String name;

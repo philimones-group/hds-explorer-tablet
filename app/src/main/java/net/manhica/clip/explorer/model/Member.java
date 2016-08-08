@@ -399,9 +399,9 @@ public class Member implements Serializable, Table {
         cv.put(DatabaseHelper.Member.COLUMN_CLIP_ID_7, clip_id_7);
         cv.put(DatabaseHelper.Member.COLUMN_CLIP_ID_8, clip_id_8);
         cv.put(DatabaseHelper.Member.COLUMN_CLIP_ID_9, clip_id_9);
-        cv.put(DatabaseHelper.Member.COLUMN_ON_POM, onPom);
-        cv.put(DatabaseHelper.Member.COLUMN_ON_FACILITY, onFacility);
-        cv.put(DatabaseHelper.Member.COLUMN_ON_SURVEILLANCE, onSurveillance);
+        cv.put(DatabaseHelper.Member.COLUMN_ON_POM, onPom ? 1 : 0);
+        cv.put(DatabaseHelper.Member.COLUMN_ON_FACILITY, onFacility ? 1 : 0);
+        cv.put(DatabaseHelper.Member.COLUMN_ON_SURVEILLANCE, onSurveillance ? 1 : 0);
         return cv;
     }
 

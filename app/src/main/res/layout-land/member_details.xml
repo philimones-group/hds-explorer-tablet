@@ -1,0 +1,314 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="net.manhica.clip.explorer.main.MemberDetailsActivity"
+    android:background="#acdde9">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:background="@drawable/m_details_header"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/iconView"
+            android:layout_width="80dp"
+            android:layout_height="90dp"
+            android:layout_marginTop="20dp"
+            android:layout_gravity="left|top"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:src="@mipmap/member_big_icon" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/mbDetailsName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="MARGARIDA MOLUSCO MBUTI"
+                android:textColor="#ffffff"
+                android:textSize="30dp"
+                android:textStyle="bold"/>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/mbDetailsPermId"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="01-0101-011-01"
+                    android:textColor="#92edb3"
+                    android:textSize="30dp"
+                    android:textStyle="bold" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="50dp"
+                    android:orientation="horizontal">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginRight="1dp"
+                        android:text="@string/member_details_gender_lbl"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:textColor="#c4daca"
+                        android:textSize="@dimen/member_filter_titlesize"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/mbDetailsGender"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginLeft="4dp"
+                        android:text="M"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:textColor="#83d34a"
+                        android:textSize="@dimen/member_filter_titlesize"
+                        android:textStyle="bold"
+                        />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginRight="1dp"
+                        android:layout_marginLeft="27dp"
+                        android:text="@string/member_details_age_lbl"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:textColor="#c4daca"
+                        android:textSize="@dimen/member_filter_titlesize"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/mbDetailsAge"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginLeft="4dp"
+                        android:text="16"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:textColor="#83d34a"
+                        android:textSize="@dimen/member_filter_titlesize"
+                        android:textStyle="bold"
+                        />
+                </LinearLayout>
+
+
+            </LinearLayout>
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <!-- Extra data details -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="15dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="10dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/member_details_other_info_lbl"
+            android:textSize="@dimen/member_details_other_info_txtsize_land"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+
+
+        <LinearLayout
+            android:id="@+id/layout_md_xdata"
+            android:layout_width="match_parent"
+            android:layout_height="205dp"
+            android:background="@drawable/corner_border"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <!-- Layout Info 1 -->
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="30dp"
+                        android:layout_marginLeft="@dimen/member_filter_xdata_margin_left"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="@dimen/member_details_txtview_width"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="?android:attr/textAppearanceLarge"
+                            android:text="@string/member_details_houseno_lbl"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="?android:attr/textAppearanceLarge"
+                            android:textStyle="bold"
+                            android:text="05-1233-123"
+                            android:id="@+id/mbDetailsHouseNo" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginLeft="@dimen/member_filter_xdata_margin_left"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="@dimen/member_details_txtview_width"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="?android:attr/textAppearanceLarge"
+                            android:text="@string/member_details_member_endtype_lbl"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="?android:attr/textAppearanceLarge"
+                            android:textStyle="bold"
+                            android:text="Esta a residir nesta casa"
+                            android:id="@+id/mbDetailsEndType" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginLeft="@dimen/member_filter_xdata_margin_left"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="@dimen/member_details_txtview_width"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="?android:attr/textAppearanceLarge"
+                            android:text="@string/member_details_father_lbl"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="?android:attr/textAppearanceLarge"
+                            android:textStyle="bold"
+                            android:text="JOAO MACACO SIMANGO"
+                            android:id="@+id/mbDetailsFather" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginLeft="@dimen/member_filter_xdata_margin_left"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="@dimen/member_details_txtview_width"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="?android:attr/textAppearanceLarge"
+                            android:text="@string/member_details_mother_lbl"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="?android:attr/textAppearanceLarge"
+                            android:textStyle="bold"
+                            android:text="Desconhecida"
+                            android:id="@+id/mbDetailsMother" />
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <!-- Layout Info 2 -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <CheckBox
+                        android:id="@+id/chkMemDetailIsPreg"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="60dp"
+                        android:layout_marginTop="60dp"
+                        android:clickable="false"
+                        android:text="@string/member_details_ispregnant_lbl"
+                        android:textSize="@dimen/member_filter_checkbox_textsize" />
+
+                    <CheckBox
+                        android:id="@+id/chkMemDetailsHasDelv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="60dp"
+                        android:layout_marginTop="20dp"
+                        android:clickable="false"
+                        android:text="@string/member_details_has_delivered_lbl"
+                        android:textSize="@dimen/member_filter_checkbox_textsize" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/mbLayoutButtons"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0"
+        android:gravity="center|bottom"
+        android:layout_marginBottom="@dimen/fagm_margin_bottom"
+        android:layout_marginLeft="@dimen/fagm_margin_right"
+        android:layout_marginRight="@dimen/fagm_margin_right"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btMemDetailsBack"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/member_details_bt_height"
+            android:textSize="@dimen/member_details_buttons_size"
+            android:textStyle="bold"
+            android:text="@string/member_details_bt_back_lbl"
+            android:background="@drawable/button_normal"/>
+
+        <Button
+            android:id="@+id/btMemDetailsCollectData"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/member_details_bt_height"
+            android:textSize="@dimen/member_details_buttons_size"
+            android:textStyle="bold"
+            android:text="@string/member_details_bt_openform_lbl"
+            android:background="@drawable/button_normal"/>
+
+
+    </LinearLayout>
+
+</LinearLayout>

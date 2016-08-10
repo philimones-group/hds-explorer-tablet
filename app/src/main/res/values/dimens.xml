@@ -2,5 +2,45 @@
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
+
     <dimen name="fab_margin">16dp</dimen>
+    <dimen name="fagm_margin_left">2dp</dimen>
+    <dimen name="fagm_margin_top">10dp</dimen>
+    <dimen name="fagm_margin_bottom">10dp</dimen>
+    <dimen name="fagm_margin_right">10dp</dimen>
+    <dimen name="fagm_margin">15dp</dimen>
+
+    <dimen name="mf_margin_left">10dp</dimen>
+    <dimen name="mf_margin_top">15dp</dimen>
+    <dimen name="mf_margin_bottom">15dp</dimen>
+    <dimen name="mf_margin_right">10dp</dimen>
+
+    <dimen name="mf_land_margin_left">10dp</dimen>
+    <dimen name="mf_land_margin_top">10dp</dimen>
+    <dimen name="mf_land_margin_bottom">10dp</dimen>
+    <dimen name="mf_land_margin_right">10dp</dimen>
+
+    <dimen name="member_filter_textsize">22dp</dimen>
+    <dimen name="member_filter_titlesize">24dp</dimen>
+    <dimen name="member_filter_textbox_size">50dp</dimen>
+    <dimen name="member_filter_checkbox_textsize">22dp</dimen>
+
+    <dimen name="member_filter_xdata_margin">20dp</dimen>
+    <dimen name="member_filter_xdata_margin_left">40dp</dimen>
+    <dimen name="member_filter_land_xdata_margin">10dp</dimen>
+
+    <dimen name="member_filter_buttons">25dp</dimen>
+    <dimen name="member_filter_buttons_pad_left">20dp</dimen>
+
+    <dimen name="member_list_titlesize">24dp</dimen>
+    <dimen name="member_list_buttons">20dp</dimen>
+    <dimen name="member_list_buttons_pad_left">20dp</dimen>
+
+    <dimen name="member_details_txtview_width">180dp</dimen>
+    <dimen name="member_details_chkbox_margin_left">210dp</dimen>
+    <dimen name="member_details_bt_height">80dp</dimen>
+    <dimen name="member_details_buttons_size">25dp</dimen>
+    <dimen name="member_details_other_info_txtsize">25dp</dimen>
+    <dimen name="member_details_other_info_txtsize_land">20dp</dimen>
+
 </resources>

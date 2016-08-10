@@ -2,6 +2,7 @@ package net.manhica.clip.explorer.database;
 
 import android.database.Cursor;
 
+import net.manhica.clip.explorer.model.Form;
 import net.manhica.clip.explorer.model.SyncReport;
 
 import java.util.ArrayList;
@@ -35,4 +36,30 @@ public class Queries {
 
         return list;
     }
+
+    public static Form getFormBy(Database database, String whereClause, String[] clauseArgs){
+        Form form = null;
+
+        Cursor cursor = database.query(Form.class, whereClause, clauseArgs, null, null, null);
+
+        if (cursor.moveToFirst()){
+            form = Converter.cursorToForm(cursor);
+        }
+
+        return form;
+    }
+
+    public static List<Form> getAllFormBy(Database database, String whereClause, String[] clauseArgs){
+        List<Form> list = new ArrayList<>();
+
+        Cursor cursor = database.query(Form.class, whereClause, clauseArgs, null, null, null);
+
+        while (cursor.moveToNext()){
+            Form form = Converter.cursorToForm(cursor);
+            list.add(form);
+        }
+
+        return list;
+    }
+
 }

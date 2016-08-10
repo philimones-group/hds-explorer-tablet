@@ -30,6 +30,7 @@ public class Converter {
 		user.setUsername(cursor.getString(cursor.getColumnIndex(DatabaseHelper.User.COLUMN_USERNAME)));
 		user.setPassword(cursor.getString(cursor.getColumnIndex(DatabaseHelper.User.COLUMN_PASSWORD)));
 		user.setModules(cursor.getString(cursor.getColumnIndex(DatabaseHelper.User.COLUMN_MODULES)));
+		user.setExtras(cursor.getString(cursor.getColumnIndex(DatabaseHelper.User.COLUMN_EXTRAS)));
 		
 		return user;
 	}

@@ -55,8 +55,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		public static final String COLUMN_USERNAME = "username";
 		public static final String COLUMN_PASSWORD = "password";
         public static final String COLUMN_MODULES = "modules";
+        public static final String COLUMN_EXTRAS = "extras";
 
-		public static final String[] ALL_COLUMNS = {COLUMN_FIRSTNAME, COLUMN_LASTNAME, COLUMN_USERNAME, COLUMN_PASSWORD, COLUMN_MODULES};
+		public static final String[] ALL_COLUMNS = {COLUMN_FIRSTNAME, COLUMN_LASTNAME, COLUMN_USERNAME, COLUMN_PASSWORD, COLUMN_MODULES, COLUMN_EXTRAS};
 	}
 
 	public static final class Form implements BaseColumns {
@@ -173,7 +174,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + User.COLUMN_LASTNAME + " TEXT,"
             + User.COLUMN_USERNAME + " TEXT,"
             + User.COLUMN_PASSWORD + " TEXT,"
-            + User.COLUMN_MODULES + " TEXT);"
+            + User.COLUMN_MODULES + " TEXT,"
+            + User.COLUMN_EXTRAS + " TEXT);"
 
             + " CREATE UNIQUE INDEX IDX_USER_USER ON " + User.TABLE_NAME
             + "(" +  User.COLUMN_USERNAME + ");"

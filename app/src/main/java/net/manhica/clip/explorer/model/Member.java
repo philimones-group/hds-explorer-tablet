@@ -333,6 +333,20 @@ public class Member implements Serializable, Table {
         this.clip_id_9 = clip_id_9==null ? "" : clip_id_9 ;
     }
 
+    public String getLastClipId(){
+        if (clip_id_1 == null || clip_id_1.isEmpty()) return "";
+        if (clip_id_2 == null || clip_id_2.isEmpty()) return clip_id_1;
+        if (clip_id_3 == null || clip_id_3.isEmpty()) return clip_id_2;
+        if (clip_id_4 == null || clip_id_4.isEmpty()) return clip_id_3;
+        if (clip_id_5 == null || clip_id_5.isEmpty()) return clip_id_4;
+        if (clip_id_6 == null || clip_id_6.isEmpty()) return clip_id_5;
+        if (clip_id_7 == null || clip_id_7.isEmpty()) return clip_id_6;
+        if (clip_id_8 == null || clip_id_8.isEmpty()) return clip_id_7;
+        if (clip_id_9 == null || clip_id_9.isEmpty()) return clip_id_8;
+
+        return clip_id_9;
+    }
+
     public boolean isOnPom() {
         return onPom;
     }

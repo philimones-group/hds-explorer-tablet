@@ -23,6 +23,10 @@ public class FilledForm {
     public void put(String variable, Object value){
     	values.put(variable, value);
     }
+
+	public void putAll(Map<String, Object> mapValues){
+		values.putAll(mapValues);
+	}
     
     public Object get(String variable){
     	return values.get(variable);

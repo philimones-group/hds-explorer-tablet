@@ -17,17 +17,19 @@ public class User implements Serializable, Table {
     private String username;
     private String password;
     private String modules;
+    private String extras;
 
     public User(){
 
     }
 
-    public User(String firstName, String lastName, String username, String password, String modules) {
+    public User(String firstName, String lastName, String username, String password, String modules, String extras) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.username = username;
         this.password = password;
         this.modules = modules;
+        this.extras = extras;
     }
 
     public String getFirstName() {
@@ -70,8 +72,16 @@ public class User implements Serializable, Table {
         this.modules = modules;
     }
 
+    public String getExtras() {
+        return extras;
+    }
+
+    public void setExtras(String extras) {
+        this.extras = extras;
+    }
+
     public String getFullname(){
-        return firstName + " " +lastName;
+        return firstName.trim() + " " + lastName.trim();
     }
 
     public String toString(){
@@ -91,6 +101,7 @@ public class User implements Serializable, Table {
         cv.put(DatabaseHelper.User.COLUMN_USERNAME, username);
         cv.put(DatabaseHelper.User.COLUMN_PASSWORD, password);
         cv.put(DatabaseHelper.User.COLUMN_MODULES, modules);
+        cv.put(DatabaseHelper.User.COLUMN_EXTRAS, extras);
         return cv;
     }
 

@@ -1,0 +1,86 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="net.manhica.clip.explorer.fragment.MemberListFragment">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginBottom="5dp"
+            android:layout_marginLeft="@dimen/fagm_margin_left"
+            android:layout_marginRight="@dimen/fagm_margin_right"
+            android:layout_marginTop="@dimen/fagm_margin_top"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:id="@+id/viewListProgressBar"
+                android:layout_width="match_parent"
+                android:layout_height="700dp"
+                android:background="@drawable/list_corner_border"
+                android:visibility="gone">
+
+                <ProgressBar
+                    style="?android:attr/progressBarStyleLarge"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true"
+                    />
+
+            </RelativeLayout>
+
+            <ListView
+                android:layout_width="match_parent"
+                android:layout_height="685dp"
+                android:background="@drawable/list_corner_border"
+                android:id="@+id/lvMembersList"
+                />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/viewListButtons"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="0"
+            android:gravity="center|bottom"
+            android:layout_marginBottom="5dp"
+            android:layout_marginLeft="@dimen/fagm_margin_left"
+            android:layout_marginRight="@dimen/fagm_margin_right"
+            android:orientation="vertical">
+
+            <Button
+                android:id="@+id/btMemListShowHHMap"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:textSize="@dimen/member_list_buttons"
+                android:text="@string/member_list_bt_show_houses_maps_lbl"
+                android:background="@drawable/button_normal"/>
+
+            <Button
+                android:id="@+id/btMemListShowMmbMap"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:textSize="@dimen/member_list_buttons"
+                android:text="@string/member_list_bt_show_houses_members_lbl"
+                android:background="@drawable/button_normal"/>
+
+            <Button
+                android:id="@+id/btMemListShowClosestPregnt"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:textSize="@dimen/member_list_buttons"
+                android:text="@string/member_list_bt_show_closest_prgwm_lbl"
+                android:background="@drawable/button_normal"/>
+        </LinearLayout>
+
+    </LinearLayout>
+
+</ScrollView>

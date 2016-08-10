@@ -1,0 +1,212 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="net.manhica.clip.explorer.fragment.MemberFilterFragment">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/mf_margin_bottom"
+            android:layout_marginLeft="@dimen/mf_margin_left"
+            android:layout_marginRight="@dimen/mf_margin_right"
+            android:layout_marginTop="@dimen/mf_margin_top"
+            android:gravity="top"
+            android:orientation="vertical">
+
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="15dp"
+                android:layout_marginBottom="40dp"
+                android:text="@string/member_filter_search_lbl"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textSize="@dimen/member_filter_titlesize"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="30dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/member_filter_name_lbl"
+                    android:textAppearance="?android:attr/textAppearanceLarge" />
+
+                <EditText
+                    android:id="@+id/txtMemFilterName"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/member_filter_textbox_size"
+                    android:background="@drawable/textinputborder"
+                    android:gravity="center_vertical"
+                    android:hint="Insert Name Here"
+                    android:paddingLeft="10dp"
+                    android:textSize="@dimen/member_filter_textsize" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="30dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/member_filter_permid_lbl"
+                    android:textAppearance="?android:attr/textAppearanceLarge" />
+
+                <EditText
+                    android:id="@+id/txtMemFilterPermId"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/member_filter_textbox_size"
+                    android:background="@drawable/textinputborder"
+                    android:gravity="center_vertical"
+                    android:hint="eg. 01-0101-001-01"
+                    android:paddingLeft="10dp"
+                    android:textSize="@dimen/member_filter_textsize" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="120dp"
+                android:layout_marginBottom="20dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/member_filter_gender_lbl"
+                    android:textAppearance="?android:attr/textAppearanceLarge" />
+
+                <LinearLayout
+                    android:id="@+id/layout_mf_gender"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <CheckBox
+                        android:id="@+id/chkMemFilterGFemale"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:text="@string/member_filter_gender_female_lbl"
+                        android:textSize="@dimen/member_filter_checkbox_textsize" />
+
+                    <CheckBox
+                        android:id="@+id/chkMemFilterGMale"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:text="@string/member_filter_gender_male_lbl"
+                        android:layout_marginLeft="60dp"
+                        android:textSize="@dimen/member_filter_checkbox_textsize" />
+
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <!-- we wont put age here for now -->
+
+            <!-- Extra data details -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="20dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/member_filter_xdata_lbl"
+                    android:textAppearance="?android:attr/textAppearanceLarge" />
+
+
+                <LinearLayout
+                    android:id="@+id/layout_mf_xdata"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/corner_border"
+                    android:orientation="vertical">
+
+                    <CheckBox
+                        android:id="@+id/chkMemFilter1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="30dp"
+                        android:layout_marginLeft="@dimen/member_filter_xdata_margin_left"
+                        android:text="@string/member_filter_ispregnant_lbl"
+                        android:textSize="@dimen/member_filter_checkbox_textsize" />
+
+                    <CheckBox
+                        android:id="@+id/chkMemFilter2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="30dp"
+                        android:layout_marginLeft="@dimen/member_filter_xdata_margin_left"
+                        android:text="@string/member_filter_on_pom_lbl"
+                        android:textSize="@dimen/member_filter_checkbox_textsize" />
+
+                    <CheckBox
+                        android:id="@+id/chkMemFilter3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="30dp"
+                        android:layout_marginLeft="@dimen/member_filter_xdata_margin_left"
+                        android:layout_marginBottom="30dp"
+                        android:text="@string/member_filter_on_facility_lbl"
+                        android:textSize="@dimen/member_filter_checkbox_textsize" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_marginTop="@dimen/fagm_margin_top"
+            android:layout_marginBottom="@dimen/fagm_margin_bottom"
+            android:layout_marginLeft="@dimen/fagm_margin_left"
+            android:layout_marginRight="@dimen/fagm_margin_right"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btMemFilterClear"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textSize="@dimen/member_filter_buttons"
+                android:text="@string/member_filter_clear_lbl"
+                android:layout_gravity="left"
+                android:background="@drawable/button_normal"/>
+
+            <Button
+                android:id="@+id/btMemFilterSearch"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_gravity="right"
+                android:textSize="@dimen/member_filter_buttons"
+                android:text="@string/member_filter_search_btn_lbl"
+                android:background="@drawable/button_normal"/>
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+
+</ScrollView>

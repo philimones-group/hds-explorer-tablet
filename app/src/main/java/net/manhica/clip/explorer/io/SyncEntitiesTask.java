@@ -315,6 +315,14 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 		return !(element.equals(parser.getName()) && parser.getEventType() == XmlPullParser.END_TAG) && !isCancelled();
 	}
 
+	private boolean isEndTag(String element, XmlPullParser parser) throws XmlPullParserException {
+		return (element.equals(parser.getName()) && parser.getEventType() == XmlPullParser.END_TAG);
+	}
+
+	private boolean isEmptyTag(String element, XmlPullParser parser) throws XmlPullParserException {
+		return (element.equals(parser.getName()) && parser.isEmptyElementTag());
+	}
+
 	private void processModulesParams(XmlPullParser parser) throws XmlPullParserException, IOException {
 
 		//clear sync_report
@@ -473,38 +481,80 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 						
 			User table = new User();
 
-			parser.nextTag(); //process username
-			parser.next();
-			table.setUsername(parser.getText());
-			Log.d(count+"-username", "value="+ parser.getText());
+			parser.nextTag(); //process <username>
+			if (!isEmptyTag("username", parser)) {
+				parser.next();
+				table.setUsername(parser.getText());
+				parser.nextTag(); //process </username>
 
-			parser.nextTag(); //process password
-			parser.nextTag();
-			parser.next();
-			table.setPassword(parser.getText());
-			Log.d(count+"-password", "value="+ parser.getText());
+				Log.d(count+"-username", "value="+ table.getUsername());
+			}else{
+				table.setUsername("");
+				parser.nextTag();
+			}
 
-			parser.nextTag(); //process firstName
-			parser.nextTag();
-			parser.next();
-			table.setFirstName(parser.getText());
-			Log.d(count+"-firstName", "value="+ parser.getText());
+			parser.nextTag(); //process <password>
+			if (!isEmptyTag("password", parser)) {
+				parser.next();
+				table.setPassword(parser.getText());
+				parser.nextTag(); //process </password>
 
-			parser.nextTag(); //process lastName
-			parser.nextTag();
-			parser.next();
-			table.setLastName(parser.getText());
-			Log.d(count+"-lastName", "value="+ parser.getText());
+				Log.d(count+"-password", "value="+ table.getPassword());
+			}else{
+				table.setPassword("");
+				parser.nextTag();
+			}
 
-			parser.nextTag(); //process modules
-			parser.nextTag();
-			parser.next();
-			table.setModules(parser.getText());
-			Log.d(count+"-modules", "value="+ parser.getText());
+			parser.nextTag(); //process <firstName>
+			if (!isEmptyTag("firstName", parser)) {
+				parser.next();
+				table.setFirstName(parser.getText());
+				parser.nextTag(); //process </firstName>
+
+				Log.d(count+"-firstName", "value="+ table.getFirstName());
+			}else{
+				table.setFirstName("");
+				parser.nextTag();
+			}
+
+			parser.nextTag(); //process <lastName>
+			if (!isEmptyTag("lastName", parser)) { //its not <lastName/>
+				parser.next();
+				table.setLastName(parser.getText());
+				parser.nextTag(); //process </lastName>
+
+				Log.d(count+"-lastName", "value="+ table.getLastName());
+			}else{
+				table.setLastName("");
+				parser.nextTag();
+			}
+
+			parser.nextTag(); //process <modules>
+			if (!isEmptyTag("modules", parser)) {
+				parser.next();
+				table.setModules(parser.getText());
+				parser.nextTag(); //process </modules>
+
+				Log.d(count+"-modules", "value="+ table.getModules());
+			}else{
+				table.setModules("");
+				parser.nextTag();
+			}
+
+			parser.nextTag(); //process <extras>
+			if (!isEmptyTag("extras", parser)){ //its not <extras/>
+				parser.next();
+				table.setExtras(parser.getText());
+				parser.nextTag(); // </extras>
+
+				Log.d(count+"-extras", "value="+ table.getExtras());
+			}else{
+				table.setExtras("");
+				parser.nextTag();
+			}
 
 
-			parser.nextTag();
-			parser.nextTag();
+			parser.nextTag(); // <user>
 			parser.next();
 
 			values.add(table);

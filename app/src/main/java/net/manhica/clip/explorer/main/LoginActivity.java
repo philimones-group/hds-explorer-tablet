@@ -40,6 +40,7 @@ import org.mindrot.jbcrypt.BCrypt;
 
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Scanner;
 
 /**
  * A login screen that offers login via email/password.
@@ -104,8 +105,8 @@ public class LoginActivity extends Activity implements SyncDatabaseListener{
 
         this.progressDialog = new ProgressDialog(this);
 
-        txtUsername.setText("FWCT1");
-        txtPassword.setText("test");
+        txtUsername.setText("");
+        txtPassword.setText("");
 
         initdb();
     }
@@ -213,7 +214,7 @@ public class LoginActivity extends Activity implements SyncDatabaseListener{
     }
 
     private boolean isPasswordValid(String password) {
-        return password.length() > 2;
+        return password.length() > 1;
     }
 
     /**
@@ -358,7 +359,7 @@ public class LoginActivity extends Activity implements SyncDatabaseListener{
                 HttpURLConnection connection = null;
                 String basicAuth = "Basic " + new String(Base64.encode((this.mUsername+":"+this.mPassword).getBytes(),Base64.NO_WRAP ));
 
-                URL url = new URL(LoginActivity.this.getString(R.string.server_url_not_secure)+"/api/clip-explorer/users");
+                URL url = new URL(LoginActivity.this.getString(R.string.server_url_not_secure)+"/api/clip-explorer/login");
 
                 connection = (HttpURLConnection) url.openConnection();
                 connection.setRequestMethod("GET");
@@ -372,7 +373,14 @@ public class LoginActivity extends Activity implements SyncDatabaseListener{
                 connection.connect();
 
                 if (connection.getResponseCode()==200){
-                    return true;
+
+                    Scanner scan = new Scanner(connection.getInputStream());
+                    String result = scan.next();
+                    scan.close();
+
+                    Log.d("result", ""+result);
+
+                    return result != null && result.equals("OK");
                 }
 
             } catch (Exception e) {

@@ -65,6 +65,7 @@ public class ModuleSelectorActivity extends Activity {
 
     private void launchModule(Class<? extends Activity> intentClass){
         Intent intent = new Intent(this, intentClass);
+        intent.putExtra("user", loggedUser);
         startActivity(intent);
     }
 

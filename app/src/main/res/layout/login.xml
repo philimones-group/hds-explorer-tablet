@@ -13,8 +13,10 @@
 
     <!-- Login progress -->
     <ImageView
-        android:layout_width="218dp"
-        android:layout_height="190dp"
+        android:layout_marginTop="50dp"
+        android:layout_marginBottom="30dp"
+        android:layout_width="118dp"
+        android:layout_height="102dp"
         android:id="@+id/imageView"
         android:layout_gravity="center_horizontal"
         android:background="@mipmap/clip_explorer_icon" />
@@ -27,7 +29,7 @@
         android:layout_marginBottom="8dp"
         android:visibility="gone" />
 
-    <ScrollView
+    <RelativeLayout
         android:id="@+id/login_form"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -82,9 +84,8 @@
                 android:text="@string/login_button_lbl"
                 android:textStyle="bold"
                 android:textColor="@android:color/background_light"
-                android:background="@drawable/drawed"
+                android:background="@drawable/button_lblue"
                 android:shadowColor="@android:color/transparent"
-
                 />
 
             <Button
@@ -95,9 +96,9 @@
                 android:layout_marginTop="16dp"
                 android:text="@string/login_synchronize_lbl"
                 android:textStyle="bold"
-                android:background="@android:color/holo_green_light"
+                android:background="@drawable/button_green"
                 />
 
         </LinearLayout>
-    </ScrollView>
+    </RelativeLayout>
 </LinearLayout>

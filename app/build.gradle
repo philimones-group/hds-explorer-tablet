@@ -1,6 +1,15 @@
 apply plugin: 'com.android.application'
 
 android {
+
+    signingConfigs {
+        config {
+            keyAlias 'cism android'
+            keyPassword 'cismandroid'
+            storeFile file('/home/paul/local/workspace/android-keys/cismandroid.keystore')
+            storePassword 'cismandroid'
+        }
+    }
     compileSdkVersion 23
     buildToolsVersion "23.0.3"
     defaultConfig {
@@ -8,12 +17,17 @@ android {
         minSdkVersion 19
         targetSdkVersion 19
         versionCode 1
-        versionName "1.0"
+        versionName "1.0-Facility"
+        archivesBaseName = "$applicationName-v$versionName"
     }
     buildTypes {
         release {
-            minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            zipAlignEnabled true
+            signingConfig signingConfigs.config
+        }
+        debug {
+            zipAlignEnabled true
         }
     }
     productFlavors {

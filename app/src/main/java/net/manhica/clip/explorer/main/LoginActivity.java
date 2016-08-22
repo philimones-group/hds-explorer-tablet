@@ -7,6 +7,7 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
@@ -32,7 +33,9 @@ import net.manhica.clip.explorer.database.Bootstrap;
 import net.manhica.clip.explorer.database.Converter;
 import net.manhica.clip.explorer.database.Database;
 import net.manhica.clip.explorer.database.DatabaseHelper;
+import net.manhica.clip.explorer.database.Queries;
 import net.manhica.clip.explorer.io.SyncDatabaseListener;
+import net.manhica.clip.explorer.model.CollectedData;
 import net.manhica.clip.explorer.model.Module;
 import net.manhica.clip.explorer.model.User;
 
@@ -40,6 +43,8 @@ import org.mindrot.jbcrypt.BCrypt;
 
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Scanner;
 
 /**
@@ -105,10 +110,27 @@ public class LoginActivity extends Activity implements SyncDatabaseListener{
 
         this.progressDialog = new ProgressDialog(this);
 
-        txtUsername.setText("");
-        txtPassword.setText("");
+        txtUsername.setText(""); //txtUsername.setText("smonjane");
+        txtPassword.setText(""); //txtPassword.setText("35");
 
         initdb();
+
+
+        Database db = new Database(this);
+        db.open();
+
+        List<CollectedData> list = Queries.getAllCollectedDataBy(db, null, null);
+
+        for (CollectedData cd : list){
+            //16
+            Log.d("colldata", cd.getId()+ ", fid:"+cd.getFormId()+", fur:"+cd.getFormUri()+", fxl:"+cd.getFormXmlPath()+", rid:"+cd.getRecordId()+", tbn:"+cd.getTableName());
+            //ContentValues cv = new ContentValues();
+            //cv.put(DatabaseHelper.CollectedData.COLUMN_RECORD_ID, 16);
+            //db.update(CollectedData.class, cv, DatabaseHelper.CollectedData._ID+"=?", new String[]{ cd.getId()+"" });
+        }
+
+        db.close();
+
     }
 
     private void initdb(){
@@ -431,6 +453,8 @@ public class LoginActivity extends Activity implements SyncDatabaseListener{
 
         String[] modules = loggedUser.getModules().split(",");
 
+        modules = filterSupervisor(modules);
+
         if (loggedUser.getModules()==null && loggedUser.getModules().isEmpty()){
             createAlertDialog(getString(R.string.error_lbl), getString(R.string.error_no_modules_permission));
             return;
@@ -459,6 +483,33 @@ public class LoginActivity extends Activity implements SyncDatabaseListener{
 
         intent.putExtra("user", loggedUser);
         startActivity(intent);
+    }
+
+    private String[] filterSupervisor(String[] modules){
+        String[] newstr = null;
+
+        if (isSupervisor(modules) && modules.length>1){
+            newstr = new String[modules.length-1];
+            i=0;
+            for (String str : modules) {
+                if (str.equals(Module.CLIP_SUPERVISOR)) continue;
+                newstr[i++] = str;
+            }
+        }else{
+            return modules;
+        }
+
+        return newstr;
+    }
+
+    private boolean isSupervisor(String[] modules) {
+        for(String s : modules ){
+            if (s.equals(Module.CLIP_SUPERVISOR)){
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private void createAlertDialog(String title, String message) {

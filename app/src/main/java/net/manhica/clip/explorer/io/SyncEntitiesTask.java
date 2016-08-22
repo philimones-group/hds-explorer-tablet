@@ -26,6 +26,7 @@ import net.manhica.clip.explorer.R;
 import net.manhica.clip.explorer.database.Database;
 import net.manhica.clip.explorer.database.DatabaseHelper;
 import net.manhica.clip.explorer.database.Table;
+import net.manhica.clip.explorer.model.CollectedData;
 import net.manhica.clip.explorer.model.Form;
 import net.manhica.clip.explorer.model.Household;
 import net.manhica.clip.explorer.model.Member;
@@ -223,6 +224,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 		database.delete(Module.class, null, null);
 		database.delete(Household.class, null, null);
 		database.delete(Member.class, null, null);
+		database.delete(CollectedData.class, DatabaseHelper.CollectedData.COLUMN_SUPERVISED+"=?", new String[]{ "true"}); //delete all collected data that was supervised
 
 		database.close();
 	}

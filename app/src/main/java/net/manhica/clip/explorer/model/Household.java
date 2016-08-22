@@ -12,6 +12,7 @@ import java.io.Serializable;
  */
 public class Household implements Serializable, Table {
 
+    private int id;
     private String extId;
     private String headExtId;
     private String houseNumber;
@@ -25,6 +26,14 @@ public class Household implements Serializable, Table {
     private String altitude;
     private String latitude;
     private String longitude;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public String getExtId() {
         return extId;

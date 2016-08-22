@@ -6,8 +6,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.provider.BaseColumns;
 
-import net.manhica.clip.explorer.model.SyncReport;
-
 public class DatabaseHelper extends SQLiteOpenHelper {
 
 		
@@ -24,6 +22,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             db.execSQL(CREATE_TABLE_MODULE);
 		    db.execSQL(CREATE_TABLE_HOUSEHOLD);
 		    db.execSQL(CREATE_TABLE_MEMBER);
+            db.execSQL(CREATE_TABLE_COLLECTED_DATA);
         }catch (Exception ex){
             ex.printStackTrace();
         }
@@ -31,7 +30,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-		
+        if (newVersion > oldVersion) {
+            db.execSQL("ALTER TABLE "+CollectedData.TABLE_NAME+" ADD COLUMN "+CollectedData.COLUMN_SUPERVISED+" TEXT"); //upgrade CollectedData
+        }
 	}
 
     public static final String[] ALL_TABLES = {User.TABLE_NAME, Form.TABLE_NAME, Module.TABLE_NAME, Household.TABLE_NAME, Member.TABLE_NAME, SyncReport.TABLE_NAME };
@@ -101,7 +102,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         public static final String COLUMN_LATITUDE = "latitude";
         public static final String COLUMN_LONGITUDE = "longitude";
 
-		public static final String[] ALL_COLUMNS = {COLUMN_EXT_ID, COLUMN_HEAD_EXT_ID, COLUMN_HOUSE_NUMBER, COLUMN_NEIGHBORHOOD, COLUMN_LOCALITY,
+		public static final String[] ALL_COLUMNS = {_ID, COLUMN_EXT_ID, COLUMN_HEAD_EXT_ID, COLUMN_HOUSE_NUMBER, COLUMN_NEIGHBORHOOD, COLUMN_LOCALITY,
                 COLUMN_ADMIN_POST, COLUMN_DISTRICT, COLUMN_PROVINCE, COLUMN_HEAD, COLUMN_ACCURACY, COLUMN_ALTITUDE, COLUMN_LATITUDE, COLUMN_LONGITUDE};
 	}
 
@@ -147,13 +148,26 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         public static final String COLUMN_ON_SURVEILLANCE = "onSurveillance";
 
 
-        public static final String[] ALL_COLUMNS = {COLUMN_EXT_ID, COLUMN_PERM_ID, COLUMN_NAME, COLUMN_GENDER, COLUMN_DOB, COLUMN_AGE, COLUMN_MOTHER_EXT_ID,
+        public static final String[] ALL_COLUMNS = {_ID, COLUMN_EXT_ID, COLUMN_PERM_ID, COLUMN_NAME, COLUMN_GENDER, COLUMN_DOB, COLUMN_AGE, COLUMN_MOTHER_EXT_ID,
                 COLUMN_MOTHER_NAME, COLUMN_MOTHER_PERM_ID, COLUMN_FATHER_EXT_ID, COLUMN_FATHER_NAME, COLUMN_FATHER_PERM_ID, COLUMN_HH_EXT_ID, COLUMN_HH_NUMBER,
                 COLUMN_HH_START_TYPE, COLUMN_HH_START_DATE, COLUMN_HH_END_TYPE, COLUMN_HH_END_DATE,
                 COLUMN_GPS_ACCURACY, COLUMN_GPS_ALTITUDE, COLUMN_GPS_LATITUDE, COLUMN_GPS_LONGITUDE, COLUMN_NR_PREGNANCIES, COLUMN_HAS_DELIVERED, COLUMN_IS_PREGNANT,
                 COLUMN_CLIP_ID_1, COLUMN_CLIP_ID_2, COLUMN_CLIP_ID_3, COLUMN_CLIP_ID_4, COLUMN_CLIP_ID_5, COLUMN_CLIP_ID_6, COLUMN_CLIP_ID_7, COLUMN_CLIP_ID_8, COLUMN_CLIP_ID_9,
                 COLUMN_ON_POM, COLUMN_ON_FACILITY, COLUMN_ON_SURVEILLANCE};
 	}
+
+    public static final class CollectedData implements BaseColumns {
+        public static final String TABLE_NAME = "collected_data";
+
+        public static final String COLUMN_FORM_ID = "formId";
+        public static final String COLUMN_FORM_URI = "formUri";
+        public static final String COLUMN_FORM_XML_PATH = "formXmlPath";
+        public static final String COLUMN_RECORD_ID = "recordId";
+        public static final String COLUMN_TABLE_NAME = "tableName";
+        public static final String COLUMN_SUPERVISED = "supervised";
+
+        public static final String[] ALL_COLUMNS = {_ID, COLUMN_FORM_ID, COLUMN_FORM_URI, COLUMN_FORM_XML_PATH, COLUMN_RECORD_ID, COLUMN_TABLE_NAME, COLUMN_SUPERVISED};
+    }
 
     private static final String CREATE_TABLE_SYNC_REPORT = " "
             + "CREATE TABLE " + SyncReport.TABLE_NAME + "("
@@ -279,5 +293,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + "(" +  Member.COLUMN_PERM_ID + ");"
             ;
 
+    private static final String CREATE_TABLE_COLLECTED_DATA = " "
+            + "CREATE TABLE " + CollectedData.TABLE_NAME + "("
+            + CollectedData._ID  + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+            + CollectedData.COLUMN_FORM_ID + " TEXT,"
+            + CollectedData.COLUMN_FORM_URI + " TEXT,"
+            + CollectedData.COLUMN_FORM_XML_PATH + " TEXT,"
+            + CollectedData.COLUMN_RECORD_ID + " INTEGER,"
+            + CollectedData.COLUMN_TABLE_NAME + " TEXT,"
+            + CollectedData.COLUMN_SUPERVISED + " TEXT);"
+
+            + " CREATE UNIQUE INDEX IDX_FORM_URI ON " + CollectedData.TABLE_NAME
+            + "(" +  CollectedData.COLUMN_FORM_URI + ");"
+            ;
 
 }

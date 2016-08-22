@@ -12,6 +12,7 @@ import java.io.Serializable;
  */
 public class Member implements Serializable, Table {
 
+    private int id;
     private String extId;
     private String permId;
     private String name;
@@ -60,6 +61,14 @@ public class Member implements Serializable, Table {
     private boolean onPom;
     private boolean onFacility;
     private boolean onSurveillance;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public String getExtId() {
         return extId;

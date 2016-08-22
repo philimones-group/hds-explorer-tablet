@@ -2,6 +2,7 @@ package net.manhica.clip.explorer.database;
 
 import android.database.Cursor;
 
+import net.manhica.clip.explorer.model.CollectedData;
 import net.manhica.clip.explorer.model.Form;
 import net.manhica.clip.explorer.model.Household;
 import net.manhica.clip.explorer.model.Member;
@@ -62,6 +63,7 @@ public class Converter {
 	public static Household cursorToHousehold(Cursor cursor){
 		Household hh = new Household();
 
+		hh.setId(cursor.getInt(cursor.getColumnIndex(DatabaseHelper.Household._ID)));
 		hh.setExtId(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Household.COLUMN_EXT_ID)));
 		hh.setHeadExtId(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Household.COLUMN_HEAD_EXT_ID)));
 		hh.setHouseNumber(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Household.COLUMN_HOUSE_NUMBER)));
@@ -81,6 +83,8 @@ public class Converter {
 	
 	public static Member cursorToMember(Cursor cursor){
 		Member mb = new Member();
+
+		mb.setId(cursor.getInt(cursor.getColumnIndex(DatabaseHelper.Member._ID)));
 		mb.setExtId(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Member.COLUMN_EXT_ID)));
 		mb.setPermId(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Member.COLUMN_PERM_ID)));
 		mb.setName(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Member.COLUMN_NAME)));
@@ -119,5 +123,19 @@ public class Converter {
 		mb.setOnFacility(cursor.getInt(cursor.getColumnIndex(DatabaseHelper.Member.COLUMN_ON_FACILITY))==1);
 		mb.setOnSurveillance(cursor.getInt(cursor.getColumnIndex(DatabaseHelper.Member.COLUMN_ON_SURVEILLANCE))==1);
 		return mb;
+	}
+
+	public static CollectedData cursorToCollectedData(Cursor cursor){
+		CollectedData cd = new CollectedData();
+
+		cd.setId(cursor.getInt(cursor.getColumnIndex(DatabaseHelper.CollectedData._ID)));
+		cd.setFormId(cursor.getString(cursor.getColumnIndex(DatabaseHelper.CollectedData.COLUMN_FORM_ID)));
+		cd.setFormUri(cursor.getString(cursor.getColumnIndex(DatabaseHelper.CollectedData.COLUMN_FORM_URI)));
+		cd.setFormXmlPath(cursor.getString(cursor.getColumnIndex(DatabaseHelper.CollectedData.COLUMN_FORM_XML_PATH)));
+		cd.setRecordId(cursor.getInt(cursor.getColumnIndex(DatabaseHelper.CollectedData.COLUMN_RECORD_ID)));
+		cd.setTableName(cursor.getString(cursor.getColumnIndex(DatabaseHelper.CollectedData.COLUMN_TABLE_NAME)));
+		cd.setSupervised(Boolean.getBoolean(cursor.getString(cursor.getColumnIndex(DatabaseHelper.CollectedData.COLUMN_SUPERVISED))));
+
+		return cd;
 	}
 }

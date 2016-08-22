@@ -2,6 +2,7 @@ package net.manhica.clip.explorer.database;
 
 import android.database.Cursor;
 
+import net.manhica.clip.explorer.model.CollectedData;
 import net.manhica.clip.explorer.model.Form;
 import net.manhica.clip.explorer.model.SyncReport;
 
@@ -57,6 +58,31 @@ public class Queries {
         while (cursor.moveToNext()){
             Form form = Converter.cursorToForm(cursor);
             list.add(form);
+        }
+
+        return list;
+    }
+
+    public static CollectedData getCollectedDataBy(Database database, String whereClause, String[] clauseArgs){
+        CollectedData cd = null;
+
+        Cursor cursor = database.query(CollectedData.class, DatabaseHelper.CollectedData.ALL_COLUMNS,  whereClause, clauseArgs, null, null, null);
+
+        if (cursor.moveToFirst()){
+            cd = Converter.cursorToCollectedData(cursor);
+        }
+
+        return cd;
+    }
+
+    public static List<CollectedData> getAllCollectedDataBy(Database database, String whereClause, String[] clauseArgs){
+        List<CollectedData> list = new ArrayList<>();
+
+        Cursor cursor = database.query(CollectedData.class, DatabaseHelper.CollectedData.ALL_COLUMNS, whereClause, clauseArgs, null, null, null);
+
+        while (cursor.moveToNext()){
+            CollectedData cd = Converter.cursorToCollectedData(cursor);
+            list.add(cd);
         }
 
         return list;

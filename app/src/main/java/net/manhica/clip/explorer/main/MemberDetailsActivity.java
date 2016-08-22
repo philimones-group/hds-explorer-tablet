@@ -1,8 +1,10 @@
 package net.manhica.clip.explorer.main;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.support.v7.app.AppCompatActivity;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -13,19 +15,22 @@ import android.widget.TextView;
 import net.manhica.clip.explorer.R;
 import net.manhica.clip.explorer.adapter.FormLoaderAdapter;
 import net.manhica.clip.explorer.data.FormDataLoader;
-import net.manhica.clip.explorer.data.FormDataLoaderList;
-import net.manhica.clip.explorer.listeners.ActionListener;
-import net.manhica.clip.explorer.listeners.MemberActionListener;
+import net.manhica.clip.explorer.database.Database;
+import net.manhica.clip.explorer.database.DatabaseHelper;
+import net.manhica.clip.explorer.database.Queries;
+import net.manhica.clip.explorer.model.CollectedData;
 import net.manhica.clip.explorer.model.Form;
 import net.manhica.clip.explorer.model.Member;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 import mz.betainteractive.odk.FormUtilities;
+import mz.betainteractive.odk.listener.OdkFormResultListener;
 import mz.betainteractive.odk.model.FilledForm;
 
-public class MemberDetailsActivity extends AppCompatActivity {
+public class MemberDetailsActivity extends Activity implements OdkFormResultListener {
 
     private TextView mbDetailsName;
     private TextView mbDetailsPermId;
@@ -42,6 +47,9 @@ public class MemberDetailsActivity extends AppCompatActivity {
             
     private Member member;
     private List<FormDataLoader> formDataLoaders = new ArrayList<>();
+    private FormDataLoader lastLoadedForm;
+
+    private FormUtilities formUtilities;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +58,8 @@ public class MemberDetailsActivity extends AppCompatActivity {
 
         this.member = (Member) getIntent().getExtras().get("member");
         readFormDataLoader();
+
+        formUtilities = new FormUtilities(this);
 
         initialize();
     }
@@ -143,23 +153,45 @@ public class MemberDetailsActivity extends AppCompatActivity {
                 openOdkForm(formDataLoaders.get(0));
             }else {
                 //load list dialog and choice the form
-                buildFormSelectortDialog(formDataLoaders);
+                buildFormSelectorDialog(formDataLoaders);
             }
         }
     }
 
-    private void openOdkForm(FormDataLoader formDataLoader) {
-        FormUtilities formUtilities = new FormUtilities(this);
+    private CollectedData getCollectedData(FormDataLoader formDataLoader){
+        Database db = new Database(this);
+        db.open();
 
-        Form form = formDataLoader.getForm();
+        String whereClause = DatabaseHelper.CollectedData.COLUMN_FORM_ID + "=? AND " + DatabaseHelper.CollectedData.COLUMN_RECORD_ID + "=? AND "+DatabaseHelper.CollectedData.COLUMN_TABLE_NAME + "=?";
+        String[] whereArgs = new String[]{ formDataLoader.getForm().getFormId(),  ""+member.getId(), member.getTableName() };
 
-        FilledForm filledForm = new FilledForm(form.getFormId());
-        filledForm.putAll(formDataLoader.getValues());
+        CollectedData collectedData = Queries.getCollectedDataBy(db, whereClause, whereArgs);
 
-        formUtilities.loadForm(filledForm);
+        db.close();
+
+        return collectedData;
     }
 
-    private void buildFormSelectortDialog(List<FormDataLoader> loaders) {
+    private void openOdkForm(FormDataLoader formDataLoader) {
+
+        CollectedData collectedData = getCollectedData(formDataLoader);
+
+        this.lastLoadedForm = formDataLoader;
+
+        if (collectedData == null){
+            Form form = formDataLoader.getForm();
+
+            FilledForm filledForm = new FilledForm(form.getFormId());
+            filledForm.putAll(formDataLoader.getValues());
+
+            formUtilities.loadForm(filledForm);
+        }else{
+            formUtilities.loadForm(collectedData.getFormUri());
+        }
+
+    }
+
+    private void buildFormSelectorDialog(List<FormDataLoader> loaders) {
 
         final FormLoaderAdapter adapter = new FormLoaderAdapter(this, loaders);
 
@@ -177,5 +209,97 @@ public class MemberDetailsActivity extends AppCompatActivity {
         builder.show();
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
 
+        formUtilities.onActivityResult(requestCode, resultCode, data, this);
+    }
+
+    @Override
+    public void onFormFinalized(Uri contentUri, File xmlFile) {
+        Log.d("form finalized"," "+contentUri+", "+xmlFile);
+
+        //save Collected data
+        Database db = new Database(this);
+        db.open();
+        //update or insert
+
+        //search existing record
+        String whereClause = DatabaseHelper.CollectedData.COLUMN_RECORD_ID + "=? AND "+DatabaseHelper.CollectedData.COLUMN_FORM_URI + "=?";
+        String[] whereArgs = new String[]{ ""+member.getId(), contentUri.toString() };
+
+        CollectedData collectedData = Queries.getCollectedDataBy(db, whereClause, whereArgs);
+
+        if (collectedData == null){ //insert
+            collectedData = new CollectedData();
+            collectedData.setFormId(lastLoadedForm.getForm().getFormId());
+            collectedData.setFormUri(contentUri.toString());
+            collectedData.setFormXmlPath(xmlFile.toString());
+            collectedData.setRecordId(member.getId());
+            collectedData.setTableName(member.getTableName());
+
+            db.insert(collectedData);
+            Log.d("inserting", "new collected data");
+        }else{ //update
+            collectedData.setFormId(lastLoadedForm.getForm().getFormId());
+            collectedData.setFormUri(contentUri.toString());
+            collectedData.setFormXmlPath(xmlFile.toString());
+            collectedData.setRecordId(member.getId());
+            collectedData.setTableName(member.getTableName());
+
+            db.update(CollectedData.class, collectedData.getContentValues(), whereClause, whereArgs);
+            Log.d("updating", "new collected data");
+        }
+
+        db.close();
+    }
+
+    @Override
+    public void onFormUnFinalized(Uri contentUri, File xmlFile) {
+        Log.d("form unfinalized"," "+contentUri);
+
+        //save Collected data
+        Database db = new Database(this);
+        db.open();
+        //update or insert
+
+        //search existing record
+        String whereClause = DatabaseHelper.CollectedData.COLUMN_RECORD_ID + "=? AND "+DatabaseHelper.CollectedData.COLUMN_FORM_URI + "=?";
+        String[] whereArgs = new String[]{ ""+member.getId(), contentUri.toString() };
+
+        CollectedData collectedData = Queries.getCollectedDataBy(db, whereClause, whereArgs);
+
+        if (collectedData == null){ //insert
+            collectedData = new CollectedData();
+            collectedData.setFormId(lastLoadedForm.getForm().getFormId());
+            collectedData.setFormUri(contentUri.toString());
+            collectedData.setFormXmlPath("");
+            collectedData.setRecordId(member.getId());
+            collectedData.setTableName(member.getTableName());
+
+            db.insert(collectedData);
+            Log.d("inserting", "new collected data");
+        }else{ //update
+            collectedData.setFormId(lastLoadedForm.getForm().getFormId());
+            collectedData.setFormUri(contentUri.toString());
+            collectedData.setFormXmlPath("");
+            collectedData.setRecordId(member.getId());
+            collectedData.setTableName(member.getTableName());
+
+            db.update(CollectedData.class, collectedData.getContentValues(), whereClause, whereArgs);
+            Log.d("updating", "new collected data");
+        }
+
+        db.close();
+    }
+
+    @Override
+    public void onDeleteForm(Uri contentUri) {
+        Log.d("delete uri", "needs to be implemented");
+        Database db = new Database(this);
+        db.open();
+        db.delete(CollectedData.class, DatabaseHelper.CollectedData.COLUMN_FORM_URI+"=?", new String[]{ contentUri.toString() } );
+        db.close();
+    }
 }

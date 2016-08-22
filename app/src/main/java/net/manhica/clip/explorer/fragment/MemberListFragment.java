@@ -249,7 +249,7 @@ public class MemberListFragment extends Fragment {
         database.open();
 
         String[] ar = new String[whereValues.size()];
-        Cursor cursor = database.query(Member.class, whereClause, whereValues.toArray(ar), null, null, DatabaseHelper.Member.COLUMN_PERM_ID);
+        Cursor cursor = database.query(Member.class, DatabaseHelper.Member.ALL_COLUMNS, whereClause, whereValues.toArray(ar), null, null, DatabaseHelper.Member.COLUMN_PERM_ID);
 
         while (cursor.moveToNext()){
             members.add(Converter.cursorToMember(cursor));
@@ -258,8 +258,6 @@ public class MemberListFragment extends Fragment {
         database.close();
 
         MemberArrayAdapter currentAdapter = new MemberArrayAdapter(this.getActivity(), members);
-
-        //lvMembersList.setAdapter(currentAdapter);
 
         return currentAdapter;
 

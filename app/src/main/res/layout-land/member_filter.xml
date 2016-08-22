@@ -50,7 +50,7 @@
                     android:layout_height="@dimen/member_filter_textbox_size"
                     android:background="@drawable/textinputborder"
                     android:gravity="center_vertical"
-                    android:hint="Insert Name Here"
+                    android:hint="@string/member_filter_name_hint"
                     android:paddingLeft="10dp"
                     android:textSize="@dimen/member_filter_textsize" />
             </LinearLayout>
@@ -73,7 +73,7 @@
                     android:layout_height="@dimen/member_filter_textbox_size"
                     android:background="@drawable/textinputborder"
                     android:gravity="center_vertical"
-                    android:hint="eg. 01-0101-001-01"
+                    android:hint="@string/member_filter_permid_hint"
                     android:paddingLeft="10dp"
                     android:textSize="@dimen/member_filter_textsize" />
             </LinearLayout>

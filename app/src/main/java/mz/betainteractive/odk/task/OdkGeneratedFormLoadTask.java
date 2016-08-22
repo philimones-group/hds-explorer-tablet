@@ -41,6 +41,7 @@ public class OdkGeneratedFormLoadTask extends AsyncTask<Void, Void, Boolean> {
     private ContentResolver resolver;
     private Uri odkUri;
     private FilledForm filledForm;
+    private boolean openingSavedUri;
     private Context mContext;
     
     
@@ -51,8 +52,20 @@ public class OdkGeneratedFormLoadTask extends AsyncTask<Void, Void, Boolean> {
         this.mContext = context;
     }
 
+    public OdkGeneratedFormLoadTask(Context context, Uri uri, OdkFormLoadListener listener) { //used to open pre-existing collected forms
+        this.listener = listener;
+        this.resolver = context.getContentResolver();
+        this.mContext = context;
+        this.odkUri = uri;
+        this.openingSavedUri = true;
+    }
+
     @Override
     protected Boolean doInBackground(Void... params) {
+
+        if (openingSavedUri){
+            return odkUri != null;
+        }
 
         Cursor cursor = getCursorForFormsProvider(filledForm.getFormName());
         

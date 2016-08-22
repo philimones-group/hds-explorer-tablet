@@ -19,6 +19,16 @@
     <string name="info_lbl">Info</string>
     <string name="error_lbl">Error</string>
 
+    <!-- Strings related to ODK -->
+    <string name="odk_couldnt_open_xform_lbl">Couldnt open the ODK Form</string>
+    <string name="odk_problem_lbl">A problem occured while trying to open ODK Form</string>
+    <string name="odk_unfinished_dialog_msg">The form wasnt finalized. This instance of the form will be deleted. Choose the next action?</string>
+    <string name="odk_unfinished_button_delete">Delete Form</string>
+    <string name="odk_unfinished_button_change">Change Form</string>
+    <string name="odk_unfinished_button_save">Save Form</string>
+    <string name="odk_unfinished_form_saved">The form was saved but is not finalized, can be edited later.</string>
+    <string name="odk_unfinished_form_not_found">The form wasnt found on ODK Collect. Please, make sure the ODK Form exists.</string>
+
 
     <!-- Sync Tasks -->
     <string name="sync_downloading_lbl">Downloading</string>
@@ -56,7 +66,6 @@
     <string name="error_incorrect_password">This password is incorrect</string>
     <string name="error_field_required">This field is required</string>
     <string name="permission_rationale">"Contacts permissions are needed for providing email completions.</string>
-    <string name="couldnt_open_xform_lbl">Couldnt open the ODK Form</string>
     <string name="warning_lbl">Warning</string>
     <string name="title_activity_synchronization">SynchronizationActivity</string>
 
@@ -66,6 +75,8 @@
     <string name="member_filter_xdata_lbl">Other Information</string>
     <string name="member_filter_name_lbl">Name</string>
     <string name="member_filter_permid_lbl">Perm Id</string>
+    <string name="member_filter_name_hint">Insert Name Here</string>
+    <string name="member_filter_permid_hint">eg. 01-0101-001-01</string>
     <string name="member_filter_gender_lbl">Gender</string>
     <string name="member_filter_gender_male_lbl">Male</string>
     <string name="member_filter_gender_female_lbl">Female</string>
@@ -84,6 +95,9 @@
     <string name="member_list_bt_show_houses_members_lbl">Show GPS Map of Members</string>
     <string name="member_list_bt_show_closest_prgwm_lbl">View Closest Prg. Women</string>
     <string name="member_list_bt_facility_form_lbl">Open Facility Form</string>
+
+    <string name="member_list_bt_add_patient_lbl">Add New Patient</string>
+    <string name="member_list_bt_show_patients_lbl">Show Collected Patients</string>
 
     <string name="member_details_title_lbl">Member Details</string>
     <string name="member_details_name_lbl">Name</string>
@@ -107,6 +121,7 @@
     <string name="member_details_endtype_na_lbl">Currently Living Here</string>
     <string name="member_details_endtype_ext_lbl">Emigrated</string>
     <string name="member_details_endtype_dth_lbl">Died</string>
+    <string name="member_details_name_unknown_lbl">Unknown Name</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

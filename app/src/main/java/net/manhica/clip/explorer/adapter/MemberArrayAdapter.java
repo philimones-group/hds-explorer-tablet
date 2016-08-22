@@ -9,7 +9,6 @@ import android.widget.CheckBox;
 import android.widget.TextView;
 
 import net.manhica.clip.explorer.R;
-import net.manhica.clip.explorer.database.DatabaseHelper;
 import net.manhica.clip.explorer.model.Member;
 
 import java.util.ArrayList;
@@ -20,7 +19,9 @@ import java.util.List;
  */
 public class MemberArrayAdapter  extends ArrayAdapter<Member> {
     private List<Member> members;
+    private List<Boolean> checkableMembers;
     private Context mContext;
+    private int layoutResId;
 
     public MemberArrayAdapter(Context context, List<Member> objects){
         super(context, R.layout.member_item, objects);
@@ -28,6 +29,18 @@ public class MemberArrayAdapter  extends ArrayAdapter<Member> {
         this.members = new ArrayList<>();
         this.members.addAll(objects);
         this.mContext = context;
+        this.layoutResId = R.layout.member_item;
+    }
+
+    public MemberArrayAdapter(Context context, List<Member> objects, List<Boolean> checks){
+        super(context, R.layout.member_item_chk, objects);
+
+        this.members = new ArrayList<>();
+        this.members.addAll(objects);
+        this.checkableMembers = new ArrayList<>();
+        this.checkableMembers.addAll(checks);
+        this.mContext = context;
+        this.layoutResId = R.layout.member_item_chk;
     }
 
     public List<Member> getMembers(){
@@ -43,21 +56,19 @@ public class MemberArrayAdapter  extends ArrayAdapter<Member> {
     public View getView(int position, View convertView, ViewGroup parent) {
         LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
-        View rowView = inflater.inflate(R.layout.member_item, parent, false);
+        View rowView = inflater.inflate(layoutResId, parent, false);
 
         TextView txtName = (TextView) rowView.findViewById(R.id.txtMemberItemName);
         TextView txtPermId = (TextView) rowView.findViewById(R.id.txtMemberItemPermId);
-        CheckBox chkVBprocessed = (CheckBox) rowView.findViewById(R.id.chkVaProcessed);
+        CheckBox chkVBprocessed = (CheckBox) rowView.findViewById(R.id.chkProcessed);
 
         Member mb = members.get(position);
-
-        String processed = "0";
 
         txtName.setText(mb.getName());
         txtPermId.setText(mb.getPermId());
 
-        if (chkVBprocessed != null){
-            chkVBprocessed.setChecked(processed.equalsIgnoreCase("1"));
+        if (chkVBprocessed != null && checkableMembers != null){
+            chkVBprocessed.setChecked(checkableMembers.get(position));
         }
 
         return rowView;

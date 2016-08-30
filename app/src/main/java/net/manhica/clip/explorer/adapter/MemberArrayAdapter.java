@@ -1,11 +1,15 @@
 package net.manhica.clip.explorer.adapter;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import net.manhica.clip.explorer.R;
@@ -20,6 +24,7 @@ import java.util.List;
 public class MemberArrayAdapter  extends ArrayAdapter<Member> {
     private List<Member> members;
     private List<Boolean> checkableMembers;
+    private List<Boolean> supervisedMembers;
     private Context mContext;
     private int layoutResId;
 
@@ -37,10 +42,23 @@ public class MemberArrayAdapter  extends ArrayAdapter<Member> {
 
         this.members = new ArrayList<>();
         this.members.addAll(objects);
-        this.checkableMembers = new ArrayList<>();
-        this.checkableMembers.addAll(checks);
+
+        if (checks != null){
+            this.checkableMembers = new ArrayList<>();
+            this.checkableMembers.addAll(checks);
+        }
+
         this.mContext = context;
         this.layoutResId = R.layout.member_item_chk;
+    }
+
+    public MemberArrayAdapter(Context context, List<Member> objects, List<Boolean> checks, List<Boolean> supervisionList){
+        this(context, objects, checks);
+
+        if (supervisionList != null){
+            this.supervisedMembers = new ArrayList<>();
+            this.supervisedMembers.addAll(supervisionList);
+        }
     }
 
     public List<Member> getMembers(){
@@ -58,6 +76,7 @@ public class MemberArrayAdapter  extends ArrayAdapter<Member> {
 
         View rowView = inflater.inflate(layoutResId, parent, false);
 
+        ImageView iconView = (ImageView) rowView.findViewById(R.id.iconView);
         TextView txtName = (TextView) rowView.findViewById(R.id.txtMemberItemName);
         TextView txtPermId = (TextView) rowView.findViewById(R.id.txtMemberItemPermId);
         CheckBox chkVBprocessed = (CheckBox) rowView.findViewById(R.id.chkProcessed);
@@ -69,6 +88,13 @@ public class MemberArrayAdapter  extends ArrayAdapter<Member> {
 
         if (chkVBprocessed != null && checkableMembers != null){
             chkVBprocessed.setChecked(checkableMembers.get(position));
+        }
+
+        if (supervisedMembers != null && position < supervisedMembers.size()){
+            if (supervisedMembers.get(position)==true){
+                txtName.setTypeface(null, Typeface.BOLD);
+                iconView.setImageResource(R.mipmap.member_green_chk);
+            }
         }
 
         return rowView;

@@ -91,7 +91,7 @@ public class MemberListFragment extends Fragment {
         }
     }
 
-    public void addButton(String buttonName, final ActionListener action){
+    public Button addButton(String buttonName, final ActionListener action){
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         params.height = 80;
 
@@ -109,6 +109,8 @@ public class MemberListFragment extends Fragment {
                 action.execute();
             }
         });
+
+        return button;
     }
 
     private void restoreLastSearch(Bundle savedInstanceState) {
@@ -271,5 +273,13 @@ public class MemberListFragment extends Fragment {
     public void setMemberAdapter(MemberArrayAdapter memberAdapter) {
         this.lvMembersList.setAdapter(memberAdapter);
         //if is empty
+    }
+
+    public MemberArrayAdapter getMemberAdapter(){
+        if (lvMembersList.getAdapter() instanceof MemberArrayAdapter){
+            return (MemberArrayAdapter) lvMembersList.getAdapter();
+        }
+
+        return null;
     }
 }

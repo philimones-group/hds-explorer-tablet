@@ -113,6 +113,15 @@ public class MemberDetailsActivity extends Activity implements OdkFormResultList
         });
 
         setMemberData();
+
+        enableButtonsByIntentData();
+    }
+
+    private void enableButtonsByIntentData() {
+        Boolean enaColData = getIntent().getExtras().getBoolean("enable-collect-data");
+        if (enaColData != null){
+            this.btMemDetailsCollectData.setEnabled(enaColData.booleanValue());
+        }
     }
 
     private void setMemberData(){

@@ -123,9 +123,9 @@ public class LoginActivity extends Activity implements SyncDatabaseListener{
 
         for (CollectedData cd : list){
             //16
-            Log.d("colldata", cd.getId()+ ", fid:"+cd.getFormId()+", fur:"+cd.getFormUri()+", fxl:"+cd.getFormXmlPath()+", rid:"+cd.getRecordId()+", tbn:"+cd.getTableName());
+            Log.d("colldata", cd.getId()+ ", fid:"+cd.getFormId()+", fur:"+cd.getFormUri()+", fxl:"+cd.getFormXmlPath()+", rid:"+cd.getRecordId()+", tbn:"+cd.getTableName()+", supervised: "+cd.isSupervised());
             //ContentValues cv = new ContentValues();
-            //cv.put(DatabaseHelper.CollectedData.COLUMN_RECORD_ID, 16);
+            //cv.put(DatabaseHelper.CollectedData.COLUMN_SUPERVISED, 0);
             //db.update(CollectedData.class, cv, DatabaseHelper.CollectedData._ID+"=?", new String[]{ cd.getId()+"" });
         }
 
@@ -490,7 +490,7 @@ public class LoginActivity extends Activity implements SyncDatabaseListener{
 
         if (isSupervisor(modules) && modules.length>1){
             newstr = new String[modules.length-1];
-            i=0;
+            int i=0;
             for (String str : modules) {
                 if (str.equals(Module.CLIP_SUPERVISOR)) continue;
                 newstr[i++] = str;

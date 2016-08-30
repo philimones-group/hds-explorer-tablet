@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.provider.BaseColumns;
+import android.util.Log;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
@@ -31,7 +32,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         if (newVersion > oldVersion) {
-            db.execSQL("ALTER TABLE "+CollectedData.TABLE_NAME+" ADD COLUMN "+CollectedData.COLUMN_SUPERVISED+" TEXT"); //upgrade CollectedData
+            Log.d("alter table", "runinng");
+            db.execSQL("ALTER TABLE "+CollectedData.TABLE_NAME+" ADD COLUMN "+CollectedData.COLUMN_SUPERVISED+" INTEGER NOT NULL DEFAULT 0"); //upgrade CollectedData
         }
 	}
 
@@ -301,7 +303,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + CollectedData.COLUMN_FORM_XML_PATH + " TEXT,"
             + CollectedData.COLUMN_RECORD_ID + " INTEGER,"
             + CollectedData.COLUMN_TABLE_NAME + " TEXT,"
-            + CollectedData.COLUMN_SUPERVISED + " TEXT);"
+            + CollectedData.COLUMN_SUPERVISED + " INTEGER NOT NULL DEFAULT 0);"
 
             + " CREATE UNIQUE INDEX IDX_FORM_URI ON " + CollectedData.TABLE_NAME
             + "(" +  CollectedData.COLUMN_FORM_URI + ");"

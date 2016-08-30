@@ -89,7 +89,7 @@ public class CollectedData implements Serializable, Table {
         cv.put(DatabaseHelper.CollectedData.COLUMN_FORM_XML_PATH, formXmlPath);
         cv.put(DatabaseHelper.CollectedData.COLUMN_RECORD_ID, recordId);
         cv.put(DatabaseHelper.CollectedData.COLUMN_TABLE_NAME, tableName);
-        cv.put(DatabaseHelper.CollectedData.COLUMN_SUPERVISED, supervised+"");
+        cv.put(DatabaseHelper.CollectedData.COLUMN_SUPERVISED, supervised ? 1 : 0);
         return cv;
     }
 

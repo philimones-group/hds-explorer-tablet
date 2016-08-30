@@ -194,6 +194,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 						break;
 					case MEMBERS:
 						deleteAll(Member.class);
+						deleteAll(CollectedData.class, DatabaseHelper.CollectedData.COLUMN_SUPERVISED+"=1", null);
 						processUrl(baseurl + API_PATH + "/members");
 						break;
 				}
@@ -224,7 +225,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 		database.delete(Module.class, null, null);
 		database.delete(Household.class, null, null);
 		database.delete(Member.class, null, null);
-		database.delete(CollectedData.class, DatabaseHelper.CollectedData.COLUMN_SUPERVISED+"=?", new String[]{ "true"}); //delete all collected data that was supervised
+		database.delete(CollectedData.class, DatabaseHelper.CollectedData.COLUMN_SUPERVISED+"=?", new String[]{ "1"}); //delete all collected data that was supervised
 
 		database.close();
 	}
@@ -240,6 +241,12 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 		for (Class<? extends Table> table : tables){
 			database.delete(table, null, null);
 		}
+		database.close();
+	}
+
+	private void deleteAll(Class<? extends Table> table, String whereClause, String[] whereClauseArgs){
+		database.open();
+		database.delete(table, whereClause, whereClauseArgs);
 		database.close();
 	}
 

@@ -1,13 +1,17 @@
 package net.manhica.clip.explorer.main;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.ContentValues;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Button;
+import android.widget.Toast;
 
 import net.manhica.clip.explorer.R;
 import net.manhica.clip.explorer.adapter.MemberArrayAdapter;
@@ -43,9 +47,12 @@ public class FacilityActivity extends Activity  implements MemberFilterFragment.
     private MemberListFragment memberListFragment;
     private ActionListener btAddNewPatientListener;
     private ActionListener btShowPatientsListener;
+    private ActionListener btMarkAsSupervisedListener;
     private FormUtilities formUtilities;
     private Member selectedNewMember;
     private FormDataLoader lastLoadedForm;
+    private boolean visualizingCollectedData;
+    private Button btMarkAsSupervised;
 
     private User loggedUser;
 
@@ -65,8 +72,17 @@ public class FacilityActivity extends Activity  implements MemberFilterFragment.
         this.memberListFragment.setOnMemberClickedListener(this);
 
         this.memberListFragment.removeDefaultButtons();
-        this.memberListFragment.addButton(getString(R.string.member_list_bt_add_patient_lbl), btAddNewPatientListener);
-        this.memberListFragment.addButton(getString(R.string.member_list_bt_show_patients_lbl), btShowPatientsListener);
+
+        if (!isSupervisor(loggedUser)){
+            this.memberListFragment.addButton(getString(R.string.member_list_bt_add_patient_lbl), btAddNewPatientListener);
+            this.memberListFragment.addButton(getString(R.string.member_list_bt_show_patients_lbl), btShowPatientsListener);
+        }else{
+            this.memberListFragment.addButton(getString(R.string.member_list_bt_show_patients_lbl), btShowPatientsListener);
+            this.btMarkAsSupervised = this.memberListFragment.addButton(getString(R.string.member_list_bt_mark_as_supervised_lbl), btMarkAsSupervisedListener);
+
+            this.btMarkAsSupervised.setEnabled(false);
+        }
+
 
         formUtilities = new FormUtilities(this);
     }
@@ -85,11 +101,24 @@ public class FacilityActivity extends Activity  implements MemberFilterFragment.
                 showCollectedMember();
             }
         };
+
+        btMarkAsSupervisedListener = new ActionListener() {
+            @Override
+            public void execute() {
+                markAllAsSupervised();
+            }
+        };
     }
 
     @Override
     public void onSearch(String name, String permId, String gender, boolean isPregnant, boolean hasPom, boolean hasFacility) {
         this.memberListFragment.showProgress(true);
+
+        this.visualizingCollectedData = false;
+
+        if (btMarkAsSupervised != null){
+            btMarkAsSupervised.setEnabled(false);
+        }
 
         MemberSearchTask task = new MemberSearchTask(name, permId, gender, isPregnant, hasPom, hasFacility);
         task.execute();
@@ -98,7 +127,9 @@ public class FacilityActivity extends Activity  implements MemberFilterFragment.
     @Override
     public void onMemberSelected(Member member) {
 
-        if (member.getAge()==0){ //new added patient
+        boolean isSupervisor = isSupervisor(loggedUser);
+
+        if (member.getAge()==0 || (visualizingCollectedData && isSupervisor)){ //new added patient
             this.selectedNewMember = member;
             CollectedData collectedData = getCollectedData("Facility", member);
             FormDataLoader[] dataLoaders = getFormLoaders();
@@ -118,6 +149,12 @@ public class FacilityActivity extends Activity  implements MemberFilterFragment.
         Intent intent = new Intent(this, MemberDetailsActivity.class);
         intent.putExtra("member", member);
         intent.putExtra("dataloaders", dataLoaders);
+
+        if (isSupervisor){
+            intent.putExtra("enable-collect-data", false);
+        }else{
+            intent.putExtra("enable-collect-data", true);
+        }
 
         startActivity(intent);
     }
@@ -202,8 +239,65 @@ public class FacilityActivity extends Activity  implements MemberFilterFragment.
     private void showCollectedMember() {
         this.memberListFragment.showProgress(true);
 
-        CollectedMemberSearchTask task = new CollectedMemberSearchTask();
+        this.visualizingCollectedData = true;
+
+        CollectedMemberSearchTask task = new CollectedMemberSearchTask(isSupervisor(loggedUser));
         task.execute();
+    }
+
+    private void markAllAsSupervised(){
+        //readcollectedData and mark as supervised='true'
+
+        MemberArrayAdapter adapter = memberListFragment.getMemberAdapter();
+
+        if (visualizingCollectedData==false || adapter == null){
+            //without collected data to supervise
+
+            return;
+        }
+
+        String ids = "";
+        for (Member mb : adapter.getMembers()){
+            if (ids.length() > 0){
+                ids += ", "+mb.getId();
+            }else{
+                ids += ""+mb.getId();
+            }
+        }
+
+        Database db = new Database(FacilityActivity.this);
+        db.open();
+
+        String whereClause = DatabaseHelper.CollectedData.COLUMN_FORM_ID + "=? AND "+DatabaseHelper.CollectedData.COLUMN_RECORD_ID + " IN ("+ids+")";
+        String[] whereArgs = new String[]{ "Facility" };
+
+        List<CollectedData> collectedDatas = Queries.getAllCollectedDataBy(db, whereClause, whereArgs);
+
+        ContentValues cv = new ContentValues();
+        cv.put(DatabaseHelper.CollectedData.COLUMN_SUPERVISED, 1);
+
+        for (CollectedData cd : collectedDatas){
+            db.update(CollectedData.class, cv, DatabaseHelper.CollectedData._ID+"=?", new String[]{ cd.getId()+"" });
+        }
+        db.close();
+
+        buildMarkAsSupervisedFinishedDialog();
+    }
+
+    private void buildMarkAsSupervisedFinishedDialog() {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(getString(R.string.facility_supervise_title_lbl));
+        builder.setMessage(getString(R.string.facility_supervise_mark_all_done_lbl));
+        builder.setPositiveButton(getString(R.string.bt_ok_lbl), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                showCollectedMember();
+            }
+        });
+
+        builder.show();
     }
 
     @Override
@@ -276,6 +370,11 @@ public class FacilityActivity extends Activity  implements MemberFilterFragment.
         }
 
         db.close();
+
+
+        if (isSupervisor(loggedUser)){
+            buildMarkAsSupervisedDialog(collectedData);
+        }
 
     }
 
@@ -350,6 +449,38 @@ public class FacilityActivity extends Activity  implements MemberFilterFragment.
         }
 
         db.close();
+    }
+
+    private void buildMarkAsSupervisedDialog(final CollectedData collectedData) {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(getString(R.string.facility_supervise_title_lbl));
+        builder.setMessage(getString(R.string.facility_supervise_collected_form_lbl));
+        builder.setCancelable(false);
+        builder.setPositiveButton(getString(R.string.bt_yes_lbl), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                ContentValues cv = new ContentValues();
+                cv.put(DatabaseHelper.CollectedData.COLUMN_SUPERVISED, 1);
+
+                Database db = new Database(FacilityActivity.this);
+                db.open();
+                db.update(CollectedData.class, cv, DatabaseHelper.CollectedData._ID+"=?", new String[]{ collectedData.getId()+"" });
+                db.close();
+
+                Log.d("supervised", ""+collectedData.getFormId());
+                showCollectedMember();
+            }
+        });
+        builder.setNegativeButton(getString(R.string.bt_no_lbl), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                //do nothing
+            }
+        });
+
+
+        builder.show();
     }
 
     private CollectedData getCollectedData(String formId, Member member){
@@ -459,15 +590,25 @@ public class FacilityActivity extends Activity  implements MemberFilterFragment.
     }
 
     class CollectedMemberSearchTask extends AsyncTask<Void, Void, MemberArrayAdapter> {
+        private boolean withSupervision;
+
+        public CollectedMemberSearchTask(){
+
+        }
+
+        public CollectedMemberSearchTask(boolean withSupervision){
+            this.withSupervision = withSupervision;
+        }
 
         @Override
         protected MemberArrayAdapter doInBackground(Void... params) {
             Database db = new Database(FacilityActivity.this);
             db.open();
 
-            123
+            List<CollectedData> list = Queries.getAllCollectedDataBy(db, DatabaseHelper.CollectedData.COLUMN_FORM_ID+"=?", new String[]{"Facility"});
             List<Member> members = new ArrayList<>();
             List<Boolean> checks = new ArrayList<>();
+            List<Boolean> supervList = new ArrayList<>();
 
             String ids = "";
             for (CollectedData cd : list){
@@ -485,13 +626,20 @@ public class FacilityActivity extends Activity  implements MemberFilterFragment.
                 members.add(member);
                 CollectedData cd = getCollectedData(list, member);
                 checks.add(cd.getFormXmlPath()!=null && !cd.getFormXmlPath().isEmpty());
+                supervList.add(cd.isSupervised());
             }
 
             cursor.close();
 
             db.close();
 
-            MemberArrayAdapter adapter = new MemberArrayAdapter(FacilityActivity.this, members, checks);
+            MemberArrayAdapter adapter = null;
+
+            if (withSupervision){
+                adapter = new MemberArrayAdapter(FacilityActivity.this, members, checks, supervList);
+            }else{
+                adapter = new MemberArrayAdapter(FacilityActivity.this, members, checks);
+            }
 
             return adapter;
         }
@@ -508,6 +656,14 @@ public class FacilityActivity extends Activity  implements MemberFilterFragment.
         protected void onPostExecute(MemberArrayAdapter adapter) {
             memberListFragment.setMemberAdapter(adapter);
             memberListFragment.showProgress(false);
+
+            if (withSupervision){
+                btMarkAsSupervised.setEnabled(true);
+            }else{
+                if (btMarkAsSupervised != null){
+                    btMarkAsSupervised.setEnabled(false);
+                }
+            }
         }
     }
 }

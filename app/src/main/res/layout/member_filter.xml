@@ -110,7 +110,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
                         android:text="@string/member_filter_gender_male_lbl"
-                        android:layout_marginLeft="60dp"
+                        android:layout_marginLeft="20dp"
                         android:textSize="@dimen/member_filter_checkbox_textsize" />
 
 

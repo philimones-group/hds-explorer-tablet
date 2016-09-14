@@ -124,12 +124,16 @@ public class MemberListFragment extends Fragment {
             boolean filter3 = list.get(5).equals("true");
 
             Log.d("restoring",""+name);
-            MemberArrayAdapter ma = loadMembersByFilters(name, peid, gndr, filter1, filter2, filter3);
+            MemberArrayAdapter ma = loadMembersByFilters(name, peid, gndr, null, filter1, filter2, filter3);
             setMemberAdapter(ma);
         }
     }
 
     private void initialize(View view) {
+        if (getActivity() instanceof MemberActionListener){
+            this.memberActionListener = (MemberActionListener) getActivity();
+        }
+
         this.lvMembersList = (ListView) view.findViewById(R.id.lvMembersList);
         this.btMemListShowHHMap = (Button) view.findViewById(R.id.btMemListShowHHMap);
         this.btMemListShowMmbMap = (Button) view.findViewById(R.id.btMemListShowMmbMap);
@@ -187,10 +191,6 @@ public class MemberListFragment extends Fragment {
 
     }
 
-    public void setOnMemberClickedListener(MemberActionListener listener){
-        this.memberActionListener = listener;
-    }
-
     private void onMemberClicked(int position) {
         MemberArrayAdapter adapter = (MemberArrayAdapter) this.lvMembersList.getAdapter();
         Member member = adapter.getItem(position);
@@ -200,15 +200,21 @@ public class MemberListFragment extends Fragment {
         }
     }
 
-    public MemberArrayAdapter loadMembersByFilters(String name, String permId, String gender, boolean isPregnant, boolean hasPom, boolean hasFacility) {
+    public MemberArrayAdapter loadMembersByFilters(String name, String permId, String gender, String houseNumber, Boolean isPregnant, Boolean hasPom, Boolean hasFacility) {
         //open loader
 
+
+        if (name == null) name = "";
+        if (permId == null) permId = "";
+        if (houseNumber == null) houseNumber = "";
+        if (gender == null) gender = "";
 
         //save last search
         this.lastSearch = new ArrayList();
         this.lastSearch.add(name);
         this.lastSearch.add(permId);
         this.lastSearch.add(gender);
+        this.lastSearch.add(houseNumber);
         this.lastSearch.add(isPregnant+"");
         this.lastSearch.add(hasPom+"");
         this.lastSearch.add(hasFacility+"");
@@ -232,17 +238,22 @@ public class MemberListFragment extends Fragment {
             whereClause += DatabaseHelper.Member.COLUMN_GENDER + " = ?";
             whereValues.add(gender);
         }
-        if (isPregnant){
+        if (!houseNumber.isEmpty()){
+            whereClause += (whereClause.isEmpty()? "" : " AND ");
+            whereClause += DatabaseHelper.Member.COLUMN_HH_NUMBER + " = ?";
+            whereValues.add(houseNumber);
+        }
+        if (isPregnant != null && isPregnant){
             whereClause += (whereClause.isEmpty()? "" : " AND ");
             whereClause += DatabaseHelper.Member.COLUMN_IS_PREGNANT + " = ?";
             whereValues.add("1");
         }
-        if (hasPom){
+        if (hasPom != null && hasPom){
             whereClause += (whereClause.isEmpty()? "" : " AND ");
             whereClause += DatabaseHelper.Member.COLUMN_ON_POM + " = ?";
             whereValues.add("1");
         }
-        if (hasFacility){
+        if (hasFacility != null && hasFacility){
             whereClause += (whereClause.isEmpty()? "" : " AND ");
             whereClause += DatabaseHelper.Member.COLUMN_ON_FACILITY + " = ?";
             whereValues.add("1");

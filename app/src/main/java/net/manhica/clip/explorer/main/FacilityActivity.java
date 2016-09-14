@@ -68,9 +68,6 @@ public class FacilityActivity extends Activity  implements MemberFilterFragment.
         this.memberFilterFragment = (MemberFilterFragment) (getFragmentManager().findFragmentById(R.id.facMemberFilterFragment));
         this.memberListFragment = (MemberListFragment) getFragmentManager().findFragmentById(R.id.facMemberListFragment);
 
-        this.memberFilterFragment.setListener(this);
-        this.memberListFragment.setOnMemberClickedListener(this);
-
         this.memberListFragment.removeDefaultButtons();
 
         if (!isSupervisor(loggedUser)){
@@ -579,7 +576,7 @@ public class FacilityActivity extends Activity  implements MemberFilterFragment.
 
         @Override
         protected MemberArrayAdapter doInBackground(Void... params) {
-            return memberListFragment.loadMembersByFilters(name, permId, gender, isPregnant, hasPom, hasFacility);
+            return memberListFragment.loadMembersByFilters(name, permId, gender, null, isPregnant, hasPom, hasFacility);
         }
 
         @Override

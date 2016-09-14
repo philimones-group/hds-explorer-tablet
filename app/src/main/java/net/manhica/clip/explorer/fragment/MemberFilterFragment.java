@@ -44,20 +44,11 @@ public class MemberFilterFragment extends Fragment {
         return view;
     }
 
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-
-        if (context instanceof Listener){
-            this.listener = (Listener) context;
-        }
-    }
-
-    public void setListener(Listener listener){
-        this.listener = listener;
-    }
-
     private void initialize(View view) {
+        if (getActivity() instanceof Listener){
+            this.listener = (Listener) getActivity();
+        }
+
         this.txtMemFilterName = (EditText) view.findViewById(R.id.txtMemFilterName);
         this.txtMemFilterPermId = (EditText) view.findViewById(R.id.txtMemFilterPermId);
         this.chkMemFilterGFemale = (CheckBox) view.findViewById(R.id.chkMemFilterGFemale);

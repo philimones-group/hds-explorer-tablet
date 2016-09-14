@@ -2,9 +2,12 @@ package net.manhica.clip.explorer.database;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.os.Environment;
+import android.util.Log;
 
 import net.manhica.clip.explorer.model.SyncReport;
 
+import java.io.File;
 import java.util.List;
 
 /**
@@ -12,7 +15,7 @@ import java.util.List;
  * Will be used to initialize any data on database tables
  */
 public class Bootstrap {
-
+    private static final String APP_PATH = "net.manhica.clip.explorer";
     private Database database;
 
     public Bootstrap(Context context){
@@ -40,6 +43,33 @@ public class Bootstrap {
         }
 
         database.close();
+
+        initializePaths();
+    }
+
+    public void initializePaths(){
+        File root = Environment.getExternalStorageDirectory();
+        String destinationPath = root.getAbsolutePath() + File.separator + "Android" + File.separator + "data"
+                + File.separator + APP_PATH + File.separator + "files"+ File.separator;
+
+        File baseDir = new File(destinationPath);
+
+        if (!baseDir.exists()) {
+            boolean created = baseDir.mkdirs();
+            if (!created) {
+                Log.d("app-dirs", "not created");
+            }else{
+                Log.d("app-dirs", "created");
+            }
+        }
+    }
+
+    public static String getAppPath(){
+        File root = Environment.getExternalStorageDirectory();
+        String destinationPath = root.getAbsolutePath() + File.separator + "Android" + File.separator + "data"
+                + File.separator + APP_PATH + File.separator + "files"+ File.separator;
+
+        return destinationPath;
     }
 
     public void dropTables(){

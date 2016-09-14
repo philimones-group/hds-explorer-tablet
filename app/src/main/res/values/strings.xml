@@ -31,6 +31,7 @@
 
 
     <!-- Sync Tasks -->
+    <string name="sync_prepare_download_lbl">Preparing Syncronization</string>
     <string name="sync_downloading_lbl">Downloading</string>
     <string name="sync_saving_lbl">Saving data</string>
     <string name="sync_modules_lbl">Modules</string>

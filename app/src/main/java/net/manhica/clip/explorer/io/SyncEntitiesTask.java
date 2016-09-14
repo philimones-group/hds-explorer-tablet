@@ -1,6 +1,8 @@
 package net.manhica.clip.explorer.io;
 
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -9,6 +11,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -23,6 +27,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import net.manhica.clip.explorer.R;
+import net.manhica.clip.explorer.database.Bootstrap;
 import net.manhica.clip.explorer.database.Database;
 import net.manhica.clip.explorer.database.DatabaseHelper;
 import net.manhica.clip.explorer.database.Table;
@@ -48,6 +53,8 @@ import mz.betainteractive.utilities.StringUtil;
 public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 
 	private static final String API_PATH = "/api/clip-explorer";
+	private static final String ZIP_MIME_TYPE = "application/zip;charset=utf-8";
+	private static final String XML_MIME_TYPE = "text/xml;charset=utf-8";
 
 	private SyncDatabaseListener listener;
 
@@ -64,7 +71,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 	private State state;
 	private Entity entity;
 
-	private Database database;
+	private Context mContext;
 
 	private enum State {
 		DOWNLOADING, SAVING
@@ -74,8 +81,6 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 		SETTINGS, MODULES, FORMS, USERS, MEMBERS, HOUSEHOLDS
 	}
 
-	private Context mContext;
-	
 	public SyncEntitiesTask(Context context, ProgressDialog dialog, SyncDatabaseListener listener, String url, String username, String password, Entity... entityToDownload) {
 		this.baseurl = url;
 		this.username = username;
@@ -85,10 +90,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 		this.mContext = context;
 		this.entities = new ArrayList<>();
 		this.entities.addAll(Arrays.asList(entityToDownload));
-		
-		database = new Database(context);
-		
-		dialog.show();
+		initDialog();
 	}
 
 	public SyncEntitiesTask(Context context, ProgressDialog dialog, String url, String username, String password, Entity... entityToDownload) {
@@ -99,10 +101,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 		this.mContext = context;
 		this.entities = new ArrayList<>();
 		this.entities.addAll(Arrays.asList(entityToDownload));
-
-		database = new Database(context);
-
-		dialog.show();
+		initDialog();
 	}
 
 	public SyncEntitiesTask(Context context, ProgressDialog dialog, String url, String username, String password) {
@@ -112,10 +111,16 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 		this.dialog = dialog;
 		this.mContext = context;
 		this.entities = new ArrayList<>();
+		initDialog();
+	}
 
-		database = new Database(context);
-
+	private void initDialog(){
+		dialog.setMessage(mContext.getString(R.string.sync_prepare_download_lbl));
 		dialog.show();
+	}
+
+	private Database getDatabase(){
+		return new Database(mContext);
 	}
 
 	public void setSyncDatabaseListener(SyncDatabaseListener listener){
@@ -159,7 +164,12 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 		}
 
 		if (values.length > 0) {
-			builder.append(". " + mContext.getString(R.string.sync_saved_lbl) + " "  + values[0] + " " + mContext.getString(R.string.sync_records_lbl) );
+			String msg = ". " + mContext.getString(R.string.sync_saved_lbl) + " "  + values[0] + " " + mContext.getString(R.string.sync_records_lbl);
+			if (state==State.DOWNLOADING){
+				msg = ". " + mContext.getString(R.string.sync_saved_lbl) + " "  + values[0] + "KB";
+			}
+
+			builder.append(msg);
 		}	
 
 		dialog.setMessage(builder.toString());
@@ -178,24 +188,24 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 				switch (entity) {
 					case MODULES:
 						deleteAll(Module.class);
-						processUrl(baseurl + API_PATH + "/modules");
+						processUrl(baseurl + API_PATH + "/modules/zip", "modules.zip");
 						break;
 					case FORMS:
 						deleteAll(Form.class);
-						processUrl(baseurl + API_PATH + "/forms");
+						processUrl(baseurl + API_PATH + "/forms", "forms.xml");
 						break;
 					case USERS:
 						deleteAll(User.class);
-						processUrl(baseurl + API_PATH + "/users");
+						processUrl(baseurl + API_PATH + "/users/zip", "users.zip");
 						break;
 					case HOUSEHOLDS:
 						deleteAll(Household.class);
-						processUrl(baseurl + API_PATH + "/households");
+						processUrl(baseurl + API_PATH + "/households/zip", "households.zip");
 						break;
 					case MEMBERS:
 						deleteAll(Member.class);
 						deleteAll(CollectedData.class, DatabaseHelper.CollectedData.COLUMN_SUPERVISED+"=1", null);
-						processUrl(baseurl + API_PATH + "/members");
+						processUrl(baseurl + API_PATH + "/members/zip", "members.zip");
 						break;
 				}
 			}
@@ -217,7 +227,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 	private void deleteAllTables() {
 		// ordering is somewhat important during delete. a few tables have
 		// foreign keys
-		
+		Database database = getDatabase();
 		database.open();
 		
 		database.delete(User.class, null, null);
@@ -231,12 +241,14 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 	}
 
 	private void deleteAll(Class<? extends Table> table){
+		Database database = getDatabase();
 		database.open();
 		database.delete(table, null, null);
 		database.close();
 	}
 
 	private void deleteAll(Class<? extends Table>... tables){
+		Database database = getDatabase();
 		database.open();
 		for (Class<? extends Table> table : tables){
 			database.delete(table, null, null);
@@ -245,12 +257,13 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 	}
 
 	private void deleteAll(Class<? extends Table> table, String whereClause, String[] whereClauseArgs){
+		Database database = getDatabase();
 		database.open();
 		database.delete(table, whereClause, whereClauseArgs);
 		database.close();
 	}
 
-	private void processUrl(String strUrl) throws Exception {
+	private void processUrl(String strUrl, String exportedFileName) throws Exception {
 		state = State.DOWNLOADING;
 		publishProgress();
 
@@ -268,25 +281,38 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 
 		connection.connect();
 
-		processResponse();
+		processResponse(exportedFileName);
 	}
 
-	private void processResponse() throws Exception {
-		InputStream inputStream = getResponse();
-		if (inputStream != null)
-			processXMLDocument(inputStream);
+	private void processResponse(String exportedFileName) throws Exception {
+		DownloadResponse response = getResponse(exportedFileName);
+
+		Log.d("is", ""+response.getInputStream()+", xml-"+response.isXmlFile()+", zip-"+response.isZipFile());
+
+		//save file
+		InputStream fileInputStream = saveFileToStorage(response);
+
+		if (fileInputStream != null){
+			if (response.isXmlFile()){
+				processXMLDocument(fileInputStream);
+			}
+			if (response.isZipFile()){
+				processZIPDocument(fileInputStream);
+			}
+		}
 	}
 
-	private InputStream getResponse() throws IOException {
+	private DownloadResponse getResponse(String exportedFileName) throws IOException {
 		int response = connection.getResponseCode();
-		Log.d("connection", "The response code is: " + response);
+		Log.d("connection", "The response code is: " + response+", type="+connection.getContentType()+", size="+connection.getContentLength());
 
 		InputStream is = connection.getInputStream();
-		return is;
+
+		return new DownloadResponse(is, connection.getContentType(), exportedFileName, connection.getContentLength());//173916816L);
 	}
 
 	private void processXMLDocument(InputStream content) throws Exception {
-		state = State.DOWNLOADING;
+		state = State.SAVING;
 
 		XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
 		//factory.setNamespaceAware(true);
@@ -320,6 +346,48 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 		}
 	}
 
+	private InputStream saveFileToStorage(DownloadResponse response) throws Exception {
+
+		InputStream content = response.getInputStream();
+
+		FileOutputStream fout = new FileOutputStream(Bootstrap.getAppPath() + response.getFileName());
+		byte[] buffer = new byte[10*1024];
+		int len = 0;
+		long total = 0;
+
+		publishProgress();
+
+		while ((len = content.read(buffer)) != -1){
+			fout.write(buffer, 0, len);
+			total += len;
+			int perc =  (int) ((total/(1024)));
+			publishProgress(perc);
+		}
+
+		fout.close();
+		content.close();
+
+		FileInputStream fin = new FileInputStream(Bootstrap.getAppPath() + response.getFileName());
+
+		return fin;
+	}
+
+	private void processZIPDocument(InputStream inputStream) throws Exception {
+
+		Log.d("zip", "processing zip file");
+
+
+		ZipInputStream zin = new ZipInputStream(inputStream);
+		ZipEntry entry = zin.getNextEntry();
+
+		if (entry != null){
+			processXMLDocument(zin);
+			zin.closeEntry();
+		}
+
+		zin.close();
+	}
+
 	private boolean notEndOfXmlDoc(String element, XmlPullParser parser) throws XmlPullParserException {
 		return !(element.equals(parser.getName()) && parser.getEventType() == XmlPullParser.END_TAG) && !isCancelled();
 	}
@@ -350,20 +418,20 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 			parser.nextTag(); //<code>
 			parser.next(); //text
 			table.setCode(parser.getText());
-			Log.d("aftere-tag-"+parser.getName(), "value="+parser.getText()+", event="+parser.getEventType());
+			//Log.d("aftere-tag-"+parser.getName(), "value="+parser.getText()+", event="+parser.getEventType());
 
             //code - startTag
 			parser.nextTag(); //</code>
 			parser.nextTag(); //<name>
 			parser.next();    //text
 			table.setName(parser.getText());
-			Log.d("2aftere-tag-"+parser.getName(), "value="+parser.getText()+", event="+parser.getEventType());
+			//Log.d("2aftere-tag-"+parser.getName(), "value="+parser.getText()+", event="+parser.getEventType());
 
 			parser.nextTag(); //</name>
 			parser.nextTag(); //<description>
 			parser.next();    //text
 			table.setDescription(parser.getText());
-			Log.d("3aftere-tag-"+parser.getName(), "value="+parser.getText()+", event="+parser.getEventType());
+			//Log.d("3aftere-tag-"+parser.getName(), "value="+parser.getText()+", event="+parser.getEventType());
 
 			parser.nextTag(); //</description>
 			parser.nextTag(); //</module>
@@ -378,6 +446,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 		state = State.SAVING;
 		entity = Entity.MODULES;
 
+		Database database = getDatabase();
 		database.open();
 		if (!values.isEmpty()) {
 			count = 0;
@@ -411,43 +480,43 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 			parser.nextTag(); //process formId
 			parser.next();
 			table.setFormId(parser.getText());
-			Log.d(count+"-formId", "value="+ parser.getText());
+			//Log.d(count+"-formId", "value="+ parser.getText());
 
 			parser.nextTag(); //process formName
 			parser.nextTag();
 			parser.next();
 			table.setFormName(parser.getText());
-			Log.d(count+"-formName", "value="+ parser.getText());
+			//Log.d(count+"-formName", "value="+ parser.getText());
 
 			parser.nextTag(); //process formDescription
 			parser.nextTag();
 			parser.next();
 			table.setFormDescription(parser.getText());
-			Log.d(count+"-formDescription", "value="+ parser.getText());
+			//Log.d(count+"-formDescription", "value="+ parser.getText());
 
 			parser.nextTag(); //process gender
 			parser.nextTag();
 			parser.next();
 			table.setGender(parser.getText());
-			Log.d(count+"-gender", "value="+ parser.getText());
+			//Log.d(count+"-gender", "value="+ parser.getText());
 
 			parser.nextTag(); //process minAge
 			parser.nextTag();
 			parser.next();
 			table.setMinAge(Integer.parseInt(parser.getText()));
-			Log.d(count+"-minAge", "value="+ parser.getText());
+			//Log.d(count+"-minAge", "value="+ parser.getText());
 
 			parser.nextTag(); //process maxAge
 			parser.nextTag();
 			parser.next();
 			table.setMaxAge(Integer.parseInt(parser.getText()));
-			Log.d(count+"-maxAge", "value="+ parser.getText());
+			//Log.d(count+"-maxAge", "value="+ parser.getText());
 
 			parser.nextTag(); //process modules
 			parser.nextTag();
 			parser.next();
 			table.setModules(parser.getText());
-			Log.d(count+"-modules", "value="+ parser.getText());
+			//Log.d(count+"-modules", "value="+ parser.getText());
 
 			parser.nextTag();
 			parser.nextTag();
@@ -461,6 +530,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 		state = State.SAVING;
 		entity = Entity.FORMS;
 
+		Database database = getDatabase();
 		database.open();
 		if (!values.isEmpty()) {
 			count = 0;
@@ -485,6 +555,10 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 
 		parser.nextTag();
 
+		Database database = getDatabase();
+		database.open();
+		database.beginTransaction();
+
 		while (notEndOfXmlDoc("users", parser)) {
 			count++;
 						
@@ -496,7 +570,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 				table.setUsername(parser.getText());
 				parser.nextTag(); //process </username>
 
-				Log.d(count+"-username", "value="+ table.getUsername());
+				//Log.d(count+"-username", "value="+ table.getUsername());
 			}else{
 				table.setUsername("");
 				parser.nextTag();
@@ -508,7 +582,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 				table.setPassword(parser.getText());
 				parser.nextTag(); //process </password>
 
-				Log.d(count+"-password", "value="+ table.getPassword());
+				//Log.d(count+"-password", "value="+ table.getPassword());
 			}else{
 				table.setPassword("");
 				parser.nextTag();
@@ -520,7 +594,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 				table.setFirstName(parser.getText());
 				parser.nextTag(); //process </firstName>
 
-				Log.d(count+"-firstName", "value="+ table.getFirstName());
+				//Log.d(count+"-firstName", "value="+ table.getFirstName());
 			}else{
 				table.setFirstName("");
 				parser.nextTag();
@@ -532,7 +606,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 				table.setLastName(parser.getText());
 				parser.nextTag(); //process </lastName>
 
-				Log.d(count+"-lastName", "value="+ table.getLastName());
+				//Log.d(count+"-lastName", "value="+ table.getLastName());
 			}else{
 				table.setLastName("");
 				parser.nextTag();
@@ -544,7 +618,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 				table.setModules(parser.getText());
 				parser.nextTag(); //process </modules>
 
-				Log.d(count+"-modules", "value="+ table.getModules());
+				//Log.d(count+"-modules", "value="+ table.getModules());
 			}else{
 				table.setModules("");
 				parser.nextTag();
@@ -556,7 +630,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 				table.setExtras(parser.getText());
 				parser.nextTag(); // </extras>
 
-				Log.d(count+"-extras", "value="+ table.getExtras());
+				//Log.d(count+"-extras", "value="+ table.getExtras());
 			}else{
 				table.setExtras("");
 				parser.nextTag();
@@ -566,14 +640,18 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 			parser.nextTag(); // <user>
 			parser.next();
 
-			values.add(table);
+			//values.add(table);
+			database.insert(table);
+
 			publishProgress(count);
 			
 		}
-		
+
+		/*
 		state = State.SAVING;
 		entity = Entity.USERS;
 
+		Database database = getDatabase();
 		database.open();
 		if (!values.isEmpty()) {
 			count = 0;
@@ -583,6 +661,10 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 				publishProgress(count);
 			}
 		}
+		*/
+
+		database.setTransactionSuccessful();
+		database.endTransaction();
 		database.close();
 
 		updateSyncReport(SyncReport.REPORT_USERS, new Date(), SyncReport.STATUS_SYNCED);
@@ -598,7 +680,9 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 
 		parser.nextTag();
 
+		Database database = getDatabase();
 		database.open();
+		database.beginTransaction();
 
 		while (notEndOfXmlDoc("households", parser)) {
 			count++;
@@ -608,79 +692,79 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 			parser.nextTag(); //process extId
 			parser.next();
 			table.setExtId(parser.getText());
-			Log.d(count+"-extId", "value="+ parser.getText());
+			//Log.d(count+"-extId", "value="+ parser.getText());
 
 			parser.nextTag(); //process headExtId
 			parser.nextTag();
 			parser.next();
 			table.setHeadExtId(parser.getText());
-			Log.d(count+"-headExtId", "value="+ parser.getText());
+			//Log.d(count+"-headExtId", "value="+ parser.getText());
 
 			parser.nextTag(); //process houseNumber
 			parser.nextTag();
 			parser.next();
 			table.setHouseNumber(parser.getText());
-			Log.d(count+"-houseNumber", "value="+ parser.getText());
+			//Log.d(count+"-houseNumber", "value="+ parser.getText());
 
 			parser.nextTag(); //process neighborhood
 			parser.nextTag();
 			parser.next();
 			table.setNeighborhood(parser.getText());
-			Log.d(count+"-neighborhood", "value="+ parser.getText());
+			//Log.d(count+"-neighborhood", "value="+ parser.getText());
 
 			parser.nextTag(); //process locality
 			parser.nextTag();
 			parser.next();
 			table.setLocality(parser.getText());
-			Log.d(count+"-locality", "value="+ parser.getText());
+			//Log.d(count+"-locality", "value="+ parser.getText());
 
 			parser.nextTag(); //process adminPost
 			parser.nextTag();
 			parser.next();
 			table.setAdminPost(parser.getText());
-			Log.d(count+"-adminPost", "value="+ parser.getText());
+			//Log.d(count+"-adminPost", "value="+ parser.getText());
 
 			parser.nextTag(); //process district
 			parser.nextTag();
 			parser.next();
 			table.setDistrict(parser.getText());
-			Log.d(count+"-district", "value="+ parser.getText());
+			//Log.d(count+"-district", "value="+ parser.getText());
 
 			parser.nextTag(); //process province
 			parser.nextTag();
 			parser.next();
 			table.setProvince(parser.getText());
-			Log.d(count+"-province", "value="+ parser.getText());
+			//Log.d(count+"-province", "value="+ parser.getText());
 
 			parser.nextTag(); //process head
 			parser.nextTag();
 			parser.next();
 			table.setHead(parser.getText());
-			Log.d(count+"-head", "value="+ parser.getText());
+			//Log.d(count+"-head", "value="+ parser.getText());
 
 			parser.nextTag(); //process accuracy
 			parser.nextTag();
 			parser.next();
 			table.setAccuracy(parser.getText());
-			Log.d(count+"-accuracy", "value="+ parser.getText());
+			//Log.d(count+"-accuracy", "value="+ parser.getText());
 
 			parser.nextTag(); //process altitude
 			parser.nextTag();
 			parser.next();
 			table.setAltitude(parser.getText());
-			Log.d(count+"-altitude", "value="+ parser.getText());
+			//Log.d(count+"-altitude", "value="+ parser.getText());
 
 			parser.nextTag(); //process latitude
 			parser.nextTag();
 			parser.next();
 			table.setLatitude(parser.getText());
-			Log.d(count+"-latitude", "value="+ parser.getText());
+			//Log.d(count+"-latitude", "value="+ parser.getText());
 
 			parser.nextTag(); //process longitude
 			parser.nextTag();
 			parser.next();
 			table.setLongitude(parser.getText());
-			Log.d(count+"-longitude", "value="+ parser.getText());
+			//Log.d(count+"-longitude", "value="+ parser.getText());
 
 			parser.nextTag();
 			parser.nextTag();
@@ -690,22 +774,17 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 
 			database.insert(table);
 
-			publishProgress(count);
+			if (count % 100 == 0){
+				publishProgress(count);
+			}
+
 
 		}
 
-		//state = State.SAVING;
-		//entity = Entity.HOUSEHOLDS;
+		publishProgress(count);
 
-		/*
-		if (!values.isEmpty()) {
-			count = 0;
-			for (Table t : values){
-				count++;
-				database.insert(t);
-				publishProgress(count);
-			}
-		}*/
+		database.setTransactionSuccessful();
+		database.endTransaction();
 		database.close();
 
 		updateSyncReport(SyncReport.REPORT_HOUSEHOLDS, new Date(), SyncReport.STATUS_SYNCED);
@@ -721,7 +800,9 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 
 		parser.nextTag();
 
+		Database database = getDatabase();
 		database.open();
+		database.beginTransaction();
 
 		while (notEndOfXmlDoc("members", parser)) {
 			count++;
@@ -975,26 +1056,18 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 			parser.next();
 
 			//values.add(table);
-
 			database.insert(table);
 
-			publishProgress(count);
-
-		}
-
-		//state = State.SAVING;
-		//entity = Entity.MEMBERS;
-
-		/*
-		if (!values.isEmpty()) {
-			count = 0;
-			for (Table t : values){
-				count++;
-				database.insert(t);
+			if (count % 100 == 0){
 				publishProgress(count);
 			}
+
 		}
-		*/
+
+		publishProgress(count);
+
+		database.setTransactionSuccessful();
+		database.endTransaction();
 		database.close();
 
 		updateSyncReport(SyncReport.REPORT_MEMBERS, new Date(), SyncReport.STATUS_SYNCED);
@@ -1002,6 +1075,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 
 	//database.query(SyncReport.class, DatabaseHelper.SyncReport.COLUMN_REPORT_ID+"=?", new String[]{}, null, null, null);
 	private void updateSyncReport(int reportId, Date date, int status){
+		Database database = getDatabase();
 		database.open();
 
 		ContentValues cv = new ContentValues();
@@ -1016,5 +1090,43 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 		listener.collectionComplete(result);
 		dialog.hide();
 		Toast.makeText(mContext, result, Toast.LENGTH_LONG).show();
+	}
+
+	private class DownloadResponse {
+		private InputStream inputStream;
+		private String fileMimeType;
+		private long fileSize;
+		private String fileName;
+
+		public DownloadResponse(InputStream is, String fileType, String exportedFileName, long fileSize){
+			this.inputStream = is;
+			this.fileMimeType = fileType;
+			this.fileName = exportedFileName;
+			this.fileSize = fileSize;
+		}
+
+		public String getFileMimeType() {
+			return fileMimeType;
+		}
+
+		public InputStream getInputStream() {
+			return inputStream;
+		}
+
+		public long getFileSize() {
+			return fileSize;
+		}
+
+		public String getFileName() {
+			return fileName;
+		}
+
+		public boolean isXmlFile(){
+			return fileMimeType.equalsIgnoreCase(XML_MIME_TYPE);
+		}
+
+		public boolean isZipFile(){
+			return fileMimeType.equalsIgnoreCase(ZIP_MIME_TYPE);
+		}
 	}
 }

@@ -32,6 +32,18 @@ public class Database {
 		return database.isOpen();
 	}
 
+	public void beginTransaction(){
+		database.beginTransaction();
+	}
+
+	public void endTransaction(){
+		database.endTransaction();
+	}
+
+	public void setTransactionSuccessful(){
+		database.setTransactionSuccessful();
+	}
+
 	public void dropAllTables(){
 		for (String t : DatabaseHelper.ALL_TABLES){
 			database.execSQL("DROP TABLE IF EXISTS " + t );

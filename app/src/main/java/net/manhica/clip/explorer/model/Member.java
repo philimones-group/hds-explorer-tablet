@@ -35,10 +35,10 @@ public class Member implements Serializable, Table {
     private String hhEndType;
     private String hhEndDate;
     /** GPS Status */
-    private String gpsAccuracy;
-    private String gpsAltitude;
-    private String gpsLatitude;
-    private String gpsLongitude;
+    private String hhAccuracy;
+    private String hhAltitude;
+    private String hhLatitude;
+    private String hhLongitude;
 
     private int nrPregnancies;
 
@@ -214,36 +214,36 @@ public class Member implements Serializable, Table {
         this.hhEndDate = hhEndDate==null ? "" : hhEndDate;
     }
 
-    public String getGpsAccuracy() {
-        return gpsAccuracy;
+    public String getHhAccuracy() {
+        return hhAccuracy;
     }
 
-    public void setGpsAccuracy(String gpsAccuracy) {
-        this.gpsAccuracy = gpsAccuracy;
+    public void setHhAccuracy(String hhAccuracy) {
+        this.hhAccuracy = hhAccuracy;
     }
 
-    public String getGpsAltitude() {
-        return gpsAltitude;
+    public String getHhAltitude() {
+        return hhAltitude;
     }
 
-    public void setGpsAltitude(String gpsAltitude) {
-        this.gpsAltitude = gpsAltitude;
+    public void setHhAltitude(String hhAltitude) {
+        this.hhAltitude = hhAltitude;
     }
 
-    public String getGpsLatitude() {
-        return gpsLatitude;
+    public String getHhLatitude() {
+        return hhLatitude;
     }
 
-    public void setGpsLatitude(String gpsLatitude) {
-        this.gpsLatitude = gpsLatitude;
+    public void setHhLatitude(String hhLatitude) {
+        this.hhLatitude = hhLatitude;
     }
 
-    public String getGpsLongitude() {
-        return gpsLongitude;
+    public String getHhLongitude() {
+        return hhLongitude;
     }
 
-    public void setGpsLongitude(String gpsLongitude) {
-        this.gpsLongitude = gpsLongitude;
+    public void setHhLongitude(String hhLongitude) {
+        this.hhLongitude = hhLongitude;
     }
 
     public int getNrPregnancies() {
@@ -406,10 +406,10 @@ public class Member implements Serializable, Table {
         cv.put(DatabaseHelper.Member.COLUMN_HH_START_DATE, hhStartDate);
         cv.put(DatabaseHelper.Member.COLUMN_HH_END_TYPE, hhEndType);
         cv.put(DatabaseHelper.Member.COLUMN_HH_END_DATE, hhEndDate);
-        cv.put(DatabaseHelper.Member.COLUMN_GPS_ACCURACY, gpsAccuracy);
-        cv.put(DatabaseHelper.Member.COLUMN_GPS_ALTITUDE, gpsAltitude);
-        cv.put(DatabaseHelper.Member.COLUMN_GPS_LATITUDE, gpsLatitude);
-        cv.put(DatabaseHelper.Member.COLUMN_GPS_LONGITUDE, gpsLongitude);
+        cv.put(DatabaseHelper.Member.COLUMN_GPS_ACCURACY, hhAccuracy);
+        cv.put(DatabaseHelper.Member.COLUMN_GPS_ALTITUDE, hhAltitude);
+        cv.put(DatabaseHelper.Member.COLUMN_GPS_LATITUDE, hhLatitude);
+        cv.put(DatabaseHelper.Member.COLUMN_GPS_LONGITUDE, hhLongitude);
         cv.put(DatabaseHelper.Member.COLUMN_NR_PREGNANCIES, nrPregnancies);
         cv.put(DatabaseHelper.Member.COLUMN_HAS_DELIVERED, hasDelivered);
         cv.put(DatabaseHelper.Member.COLUMN_IS_PREGNANT, isPregnant);

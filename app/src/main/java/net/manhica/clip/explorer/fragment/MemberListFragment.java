@@ -182,8 +182,8 @@ public class MemberListFragment extends Fragment {
         for (int i=0; i < points.length; i++){
             Member m = adpter.getMembers().get(i);
             String name = m.getName();
-            double lat = Double.parseDouble(m.getGpsLatitude());
-            double lon = Double.parseDouble(m.getGpsLongitude());
+            double lat = Double.parseDouble(m.getHhLatitude());
+            double lon = Double.parseDouble(m.getHhLongitude());
             points[i] = new MWMPoint(lat, lon, name);
         }
 

@@ -104,10 +104,10 @@ public class Converter {
 		mb.setHhStartDate(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Member.COLUMN_HH_START_DATE)));
 		mb.setHhEndType(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Member.COLUMN_HH_END_TYPE)));
 		mb.setHhEndDate(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Member.COLUMN_HH_END_DATE)));
-		mb.setGpsAccuracy(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Member.COLUMN_GPS_ACCURACY)));
-		mb.setGpsAltitude(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Member.COLUMN_GPS_ALTITUDE)));
-		mb.setGpsLatitude(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Member.COLUMN_GPS_LATITUDE)));
-		mb.setGpsLongitude(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Member.COLUMN_GPS_LONGITUDE)));
+		mb.setHhAccuracy(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Member.COLUMN_GPS_ACCURACY)));
+		mb.setHhAltitude(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Member.COLUMN_GPS_ALTITUDE)));
+		mb.setHhLatitude(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Member.COLUMN_GPS_LATITUDE)));
+		mb.setHhLongitude(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Member.COLUMN_GPS_LONGITUDE)));
 		mb.setNrPregnancies(cursor.getInt(cursor.getColumnIndex(DatabaseHelper.Member.COLUMN_NR_PREGNANCIES)));
 		mb.setHasDelivered(cursor.getInt(cursor.getColumnIndex(DatabaseHelper.Member.COLUMN_HAS_DELIVERED))==1);
 		mb.setPregnant(cursor.getInt(cursor.getColumnIndex(DatabaseHelper.Member.COLUMN_IS_PREGNANT))==1);

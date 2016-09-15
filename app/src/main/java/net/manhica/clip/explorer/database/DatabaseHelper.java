@@ -32,8 +32,21 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         if (newVersion > oldVersion) {
-            Log.d("alter table", "runinng");
-            db.execSQL("ALTER TABLE "+CollectedData.TABLE_NAME+" ADD COLUMN "+CollectedData.COLUMN_SUPERVISED+" INTEGER NOT NULL DEFAULT 0"); //upgrade CollectedData
+            Log.d("alter table", "runinng"); //OLD VERSION
+            try {
+                db.execSQL("ALTER TABLE " + CollectedData.TABLE_NAME + " ADD COLUMN " + CollectedData.COLUMN_SUPERVISED + " INTEGER NOT NULL DEFAULT 0"); //upgrade CollectedData
+            }catch (Exception ex){
+                Log.d("error on database alter", ""+ex.getMessage());
+                ex.printStackTrace();
+            }
+
+            //NEW DB VERSION with BindMap
+            try {
+                db.execSQL("ALTER TABLE " + Form.TABLE_NAME + " ADD COLUMN " + Form.COLUMN_BIND_MAP + " TEXT"); //upgrade CollectedData
+            }catch (Exception ex){
+                Log.d("error on database alter", ""+ex.getMessage());
+                ex.printStackTrace();
+            }
         }
 	}
 
@@ -73,8 +86,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         public static final String COLUMN_MIN_AGE = "minAge";
         public static final String COLUMN_MAX_AGE = "maxAge";
         public static final String COLUMN_MODULES = "modules";
+        public static final String COLUMN_BIND_MAP = "bindMap";
 
-		public static final String[] ALL_COLUMNS = {COLUMN_FORM_ID, COLUMN_FORM_NAME, COLUMN_FORM_DESCRIPTION, COLUMN_GENDER, COLUMN_MIN_AGE, COLUMN_MAX_AGE, COLUMN_MODULES};
+		public static final String[] ALL_COLUMNS = {COLUMN_FORM_ID, COLUMN_FORM_NAME, COLUMN_FORM_DESCRIPTION, COLUMN_GENDER, COLUMN_MIN_AGE, COLUMN_MAX_AGE, COLUMN_MODULES, COLUMN_BIND_MAP};
 	}
 
     public static final class Module implements BaseColumns {
@@ -206,7 +220,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + Form.COLUMN_GENDER + " TEXT,"
             + Form.COLUMN_MIN_AGE + " INTEGER,"
             + Form.COLUMN_MAX_AGE + " INTEGER,"
-            + Form.COLUMN_MODULES + " TEXT);"
+            + Form.COLUMN_MODULES + " TEXT,"
+            + Form.COLUMN_BIND_MAP + " TEXT);"
 
             + " CREATE UNIQUE INDEX IDX_FORM_ID ON " + Form.TABLE_NAME
             + "(" +  Form.COLUMN_FORM_ID + ");"

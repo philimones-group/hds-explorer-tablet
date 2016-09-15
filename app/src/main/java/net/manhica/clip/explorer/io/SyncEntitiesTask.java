@@ -192,7 +192,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 						break;
 					case FORMS:
 						deleteAll(Form.class);
-						processUrl(baseurl + API_PATH + "/forms", "forms.xml");
+						processUrl(baseurl + API_PATH + "/forms/zip", "forms.zip");
 						break;
 					case USERS:
 						deleteAll(User.class);
@@ -470,6 +470,10 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 		int count = 0;
 		values.clear();
 
+		Database database = getDatabase();
+		database.open();
+		database.beginTransaction();
+
 		parser.nextTag(); //<form>
 
 		while (notEndOfXmlDoc("forms", parser)) {
@@ -478,51 +482,99 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 			Form table = new Form();
 
 			parser.nextTag(); //process formId
-			parser.next();
-			table.setFormId(parser.getText());
-			//Log.d(count+"-formId", "value="+ parser.getText());
+			if (!isEmptyTag("formId", parser)) {
+				parser.next();
+				table.setFormId(parser.getText());
+				parser.nextTag(); //process </formId>
+				//Log.d(count+"-formId", "value="+ parser.getText());
+			}else{
+				table.setFormId("");
+				parser.nextTag();
+			}
 
 			parser.nextTag(); //process formName
-			parser.nextTag();
-			parser.next();
-			table.setFormName(parser.getText());
-			//Log.d(count+"-formName", "value="+ parser.getText());
+			if (!isEmptyTag("formName", parser)) {
+				parser.next();
+				table.setFormName(parser.getText());
+				parser.nextTag(); //process </formName>
+				//Log.d(count+"-formName", "value="+ parser.getText());
+			}else{
+				table.setFormName("");
+				parser.nextTag();
+			}
 
 			parser.nextTag(); //process formDescription
-			parser.nextTag();
-			parser.next();
-			table.setFormDescription(parser.getText());
-			//Log.d(count+"-formDescription", "value="+ parser.getText());
+			if (!isEmptyTag("formDescription", parser)) {
+				parser.next();
+				table.setFormDescription(parser.getText());
+				parser.nextTag(); //process </formDescription>
+				//Log.d(count+"-formDescription", "value="+ parser.getText());
+			}else{
+				table.setFormDescription("");
+				parser.nextTag();
+			}
 
 			parser.nextTag(); //process gender
-			parser.nextTag();
-			parser.next();
-			table.setGender(parser.getText());
-			//Log.d(count+"-gender", "value="+ parser.getText());
+			if (!isEmptyTag("gender", parser)) {
+				parser.next();
+				table.setGender(parser.getText());
+				parser.nextTag(); //process </gender>
+				//Log.d(count+"-gender", "value="+ parser.getText());
+			}else{
+				table.setGender("");
+				parser.nextTag();
+			}
 
 			parser.nextTag(); //process minAge
-			parser.nextTag();
-			parser.next();
-			table.setMinAge(Integer.parseInt(parser.getText()));
-			//Log.d(count+"-minAge", "value="+ parser.getText());
+			if (!isEmptyTag("minAge", parser)) {
+				parser.next();
+				table.setMinAge(Integer.parseInt(parser.getText()));
+				parser.nextTag(); //process </minAge>
+				//Log.d(count+"-minAge", "value="+ parser.getText());
+			}else{
+				//table.setMinAge(0);
+				parser.nextTag();
+			}
 
 			parser.nextTag(); //process maxAge
-			parser.nextTag();
-			parser.next();
-			table.setMaxAge(Integer.parseInt(parser.getText()));
-			//Log.d(count+"-maxAge", "value="+ parser.getText());
+			if (!isEmptyTag("maxAge", parser)) {
+				parser.next();
+				table.setMaxAge(Integer.parseInt(parser.getText()));
+				parser.nextTag(); //process </maxAge>
+				//Log.d(count+"-maxAge", "value="+ parser.getText());
+			}else{
+				//table.setMaxAge(0);
+				parser.nextTag();
+			}
 
 			parser.nextTag(); //process modules
-			parser.nextTag();
-			parser.next();
-			table.setModules(parser.getText());
-			//Log.d(count+"-modules", "value="+ parser.getText());
+			if (!isEmptyTag("modules", parser)) {
+				parser.next();
+				table.setModules(parser.getText());
+				parser.nextTag(); //process </modules>
+				//Log.d(count+"-modules", "value="+ parser.getText());
+			}else{
+				table.setModules("");
+				parser.nextTag();
+			}
+
+			parser.nextTag(); //process bindMap
+			if (!isEmptyTag("bindMap", parser)) {
+				parser.next();
+				table.setBindMap(parser.getText());
+				//Log.d(count+"-bindMap", "value="+ parser.getText());
+				parser.nextTag(); //process </bindMap>
+			}else{
+				table.setBindMap("");
+				parser.nextTag();
+
+			}
 
 			parser.nextTag();
-			parser.nextTag();
 			parser.next();
 
-			values.add(table);
+
+			database.insert(table);
 			publishProgress(count);
 
 		}
@@ -530,16 +582,8 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 		state = State.SAVING;
 		entity = Entity.FORMS;
 
-		Database database = getDatabase();
-		database.open();
-		if (!values.isEmpty()) {
-			count = 0;
-			for (Table t : values){
-				count++;
-				database.insert(t);
-				publishProgress(count);
-			}
-		}
+		database.setTransactionSuccessful();
+		database.endTransaction();
 		database.close();
 
 		updateSyncReport(SyncReport.REPORT_FORMS, new Date(), SyncReport.STATUS_SYNCED);
@@ -569,7 +613,6 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 				parser.next();
 				table.setUsername(parser.getText());
 				parser.nextTag(); //process </username>
-
 				//Log.d(count+"-username", "value="+ table.getUsername());
 			}else{
 				table.setUsername("");
@@ -581,7 +624,6 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 				parser.next();
 				table.setPassword(parser.getText());
 				parser.nextTag(); //process </password>
-
 				//Log.d(count+"-password", "value="+ table.getPassword());
 			}else{
 				table.setPassword("");
@@ -593,7 +635,6 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 				parser.next();
 				table.setFirstName(parser.getText());
 				parser.nextTag(); //process </firstName>
-
 				//Log.d(count+"-firstName", "value="+ table.getFirstName());
 			}else{
 				table.setFirstName("");
@@ -605,7 +646,6 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 				parser.next();
 				table.setLastName(parser.getText());
 				parser.nextTag(); //process </lastName>
-
 				//Log.d(count+"-lastName", "value="+ table.getLastName());
 			}else{
 				table.setLastName("");
@@ -617,7 +657,6 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 				parser.next();
 				table.setModules(parser.getText());
 				parser.nextTag(); //process </modules>
-
 				//Log.d(count+"-modules", "value="+ table.getModules());
 			}else{
 				table.setModules("");
@@ -629,7 +668,6 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 				parser.next();
 				table.setExtras(parser.getText());
 				parser.nextTag(); // </extras>
-
 				//Log.d(count+"-extras", "value="+ table.getExtras());
 			}else{
 				table.setExtras("");
@@ -1088,7 +1126,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 
 	protected void onPostExecute(String result) {
 		listener.collectionComplete(result);
-		dialog.hide();
+		dialog.dismiss();
 		Toast.makeText(mContext, result, Toast.LENGTH_LONG).show();
 	}
 

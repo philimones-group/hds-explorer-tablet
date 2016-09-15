@@ -6,6 +6,8 @@ import net.manhica.clip.explorer.database.DatabaseHelper;
 import net.manhica.clip.explorer.database.Table;
 
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by paul on 5/20/16.
@@ -19,6 +21,12 @@ public class Form implements Serializable, Table {
     private int minAge; //0
     private int maxAge; //Default - 120
     private String modules; //if null - is accessed by all
+    private String bindMapText;
+    private Map<String, String> bindMap;
+
+    public Form(){
+        bindMap = new HashMap<>();
+    }
 
     public String getFormId() {
         return formId;
@@ -76,6 +84,29 @@ public class Form implements Serializable, Table {
         this.modules = modules;
     }
 
+    public void setBindMap(String bindMapAsText){
+        this.bindMapText = bindMapAsText;
+        convertBindMapTextToMap();
+    }
+
+    public Map<String, String> getBindMap(){
+        return this.bindMap;
+    }
+
+    private void convertBindMapTextToMap() {
+        if (bindMapText != null && !bindMapText.isEmpty()){
+            this.bindMap.clear();
+
+            String[] entries = bindMapText.split(";");
+            for (String entry : entries){
+                String[] keyValue = entry.split(":");
+                if (keyValue.length == 2){
+                    this.bindMap.put(keyValue[0], keyValue[1]);
+                }
+            }
+        }
+    }
+
     @Override
     public String getTableName() {
         return DatabaseHelper.Form.TABLE_NAME;
@@ -91,6 +122,7 @@ public class Form implements Serializable, Table {
         cv.put(DatabaseHelper.Form.COLUMN_MIN_AGE, minAge);
         cv.put(DatabaseHelper.Form.COLUMN_MAX_AGE, maxAge);
         cv.put(DatabaseHelper.Form.COLUMN_MODULES, modules);
+        cv.put(DatabaseHelper.Form.COLUMN_BIND_MAP, bindMapText);
         return cv;
     }
 

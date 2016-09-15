@@ -959,28 +959,28 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 			parser.nextTag(); //process gps-accuracy
 			parser.nextTag();
 			parser.next();
-			table.setGpsAccuracy(parser.getText());
+			table.setHhAccuracy(parser.getText());
 			//Log.d(count+"-Accuracy", "value="+ parser.getText());
 
 			if (parser.getText()!=null)
 			parser.nextTag(); //process gps-altitude
 			parser.nextTag();
 			parser.next();
-			table.setGpsAltitude(parser.getText());
+			table.setHhAltitude(parser.getText());
 			//Log.d(count+"-Altitude", "value="+ parser.getText());
 
 			if (parser.getText()!=null)
 			parser.nextTag(); //process gps-latitude
 			parser.nextTag();
 			parser.next();
-			table.setGpsLatitude(parser.getText());
+			table.setHhLatitude(parser.getText());
 			//Log.d(count+"-Latitude", "value="+ parser.getText());
 
 			if (parser.getText()!=null)
 			parser.nextTag(); //process gps-longitude
 			parser.nextTag();
 			parser.next();
-			table.setGpsLongitude(parser.getText());
+			table.setHhLongitude(parser.getText());
 			//Log.d(count+"-Longitude", "value="+ parser.getText());
 
 			if (parser.getText()!=null)

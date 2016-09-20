@@ -7,6 +7,8 @@ import net.manhica.clip.explorer.database.Table;
 
 import java.io.Serializable;
 
+import mz.betainteractive.utilities.ReflectionUtils;
+
 /**
  * Created by paul on 5/20/16.
  */
@@ -137,6 +139,10 @@ public class Household implements Serializable, Table {
 
     public void setLongitude(String longitude) {
         this.longitude = longitude;
+    }
+
+    public String getValueByName(String variableName){
+        return ReflectionUtils.getValueByName(this, variableName);
     }
 
     @Override

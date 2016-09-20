@@ -15,6 +15,10 @@ import java.util.Map;
  * Created by paul on 8/9/16.
  */
 public class FormDataLoader implements Serializable {
+    private final String householdPrefix = "Household.";
+    private final String memberPrefix = "Member.";
+    private final String userPrefix = "User.";
+
     private Form form;
     private Map<String, Object> values;
 
@@ -50,42 +54,93 @@ public class FormDataLoader implements Serializable {
     public void loadHouseholdValues(Household household){
         Map<String, String> map = form.getBindMap();
         for (String key : map.keySet()){
-            String internalVariableName = key.replace("Household.","");
-            String odkVariable = map.get(key);
-            String value = household.getValueByName(internalVariableName);
+            if (key.startsWith(householdPrefix)) {
+                String internalVariableName = key.replace(householdPrefix, "");
+                String odkVariable = map.get(key);
+                String value = null;
+                ExtrasVariable extrasVariable = tryParseExtrasVariable(internalVariableName);
 
-            if (value==null) value="";
+                if (extrasVariable == null){
+                    value = household.getValueByName(internalVariableName);
+                }else {
+                    internalVariableName = extrasVariable.columnName;
+                    String commaValue = household.getValueByName(internalVariableName);
+                    value = commaValue.split(",")[extrasVariable.arrayIndex];
+                }
 
-            this.values.put(odkVariable, value);
-            Log.d("h-odk auto-loadable", odkVariable+", "+value);
+                if (value == null) value = "";
+
+                this.values.put(odkVariable, value);
+                Log.d("h-odk auto-loadable", odkVariable + ", " + value);
+            }
         }
     }
 
     public void loadMemberValues(Member member){
         Map<String, String> map = form.getBindMap();
         for (String key : map.keySet()){
-            String internalVariableName = key.replace("Member.","");
-            String odkVariable = map.get(key);
-            String value = member.getValueByName(internalVariableName);
+            if (key.startsWith(memberPrefix)) {
+                String internalVariableName = key.replace(memberPrefix, "");
+                String odkVariable = map.get(key);
+                String value = null;
+                ExtrasVariable extrasVariable = tryParseExtrasVariable(internalVariableName);
 
-            if (value==null) value="";
+                if (extrasVariable == null){
+                    value = member.getValueByName(internalVariableName);
+                }else {
+                    internalVariableName = extrasVariable.columnName;
+                    String commaValue = member.getValueByName(internalVariableName);
+                    value = commaValue.split(",")[extrasVariable.arrayIndex];
+                }
 
-            this.values.put(odkVariable, value);
-            Log.d("m-odk auto-loadable", odkVariable+", "+value);
+                if (value == null) value = "";
+
+                this.values.put(odkVariable, value);
+                Log.d("m-odk auto-loadable", odkVariable + ", " + value);
+            }
         }
     }
 
     public void loadUserValues(User user){
         Map<String, String> map = form.getBindMap();
         for (String key : map.keySet()){
-            String internalVariableName = key.replace("User.","");
-            String odkVariable = map.get(key);
-            String value = user.getValueByName(internalVariableName);
+            if (key.startsWith(userPrefix)) {
+                String internalVariableName = key.replace(userPrefix, "");
+                String odkVariable = map.get(key);
+                String value = null;
+                ExtrasVariable extrasVariable = tryParseExtrasVariable(internalVariableName);
 
-            if (value==null) value="";
+                if (extrasVariable == null){
+                    value = user.getValueByName(internalVariableName);
+                }else {
+                    internalVariableName = extrasVariable.columnName;
+                    String commaValue = user.getValueByName(internalVariableName);
+                    value = commaValue.split(",")[extrasVariable.arrayIndex];
+                }
 
-            this.values.put(odkVariable, value);
-            Log.d("u-odk auto-loadable", odkVariable+", "+value);
+                if (value == null) value = "";
+
+                this.values.put(odkVariable, value);
+                Log.d("u-odk auto-loadable", odkVariable + ", " + value);
+            }
         }
+    }
+
+    private ExtrasVariable tryParseExtrasVariable(String str){
+        if (str.matches(".+\\[[0-9]+\\]")){
+            ExtrasVariable extras = new ExtrasVariable();
+            int indexPar = str.indexOf("[");
+            extras.columnName = str.substring(0, indexPar);
+            extras.arrayIndex = Integer.parseInt(str.substring(indexPar+1,str.length()-1));
+
+            return extras;
+        }
+
+        return null;
+    }
+
+    private class ExtrasVariable {
+        public String columnName;
+        public int arrayIndex;
     }
 }

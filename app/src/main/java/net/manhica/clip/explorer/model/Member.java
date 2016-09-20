@@ -7,6 +7,8 @@ import net.manhica.clip.explorer.database.Table;
 
 import java.io.Serializable;
 
+import mz.betainteractive.utilities.ReflectionUtils;
+
 /**
  * Created by paul on 5/20/16.
  */
@@ -378,6 +380,10 @@ public class Member implements Serializable, Table {
 
     public void setOnSurveillance(boolean onSurveillance) {
         this.onSurveillance = onSurveillance;
+    }
+
+    public String getValueByName(String variableName){
+        return ReflectionUtils.getValueByName(this, variableName);
     }
 
     @Override

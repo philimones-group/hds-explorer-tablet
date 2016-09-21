@@ -150,6 +150,7 @@ public class MemberListFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Log.d("test-show-closest-wmmap", "not yet implemented");
+                showPregnantMembersMap();
             }
         });
         
@@ -177,8 +178,27 @@ public class MemberListFragment extends Fragment {
             points[i] = new MWMPoint(lat, lon, name);
         }
 
-        MapsWithMeApi.showPointsOnMap(this.getActivity(), "Localization of Women on map", points);
+        MapsWithMeApi.showPointsOnMap(this.getActivity(), getString(R.string.map_women_coordinates), points);
+    }
 
+    private void showPregnantMembersMap() {
+        MemberArrayAdapter adpter = (MemberArrayAdapter) this.lvMembersList.getAdapter();
+
+        final MWMPoint[] points = new MWMPoint[adpter.getMembers().size()];
+
+
+        for (int i=0; i < points.length; i++){
+            Member m = adpter.getMembers().get(i);
+            if (m.isHasDelivered()==false && !m.getLastClipId().isEmpty()) {
+                String name = m.getName();
+                double lat = Double.parseDouble(m.getHhLatitude());
+                double lon = Double.parseDouble(m.getHhLongitude());
+                points[i] = new MWMPoint(lat, lon, name);
+            }
+
+        }
+
+        MapsWithMeApi.showPointsOnMap(this.getActivity(), getString(R.string.map_pregnant_women_coordinates), points);
     }
 
     private void onMemberClicked(int position) {

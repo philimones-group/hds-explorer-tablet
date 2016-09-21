@@ -27,6 +27,7 @@ import net.manhica.clip.explorer.listeners.ActionListener;
 import net.manhica.clip.explorer.listeners.MemberActionListener;
 import net.manhica.clip.explorer.model.CollectedData;
 import net.manhica.clip.explorer.model.Form;
+import net.manhica.clip.explorer.model.Household;
 import net.manhica.clip.explorer.model.Member;
 import net.manhica.clip.explorer.model.Module;
 import net.manhica.clip.explorer.model.User;
@@ -122,7 +123,7 @@ public class FacilityActivity extends Activity  implements MemberFilterFragment.
     }
 
     @Override
-    public void onMemberSelected(Member member) {
+    public void onMemberSelected(Household household, Member member) {
 
         boolean isSupervisor = isSupervisor(loggedUser);
 
@@ -175,7 +176,7 @@ public class FacilityActivity extends Activity  implements MemberFilterFragment.
         Database db = new Database(this);
         db.open();
 
-        List<Form> formFacilities = Queries.getAllFormBy(db, DatabaseHelper.Form.COLUMN_MODULES+"=?", new String[]{ "CLIP-FACILITY" });
+        List<Form> formFacilities = Queries.getAllFormBy(db, DatabaseHelper.Form.COLUMN_MODULES+" like ?", new String[]{ "%"+ Module.CLIP_FACILITY_MODULE +"%" });
 
         db.close();
 
@@ -185,9 +186,9 @@ public class FacilityActivity extends Activity  implements MemberFilterFragment.
         for (Form formFacility : formFacilities){
             FormDataLoader loader = new FormDataLoader(formFacility);
 
-            loader.putExtra("facility", extras[0]); //health facility number
+            //loader.putExtra("facility", extras[0]); //health facility number
             loader.putExtra("fieldWorkerName", loggedUser.getFullname());
-            loader.putExtra("fieldWorkerId", loggedUser.getUsername());
+            //loader.putExtra("fieldWorkerId", loggedUser.getUsername());
 
             list[i++] = loader;
         }
@@ -206,6 +207,24 @@ public class FacilityActivity extends Activity  implements MemberFilterFragment.
     private void loadFormValues(FormDataLoader[] loaders, Member member){
         for (FormDataLoader loader : loaders){
             loadFormValues(loader, member);
+        }
+    }
+
+    private void loadFormValues(FormDataLoader loader, Household household, Member member){
+        if (household != null){
+            loader.loadHouseholdValues(household);
+        }
+        if (member != null){
+            loader.loadMemberValues(member);
+        }
+        if (loggedUser != null){
+            loader.loadUserValues(loggedUser);
+        }
+    }
+
+    private void loadFormValues(FormDataLoader[] loaders, Household household, Member member){
+        for (FormDataLoader loader : loaders){
+            loadFormValues(loader, household, member);
         }
     }
 
@@ -576,7 +595,7 @@ public class FacilityActivity extends Activity  implements MemberFilterFragment.
 
         @Override
         protected MemberArrayAdapter doInBackground(Void... params) {
-            return memberListFragment.loadMembersByFilters(name, permId, gender, null, isPregnant, hasPom, hasFacility);
+            return memberListFragment.loadMembersByFilters(null, name, permId, gender, null, isPregnant, hasPom, hasFacility);
         }
 
         @Override

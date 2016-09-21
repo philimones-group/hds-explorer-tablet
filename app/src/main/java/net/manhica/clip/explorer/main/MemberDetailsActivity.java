@@ -70,6 +70,7 @@ public class MemberDetailsActivity extends Activity implements OdkFormResultList
 
         for (int i=0; i < objs.length; i++){
             FormDataLoader formDataLoader = (FormDataLoader) objs[i];
+
             if (isVisualizableForm(formDataLoader.getForm())){
                 this.formDataLoaders.add(formDataLoader);
             }
@@ -114,11 +115,20 @@ public class MemberDetailsActivity extends Activity implements OdkFormResultList
 
         setMemberData();
 
+        enableButtonsByFormLoaders();
         enableButtonsByIntentData();
     }
 
+    private void enableButtonsByFormLoaders() {
+        boolean hasForms = this.formDataLoaders.size()>0;
+        this.btMemDetailsCollectData.setEnabled(hasForms);
+    }
+
     private void enableButtonsByIntentData() {
-        Boolean enaColData = getIntent().getExtras().getBoolean("enable-collect-data");
+        Object item = getIntent().getExtras().get("enable-collect-data");
+
+        Boolean enaColData = (item==null) ? null : (boolean)item;
+
         if (enaColData != null){
             this.btMemDetailsCollectData.setEnabled(enaColData.booleanValue());
         }

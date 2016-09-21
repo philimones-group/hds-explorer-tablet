@@ -135,7 +135,7 @@ public class ServerSyncActivity extends Activity implements SyncDatabaseListener
         this.username = (String) getIntent().getExtras().get("username");
         this.password = (String) getIntent().getExtras().get("password");
 
-
+        this.progressDialog.setCancelable(false);
     }
 
     private void syncModules() {

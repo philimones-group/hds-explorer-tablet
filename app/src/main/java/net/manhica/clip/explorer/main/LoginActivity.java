@@ -36,6 +36,7 @@ import net.manhica.clip.explorer.database.DatabaseHelper;
 import net.manhica.clip.explorer.database.Queries;
 import net.manhica.clip.explorer.io.SyncDatabaseListener;
 import net.manhica.clip.explorer.model.CollectedData;
+import net.manhica.clip.explorer.model.Form;
 import net.manhica.clip.explorer.model.Module;
 import net.manhica.clip.explorer.model.User;
 
@@ -119,6 +120,7 @@ public class LoginActivity extends Activity implements SyncDatabaseListener{
         Database db = new Database(this);
         db.open();
 
+        /*
         List<CollectedData> list = Queries.getAllCollectedDataBy(db, null, null);
 
         for (CollectedData cd : list){
@@ -127,6 +129,11 @@ public class LoginActivity extends Activity implements SyncDatabaseListener{
             //ContentValues cv = new ContentValues();
             //cv.put(DatabaseHelper.CollectedData.COLUMN_SUPERVISED, 0);
             //db.update(CollectedData.class, cv, DatabaseHelper.CollectedData._ID+"=?", new String[]{ cd.getId()+"" });
+        }*/
+
+        List<Form> list = Queries.getAllFormBy(db, null, null);
+        for (Form f : list){
+            Log.d("form", ""+f.getFormId()+", bind->"+f.getBindMap());
         }
 
         db.close();

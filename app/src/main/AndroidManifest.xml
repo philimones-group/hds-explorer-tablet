@@ -31,6 +31,8 @@
         <activity android:name=".main.ModuleSelectorActivity" />
         <activity android:name=".main.FacilityActivity" />
         <activity android:name=".main.SurveyActivity" />
+        <activity android:name=".main.SurveyHouseholdsActivity" />
+        <activity android:name=".main.SurveyMembersActivity" />
         <activity android:name=".main.POMActivity" />
         <activity android:name=".main.MemberDetailsActivity" />
     </application>

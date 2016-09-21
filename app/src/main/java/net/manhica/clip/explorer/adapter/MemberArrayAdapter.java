@@ -97,6 +97,11 @@ public class MemberArrayAdapter  extends ArrayAdapter<Member> {
             }
         }
 
+        if (mb.isHouseholdHead()){
+            txtName.setTypeface(null, Typeface.BOLD);
+            iconView.setImageResource(R.mipmap.member_green);
+        }
+
         return rowView;
     }
 }

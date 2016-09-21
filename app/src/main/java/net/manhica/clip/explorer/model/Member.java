@@ -64,6 +64,8 @@ public class Member implements Serializable, Table {
     private boolean onFacility;
     private boolean onSurveillance;
 
+    private boolean isHouseholdHead; /*not on database*/
+
     public int getId() {
         return id;
     }
@@ -380,6 +382,14 @@ public class Member implements Serializable, Table {
 
     public void setOnSurveillance(boolean onSurveillance) {
         this.onSurveillance = onSurveillance;
+    }
+
+    public boolean isHouseholdHead() {
+        return isHouseholdHead;
+    }
+
+    public void setHouseholdHead(boolean householdHead) {
+        isHouseholdHead = householdHead;
     }
 
     public String getValueByName(String variableName){

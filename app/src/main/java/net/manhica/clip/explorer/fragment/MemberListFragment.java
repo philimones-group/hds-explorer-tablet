@@ -22,8 +22,10 @@ import net.manhica.clip.explorer.adapter.MemberArrayAdapter;
 import net.manhica.clip.explorer.database.Converter;
 import net.manhica.clip.explorer.database.Database;
 import net.manhica.clip.explorer.database.DatabaseHelper;
+import net.manhica.clip.explorer.database.Queries;
 import net.manhica.clip.explorer.listeners.ActionListener;
 import net.manhica.clip.explorer.listeners.MemberActionListener;
+import net.manhica.clip.explorer.model.Household;
 import net.manhica.clip.explorer.model.Member;
 
 import java.util.ArrayList;
@@ -124,7 +126,7 @@ public class MemberListFragment extends Fragment {
             boolean filter3 = list.get(5).equals("true");
 
             Log.d("restoring",""+name);
-            MemberArrayAdapter ma = loadMembersByFilters(name, peid, gndr, null, filter1, filter2, filter3);
+            MemberArrayAdapter ma = loadMembersByFilters(null, name, peid, gndr, null, filter1, filter2, filter3);
             setMemberAdapter(ma);
         }
     }
@@ -194,15 +196,25 @@ public class MemberListFragment extends Fragment {
     private void onMemberClicked(int position) {
         MemberArrayAdapter adapter = (MemberArrayAdapter) this.lvMembersList.getAdapter();
         Member member = adapter.getItem(position);
+        Household household = getHousehold(member);
 
         if (memberActionListener != null){
-            memberActionListener.onMemberSelected(member);
+            memberActionListener.onMemberSelected(household, member);
         }
     }
 
-    public MemberArrayAdapter loadMembersByFilters(String name, String permId, String gender, String houseNumber, Boolean isPregnant, Boolean hasPom, Boolean hasFacility) {
-        //open loader
+    private Household getHousehold(Member member){
+        if (member == null || member.getHhNumber()==null) return null;
 
+        database.open();
+        Household household = Queries.getHouseholdBy(database, DatabaseHelper.Household.COLUMN_HOUSE_NUMBER+"=?", new String[]{ member.getHhNumber() });
+        database.close();
+
+        return household;
+    }
+
+    public MemberArrayAdapter loadMembersByFilters(Household household, String name, String permId, String gender, String houseNumber, Boolean isPregnant, Boolean hasPom, Boolean hasFacility) {
+        //open loader
 
         if (name == null) name = "";
         if (permId == null) permId = "";
@@ -265,7 +277,13 @@ public class MemberListFragment extends Fragment {
         Cursor cursor = database.query(Member.class, DatabaseHelper.Member.ALL_COLUMNS, whereClause, whereValues.toArray(ar), null, null, DatabaseHelper.Member.COLUMN_PERM_ID);
 
         while (cursor.moveToNext()){
-            members.add(Converter.cursorToMember(cursor));
+            Member member = Converter.cursorToMember(cursor);
+            members.add(member);
+            Log.d("household", ""+household);
+            Log.d("head", ""+(household!=null ? household.getHead():"null"));
+            if (household != null && household.getHead().equals(member.getPermId())){
+                member.setHouseholdHead(true);
+            }
         }
 
         database.close();

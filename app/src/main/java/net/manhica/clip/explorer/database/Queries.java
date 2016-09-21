@@ -4,6 +4,7 @@ import android.database.Cursor;
 
 import net.manhica.clip.explorer.model.CollectedData;
 import net.manhica.clip.explorer.model.Form;
+import net.manhica.clip.explorer.model.Household;
 import net.manhica.clip.explorer.model.SyncReport;
 
 import java.util.ArrayList;
@@ -88,4 +89,28 @@ public class Queries {
         return list;
     }
 
+    public static Household getHouseholdBy(Database database, String whereClause, String[] clauseArgs){
+        Household household = null;
+
+        Cursor cursor = database.query(Household.class, whereClause, clauseArgs, null, null, null);
+
+        if (cursor.moveToFirst()){
+            household = Converter.cursorToHousehold(cursor);
+        }
+
+        return household;
+    }
+
+    public static List<Household> getAllHouseholdBy(Database database, String whereClause, String[] clauseArgs){
+        List<Household> list = new ArrayList<>();
+
+        Cursor cursor = database.query(Household.class, whereClause, clauseArgs, null, null, null);
+
+        while (cursor.moveToNext()){
+            Household household = Converter.cursorToHousehold(cursor);
+            list.add(household);
+        }
+
+        return list;
+    }
 }

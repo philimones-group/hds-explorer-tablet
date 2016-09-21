@@ -1,65 +1,57 @@
 package net.manhica.clip.explorer.main;
 
 import android.app.Activity;
-import android.os.AsyncTask;
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 
 import net.manhica.clip.explorer.R;
-import net.manhica.clip.explorer.adapter.MemberArrayAdapter;
-import net.manhica.clip.explorer.fragment.MemberFilterFragment;
-import net.manhica.clip.explorer.fragment.MemberListFragment;
+import net.manhica.clip.explorer.model.User;
 
-public class SurveyActivity extends Activity implements MemberFilterFragment.Listener {
+public class SurveyActivity extends Activity {
 
-    private MemberFilterFragment memberFilterFragment;
-    private MemberListFragment memberListFragment;
+    private User loggedUser;
+    private Button btSurveyHouseholds;
+    private Button btSurveyMembers;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.survey);
 
-        this.memberFilterFragment = (MemberFilterFragment) (getFragmentManager().findFragmentById(R.id.memberFilterFragment));
-        this.memberListFragment = (MemberListFragment) getFragmentManager().findFragmentById(R.id.memberListFragment);
+        this.loggedUser = (User) getIntent().getExtras().get("user");
 
-        this.memberFilterFragment.setListener(this);
+        this.btSurveyHouseholds = (Button) findViewById(R.id.btSurveyHouseholds);
+        this.btSurveyMembers = (Button) findViewById(R.id.btSurveyMembers);
+
+        this.btSurveyHouseholds.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openSurveyHouseholds();
+            }
+        });
+
+        this.btSurveyMembers.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openSurveyMembers();
+            }
+        });
     }
 
-    @Override
-    public void onSearch(String name, String permId, String gender, boolean isPregnant, boolean hasPom, boolean hasFacility) {
-        this.memberListFragment.showProgress(true);
-
-        MemberSearchTask task = new MemberSearchTask(name, permId, gender, isPregnant, hasPom, hasFacility);
-        task.execute();
-        //this.memberListFragment.loadMembersByFilters();
+    private void openSurveyMembers() {
+        Intent intent = new Intent(this, SurveyMembersActivity.class);
+        intent.putExtra("user", loggedUser);
+        startActivity(intent);
     }
 
-    class MemberSearchTask extends AsyncTask<Void, Void, MemberArrayAdapter> {
-        private String name;
-        private String permId;
-        private String gender;
-        private boolean isPregnant;
-        private boolean hasPom;
-        private boolean hasFacility;
-
-        public MemberSearchTask(String name, String permId, String gender, boolean isPregant, boolean hasPom, boolean hasFacility) {
-            this.name = name;
-            this.permId = permId;
-            this.gender = gender;
-            this.isPregnant = isPregant;
-            this.hasPom = hasPom;
-            this.hasFacility = hasFacility;
-        }
-
-        @Override
-        protected MemberArrayAdapter doInBackground(Void... params) {
-            return memberListFragment.loadMembersByFilters(name, permId, gender, isPregnant, hasPom, hasFacility);
-        }
-
-        @Override
-        protected void onPostExecute(MemberArrayAdapter adapter) {
-            memberListFragment.setMemberAdapter(adapter);
-            memberListFragment.showProgress(false);
-        }
+    private void openSurveyHouseholds() {
+        Intent intent = new Intent(this, SurveyHouseholdsActivity.class);
+        intent.putExtra("user", loggedUser);
+        startActivity(intent);
     }
+
+
 }

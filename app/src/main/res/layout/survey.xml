@@ -3,22 +3,51 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="horizontal"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
     android:background="@mipmap/clip_back1"
-    tools:context="net.manhica.clip.explorer.main.SurveyActivity">
+    tools:context="net.manhica.clip.explorer.main.SurveyActivity"
+    android:weightSum="1">
 
-    <fragment android:name="net.manhica.clip.explorer.fragment.MemberFilterFragment"
-        android:id="@+id/memberFilterFragment"
-        android:layout_weight="1"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        tools:layout="@layout/member_filter" />
+    <ImageView
+        android:layout_marginTop="50dp"
+        android:layout_marginBottom="30dp"
+        android:layout_width="118dp"
+        android:layout_height="102dp"
+        android:id="@+id/imageView"
+        android:layout_gravity="center_horizontal"
+        android:background="@mipmap/clip_explorer_icon" />
 
-    <fragment android:name="net.manhica.clip.explorer.fragment.MemberListFragment"
-        android:id="@+id/memberListFragment"
-        android:layout_weight="1"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        tools:layout="@layout/member_list" />
+    <Button
+        android:id="@+id/btSurveyHouseholds"
+        style="?android:textAppearanceSmall"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:layout_marginTop="50dp"
+        android:layout_marginLeft="50dp"
+        android:layout_marginRight="50dp"
+        android:text="@string/survey_households_btn_lbl"
+        android:textSize="20dp"
+        android:textStyle="bold"
+        android:textColor="@android:color/background_light"
+        android:background="@drawable/button_lblue_house"
+        android:shadowColor="@android:color/transparent"
+        />
 
+
+    <Button
+        android:id="@+id/btSurveyMembers"
+        style="?android:textAppearanceSmall"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:layout_marginTop="50dp"
+        android:layout_marginLeft="50dp"
+        android:layout_marginRight="50dp"
+        android:text="@string/survey_members_btn_lbl"
+        android:textSize="20dp"
+        android:textStyle="bold"
+        android:textColor="@android:color/background_light"
+        android:background="@drawable/button_lblue_member"
+        android:shadowColor="@android:color/transparent"
+        />
 </LinearLayout>

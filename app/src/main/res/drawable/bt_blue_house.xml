@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item android:drawable="@drawable/btn"/>
+
+    <item
+        android:left="15dp"
+        android:top="5dp"
+        android:bottom="5dp">
+        <bitmap android:src="@drawable/household" android:gravity="left" />
+    </item>
+</layer-list>
+

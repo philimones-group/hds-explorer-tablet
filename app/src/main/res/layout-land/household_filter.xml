@@ -1,0 +1,124 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="net.manhica.clip.explorer.fragment.HouseholdFilterFragment">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:layout_marginLeft="@dimen/mf_margin_left"
+            android:layout_marginRight="@dimen/mf_margin_right"
+            android:layout_marginTop="@dimen/mf_margin_top"
+            android:gravity="top"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="10dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/household_filter_permid_lbl"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:visibility="gone"/>
+
+                <EditText
+                    android:id="@+id/txtHouseFilterNr"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/member_filter_textbox_size"
+                    android:background="@drawable/textinputborder"
+                    android:gravity="center_vertical"
+                    android:hint="@string/household_filter_permid_hint_lbl"
+                    android:paddingLeft="10dp"
+                    android:textSize="@dimen/member_filter_textsize" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <RelativeLayout
+                    android:id="@+id/hfListProgressBar"
+                    android:layout_width="match_parent"
+                    android:layout_height="700dp"
+                    android:background="@drawable/list_corner_border"
+                    android:visibility="gone">
+
+                    <ProgressBar
+                        style="?android:attr/progressBarStyleLarge"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:layout_centerVertical="true"
+                        />
+
+                </RelativeLayout>
+
+                <ListView
+                    android:layout_width="match_parent"
+                    android:layout_height="350dp"
+                    android:background="@drawable/list_corner_border"
+                    android:id="@+id/hfHousesList"
+                    />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:layout_marginLeft="@dimen/fagm_margin_left"
+            android:layout_marginRight="@dimen/fagm_margin_right"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btHouseFilterClear"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textSize="@dimen/member_filter_buttons"
+                android:text="@string/household_filter_clear_lbl"
+                android:layout_gravity="left"
+                android:visibility="gone"
+                android:background="@drawable/button_normal"/>
+
+            <Button
+                android:id="@+id/btHouseFilterSearch"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textSize="@dimen/member_filter_buttons"
+                android:text="@string/household_filter_search_lbl"
+                android:layout_gravity="left"
+                android:enabled="false"
+                android:background="@drawable/button_normal"/>
+
+            <Button
+                android:id="@+id/btHouseFilterGpsMap"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_gravity="right"
+                android:textSize="@dimen/member_filter_buttons"
+                android:text="@string/household_filter_gpsmap_lbl"
+                android:background="@drawable/button_normal"/>
+        </LinearLayout>
+
+    </LinearLayout>
+
+</FrameLayout>

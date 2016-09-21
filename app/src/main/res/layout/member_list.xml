@@ -57,14 +57,6 @@
             android:orientation="vertical">
 
             <Button
-                android:id="@+id/btMemListShowHHMap"
-                android:layout_width="match_parent"
-                android:layout_height="60dp"
-                android:textSize="@dimen/member_list_buttons"
-                android:text="@string/member_list_bt_show_houses_maps_lbl"
-                android:background="@drawable/button_normal"/>
-
-            <Button
                 android:id="@+id/btMemListShowMmbMap"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"

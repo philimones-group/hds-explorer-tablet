@@ -40,7 +40,6 @@ public class MemberListFragment extends Fragment {
     private LinearLayout listButtons;
     private List<Button> buttons = new ArrayList<>();
     /*Default buttons*/
-    private Button btMemListShowHHMap;
     private Button btMemListShowMmbMap;
     private Button btMemListShowClosestPregnt;
 
@@ -82,9 +81,6 @@ public class MemberListFragment extends Fragment {
     }
 
     public void removeDefaultButtons(){
-        if (btMemListShowHHMap != null){
-            btMemListShowHHMap.setVisibility(View.GONE);
-        }
         if (btMemListShowMmbMap != null){
             btMemListShowMmbMap.setVisibility(View.GONE);
         }
@@ -137,18 +133,10 @@ public class MemberListFragment extends Fragment {
         }
 
         this.lvMembersList = (ListView) view.findViewById(R.id.lvMembersList);
-        this.btMemListShowHHMap = (Button) view.findViewById(R.id.btMemListShowHHMap);
         this.btMemListShowMmbMap = (Button) view.findViewById(R.id.btMemListShowMmbMap);
         this.btMemListShowClosestPregnt = (Button) view.findViewById(R.id.btMemListShowClosestPregnt);
         this.listButtons = (LinearLayout) view.findViewById(R.id.viewListButtons);
         this.mProgressView = view.findViewById(R.id.viewListProgressBar);
-
-        this.btMemListShowHHMap.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.d("test-show-hhmap", "not yet implemented");
-            }
-        });
 
         this.btMemListShowMmbMap.setOnClickListener(new View.OnClickListener() {
             @Override

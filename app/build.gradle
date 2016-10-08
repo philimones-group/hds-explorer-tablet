@@ -41,4 +41,5 @@ dependencies {
     compile 'com.android.support:appcompat-v7:23.4.0'
     compile 'com.android.support:design:23.4.0'
     compile 'com.android.support:support-v4:23.4.0'
+    compile 'org.jdom:jdom2:2.0.6'
 }

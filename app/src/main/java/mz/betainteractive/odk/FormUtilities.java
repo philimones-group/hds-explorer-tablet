@@ -67,6 +67,21 @@ public class FormUtilities {
         loadForm(contentUri);
     }
 
+    public void loadForm(FilledForm filledForm, String contentUriAsString){
+        contentUri = Uri.parse(contentUriAsString);
+
+        new OdkGeneratedFormLoadTask(mContext, filledForm, contentUri, new OdkFormLoadListener() {
+            public void onOdkFormLoadSuccess(Uri contentUri) {
+                FormUtilities.this.contentUri = contentUri;
+                mContext.startActivityForResult(new Intent(Intent.ACTION_EDIT, contentUri), SELECTED_ODK_FORM);
+            }
+
+            public void onOdkFormLoadFailure() {
+                createXFormNotFoundDialog();
+            }
+        }).execute();
+    }
+
     public void loadForm(Uri content_uri){
 
         new OdkGeneratedFormLoadTask(mContext, content_uri, new OdkFormLoadListener() {

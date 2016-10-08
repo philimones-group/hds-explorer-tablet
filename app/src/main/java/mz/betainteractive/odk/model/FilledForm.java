@@ -50,6 +50,8 @@ public class FilledForm {
 			values.put(key, value);
 		}
 	}
-    
-	
+
+	public Map<String, Object> getValues() {
+		return values;
+	}
 }

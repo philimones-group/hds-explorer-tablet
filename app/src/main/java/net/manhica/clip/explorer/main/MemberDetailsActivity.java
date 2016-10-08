@@ -197,15 +197,16 @@ public class MemberDetailsActivity extends Activity implements OdkFormResultList
 
         this.lastLoadedForm = formDataLoader;
 
+        //temporary code for facility
+        Form form = formDataLoader.getForm();
+
+        FilledForm filledForm = new FilledForm(form.getFormId());
+        filledForm.putAll(formDataLoader.getValues());
+
         if (collectedData == null){
-            Form form = formDataLoader.getForm();
-
-            FilledForm filledForm = new FilledForm(form.getFormId());
-            filledForm.putAll(formDataLoader.getValues());
-
             formUtilities.loadForm(filledForm);
         }else{
-            formUtilities.loadForm(collectedData.getFormUri());
+            formUtilities.loadForm(filledForm, collectedData.getFormUri());
         }
 
     }

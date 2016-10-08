@@ -186,9 +186,9 @@ public class FacilityActivity extends Activity  implements MemberFilterFragment.
         for (Form formFacility : formFacilities){
             FormDataLoader loader = new FormDataLoader(formFacility);
 
-            //loader.putExtra("facility", extras[0]); //health facility number
+            loader.putExtra("facility", extras[0]); //health facility number
             loader.putExtra("fieldWorkerName", loggedUser.getFullname());
-            //loader.putExtra("fieldWorkerId", loggedUser.getUsername());
+            loader.putExtra("fieldWorkerId", loggedUser.getUsername());
 
             list[i++] = loader;
         }

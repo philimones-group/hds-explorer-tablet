@@ -44,7 +44,7 @@ public class SurveyHouseholdsActivity extends Activity implements HouseholdFilte
     @Override
     public void onHouseholdClick(Household household) {
         Log.d("survey-household", ""+household);
-        MemberSearchTask task = new MemberSearchTask(household, null, null, null, household.getHouseNumber(), null, null, null);
+        MemberSearchTask task = new MemberSearchTask(household, null, null, null, household.getHouseNumber(), null, null, null, null);
         task.execute();
     }
 
@@ -103,16 +103,18 @@ public class SurveyHouseholdsActivity extends Activity implements HouseholdFilte
         private String gender;
         private String houseNumber;
         private Boolean isPregnant;
+        private Boolean hasDelivered;
         private Boolean hasPom;
         private Boolean hasFacility;
         private Household household;
 
-        public MemberSearchTask(Household household, String name, String permId, String gender, String houseNumber, Boolean isPregnant, Boolean hasPom, Boolean hasFacility) {
+        public MemberSearchTask(Household household, String name, String permId, String gender, String houseNumber, Boolean isPregnant, Boolean hasDelivered, Boolean hasPom, Boolean hasFacility) {
             this.name = name;
             this.permId = permId;
             this.gender = gender;
             this.houseNumber = houseNumber;
             this.isPregnant = isPregnant;
+            this.hasDelivered = hasDelivered;
             this.hasPom = hasPom;
             this.hasFacility = hasFacility;
             this.household = household;
@@ -120,7 +122,7 @@ public class SurveyHouseholdsActivity extends Activity implements HouseholdFilte
 
         @Override
         protected MemberArrayAdapter doInBackground(Void... params) {
-            return memberListFragment.loadMembersByFilters(household, name, permId, gender, houseNumber, isPregnant, hasPom, hasFacility);
+            return memberListFragment.loadMembersByFilters(household, name, permId, gender, houseNumber, isPregnant, hasDelivered, hasPom, hasFacility);
         }
 
         @Override

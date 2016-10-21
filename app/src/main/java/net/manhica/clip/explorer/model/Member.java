@@ -427,8 +427,8 @@ public class Member implements Serializable, Table {
         cv.put(DatabaseHelper.Member.COLUMN_GPS_LATITUDE, hhLatitude);
         cv.put(DatabaseHelper.Member.COLUMN_GPS_LONGITUDE, hhLongitude);
         cv.put(DatabaseHelper.Member.COLUMN_NR_PREGNANCIES, nrPregnancies);
-        cv.put(DatabaseHelper.Member.COLUMN_HAS_DELIVERED, hasDelivered);
-        cv.put(DatabaseHelper.Member.COLUMN_IS_PREGNANT, isPregnant);
+        cv.put(DatabaseHelper.Member.COLUMN_HAS_DELIVERED, hasDelivered ? 1 : 0);
+        cv.put(DatabaseHelper.Member.COLUMN_IS_PREGNANT, isPregnant ? 1 : 0);
         cv.put(DatabaseHelper.Member.COLUMN_CLIP_ID_1, clip_id_1);
         cv.put(DatabaseHelper.Member.COLUMN_CLIP_ID_2, clip_id_2);
         cv.put(DatabaseHelper.Member.COLUMN_CLIP_ID_3, clip_id_3);

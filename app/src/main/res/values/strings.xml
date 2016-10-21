@@ -85,6 +85,7 @@
     <string name="member_filter_agefrom_lbl">From</string>
     <string name="member_filter_ageto_lbl">To</string>
     <string name="member_filter_ispregnant_lbl">Currently Pregnant</string>
+    <string name="member_filter_has_delivered_lbl">Has Delivered</string>
     <string name="member_filter_nrpregn_lbl">Nº Pregnancies</string>
     <string name="member_filter_on_pom_lbl">Has POM Record</string>
     <string name="member_filter_on_facility_lbl">Has Facility Record</string>

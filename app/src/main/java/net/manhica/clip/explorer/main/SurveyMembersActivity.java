@@ -41,10 +41,10 @@ public class SurveyMembersActivity extends Activity implements MemberFilterFragm
     }
 
     @Override
-    public void onSearch(String name, String permId, String gender, boolean isPregnant, boolean hasPom, boolean hasFacility) {
+    public void onSearch(String name, String permId, String gender, boolean isPregnant, boolean hasDelivered, boolean hasFacility) {
         this.memberListFragment.showProgress(true);
 
-        MemberSearchTask task = new MemberSearchTask(name, permId, gender, isPregnant, hasPom, hasFacility);
+        MemberSearchTask task = new MemberSearchTask(name, permId, gender, isPregnant,hasDelivered, null, hasFacility);
         task.execute();
     }
 
@@ -101,22 +101,24 @@ public class SurveyMembersActivity extends Activity implements MemberFilterFragm
         private String name;
         private String permId;
         private String gender;
-        private boolean isPregnant;
-        private boolean hasPom;
-        private boolean hasFacility;
+        private Boolean isPregnant;
+        private Boolean hasDelivered;
+        private Boolean hasPom;
+        private Boolean hasFacility;
 
-        public MemberSearchTask(String name, String permId, String gender, boolean isPregant, boolean hasPom, boolean hasFacility) {
+        public MemberSearchTask(String name, String permId, String gender, boolean isPregnant, Boolean hasDelivered, Boolean hasPom, Boolean hasFacility) {
             this.name = name;
             this.permId = permId;
             this.gender = gender;
-            this.isPregnant = isPregant;
+            this.isPregnant = isPregnant;
+            this.hasDelivered = hasDelivered;
             this.hasPom = hasPom;
             this.hasFacility = hasFacility;
         }
 
         @Override
         protected MemberArrayAdapter doInBackground(Void... params) {
-            return memberListFragment.loadMembersByFilters(null, name, permId, gender, null, isPregnant, hasPom, hasFacility);
+            return memberListFragment.loadMembersByFilters(null, name, permId, gender, null, isPregnant, hasDelivered, hasPom, hasFacility);
         }
 
         @Override

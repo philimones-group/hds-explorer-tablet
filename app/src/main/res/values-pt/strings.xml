@@ -85,6 +85,7 @@
     <string name="member_filter_agefrom_lbl">De</string>
     <string name="member_filter_ageto_lbl">Até</string>
     <string name="member_filter_ispregnant_lbl">Está grávida</string>
+    <string name="member_filter_has_delivered_lbl">Já deu parto</string>
     <string name="member_filter_nrpregn_lbl">Nº de gravidezes</string>
     <string name="member_filter_on_pom_lbl">Têm registos POM</string>
     <string name="member_filter_on_facility_lbl">Têm registo de U.Sanitarias</string>

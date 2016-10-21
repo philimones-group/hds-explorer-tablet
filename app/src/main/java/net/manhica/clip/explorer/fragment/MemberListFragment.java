@@ -120,9 +120,10 @@ public class MemberListFragment extends Fragment {
             boolean filter1 = list.get(3).equals("true");
             boolean filter2 = list.get(4).equals("true");
             boolean filter3 = list.get(5).equals("true");
+            boolean filter4 = list.get(6).equals("true");
 
             Log.d("restoring",""+name);
-            MemberArrayAdapter ma = loadMembersByFilters(null, name, peid, gndr, null, filter1, filter2, filter3);
+            MemberArrayAdapter ma = loadMembersByFilters(null, name, peid, gndr, null, filter1, filter2, filter3, filter4);
             setMemberAdapter(ma);
         }
     }
@@ -221,7 +222,7 @@ public class MemberListFragment extends Fragment {
         return household;
     }
 
-    public MemberArrayAdapter loadMembersByFilters(Household household, String name, String permId, String gender, String houseNumber, Boolean isPregnant, Boolean hasPom, Boolean hasFacility) {
+    public MemberArrayAdapter loadMembersByFilters(Household household, String name, String permId, String gender, String houseNumber, Boolean isPregnant, Boolean hasDelivered, Boolean hasPom, Boolean hasFacility) {
         //open loader
 
         if (name == null) name = "";
@@ -235,9 +236,10 @@ public class MemberListFragment extends Fragment {
         this.lastSearch.add(permId);
         this.lastSearch.add(gender);
         this.lastSearch.add(houseNumber);
-        this.lastSearch.add(isPregnant+"");
-        this.lastSearch.add(hasPom+"");
-        this.lastSearch.add(hasFacility+"");
+        this.lastSearch.add(isPregnant==null ? "" : isPregnant+"");
+        this.lastSearch.add(hasDelivered==null ? "" : hasDelivered+"");
+        this.lastSearch.add(hasPom==null ? "" : hasPom+"");
+        this.lastSearch.add(hasFacility==null ? "" : hasFacility+"");
 
         //search on database
         List<Member> members = new ArrayList<>();
@@ -266,6 +268,11 @@ public class MemberListFragment extends Fragment {
         if (isPregnant != null && isPregnant){
             whereClause += (whereClause.isEmpty()? "" : " AND ");
             whereClause += DatabaseHelper.Member.COLUMN_IS_PREGNANT + " = ?";
+            whereValues.add("1");
+        }
+        if (hasDelivered != null && hasDelivered){
+            whereClause += (whereClause.isEmpty()? "" : " AND ");
+            whereClause += DatabaseHelper.Member.COLUMN_HAS_DELIVERED + " = ?";
             whereValues.add("1");
         }
         if (hasPom != null && hasPom){

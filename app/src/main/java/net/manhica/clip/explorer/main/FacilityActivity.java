@@ -11,7 +11,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
-import android.widget.Toast;
 
 import net.manhica.clip.explorer.R;
 import net.manhica.clip.explorer.adapter.MemberArrayAdapter;
@@ -109,7 +108,7 @@ public class FacilityActivity extends Activity  implements MemberFilterFragment.
     }
 
     @Override
-    public void onSearch(String name, String permId, String gender, boolean isPregnant, boolean hasPom, boolean hasFacility) {
+    public void onSearch(String name, String permId, String gender, boolean isPregnant, boolean hasDelivered, boolean hasFacility) {
         this.memberListFragment.showProgress(true);
 
         this.visualizingCollectedData = false;
@@ -118,7 +117,7 @@ public class FacilityActivity extends Activity  implements MemberFilterFragment.
             btMarkAsSupervised.setEnabled(false);
         }
 
-        MemberSearchTask task = new MemberSearchTask(name, permId, gender, isPregnant, hasPom, hasFacility);
+        MemberSearchTask task = new MemberSearchTask(name, permId, gender, isPregnant, hasDelivered, hasFacility);
         task.execute();
     }
 
@@ -580,22 +579,22 @@ public class FacilityActivity extends Activity  implements MemberFilterFragment.
         private String name;
         private String permId;
         private String gender;
-        private boolean isPregnant;
-        private boolean hasPom;
-        private boolean hasFacility;
+        private Boolean isPregnant;
+        private Boolean hasDelivered;
+        private Boolean hasFacility;
 
-        public MemberSearchTask(String name, String permId, String gender, boolean isPregant, boolean hasPom, boolean hasFacility) {
+        public MemberSearchTask(String name, String permId, String gender, Boolean isPregant, Boolean hasPom, Boolean hasFacility) {
             this.name = name;
             this.permId = permId;
             this.gender = gender;
             this.isPregnant = isPregant;
-            this.hasPom = hasPom;
+            this.hasDelivered = hasPom;
             this.hasFacility = hasFacility;
         }
 
         @Override
         protected MemberArrayAdapter doInBackground(Void... params) {
-            return memberListFragment.loadMembersByFilters(null, name, permId, gender, null, isPregnant, hasPom, hasFacility);
+            return memberListFragment.loadMembersByFilters(null, name, permId, gender, null, isPregnant, hasDelivered, null , hasFacility);
         }
 
         @Override

@@ -476,7 +476,8 @@ public class LoginActivity extends Activity implements SyncDatabaseListener{
         }
 
         if (modules.length==1 && modules[0].equals(Module.CLIP_POM_MODULE)){
-            intent = new Intent(this, POMActivity.class); //
+            //intent = new Intent(this, POMActivity.class); //
+            intent = new Intent(this, SurveyMembersActivity.class);
         }
 
         if (modules.length==1 && modules[0].equals(Module.CLIP_SURVEY_MODULE)){

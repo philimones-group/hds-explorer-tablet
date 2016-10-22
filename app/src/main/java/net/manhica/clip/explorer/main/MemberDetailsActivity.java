@@ -40,6 +40,7 @@ public class MemberDetailsActivity extends Activity implements OdkFormResultList
     private TextView mbDetailsEndType;
     private TextView mbDetailsFather;
     private TextView mbDetailsMother;
+    private TextView mbDetailsClipId;
     private CheckBox chkMemDetailIsPreg;
     private CheckBox chkMemDetailsHasDelv;
     private Button btMemDetailsCollectData;
@@ -94,6 +95,7 @@ public class MemberDetailsActivity extends Activity implements OdkFormResultList
         mbDetailsEndType = (TextView) findViewById(R.id.mbDetailsEndType);
         mbDetailsFather = (TextView) findViewById(R.id.mbDetailsFather);
         mbDetailsMother = (TextView) findViewById(R.id.mbDetailsMother);
+        mbDetailsClipId = (TextView) findViewById(R.id.mbDetailsClipId);
         chkMemDetailIsPreg = (CheckBox) findViewById(R.id.chkMemDetailIsPreg);
         chkMemDetailsHasDelv = (CheckBox) findViewById(R.id.chkMemDetailsHasDelv);
         btMemDetailsCollectData = (Button) findViewById(R.id.btMemDetailsCollectData);
@@ -143,8 +145,18 @@ public class MemberDetailsActivity extends Activity implements OdkFormResultList
         mbDetailsEndType.setText(getEndTypeMsg(member));
         mbDetailsFather.setText(getParentName(member.getFatherName()));
         mbDetailsMother.setText(getParentName(member.getMotherName()));
+        mbDetailsClipId.setText(member.getLastClipId());
         chkMemDetailIsPreg.setChecked(member.isPregnant());
         chkMemDetailsHasDelv.setChecked(member.isHasDelivered());
+    }
+
+    private String getClipId(Member member){
+        String clipid = member.getLastClipId();
+        if (clipid==null || clipid.isEmpty()){
+            return getString(R.string.member_details_no_clipid_status_lbl);
+        }
+
+        return clipid;
     }
 
     private String getEndTypeMsg(Member member){

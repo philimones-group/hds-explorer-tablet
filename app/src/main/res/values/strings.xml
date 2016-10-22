@@ -114,8 +114,9 @@
     <string name="member_details_member_endtype_lbl">Current Status:</string>
     <string name="member_details_father_lbl">Father:</string>
     <string name="member_details_mother_lbl">Mother:</string>
-    <string name="member_details_ispregnant_lbl">Is Currently Pregnant:</string>
-    <string name="member_details_has_delivered_lbl">Has Delivered:     </string>
+    <string name="member_details_forms_clip_id_lbl">CLIP Id:</string>
+    <string name="member_details_ispregnant_lbl">Is Currently Pregnant </string>
+    <string name="member_details_has_delivered_lbl">Has Delivered      </string>
     <string name="member_details_bt_openform_lbl">Collect Data</string>
     <string name="member_details_bt_back_lbl">Back</string>
     <string name="member_details_forms_selector_lbl">Select an Form</string>
@@ -125,6 +126,8 @@
     <string name="member_details_endtype_ext_lbl">Emigrated</string>
     <string name="member_details_endtype_dth_lbl">Died</string>
     <string name="member_details_name_unknown_lbl">Unknown Name</string>
+
+    <string name="member_details_no_clipid_status_lbl">Without Pregnancy Registration</string>
 
     <string name="facility_supervise_collected_form_lbl">Mark Form as Supervised?</string>
     <string name="facility_supervise_title_lbl">Form Supervision</string>

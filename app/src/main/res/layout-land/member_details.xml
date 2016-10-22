@@ -248,26 +248,54 @@
                     android:layout_height="match_parent"
                     android:orientation="vertical">
 
-                    <CheckBox
-                        android:id="@+id/chkMemDetailIsPreg"
+                    <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="60dp"
-                        android:layout_marginTop="60dp"
-                        android:clickable="false"
-                        android:text="@string/member_details_ispregnant_lbl"
-                        android:textSize="@dimen/member_filter_checkbox_textsize" />
+                        android:layout_marginTop="30dp"
+                        android:layout_marginLeft="@dimen/member_filter_xdata_margin_left"
+                        android:orientation="horizontal">
 
-                    <CheckBox
-                        android:id="@+id/chkMemDetailsHasDelv"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="60dp"
-                        android:layout_marginTop="20dp"
-                        android:clickable="false"
-                        android:text="@string/member_details_has_delivered_lbl"
-                        android:textSize="@dimen/member_filter_checkbox_textsize" />
+                        <TextView
+                            android:layout_width="@dimen/member_details_txtview_width"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="?android:attr/textAppearanceLarge"
+                            android:text="@string/member_details_forms_clip_id_lbl"/>
 
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="?android:attr/textAppearanceLarge"
+                            android:textStyle="bold"
+                            android:text=""
+                            android:id="@+id/mbDetailsClipId" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="70dp"
+                        android:orientation="vertical">
+
+                        <CheckBox
+                            android:id="@+id/chkMemDetailIsPreg"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="60dp"
+                            android:layout_marginTop="20dp"
+                            android:clickable="false"
+                            android:text="@string/member_details_ispregnant_lbl"
+                            android:textSize="@dimen/member_filter_checkbox_textsize" />
+
+                        <CheckBox
+                            android:id="@+id/chkMemDetailsHasDelv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="60dp"
+                            android:layout_marginTop="20dp"
+                            android:clickable="false"
+                            android:text="@string/member_details_has_delivered_lbl"
+                            android:textSize="@dimen/member_filter_checkbox_textsize" />
+                    </LinearLayout>
                 </LinearLayout>
 
             </LinearLayout>

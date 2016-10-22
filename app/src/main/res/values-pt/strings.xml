@@ -114,8 +114,9 @@
     <string name="member_details_member_endtype_lbl">Estado atual:</string>
     <string name="member_details_father_lbl">Pai:</string>
     <string name="member_details_mother_lbl">Mãe:</string>
-    <string name="member_details_ispregnant_lbl">Está gravida:</string>
-    <string name="member_details_has_delivered_lbl">Já deu parto:     </string>
+    <string name="member_details_forms_clip_id_lbl">ID da Gravidez:</string>
+    <string name="member_details_ispregnant_lbl">Está gravida </string>
+    <string name="member_details_has_delivered_lbl">Já deu parto      </string>
     <string name="member_details_bt_openform_lbl">Colher Dados</string>
     <string name="member_details_bt_back_lbl">Voltar</string>
     <string name="member_details_forms_selector_lbl">Selecionar um Formulário</string>
@@ -125,6 +126,8 @@
     <string name="member_details_endtype_ext_lbl">Emigrou</string>
     <string name="member_details_endtype_dth_lbl">Faleceu/</string>
     <string name="member_details_name_unknown_lbl">Nome Desconhecido</string>
+
+    <string name="member_details_no_clipid_status_lbl">Sem Reg. de Gravidez</string>
 
     <string name="facility_supervise_collected_form_lbl">Marcar Formulário como supervisionado?</string>
     <string name="facility_supervise_title_lbl">Supervisão de dados</string>

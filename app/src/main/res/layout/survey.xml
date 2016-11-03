@@ -6,7 +6,7 @@
     android:gravity="center_horizontal"
     android:orientation="vertical"
     android:background="@mipmap/clip_back1"
-    tools:context="net.manhica.clip.explorer.main.SurveyActivity"
+    tools:context=".main.SurveyActivity"
     android:weightSum="1">
 
     <ImageView

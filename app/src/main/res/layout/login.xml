@@ -14,12 +14,13 @@
     <!-- Login progress -->
     <ImageView
         android:layout_marginTop="50dp"
-        android:layout_marginBottom="30dp"
-        android:layout_width="118dp"
-        android:layout_height="102dp"
+        android:layout_marginBottom="0dp"
+        android:layout_width="128dp"
+        android:layout_height="128dp"
         android:id="@+id/imageView"
         android:layout_gravity="center_horizontal"
-        android:background="@mipmap/clip_explorer_icon" />
+        android:alpha="0.5"
+        android:background="@mipmap/family_icon" />
 
     <ProgressBar
         android:id="@+id/login_progress"

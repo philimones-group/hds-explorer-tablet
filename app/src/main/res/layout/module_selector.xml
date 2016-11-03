@@ -9,7 +9,7 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     android:gravity="center"
     android:background="@mipmap/clip_back1"
-    tools:context="net.manhica.clip.explorer.main.ModuleSelectorActivity">
+    tools:context=".main.ModuleSelectorActivity">
 
     <LinearLayout
         android:orientation="vertical"

@@ -5,16 +5,16 @@
     android:layout_height="match_parent"
     android:orientation="horizontal"
     android:background="@mipmap/clip_back1"
-    tools:context="net.manhica.clip.explorer.main.SurveyActivity">
+    tools:context=".main.SurveyActivity">
 
-    <fragment android:name="net.manhica.clip.explorer.fragment.HouseholdFilterFragment"
+    <fragment android:name="net.manhica.dss.explorer.fragment.HouseholdFilterFragment"
         android:id="@+id/householdFilterFragment"
         android:layout_weight="1"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         tools:layout="@layout/household_filter" />
 
-    <fragment android:name="net.manhica.clip.explorer.fragment.MemberListFragment"
+    <fragment android:name="net.manhica.dss.explorer.fragment.MemberListFragment"
         android:id="@+id/memberListFragment"
         android:layout_weight="1"
         android:layout_width="0dp"

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">CLIP Explorer</string>
+    <string name="app_name">DSS Explorer</string>
     <string name="server_url">https://sap.manhica.net:4442/manhica-dbsync</string>
     <string name="server_url_not_secure">http://sap.manhica.net:4780/manhica-dbsync</string>
 
@@ -135,7 +135,7 @@
 
     <!-- Household Filter -->
     <string name="household_filter_permid_lbl">House Number</string>
-    <string name="household_filter_permid_hint_lbl">eg. 01-0101-001</string>
+    <string name="household_filter_permid_hint_lbl">eg. 0101-001</string>
     <string name="household_filter_search_lbl">Search House</string>
     <string name="household_filter_gpsmap_lbl">View GPS Map</string>
     <string name="household_filter_clear_lbl">Clear</string>

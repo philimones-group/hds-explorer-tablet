@@ -6,7 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
-import net.manhica.clip.explorer.R;
+import net.manhica.dss.explorer.R;
 import net.manhica.dss.explorer.model.User;
 
 public class SurveyActivity extends Activity {

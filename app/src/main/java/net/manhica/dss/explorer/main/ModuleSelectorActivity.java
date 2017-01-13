@@ -7,7 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
-import net.manhica.clip.explorer.R;
+import net.manhica.dss.explorer.R;
 import net.manhica.dss.explorer.model.User;
 
 public class ModuleSelectorActivity extends Activity {
@@ -33,20 +33,6 @@ public class ModuleSelectorActivity extends Activity {
         this.btModuleSelectorExit = (Button) findViewById(R.id.btModuleSelectorExit);
 
         this.loggedUser = (User) getIntent().getExtras().get("user");
-
-        this.btPomModule.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                launchModule(POMActivity.class);
-            }
-        });
-
-        this.btFacilityModule.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                launchModule(FacilityActivity.class);
-            }
-        });
 
         this.btSurveyModule.setOnClickListener(new View.OnClickListener() {
             @Override

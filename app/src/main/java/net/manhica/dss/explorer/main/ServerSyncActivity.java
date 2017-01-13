@@ -7,7 +7,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import net.manhica.clip.explorer.R;
+import net.manhica.dss.explorer.R;
 import net.manhica.dss.explorer.database.Database;
 import net.manhica.dss.explorer.database.Queries;
 import net.manhica.dss.explorer.io.SyncDatabaseListener;

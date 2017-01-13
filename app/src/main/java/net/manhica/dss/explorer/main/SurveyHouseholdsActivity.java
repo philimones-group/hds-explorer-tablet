@@ -6,7 +6,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 
-import net.manhica.clip.explorer.R;
+import net.manhica.dss.explorer.R;
 import net.manhica.dss.explorer.adapter.MemberArrayAdapter;
 import net.manhica.dss.explorer.data.FormDataLoader;
 import net.manhica.dss.explorer.database.Database;
@@ -44,7 +44,7 @@ public class SurveyHouseholdsActivity extends Activity implements HouseholdFilte
     @Override
     public void onHouseholdClick(Household household) {
         Log.d("survey-household", ""+household);
-        MemberSearchTask task = new MemberSearchTask(household, null, null, null, household.getHouseNumber(), null, null, null, null);
+        MemberSearchTask task = new MemberSearchTask(household, null, null, null, household.getHouseNumber());
         task.execute();
     }
 
@@ -65,7 +65,7 @@ public class SurveyHouseholdsActivity extends Activity implements HouseholdFilte
         Database db = new Database(this);
 
         db.open();
-        List<Form> forms = Queries.getAllFormBy(db, DatabaseHelper.Form.COLUMN_MODULES+" like ?", new String[]{ "%" + Module.CLIP_SURVEY_MODULE + "%" });
+        List<Form> forms = Queries.getAllFormBy(db, DatabaseHelper.Form.COLUMN_MODULES+" like ?", new String[]{ "%" + Module.DSS_SURVEY_MODULE + "%" });
         db.close();
 
         FormDataLoader[] list = new FormDataLoader[forms.size()];
@@ -102,27 +102,19 @@ public class SurveyHouseholdsActivity extends Activity implements HouseholdFilte
         private String permId;
         private String gender;
         private String houseNumber;
-        private Boolean isPregnant;
-        private Boolean hasDelivered;
-        private Boolean hasPom;
-        private Boolean hasFacility;
         private Household household;
 
-        public MemberSearchTask(Household household, String name, String permId, String gender, String houseNumber, Boolean isPregnant, Boolean hasDelivered, Boolean hasPom, Boolean hasFacility) {
+        public MemberSearchTask(Household household, String name, String permId, String gender, String houseNumber) {
             this.name = name;
             this.permId = permId;
             this.gender = gender;
             this.houseNumber = houseNumber;
-            this.isPregnant = isPregnant;
-            this.hasDelivered = hasDelivered;
-            this.hasPom = hasPom;
-            this.hasFacility = hasFacility;
             this.household = household;
         }
 
         @Override
         protected MemberArrayAdapter doInBackground(Void... params) {
-            return memberListFragment.loadMembersByFilters(household, name, permId, gender, houseNumber, isPregnant, hasDelivered, hasPom, hasFacility);
+            return memberListFragment.loadMembersByFilters(household, name, permId, houseNumber, gender, null, null, null, null, null);
         }
 
         @Override

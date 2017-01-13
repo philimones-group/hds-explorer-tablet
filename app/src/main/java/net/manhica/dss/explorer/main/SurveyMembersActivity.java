@@ -5,7 +5,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
-import net.manhica.clip.explorer.R;
+import net.manhica.dss.explorer.R;
 import net.manhica.dss.explorer.adapter.MemberArrayAdapter;
 import net.manhica.dss.explorer.data.FormDataLoader;
 import net.manhica.dss.explorer.database.Database;
@@ -41,10 +41,10 @@ public class SurveyMembersActivity extends Activity implements MemberFilterFragm
     }
 
     @Override
-    public void onSearch(String name, String permId, String gender, boolean isPregnant, boolean hasDelivered, boolean hasFacility) {
+    public void onSearch(String name, String permId, String houseNumber, String gender, Integer minAge, Integer maxAge, Boolean isDead, Boolean hasOutmigrated, Boolean liveResident) {
         this.memberListFragment.showProgress(true);
 
-        MemberSearchTask task = new MemberSearchTask(name, permId, gender, isPregnant,hasDelivered, null, hasFacility);
+        MemberSearchTask task = new MemberSearchTask(name, permId, houseNumber, gender, minAge, maxAge, isDead, hasOutmigrated, liveResident);
         task.execute();
     }
 
@@ -65,7 +65,7 @@ public class SurveyMembersActivity extends Activity implements MemberFilterFragm
         Database db = new Database(this);
 
         db.open();
-        List<Form> forms = Queries.getAllFormBy(db, DatabaseHelper.Form.COLUMN_MODULES+" like ?", new String[]{ "%" + Module.CLIP_SURVEY_MODULE + "%" });
+        List<Form> forms = Queries.getAllFormBy(db, DatabaseHelper.Form.COLUMN_MODULES+" like ?", new String[]{ "%" + Module.DSS_SURVEY_MODULE + "%" });
         db.close();
 
         FormDataLoader[] list = new FormDataLoader[forms.size()];
@@ -101,24 +101,28 @@ public class SurveyMembersActivity extends Activity implements MemberFilterFragm
         private String name;
         private String permId;
         private String gender;
-        private Boolean isPregnant;
-        private Boolean hasDelivered;
-        private Boolean hasPom;
-        private Boolean hasFacility;
+        private String houseNr;
+        private Integer minAge;
+        private Integer maxAge;
+        private Boolean dead;
+        private Boolean outmigrated;
+        private Boolean resident;
 
-        public MemberSearchTask(String name, String permId, String gender, boolean isPregnant, Boolean hasDelivered, Boolean hasPom, Boolean hasFacility) {
+        public MemberSearchTask(String name, String permId, String houseNumber, String gender, Integer minAge, Integer maxAge, Boolean isDead, Boolean hasOutmigrated, Boolean liveResident) {
             this.name = name;
             this.permId = permId;
+            this.houseNr = houseNumber;
             this.gender = gender;
-            this.isPregnant = isPregnant;
-            this.hasDelivered = hasDelivered;
-            this.hasPom = hasPom;
-            this.hasFacility = hasFacility;
+            this.minAge = minAge;
+            this.maxAge = maxAge;
+            this.dead = isDead;
+            this.outmigrated = hasOutmigrated;
+            this.resident = liveResident;
         }
 
         @Override
         protected MemberArrayAdapter doInBackground(Void... params) {
-            return memberListFragment.loadMembersByFilters(null, name, permId, gender, null, isPregnant, hasDelivered, hasPom, hasFacility);
+            return memberListFragment.loadMembersByFilters(null, name, permId, houseNr, gender, minAge, maxAge, dead, outmigrated, resident);
         }
 
         @Override

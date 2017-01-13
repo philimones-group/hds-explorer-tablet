@@ -1,6 +1,7 @@
 package net.manhica.dss.explorer.adapter;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,7 +11,7 @@ import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import net.manhica.clip.explorer.R;
+import net.manhica.dss.explorer.R;
 import net.manhica.dss.explorer.model.Member;
 
 import java.util.ArrayList;
@@ -25,6 +26,7 @@ public class MemberArrayAdapter  extends ArrayAdapter<Member> {
     private List<Boolean> supervisedMembers;
     private Context mContext;
     private int layoutResId;
+    private int selectedIndex = -1;
 
     public MemberArrayAdapter(Context context, List<Member> objects){
         super(context, R.layout.member_item, objects);
@@ -63,6 +65,11 @@ public class MemberArrayAdapter  extends ArrayAdapter<Member> {
         return this.members;
     }
 
+    public void setSelectedIndex(int index){
+        this.selectedIndex = index;
+        notifyDataSetChanged();
+    }
+
     @Override
     public Member getItem(int position) {
         return members.get(position);
@@ -98,6 +105,19 @@ public class MemberArrayAdapter  extends ArrayAdapter<Member> {
         if (mb.isHouseholdHead()){
             txtName.setTypeface(null, Typeface.BOLD);
             iconView.setImageResource(R.mipmap.member_green);
+        }
+
+        if (mb.isSubsHouseholdHead()){
+            txtName.setTypeface(null, Typeface.BOLD);
+            iconView.setImageResource(R.mipmap.member_green_2);
+        }
+
+        if (selectedIndex == position){
+            int colorB = Color.parseColor("#0073C6");
+
+            rowView.setBackgroundColor(colorB);
+            txtName.setTextColor(Color.WHITE);
+            txtPermId.setTextColor(Color.WHITE);
         }
 
         return rowView;

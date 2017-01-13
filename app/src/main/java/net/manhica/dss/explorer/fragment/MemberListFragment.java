@@ -17,7 +17,7 @@ import android.widget.ListView;
 import com.mapswithme.maps.api.MWMPoint;
 import com.mapswithme.maps.api.MapsWithMeApi;
 
-import net.manhica.clip.explorer.R;
+import net.manhica.dss.explorer.R;
 import net.manhica.dss.explorer.adapter.MemberArrayAdapter;
 import net.manhica.dss.explorer.database.Converter;
 import net.manhica.dss.explorer.database.Database;
@@ -29,7 +29,9 @@ import net.manhica.dss.explorer.model.Household;
 import net.manhica.dss.explorer.model.Member;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -41,7 +43,8 @@ public class MemberListFragment extends Fragment {
     private List<Button> buttons = new ArrayList<>();
     /*Default buttons*/
     private Button btMemListShowMmbMap;
-    private Button btMemListShowClosestPregnt;
+    private Button btMemListShowClosestMembers;
+    private Button btMemListShowClosestHouses;
 
     private View mProgressView;
 
@@ -84,8 +87,8 @@ public class MemberListFragment extends Fragment {
         if (btMemListShowMmbMap != null){
             btMemListShowMmbMap.setVisibility(View.GONE);
         }
-        if (btMemListShowClosestPregnt != null){
-            btMemListShowClosestPregnt.setVisibility(View.GONE);
+        if (btMemListShowClosestMembers != null){
+            btMemListShowClosestMembers.setVisibility(View.GONE);
         }
     }
 
@@ -114,16 +117,32 @@ public class MemberListFragment extends Fragment {
     private void restoreLastSearch(Bundle savedInstanceState) {
         ArrayList<String> list = savedInstanceState.getStringArrayList("adapter");
         if (list != null && list.size()>0){
-            String name = list.get(0);
-            String peid = list.get(1);
-            String gndr = list.get(2);
-            boolean filter1 = list.get(3).equals("true");
-            boolean filter2 = list.get(4).equals("true");
-            boolean filter3 = list.get(5).equals("true");
-            boolean filter4 = list.get(6).equals("true");
+            Household household = getHousehold(list.get(0));
+            String name = list.get(1);
+            String peid = list.get(2);
+            String hsnr = list.get(3);
+            String gndr = list.get(4);
+            Integer min = Integer.getInteger(list.get(5));
+            Integer max = Integer.getInteger(list.get(6));
+            Boolean filter1 = list.get(7).equals("true"); //dth
+            Boolean filter2 = list.get(8).equals("true"); //ext
+            Boolean filter3 = list.get(9).equals("true"); //na
+
+            /*
+            this.lastSearch.add(household);
+            this.lastSearch.add(name);
+            this.lastSearch.add(permId);
+            this.lastSearch.add(houseNumber);
+            this.lastSearch.add(gender);
+            this.lastSearch.add(minAge==null ? "" : minAge.toString());
+            this.lastSearch.add(maxAge==null ? "" : maxAge.toString());
+            this.lastSearch.add(isDead==null ? "" : isDead+"");
+            this.lastSearch.add(hasOutmigrated==null ? "" : hasOutmigrated+"");
+            this.lastSearch.add(liveResident==null ? "" : liveResident+"");
+             */
 
             Log.d("restoring",""+name);
-            MemberArrayAdapter ma = loadMembersByFilters(null, name, peid, gndr, null, filter1, filter2, filter3, filter4);
+            MemberArrayAdapter ma = loadMembersByFilters(household, name, peid, hsnr, gndr, min, max, filter1, filter2, filter3);
             setMemberAdapter(ma);
         }
     }
@@ -135,7 +154,7 @@ public class MemberListFragment extends Fragment {
 
         this.lvMembersList = (ListView) view.findViewById(R.id.lvMembersList);
         this.btMemListShowMmbMap = (Button) view.findViewById(R.id.btMemListShowMmbMap);
-        this.btMemListShowClosestPregnt = (Button) view.findViewById(R.id.btMemListShowClosestPregnt);
+        this.btMemListShowClosestMembers = (Button) view.findViewById(R.id.btMemListShowClosestMembers);
         this.listButtons = (LinearLayout) view.findViewById(R.id.viewListButtons);
         this.mProgressView = view.findViewById(R.id.viewListProgressBar);
 
@@ -147,11 +166,10 @@ public class MemberListFragment extends Fragment {
             }
         });
 
-        this.btMemListShowClosestPregnt.setOnClickListener(new View.OnClickListener() {
+        this.btMemListShowClosestMembers.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d("test-show-closest-wmmap", "not yet implemented");
-                showPregnantMembersMap();
+                Log.d("test-show-closest", "not yet implemented");
             }
         });
         
@@ -162,44 +180,79 @@ public class MemberListFragment extends Fragment {
             }
         });
 
+        this.lvMembersList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                onMemberLongClicked(position);
+                return true;
+            }
+        });
+
         this.database = new Database(getActivity());
     }
 
     private void showMembersMap() {
-        MemberArrayAdapter adpter = (MemberArrayAdapter) this.lvMembersList.getAdapter();
+        MemberArrayAdapter adapter = (MemberArrayAdapter) this.lvMembersList.getAdapter();
 
-        final MWMPoint[] points = new MWMPoint[adpter.getMembers().size()];
+        final MWMPoint[] points = new MWMPoint[adapter.getMembers().size()];
 
+        //organize by households and calculate new coordinates
+        Map<String, List<MWMPoint>> gpsMapHouseMembers = new HashMap<>();
 
         for (int i=0; i < points.length; i++){
-            Member m = adpter.getMembers().get(i);
+            Member m = adapter.getMembers().get(i);
             String name = m.getName();
-            double lat = Double.parseDouble(m.getHhLatitude());
-            double lon = Double.parseDouble(m.getHhLongitude());
-            points[i] = new MWMPoint(lat, lon, name);
+            if (!m.hasNullCoordinates()) {
+                double lat = Double.parseDouble(m.getGpsLatitude());
+                double lon = Double.parseDouble(m.getGpsLongitude());
+                points[i] = new MWMPoint(lat, lon, name);
+
+                //put point on a java map organized by houseNumber
+                if (gpsMapHouseMembers.containsKey(m.getHouseNumber())){
+                    List<MWMPoint> list = gpsMapHouseMembers.get(m.getHouseNumber());
+                    list.add(points[i]);
+                }else{
+                    List<MWMPoint> list = new ArrayList<MWMPoint>();
+                    list.add(points[i]);
+                    gpsMapHouseMembers.put(m.getHouseNumber(), list);
+                }
+            }
         }
 
-        MapsWithMeApi.showPointsOnMap(this.getActivity(), getString(R.string.map_women_coordinates), points);
+        organizeHouseMembersCoordinates(gpsMapHouseMembers);
+
+        MapsWithMeApi.showPointsOnMap(this.getActivity(), getString(R.string.map_members_coordinates), points);
     }
 
-    private void showPregnantMembersMap() {
-        MemberArrayAdapter adpter = (MemberArrayAdapter) this.lvMembersList.getAdapter();
+    private void organizeHouseMembersCoordinates(Map<String, List<MWMPoint>> gpsMapHouseMembers){
+        final double pointRadius = 0.00008; //grads equivalent to 2 meters - 0.0001242
 
-        final MWMPoint[] points = new MWMPoint[adpter.getMembers().size()];
+        for (String house : gpsMapHouseMembers.keySet()){
+            List<MWMPoint> list = gpsMapHouseMembers.get(house);
+            int n = list.size();
+            int max_col = (int)(Math.ceil(Math.sqrt(n))) + 1;
+            int max_row = (int) Math.ceil(n/(max_col*1.0));
 
+            int r=0,c=0;
+            for (MWMPoint p : list){
+                p.setLat( p.getLat() + (c * pointRadius) );
+                p.setLon( p.getLon() + (r * pointRadius) );
 
-        for (int i=0; i < points.length; i++){
-            Member m = adpter.getMembers().get(i);
-            if (m.isHasDelivered()==false && !m.getLastClipId().isEmpty()) {
-                String name = m.getName();
-                double lat = Double.parseDouble(m.getHhLatitude());
-                double lon = Double.parseDouble(m.getHhLongitude());
-                points[i] = new MWMPoint(lat, lon, name);
+                c++;
+                if (c == max_col){
+                    c = 0;
+                    r++;
+                }
             }
-
         }
+    }
 
-        MapsWithMeApi.showPointsOnMap(this.getActivity(), getString(R.string.map_pregnant_women_coordinates), points);
+    private void onMemberLongClicked(int position) {
+        MemberArrayAdapter adapter = (MemberArrayAdapter) this.lvMembersList.getAdapter();
+        Member member = adapter.getItem(position);
+        Household household = getHousehold(member);
+
+        adapter.setSelectedIndex(position);
     }
 
     private void onMemberClicked(int position) {
@@ -213,33 +266,55 @@ public class MemberListFragment extends Fragment {
     }
 
     private Household getHousehold(Member member){
-        if (member == null || member.getHhNumber()==null) return null;
+        if (member == null || member.getHouseNumber()==null) return null;
 
         database.open();
-        Household household = Queries.getHouseholdBy(database, DatabaseHelper.Household.COLUMN_HOUSE_NUMBER+"=?", new String[]{ member.getHhNumber() });
+        Household household = Queries.getHouseholdBy(database, DatabaseHelper.Household.COLUMN_HOUSE_NUMBER+"=?", new String[]{ member.getHouseNumber() });
         database.close();
 
         return household;
     }
 
-    public MemberArrayAdapter loadMembersByFilters(Household household, String name, String permId, String gender, String houseNumber, Boolean isPregnant, Boolean hasDelivered, Boolean hasPom, Boolean hasFacility) {
+    private Household getHousehold(int id){
+        return getHousehold(id+"");
+    }
+
+    private Household getHousehold(String id){
+        if (Integer.getInteger(id) == null) return null;
+
+        database.open();
+        Household household = Queries.getHouseholdBy(database, DatabaseHelper.Household._ID+"=?", new String[]{ id });
+        database.close();
+
+        return household;
+    }
+
+    public MemberArrayAdapter loadMembersByFilters(Household household, String name, String permId, String houseNumber, String gender, Integer minAge, Integer maxAge, Boolean isDead, Boolean hasOutmigrated, Boolean liveResident) {
         //open loader
+
+        String endType = "";
 
         if (name == null) name = "";
         if (permId == null) permId = "";
         if (houseNumber == null) houseNumber = "";
         if (gender == null) gender = "";
+        if (isDead != null && isDead) endType = "DTH";
+        if (hasOutmigrated != null && hasOutmigrated) endType = "EXT";
+        if (liveResident != null && liveResident) endType = "NA";
 
         //save last search
         this.lastSearch = new ArrayList();
+        this.lastSearch.add(household!=null ? household.getId()+"" : "");
         this.lastSearch.add(name);
         this.lastSearch.add(permId);
-        this.lastSearch.add(gender);
         this.lastSearch.add(houseNumber);
-        this.lastSearch.add(isPregnant==null ? "" : isPregnant+"");
-        this.lastSearch.add(hasDelivered==null ? "" : hasDelivered+"");
-        this.lastSearch.add(hasPom==null ? "" : hasPom+"");
-        this.lastSearch.add(hasFacility==null ? "" : hasFacility+"");
+        this.lastSearch.add(gender);
+        this.lastSearch.add(minAge==null ? "" : minAge.toString());
+        this.lastSearch.add(maxAge==null ? "" : maxAge.toString());
+        this.lastSearch.add(isDead==null ? "" : isDead+"");
+        this.lastSearch.add(hasOutmigrated==null ? "" : hasOutmigrated+"");
+        this.lastSearch.add(liveResident==null ? "" : liveResident+"");
+
 
         //search on database
         List<Member> members = new ArrayList<>();
@@ -255,36 +330,32 @@ public class MemberListFragment extends Fragment {
             whereClause += DatabaseHelper.Member.COLUMN_PERM_ID + " like ?";
             whereValues.add(permId+"%");
         }
+        if (!houseNumber.isEmpty()){
+            whereClause += (whereClause.isEmpty()? "" : " AND ");
+            whereClause += DatabaseHelper.Member.COLUMN_HOUSE_NUMBER + " like ?";
+            whereValues.add(houseNumber+"%");
+        }
         if (!gender.isEmpty()){
             whereClause += (whereClause.isEmpty()? "" : " AND ");
             whereClause += DatabaseHelper.Member.COLUMN_GENDER + " = ?";
             whereValues.add(gender);
         }
-        if (!houseNumber.isEmpty()){
+        if (minAge != null){
             whereClause += (whereClause.isEmpty()? "" : " AND ");
-            whereClause += DatabaseHelper.Member.COLUMN_HH_NUMBER + " = ?";
-            whereValues.add(houseNumber);
+            whereClause += DatabaseHelper.Member.COLUMN_AGE + " >= ?";
+            whereValues.add(minAge.toString());
         }
-        if (isPregnant != null && isPregnant){
+        if (maxAge != null){
             whereClause += (whereClause.isEmpty()? "" : " AND ");
-            whereClause += DatabaseHelper.Member.COLUMN_IS_PREGNANT + " = ?";
-            whereValues.add("1");
+            whereClause += DatabaseHelper.Member.COLUMN_AGE + " <= ?";
+            whereValues.add(maxAge.toString());
         }
-        if (hasDelivered != null && hasDelivered){
+        if (!endType.isEmpty()){
             whereClause += (whereClause.isEmpty()? "" : " AND ");
-            whereClause += DatabaseHelper.Member.COLUMN_HAS_DELIVERED + " = ?";
-            whereValues.add("1");
+            whereClause += DatabaseHelper.Member.COLUMN_END_TYPE + " = ?";
+            whereValues.add(endType);
         }
-        if (hasPom != null && hasPom){
-            whereClause += (whereClause.isEmpty()? "" : " AND ");
-            whereClause += DatabaseHelper.Member.COLUMN_ON_POM + " = ?";
-            whereValues.add("1");
-        }
-        if (hasFacility != null && hasFacility){
-            whereClause += (whereClause.isEmpty()? "" : " AND ");
-            whereClause += DatabaseHelper.Member.COLUMN_ON_FACILITY + " = ?";
-            whereValues.add("1");
-        }
+
 
         database.open();
 
@@ -295,9 +366,13 @@ public class MemberListFragment extends Fragment {
             Member member = Converter.cursorToMember(cursor);
             members.add(member);
             Log.d("household", ""+household);
-            Log.d("head", ""+(household!=null ? household.getHead():"null"));
-            if (household != null && household.getHead().equals(member.getPermId())){
+            Log.d("head", ""+(household!=null ? household.getHeadPermId():"null"));
+            if (household != null && household.getHeadPermId().equals(member.getPermId())){
                 member.setHouseholdHead(true);
+            }
+
+            if (household != null && household.getSubsHeadPermId().equals(member.getPermId())){
+                member.setSubsHouseholdHead(true);
             }
         }
 

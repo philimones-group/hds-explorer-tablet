@@ -10,6 +10,7 @@
         android:layout_height="match_parent"
         android:layout_weight="1">
 
+        <!-- main layout -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -19,7 +20,6 @@
             android:layout_marginTop="@dimen/mf_land_margin_top"
             android:gravity="top"
             android:orientation="vertical">
-
 
             <TextView
                 android:layout_width="match_parent"
@@ -32,10 +32,11 @@
                 android:textStyle="bold"
                 android:visibility="gone"/>
 
+            <!-- Name -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginBottom="10dp"
+                android:layout_marginBottom="5dp"
                 android:orientation="vertical">
 
                 <TextView
@@ -55,10 +56,11 @@
                     android:textSize="@dimen/member_filter_textsize" />
             </LinearLayout>
 
+            <!-- Perm Id -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginBottom="10dp"
+                android:layout_marginBottom="5dp"
                 android:orientation="vertical">
 
                 <TextView
@@ -78,10 +80,35 @@
                     android:textSize="@dimen/member_filter_textsize" />
             </LinearLayout>
 
+            <!-- Current House/Neigh -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="10dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/member_filter_curr_housenumber_lbl"
+                    android:textAppearance="?android:attr/textAppearanceLarge" />
+
+                <EditText
+                    android:id="@+id/txtMemFilterCurrHousenumber"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/member_filter_textbox_size"
+                    android:background="@drawable/textinputborder"
+                    android:gravity="center_vertical"
+                    android:hint="@string/member_filter_curr_housenumber_hint"
+                    android:paddingLeft="10dp"
+                    android:textSize="@dimen/member_filter_textsize" />
+            </LinearLayout>
+
+            <!-- Gender Info -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
+                android:layout_marginBottom="5dp"
                 android:orientation="vertical">
 
                 <TextView
@@ -120,35 +147,89 @@
 
             </LinearLayout>
 
-            <!-- we wont put age here for now -->
-
-            <!-- Extra data details -->
+            <!-- Age details -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginBottom="0dp"
+                android:layout_marginBottom="20dp"
                 android:orientation="vertical">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/member_filter_xdata_lbl"
+                    android:text="@string/member_filter_age_details_lbl"
+                    android:textAppearance="?android:attr/textAppearanceLarge" />
+
+
+                <LinearLayout
+                    android:id="@+id/layout_mf_age"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:background="@drawable/corner_border"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:text="@string/member_filter_age_min_lbl"
+                        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+                    <net.manhica.dss.explorer.widget.NumberPicker
+                        android:layout_width="wrap_content"
+                        android:layout_height="110dp"
+                        min_value="0"
+                        max_value="140"
+                        default_value="0"
+                        android:id="@+id/nbpMemFilterMinAge" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="60dp"
+                        android:gravity="center"
+                        android:text="@string/member_filter_age_max_lbl"
+                        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+                    <net.manhica.dss.explorer.widget.NumberPicker
+                        android:layout_width="wrap_content"
+                        android:layout_height="110dp"
+                        min_value="0"
+                        max_value="140"
+                        default_value="120"
+                        android:id="@+id/nbpMemFilterMaxAge" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <!-- Extra data details -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/member_filter_current_status_lbl"
                     android:textAppearance="?android:attr/textAppearanceLarge" />
 
                 <LinearLayout
                     android:id="@+id/layout_mf_xdata"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="100dp"
+                    android:gravity="center"
                     android:background="@drawable/corner_border"
-                    android:orientation="vertical">
+                    android:orientation="horizontal">
 
                     <CheckBox
                         android:id="@+id/chkMemFilter1"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_margin="@dimen/member_filter_land_xdata_margin"
-                        android:layout_marginLeft="@dimen/member_filter_xdata_margin_left"
-                        android:text="@string/member_filter_ispregnant_lbl"
+                        android:text="@string/member_filter_death_status_lbl"
                         android:textSize="@dimen/member_filter_checkbox_textsize" />
 
                     <CheckBox
@@ -156,8 +237,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_margin="@dimen/member_filter_land_xdata_margin"
-                        android:layout_marginLeft="@dimen/member_filter_xdata_margin_left"
-                        android:text="@string/member_filter_has_delivered_lbl"
+                        android:layout_marginLeft="40dp"
+                        android:text="@string/member_filter_ext_status_lbl"
                         android:textSize="@dimen/member_filter_checkbox_textsize" />
 
                     <CheckBox
@@ -165,8 +246,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_margin="@dimen/member_filter_land_xdata_margin"
-                        android:layout_marginLeft="@dimen/member_filter_xdata_margin_left"
-                        android:text="@string/member_filter_on_facility_lbl"
+                        android:layout_marginLeft="40dp"
+                        android:text="@string/member_filter_na_status_lbl"
                         android:textSize="@dimen/member_filter_checkbox_textsize" />
 
                 </LinearLayout>
@@ -175,10 +256,10 @@
 
         </LinearLayout>
 
+        <!-- Buttons -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="60dp"
-            android:layout_marginTop="3dp"
             android:layout_marginBottom="@dimen/fagm_margin_bottom"
             android:layout_marginLeft="@dimen/fagm_margin_left"
             android:layout_marginRight="@dimen/fagm_margin_right"

@@ -10,7 +10,8 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 
-import net.manhica.clip.explorer.R;
+import net.manhica.dss.explorer.R;
+import net.manhica.dss.explorer.widget.NumberPicker;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -19,11 +20,14 @@ public class MemberFilterFragment extends Fragment {
 
     private EditText txtMemFilterName;
     private EditText txtMemFilterPermId;
+    private EditText txtMemFilterHouseNr;
     private CheckBox chkMemFilterGFemale;
     private CheckBox chkMemFilterGMale;
-    private CheckBox chkMemFilter1cp;
-    private CheckBox chkMemFilter2hd;
-    private CheckBox chkMemFilter3hf;
+    private NumberPicker nbpMemFilterMinAge;
+    private NumberPicker nbpMemFilterMaxAge;
+    private CheckBox chkMemFilter1dt;
+    private CheckBox chkMemFilter2om;
+    private CheckBox chkMemFilter3na;
     private Button btMemFilterClear;
     private Button btMemFilterSearch;
 
@@ -50,11 +54,14 @@ public class MemberFilterFragment extends Fragment {
 
         this.txtMemFilterName = (EditText) view.findViewById(R.id.txtMemFilterName);
         this.txtMemFilterPermId = (EditText) view.findViewById(R.id.txtMemFilterPermId);
+        this.txtMemFilterHouseNr = (EditText) view.findViewById(R.id.txtMemFilterCurrHousenumber);
         this.chkMemFilterGFemale = (CheckBox) view.findViewById(R.id.chkMemFilterGFemale);
         this.chkMemFilterGMale = (CheckBox) view.findViewById(R.id.chkMemFilterGMale);
-        this.chkMemFilter1cp = (CheckBox) view.findViewById(R.id.chkMemFilter1);
-        this.chkMemFilter2hd = (CheckBox) view.findViewById(R.id.chkMemFilter2);
-        this.chkMemFilter3hf = (CheckBox) view.findViewById(R.id.chkMemFilter3);
+        this.chkMemFilter1dt = (CheckBox) view.findViewById(R.id.chkMemFilter1);
+        this.chkMemFilter2om = (CheckBox) view.findViewById(R.id.chkMemFilter2);
+        this.chkMemFilter3na = (CheckBox) view.findViewById(R.id.chkMemFilter3);
+        this.nbpMemFilterMinAge = (NumberPicker) view.findViewById(R.id.nbpMemFilterMinAge);
+        this.nbpMemFilterMaxAge = (NumberPicker) view.findViewById(R.id.nbpMemFilterMaxAge);
         this.btMemFilterClear = (Button) view.findViewById(R.id.btMemFilterClear);
         this.btMemFilterSearch = (Button) view.findViewById(R.id.btMemFilterSearch);
 
@@ -80,25 +87,30 @@ public class MemberFilterFragment extends Fragment {
     private void onSearch() {
         String name = txtMemFilterName.getText().toString();
         String permid = txtMemFilterPermId.getText().toString();
+        String houseNr = txtMemFilterHouseNr.getText().toString();
         String gender = (chkMemFilterGMale.isChecked() && chkMemFilterGFemale.isChecked()) ? "" : chkMemFilterGMale.isChecked() ? "M" : chkMemFilterGFemale.isChecked() ? "F" : "";
-        boolean filter1 = chkMemFilter1cp.isChecked();
-        boolean filter2 = chkMemFilter2hd.isChecked();
-        boolean filter3 = chkMemFilter3hf.isChecked();
+        boolean filter1 = chkMemFilter1dt.isChecked();
+        boolean filter2 = chkMemFilter2om.isChecked();
+        boolean filter3 = chkMemFilter3na.isChecked();
+        int minAge = this.nbpMemFilterMinAge.getValue();
+        int maxAge = this.nbpMemFilterMaxAge.getValue();
 
-        listener.onSearch(name, permid, gender, filter1, filter2, filter3);
+        listener.onSearch(name, permid, houseNr, gender, minAge, maxAge, filter1, filter2, filter3);
     }
 
     private void clear(){
         this.txtMemFilterName.setText("");
         this.txtMemFilterPermId.setText("");
+        this.txtMemFilterHouseNr.setText("");
         this.chkMemFilterGMale.setChecked(false);
-        this.chkMemFilterGFemale.setChecked(true);
-        this.chkMemFilter1cp.setChecked(false);
-        this.chkMemFilter2hd.setChecked(false);
-        this.chkMemFilter3hf.setChecked(false);
+        this.chkMemFilterGFemale.setChecked(false);
+        this.nbpMemFilterMinAge.setValue(0);
+        this.nbpMemFilterMaxAge.setValue(120);
+        this.chkMemFilter1dt.setChecked(false);
+        this.chkMemFilter2om.setChecked(false);
     }
 
     public interface Listener {
-        void onSearch(String name, String permId, String gender, boolean isPregnant, boolean hasDelivered, boolean hasFacility);
+        void onSearch(String name, String permId, String houseNumber, String gender, Integer minAge, Integer maxAge, Boolean isDead, Boolean hasOutmigrated, Boolean liveResident);
     }
 }

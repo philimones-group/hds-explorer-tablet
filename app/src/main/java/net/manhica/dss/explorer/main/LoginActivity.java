@@ -26,7 +26,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import net.manhica.clip.explorer.R;
+import net.manhica.dss.explorer.BuildConfig;
+import net.manhica.dss.explorer.R;
 import net.manhica.dss.explorer.database.Bootstrap;
 import net.manhica.dss.explorer.database.Converter;
 import net.manhica.dss.explorer.database.Database;
@@ -58,6 +59,9 @@ public class LoginActivity extends Activity implements SyncDatabaseListener{
     // UI references.
     private AutoCompleteTextView txtUsername;
     private EditText txtPassword;
+    private TextView txtCopyrightAppName;
+    private TextView txtCopyrightCompany;
+    private TextView txtCopyrightDevs;
     private View mProgressView;
     private View mLoginFormView;
     private ProgressDialog progressDialog;
@@ -74,6 +78,9 @@ public class LoginActivity extends Activity implements SyncDatabaseListener{
         // Set up the login form.
         txtUsername = (AutoCompleteTextView) findViewById(R.id.login_username_txt);
         txtPassword = (EditText) findViewById(R.id.login_password_txt);
+        txtCopyrightAppName = (TextView) findViewById(R.id.txtCopyrightAppName);
+        txtCopyrightCompany = (TextView) findViewById(R.id.txtCopyrightAppName);
+        txtCopyrightDevs = (TextView) findViewById(R.id.txtCopyrightDevs);
 
         txtPassword.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
@@ -91,6 +98,7 @@ public class LoginActivity extends Activity implements SyncDatabaseListener{
             @Override
             public void onClick(View view) {
                 userLogin();
+                //launchModulesSelector();
             }
         });
 
@@ -107,11 +115,13 @@ public class LoginActivity extends Activity implements SyncDatabaseListener{
 
         this.progressDialog = new ProgressDialog(this);
 
-        txtUsername.setText(""); //txtUsername.setText("smonjane");
-        txtPassword.setText(""); //txtPassword.setText("35");
+        txtUsername.setText("FWPF1"); //txtUsername.setText("supervisor");
+        txtPassword.setText("test"); //txtPassword.setText("dssmanhica");
+
+        updateView();
 
         initdb();
-
+/*
 
         Database db = new Database(this);
         db.open();
@@ -127,13 +137,21 @@ public class LoginActivity extends Activity implements SyncDatabaseListener{
             //db.update(CollectedData.class, cv, DatabaseHelper.CollectedData._ID+"=?", new String[]{ cd.getId()+"" });
         }*/
 
+       /*
+        loggedUser = user;
+
         List<Form> list = Queries.getAllFormBy(db, null, null);
         for (Form f : list){
             Log.d("form", ""+f.getFormId()+", bind->"+f.getBindMap());
         }
 
         db.close();
+        */
 
+    }
+
+    private void updateView() {
+        txtCopyrightAppName.setText(getString(R.string.app_name)+" v"+ BuildConfig.VERSION_NAME);
     }
 
     private void initdb(){
@@ -169,19 +187,20 @@ public class LoginActivity extends Activity implements SyncDatabaseListener{
         View focusView = null;
 
         // Check for a valid password, if the user entered one.
+        /*
         if (!TextUtils.isEmpty(password) && !isPasswordValid(password)) {
             txtPassword.setError(getString(R.string.error_invalid_password));
             focusView = txtPassword;
             cancel = true;
         }
-
+*/
         // Check for a valid email address.
         if (TextUtils.isEmpty(username)) {
             txtUsername.setError(getString(R.string.error_field_required));
             focusView = txtUsername;
             cancel = true;
         }
-
+        cancel = false; //bad
         if (cancel) {
             // There was an error; don't attempt login and focus the first
             // form field with an error.
@@ -320,7 +339,7 @@ public class LoginActivity extends Activity implements SyncDatabaseListener{
 
             } catch (Exception e) {
                 e.printStackTrace();
-                return null;
+                return loggedUser;
             }
 
             db.close();
@@ -384,7 +403,7 @@ public class LoginActivity extends Activity implements SyncDatabaseListener{
                 HttpURLConnection connection = null;
                 String basicAuth = "Basic " + new String(Base64.encode((this.mUsername+":"+this.mPassword).getBytes(),Base64.NO_WRAP ));
 
-                URL url = new URL(LoginActivity.this.getString(R.string.server_url_not_secure)+"/api/clip-explorer/login");
+                URL url = new URL(LoginActivity.this.getString(R.string.server_url_not_secure)+"/api/dss-explorer/login");
 
                 connection = (HttpURLConnection) url.openConnection();
                 connection.setRequestMethod("GET");
@@ -450,7 +469,7 @@ public class LoginActivity extends Activity implements SyncDatabaseListener{
 
     private void launchModulesSelector(){
         //Toast.makeText(this, "Sucessfull Login", Toast.LENGTH_LONG);
-        Log.d("logged","logged"+loggedUser.getModules());
+        //Log.d("logged","logged"+loggedUser.getModules());
 
         Intent intent = null;
 
@@ -467,20 +486,11 @@ public class LoginActivity extends Activity implements SyncDatabaseListener{
             intent = new Intent(this, ModuleSelectorActivity.class); //open Modules Selector
         }
 
-        if (modules.length==1 && modules[0].equals(Module.CLIP_FACILITY_MODULE)){
-            intent = new Intent(this, FacilityActivity.class); //
-        }
-
-        if (modules.length==1 && modules[0].equals(Module.CLIP_POM_MODULE)){
-            //intent = new Intent(this, POMActivity.class); //
-            intent = new Intent(this, SurveyMembersActivity.class);
-        }
-
-        if (modules.length==1 && modules[0].equals(Module.CLIP_SURVEY_MODULE)){
+        if (modules.length==1 && modules[0].equals(Module.DSS_SURVEY_MODULE)){
             intent = new Intent(this, SurveyActivity.class); //
         }
 
-        if (modules.length==1 && modules[0].equals(Module.CLIP_OTHERS)){
+        if (modules.length==1 && modules[0].equals(Module.DSS_OTHERS)){
             createAlertDialog("Exception", "Not yet Implemented");
             return;
         }
@@ -496,7 +506,7 @@ public class LoginActivity extends Activity implements SyncDatabaseListener{
             newstr = new String[modules.length-1];
             int i=0;
             for (String str : modules) {
-                if (str.equals(Module.CLIP_SUPERVISOR)) continue;
+                if (str.equals(Module.DSS_SUPERVISOR)) continue;
                 newstr[i++] = str;
             }
         }else{
@@ -508,7 +518,7 @@ public class LoginActivity extends Activity implements SyncDatabaseListener{
 
     private boolean isSupervisor(String[] modules) {
         for(String s : modules ){
-            if (s.equals(Module.CLIP_SUPERVISOR)){
+            if (s.equals(Module.DSS_SUPERVISOR)){
                 return true;
             }
         }

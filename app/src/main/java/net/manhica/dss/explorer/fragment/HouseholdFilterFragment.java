@@ -19,7 +19,7 @@ import android.widget.ListView;
 import com.mapswithme.maps.api.MWMPoint;
 import com.mapswithme.maps.api.MapsWithMeApi;
 
-import net.manhica.clip.explorer.R;
+import net.manhica.dss.explorer.R;
 import net.manhica.dss.explorer.adapter.HouseholdArrayAdapter;
 import net.manhica.dss.explorer.database.Converter;
 import net.manhica.dss.explorer.database.Database;
@@ -140,12 +140,16 @@ public class HouseholdFilterFragment extends Fragment {
         for (int i=0; i < points.length; i++){
             Household h = adapter.getHouseholds().get(i);
             String name = h.getHouseNumber();
-            double lat = Double.parseDouble(h.getLatitude());
-            double lon = Double.parseDouble(h.getLongitude());
-            points[i] = new MWMPoint(lat, lon, name);
+
+            if (!h.hasNullCoordinates()) {
+                double lat = Double.parseDouble(h.getGpsLatitude());
+                double lon = Double.parseDouble(h.getGpsLongitude());
+                points[i] = new MWMPoint(lat, lon, name);
+            }
+
         }
 
-        MapsWithMeApi.showPointsOnMap(this.getActivity(), getString(R.string.map_women_coordinates), points);
+        MapsWithMeApi.showPointsOnMap(this.getActivity(), getString(R.string.map_households), points);
     }
 
     private void searchHouses(String houseNumber){

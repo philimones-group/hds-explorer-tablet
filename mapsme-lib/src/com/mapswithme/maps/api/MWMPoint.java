@@ -33,9 +33,9 @@ public final class MWMPoint implements Serializable
 {
   private static final long serialVersionUID = 1L;
 
-  final private double mLat;
-  final private double mLon;
-  final private String mName;
+  private double mLat;
+  private double mLon;
+  private String mName;
   private String mId;
   private Style mStyle;
 
@@ -60,6 +60,9 @@ public final class MWMPoint implements Serializable
     this.mId = id;
     this.mStyle = style;
   }
+
+  public void setLat(double lat) { mLat=lat;   }
+  public void setLon(double lon) { mLon=lon;   }
 
   public double getLat()       { return mLat;   }
   public double getLon()       { return mLon;   }

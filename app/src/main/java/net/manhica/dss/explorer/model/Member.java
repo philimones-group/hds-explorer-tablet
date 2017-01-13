@@ -21,6 +21,11 @@ public class Member implements Serializable, Table {
     private String gender;
     private String dob;
     private int age;
+
+    private String spouseExtId;
+    private String spouseName;
+    private String spousePermId;
+
     private String motherExtId;
     private String motherName;
     private String motherPermId;
@@ -30,41 +35,24 @@ public class Member implements Serializable, Table {
     /**
      * Current HouseHold Status
      */
-    private String hhExtId;
-    private String hhNumber;
-    private String hhStartType;
-    private String hhStartDate;
-    private String hhEndType;
-    private String hhEndDate;
+    private String houseExtId;
+    private String houseNumber;
+    private String startType;
+    private String startDate;
+    private String endType;
+    private String endDate;
     /** GPS Status */
-    private String hhAccuracy;
-    private String hhAltitude;
-    private String hhLatitude;
-    private String hhLongitude;
+    private String gpsAccuracy;
+    private String gpsAltitude;
+    private String gpsLatitude;
+    private String gpsLongitude;
+    /* Extras Variables*/ //separated by semicolon :
+    String extrasColumns;
+    String extrasValues;
 
-    private int nrPregnancies;
-
-    /* Current Pregnancy*/
-    private boolean hasDelivered;  //0 - false, 1 - false
-    private boolean isPregnant;
-
-    private String clip_id_1;
-    private String clip_id_2;
-    private String clip_id_3;
-    private String clip_id_4;
-    private String clip_id_5;
-    private String clip_id_6;
-    private String clip_id_7;
-    private String clip_id_8;
-    private String clip_id_9;
-    /**
-     *  Used on Study Section Status - Pom, Facility and Form D e E
-     */
-    private boolean onPom;
-    private boolean onFacility;
-    private boolean onSurveillance;
 
     private boolean isHouseholdHead; /*not on database*/
+    private boolean isSubsHouseholdHead; /*not on database*/
 
     public int getId() {
         return id;
@@ -170,218 +158,124 @@ public class Member implements Serializable, Table {
         this.fatherPermId = fatherPermId;
     }
 
-    public String getHhExtId() {
-        return hhExtId;
+    public String getHouseExtId() {
+        return houseExtId;
     }
 
-    public void setHhExtId(String hhExtId) {
-        this.hhExtId = hhExtId;
+    public void setHouseExtId(String houseExtId) {
+        this.houseExtId = houseExtId;
     }
 
-    public String getHhNumber() {
-        return hhNumber;
+    public String getHouseNumber() {
+        return houseNumber;
     }
 
-    public void setHhNumber(String hhNumber) {
-        this.hhNumber = hhNumber;
+    public void setHouseNumber(String houseNumber) {
+        this.houseNumber = houseNumber;
     }
 
-    public String getHhStartType() {
-        return hhStartType;
+    public String getStartType() {
+        return startType;
     }
 
-    public void setHhStartType(String hhStartType) {
-        this.hhStartType = hhStartType;
+    public void setStartType(String startType) {
+        this.startType = startType;
     }
 
-    public String getHhStartDate() {
-        return hhStartDate;
+    public String getStartDate() {
+        return startDate;
     }
 
-    public void setHhStartDate(String hhStartDate) {
-        this.hhStartDate = hhStartDate;
+    public void setStartDate(String startDate) {
+        this.startDate = startDate;
     }
 
-    public String getHhEndType() {
-        return hhEndType;
+    public String getEndType() {
+        return endType;
     }
 
-    public void setHhEndType(String hhEndType) {
-        this.hhEndType = hhEndType;
+    public void setEndType(String endType) {
+        this.endType = endType;
     }
 
-    public String getHhEndDate() {
-        return hhEndDate;
+    public String getEndDate() {
+        return endDate;
     }
 
-    public void setHhEndDate(String hhEndDate) {
-        this.hhEndDate = hhEndDate==null ? "" : hhEndDate;
+    public void setEndDate(String endDate) {
+        this.endDate = endDate ==null ? "" : endDate;
     }
 
-    public String getHhAccuracy() {
-        return hhAccuracy;
+    public String getGpsAccuracy() {
+        return gpsAccuracy;
     }
 
-    public void setHhAccuracy(String hhAccuracy) {
-        this.hhAccuracy = hhAccuracy;
+    public void setGpsAccuracy(String gpsAccuracy) {
+        this.gpsAccuracy = gpsAccuracy;
     }
 
-    public String getHhAltitude() {
-        return hhAltitude;
+    public String getGpsAltitude() {
+        return gpsAltitude;
     }
 
-    public void setHhAltitude(String hhAltitude) {
-        this.hhAltitude = hhAltitude;
+    public void setGpsAltitude(String gpsAltitude) {
+        this.gpsAltitude = gpsAltitude;
     }
 
-    public String getHhLatitude() {
-        return hhLatitude;
+    public String getGpsLatitude() {
+        return gpsLatitude;
     }
 
-    public void setHhLatitude(String hhLatitude) {
-        this.hhLatitude = hhLatitude;
+    public void setGpsLatitude(String gpsLatitude) {
+        this.gpsLatitude = gpsLatitude;
     }
 
-    public String getHhLongitude() {
-        return hhLongitude;
+    public String getGpsLongitude() {
+        return gpsLongitude;
     }
 
-    public void setHhLongitude(String hhLongitude) {
-        this.hhLongitude = hhLongitude;
+    public void setGpsLongitude(String gpsLongitude) {
+        this.gpsLongitude = gpsLongitude;
     }
 
-    public int getNrPregnancies() {
-        return nrPregnancies;
+    public String getSpouseExtId() {
+        return spouseExtId;
     }
 
-    public void setNrPregnancies(int nrPregnancies) {
-        this.nrPregnancies = nrPregnancies;
+    public void setSpouseExtId(String spouseExtId) {
+        this.spouseExtId = spouseExtId;
     }
 
-    public boolean isHasDelivered() {
-        return hasDelivered;
+    public String getSpouseName() {
+        return spouseName;
     }
 
-    public void setHasDelivered(boolean hasDelivered) {
-        this.hasDelivered = hasDelivered;
+    public void setSpouseName(String spouseName) {
+        this.spouseName = spouseName;
     }
 
-    public boolean isPregnant() {
-        return isPregnant;
+    public String getSpousePermId() {
+        return spousePermId;
     }
 
-    public void setPregnant(boolean pregnant) {
-        isPregnant = pregnant;
+    public void setSpousePermId(String spousePermId) {
+        this.spousePermId = spousePermId;
     }
 
-    public String getClip_id_1() {
-        return clip_id_1;
+    public String getExtrasColumns() {
+        return extrasColumns;
     }
 
-    public void setClip_id_1(String clip_id_1) {
-        this.clip_id_1 = clip_id_1==null ? "" : clip_id_1 ;
+    public void setExtrasColumns(String extrasColumns) {
+        this.extrasColumns = extrasColumns;
     }
 
-    public String getClip_id_2() {
-        return clip_id_2;
+    public String getExtrasValues() {
+        return extrasValues;
     }
 
-    public void setClip_id_2(String clip_id_2) {
-        this.clip_id_2 = clip_id_2==null ? "" : clip_id_2 ;
-    }
-
-    public String getClip_id_3() {
-        return clip_id_3;
-    }
-
-    public void setClip_id_3(String clip_id_3) {
-        this.clip_id_3 = clip_id_3==null ? "" : clip_id_3 ;
-    }
-
-    public String getClip_id_4() {
-        return clip_id_4;
-    }
-
-    public void setClip_id_4(String clip_id_4) {
-        this.clip_id_4 = clip_id_4==null ? "" : clip_id_4 ;
-    }
-
-    public String getClip_id_5() {
-        return clip_id_5;
-    }
-
-    public void setClip_id_5(String clip_id_5) {
-        this.clip_id_5 = clip_id_5==null ? "" : clip_id_5 ;
-    }
-
-    public String getClip_id_6() {
-        return clip_id_6;
-    }
-
-    public void setClip_id_6(String clip_id_6) {
-        this.clip_id_6 = clip_id_6==null ? "" : clip_id_6 ;
-    }
-
-    public String getClip_id_7() {
-        return clip_id_7;
-    }
-
-    public void setClip_id_7(String clip_id_7) {
-        this.clip_id_7 = clip_id_7==null ? "" : clip_id_7 ;
-    }
-
-    public String getClip_id_8() {
-        return clip_id_8;
-    }
-
-    public void setClip_id_8(String clip_id_8) {
-        this.clip_id_8 = clip_id_8==null ? "" : clip_id_8 ;
-    }
-
-    public String getClip_id_9() {
-        return clip_id_9;
-    }
-
-    public void setClip_id_9(String clip_id_9) {
-        this.clip_id_9 = clip_id_9==null ? "" : clip_id_9 ;
-    }
-
-    public String getLastClipId(){
-        if (clip_id_1 == null || clip_id_1.isEmpty()) return "";
-        if (clip_id_2 == null || clip_id_2.isEmpty()) return clip_id_1;
-        if (clip_id_3 == null || clip_id_3.isEmpty()) return clip_id_2;
-        if (clip_id_4 == null || clip_id_4.isEmpty()) return clip_id_3;
-        if (clip_id_5 == null || clip_id_5.isEmpty()) return clip_id_4;
-        if (clip_id_6 == null || clip_id_6.isEmpty()) return clip_id_5;
-        if (clip_id_7 == null || clip_id_7.isEmpty()) return clip_id_6;
-        if (clip_id_8 == null || clip_id_8.isEmpty()) return clip_id_7;
-        if (clip_id_9 == null || clip_id_9.isEmpty()) return clip_id_8;
-
-        return clip_id_9;
-    }
-
-    public boolean isOnPom() {
-        return onPom;
-    }
-
-    public void setOnPom(boolean onPom) {
-        this.onPom = onPom;
-    }
-
-    public boolean isOnFacility() {
-        return onFacility;
-    }
-
-    public void setOnFacility(boolean onFacility) {
-        this.onFacility = onFacility;
-    }
-
-    public boolean isOnSurveillance() {
-        return onSurveillance;
-    }
-
-    public void setOnSurveillance(boolean onSurveillance) {
-        this.onSurveillance = onSurveillance;
+    public void setExtrasValues(String extrasValues) {
+        this.extrasValues = extrasValues;
     }
 
     public boolean isHouseholdHead() {
@@ -390,6 +284,18 @@ public class Member implements Serializable, Table {
 
     public void setHouseholdHead(boolean householdHead) {
         isHouseholdHead = householdHead;
+    }
+
+    public boolean isSubsHouseholdHead() {
+        return isSubsHouseholdHead;
+    }
+
+    public void setSubsHouseholdHead(boolean subsHouseholdHead) {
+        isSubsHouseholdHead = subsHouseholdHead;
+    }
+
+    public boolean hasNullCoordinates(){
+        return gpsLatitude==null || gpsLatitude.isEmpty() || gpsLongitude==null || gpsLongitude.isEmpty();
     }
 
     public String getValueByName(String variableName){
@@ -410,37 +316,27 @@ public class Member implements Serializable, Table {
         cv.put(DatabaseHelper.Member.COLUMN_GENDER, gender);
         cv.put(DatabaseHelper.Member.COLUMN_DOB, dob);
         cv.put(DatabaseHelper.Member.COLUMN_AGE, age);
+        cv.put(DatabaseHelper.Member.COLUMN_SPOUSE_EXT_ID, spouseExtId);
+        cv.put(DatabaseHelper.Member.COLUMN_SPOUSE_NAME, spouseName);
+        cv.put(DatabaseHelper.Member.COLUMN_SPOUSE_PERM_ID, spousePermId);
         cv.put(DatabaseHelper.Member.COLUMN_MOTHER_EXT_ID, motherExtId);
         cv.put(DatabaseHelper.Member.COLUMN_MOTHER_NAME, motherName);
         cv.put(DatabaseHelper.Member.COLUMN_MOTHER_PERM_ID, motherPermId);
         cv.put(DatabaseHelper.Member.COLUMN_FATHER_EXT_ID, fatherExtId);
         cv.put(DatabaseHelper.Member.COLUMN_FATHER_NAME, fatherName);
         cv.put(DatabaseHelper.Member.COLUMN_FATHER_PERM_ID, fatherPermId);
-        cv.put(DatabaseHelper.Member.COLUMN_HH_EXT_ID, hhExtId);
-        cv.put(DatabaseHelper.Member.COLUMN_HH_NUMBER, hhNumber);
-        cv.put(DatabaseHelper.Member.COLUMN_HH_START_TYPE, hhStartType);
-        cv.put(DatabaseHelper.Member.COLUMN_HH_START_DATE, hhStartDate);
-        cv.put(DatabaseHelper.Member.COLUMN_HH_END_TYPE, hhEndType);
-        cv.put(DatabaseHelper.Member.COLUMN_HH_END_DATE, hhEndDate);
-        cv.put(DatabaseHelper.Member.COLUMN_GPS_ACCURACY, hhAccuracy);
-        cv.put(DatabaseHelper.Member.COLUMN_GPS_ALTITUDE, hhAltitude);
-        cv.put(DatabaseHelper.Member.COLUMN_GPS_LATITUDE, hhLatitude);
-        cv.put(DatabaseHelper.Member.COLUMN_GPS_LONGITUDE, hhLongitude);
-        cv.put(DatabaseHelper.Member.COLUMN_NR_PREGNANCIES, nrPregnancies);
-        cv.put(DatabaseHelper.Member.COLUMN_HAS_DELIVERED, hasDelivered ? 1 : 0);
-        cv.put(DatabaseHelper.Member.COLUMN_IS_PREGNANT, isPregnant ? 1 : 0);
-        cv.put(DatabaseHelper.Member.COLUMN_CLIP_ID_1, clip_id_1);
-        cv.put(DatabaseHelper.Member.COLUMN_CLIP_ID_2, clip_id_2);
-        cv.put(DatabaseHelper.Member.COLUMN_CLIP_ID_3, clip_id_3);
-        cv.put(DatabaseHelper.Member.COLUMN_CLIP_ID_4, clip_id_4);
-        cv.put(DatabaseHelper.Member.COLUMN_CLIP_ID_5, clip_id_5);
-        cv.put(DatabaseHelper.Member.COLUMN_CLIP_ID_6, clip_id_6);
-        cv.put(DatabaseHelper.Member.COLUMN_CLIP_ID_7, clip_id_7);
-        cv.put(DatabaseHelper.Member.COLUMN_CLIP_ID_8, clip_id_8);
-        cv.put(DatabaseHelper.Member.COLUMN_CLIP_ID_9, clip_id_9);
-        cv.put(DatabaseHelper.Member.COLUMN_ON_POM, onPom ? 1 : 0);
-        cv.put(DatabaseHelper.Member.COLUMN_ON_FACILITY, onFacility ? 1 : 0);
-        cv.put(DatabaseHelper.Member.COLUMN_ON_SURVEILLANCE, onSurveillance ? 1 : 0);
+        cv.put(DatabaseHelper.Member.COLUMN_HOUSE_EXT_ID, houseExtId);
+        cv.put(DatabaseHelper.Member.COLUMN_HOUSE_NUMBER, houseNumber);
+        cv.put(DatabaseHelper.Member.COLUMN_START_TYPE, startType);
+        cv.put(DatabaseHelper.Member.COLUMN_START_DATE, startDate);
+        cv.put(DatabaseHelper.Member.COLUMN_END_TYPE, endType);
+        cv.put(DatabaseHelper.Member.COLUMN_END_DATE, endDate);
+        cv.put(DatabaseHelper.Member.COLUMN_GPS_ACCURACY, gpsAccuracy);
+        cv.put(DatabaseHelper.Member.COLUMN_GPS_ALTITUDE, gpsAltitude);
+        cv.put(DatabaseHelper.Member.COLUMN_GPS_LATITUDE, gpsLatitude);
+        cv.put(DatabaseHelper.Member.COLUMN_GPS_LONGITUDE, gpsLongitude);
+        cv.put(DatabaseHelper.Member.COLUMN_EXTRAS_COLUMNS, extrasColumns);
+        cv.put(DatabaseHelper.Member.COLUMN_EXTRAS_VALUES, extrasValues);
         return cv;
     }
 

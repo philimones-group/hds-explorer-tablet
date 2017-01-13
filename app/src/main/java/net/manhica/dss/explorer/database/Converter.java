@@ -28,6 +28,7 @@ public class Converter {
 				
 		user.setFirstName(cursor.getString(cursor.getColumnIndex(DatabaseHelper.User.COLUMN_FIRSTNAME)));
 		user.setLastName(cursor.getString(cursor.getColumnIndex(DatabaseHelper.User.COLUMN_LASTNAME)));
+		user.setFullName(cursor.getString(cursor.getColumnIndex(DatabaseHelper.User.COLUMN_FULLNAME)));
 		user.setUsername(cursor.getString(cursor.getColumnIndex(DatabaseHelper.User.COLUMN_USERNAME)));
 		user.setPassword(cursor.getString(cursor.getColumnIndex(DatabaseHelper.User.COLUMN_PASSWORD)));
 		user.setModules(cursor.getString(cursor.getColumnIndex(DatabaseHelper.User.COLUMN_MODULES)));
@@ -66,18 +67,20 @@ public class Converter {
 
 		hh.setId(cursor.getInt(cursor.getColumnIndex(DatabaseHelper.Household._ID)));
 		hh.setExtId(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Household.COLUMN_EXT_ID)));
-		hh.setHeadExtId(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Household.COLUMN_HEAD_EXT_ID)));
 		hh.setHouseNumber(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Household.COLUMN_HOUSE_NUMBER)));
+		hh.setHeadPermId(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Household.COLUMN_HEAD_PERM_ID)));
+		hh.setSubsHeadPermId(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Household.COLUMN_SUBSHEAD_PERM_ID)));
 		hh.setNeighborhood(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Household.COLUMN_NEIGHBORHOOD)));
 		hh.setLocality(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Household.COLUMN_LOCALITY)));
 		hh.setAdminPost(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Household.COLUMN_ADMIN_POST)));
 		hh.setDistrict(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Household.COLUMN_DISTRICT)));
 		hh.setProvince(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Household.COLUMN_PROVINCE)));
-		hh.setHead(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Household.COLUMN_HEAD)));
-		hh.setAccuracy(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Household.COLUMN_ACCURACY)));
-		hh.setAltitude(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Household.COLUMN_ALTITUDE)));
-		hh.setLatitude(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Household.COLUMN_LATITUDE)));
-		hh.setLongitude(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Household.COLUMN_LONGITUDE)));
+		hh.setGpsAccuracy(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Household.COLUMN_GPS_ACCURACY)));
+		hh.setGpsAltitude(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Household.COLUMN_GPS_ALTITUDE)));
+		hh.setGpsLatitude(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Household.COLUMN_GPS_LATITUDE)));
+		hh.setGpsLongitude(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Household.COLUMN_GPS_LONGITUDE)));
+        hh.setExtrasColumns(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Household.COLUMN_EXTRAS_COLUMNS)));
+        hh.setExtrasValues(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Household.COLUMN_EXTRAS_VALUES)));
 		
 		return hh;
 	}
@@ -92,37 +95,29 @@ public class Converter {
 		mb.setGender(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Member.COLUMN_GENDER)));
 		mb.setDob(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Member.COLUMN_DOB)));
 		mb.setAge(cursor.getInt(cursor.getColumnIndex(DatabaseHelper.Member.COLUMN_AGE)));
+
+        mb.setSpouseExtId(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Member.COLUMN_SPOUSE_EXT_ID)));
+        mb.setSpouseName(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Member.COLUMN_SPOUSE_NAME)));
+        mb.setSpousePermId(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Member.COLUMN_SPOUSE_PERM_ID)));
+
 		mb.setMotherExtId(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Member.COLUMN_MOTHER_EXT_ID)));
 		mb.setMotherName(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Member.COLUMN_MOTHER_NAME)));
 		mb.setMotherPermId(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Member.COLUMN_MOTHER_PERM_ID)));
 		mb.setFatherExtId(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Member.COLUMN_FATHER_EXT_ID)));
 		mb.setFatherName(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Member.COLUMN_FATHER_NAME)));
 		mb.setFatherPermId(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Member.COLUMN_FATHER_PERM_ID)));
-		mb.setHhExtId(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Member.COLUMN_HH_EXT_ID)));
-		mb.setHhNumber(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Member.COLUMN_HH_NUMBER)));
-		mb.setHhStartType(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Member.COLUMN_HH_START_TYPE)));
-		mb.setHhStartDate(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Member.COLUMN_HH_START_DATE)));
-		mb.setHhEndType(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Member.COLUMN_HH_END_TYPE)));
-		mb.setHhEndDate(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Member.COLUMN_HH_END_DATE)));
-		mb.setHhAccuracy(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Member.COLUMN_GPS_ACCURACY)));
-		mb.setHhAltitude(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Member.COLUMN_GPS_ALTITUDE)));
-		mb.setHhLatitude(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Member.COLUMN_GPS_LATITUDE)));
-		mb.setHhLongitude(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Member.COLUMN_GPS_LONGITUDE)));
-		mb.setNrPregnancies(cursor.getInt(cursor.getColumnIndex(DatabaseHelper.Member.COLUMN_NR_PREGNANCIES)));
-		mb.setHasDelivered(cursor.getInt(cursor.getColumnIndex(DatabaseHelper.Member.COLUMN_HAS_DELIVERED))==1);
-		mb.setPregnant(cursor.getInt(cursor.getColumnIndex(DatabaseHelper.Member.COLUMN_IS_PREGNANT))==1);
-		mb.setClip_id_1(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Member.COLUMN_CLIP_ID_1)));
-		mb.setClip_id_2(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Member.COLUMN_CLIP_ID_2)));
-		mb.setClip_id_3(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Member.COLUMN_CLIP_ID_3)));
-		mb.setClip_id_4(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Member.COLUMN_CLIP_ID_4)));
-		mb.setClip_id_5(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Member.COLUMN_CLIP_ID_5)));
-		mb.setClip_id_6(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Member.COLUMN_CLIP_ID_6)));
-		mb.setClip_id_7(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Member.COLUMN_CLIP_ID_7)));
-		mb.setClip_id_8(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Member.COLUMN_CLIP_ID_8)));
-		mb.setClip_id_9(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Member.COLUMN_CLIP_ID_9)));
-		mb.setOnPom(cursor.getInt(cursor.getColumnIndex(DatabaseHelper.Member.COLUMN_ON_POM))==1);
-		mb.setOnFacility(cursor.getInt(cursor.getColumnIndex(DatabaseHelper.Member.COLUMN_ON_FACILITY))==1);
-		mb.setOnSurveillance(cursor.getInt(cursor.getColumnIndex(DatabaseHelper.Member.COLUMN_ON_SURVEILLANCE))==1);
+		mb.setHouseExtId(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Member.COLUMN_HOUSE_EXT_ID)));
+		mb.setHouseNumber(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Member.COLUMN_HOUSE_NUMBER)));
+		mb.setStartType(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Member.COLUMN_START_TYPE)));
+		mb.setStartDate(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Member.COLUMN_START_DATE)));
+		mb.setEndType(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Member.COLUMN_END_TYPE)));
+		mb.setEndDate(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Member.COLUMN_END_DATE)));
+		mb.setGpsAccuracy(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Member.COLUMN_GPS_ACCURACY)));
+		mb.setGpsAltitude(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Member.COLUMN_GPS_ALTITUDE)));
+		mb.setGpsLatitude(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Member.COLUMN_GPS_LATITUDE)));
+		mb.setGpsLongitude(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Member.COLUMN_GPS_LONGITUDE)));
+        mb.setExtrasColumns(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Member.COLUMN_EXTRAS_COLUMNS)));
+        mb.setExtrasValues(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Member.COLUMN_EXTRAS_VALUES)));
 		return mb;
 	}
 

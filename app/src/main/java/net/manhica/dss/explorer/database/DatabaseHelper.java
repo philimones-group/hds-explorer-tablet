@@ -5,7 +5,6 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.provider.BaseColumns;
-import android.util.Log;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
@@ -32,6 +31,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         if (newVersion > oldVersion) {
+            /*
             Log.d("alter table", "runinng"); //OLD VERSION
             try {
                 db.execSQL("ALTER TABLE " + CollectedData.TABLE_NAME + " ADD COLUMN " + CollectedData.COLUMN_SUPERVISED + " INTEGER NOT NULL DEFAULT 0"); //upgrade CollectedData
@@ -47,6 +47,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 Log.d("error on database alter", ""+ex.getMessage());
                 ex.printStackTrace();
             }
+            */
         }
 	}
 
@@ -68,12 +69,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         public static final String COLUMN_FIRSTNAME = "firstName";
         public static final String COLUMN_LASTNAME = "lastName";
+        public static final String COLUMN_FULLNAME = "fullName";
 		public static final String COLUMN_USERNAME = "username";
 		public static final String COLUMN_PASSWORD = "password";
         public static final String COLUMN_MODULES = "modules";
         public static final String COLUMN_EXTRAS = "extras";
 
-		public static final String[] ALL_COLUMNS = {COLUMN_FIRSTNAME, COLUMN_LASTNAME, COLUMN_USERNAME, COLUMN_PASSWORD, COLUMN_MODULES, COLUMN_EXTRAS};
+		public static final String[] ALL_COLUMNS = {COLUMN_FIRSTNAME, COLUMN_LASTNAME, COLUMN_FULLNAME, COLUMN_USERNAME, COLUMN_PASSWORD, COLUMN_MODULES, COLUMN_EXTRAS};
 	}
 
 	public static final class Form implements BaseColumns {
@@ -105,21 +107,23 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		public static final String TABLE_NAME = "household";
 
         public static final String COLUMN_EXT_ID = "extId";
-        public static final String COLUMN_HEAD_EXT_ID = "headExtId";
         public static final String COLUMN_HOUSE_NUMBER = "houseNumber";
+        public static final String COLUMN_HEAD_PERM_ID = "headPermId";
+        public static final String COLUMN_SUBSHEAD_PERM_ID = "subsHeadPermId";
         public static final String COLUMN_NEIGHBORHOOD = "neighborhood";
         public static final String COLUMN_LOCALITY = "locality";
         public static final String COLUMN_ADMIN_POST = "adminPost";
         public static final String COLUMN_DISTRICT = "district";
         public static final String COLUMN_PROVINCE = "province";
-        public static final String COLUMN_HEAD = "head";
-        public static final String COLUMN_ACCURACY = "accuracy";
-        public static final String COLUMN_ALTITUDE = "altitude";
-        public static final String COLUMN_LATITUDE = "latitude";
-        public static final String COLUMN_LONGITUDE = "longitude";
+        public static final String COLUMN_GPS_ACCURACY = "gpsAccuracy";
+        public static final String COLUMN_GPS_ALTITUDE = "gpsAltitude";
+        public static final String COLUMN_GPS_LATITUDE = "gpsLatitude";
+        public static final String COLUMN_GPS_LONGITUDE = "gpsLongitude";
+        public static final String COLUMN_EXTRAS_COLUMNS = "extrasColumns";
+        public static final String COLUMN_EXTRAS_VALUES = "extrasValues";
 
-		public static final String[] ALL_COLUMNS = {_ID, COLUMN_EXT_ID, COLUMN_HEAD_EXT_ID, COLUMN_HOUSE_NUMBER, COLUMN_NEIGHBORHOOD, COLUMN_LOCALITY,
-                COLUMN_ADMIN_POST, COLUMN_DISTRICT, COLUMN_PROVINCE, COLUMN_HEAD, COLUMN_ACCURACY, COLUMN_ALTITUDE, COLUMN_LATITUDE, COLUMN_LONGITUDE};
+		public static final String[] ALL_COLUMNS = {_ID, COLUMN_EXT_ID, COLUMN_HOUSE_NUMBER, COLUMN_HEAD_PERM_ID, COLUMN_SUBSHEAD_PERM_ID, COLUMN_NEIGHBORHOOD, COLUMN_LOCALITY,
+                COLUMN_ADMIN_POST, COLUMN_DISTRICT, COLUMN_PROVINCE, COLUMN_GPS_ACCURACY, COLUMN_GPS_ALTITUDE, COLUMN_GPS_LATITUDE, COLUMN_GPS_LONGITUDE, COLUMN_EXTRAS_COLUMNS, COLUMN_EXTRAS_VALUES};
 	}
 
 	public static final class Member implements BaseColumns  {
@@ -131,45 +135,34 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         public static final String COLUMN_GENDER = "gender";
         public static final String COLUMN_DOB = "dob";
         public static final String COLUMN_AGE = "age";
+        public static final String COLUMN_SPOUSE_EXT_ID = "spouseExtId";
+        public static final String COLUMN_SPOUSE_NAME = "spouseName";
+        public static final String COLUMN_SPOUSE_PERM_ID = "spousePermId";
         public static final String COLUMN_MOTHER_EXT_ID = "motherExtId";
         public static final String COLUMN_MOTHER_NAME = "motherName";
         public static final String COLUMN_MOTHER_PERM_ID = "motherPermId";
         public static final String COLUMN_FATHER_EXT_ID = "fatherExtId";
         public static final String COLUMN_FATHER_NAME = "fatherName";
         public static final String COLUMN_FATHER_PERM_ID = "fatherPermId";
-        public static final String COLUMN_HH_EXT_ID = "hhExtId";
-        public static final String COLUMN_HH_NUMBER = "hhNumber";
-        public static final String COLUMN_HH_START_TYPE = "hhStartType";
-        public static final String COLUMN_HH_START_DATE = "hhStartDate";
-        public static final String COLUMN_HH_END_TYPE = "hhEndType";
-        public static final String COLUMN_HH_END_DATE = "hhEndDate";
+        public static final String COLUMN_HOUSE_EXT_ID = "houseExtId";
+        public static final String COLUMN_HOUSE_NUMBER = "houseNumber";
+        public static final String COLUMN_START_TYPE = "startType";
+        public static final String COLUMN_START_DATE = "startDate";
+        public static final String COLUMN_END_TYPE = "endType";
+        public static final String COLUMN_END_DATE = "endDate";
         public static final String COLUMN_GPS_ACCURACY = "gpsAccuracy";
         public static final String COLUMN_GPS_ALTITUDE = "gpsAltitude";
         public static final String COLUMN_GPS_LATITUDE = "gpsLatitude";
         public static final String COLUMN_GPS_LONGITUDE = "gpsLongitude";
-        public static final String COLUMN_NR_PREGNANCIES = "nrPregnancies";
-        public static final String COLUMN_HAS_DELIVERED = "hasDelivered";
-        public static final String COLUMN_IS_PREGNANT = "isPregnant";
-        public static final String COLUMN_CLIP_ID_1 = "clip_id_1";
-        public static final String COLUMN_CLIP_ID_2 = "clip_id_2";
-        public static final String COLUMN_CLIP_ID_3 = "clip_id_3";
-        public static final String COLUMN_CLIP_ID_4 = "clip_id_4";
-        public static final String COLUMN_CLIP_ID_5 = "clip_id_5";
-        public static final String COLUMN_CLIP_ID_6 = "clip_id_6";
-        public static final String COLUMN_CLIP_ID_7 = "clip_id_7";
-        public static final String COLUMN_CLIP_ID_8 = "clip_id_8";
-        public static final String COLUMN_CLIP_ID_9 = "clip_id_9";
-        public static final String COLUMN_ON_POM = "onPom";
-        public static final String COLUMN_ON_FACILITY = "onFacility";
-        public static final String COLUMN_ON_SURVEILLANCE = "onSurveillance";
+        public static final String COLUMN_EXTRAS_COLUMNS = "extrasColumns";
+        public static final String COLUMN_EXTRAS_VALUES = "extrasValues";
 
 
-        public static final String[] ALL_COLUMNS = {_ID, COLUMN_EXT_ID, COLUMN_PERM_ID, COLUMN_NAME, COLUMN_GENDER, COLUMN_DOB, COLUMN_AGE, COLUMN_MOTHER_EXT_ID,
-                COLUMN_MOTHER_NAME, COLUMN_MOTHER_PERM_ID, COLUMN_FATHER_EXT_ID, COLUMN_FATHER_NAME, COLUMN_FATHER_PERM_ID, COLUMN_HH_EXT_ID, COLUMN_HH_NUMBER,
-                COLUMN_HH_START_TYPE, COLUMN_HH_START_DATE, COLUMN_HH_END_TYPE, COLUMN_HH_END_DATE,
-                COLUMN_GPS_ACCURACY, COLUMN_GPS_ALTITUDE, COLUMN_GPS_LATITUDE, COLUMN_GPS_LONGITUDE, COLUMN_NR_PREGNANCIES, COLUMN_HAS_DELIVERED, COLUMN_IS_PREGNANT,
-                COLUMN_CLIP_ID_1, COLUMN_CLIP_ID_2, COLUMN_CLIP_ID_3, COLUMN_CLIP_ID_4, COLUMN_CLIP_ID_5, COLUMN_CLIP_ID_6, COLUMN_CLIP_ID_7, COLUMN_CLIP_ID_8, COLUMN_CLIP_ID_9,
-                COLUMN_ON_POM, COLUMN_ON_FACILITY, COLUMN_ON_SURVEILLANCE};
+        public static final String[] ALL_COLUMNS = {_ID, COLUMN_EXT_ID, COLUMN_PERM_ID, COLUMN_NAME, COLUMN_GENDER, COLUMN_DOB, COLUMN_AGE, COLUMN_SPOUSE_EXT_ID,
+                COLUMN_SPOUSE_NAME, COLUMN_SPOUSE_PERM_ID, COLUMN_MOTHER_EXT_ID,
+                COLUMN_MOTHER_NAME, COLUMN_MOTHER_PERM_ID, COLUMN_FATHER_EXT_ID, COLUMN_FATHER_NAME, COLUMN_FATHER_PERM_ID, COLUMN_HOUSE_EXT_ID, COLUMN_HOUSE_NUMBER,
+                COLUMN_START_TYPE, COLUMN_START_DATE, COLUMN_END_TYPE, COLUMN_END_DATE,
+                COLUMN_GPS_ACCURACY, COLUMN_GPS_ALTITUDE, COLUMN_GPS_LATITUDE, COLUMN_GPS_LONGITUDE, COLUMN_EXTRAS_COLUMNS, COLUMN_EXTRAS_VALUES};
 	}
 
     public static final class CollectedData implements BaseColumns {
@@ -202,6 +195,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + User._ID  + " INTEGER PRIMARY KEY AUTOINCREMENT, "
             + User.COLUMN_FIRSTNAME + " TEXT,"
             + User.COLUMN_LASTNAME + " TEXT,"
+            + User.COLUMN_FULLNAME + " TEXT,"
             + User.COLUMN_USERNAME + " TEXT,"
             + User.COLUMN_PASSWORD + " TEXT,"
             + User.COLUMN_MODULES + " TEXT,"
@@ -242,18 +236,20 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + "CREATE TABLE " + Household.TABLE_NAME + "("
             + Household._ID  + " INTEGER PRIMARY KEY AUTOINCREMENT, "
             + Household.COLUMN_EXT_ID + " TEXT,"
-            + Household.COLUMN_HEAD_EXT_ID + " TEXT,"
+            + Household.COLUMN_HEAD_PERM_ID + " TEXT,"
+            + Household.COLUMN_SUBSHEAD_PERM_ID + " TEXT,"
             + Household.COLUMN_HOUSE_NUMBER + " TEXT,"
             + Household.COLUMN_NEIGHBORHOOD + " TEXT,"
             + Household.COLUMN_LOCALITY + " TEXT,"
             + Household.COLUMN_ADMIN_POST + " TEXT,"
             + Household.COLUMN_DISTRICT + " TEXT,"
             + Household.COLUMN_PROVINCE + " TEXT,"
-            + Household.COLUMN_HEAD + " TEXT,"
-            + Household.COLUMN_ACCURACY + " TEXT,"
-            + Household.COLUMN_ALTITUDE + " TEXT,"
-            + Household.COLUMN_LATITUDE + " TEXT,"
-            + Household.COLUMN_LONGITUDE + " TEXT);"
+            + Household.COLUMN_GPS_ACCURACY + " TEXT,"
+            + Household.COLUMN_GPS_ALTITUDE + " TEXT,"
+            + Household.COLUMN_GPS_LATITUDE + " TEXT,"
+            + Household.COLUMN_GPS_LONGITUDE + " TEXT,"
+            + Household.COLUMN_EXTRAS_COLUMNS + " TEXT,"
+            + Household.COLUMN_EXTRAS_VALUES + " TEXT);"
 
             + " CREATE UNIQUE INDEX IDX_HOUSEHOLD_EXTID ON " + Household.TABLE_NAME
             + "(" +  Household.COLUMN_EXT_ID + ");"
@@ -271,37 +267,27 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + Member.COLUMN_GENDER + " TEXT,"
             + Member.COLUMN_DOB + " TEXT,"
             + Member.COLUMN_AGE + " INTEGER,"
+            + Member.COLUMN_SPOUSE_EXT_ID + " TEXT,"
+            + Member.COLUMN_SPOUSE_NAME + " TEXT,"
+            + Member.COLUMN_SPOUSE_PERM_ID + " TEXT,"
             + Member.COLUMN_MOTHER_EXT_ID + " TEXT,"
             + Member.COLUMN_MOTHER_NAME + " TEXT,"
             + Member.COLUMN_MOTHER_PERM_ID + " TEXT,"
             + Member.COLUMN_FATHER_EXT_ID + " TEXT,"
             + Member.COLUMN_FATHER_NAME + " TEXT,"
             + Member.COLUMN_FATHER_PERM_ID + " TEXT,"
-            + Member.COLUMN_HH_EXT_ID + " TEXT,"
-            + Member.COLUMN_HH_NUMBER + " TEXT,"
-            + Member.COLUMN_HH_START_TYPE + " TEXT,"
-            + Member.COLUMN_HH_START_DATE + " TEXT,"
-            + Member.COLUMN_HH_END_TYPE + " TEXT,"
-            + Member.COLUMN_HH_END_DATE + " TEXT,"
+            + Member.COLUMN_HOUSE_EXT_ID + " TEXT,"
+            + Member.COLUMN_HOUSE_NUMBER + " TEXT,"
+            + Member.COLUMN_START_TYPE + " TEXT,"
+            + Member.COLUMN_START_DATE + " TEXT,"
+            + Member.COLUMN_END_TYPE + " TEXT,"
+            + Member.COLUMN_END_DATE + " TEXT,"
             + Member.COLUMN_GPS_ACCURACY + " TEXT,"
             + Member.COLUMN_GPS_ALTITUDE + " TEXT,"
             + Member.COLUMN_GPS_LATITUDE + " TEXT,"
             + Member.COLUMN_GPS_LONGITUDE + " TEXT,"
-            + Member.COLUMN_NR_PREGNANCIES + " INTEGER,"
-            + Member.COLUMN_HAS_DELIVERED + " INTEGER,"
-            + Member.COLUMN_IS_PREGNANT + " INTEGER,"
-            + Member.COLUMN_CLIP_ID_1 + " TEXT,"
-            + Member.COLUMN_CLIP_ID_2 + " TEXT,"
-            + Member.COLUMN_CLIP_ID_3 + " TEXT,"
-            + Member.COLUMN_CLIP_ID_4 + " TEXT,"
-            + Member.COLUMN_CLIP_ID_5 + " TEXT,"
-            + Member.COLUMN_CLIP_ID_6 + " TEXT,"
-            + Member.COLUMN_CLIP_ID_7 + " TEXT,"
-            + Member.COLUMN_CLIP_ID_8 + " TEXT,"
-            + Member.COLUMN_CLIP_ID_9 + " TEXT,"
-            + Member.COLUMN_ON_POM + " INTEGER,"
-            + Member.COLUMN_ON_FACILITY + " INTEGER,"
-            + Member.COLUMN_ON_SURVEILLANCE + " INTEGER);"
+            + Member.COLUMN_EXTRAS_COLUMNS + " TEXT,"
+            + Member.COLUMN_EXTRAS_VALUES + " TEXT);"
 
             + " CREATE UNIQUE INDEX IDX_MEMBER_EXT_ID ON " + Member.TABLE_NAME
             + "(" +  Member.COLUMN_EXT_ID + ");"

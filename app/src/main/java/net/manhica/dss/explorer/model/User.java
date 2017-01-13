@@ -16,6 +16,7 @@ public class User implements Serializable, Table {
 
     private String firstName;
     private String lastName;
+    private String fullName;
     private String username;
     private String password;
     private String modules;
@@ -25,9 +26,10 @@ public class User implements Serializable, Table {
 
     }
 
-    public User(String firstName, String lastName, String username, String password, String modules, String extras) {
+    public User(String firstName, String lastName, String fullName, String username, String password, String modules, String extras) {
         this.firstName = firstName;
         this.lastName = lastName;
+        this.fullName = fullName;
         this.username = username;
         this.password = password;
         this.modules = modules;
@@ -48,6 +50,14 @@ public class User implements Serializable, Table {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    public String getFullName() {
+        return fullName;
+    }
+
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
     }
 
     public String getUsername() {
@@ -82,10 +92,6 @@ public class User implements Serializable, Table {
         this.extras = extras;
     }
 
-    public String getFullname(){
-        return firstName.trim() + " " + lastName.trim();
-    }
-
     public String toString(){
         return ""+this.firstName+" "+this.lastName+", user: "+this.username;
     }
@@ -105,6 +111,7 @@ public class User implements Serializable, Table {
         cv.put(DatabaseHelper.User.COLUMN_FIRSTNAME, firstName);
         cv.put(DatabaseHelper.User.COLUMN_LASTNAME, lastName);
         cv.put(DatabaseHelper.User.COLUMN_USERNAME, username);
+        cv.put(DatabaseHelper.User.COLUMN_FULLNAME, fullName);
         cv.put(DatabaseHelper.User.COLUMN_PASSWORD, password);
         cv.put(DatabaseHelper.User.COLUMN_MODULES, modules);
         cv.put(DatabaseHelper.User.COLUMN_EXTRAS, extras);

@@ -12,11 +12,9 @@ import java.io.Serializable;
  */
 public class Module implements Serializable, Table {
 
-    public final static String CLIP_POM_MODULE = "CLIP-POM";
-    public final static String CLIP_SURVEY_MODULE = "CLIP-SURVEY";
-    public final static String CLIP_FACILITY_MODULE = "CLIP-FACILITY";
-    public final static String CLIP_SUPERVISOR = "CLIP-SUPERVISOR";
-    public final static String CLIP_OTHERS = "CLIP-ANY";
+    public final static String DSS_SURVEY_MODULE = "DSS-SURVEY";
+    public final static String DSS_SUPERVISOR = "DSS-SUPERVISOR";
+    public final static String DSS_OTHERS = "DSS-ANY";
 
     private String code;
     private String name;

@@ -26,7 +26,7 @@ import android.util.Base64;
 import android.util.Log;
 import android.widget.Toast;
 
-import net.manhica.clip.explorer.R;
+import net.manhica.dss.explorer.R;
 import net.manhica.dss.explorer.database.Bootstrap;
 import net.manhica.dss.explorer.database.Database;
 import net.manhica.dss.explorer.database.DatabaseHelper;
@@ -52,7 +52,7 @@ import mz.betainteractive.utilities.StringUtil;
  */
 public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 
-	private static final String API_PATH = "/api/clip-explorer";
+	private static final String API_PATH = "/api/dss-explorer";
 	private static final String ZIP_MIME_TYPE = "application/zip;charset=utf-8";
 	private static final String XML_MIME_TYPE = "text/xml;charset=utf-8";
 
@@ -135,7 +135,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 	@Override
 	protected void onProgressUpdate(Integer... values) {
 		StringBuilder builder = new StringBuilder();
-		
+
 		switch (state) {
 		case DOWNLOADING:
 			builder.append(mContext.getString(R.string.sync_downloading_lbl));
@@ -170,7 +170,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 			}
 
 			builder.append(msg);
-		}	
+		}
 
 		dialog.setMessage(builder.toString());
 	}
@@ -229,7 +229,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 		// foreign keys
 		Database database = getDatabase();
 		database.open();
-		
+
 		database.delete(User.class, null, null);
 		database.delete(Form.class, null, null);
 		database.delete(Module.class, null, null);
@@ -321,7 +321,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 		parser.setInput(content, null);
 
 		int eventType = parser.getEventType();
-		
+
 		while (eventType != XmlPullParser.END_DOCUMENT && !isCancelled()) {
 			String name = null;
 
@@ -341,7 +341,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 				}
 				break;
 			}
-						
+
 			eventType = parser.next();
 		}
 	}
@@ -416,26 +416,37 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 			Module table = new Module();
 
 			parser.nextTag(); //<code>
-			parser.next(); //text
-			table.setCode(parser.getText());
-			//Log.d("aftere-tag-"+parser.getName(), "value="+parser.getText()+", event="+parser.getEventType());
+			if (!isEmptyTag(DatabaseHelper.Module.COLUMN_CODE, parser)) {
+                parser.next();
+                table.setCode(parser.getText());
+                parser.nextTag();
+			}else{
+				table.setCode("");
+                parser.nextTag();
+			}
 
-            //code - startTag
-			parser.nextTag(); //</code>
-			parser.nextTag(); //<name>
-			parser.next();    //text
-			table.setName(parser.getText());
-			//Log.d("2aftere-tag-"+parser.getName(), "value="+parser.getText()+", event="+parser.getEventType());
+            parser.nextTag(); //name
+            if (!isEmptyTag(DatabaseHelper.Module.COLUMN_NAME, parser)) {
+                parser.next();
+                table.setName(parser.getText());
+                parser.nextTag();
+            }else{
+                table.setName("");
+                parser.nextTag();
+            }
 
-			parser.nextTag(); //</name>
-			parser.nextTag(); //<description>
-			parser.next();    //text
-			table.setDescription(parser.getText());
-			//Log.d("3aftere-tag-"+parser.getName(), "value="+parser.getText()+", event="+parser.getEventType());
+            parser.nextTag(); //description
+            if (!isEmptyTag(DatabaseHelper.Module.COLUMN_DESCRIPTION, parser)) {
+                parser.next();
+                table.setDescription(parser.getText());
+                parser.nextTag();
+            }else{
+                table.setDescription("");
+                parser.nextTag();
+            }
 
-			parser.nextTag(); //</description>
-			parser.nextTag(); //</module>
-			parser.next();    //</modules> or <module>
+            parser.nextTag();
+            parser.next();
 
 			values.add(table);
 			publishProgress(count);
@@ -605,7 +616,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 
 		while (notEndOfXmlDoc("users", parser)) {
 			count++;
-						
+
 			User table = new User();
 
 			parser.nextTag(); //process <username>
@@ -649,6 +660,17 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 				//Log.d(count+"-lastName", "value="+ table.getLastName());
 			}else{
 				table.setLastName("");
+				parser.nextTag();
+			}
+
+			parser.nextTag(); //process <fullName>
+			if (!isEmptyTag("fullName", parser)) { //its not <fullName/>
+				parser.next();
+				table.setFullName(parser.getText());
+				parser.nextTag(); //process </fullName>
+				//Log.d(count+"-fullName", "value="+ table.getFullName());
+			}else{
+				table.setFullName("");
 				parser.nextTag();
 			}
 
@@ -727,85 +749,165 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 
 			Household table = new Household();
 
-			parser.nextTag(); //process extId
-			parser.next();
-			table.setExtId(parser.getText());
-			//Log.d(count+"-extId", "value="+ parser.getText());
 
-			parser.nextTag(); //process headExtId
-			parser.nextTag();
-			parser.next();
-			table.setHeadExtId(parser.getText());
-			//Log.d(count+"-headExtId", "value="+ parser.getText());
+            parser.nextTag(); //process <extId>
+            if (!isEmptyTag(DatabaseHelper.Household.COLUMN_EXT_ID, parser)) {
+                parser.next();
+                table.setExtId(parser.getText());
+                parser.nextTag(); //process </extId>
+            }else{
+                table.setExtId("");
+                parser.nextTag();
+            }
 
-			parser.nextTag(); //process houseNumber
-			parser.nextTag();
-			parser.next();
-			table.setHouseNumber(parser.getText());
-			//Log.d(count+"-houseNumber", "value="+ parser.getText());
+            parser.nextTag(); //process <houseNumber>
+            if (!isEmptyTag(DatabaseHelper.Household.COLUMN_HOUSE_NUMBER, parser)) {
+                parser.next();
+                table.setHouseNumber(parser.getText());
+                parser.nextTag(); //process </houseNumber>
+            }else{
+                table.setHouseNumber("");
+                parser.nextTag();
+            }
 
-			parser.nextTag(); //process neighborhood
-			parser.nextTag();
-			parser.next();
-			table.setNeighborhood(parser.getText());
-			//Log.d(count+"-neighborhood", "value="+ parser.getText());
+            parser.nextTag(); //process <headPermId>
+            if (!isEmptyTag(DatabaseHelper.Household.COLUMN_HEAD_PERM_ID, parser)) {
+                parser.next();
+                table.setHeadPermId(parser.getText());
+                parser.nextTag(); //process </headPermId>
+            }else{
+                table.setHeadPermId("");
+                parser.nextTag();
+            }
 
-			parser.nextTag(); //process locality
-			parser.nextTag();
-			parser.next();
-			table.setLocality(parser.getText());
-			//Log.d(count+"-locality", "value="+ parser.getText());
+            parser.nextTag(); //process <subsHeadPermId>
+            if (!isEmptyTag(DatabaseHelper.Household.COLUMN_SUBSHEAD_PERM_ID, parser)) {
+                parser.next();
+                table.setSubsHeadPermId(parser.getText());
+                parser.nextTag(); //process </subsHeadPermId>
+            }else{
+                table.setSubsHeadPermId("");
+                parser.nextTag();
+            }
 
-			parser.nextTag(); //process adminPost
-			parser.nextTag();
-			parser.next();
-			table.setAdminPost(parser.getText());
-			//Log.d(count+"-adminPost", "value="+ parser.getText());
+            parser.nextTag(); //process <neighborhood>
+            if (!isEmptyTag(DatabaseHelper.Household.COLUMN_NEIGHBORHOOD, parser)) {
+                parser.next();
+                table.setNeighborhood(parser.getText());
+                parser.nextTag(); //process </neighborhood>
+            }else{
+                table.setNeighborhood("");
+                parser.nextTag();
+            }
 
-			parser.nextTag(); //process district
-			parser.nextTag();
-			parser.next();
-			table.setDistrict(parser.getText());
-			//Log.d(count+"-district", "value="+ parser.getText());
+            parser.nextTag(); //process <locality>
+            if (!isEmptyTag(DatabaseHelper.Household.COLUMN_LOCALITY, parser)) {
+                parser.next();
+                table.setLocality(parser.getText());
+                parser.nextTag(); //process </locality>
+            }else{
+                table.setLocality("");
+                parser.nextTag();
+            }
 
-			parser.nextTag(); //process province
-			parser.nextTag();
-			parser.next();
-			table.setProvince(parser.getText());
-			//Log.d(count+"-province", "value="+ parser.getText());
+            parser.nextTag(); //process <adminPost>
+            if (!isEmptyTag(DatabaseHelper.Household.COLUMN_ADMIN_POST, parser)) {
+                parser.next();
+                table.setAdminPost(parser.getText());
+                parser.nextTag(); //process </adminPost>
+            }else{
+                table.setAdminPost("");
+                parser.nextTag();
+            }
 
-			parser.nextTag(); //process head
-			parser.nextTag();
-			parser.next();
-			table.setHead(parser.getText());
-			//Log.d(count+"-head", "value="+ parser.getText());
+            parser.nextTag(); //process <district>
+            if (!isEmptyTag(DatabaseHelper.Household.COLUMN_DISTRICT, parser)) {
+                parser.next();
+                table.setDistrict(parser.getText());
+                parser.nextTag(); //process </district>
+            }else{
+                table.setDistrict("");
+                parser.nextTag();
+            }
 
-			parser.nextTag(); //process accuracy
-			parser.nextTag();
-			parser.next();
-			table.setAccuracy(parser.getText());
-			//Log.d(count+"-accuracy", "value="+ parser.getText());
+            parser.nextTag(); //process <province>
+            if (!isEmptyTag(DatabaseHelper.Household.COLUMN_PROVINCE, parser)) {
+                parser.next();
+                table.setProvince(parser.getText());
+                parser.nextTag(); //process </province>
+            }else{
+                table.setProvince("");
+                parser.nextTag();
+            }
 
-			parser.nextTag(); //process altitude
-			parser.nextTag();
-			parser.next();
-			table.setAltitude(parser.getText());
-			//Log.d(count+"-altitude", "value="+ parser.getText());
+            parser.nextTag(); //process <gpsAccuracy>
+            if (!isEmptyTag(DatabaseHelper.Household.COLUMN_GPS_ACCURACY, parser)) {
+                parser.next();
+                table.setGpsAccuracy(parser.getText());
+                parser.nextTag(); //process </gpsAccuracy>
+                //Log.d("note gpsacc", table.getGpsAccuracy());
+            }else{
+                table.setGpsAccuracy("");
+                parser.nextTag();
+                //Log.d("e gpsacc", table.getGpsAccuracy());
+            }
 
-			parser.nextTag(); //process latitude
-			parser.nextTag();
-			parser.next();
-			table.setLatitude(parser.getText());
-			//Log.d(count+"-latitude", "value="+ parser.getText());
+            parser.nextTag(); //process <gpsAltitude>
+            if (!isEmptyTag(DatabaseHelper.Household.COLUMN_GPS_ALTITUDE, parser)) {
+                parser.next();
+                table.setGpsAltitude(parser.getText());
+                parser.nextTag(); //process </gpsAltitude>
+            }else{
+                table.setGpsAltitude("");
+                parser.nextTag();
+            }
 
-			parser.nextTag(); //process longitude
-			parser.nextTag();
-			parser.next();
-			table.setLongitude(parser.getText());
-			//Log.d(count+"-longitude", "value="+ parser.getText());
+            parser.nextTag(); //process <gpsLatitude>
+            if (!isEmptyTag(DatabaseHelper.Household.COLUMN_GPS_LATITUDE, parser)) {
+                parser.next();
+                table.setGpsLatitude(parser.getText());
+                parser.nextTag(); //process </gpsLatitude>
+            }else{
+                table.setGpsLatitude("");
+                parser.nextTag();
+            }
 
-			parser.nextTag();
-			parser.nextTag();
+            parser.nextTag(); //process <gpsLongitude>
+            if (!isEmptyTag(DatabaseHelper.Household.COLUMN_GPS_LONGITUDE, parser)) {
+                parser.next();
+                table.setGpsLongitude(parser.getText());
+                parser.nextTag(); //process </gpsLongitude>
+                //Log.d("note gpslng", table.getGpsLongitude());
+            }else{
+                table.setGpsLongitude("");
+                parser.nextTag();
+            }
+            //Log.d("position now ", ""+parser.getName() + ", " +parser.getPositionDescription() );
+            parser.nextTag(); //process <extrasColumns>
+            //Log.d("extraColumns "+isEmptyTag(DatabaseHelper.Household.COLUMN_EXTRAS_COLUMNS,parser), ""+parser.getName() + ", " +parser.getPositionDescription() );
+            if (!isEmptyTag(DatabaseHelper.Household.COLUMN_EXTRAS_COLUMNS, parser)) {
+                parser.next();
+                table.setExtrasColumns(parser.getText());
+                parser.nextTag(); //process </extrasColumns>
+                //Log.d("note excol", table.getExtrasColumns());
+            }else{
+                table.setExtrasColumns("");
+                parser.nextTag();
+                //Log.d("e excol", table.getExtrasColumns());
+            }
+
+            parser.nextTag(); //process <extrasValues>
+            if (!isEmptyTag(DatabaseHelper.Household.COLUMN_EXTRAS_VALUES, parser)) {
+                parser.next();
+                table.setExtrasValues(parser.getText());
+                parser.nextTag(); //process </extrasValues>
+            }else{
+                table.setExtrasValues("");
+                parser.nextTag();
+            }
+
+
+			parser.nextTag(); //last process tag
 			parser.next();
 
 			//values.add(table);
@@ -847,256 +949,294 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 
 			Member table = new Member();
 
-			parser.nextTag(); //process extId
-			parser.next();
-			table.setExtId(parser.getText());
-			//Log.d(count+"-extId", "value="+ parser.getText());
+            //Log.d("TAG", parser.getPositionDescription());
 
-			parser.nextTag(); //process permId
-			parser.nextTag();
-			parser.next();
-			table.setPermId(parser.getText());
-			//Log.d(count+"-permId", "value="+ parser.getText());
+            parser.nextTag(); //process <extId>
+            //Log.d("TAG2", parser.getPositionDescription());
+            if (!isEmptyTag(DatabaseHelper.Member.COLUMN_EXT_ID, parser)) {
+                parser.next();
+                table.setExtId(parser.getText());
+                parser.nextTag(); //process </extId>
+            }else{
+                table.setExtId("");
+                parser.nextTag();
+            }
 
-			parser.nextTag(); //process name
-			parser.nextTag();
-			parser.next();
-			table.setName(parser.getText());
-			//Log.d(count+"-name", "value="+ parser.getText());
+            parser.nextTag(); //process <permId>
+            if (!isEmptyTag(DatabaseHelper.Member.COLUMN_PERM_ID, parser)) {
+                parser.next();
+                table.setPermId(parser.getText());
+                parser.nextTag(); //process </permId>
+            }else{
+                table.setPermId("");
+                parser.nextTag();
+            }
 
-			parser.nextTag(); //process gender
-			parser.nextTag();
-			parser.next();
-			table.setGender(parser.getText());
-			//Log.d(count+"-gender", "value="+ parser.getText());
+            parser.nextTag(); //process <name>
+            if (!isEmptyTag(DatabaseHelper.Member.COLUMN_NAME, parser)) {
+                parser.next();
+                table.setName(parser.getText());
+                parser.nextTag(); //process </name>
+            }else{
+                table.setName("");
+                parser.nextTag();
+            }
 
-			parser.nextTag(); //process dob
-			parser.nextTag();
-			parser.next();
-			table.setDob(parser.getText());
-			//Log.d(count+"-dob", "value="+ parser.getText());
+            parser.nextTag(); //process <gender>
+            if (!isEmptyTag(DatabaseHelper.Member.COLUMN_GENDER, parser)) {
+                parser.next();
+                table.setGender(parser.getText());
+                parser.nextTag(); //process </gender>
+            }else{
+                table.setGender("");
+                parser.nextTag();
+            }
 
-			parser.nextTag(); //process age
-			parser.nextTag();
-			parser.next();
-			table.setAge(Integer.parseInt(parser.getText()));
-			//Log.d(count+"-age", "value="+ parser.getText());
+            parser.nextTag(); //process <dob>
+            if (!isEmptyTag(DatabaseHelper.Member.COLUMN_DOB, parser)) {
+                parser.next();
+                table.setDob(parser.getText());
+                parser.nextTag(); //process </dob>
+            }else{
+                table.setDob("");
+                parser.nextTag();
+            }
 
-			parser.nextTag(); //process motherExtId
-			parser.nextTag();
-			parser.next();
-			table.setMotherExtId(parser.getText());
-			//Log.d(count+"-motherExtId", "value="+ parser.getText());
+            parser.nextTag(); //process <age>
+            if (!isEmptyTag(DatabaseHelper.Member.COLUMN_AGE, parser)) {
+                parser.next();
+                table.setAge(Integer.parseInt(parser.getText()));
+                parser.nextTag(); //process </age>
+            }else{
+                table.setAge(-1);
+                parser.nextTag();
+            }
 
-			parser.nextTag(); //process motherName
-			parser.nextTag();
-			parser.next();
-			table.setMotherName(parser.getText());
-			//Log.d(count+"-motherName", "value="+ parser.getText());
+            parser.nextTag(); //process <motherExtId>
+            if (!isEmptyTag(DatabaseHelper.Member.COLUMN_MOTHER_EXT_ID, parser)) {
+                parser.next();
+                table.setMotherExtId(parser.getText());
+                parser.nextTag(); //process </motherExtId>
+            }else{
+                table.setMotherExtId("");
+                parser.nextTag();
+            }
 
-			parser.nextTag(); //process motherPermId
-			parser.nextTag();
-			parser.next();
-			table.setMotherPermId(parser.getText());
-			//Log.d(count+"-motherPermId", "value="+ parser.getText());
+            parser.nextTag(); //process <motherName>
+            if (!isEmptyTag(DatabaseHelper.Member.COLUMN_MOTHER_NAME, parser)) {
+                parser.next();
+                table.setMotherName(parser.getText());
+                parser.nextTag(); //process </motherName>
+            }else{
+                table.setMotherName("");
+                parser.nextTag();
+            }
 
-			parser.nextTag(); //process fatherExtId
-			parser.nextTag();
-			parser.next();
-			table.setFatherExtId(parser.getText());
-			//Log.d(count+"-fatherExtId", "value="+ parser.getText());
+            parser.nextTag(); //process <motherPermId>
+            if (!isEmptyTag(DatabaseHelper.Member.COLUMN_MOTHER_PERM_ID, parser)) {
+                parser.next();
+                table.setMotherPermId(parser.getText());
+                parser.nextTag(); //process </motherPermId>
+            }else{
+                table.setMotherPermId("");
+                parser.nextTag();
+            }
 
-			parser.nextTag(); //process fatherName
-			parser.nextTag();
-			parser.next();
-			table.setFatherName(parser.getText());
-			//Log.d(count+"-fatherName", "value="+ parser.getText());
+            parser.nextTag(); //process <fatherExtId>
+            if (!isEmptyTag(DatabaseHelper.Member.COLUMN_FATHER_EXT_ID, parser)) {
+                parser.next();
+                table.setFatherExtId(parser.getText());
+                parser.nextTag(); //process </fatherExtId>
+            }else{
+                table.setFatherExtId("");
+                parser.nextTag();
+            }
 
-			parser.nextTag(); //process fatherPermId
-			parser.nextTag();
-			parser.next();
-			table.setFatherPermId(parser.getText());
-			//Log.d(count+"-fatherPermId", "value="+ parser.getText());
+            parser.nextTag(); //process <fatherName>
+            if (!isEmptyTag(DatabaseHelper.Member.COLUMN_FATHER_NAME, parser)) {
+                parser.next();
+                table.setFatherName(parser.getText());
+                parser.nextTag(); //process </fatherName>
+            }else{
+                table.setFatherName("");
+                parser.nextTag();
+            }
 
-			parser.nextTag(); //process hhExtId
-			parser.nextTag();
-			parser.next();
-			table.setHhExtId(parser.getText());
-			//Log.d(count+"-hhExtId", "value="+ parser.getText());
+            parser.nextTag(); //process <fatherPermId>
+            if (!isEmptyTag(DatabaseHelper.Member.COLUMN_FATHER_PERM_ID, parser)) {
+                parser.next();
+                table.setFatherPermId(parser.getText());
+                parser.nextTag(); //process </fatherPermId>
+            }else{
+                table.setFatherPermId("");
+                parser.nextTag();
+            }
 
-			parser.nextTag(); //process hhNumber
-			parser.nextTag();
-			parser.next();
-			table.setHhNumber(parser.getText());
-			//Log.d(count+"-hhNumber", "value="+ parser.getText());
+            parser.nextTag(); //process <spouseExtId>
+            if (!isEmptyTag(DatabaseHelper.Member.COLUMN_SPOUSE_EXT_ID, parser)) {
+                parser.next();
+                table.setSpouseExtId(parser.getText());
+                parser.nextTag(); //process </spouseExtId>
+            }else{
+                table.setSpouseExtId("");
+                parser.nextTag();
+            }
 
-			parser.nextTag(); //process hhStartType
-			parser.nextTag();
-			parser.next();
-			table.setHhStartType(parser.getText());
-			//Log.d(count+"-hhStartType", "value="+ parser.getText());
+            parser.nextTag(); //process <spouseName>
+            if (!isEmptyTag(DatabaseHelper.Member.COLUMN_SPOUSE_NAME, parser)) {
+                parser.next();
+                table.setSpouseName(parser.getText());
+                parser.nextTag(); //process </spouseName>
+            }else{
+                table.setSpouseName("");
+                parser.nextTag();
+            }
 
-			parser.nextTag(); //process hhStartDate
-			parser.nextTag();
-			parser.next();
-			table.setHhStartDate(parser.getText());
-			//Log.d(count+"-hhStartDate", "value="+ parser.getText());
+            parser.nextTag(); //process <spousePermId>
+            if (!isEmptyTag(DatabaseHelper.Member.COLUMN_SPOUSE_PERM_ID, parser)) {
+                parser.next();
+                table.setSpousePermId(parser.getText());
+                parser.nextTag(); //process </spousePermId>
+            }else{
+                table.setSpousePermId("");
+                parser.nextTag();
+            }
 
-			parser.nextTag(); //process hhEndType
-			parser.nextTag();
-			parser.next();
-			table.setHhEndType(parser.getText());
-			//Log.d(count+"-hhEndType", "value="+ parser.getText());
+            parser.nextTag(); //process <houseExtId>
+            if (!isEmptyTag(DatabaseHelper.Member.COLUMN_HOUSE_EXT_ID, parser)) {
+                parser.next();
+                table.setHouseExtId(parser.getText());
+                parser.nextTag(); //process </houseExtId>
+            }else{
+                table.setHouseExtId("");
+                parser.nextTag();
+            }
 
-			if (parser.getText()!=null)
-			parser.nextTag(); //process hhEndDate
-			parser.nextTag();
-			parser.next();
-			table.setHhEndDate(parser.getText());
-			//Log.d(count+"-hhEndDate", "value="+ parser.getText());
+            parser.nextTag(); //process <houseNumber>
+            if (!isEmptyTag(DatabaseHelper.Member.COLUMN_HOUSE_NUMBER, parser)) {
+                parser.next();
+                table.setHouseNumber(parser.getText());
+                parser.nextTag(); //process </houseNumber>
+            }else{
+                table.setHouseNumber("");
+                parser.nextTag();
+            }
 
-			if (parser.getText()!=null)
-			parser.nextTag(); //process gps-accuracy
-			parser.nextTag();
-			parser.next();
-			table.setHhAccuracy(parser.getText());
-			//Log.d(count+"-Accuracy", "value="+ parser.getText());
+            parser.nextTag(); //process <startType>
+            if (!isEmptyTag(DatabaseHelper.Member.COLUMN_START_TYPE, parser)) {
+                parser.next();
+                table.setStartType(parser.getText());
+                parser.nextTag(); //process </startType>
+            }else{
+                table.setStartType("");
+                parser.nextTag();
+            }
 
-			if (parser.getText()!=null)
-			parser.nextTag(); //process gps-altitude
-			parser.nextTag();
-			parser.next();
-			table.setHhAltitude(parser.getText());
-			//Log.d(count+"-Altitude", "value="+ parser.getText());
+            parser.nextTag(); //process <startDate>
+            if (!isEmptyTag(DatabaseHelper.Member.COLUMN_START_DATE, parser)) {
+                parser.next();
+                table.setStartDate(parser.getText());
+                parser.nextTag(); //process </startDate>
+            }else{
+                table.setStartDate("");
+                parser.nextTag();
+            }
 
-			if (parser.getText()!=null)
-			parser.nextTag(); //process gps-latitude
-			parser.nextTag();
-			parser.next();
-			table.setHhLatitude(parser.getText());
-			//Log.d(count+"-Latitude", "value="+ parser.getText());
+            parser.nextTag(); //process <endType>
+            if (!isEmptyTag(DatabaseHelper.Member.COLUMN_END_TYPE, parser)) {
+                parser.next();
+                table.setEndType(parser.getText());
+                parser.nextTag(); //process </endType>
+            }else{
+                table.setEndType("");
+                parser.nextTag();
+            }
 
-			if (parser.getText()!=null)
-			parser.nextTag(); //process gps-longitude
-			parser.nextTag();
-			parser.next();
-			table.setHhLongitude(parser.getText());
-			//Log.d(count+"-Longitude", "value="+ parser.getText());
+            parser.nextTag(); //process <endDate>
+            if (!isEmptyTag(DatabaseHelper.Member.COLUMN_END_DATE, parser)) { //endtag is temp
+                parser.next();
+				//Log.d("note endDate", parser.getText() + ", " +parser.getPositionDescription());
+				if (parser.getText()!=null){
+					table.setEndDate(parser.getText());
+					parser.nextTag(); //process </endDate>
+				}
+            }else{
+                table.setEndDate("");
+                parser.nextTag();
+                //Log.d("e gpsacc", table.getEndDate());
+            }
 
-			if (parser.getText()!=null)
-			parser.nextTag(); //process nrPregnancies
-			parser.nextTag();
-			parser.next();
-			table.setNrPregnancies(Integer.parseInt(parser.getText()));
-			//Log.d(count+"-nrPregnancies", "value="+ parser.getText());
+            //CORRECT THE BUG AROUND HERE
+            parser.nextTag(); //process <gpsAccuracy>
+            if (!isEmptyTag(DatabaseHelper.Member.COLUMN_GPS_ACCURACY, parser)) {
+                parser.next();
+                table.setGpsAccuracy(parser.getText());
+                parser.nextTag(); //process </gpsAccuracy>
+                //Log.d("note gpsacc", table.getGpsAccuracy());
+            }else{
+                table.setGpsAccuracy("");
+                parser.nextTag();
 
-			if (parser.getText()!=null)
-			parser.nextTag(); //process hasDelivered
-			parser.nextTag();
-			parser.next();
-			table.setHasDelivered(Boolean.parseBoolean(parser.getText()));
-			//Log.d(count+"-hasDelivered", "value="+ parser.getText());
+            }
 
-			if (parser.getText()!=null)
-			parser.nextTag(); //process isPregnant
-			parser.nextTag();
-			parser.next();
-			table.setPregnant(Boolean.parseBoolean(parser.getText()));
-			//Log.d(count+"-isPregnant", "value="+ parser.getText());
+            parser.nextTag(); //process <gpsAltitude>
+            if (!isEmptyTag(DatabaseHelper.Member.COLUMN_GPS_ALTITUDE, parser)) {
+                parser.next();
+                table.setGpsAltitude(parser.getText());
+                parser.nextTag(); //process </gpsAltitude>
+            }else{
+                table.setGpsAltitude("");
+                parser.nextTag();
+            }
 
-			if (parser.getText()!=null)
-			parser.nextTag(); //process clip_id_1
-			parser.nextTag();
-			parser.next();
-			table.setClip_id_1(parser.getText());
-			//Log.d(count+"-clip_id_1", "value="+ parser.getText());
+            parser.nextTag(); //process <gpsLatitude>
+            if (!isEmptyTag(DatabaseHelper.Member.COLUMN_GPS_LATITUDE, parser)) {
+                parser.next();
+                table.setGpsLatitude(parser.getText());
+                parser.nextTag(); //process </gpsLatitude>
+            }else{
+                table.setGpsLatitude("");
+                parser.nextTag();
+            }
 
-			if (parser.getText()!=null)
-			parser.nextTag(); //process clip_id_2
-			parser.nextTag();
-			parser.next();
-			table.setClip_id_2(parser.getText());
-			//Log.d(count+"-clip_id_2", "value="+ parser.getText());
+            parser.nextTag(); //process <gpsLongitude>
+            if (!isEmptyTag(DatabaseHelper.Member.COLUMN_GPS_LONGITUDE, parser)) {
+                parser.next();
+                table.setGpsLongitude(parser.getText());
+                parser.nextTag(); //process </gpsLongitude>
+            }else{
+                table.setGpsLongitude("");
+                parser.nextTag();
+            }
 
-			if (parser.getText()!=null)
-			parser.nextTag(); //process clip_id_3
-			parser.nextTag();
-			parser.next();
-			table.setClip_id_3(parser.getText());
-			//Log.d(count+"-clip_id_3", "value="+ parser.getText());
+            parser.nextTag(); //process <extrasColumns>
+            if (!isEmptyTag(DatabaseHelper.Member.COLUMN_EXTRAS_COLUMNS, parser)) {
+                parser.next();
+                table.setExtrasColumns(parser.getText());
+                parser.nextTag(); //process </extrasColumns>
+            }else{
+                table.setExtrasColumns("");
+                parser.nextTag();
+            }
 
-			if (parser.getText()!=null)
-			parser.nextTag(); //process clip_id_4
-			parser.nextTag();
-			parser.next();
-			table.setClip_id_4(parser.getText());
-			//Log.d(count+"-clip_id_4", "value="+ parser.getText());
-
-			if (parser.getText()!=null)
-			parser.nextTag(); //process clip_id_5
-			parser.nextTag();
-			parser.next();
-			table.setClip_id_5(parser.getText());
-			//Log.d(count+"-clip_id_5", "value="+ parser.getText());
-
-			if (parser.getText()!=null)
-			parser.nextTag(); //process clip_id_6
-			parser.nextTag();
-			parser.next();
-			table.setClip_id_6(parser.getText());
-			//Log.d(count+"-clip_id_6", "value="+ parser.getText());
-
-			if (parser.getText()!=null)
-			parser.nextTag(); //process clip_id_7
-			parser.nextTag();
-			parser.next();
-			table.setClip_id_7(parser.getText());
-			//Log.d(count+"-clip_id_7", "value="+ parser.getText());
-
-			if (parser.getText()!=null)
-			parser.nextTag(); //process clip_id_8
-			parser.nextTag();
-			parser.next();
-			table.setClip_id_8(parser.getText());
-			//Log.d(count+"-clip_id_8", "value="+ parser.getText());
-
-			if (parser.getText()!=null)
-			parser.nextTag(); //process clip_id_9
-			parser.nextTag();
-			parser.next();
-			table.setClip_id_9(parser.getText());
-			//Log.d(count+"-clip_id_9", "value="+ parser.getText());
-
-			if (parser.getText()!=null)
-			parser.nextTag(); //process onPom
-			parser.nextTag();
-			parser.next();
-			table.setOnPom(Boolean.parseBoolean(parser.getText()));
-			//Log.d(count+"-onPom", "value="+ parser.getText());
-
-			if (parser.getText()!=null)
-			parser.nextTag(); //process onFacility
-			parser.nextTag();
-			parser.next();
-			table.setOnFacility(Boolean.parseBoolean(parser.getText()));
-			//Log.d(count+"-onFacility", "value="+ parser.getText());
-
-			if (parser.getText()!=null)
-			parser.nextTag(); //process onSurveillance
-			parser.nextTag();
-			parser.next();
-			table.setOnSurveillance(Boolean.parseBoolean(parser.getText()));
-			//Log.d(count+"-onSurveillance", "value="+ parser.getText());
+            parser.nextTag(); //process <extrasValues>
+            if (!isEmptyTag(DatabaseHelper.Member.COLUMN_EXTRAS_VALUES, parser)) {
+                parser.next();
+                table.setExtrasValues(parser.getText());
+                parser.nextTag(); //process </extrasValues>
+            }else{
+                table.setExtrasValues("");
+                parser.nextTag();
+            }
 
 
-			parser.nextTag();
-			parser.nextTag();
+			parser.nextTag(); //process last tag
 			parser.next();
 
 			//values.add(table);
 			database.insert(table);
 
-			if (count % 100 == 0){
+			if (count % 200 == 0){
 				publishProgress(count);
 			}
 

@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="horizontal"
-    android:background="@mipmap/clip_back1"
+    android:background="@mipmap/form_background_1"
     tools:context=".main.SurveyActivity">
 
     <fragment android:name="net.manhica.dss.explorer.fragment.MemberFilterFragment"

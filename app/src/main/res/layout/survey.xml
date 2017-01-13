@@ -5,18 +5,19 @@
     android:layout_height="match_parent"
     android:gravity="center_horizontal"
     android:orientation="vertical"
-    android:background="@mipmap/clip_back1"
+    android:background="@mipmap/form_background_1"
     tools:context=".main.SurveyActivity"
     android:weightSum="1">
 
     <ImageView
         android:layout_marginTop="50dp"
-        android:layout_marginBottom="30dp"
-        android:layout_width="118dp"
-        android:layout_height="102dp"
+        android:layout_marginBottom="10dp"
+        android:layout_width="128dp"
+        android:layout_height="128dp"
         android:id="@+id/imageView"
         android:layout_gravity="center_horizontal"
-        android:background="@mipmap/clip_explorer_icon" />
+        android:alpha="0.65"
+        android:background="@mipmap/dss_explorer_bevel" />
 
     <Button
         android:id="@+id/btSurveyHouseholds"

@@ -35,48 +35,4 @@ public class FormXmlReader {
         return doc;
     }
 
-    public Member readMemberFromFacility(FileInputStream fileInputStream, String jrFormId)  {
-        try {
-            Document doc = buildDocument(fileInputStream);
-            if(xpath.evaluate("/"+jrFormId+"/womanOnSystem/text()", doc).length()==0) {
-                jrFormId ="data";
-            }
-
-            String name = "";
-            String clipId = "";
-            String permId = "";
-
-            if(xpath.evaluate("/"+jrFormId+"/demogfafic_info/name/text()", doc).length()>0) {
-                name = xpath.evaluate("/"+jrFormId+"/demogfafic_info/name/text()", doc);
-            }
-
-            if(xpath.evaluate("/"+jrFormId+"/demogfafic_info/clip_id/text()", doc).length()>0) {
-                clipId = xpath.evaluate("/"+jrFormId+"/demogfafic_info/clip_id/text()", doc);
-            }
-
-            if(clipId != null) {
-                permId = clipId;
-            }
-
-            Log.d("name", ""+name);
-            Log.d("clip_id", ""+clipId);
-            Log.d("perm_id", ""+permId);
-
-            Member member = new Member();
-
-            member.setName(name);
-            member.setExtId(UUID.randomUUID().toString());
-            member.setPermId(permId);
-            member.setClip_id_1(clipId);
-
-            return member;
-
-        } catch (ParserConfigurationException e) {
-        } catch (SAXException e) {
-        } catch (IOException e) {
-        } catch (XPathExpressionException e) {
-        }
-
-        return null;
-    }
 }

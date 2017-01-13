@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-import net.manhica.clip.explorer.R;
+import net.manhica.dss.explorer.R;
 import net.manhica.dss.explorer.data.FormDataLoader;
 
 import java.util.ArrayList;
@@ -21,7 +21,7 @@ public class FormLoaderAdapter extends ArrayAdapter {
     private Context mContext;
 
     public FormLoaderAdapter(Context context, List<FormDataLoader> objects){
-        super(context, R.layout.member_item, objects);
+        super(context, R.layout.form_item, objects);
 
         this.dataLoaders = new ArrayList<>();
         this.dataLoaders.addAll(objects);
@@ -29,7 +29,7 @@ public class FormLoaderAdapter extends ArrayAdapter {
     }
 
     public FormLoaderAdapter(Context context, FormDataLoader[] objects){
-        super(context, R.layout.member_item, objects);
+        super(context, R.layout.form_item, objects);
 
         this.dataLoaders = new ArrayList<>();
         for (FormDataLoader fdl : objects) this.dataLoaders.add(fdl);

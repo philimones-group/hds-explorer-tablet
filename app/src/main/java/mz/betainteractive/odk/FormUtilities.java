@@ -1,11 +1,6 @@
 package mz.betainteractive.odk;
 
 
-import mz.betainteractive.odk.listener.OdkFormLoadListener;
-import mz.betainteractive.odk.listener.OdkFormResultListener;
-import mz.betainteractive.odk.model.FilledForm;
-import mz.betainteractive.odk.task.OdkGeneratedFormLoadTask;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ContentResolver;
@@ -14,13 +9,17 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.text.LoginFilter;
 import android.util.Log;
 import android.widget.Toast;
 
-import net.manhica.clip.explorer.R;
+import net.manhica.dss.explorer.R;
 
 import java.io.File;
+
+import mz.betainteractive.odk.listener.OdkFormLoadListener;
+import mz.betainteractive.odk.listener.OdkFormResultListener;
+import mz.betainteractive.odk.model.FilledForm;
+import mz.betainteractive.odk.task.OdkGeneratedFormLoadTask;
 
 public class FormUtilities {
     public static final int SELECTED_ODK_FORM = 51;

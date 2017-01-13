@@ -38,7 +38,7 @@ import android.util.Log;
 
 public class OdkGeneratedFormLoadTask extends AsyncTask<Void, Void, Boolean> {
 
-	private static String FORMS_PATH = "mz.betainteractive.openingodk";
+	private static String FORMS_PATH = "net.manhica.dss.explorer";
 	
     private OdkFormLoadListener listener;
     private ContentResolver resolver;

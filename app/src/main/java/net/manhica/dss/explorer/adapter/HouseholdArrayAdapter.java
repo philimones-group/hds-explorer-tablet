@@ -11,7 +11,7 @@ import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import net.manhica.clip.explorer.R;
+import net.manhica.dss.explorer.R;
 import net.manhica.dss.explorer.model.Household;
 
 import java.util.ArrayList;

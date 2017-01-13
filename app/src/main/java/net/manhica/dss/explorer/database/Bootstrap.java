@@ -14,7 +14,7 @@ import java.io.File;
  * Will be used to initialize any data on database tables
  */
 public class Bootstrap {
-    private static final String APP_PATH = "net.manhica.clip.explorer";
+    private static final String APP_PATH = "net.manhica.dss.explorer";
     private Database database;
 
     public Bootstrap(Context context){

@@ -75,10 +75,10 @@ public class Converter {
 		hh.setAdminPost(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Household.COLUMN_ADMIN_POST)));
 		hh.setDistrict(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Household.COLUMN_DISTRICT)));
 		hh.setProvince(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Household.COLUMN_PROVINCE)));
-		hh.setGpsAccuracy(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Household.COLUMN_GPS_ACCURACY)));
-		hh.setGpsAltitude(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Household.COLUMN_GPS_ALTITUDE)));
-		hh.setGpsLatitude(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Household.COLUMN_GPS_LATITUDE)));
-		hh.setGpsLongitude(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Household.COLUMN_GPS_LONGITUDE)));
+		hh.setGpsAccuracy(cursor.getDouble(cursor.getColumnIndex(DatabaseHelper.Household.COLUMN_GPS_ACCURACY)));
+		hh.setGpsAltitude(cursor.getDouble(cursor.getColumnIndex(DatabaseHelper.Household.COLUMN_GPS_ALTITUDE)));
+		hh.setGpsLatitude(cursor.getDouble(cursor.getColumnIndex(DatabaseHelper.Household.COLUMN_GPS_LATITUDE)));
+		hh.setGpsLongitude(cursor.getDouble(cursor.getColumnIndex(DatabaseHelper.Household.COLUMN_GPS_LONGITUDE)));
         hh.setExtrasColumns(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Household.COLUMN_EXTRAS_COLUMNS)));
         hh.setExtrasValues(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Household.COLUMN_EXTRAS_VALUES)));
 		
@@ -112,10 +112,10 @@ public class Converter {
 		mb.setStartDate(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Member.COLUMN_START_DATE)));
 		mb.setEndType(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Member.COLUMN_END_TYPE)));
 		mb.setEndDate(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Member.COLUMN_END_DATE)));
-		mb.setGpsAccuracy(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Member.COLUMN_GPS_ACCURACY)));
-		mb.setGpsAltitude(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Member.COLUMN_GPS_ALTITUDE)));
-		mb.setGpsLatitude(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Member.COLUMN_GPS_LATITUDE)));
-		mb.setGpsLongitude(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Member.COLUMN_GPS_LONGITUDE)));
+		mb.setGpsAccuracy(cursor.getDouble(cursor.getColumnIndex(DatabaseHelper.Member.COLUMN_GPS_ACCURACY)));
+		mb.setGpsAltitude(cursor.getDouble(cursor.getColumnIndex(DatabaseHelper.Member.COLUMN_GPS_ALTITUDE)));
+		mb.setGpsLatitude(cursor.getDouble(cursor.getColumnIndex(DatabaseHelper.Member.COLUMN_GPS_LATITUDE)));
+		mb.setGpsLongitude(cursor.getDouble(cursor.getColumnIndex(DatabaseHelper.Member.COLUMN_GPS_LONGITUDE)));
         mb.setExtrasColumns(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Member.COLUMN_EXTRAS_COLUMNS)));
         mb.setExtrasValues(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Member.COLUMN_EXTRAS_VALUES)));
 		return mb;

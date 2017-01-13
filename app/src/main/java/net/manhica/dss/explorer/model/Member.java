@@ -42,10 +42,10 @@ public class Member implements Serializable, Table {
     private String endType;
     private String endDate;
     /** GPS Status */
-    private String gpsAccuracy;
-    private String gpsAltitude;
-    private String gpsLatitude;
-    private String gpsLongitude;
+    private Double gpsAccuracy;
+    private Double gpsAltitude;
+    private Double gpsLatitude;
+    private Double gpsLongitude;
     /* Extras Variables*/ //separated by semicolon :
     String extrasColumns;
     String extrasValues;
@@ -206,35 +206,35 @@ public class Member implements Serializable, Table {
         this.endDate = endDate ==null ? "" : endDate;
     }
 
-    public String getGpsAccuracy() {
+    public Double getGpsAccuracy() {
         return gpsAccuracy;
     }
 
-    public void setGpsAccuracy(String gpsAccuracy) {
+    public void setGpsAccuracy(Double gpsAccuracy) {
         this.gpsAccuracy = gpsAccuracy;
     }
 
-    public String getGpsAltitude() {
+    public Double getGpsAltitude() {
         return gpsAltitude;
     }
 
-    public void setGpsAltitude(String gpsAltitude) {
+    public void setGpsAltitude(Double gpsAltitude) {
         this.gpsAltitude = gpsAltitude;
     }
 
-    public String getGpsLatitude() {
+    public Double getGpsLatitude() {
         return gpsLatitude;
     }
 
-    public void setGpsLatitude(String gpsLatitude) {
+    public void setGpsLatitude(Double gpsLatitude) {
         this.gpsLatitude = gpsLatitude;
     }
 
-    public String getGpsLongitude() {
+    public Double getGpsLongitude() {
         return gpsLongitude;
     }
 
-    public void setGpsLongitude(String gpsLongitude) {
+    public void setGpsLongitude(Double gpsLongitude) {
         this.gpsLongitude = gpsLongitude;
     }
 
@@ -295,7 +295,7 @@ public class Member implements Serializable, Table {
     }
 
     public boolean hasNullCoordinates(){
-        return gpsLatitude==null || gpsLatitude.isEmpty() || gpsLongitude==null || gpsLongitude.isEmpty();
+        return gpsLatitude==null || gpsLongitude==null;
     }
 
     public String getValueByName(String variableName){

@@ -221,7 +221,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 		}
 
 
-		return "Success"; //HttpTask.EndResult.SUCCESS;
+		return this.mContext.getString(R.string.sync_successfully_lbl);
 	}
 
 	private void deleteAllTables() {
@@ -843,11 +843,11 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
             parser.nextTag(); //process <gpsAccuracy>
             if (!isEmptyTag(DatabaseHelper.Household.COLUMN_GPS_ACCURACY, parser)) {
                 parser.next();
-                table.setGpsAccuracy(parser.getText());
+                table.setGpsAccuracy(Double.parseDouble(parser.getText()));
                 parser.nextTag(); //process </gpsAccuracy>
                 //Log.d("note gpsacc", table.getGpsAccuracy());
             }else{
-                table.setGpsAccuracy("");
+                table.setGpsAccuracy(null);
                 parser.nextTag();
                 //Log.d("e gpsacc", table.getGpsAccuracy());
             }
@@ -855,31 +855,31 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
             parser.nextTag(); //process <gpsAltitude>
             if (!isEmptyTag(DatabaseHelper.Household.COLUMN_GPS_ALTITUDE, parser)) {
                 parser.next();
-                table.setGpsAltitude(parser.getText());
+                table.setGpsAltitude(Double.parseDouble(parser.getText()));
                 parser.nextTag(); //process </gpsAltitude>
             }else{
-                table.setGpsAltitude("");
+                table.setGpsAltitude(null);
                 parser.nextTag();
             }
 
             parser.nextTag(); //process <gpsLatitude>
             if (!isEmptyTag(DatabaseHelper.Household.COLUMN_GPS_LATITUDE, parser)) {
                 parser.next();
-                table.setGpsLatitude(parser.getText());
+                table.setGpsLatitude(Double.parseDouble(parser.getText()));
                 parser.nextTag(); //process </gpsLatitude>
             }else{
-                table.setGpsLatitude("");
+                table.setGpsLatitude(null);
                 parser.nextTag();
             }
 
             parser.nextTag(); //process <gpsLongitude>
             if (!isEmptyTag(DatabaseHelper.Household.COLUMN_GPS_LONGITUDE, parser)) {
                 parser.next();
-                table.setGpsLongitude(parser.getText());
+                table.setGpsLongitude(Double.parseDouble(parser.getText()));
                 parser.nextTag(); //process </gpsLongitude>
                 //Log.d("note gpslng", table.getGpsLongitude());
             }else{
-                table.setGpsLongitude("");
+                table.setGpsLongitude(null);
                 parser.nextTag();
             }
             //Log.d("position now ", ""+parser.getName() + ", " +parser.getPositionDescription() );
@@ -1170,11 +1170,11 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
             parser.nextTag(); //process <gpsAccuracy>
             if (!isEmptyTag(DatabaseHelper.Member.COLUMN_GPS_ACCURACY, parser)) {
                 parser.next();
-                table.setGpsAccuracy(parser.getText());
+                table.setGpsAccuracy(Double.parseDouble(parser.getText()));
                 parser.nextTag(); //process </gpsAccuracy>
                 //Log.d("note gpsacc", table.getGpsAccuracy());
             }else{
-                table.setGpsAccuracy("");
+                table.setGpsAccuracy(null);
                 parser.nextTag();
 
             }
@@ -1182,30 +1182,30 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
             parser.nextTag(); //process <gpsAltitude>
             if (!isEmptyTag(DatabaseHelper.Member.COLUMN_GPS_ALTITUDE, parser)) {
                 parser.next();
-                table.setGpsAltitude(parser.getText());
+                table.setGpsAltitude(Double.parseDouble(parser.getText()));
                 parser.nextTag(); //process </gpsAltitude>
             }else{
-                table.setGpsAltitude("");
+                table.setGpsAltitude(null);
                 parser.nextTag();
             }
 
             parser.nextTag(); //process <gpsLatitude>
             if (!isEmptyTag(DatabaseHelper.Member.COLUMN_GPS_LATITUDE, parser)) {
                 parser.next();
-                table.setGpsLatitude(parser.getText());
+                table.setGpsLatitude(Double.parseDouble(parser.getText()));
                 parser.nextTag(); //process </gpsLatitude>
             }else{
-                table.setGpsLatitude("");
+                table.setGpsLatitude(null);
                 parser.nextTag();
             }
 
             parser.nextTag(); //process <gpsLongitude>
             if (!isEmptyTag(DatabaseHelper.Member.COLUMN_GPS_LONGITUDE, parser)) {
                 parser.next();
-                table.setGpsLongitude(parser.getText());
+                table.setGpsLongitude(Double.parseDouble(parser.getText()));
                 parser.nextTag(); //process </gpsLongitude>
             }else{
-                table.setGpsLongitude("");
+                table.setGpsLongitude(null);
                 parser.nextTag();
             }
 

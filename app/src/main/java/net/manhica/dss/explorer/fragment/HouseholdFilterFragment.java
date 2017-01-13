@@ -142,8 +142,8 @@ public class HouseholdFilterFragment extends Fragment {
             String name = h.getHouseNumber();
 
             if (!h.hasNullCoordinates()) {
-                double lat = Double.parseDouble(h.getGpsLatitude());
-                double lon = Double.parseDouble(h.getGpsLongitude());
+                double lat = h.getGpsLatitude();
+                double lon = h.getGpsLongitude();
                 points[i] = new MWMPoint(lat, lon, name);
             }
 

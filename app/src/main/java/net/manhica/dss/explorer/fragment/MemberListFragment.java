@@ -203,8 +203,8 @@ public class MemberListFragment extends Fragment {
             Member m = adapter.getMembers().get(i);
             String name = m.getName();
             if (!m.hasNullCoordinates()) {
-                double lat = Double.parseDouble(m.getGpsLatitude());
-                double lon = Double.parseDouble(m.getGpsLongitude());
+                double lat = m.getGpsLatitude();
+                double lon = m.getGpsLongitude();
                 points[i] = new MWMPoint(lat, lon, name);
 
                 //put point on a java map organized by houseNumber

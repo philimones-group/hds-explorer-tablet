@@ -46,6 +46,7 @@
     <string name="sync_members_lbl">Membros</string>
     <string name="sync_saved_lbl">Guardado</string>
     <string name="sync_records_lbl">registros</string>
+    <string name="sync_successfully_lbl">Os dados foram sincronizados com sucesso.</string>
     <string name="sync_failure_file_not_found_lbl">O ficheiro não foi encontrado no servidor para ser baixado.</string>
     <string name="sync_failure_unknow_lbl">Não foi possivel baixar o ficheiro do servidor</string>
 

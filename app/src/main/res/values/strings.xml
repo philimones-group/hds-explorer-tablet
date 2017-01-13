@@ -3,6 +3,11 @@
     <string name="server_url">https://sap.manhica.net:4442/manhica-dbsync</string>
     <string name="server_url_not_secure">http://sap.manhica.net:4780/manhica-dbsync</string>
 
+    <!-- Copyright    -->
+    <string name="copyright_app_name_lbl">Dss Explorer v1.0 RC2</string>
+    <string name="copyright_app_company_lbl">© 2016 Manhiça Health and Research Centre</string>
+    <string name="copyright_app_developers_lbl">Developed by Paulo Filimone</string>
+
     <!-- General buttons and Strings-->
     <string name="bt_ok_lbl">Ok</string>
     <string name="bt_yes_lbl">Yes</string>
@@ -77,25 +82,26 @@
     <string name="member_filter_name_lbl">Name</string>
     <string name="member_filter_permid_lbl">Perm Id</string>
     <string name="member_filter_name_hint">Insert Name Here</string>
-    <string name="member_filter_permid_hint">eg. 01-0101-001-01</string>
+    <string name="member_filter_permid_hint">eg. 0101-001-01</string>
+    <string name="member_filter_curr_housenumber_lbl">Neigh/House Number</string>
+    <string name="member_filter_curr_housenumber_hint">eg. 0101-001</string>
     <string name="member_filter_gender_lbl">Gender</string>
     <string name="member_filter_gender_male_lbl">Male</string>
     <string name="member_filter_gender_female_lbl">Female</string>
-    <string name="member_filter_age_lbl">Age</string>
-    <string name="member_filter_agefrom_lbl">From</string>
-    <string name="member_filter_ageto_lbl">To</string>
-    <string name="member_filter_ispregnant_lbl">Currently Pregnant</string>
-    <string name="member_filter_has_delivered_lbl">Has Delivered</string>
-    <string name="member_filter_nrpregn_lbl">Nº Pregnancies</string>
-    <string name="member_filter_on_pom_lbl">Has POM Record</string>
-    <string name="member_filter_on_facility_lbl">Has Facility Record</string>
+    <string name="member_filter_age_details_lbl">Age Info</string>
+    <string name="member_filter_age_min_lbl">Min</string>
+    <string name="member_filter_age_max_lbl">Max</string>
+    <string name="member_filter_current_status_lbl">Current Status</string>
+    <string name="member_filter_death_status_lbl">Is Dead</string>
+    <string name="member_filter_ext_status_lbl">Outmigrated</string>
+    <string name="member_filter_na_status_lbl">Resident</string>
     <string name="member_filter_clear_lbl">Clear</string>
     <string name="member_filter_search_btn_lbl">Search</string>
 
     <string name="member_list_bt_clear_lbl">Clear List</string>
     <string name="member_list_bt_show_houses_maps_lbl">Show GPS Map of Houses</string>
     <string name="member_list_bt_show_houses_members_lbl">Show GPS Map of Members</string>
-    <string name="member_list_bt_show_closest_prgwm_lbl">View Closest Prg. Women</string>
+    <string name="member_list_bt_show_closest_members_lbl">View Closest Members</string>
     <string name="member_list_bt_facility_form_lbl">Open Facility Form</string>
 
     <string name="member_list_bt_add_patient_lbl">Add New Patient</string>
@@ -114,7 +120,7 @@
     <string name="member_details_member_endtype_lbl">Current Status:</string>
     <string name="member_details_father_lbl">Father:</string>
     <string name="member_details_mother_lbl">Mother:</string>
-    <string name="member_details_forms_clip_id_lbl">CLIP Id:</string>
+    <string name="member_details_forms_spouse_lbl">Spouse:</string>
     <string name="member_details_ispregnant_lbl">Is Currently Pregnant </string>
     <string name="member_details_has_delivered_lbl">Has Delivered      </string>
     <string name="member_details_bt_openform_lbl">Collect Data</string>
@@ -126,8 +132,6 @@
     <string name="member_details_endtype_ext_lbl">Emigrated</string>
     <string name="member_details_endtype_dth_lbl">Died</string>
     <string name="member_details_name_unknown_lbl">Unknown Name</string>
-
-    <string name="member_details_no_clipid_status_lbl">Without Pregnancy Registration</string>
 
     <string name="facility_supervise_collected_form_lbl">Mark Form as Supervised?</string>
     <string name="facility_supervise_title_lbl">Form Supervision</string>
@@ -144,11 +148,12 @@
     <string name="survey_members_btn_lbl">Search By Members</string>
 
     <!-- GPS Maps -->
-    <string name="map_women_coordinates">Localization of Women</string>
-    <string name="map_pregnant_women_coordinates">Localization of Pregnant Women</string>
+    <string name="map_closest_members">Closest Individuals Localizations</string>
+    <string name="map_members_coordinates">Localization of Individuals Houses</string>
     <string name="map_households">Localization of Households</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="member_details_member_enddate_lbl">Status Date</string>
 
 
 </resources>

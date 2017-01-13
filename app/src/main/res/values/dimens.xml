@@ -37,6 +37,7 @@
     <dimen name="member_list_buttons_pad_left">20dp</dimen>
 
     <dimen name="member_details_txtview_width">180dp</dimen>
+    <dimen name="member_details_txtview_width_p2">90dp</dimen>
     <dimen name="member_details_chkbox_margin_left">210dp</dimen>
     <dimen name="member_details_bt_height">80dp</dimen>
     <dimen name="member_details_buttons_size">25dp</dimen>

@@ -4,15 +4,16 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.CheckBox;
+import android.widget.ImageView;
 import android.widget.TextView;
 
-import net.manhica.clip.explorer.R;
+import net.manhica.dss.explorer.R;
 import net.manhica.dss.explorer.adapter.FormLoaderAdapter;
 import net.manhica.dss.explorer.data.FormDataLoader;
 import net.manhica.dss.explorer.database.Database;
@@ -38,13 +39,13 @@ public class MemberDetailsActivity extends Activity implements OdkFormResultList
     private TextView mbDetailsAge;
     private TextView mbDetailsHouseNo;
     private TextView mbDetailsEndType;
+    private TextView mbDetailsEndDate;
     private TextView mbDetailsFather;
     private TextView mbDetailsMother;
-    private TextView mbDetailsClipId;
-    private CheckBox chkMemDetailIsPreg;
-    private CheckBox chkMemDetailsHasDelv;
+    private TextView mbDetailsSpouse;
     private Button btMemDetailsCollectData;
     private Button btMemDetailsBack;
+    private ImageView iconView;
             
     private Member member;
     private List<FormDataLoader> formDataLoaders = new ArrayList<>();
@@ -93,13 +94,13 @@ public class MemberDetailsActivity extends Activity implements OdkFormResultList
         mbDetailsAge = (TextView) findViewById(R.id.mbDetailsAge);
         mbDetailsHouseNo = (TextView) findViewById(R.id.mbDetailsHouseNo);
         mbDetailsEndType = (TextView) findViewById(R.id.mbDetailsEndType);
+        mbDetailsEndDate = (TextView) findViewById(R.id.mbDetailsEndDate);
         mbDetailsFather = (TextView) findViewById(R.id.mbDetailsFather);
         mbDetailsMother = (TextView) findViewById(R.id.mbDetailsMother);
-        mbDetailsClipId = (TextView) findViewById(R.id.mbDetailsClipId);
-        chkMemDetailIsPreg = (CheckBox) findViewById(R.id.chkMemDetailIsPreg);
-        chkMemDetailsHasDelv = (CheckBox) findViewById(R.id.chkMemDetailsHasDelv);
+        mbDetailsSpouse = (TextView) findViewById(R.id.mbDetailsSpouse);
         btMemDetailsCollectData = (Button) findViewById(R.id.btMemDetailsCollectData);
         btMemDetailsBack = (Button) findViewById(R.id.btMemDetailsBack);
+        iconView = (ImageView) findViewById(R.id.iconView);
 
         btMemDetailsBack.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -141,33 +142,49 @@ public class MemberDetailsActivity extends Activity implements OdkFormResultList
         mbDetailsPermId.setText(member.getPermId());
         mbDetailsGender.setText(member.getGender());
         mbDetailsAge.setText(member.getAge()+"");
-        mbDetailsHouseNo.setText(member.getHhNumber());
+        mbDetailsHouseNo.setText(member.getHouseNumber());
         mbDetailsEndType.setText(getEndTypeMsg(member));
+        mbDetailsEndDate.setText(getEndDateMsg(member));
         mbDetailsFather.setText(getParentName(member.getFatherName()));
         mbDetailsMother.setText(getParentName(member.getMotherName()));
-        mbDetailsClipId.setText(member.getLastClipId());
-        chkMemDetailIsPreg.setChecked(member.isPregnant());
-        chkMemDetailsHasDelv.setChecked(member.isHasDelivered());
-    }
+        mbDetailsSpouse.setText(getSpouseName(member.getSpouseName()));
 
-    private String getClipId(Member member){
-        String clipid = member.getLastClipId();
-        if (clipid==null || clipid.isEmpty()){
-            return getString(R.string.member_details_no_clipid_status_lbl);
+        if (member.isHouseholdHead()){
+            iconView.setImageResource(R.mipmap.member_big_head_icon);
         }
 
-        return clipid;
+        if (member.isSubsHouseholdHead()){
+            iconView.setImageResource(R.mipmap.member_big_subs_icon);
+        }
     }
 
     private String getEndTypeMsg(Member member){
-        if (member.getHhEndType().equals("NA")) return getString(R.string.member_details_endtype_na_lbl);
-        if (member.getHhEndType().equals("EXT")) return getString(R.string.member_details_endtype_ext_lbl);
-        if (member.getHhEndType().equals("DTH")) return getString(R.string.member_details_endtype_dth_lbl);
+        if (member.getEndType().equals("NA")) return getString(R.string.member_details_endtype_na_lbl);
+        if (member.getEndType().equals("EXT")) return getString(R.string.member_details_endtype_ext_lbl);
+        if (member.getEndType().equals("DTH")) return getString(R.string.member_details_endtype_dth_lbl);
 
-        return member.getHhEndType();
+        return member.getEndType();
+    }
+
+    private String getEndDateMsg(Member member){
+        String date = member.getEndDate();
+        if (member.getEndType().equals("NA")) return date = member.getStartDate();
+
+        return member.getEndDate();
     }
 
     private String getParentName(String name){
+        if (name.equals("Unknown")){
+            return getString(R.string.member_details_unknown_lbl);
+        }else {
+            return name;
+        }
+    }
+
+    private String getSpouseName(String name){
+        if (name == null || name.isEmpty()){
+            return "";
+        }
         if (name.equals("Unknown")){
             return getString(R.string.member_details_unknown_lbl);
         }else {
@@ -209,7 +226,6 @@ public class MemberDetailsActivity extends Activity implements OdkFormResultList
 
         this.lastLoadedForm = formDataLoader;
 
-        //temporary code for facility
         Form form = formDataLoader.getForm();
 
         FilledForm filledForm = new FilledForm(form.getFormId());

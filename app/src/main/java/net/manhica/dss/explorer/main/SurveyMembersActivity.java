@@ -38,6 +38,12 @@ public class SurveyMembersActivity extends Activity implements MemberFilterFragm
 
         this.memberFilterFragment = (MemberFilterFragment) (getFragmentManager().findFragmentById(R.id.memberFilterFragment));
         this.memberListFragment = (MemberListFragment) getFragmentManager().findFragmentById(R.id.memberListFragment);
+
+        initialize();
+    }
+
+    private void initialize() {
+        this.memberListFragment.setButtonVisibilityGone(MemberListFragment.Buttons.CLOSEST_HOUSES);
     }
 
     @Override

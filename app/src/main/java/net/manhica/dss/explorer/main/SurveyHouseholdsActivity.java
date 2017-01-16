@@ -39,6 +39,12 @@ public class SurveyHouseholdsActivity extends Activity implements HouseholdFilte
 
         this.householdFilterFragment = (HouseholdFilterFragment) (getFragmentManager().findFragmentById(R.id.householdFilterFragment));
         this.memberListFragment = (MemberListFragment) getFragmentManager().findFragmentById(R.id.memberListFragment);
+
+        initialize();
+    }
+
+    private void initialize() {
+        this.memberListFragment.setButtonVisibilityGone(MemberListFragment.Buttons.CLOSEST_MEMBERS);
     }
 
     @Override

@@ -13,6 +13,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.mapswithme.maps.api.MWMPoint;
 import com.mapswithme.maps.api.MapsWithMeApi;
@@ -53,6 +54,11 @@ public class MemberListFragment extends Fragment {
     private ArrayList<String> lastSearch;
 
     private MemberActionListener memberActionListener;
+    private Household currentHousehold;
+
+    public enum Buttons {
+        MEMBERS_MAP, CLOSEST_MEMBERS, CLOSEST_HOUSES
+    }
 
     public MemberListFragment() {
         // Required empty public constructor
@@ -83,13 +89,20 @@ public class MemberListFragment extends Fragment {
         //restoreLastSearch(savedInstanceState);
     }
 
-    public void removeDefaultButtons(){
-        if (btMemListShowMmbMap != null){
-            btMemListShowMmbMap.setVisibility(View.GONE);
+    public void setButtonVisibilityGone(Buttons... buttons){
+
+        for (Buttons button : buttons){
+            if (button==Buttons.MEMBERS_MAP){
+                btMemListShowMmbMap.setVisibility(View.GONE);
+            }
+            if (button==Buttons.CLOSEST_HOUSES){
+                btMemListShowClosestHouses.setVisibility(View.GONE);
+            }
+            if (button==Buttons.CLOSEST_MEMBERS){
+                btMemListShowClosestMembers.setVisibility(View.GONE);
+            }
         }
-        if (btMemListShowClosestMembers != null){
-            btMemListShowClosestMembers.setVisibility(View.GONE);
-        }
+
     }
 
     public Button addButton(String buttonName, final ActionListener action){
@@ -154,15 +167,27 @@ public class MemberListFragment extends Fragment {
 
         this.lvMembersList = (ListView) view.findViewById(R.id.lvMembersList);
         this.btMemListShowMmbMap = (Button) view.findViewById(R.id.btMemListShowMmbMap);
+        this.btMemListShowClosestHouses = (Button) view.findViewById(R.id.btMemListShowClosestHouses);
         this.btMemListShowClosestMembers = (Button) view.findViewById(R.id.btMemListShowClosestMembers);
         this.listButtons = (LinearLayout) view.findViewById(R.id.viewListButtons);
         this.mProgressView = view.findViewById(R.id.viewListProgressBar);
 
+        this.btMemListShowMmbMap.setEnabled(false);
+        this.btMemListShowClosestHouses.setEnabled(false);
+        this.btMemListShowClosestMembers.setEnabled(false);
+
         this.btMemListShowMmbMap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d("test-show-mmbmap", "not yet implemented");
                 showMembersMap();
+                showGpsMap();
+            }
+        });
+
+        this.btMemListShowClosestHouses.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d("test-show-closest", "not yet implemented");
             }
         });
 
@@ -189,6 +214,26 @@ public class MemberListFragment extends Fragment {
         });
 
         this.database = new Database(getActivity());
+    }
+
+    private void showGpsMap() {
+        if (currentHousehold != null){
+            showHouseholdInMap(currentHousehold);
+        }else {
+            showMembersMap();
+        }
+    }
+
+    private void showHouseholdInMap(Household household){
+        final MWMPoint[] points = new MWMPoint[1];
+
+        if (!household.hasNullCoordinates()){
+            points[0] = new MWMPoint(household.getGpsLatitude(), household.getGpsLongitude(), household.getHouseNumber());
+
+            MapsWithMeApi.showPointsOnMap(this.getActivity(), getString(R.string.map_households), points);
+        }else{
+            Toast.makeText(getActivity(), getActivity().getString(R.string.member_list_gps_not_available_lbl), Toast.LENGTH_SHORT);
+        }
     }
 
     private void showMembersMap() {
@@ -253,6 +298,8 @@ public class MemberListFragment extends Fragment {
         Household household = getHousehold(member);
 
         adapter.setSelectedIndex(position);
+
+        this.btMemListShowClosestMembers.setEnabled(true);
     }
 
     private void onMemberClicked(int position) {
@@ -291,6 +338,7 @@ public class MemberListFragment extends Fragment {
 
     public MemberArrayAdapter loadMembersByFilters(Household household, String name, String permId, String houseNumber, String gender, Integer minAge, Integer maxAge, Boolean isDead, Boolean hasOutmigrated, Boolean liveResident) {
         //open loader
+        this.currentHousehold = household;
 
         String endType = "";
 
@@ -392,6 +440,13 @@ public class MemberListFragment extends Fragment {
     public void setMemberAdapter(MemberArrayAdapter memberAdapter) {
         this.lvMembersList.setAdapter(memberAdapter);
         //if is empty
+        boolean value =  (memberAdapter == null || memberAdapter.isEmpty());
+
+        //disable buttons
+        this.btMemListShowMmbMap.setEnabled(!value);
+        this.btMemListShowClosestHouses.setEnabled(!value);
+        this.btMemListShowClosestMembers.setEnabled(false);
+
     }
 
     public MemberArrayAdapter getMemberAdapter(){

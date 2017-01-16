@@ -65,6 +65,14 @@
                 android:background="@drawable/button_normal"/>
 
             <Button
+                android:id="@+id/btMemListShowClosestHouses"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:textSize="@dimen/member_list_buttons"
+                android:text="@string/member_list_bt_show_closest_houses_lbl"
+                android:background="@drawable/button_normal"/>
+
+            <Button
                 android:id="@+id/btMemListShowClosestMembers"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"

@@ -848,6 +848,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
                 //Log.d("note gpsacc", table.getGpsAccuracy());
             }else{
                 table.setGpsAccuracy(null);
+				table.setGpsNull(true);
                 parser.nextTag();
                 //Log.d("e gpsacc", table.getGpsAccuracy());
             }
@@ -859,6 +860,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
                 parser.nextTag(); //process </gpsAltitude>
             }else{
                 table.setGpsAltitude(null);
+				table.setGpsNull(true);
                 parser.nextTag();
             }
 
@@ -866,9 +868,12 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
             if (!isEmptyTag(DatabaseHelper.Household.COLUMN_GPS_LATITUDE, parser)) {
                 parser.next();
                 table.setGpsLatitude(Double.parseDouble(parser.getText()));
+				table.setCosLatitude(Math.cos(table.getGpsLatitude()*Math.PI / 180.0)); // cos_lat = cos(lat * PI / 180)
+				table.setSinLatitude(Math.sin(table.getGpsLatitude()*Math.PI / 180.0)); // sin_lat = sin(lat * PI / 180)
                 parser.nextTag(); //process </gpsLatitude>
             }else{
                 table.setGpsLatitude(null);
+				table.setGpsNull(true);
                 parser.nextTag();
             }
 
@@ -876,10 +881,13 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
             if (!isEmptyTag(DatabaseHelper.Household.COLUMN_GPS_LONGITUDE, parser)) {
                 parser.next();
                 table.setGpsLongitude(Double.parseDouble(parser.getText()));
-                parser.nextTag(); //process </gpsLongitude>
+				table.setCosLongitude(Math.cos(table.getGpsLongitude()*Math.PI / 180.0)); // cos_lng = cos(lng * PI / 180)
+				table.setSinLongitude(Math.sin(table.getGpsLongitude()*Math.PI / 180.0)); // sin_lng = sin(lng * PI / 180)
+				parser.nextTag(); //process </gpsLongitude>
                 //Log.d("note gpslng", table.getGpsLongitude());
             }else{
                 table.setGpsLongitude(null);
+				table.setGpsNull(true);
                 parser.nextTag();
             }
             //Log.d("position now ", ""+parser.getName() + ", " +parser.getPositionDescription() );
@@ -1175,6 +1183,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
                 //Log.d("note gpsacc", table.getGpsAccuracy());
             }else{
                 table.setGpsAccuracy(null);
+				table.setGpsNull(true);
                 parser.nextTag();
 
             }
@@ -1186,6 +1195,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
                 parser.nextTag(); //process </gpsAltitude>
             }else{
                 table.setGpsAltitude(null);
+				table.setGpsNull(true);
                 parser.nextTag();
             }
 
@@ -1193,9 +1203,12 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
             if (!isEmptyTag(DatabaseHelper.Member.COLUMN_GPS_LATITUDE, parser)) {
                 parser.next();
                 table.setGpsLatitude(Double.parseDouble(parser.getText()));
+				table.setCosLatitude(Math.cos(table.getGpsLatitude()*Math.PI / 180.0)); // cos_lat = cos(lat * PI / 180)
+				table.setSinLatitude(Math.sin(table.getGpsLatitude()*Math.PI / 180.0)); // sin_lat = sin(lat * PI / 180)
                 parser.nextTag(); //process </gpsLatitude>
             }else{
                 table.setGpsLatitude(null);
+				table.setGpsNull(true);
                 parser.nextTag();
             }
 
@@ -1203,9 +1216,12 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
             if (!isEmptyTag(DatabaseHelper.Member.COLUMN_GPS_LONGITUDE, parser)) {
                 parser.next();
                 table.setGpsLongitude(Double.parseDouble(parser.getText()));
+				table.setCosLongitude(Math.cos(table.getGpsLongitude()*Math.PI / 180.0)); // cos_lng = cos(lng * PI / 180)
+				table.setSinLongitude(Math.sin(table.getGpsLongitude()*Math.PI / 180.0)); // sin_lng = sin(lng * PI / 180)
                 parser.nextTag(); //process </gpsLongitude>
             }else{
                 table.setGpsLongitude(null);
+				table.setGpsNull(true);
                 parser.nextTag();
             }
 

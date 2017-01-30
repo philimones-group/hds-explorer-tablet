@@ -42,10 +42,17 @@ public class Member implements Serializable, Table {
     private String endType;
     private String endDate;
     /** GPS Status */
+    private boolean gpsNull;
     private Double gpsAccuracy;
     private Double gpsAltitude;
     private Double gpsLatitude;
     private Double gpsLongitude;
+
+    private Double cosLatitude;
+    private Double sinLatitude;
+    private Double cosLongitude;
+    private Double sinLongitude;
+
     /* Extras Variables*/ //separated by semicolon :
     String extrasColumns;
     String extrasValues;
@@ -238,6 +245,38 @@ public class Member implements Serializable, Table {
         this.gpsLongitude = gpsLongitude;
     }
 
+    public Double getCosLatitude() {
+        return cosLatitude;
+    }
+
+    public void setCosLatitude(Double cosLatitude) {
+        this.cosLatitude = cosLatitude;
+    }
+
+    public Double getSinLatitude() {
+        return sinLatitude;
+    }
+
+    public void setSinLatitude(Double sinLatitude) {
+        this.sinLatitude = sinLatitude;
+    }
+
+    public Double getCosLongitude() {
+        return cosLongitude;
+    }
+
+    public void setCosLongitude(Double cosLongitude) {
+        this.cosLongitude = cosLongitude;
+    }
+
+    public Double getSinLongitude() {
+        return sinLongitude;
+    }
+
+    public void setSinLongitude(Double sinLongitude) {
+        this.sinLongitude = sinLongitude;
+    }
+
     public String getSpouseExtId() {
         return spouseExtId;
     }
@@ -294,8 +333,12 @@ public class Member implements Serializable, Table {
         isSubsHouseholdHead = subsHouseholdHead;
     }
 
-    public boolean hasNullCoordinates(){
-        return gpsLatitude==null || gpsLongitude==null;
+    public boolean isGpsNull() {
+        return gpsNull;
+    }
+
+    public void setGpsNull(boolean gpsNull) {
+        this.gpsNull = gpsNull;
     }
 
     public String getValueByName(String variableName){
@@ -331,10 +374,15 @@ public class Member implements Serializable, Table {
         cv.put(DatabaseHelper.Member.COLUMN_START_DATE, startDate);
         cv.put(DatabaseHelper.Member.COLUMN_END_TYPE, endType);
         cv.put(DatabaseHelper.Member.COLUMN_END_DATE, endDate);
+        cv.put(DatabaseHelper.Member.COLUMN_GPS_NULL, gpsNull ? 1 : 0);
         cv.put(DatabaseHelper.Member.COLUMN_GPS_ACCURACY, gpsAccuracy);
         cv.put(DatabaseHelper.Member.COLUMN_GPS_ALTITUDE, gpsAltitude);
         cv.put(DatabaseHelper.Member.COLUMN_GPS_LATITUDE, gpsLatitude);
         cv.put(DatabaseHelper.Member.COLUMN_GPS_LONGITUDE, gpsLongitude);
+        cv.put(DatabaseHelper.Member.COLUMN_COS_LATITUDE, cosLatitude);
+        cv.put(DatabaseHelper.Member.COLUMN_SIN_LATITUDE, sinLatitude);
+        cv.put(DatabaseHelper.Member.COLUMN_COS_LONGITUDE, cosLongitude);
+        cv.put(DatabaseHelper.Member.COLUMN_SIN_LONGITUDE, sinLongitude);
         cv.put(DatabaseHelper.Member.COLUMN_EXTRAS_COLUMNS, extrasColumns);
         cv.put(DatabaseHelper.Member.COLUMN_EXTRAS_VALUES, extrasValues);
         return cv;

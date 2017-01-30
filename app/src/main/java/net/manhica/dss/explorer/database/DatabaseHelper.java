@@ -115,15 +115,21 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         public static final String COLUMN_ADMIN_POST = "adminPost";
         public static final String COLUMN_DISTRICT = "district";
         public static final String COLUMN_PROVINCE = "province";
+        public static final String COLUMN_GPS_NULL = "hasGps";
         public static final String COLUMN_GPS_ACCURACY = "gpsAccuracy";
         public static final String COLUMN_GPS_ALTITUDE = "gpsAltitude";
         public static final String COLUMN_GPS_LATITUDE = "gpsLatitude";
         public static final String COLUMN_GPS_LONGITUDE = "gpsLongitude";
+        public static final String COLUMN_COS_LATITUDE = "cosLatitude";
+        public static final String COLUMN_SIN_LATITUDE = "sinLatitude";
+        public static final String COLUMN_COS_LONGITUDE = "cosLongitude";
+        public static final String COLUMN_SIN_LONGITUDE = "sinLongitude";
         public static final String COLUMN_EXTRAS_COLUMNS = "extrasColumns";
         public static final String COLUMN_EXTRAS_VALUES = "extrasValues";
 
 		public static final String[] ALL_COLUMNS = {_ID, COLUMN_EXT_ID, COLUMN_HOUSE_NUMBER, COLUMN_HEAD_PERM_ID, COLUMN_SUBSHEAD_PERM_ID, COLUMN_NEIGHBORHOOD, COLUMN_LOCALITY,
-                COLUMN_ADMIN_POST, COLUMN_DISTRICT, COLUMN_PROVINCE, COLUMN_GPS_ACCURACY, COLUMN_GPS_ALTITUDE, COLUMN_GPS_LATITUDE, COLUMN_GPS_LONGITUDE, COLUMN_EXTRAS_COLUMNS, COLUMN_EXTRAS_VALUES};
+                COLUMN_ADMIN_POST, COLUMN_DISTRICT, COLUMN_PROVINCE, COLUMN_GPS_NULL, COLUMN_GPS_ACCURACY, COLUMN_GPS_ALTITUDE, COLUMN_GPS_LATITUDE, COLUMN_GPS_LONGITUDE,
+                COLUMN_COS_LATITUDE, COLUMN_SIN_LATITUDE, COLUMN_COS_LONGITUDE, COLUMN_SIN_LONGITUDE, COLUMN_EXTRAS_COLUMNS, COLUMN_EXTRAS_VALUES};
 	}
 
 	public static final class Member implements BaseColumns  {
@@ -150,10 +156,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         public static final String COLUMN_START_DATE = "startDate";
         public static final String COLUMN_END_TYPE = "endType";
         public static final String COLUMN_END_DATE = "endDate";
+        public static final String COLUMN_GPS_NULL = "hasGps";
         public static final String COLUMN_GPS_ACCURACY = "gpsAccuracy";
         public static final String COLUMN_GPS_ALTITUDE = "gpsAltitude";
         public static final String COLUMN_GPS_LATITUDE = "gpsLatitude";
         public static final String COLUMN_GPS_LONGITUDE = "gpsLongitude";
+        public static final String COLUMN_COS_LATITUDE = "cosLatitude";
+        public static final String COLUMN_SIN_LATITUDE = "sinLatitude";
+        public static final String COLUMN_COS_LONGITUDE = "cosLongitude";
+        public static final String COLUMN_SIN_LONGITUDE = "sinLongitude";
         public static final String COLUMN_EXTRAS_COLUMNS = "extrasColumns";
         public static final String COLUMN_EXTRAS_VALUES = "extrasValues";
 
@@ -161,8 +172,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         public static final String[] ALL_COLUMNS = {_ID, COLUMN_EXT_ID, COLUMN_PERM_ID, COLUMN_NAME, COLUMN_GENDER, COLUMN_DOB, COLUMN_AGE, COLUMN_SPOUSE_EXT_ID,
                 COLUMN_SPOUSE_NAME, COLUMN_SPOUSE_PERM_ID, COLUMN_MOTHER_EXT_ID,
                 COLUMN_MOTHER_NAME, COLUMN_MOTHER_PERM_ID, COLUMN_FATHER_EXT_ID, COLUMN_FATHER_NAME, COLUMN_FATHER_PERM_ID, COLUMN_HOUSE_EXT_ID, COLUMN_HOUSE_NUMBER,
-                COLUMN_START_TYPE, COLUMN_START_DATE, COLUMN_END_TYPE, COLUMN_END_DATE,
-                COLUMN_GPS_ACCURACY, COLUMN_GPS_ALTITUDE, COLUMN_GPS_LATITUDE, COLUMN_GPS_LONGITUDE, COLUMN_EXTRAS_COLUMNS, COLUMN_EXTRAS_VALUES};
+                COLUMN_START_TYPE, COLUMN_START_DATE, COLUMN_END_TYPE, COLUMN_END_DATE, COLUMN_GPS_NULL,
+                COLUMN_GPS_ACCURACY, COLUMN_GPS_ALTITUDE, COLUMN_GPS_LATITUDE, COLUMN_GPS_LONGITUDE,
+                COLUMN_COS_LATITUDE, COLUMN_SIN_LATITUDE, COLUMN_COS_LONGITUDE, COLUMN_SIN_LONGITUDE, COLUMN_EXTRAS_COLUMNS, COLUMN_EXTRAS_VALUES};
 	}
 
     public static final class CollectedData implements BaseColumns {
@@ -244,10 +256,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + Household.COLUMN_ADMIN_POST + " TEXT,"
             + Household.COLUMN_DISTRICT + " TEXT,"
             + Household.COLUMN_PROVINCE + " TEXT,"
+            + Household.COLUMN_GPS_NULL + " INTEGER,"
             + Household.COLUMN_GPS_ACCURACY + " REAL,"
             + Household.COLUMN_GPS_ALTITUDE + " REAL,"
             + Household.COLUMN_GPS_LATITUDE + " REAL,"
             + Household.COLUMN_GPS_LONGITUDE + " REAL,"
+            + Household.COLUMN_COS_LATITUDE + " REAL,"
+            + Household.COLUMN_SIN_LATITUDE + " REAL,"
+            + Household.COLUMN_COS_LONGITUDE + " REAL,"
+            + Household.COLUMN_SIN_LONGITUDE + " REAL,"
             + Household.COLUMN_EXTRAS_COLUMNS + " TEXT,"
             + Household.COLUMN_EXTRAS_VALUES + " TEXT);"
 
@@ -282,10 +299,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + Member.COLUMN_START_DATE + " TEXT,"
             + Member.COLUMN_END_TYPE + " TEXT,"
             + Member.COLUMN_END_DATE + " TEXT,"
+            + Member.COLUMN_GPS_NULL + " INTEGER,"
             + Member.COLUMN_GPS_ACCURACY + " REAL,"
             + Member.COLUMN_GPS_ALTITUDE + " REAL,"
             + Member.COLUMN_GPS_LATITUDE + " REAL,"
             + Member.COLUMN_GPS_LONGITUDE + " REAL,"
+            + Member.COLUMN_COS_LATITUDE + " REAL,"
+            + Member.COLUMN_SIN_LATITUDE + " REAL,"
+            + Member.COLUMN_COS_LONGITUDE + " REAL,"
+            + Member.COLUMN_SIN_LONGITUDE + " REAL,"
             + Member.COLUMN_EXTRAS_COLUMNS + " TEXT,"
             + Member.COLUMN_EXTRAS_VALUES + " TEXT);"
 

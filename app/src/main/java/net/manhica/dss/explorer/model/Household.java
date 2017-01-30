@@ -27,10 +27,17 @@ public class Household implements Serializable, Table {
     private String headPermId;
     private String subsHeadPermId;
 
+    private boolean gpsNull;
     private Double gpsAccuracy;
     private Double gpsAltitude;
     private Double gpsLatitude;
     private Double gpsLongitude;
+
+    private Double cosLatitude;
+    private Double sinLatitude;
+    private Double cosLongitude;
+    private Double sinLongitude;
+
     /* Extras Variables*/ //separated by semicolon :
     String extrasColumns;
     String extrasValues;
@@ -163,8 +170,44 @@ public class Household implements Serializable, Table {
         this.gpsLongitude = gpsLongitude;
     }
 
-    public boolean hasNullCoordinates(){
-        return gpsLatitude==null || gpsLongitude==null;
+    public Double getCosLatitude() {
+        return cosLatitude;
+    }
+
+    public void setCosLatitude(Double cosLatitude) {
+        this.cosLatitude = cosLatitude;
+    }
+
+    public Double getSinLatitude() {
+        return sinLatitude;
+    }
+
+    public void setSinLatitude(Double sinLatitude) {
+        this.sinLatitude = sinLatitude;
+    }
+
+    public Double getSinLongitude() {
+        return sinLongitude;
+    }
+
+    public void setSinLongitude(Double sinLongitude) {
+        this.sinLongitude = sinLongitude;
+    }
+
+    public Double getCosLongitude() {
+        return cosLongitude;
+    }
+
+    public void setCosLongitude(Double cosLongitude) {
+        this.cosLongitude = cosLongitude;
+    }
+
+    public boolean isGpsNull() {
+        return gpsNull;
+    }
+
+    public void setGpsNull(boolean gpsNull) {
+        this.gpsNull = gpsNull;
     }
 
     public String getValueByName(String variableName){
@@ -188,10 +231,15 @@ public class Household implements Serializable, Table {
         cv.put(DatabaseHelper.Household.COLUMN_ADMIN_POST, adminPost);
         cv.put(DatabaseHelper.Household.COLUMN_DISTRICT, district);
         cv.put(DatabaseHelper.Household.COLUMN_PROVINCE, province);
+        cv.put(DatabaseHelper.Household.COLUMN_GPS_NULL, gpsNull ? 1 : 0);
         cv.put(DatabaseHelper.Household.COLUMN_GPS_ACCURACY, gpsAccuracy);
         cv.put(DatabaseHelper.Household.COLUMN_GPS_ALTITUDE, gpsAltitude);
         cv.put(DatabaseHelper.Household.COLUMN_GPS_LATITUDE, gpsLatitude);
         cv.put(DatabaseHelper.Household.COLUMN_GPS_LONGITUDE, gpsLongitude);
+        cv.put(DatabaseHelper.Household.COLUMN_COS_LATITUDE, cosLatitude);
+        cv.put(DatabaseHelper.Household.COLUMN_SIN_LATITUDE, sinLatitude);
+        cv.put(DatabaseHelper.Household.COLUMN_COS_LONGITUDE, cosLongitude);
+        cv.put(DatabaseHelper.Household.COLUMN_SIN_LONGITUDE, sinLongitude);
         cv.put(DatabaseHelper.Household.COLUMN_EXTRAS_COLUMNS, extrasColumns);
         cv.put(DatabaseHelper.Household.COLUMN_EXTRAS_VALUES, extrasValues);
 

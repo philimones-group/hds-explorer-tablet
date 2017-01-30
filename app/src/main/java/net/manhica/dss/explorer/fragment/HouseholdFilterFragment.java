@@ -1,6 +1,7 @@
 package net.manhica.dss.explorer.fragment;
 
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.database.Cursor;
 import android.os.AsyncTask;
@@ -8,6 +9,7 @@ import android.os.Bundle;
 import android.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -134,19 +136,30 @@ public class HouseholdFilterFragment extends Fragment {
     private void showHouseholdsMap() {
         HouseholdArrayAdapter adapter = (HouseholdArrayAdapter) this.hfHousesList.getAdapter();
 
-        final MWMPoint[] points = new MWMPoint[adapter.getHouseholds().size()];
+        if (adapter==null || adapter.isEmpty()){
+            buildOkDialog(getString(R.string.household_filter_gps_not_available_title_lbl), getString(R.string.household_filter_no_houses_lbl));
+            return;
+        }
 
+        final MWMPoint[] points = new MWMPoint[adapter.getHouseholds().size()];
+        boolean hasAnyCoords = false;
 
         for (int i=0; i < points.length; i++){
             Household h = adapter.getHouseholds().get(i);
             String name = h.getHouseNumber();
 
-            if (!h.hasNullCoordinates()) {
+            if (!h.isGpsNull()) {
                 double lat = h.getGpsLatitude();
                 double lon = h.getGpsLongitude();
                 points[i] = new MWMPoint(lat, lon, name);
+                Log.d("corrds-test", name+" - "+h.getGpsLatitude()+", "+h.getGpsLongitude());
+                hasAnyCoords = true;
             }
+        }
 
+        if (!hasAnyCoords){
+            buildOkDialog(getString(R.string.map_gps_not_available_title_lbl), getString(R.string.household_filter_gps_not_available_lbl));
+            return;
         }
 
         MapsWithMeApi.showPointsOnMap(this.getActivity(), getString(R.string.map_households), points);
@@ -189,6 +202,21 @@ public class HouseholdFilterFragment extends Fragment {
         HouseholdArrayAdapter currentAdapter = new HouseholdArrayAdapter(this.getActivity(), households);
 
         return currentAdapter;
+    }
+
+    private void buildOkDialog(String message){
+        buildOkDialog(null, message);
+    }
+
+    private void buildOkDialog(String title, String message){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this.getActivity());
+        title = (title==null || title.isEmpty()) ? getString(R.string.info_lbl) : title;
+
+        builder.setTitle(title);
+        builder.setMessage(message);
+        builder.setCancelable(false);
+        builder.setPositiveButton("OK", null);
+        builder.show();
     }
 
     public void showProgress(final boolean show) {

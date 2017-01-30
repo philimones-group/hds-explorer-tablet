@@ -31,8 +31,8 @@
     <string name="odk_unfinished_button_delete">Apagar formulário</string>
     <string name="odk_unfinished_button_change">Alterar formulário</string>
     <string name="odk_unfinished_button_save">Salvar formulário</string>
-    <string name="odk_unfinished_form_saved">O formulário foi salvo mas não esta finalizado, poderá ser editado depois</string>
-    <string name="odk_unfinished_form_not_found">O formulário não pôde ser encontrado dentro do ODK Collect. Por favor, certifique-se que ele existe e que foi escrito corretamente.</string>
+    <string name="odk_unfinished_form_saved">O formulário foi salvo mas não esta finaliado, poderá ser editado depois</string>
+    <string name="odk_unfinished_form_not_found">O formulário não pôde ser encontrado dntro do ODK Collect. Por favor, certifique-se que ele existe e que foi escrito corretamente.</string>
 
 
     <!-- Sync Tasks -->
@@ -101,11 +101,14 @@
 
     <string name="member_list_bt_clear_lbl">Limpar Lista</string>
     <string name="member_list_bt_show_houses_maps_lbl">Mapa GPS das Casas</string>
-    <string name="member_list_gps_not_available_lbl">As cooredenadas GPS não estão disponíveis</string>
+    <string name="member_list_gps_not_available_lbl">As cooredenadas GPS da casa não estão disponíveis</string>
+    <string name="member_list_member_gps_not_available_lbl">As cooredenadas GPS da casa do membro selecionado não estão disponíveis</string>
     <string name="member_list_bt_show_houses_members_lbl">Mostrar Mapa GPS</string>
     <string name="member_list_bt_show_closest_houses_lbl">Mapa de Casas prox.</string>
     <string name="member_list_bt_show_closest_members_lbl">Mapa de Membros prox.</string>
+    <string name="member_list_select_distance_radius_lbl">Selecione a distância maxima apartir da casa</string>
     <string name="member_list_bt_facility_form_lbl">Abrir Form. de Facility</string>
+    <string name="member_list_no_members_lbl">A lista de membros/individuos esta vazia</string>
 
     <string name="member_list_bt_add_patient_lbl">Adicionar nova Paciente</string>
     <string name="member_list_bt_show_patients_lbl">Mostrar pacientes colhidos</string>
@@ -145,13 +148,21 @@
     <string name="household_filter_permid_hint_lbl">ex: 0101-001</string>
     <string name="household_filter_search_lbl">Procurar casa</string>
     <string name="household_filter_gpsmap_lbl">Mapa GPS</string>
+    <string name="household_filter_gps_not_available_title_lbl">Não será possivel visualizar o mapa</string>
+    <string name="household_filter_gps_not_available_lbl">As cooredenadas GPS das casas não estão disponíveis</string>
+    <string name="household_filter_no_houses_lbl">A lista das casas está vazia</string>
     <string name="household_filter_clear_lbl">Limpar</string>
 
     <string name="survey_households_btn_lbl">Procurar por Agregado</string>
     <string name="survey_members_btn_lbl">Procurar por membros</string>
 
     <!-- GPS Maps -->
+    <string name="map_gps_not_available_title_lbl">Não será possivel visualizar o mapa</string>
     <string name="map_closest_members">Individuos por perto</string>
+    <string name="map_closest_houses_from_lbl">Casas perto de </string>
+    <string name="map_closest_members_from_lbl">Membros perto de </string>
+    <string name="map_no_closest_houses_found_lbl">Não foram encontradas casas vizinhas num raio de ### da casa selecionada.</string>
+    <string name="map_no_closest_members_found_lbl">Não foram encontrados membros vizinhos num raio de ### da casa do membro selecionado</string>
     <string name="map_members_coordinates">Localização dos individuos/pessoas</string>
     <string name="map_households">Localização das casas</string>
 

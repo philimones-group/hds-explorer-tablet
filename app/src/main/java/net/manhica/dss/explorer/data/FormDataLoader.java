@@ -65,7 +65,8 @@ public class FormDataLoader implements Serializable {
                 }else {
                     internalVariableName = extrasVariable.columnName;
                     String commaValue = household.getValueByName(internalVariableName);
-                    value = commaValue.split(",")[extrasVariable.arrayIndex];
+                    String[] values = commaValue.split(",");
+                    value = (extrasVariable.arrayIndex >= values.length) ? null : values[extrasVariable.arrayIndex];
                 }
 
                 if (value == null) value = "";
@@ -90,7 +91,8 @@ public class FormDataLoader implements Serializable {
                 }else {
                     internalVariableName = extrasVariable.columnName;
                     String commaValue = member.getValueByName(internalVariableName);
-                    value = commaValue.split(",")[extrasVariable.arrayIndex];
+                    String[] values = commaValue.split(",");
+                    value = (extrasVariable.arrayIndex >= values.length) ? null : values[extrasVariable.arrayIndex];
                 }
 
                 if (value == null) value = "";
@@ -115,7 +117,8 @@ public class FormDataLoader implements Serializable {
                 }else {
                     internalVariableName = extrasVariable.columnName;
                     String commaValue = user.getValueByName(internalVariableName);
-                    value = commaValue.split(",")[extrasVariable.arrayIndex];
+                    String[] values = commaValue.split(",");
+                    value = (extrasVariable.arrayIndex >= values.length) ? null : values[extrasVariable.arrayIndex];
                 }
 
                 if (value == null) value = "";

@@ -98,6 +98,10 @@ public class Database {
         	
     	return cursor;
     }
+
+	public Cursor rawQuery(String sql, String[] selectionArgs){
+		return database.rawQuery(sql, selectionArgs);
+	}
     
     private Table newInstance(Class<? extends Table> entity){
     	try {

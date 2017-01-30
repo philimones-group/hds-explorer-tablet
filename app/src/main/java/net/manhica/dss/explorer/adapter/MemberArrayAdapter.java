@@ -70,6 +70,14 @@ public class MemberArrayAdapter  extends ArrayAdapter<Member> {
         notifyDataSetChanged();
     }
 
+    public int getSelectedIndex(){
+        return selectedIndex;
+    }
+
+    public Member getSelectedMember(){
+        return (selectedIndex < 0 || selectedIndex >= members.size()) ? null : members.get(selectedIndex);
+    }
+
     @Override
     public Member getItem(int position) {
         return members.get(position);

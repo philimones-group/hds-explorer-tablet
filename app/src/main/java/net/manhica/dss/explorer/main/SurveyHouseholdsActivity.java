@@ -95,6 +95,8 @@ public class SurveyHouseholdsActivity extends Activity implements HouseholdFilte
         if (loggedUser != null){
             loader.loadUserValues(loggedUser);
         }
+
+        loader.loadConstantValues();
     }
 
     private void loadFormValues(FormDataLoader[] loaders, Household household, Member member){

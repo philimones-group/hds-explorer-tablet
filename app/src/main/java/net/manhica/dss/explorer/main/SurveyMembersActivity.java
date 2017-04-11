@@ -95,6 +95,8 @@ public class SurveyMembersActivity extends Activity implements MemberFilterFragm
         if (loggedUser != null){
             loader.loadUserValues(loggedUser);
         }
+
+        loader.loadConstantValues();
     }
 
     private void loadFormValues(FormDataLoader[] loaders, Household household, Member member){

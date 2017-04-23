@@ -569,6 +569,28 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 				parser.nextTag();
 			}
 
+			parser.nextTag(); //process isHouseholdForm
+			if (!isEmptyTag("isHouseholdForm", parser)) {
+				parser.next();
+				table.setHouseholdForm(Boolean.parseBoolean(parser.getText()));
+				parser.nextTag(); //process </isHouseholdForm>
+				//Log.d(count+"-isHouseholdForm", "value="+ parser.getText());
+			}else{
+				table.setHouseholdForm(false);
+				parser.nextTag();
+			}
+
+			parser.nextTag(); //process isMemberForm
+			if (!isEmptyTag("isMemberForm", parser)) {
+				parser.next();
+				table.setMemberForm(Boolean.parseBoolean(parser.getText()));
+				parser.nextTag(); //process </isMemberForm>
+				//Log.d(count+"-isMemberForm", "value="+ parser.getText());
+			}else{
+				table.setMemberForm(false);
+				parser.nextTag();
+			}
+
 			parser.nextTag(); //process bindMap
 			if (!isEmptyTag("bindMap", parser)) {
 				parser.next();
@@ -577,6 +599,30 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 				parser.nextTag(); //process </bindMap>
 			}else{
 				table.setBindMap("");
+				parser.nextTag();
+
+			}
+
+			parser.nextTag(); //process redcapApi
+			if (!isEmptyTag("redcapApi", parser)) {
+				parser.next();
+				table.setRedcapApi(parser.getText());
+				//Log.d(count+"-redcapApi", "value="+ parser.getText());
+				parser.nextTag(); //process </redcapApi>
+			}else{
+				table.setRedcapApi("");
+				parser.nextTag();
+
+			}
+
+			parser.nextTag(); //process redcapMap
+			if (!isEmptyTag("redcapMap", parser)) {
+				parser.next();
+				table.setRedcapMap(parser.getText());
+				//Log.d(count+"-redcapMap", "value="+ parser.getText());
+				parser.nextTag(); //process </redcapMap>
+			}else{
+				table.setRedcapMap("");
 				parser.nextTag();
 
 			}

@@ -47,8 +47,11 @@ public class Converter {
         form.setMinAge(cursor.getInt(cursor.getColumnIndex(DatabaseHelper.Form.COLUMN_MIN_AGE)));
         form.setMaxAge(cursor.getInt(cursor.getColumnIndex(DatabaseHelper.Form.COLUMN_MAX_AGE)));
         form.setModules(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Form.COLUMN_MODULES)));
+		form.setHouseholdForm(cursor.getInt(cursor.getColumnIndex(DatabaseHelper.Form.COLUMN_IS_HOUSEHOLD))==1);
+		form.setMemberForm(cursor.getInt(cursor.getColumnIndex(DatabaseHelper.Form.COLUMN_IS_MEMBER))==1);
 		form.setBindMap(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Form.COLUMN_BIND_MAP)));
-				
+		form.setRedcapApi(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Form.COLUMN_REDCAP_API)));
+		form.setRedcapMap(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Form.COLUMN_REDCAP_MAP)));
 		return form;
 	}
 

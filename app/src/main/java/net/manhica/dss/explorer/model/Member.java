@@ -6,8 +6,10 @@ import net.manhica.dss.explorer.database.DatabaseHelper;
 import net.manhica.dss.explorer.database.Table;
 
 import java.io.Serializable;
+import java.util.Date;
 
 import mz.betainteractive.utilities.ReflectionUtils;
+import mz.betainteractive.utilities.StringUtil;
 
 /**
  * Created by paul on 5/20/16.
@@ -54,8 +56,8 @@ public class Member implements Serializable, Table {
     private Double sinLongitude;
 
     /* Extras Variables*/ //separated by semicolon :
-    String extrasColumns;
-    String extrasValues;
+    private String extrasColumns;
+    private String extrasValues;
 
 
     private boolean isHouseholdHead; /*not on database*/
@@ -103,6 +105,10 @@ public class Member implements Serializable, Table {
 
     public String getDob() {
         return dob;
+    }
+
+    public Date getDobDate(){
+        return StringUtil.toDate(dob, "yyyy-MM-dd");
     }
 
     public void setDob(String dob) {
@@ -343,6 +349,51 @@ public class Member implements Serializable, Table {
 
     public String getValueByName(String variableName){
         return ReflectionUtils.getValueByName(this, variableName);
+    }
+
+    public static Member getEmptyMember(){
+        Member member = new Member();
+        member.extId = "";
+        member.permId = "";
+        member.name = "";
+        member.gender = "";
+        member.dob = "";
+        member.age = 0;
+
+        member.spouseExtId = "";
+        member.spouseName = "";
+        member.spousePermId = "";
+
+        member.motherExtId = "";
+        member.motherName = "";
+        member.motherPermId = "";
+        member.fatherExtId = "";
+        member.fatherName = "";
+        member.fatherPermId = "";
+
+        member.houseExtId = "";
+        member.houseNumber = "";
+        member.startType = "";
+        member.startDate = "";
+        member.endType = "";
+        member.endDate = "";
+
+        member.gpsNull = true;
+        member.gpsAccuracy = 0.0;
+        member.gpsAltitude = 0.0;
+        member.gpsLatitude = 0.0;
+        member.gpsLongitude = 0.0;
+
+        member.cosLatitude = 0.0;
+        member.sinLatitude = 0.0;
+        member.cosLongitude = 0.0;
+        member.sinLongitude = 0.0;
+
+
+        member.extrasColumns = "";
+        member.extrasValues = "";
+
+        return member;
     }
 
     @Override

@@ -96,19 +96,25 @@ public class OdkGeneratedFormLoadTask extends AsyncTask<Void, Void, Boolean> {
         if (cursor.moveToFirst()) {
             String jrFormId = cursor.getString(0);
             String formFilePath = cursor.getString(1);
+            String formVersion = cursor.getString(2);
+
+            Log.d("loading forms", ""+cursor.toString()+", "+cursor.getColumnName(0)+", formVersion="+formVersion);
             
             String xml = processXml(jrFormId, formFilePath);            
             File targetFile = saveFile(xml,jrFormId);
+            boolean writeFile = false;
 
             if (targetFile != null) {
-
-            	boolean writeFile = writeContent(targetFile, filledForm.getFormName(), jrFormId);
-
-                return writeFile;
+            	writeFile = writeContent(targetFile, filledForm.getFormName(), jrFormId, formVersion);
             }
-        }
-        cursor.close();
 
+            //Log.d("finished", "creating file");
+
+            cursor.close();
+            return writeFile;
+        }
+
+        cursor.close();
         return false;
     }
 
@@ -137,7 +143,7 @@ public class OdkGeneratedFormLoadTask extends AsyncTask<Void, Void, Boolean> {
         Log.d("Running check form", "");
 
         if (cursor.moveToNext()) {
-            Log.d("move next", ""+cursor.getString(0));
+            //Log.d("move next", ""+cursor.getString(0));
             xmlFilePath = cursor.getString(cursor.getColumnIndex(InstanceProviderAPI.InstanceColumns.INSTANCE_FILE_PATH)); //used to read the xml file
         } else {
             Log.d("move next", "couldnt find executed form");
@@ -155,7 +161,7 @@ public class OdkGeneratedFormLoadTask extends AsyncTask<Void, Void, Boolean> {
 
     private Cursor getCursorForFormsProvider(String name) {
         return resolver.query(FormsProviderAPI.FormsColumns.CONTENT_URI, new String[] {
-                FormsProviderAPI.FormsColumns.JR_FORM_ID, FormsProviderAPI.FormsColumns.FORM_FILE_PATH },
+                FormsProviderAPI.FormsColumns.JR_FORM_ID, FormsProviderAPI.FormsColumns.FORM_FILE_PATH, FormsProviderAPI.FormsColumns.JR_VERSION },
                 FormsProviderAPI.FormsColumns.JR_FORM_ID + " like ?", new String[] { name + "%" }, null);
     }
 
@@ -172,12 +178,14 @@ public class OdkGeneratedFormLoadTask extends AsyncTask<Void, Void, Boolean> {
             
             if (node==null){
             	node = doc.getElementsByTagName(jrFormId).item(0);
-                sbuilder.append("<"+jrFormId+" id=\"" + jrFormId + "\">" + "\r\n");
+                //Log.d("node", ""+node.getNodeName());
+                sbuilder.append("<"+jrFormId+" id=\"" + jrFormId + "\">" + "\r\n"); // version="161103141"
             } else {
             	sbuilder.append("<data id=\"" + jrFormId + "\">" + "\r\n");
             }
 
             processNodeChildren(node, sbuilder);
+            Log.d("processXml","finished!");
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -194,7 +202,7 @@ public class OdkGeneratedFormLoadTask extends AsyncTask<Void, Void, Boolean> {
         NodeList childElements = node.getChildNodes();
 
         List<String> params = filledForm.getVariables();
-        Log.d("executing-pnc",""+params);
+        //Log.d("executing-pnc",""+params);
         for (int i = 0; i < childElements.getLength(); i++) {
             Node n = childElements.item(i);
             
@@ -217,7 +225,7 @@ public class OdkGeneratedFormLoadTask extends AsyncTask<Void, Void, Boolean> {
                 }
             }
         }
-        Log.d("finished", sbuilder.toString());
+        //Log.d("finished", sbuilder.toString());
         
         sbuilder.append("</" + node.getNodeName() + ">" + "\r\n");
     }
@@ -306,12 +314,15 @@ public class OdkGeneratedFormLoadTask extends AsyncTask<Void, Void, Boolean> {
         return targetFile;
     }
 
-    private boolean writeContent(File targetFile, String displayName, String formId) {
+    private boolean writeContent(File targetFile, String displayName, String formId, String formVersion) {
 
         ContentValues values = new ContentValues();
         values.put(InstanceProviderAPI.InstanceColumns.INSTANCE_FILE_PATH, targetFile.getAbsolutePath());
         values.put(InstanceProviderAPI.InstanceColumns.DISPLAY_NAME, displayName);
         values.put(InstanceProviderAPI.InstanceColumns.JR_FORM_ID, formId);
+        if (formVersion != null){
+            values.put(InstanceProviderAPI.InstanceColumns.JR_VERSION, formVersion);
+        }
         odkUri = resolver.insert(InstanceProviderAPI.InstanceColumns.CONTENT_URI, values);
         if (odkUri == null) {
             return false;

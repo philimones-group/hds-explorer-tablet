@@ -13,13 +13,20 @@ import android.content.ContentValues;
  */
 public class FilledForm {
     private String formName;
+	private String formVersion;
     private Map<String,Object> values;
     
     public FilledForm(String formName) {
         this.formName = formName;
         this.values = new HashMap<String, Object>();
     }
-    
+
+	public FilledForm(String formName, String formVersion) {
+		this.formName = formName;
+		this.formVersion = formVersion;
+		this.values = new HashMap<String, Object>();
+	}
+
     public void put(String variable, Object value){
     	values.put(variable, value);
     }
@@ -38,6 +45,14 @@ public class FilledForm {
 
 	public void setFormName(String formName) {
 		this.formName = formName;
+	}
+
+	public String getFormVersion() {
+		return formVersion;
+	}
+
+	public void setFormVersion(String formVersion) {
+		this.formVersion = formVersion;
 	}
 
 	public List<String> getVariables(){

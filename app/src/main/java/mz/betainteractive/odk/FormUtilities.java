@@ -46,7 +46,9 @@ public class FormUtilities {
             	Cursor cursor = getCursorForFormsProvider(filledForm.getFormName());
                 if (cursor.moveToFirst()) {
                     jrFormId = cursor.getString(0);
+                    //Log.d("form",""+jrFormId+", v = "+cursor.getString(2));
                 }
+                cursor.close();
                 
                 FormUtilities.this.contentUri = contentUri;
                 
@@ -113,7 +115,7 @@ public class FormUtilities {
 	private Cursor getCursorForFormsProvider(String name) {
     	ContentResolver resolver = mContext.getContentResolver();
         return resolver.query(FormsProviderAPI.FormsColumns.CONTENT_URI, new String[] {
-                FormsProviderAPI.FormsColumns.JR_FORM_ID, FormsProviderAPI.FormsColumns.FORM_FILE_PATH },
+                FormsProviderAPI.FormsColumns.JR_FORM_ID, FormsProviderAPI.FormsColumns.FORM_FILE_PATH, FormsProviderAPI.FormsColumns.JR_VERSION },
                 FormsProviderAPI.FormsColumns.JR_FORM_ID + " like ?", new String[] { name + "%" }, null);
     }
 

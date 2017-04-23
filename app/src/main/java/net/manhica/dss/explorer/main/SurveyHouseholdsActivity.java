@@ -45,6 +45,7 @@ public class SurveyHouseholdsActivity extends Activity implements HouseholdFilte
 
     private void initialize() {
         this.memberListFragment.setButtonVisibilityGone(MemberListFragment.Buttons.CLOSEST_MEMBERS);
+        this.memberListFragment.setButtonEnabled(hasMemberBoundForms(), MemberListFragment.Buttons.NEW_MEMBER_COLLECT);
     }
 
     @Override
@@ -85,6 +86,24 @@ public class SurveyHouseholdsActivity extends Activity implements HouseholdFilte
         return list;
     }
 
+    private boolean hasMemberBoundForms(){
+        for (FormDataLoader fdls : getFormLoaders()){
+            if (fdls.getForm().isMemberForm()){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean hasHouseholdBoundForms(){
+        for (FormDataLoader fdls : getFormLoaders()){
+            if (fdls.getForm().isHouseholdForm()){
+                return true;
+            }
+        }
+        return false;
+    }
+
     private void loadFormValues(FormDataLoader loader, Household household, Member member){
         if (household != null){
             loader.loadHouseholdValues(household);
@@ -97,6 +116,7 @@ public class SurveyHouseholdsActivity extends Activity implements HouseholdFilte
         }
 
         loader.loadConstantValues();
+        loader.loadSpecialConstantValues(household, member, loggedUser);
     }
 
     private void loadFormValues(FormDataLoader[] loaders, Household household, Member member){

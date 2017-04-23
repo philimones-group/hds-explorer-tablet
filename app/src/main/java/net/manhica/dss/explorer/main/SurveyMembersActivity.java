@@ -44,6 +44,7 @@ public class SurveyMembersActivity extends Activity implements MemberFilterFragm
 
     private void initialize() {
         this.memberListFragment.setButtonVisibilityGone(MemberListFragment.Buttons.CLOSEST_HOUSES);
+        this.memberListFragment.setButtonEnabled(hasMemberBoundForms(), MemberListFragment.Buttons.NEW_MEMBER_COLLECT);
     }
 
     @Override
@@ -71,7 +72,7 @@ public class SurveyMembersActivity extends Activity implements MemberFilterFragm
         Database db = new Database(this);
 
         db.open();
-        List<Form> forms = Queries.getAllFormBy(db, DatabaseHelper.Form.COLUMN_MODULES+" like ?", new String[]{ "%" + Module.DSS_SURVEY_MODULE + "%" });
+        List<Form> forms = Queries.getAllFormBy(db, DatabaseHelper.Form.COLUMN_MODULES+" like ? ", new String[]{ "%" + Module.DSS_SURVEY_MODULE + "%" });
         db.close();
 
         FormDataLoader[] list = new FormDataLoader[forms.size()];
@@ -83,6 +84,24 @@ public class SurveyMembersActivity extends Activity implements MemberFilterFragm
         }
 
         return list;
+    }
+
+    private boolean hasMemberBoundForms(){
+        for (FormDataLoader fdls : getFormLoaders()){
+            if (fdls.getForm().isMemberForm()){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean hasHouseholdBoundForms(){
+        for (FormDataLoader fdls : getFormLoaders()){
+            if (fdls.getForm().isHouseholdForm()){
+                return true;
+            }
+        }
+        return false;
     }
 
     private void loadFormValues(FormDataLoader loader, Household household, Member member){
@@ -97,6 +116,7 @@ public class SurveyMembersActivity extends Activity implements MemberFilterFragm
         }
 
         loader.loadConstantValues();
+        loader.loadSpecialConstantValues(household, member, loggedUser);
     }
 
     private void loadFormValues(FormDataLoader[] loaders, Household household, Member member){

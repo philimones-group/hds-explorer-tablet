@@ -14,6 +14,8 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -33,9 +35,13 @@ import net.manhica.dss.explorer.model.Household;
 import net.manhica.dss.explorer.model.Member;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import mz.betainteractive.utilities.GeneralUtil;
+import mz.betainteractive.utilities.StringUtil;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -49,6 +55,7 @@ public class MemberListFragment extends Fragment {
     private Button btMemListShowMmbMap;
     private Button btMemListShowClosestMembers;
     private Button btMemListShowClosestHouses;
+    private Button btMemListNewMemberCollect;
 
     private View mProgressView;
 
@@ -59,8 +66,10 @@ public class MemberListFragment extends Fragment {
     private MemberActionListener memberActionListener;
     private Household currentHousehold;
 
+    private AlertDialog dialogNewMember;
+
     public enum Buttons {
-        MEMBERS_MAP, CLOSEST_MEMBERS, CLOSEST_HOUSES
+        MEMBERS_MAP, CLOSEST_MEMBERS, CLOSEST_HOUSES, NEW_MEMBER_COLLECT
     }
 
     public MemberListFragment() {
@@ -104,8 +113,28 @@ public class MemberListFragment extends Fragment {
             if (button==Buttons.CLOSEST_MEMBERS){
                 btMemListShowClosestMembers.setVisibility(View.GONE);
             }
+            if (button==Buttons.NEW_MEMBER_COLLECT){
+                btMemListNewMemberCollect.setVisibility(View.GONE);
+            }
         }
+    }
 
+    public void setButtonEnabled(boolean enabled, Buttons... buttons){
+
+        for (Buttons button : buttons){
+            if (button==Buttons.MEMBERS_MAP){
+                btMemListShowMmbMap.setEnabled(enabled);
+            }
+            if (button==Buttons.CLOSEST_HOUSES){
+                btMemListShowClosestHouses.setEnabled(enabled);
+            }
+            if (button==Buttons.CLOSEST_MEMBERS){
+                btMemListShowClosestMembers.setEnabled(enabled);
+            }
+            if (button==Buttons.NEW_MEMBER_COLLECT){
+                btMemListNewMemberCollect.setEnabled(enabled);
+            }
+        }
     }
 
     public Button addButton(String buttonName, final ActionListener action){
@@ -172,12 +201,14 @@ public class MemberListFragment extends Fragment {
         this.btMemListShowMmbMap = (Button) view.findViewById(R.id.btMemListShowMmbMap);
         this.btMemListShowClosestHouses = (Button) view.findViewById(R.id.btMemListShowClosestHouses);
         this.btMemListShowClosestMembers = (Button) view.findViewById(R.id.btMemListShowClosestMembers);
+        this.btMemListNewMemberCollect = (Button) view.findViewById(R.id.btMemListNewMemberCollect);
         this.listButtons = (LinearLayout) view.findViewById(R.id.viewListButtons);
         this.mProgressView = view.findViewById(R.id.viewListProgressBar);
 
         this.btMemListShowMmbMap.setEnabled(false);
         this.btMemListShowClosestHouses.setEnabled(false);
         this.btMemListShowClosestMembers.setEnabled(false);
+        this.btMemListNewMemberCollect.setEnabled(true);
 
         this.btMemListShowMmbMap.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -197,6 +228,13 @@ public class MemberListFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 buildMemberDistanceSelectorDialog();
+            }
+        });
+
+        this.btMemListNewMemberCollect.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                buildNewMemberDialog();
             }
         });
         
@@ -390,6 +428,82 @@ public class MemberListFragment extends Fragment {
         builder.show();
     }
 
+    private void buildNewMemberDialog(){
+
+        if (dialogNewMember == null){
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            LayoutInflater inflater = getActivity().getLayoutInflater();
+
+            builder.setTitle(getString(R.string.member_list_newmem_title_lbl));
+            builder.setView(inflater.inflate(R.layout.new_member, null));
+            builder.setCancelable(false);
+            builder.setPositiveButton(R.string.member_list_newmem_collect_lbl, null);
+            builder.setNegativeButton(R.string.bt_cancel_lbl, null);
+            dialogNewMember = builder.create();
+
+            dialogNewMember.setOnShowListener(new DialogInterface.OnShowListener() {
+                @Override
+                public void onShow(DialogInterface dialog) {
+                    Button b = dialogNewMember.getButton(AlertDialog.BUTTON_POSITIVE);
+                    b.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            onAddNewMemberCollect();
+                        }
+                    });
+                }
+            });
+
+
+        }
+
+        //dialogNewMember.setCancelable(false);
+        dialogNewMember.show();
+    }
+
+    private void onAddNewMemberCollect() {
+        if (dialogNewMember == null) return;
+
+        EditText txtNmHouseNumber = (EditText) dialogNewMember.findViewById(R.id.txtNmHouseNumber);
+        EditText txtNmPermId = (EditText) dialogNewMember.findViewById(R.id.txtNmPermId);
+        EditText txtNmName = (EditText) dialogNewMember.findViewById(R.id.txtNmName);
+        DatePicker dtpNmDob = (DatePicker) dialogNewMember.findViewById(R.id.dtpNmDob);
+
+        Member member = Member.getEmptyMember();
+        member.setHouseExtId(txtNmHouseNumber.getText().toString());
+        member.setHouseNumber(txtNmHouseNumber.getText().toString());
+        member.setExtId(txtNmPermId.getText().toString());
+        member.setPermId(txtNmPermId.getText().toString());
+        member.setName(txtNmName.getText().toString());
+        member.setDob(StringUtil.format(GeneralUtil.getDate(dtpNmDob), "yyyy-MM-dd" ));
+        member.setAge(GeneralUtil.getAge(GeneralUtil.getDate(dtpNmDob)));
+
+        //
+        if (!member.getHouseNumber().matches("[0-9]{4}-[0-9]{3}")){
+            buildOkDialog(getString(R.string.member_list_newmem_houseno_err_lbl));
+            dialogNewMember.show();
+            return;
+        }
+        if (!member.getPermId().matches("[0-9]{4}-[0-9]{3}-[0-9]{2}")){
+            buildOkDialog(getString(R.string.member_list_newmem_permid_err_lbl));
+            dialogNewMember.show();
+            return;
+        }
+        if (member.getName().trim().isEmpty()){
+            buildOkDialog(getString(R.string.member_list_newmem_name_err_lbl));
+            dialogNewMember.show();
+            return;
+        }
+        if (member.getDobDate().after(new Date())){
+            buildOkDialog(getString(R.string.member_list_newmem_dob_err_lbl));
+            dialogNewMember.show();
+            return;
+        }
+
+        buildOkDialog("data: "+ GeneralUtil.getDate(dtpNmDob));
+        memberActionListener.onMemberSelected(null, member);
+    }
+
     private void buildOkDialog(String message){
         buildOkDialog(null, message);
     }
@@ -498,6 +612,7 @@ public class MemberListFragment extends Fragment {
 
         adapter.setSelectedIndex(position);
         this.btMemListShowClosestMembers.setEnabled(true);
+        this.btMemListNewMemberCollect.setEnabled(false);
     }
 
     private void onMemberClicked(int position) {

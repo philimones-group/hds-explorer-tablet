@@ -115,8 +115,8 @@ public class LoginActivity extends Activity implements SyncDatabaseListener{
 
         this.progressDialog = new ProgressDialog(this);
 
-        txtUsername.setText("FWPF1"); //txtUsername.setText("supervisor");
-        txtPassword.setText("test"); //txtPassword.setText("dssmanhica");
+        //txtUsername.setText("FWPF1"); //txtUsername.setText("supervisor");
+        //txtPassword.setText("test"); //txtPassword.setText("dssmanhica");
 
         updateView();
 

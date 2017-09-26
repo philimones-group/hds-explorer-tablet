@@ -500,7 +500,10 @@ public class MemberListFragment extends Fragment {
             return;
         }
 
-        buildOkDialog("data: "+ GeneralUtil.getDate(dtpNmDob));
+        //buildOkDialog("data: "+ GeneralUtil.getDate(dtpNmDob));
+
+        dialogNewMember.dismiss();
+
         memberActionListener.onMemberSelected(null, member);
     }
 

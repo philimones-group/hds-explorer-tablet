@@ -108,6 +108,31 @@
                         android:textSize="@dimen/member_filter_titlesize"
                         android:textStyle="bold"
                         />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginRight="1dp"
+                        android:layout_marginLeft="27dp"
+                        android:text="@string/member_details_dob_lbl"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:textColor="#c4daca"
+                        android:textSize="@dimen/member_filter_titlesize"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/mbDetailsDob"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginLeft="4dp"
+                        android:text="2010-08-23"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:textColor="#83d34a"
+                        android:textSize="@dimen/member_filter_titlesize"
+                        android:textStyle="bold"
+                        />
                 </LinearLayout>
 
 

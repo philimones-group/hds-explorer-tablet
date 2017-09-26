@@ -138,6 +138,7 @@
     <string name="member_details_gender_male_lbl">Masculino</string>
     <string name="member_details_gender_female_lbl">Feminino</string>
     <string name="member_details_age_lbl">Idade:</string>
+    <string name="member_details_dob_lbl">Data de Nasc.:</string>
     <string name="member_details_other_info_lbl">Detalhes do Membro</string>
     <string name="member_details_houseno_lbl">Número da casa:</string>
     <string name="member_details_member_endtype_lbl">Estado atual:</string>

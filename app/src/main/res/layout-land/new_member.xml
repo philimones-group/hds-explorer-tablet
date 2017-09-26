@@ -25,7 +25,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/member_list_newmem_houseno_hint"
-                android:inputType="text"
+                android:inputType="textFilter|number"
+                android:digits="0123456789-"
                 android:maxLines="1"
                 android:singleLine="true" />
         </android.support.design.widget.TextInputLayout>
@@ -52,7 +53,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/member_list_newmem_permid_hint"
-                android:inputType="text"
+                android:inputType="textFilter|number"
+                android:digits="0123456789-"
                 android:maxLines="1"
                 android:singleLine="true" />
         </android.support.design.widget.TextInputLayout>

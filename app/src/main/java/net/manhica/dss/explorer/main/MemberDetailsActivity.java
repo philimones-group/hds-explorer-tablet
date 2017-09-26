@@ -37,6 +37,7 @@ public class MemberDetailsActivity extends Activity implements OdkFormResultList
     private TextView mbDetailsPermId;
     private TextView mbDetailsGender;
     private TextView mbDetailsAge;
+    private TextView mbDetailsDob;
     private TextView mbDetailsHouseNo;
     private TextView mbDetailsEndType;
     private TextView mbDetailsEndDate;
@@ -92,6 +93,7 @@ public class MemberDetailsActivity extends Activity implements OdkFormResultList
         mbDetailsPermId = (TextView) findViewById(R.id.mbDetailsPermId);
         mbDetailsGender = (TextView) findViewById(R.id.mbDetailsGender);
         mbDetailsAge = (TextView) findViewById(R.id.mbDetailsAge);
+        mbDetailsDob = (TextView) findViewById(R.id.mbDetailsDob);
         mbDetailsHouseNo = (TextView) findViewById(R.id.mbDetailsHouseNo);
         mbDetailsEndType = (TextView) findViewById(R.id.mbDetailsEndType);
         mbDetailsEndDate = (TextView) findViewById(R.id.mbDetailsEndDate);
@@ -142,6 +144,7 @@ public class MemberDetailsActivity extends Activity implements OdkFormResultList
         mbDetailsPermId.setText(member.getPermId());
         mbDetailsGender.setText(member.getGender());
         mbDetailsAge.setText(member.getAge()+"");
+        mbDetailsDob.setText(member.getDob());
         mbDetailsHouseNo.setText(member.getHouseNumber());
         mbDetailsEndType.setText(getEndTypeMsg(member));
         mbDetailsEndDate.setText(getEndDateMsg(member));

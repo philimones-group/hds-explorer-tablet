@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 
 import net.manhica.dss.explorer.R;
 import net.manhica.dss.explorer.adapter.MemberArrayAdapter;
@@ -20,7 +21,11 @@ import net.manhica.dss.explorer.model.Member;
 import net.manhica.dss.explorer.model.Module;
 import net.manhica.dss.explorer.model.User;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+
+import mz.betainteractive.utilities.StringUtil;
 
 public class SurveyMembersActivity extends Activity implements MemberFilterFragment.Listener, MemberActionListener {
 
@@ -69,21 +74,29 @@ public class SurveyMembersActivity extends Activity implements MemberFilterFragm
 
     public FormDataLoader[] getFormLoaders(){
 
+        String[] userModules = loggedUser.getModules().split(",");
+
         Database db = new Database(this);
 
         db.open();
-        List<Form> forms = Queries.getAllFormBy(db, DatabaseHelper.Form.COLUMN_MODULES+" like ? ", new String[]{ "%" + Module.DSS_SURVEY_MODULE + "%" });
+        List<Form> forms = Queries.getAllFormBy(db, null, null); //get all forms
         db.close();
 
-        FormDataLoader[] list = new FormDataLoader[forms.size()];
+        List<FormDataLoader> list = new ArrayList<>();
 
         int i=0;
         for (Form form : forms){
-            FormDataLoader loader = new FormDataLoader(form);
-            list[i++] = loader;
+            String[] formModules = form.getModules().split(",");
+            Log.d("forms", ""+loggedUser.getModules() +" - " + form.getModules() );
+            if (StringUtil.containsAny(userModules, formModules)){ //if the user has access to module specified on Form
+                FormDataLoader loader = new FormDataLoader(form);
+                list.add(loader);
+            }
         }
 
-        return list;
+        FormDataLoader[] aList = new FormDataLoader[list.size()];
+
+        return list.toArray(aList);
     }
 
     private boolean hasMemberBoundForms(){

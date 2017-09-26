@@ -3,7 +3,9 @@ package mz.betainteractive.utilities;
 import java.sql.Timestamp;
 import java.text.Normalizer;
 import java.text.ParseException;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by paul on 6/7/15.
@@ -284,4 +286,28 @@ public class StringUtil {
         }
     }
 
+    public static boolean containsAny(String[] list, String[] items){
+        List<String> aList = Arrays.asList(list);
+        return containsAny(aList, items);
+    }
+
+    public static boolean containsAny(List<String> list, String[] items){
+        for (String item : items){
+            if (list.contains(item)){
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public static boolean containsAny(List<String> list, List<String> items){
+        for (String item : items){
+            if (list.contains(item)){
+                return true;
+            }
+        }
+
+        return false;
+    }
 }

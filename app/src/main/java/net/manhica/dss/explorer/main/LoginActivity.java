@@ -482,6 +482,7 @@ public class LoginActivity extends Activity implements SyncDatabaseListener{
             return;
         }
 
+        /*
         if (modules.length > 1){
             intent = new Intent(this, ModuleSelectorActivity.class); //open Modules Selector
         }
@@ -493,8 +494,9 @@ public class LoginActivity extends Activity implements SyncDatabaseListener{
         if (modules.length==1 && modules[0].equals(Module.DSS_OTHERS)){
             createAlertDialog("Exception", "Not yet Implemented");
             return;
-        }
+        }*/
 
+        intent = new Intent(this, SurveyActivity.class);
         intent.putExtra("user", loggedUser);
         startActivity(intent);
     }

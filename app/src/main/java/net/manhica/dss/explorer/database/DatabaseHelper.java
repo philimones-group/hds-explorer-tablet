@@ -128,12 +128,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         public static final String COLUMN_SIN_LATITUDE = "sinLatitude";
         public static final String COLUMN_COS_LONGITUDE = "cosLongitude";
         public static final String COLUMN_SIN_LONGITUDE = "sinLongitude";
+        public static final String COLUMN_POPULATION_DENSITY = "populationDensity";
+        public static final String COLUMN_DENSITY_TYPE = "densityType";
         public static final String COLUMN_EXTRAS_COLUMNS = "extrasColumns";
         public static final String COLUMN_EXTRAS_VALUES = "extrasValues";
 
 		public static final String[] ALL_COLUMNS = {_ID, COLUMN_EXT_ID, COLUMN_HOUSE_NUMBER, COLUMN_HEAD_PERM_ID, COLUMN_SUBSHEAD_PERM_ID, COLUMN_NEIGHBORHOOD, COLUMN_LOCALITY,
                 COLUMN_ADMIN_POST, COLUMN_DISTRICT, COLUMN_PROVINCE, COLUMN_GPS_NULL, COLUMN_GPS_ACCURACY, COLUMN_GPS_ALTITUDE, COLUMN_GPS_LATITUDE, COLUMN_GPS_LONGITUDE,
-                COLUMN_COS_LATITUDE, COLUMN_SIN_LATITUDE, COLUMN_COS_LONGITUDE, COLUMN_SIN_LONGITUDE, COLUMN_EXTRAS_COLUMNS, COLUMN_EXTRAS_VALUES};
+                COLUMN_COS_LATITUDE, COLUMN_SIN_LATITUDE, COLUMN_COS_LONGITUDE, COLUMN_SIN_LONGITUDE, COLUMN_POPULATION_DENSITY, COLUMN_DENSITY_TYPE, COLUMN_EXTRAS_COLUMNS, COLUMN_EXTRAS_VALUES};
 	}
 
 	public static final class Member implements BaseColumns  {
@@ -273,6 +275,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + Household.COLUMN_SIN_LATITUDE + " REAL,"
             + Household.COLUMN_COS_LONGITUDE + " REAL,"
             + Household.COLUMN_SIN_LONGITUDE + " REAL,"
+            + Household.COLUMN_POPULATION_DENSITY + " REAL,"
+            + Household.COLUMN_DENSITY_TYPE + " TEXT,"
             + Household.COLUMN_EXTRAS_COLUMNS + " TEXT,"
             + Household.COLUMN_EXTRAS_VALUES + " TEXT);"
 

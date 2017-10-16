@@ -936,6 +936,29 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 				table.setGpsNull(true);
                 parser.nextTag();
             }
+
+			parser.nextTag(); //process <populationDensity>
+			if (!isEmptyTag(DatabaseHelper.Household.COLUMN_POPULATION_DENSITY, parser)) {
+				parser.next();
+				table.setPopulationDensity(Double.parseDouble(parser.getText()));
+				parser.nextTag(); //process </populationDensity>
+				//Log.d("note popden", table.getPopulationDensity());
+			}else{
+				table.setPopulationDensity(0D);
+				parser.nextTag();
+			}
+
+			parser.nextTag(); //process <densityType>
+			if (!isEmptyTag(DatabaseHelper.Household.COLUMN_DENSITY_TYPE, parser)) {
+				parser.next();
+				table.setDensityType(parser.getText());
+				parser.nextTag(); //process </densityType>
+				//Log.d("note popden", table.getDensityType());
+			}else{
+				table.setDensityType("");
+				parser.nextTag();
+			}
+
             //Log.d("position now ", ""+parser.getName() + ", " +parser.getPositionDescription() );
             parser.nextTag(); //process <extrasColumns>
             //Log.d("extraColumns "+isEmptyTag(DatabaseHelper.Household.COLUMN_EXTRAS_COLUMNS,parser), ""+parser.getName() + ", " +parser.getPositionDescription() );

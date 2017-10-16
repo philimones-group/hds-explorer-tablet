@@ -38,6 +38,9 @@ public class Household implements Serializable, Table {
     private Double cosLongitude;
     private Double sinLongitude;
 
+    private Double populationDensity;
+    private String densityType;
+
     /* Extras Variables*/ //separated by semicolon :
     String extrasColumns;
     String extrasValues;
@@ -210,6 +213,22 @@ public class Household implements Serializable, Table {
         this.gpsNull = gpsNull;
     }
 
+    public Double getPopulationDensity() {
+        return populationDensity;
+    }
+
+    public void setPopulationDensity(Double populationDensity) {
+        this.populationDensity = populationDensity;
+    }
+
+    public String getDensityType() {
+        return densityType;
+    }
+
+    public void setDensityType(String densityType) {
+        this.densityType = densityType;
+    }
+
     public String getValueByName(String variableName){
         return ReflectionUtils.getValueByName(this, variableName);
     }
@@ -240,6 +259,8 @@ public class Household implements Serializable, Table {
         cv.put(DatabaseHelper.Household.COLUMN_SIN_LATITUDE, sinLatitude);
         cv.put(DatabaseHelper.Household.COLUMN_COS_LONGITUDE, cosLongitude);
         cv.put(DatabaseHelper.Household.COLUMN_SIN_LONGITUDE, sinLongitude);
+        cv.put(DatabaseHelper.Household.COLUMN_POPULATION_DENSITY, populationDensity);
+        cv.put(DatabaseHelper.Household.COLUMN_DENSITY_TYPE, densityType);
         cv.put(DatabaseHelper.Household.COLUMN_EXTRAS_COLUMNS, extrasColumns);
         cv.put(DatabaseHelper.Household.COLUMN_EXTRAS_VALUES, extrasValues);
 

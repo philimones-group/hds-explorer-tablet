@@ -87,6 +87,8 @@ public class Converter {
 		hh.setSinLatitude(cursor.getDouble(cursor.getColumnIndex(DatabaseHelper.Household.COLUMN_SIN_LATITUDE)));
 		hh.setCosLongitude(cursor.getDouble(cursor.getColumnIndex(DatabaseHelper.Household.COLUMN_COS_LONGITUDE)));
 		hh.setSinLongitude(cursor.getDouble(cursor.getColumnIndex(DatabaseHelper.Household.COLUMN_SIN_LONGITUDE)));
+		hh.setPopulationDensity(cursor.getDouble(cursor.getColumnIndex(DatabaseHelper.Household.COLUMN_POPULATION_DENSITY)));
+		hh.setDensityType(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Household.COLUMN_DENSITY_TYPE)));
         hh.setExtrasColumns(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Household.COLUMN_EXTRAS_COLUMNS)));
         hh.setExtrasValues(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Household.COLUMN_EXTRAS_VALUES)));
 		

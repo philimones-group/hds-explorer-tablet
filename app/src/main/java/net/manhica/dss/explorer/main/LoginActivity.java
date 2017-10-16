@@ -398,12 +398,20 @@ public class LoginActivity extends Activity implements SyncDatabaseListener{
                 return false;
             }
 
+            String serverUrl = "";
+
+            if (BuildConfig.DEBUG){
+                serverUrl = "http://172.16.234.123:8080/manhica-dbsync";
+            }else{
+                serverUrl = getString(R.string.server_url_not_secure);
+            }
+
             //http request
             try {
                 HttpURLConnection connection = null;
                 String basicAuth = "Basic " + new String(Base64.encode((this.mUsername+":"+this.mPassword).getBytes(),Base64.NO_WRAP ));
 
-                URL url = new URL(LoginActivity.this.getString(R.string.server_url_not_secure)+"/api/dss-explorer/login");
+                URL url = new URL(serverUrl+"/api/dss-explorer/login");
 
                 connection = (HttpURLConnection) url.openConnection();
                 connection.setRequestMethod("GET");

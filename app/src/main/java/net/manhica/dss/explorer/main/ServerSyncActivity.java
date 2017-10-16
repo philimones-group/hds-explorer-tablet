@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import net.manhica.dss.explorer.BuildConfig;
 import net.manhica.dss.explorer.R;
 import net.manhica.dss.explorer.database.Database;
 import net.manhica.dss.explorer.database.Queries;
@@ -37,6 +38,8 @@ public class ServerSyncActivity extends Activity implements SyncDatabaseListener
 
     private String username;
     private String password;
+
+    private String serverUrl;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -136,30 +139,37 @@ public class ServerSyncActivity extends Activity implements SyncDatabaseListener
         this.password = (String) getIntent().getExtras().get("password");
 
         this.progressDialog.setCancelable(false);
+
+        if (BuildConfig.DEBUG){
+            this.serverUrl = "http://172.16.234.123:8080/manhica-dbsync";
+        }else{
+            this.serverUrl = getString(R.string.server_url);
+        }
+
     }
 
     private void syncModules() {
-        SyncEntitiesTask syncEntitiesTask = new SyncEntitiesTask(this, progressDialog, this, getString(R.string.server_url), username, password, SyncEntitiesTask.Entity.MODULES);
+        SyncEntitiesTask syncEntitiesTask = new SyncEntitiesTask(this, progressDialog, this, serverUrl, username, password, SyncEntitiesTask.Entity.MODULES);
         syncEntitiesTask.execute();
     }
 
     private void syncForms() {
-        SyncEntitiesTask syncEntitiesTask = new SyncEntitiesTask(this, progressDialog, this, getString(R.string.server_url), username, password, SyncEntitiesTask.Entity.FORMS);
+        SyncEntitiesTask syncEntitiesTask = new SyncEntitiesTask(this, progressDialog, this, serverUrl, username, password, SyncEntitiesTask.Entity.FORMS);
         syncEntitiesTask.execute();
     }
 
     private void syncUsers() {
-        SyncEntitiesTask syncEntitiesTask = new SyncEntitiesTask(this, progressDialog, this, getString(R.string.server_url), username, password, SyncEntitiesTask.Entity.USERS);
+        SyncEntitiesTask syncEntitiesTask = new SyncEntitiesTask(this, progressDialog, this, serverUrl, username, password, SyncEntitiesTask.Entity.USERS);
         syncEntitiesTask.execute();
     }
 
     private void syncHouseholds() {
-        SyncEntitiesTask syncEntitiesTask = new SyncEntitiesTask(this, progressDialog, this, getString(R.string.server_url), username, password, SyncEntitiesTask.Entity.HOUSEHOLDS);
+        SyncEntitiesTask syncEntitiesTask = new SyncEntitiesTask(this, progressDialog, this, serverUrl, username, password, SyncEntitiesTask.Entity.HOUSEHOLDS);
         syncEntitiesTask.execute();
     }
 
     private void syncMembers() {
-        SyncEntitiesTask syncEntitiesTask = new SyncEntitiesTask(this, progressDialog, this, getString(R.string.server_url), username, password, SyncEntitiesTask.Entity.MEMBERS);
+        SyncEntitiesTask syncEntitiesTask = new SyncEntitiesTask(this, progressDialog, this, serverUrl, username, password, SyncEntitiesTask.Entity.MEMBERS);
         syncEntitiesTask.execute();
     }
 }

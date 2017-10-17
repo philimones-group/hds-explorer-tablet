@@ -33,6 +33,7 @@
         <activity android:name=".main.SurveyHouseholdsActivity" />
         <activity android:name=".main.SurveyMembersActivity" />
         <activity android:name=".main.MemberDetailsActivity" />
+        <activity android:name=".main.GpsSearchedListActivity"></activity>
     </application>
 
 </manifest>

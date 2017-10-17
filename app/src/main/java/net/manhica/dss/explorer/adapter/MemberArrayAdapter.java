@@ -24,10 +24,18 @@ public class MemberArrayAdapter  extends ArrayAdapter<Member> {
     private List<Member> members;
     private List<Boolean> checkableMembers;
     private List<Boolean> supervisedMembers;
+    private List<String> extras;
     private Context mContext;
     private int layoutResId;
     private int selectedIndex = -1;
+    private boolean ignoreHeadOfHousehold = false;
+    private boolean showHouseholdAndPermId = false;
 
+    /**
+     * Adapter of a List View Item for members (name and perm-id are displayed)
+     * @param context
+     * @param objects
+     */
     public MemberArrayAdapter(Context context, List<Member> objects){
         super(context, R.layout.member_item, objects);
 
@@ -37,6 +45,12 @@ public class MemberArrayAdapter  extends ArrayAdapter<Member> {
         this.layoutResId = R.layout.member_item;
     }
 
+    /**
+     * Adapter of a List View Item for members (name, perm-id, and a check box are displayed)
+     * @param context
+     * @param objects
+     * @param checks
+     */
     public MemberArrayAdapter(Context context, List<Member> objects, List<Boolean> checks){
         super(context, R.layout.member_item_chk, objects);
 
@@ -52,6 +66,13 @@ public class MemberArrayAdapter  extends ArrayAdapter<Member> {
         this.layoutResId = R.layout.member_item_chk;
     }
 
+    /**
+     * Adapter of a List View Item for members (name, perm-id, checkbox and different icon for supervised member are displayed)
+     * @param context
+     * @param objects
+     * @param checks
+     * @param supervisionList
+     */
     public MemberArrayAdapter(Context context, List<Member> objects, List<Boolean> checks, List<Boolean> supervisionList){
         this(context, objects, checks);
 
@@ -59,6 +80,29 @@ public class MemberArrayAdapter  extends ArrayAdapter<Member> {
             this.supervisedMembers = new ArrayList<>();
             this.supervisedMembers.addAll(supervisionList);
         }
+    }
+
+    /**
+     * Adapter of a List View Item for members (name, perm-id, extra text view and a large sized icon are displayed)
+     * @param context
+     * @param objects
+     * @param extras
+     */
+    public MemberArrayAdapter(Context context, List<Member> objects, ArrayList<String> extras){
+        super(context, R.layout.member_item_xtra, objects);
+
+        this.members = new ArrayList<>();
+        this.members.addAll(objects);
+
+        if (extras != null){
+            this.extras = new ArrayList<>();
+            this.extras.addAll(extras);
+        }
+
+        this.ignoreHeadOfHousehold = true;
+
+        this.mContext = context;
+        this.layoutResId = R.layout.member_item_xtra;
     }
 
     public List<Member> getMembers(){
@@ -78,6 +122,10 @@ public class MemberArrayAdapter  extends ArrayAdapter<Member> {
         return (selectedIndex < 0 || selectedIndex >= members.size()) ? null : members.get(selectedIndex);
     }
 
+    public void setShowHouseholdAndPermId(boolean showHouseholdAndPermId) {
+        this.showHouseholdAndPermId = showHouseholdAndPermId;
+    }
+
     @Override
     public Member getItem(int position) {
         return members.get(position);
@@ -92,12 +140,17 @@ public class MemberArrayAdapter  extends ArrayAdapter<Member> {
         ImageView iconView = (ImageView) rowView.findViewById(R.id.iconView);
         TextView txtName = (TextView) rowView.findViewById(R.id.txtMemberItemName);
         TextView txtPermId = (TextView) rowView.findViewById(R.id.txtMemberItemPermId);
+        TextView txtExtra = (TextView) rowView.findViewById(R.id.txtMemberItemExtras);
         CheckBox chkVBprocessed = (CheckBox) rowView.findViewById(R.id.chkProcessed);
 
         Member mb = members.get(position);
 
         txtName.setText(mb.getName());
         txtPermId.setText(mb.getPermId());
+
+        if (showHouseholdAndPermId){
+            txtPermId.setText(mb.getHouseNumber() +" -> "+mb.getPermId());
+        }
 
         if (chkVBprocessed != null && checkableMembers != null){
             chkVBprocessed.setChecked(checkableMembers.get(position));
@@ -110,14 +163,20 @@ public class MemberArrayAdapter  extends ArrayAdapter<Member> {
             }
         }
 
-        if (mb.isHouseholdHead()){
-            txtName.setTypeface(null, Typeface.BOLD);
-            iconView.setImageResource(R.mipmap.member_green);
+        if (this.extras != null && position < this.extras.size()){
+            txtExtra.setText(extras.get(position));
         }
 
-        if (mb.isSubsHouseholdHead()){
-            txtName.setTypeface(null, Typeface.BOLD);
-            iconView.setImageResource(R.mipmap.member_green_2);
+        if (!ignoreHeadOfHousehold){
+            if (mb.isHouseholdHead()){
+                txtName.setTypeface(null, Typeface.BOLD);
+                iconView.setImageResource(R.mipmap.member_green);
+            }
+
+            if (mb.isSubsHouseholdHead()){
+                txtName.setTypeface(null, Typeface.BOLD);
+                iconView.setImageResource(R.mipmap.member_green_2);
+            }
         }
 
         if (selectedIndex == position){
@@ -126,6 +185,7 @@ public class MemberArrayAdapter  extends ArrayAdapter<Member> {
             rowView.setBackgroundColor(colorB);
             txtName.setTextColor(Color.WHITE);
             txtPermId.setTextColor(Color.WHITE);
+            if (txtExtra!=null) txtExtra.setTextColor(Color.WHITE);
         }
 
         return rowView;

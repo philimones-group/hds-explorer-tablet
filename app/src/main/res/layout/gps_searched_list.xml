@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="net.manhica.dss.explorer.main.GpsSearchedListActivity">
+
+<LinearLayout
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_marginBottom="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="10dp"
+        android:orientation="vertical">
+
+        <ListView
+            android:id="@+id/lvGpsSearchedList"
+            android:layout_width="match_parent"
+            android:layout_height="700dp"
+            android:background="@drawable/list_corner_border"
+            />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/viewListButtons"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0"
+        android:gravity="center|bottom"
+        android:layout_marginBottom="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:orientation="vertical">
+
+        <Button
+            android:id="@+id/btGpsListShowMap"
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:textSize="25dp"
+            android:text="@string/member_list_bt_show_houses_members_lbl"
+            android:background="@drawable/button_normal"/>
+
+        <Button
+            android:id="@+id/btGpsOrigListShowMap"
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:textSize="25dp"
+            android:text="@string/member_list_bt_show_houses_lbl"
+            android:background="@drawable/button_normal"/>
+
+        <Button
+            android:id="@+id/btGpsListBack"
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:textSize="25dp"
+            android:text="@string/gps_searched_list_back_lbl"
+            android:background="@drawable/button_normal"/>
+    </LinearLayout>
+
+</LinearLayout>
+
+</ScrollView>

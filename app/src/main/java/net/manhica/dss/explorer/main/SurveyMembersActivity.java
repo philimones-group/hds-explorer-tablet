@@ -6,6 +6,8 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.mapswithme.maps.api.MWMPoint;
+
 import net.manhica.dss.explorer.R;
 import net.manhica.dss.explorer.adapter.MemberArrayAdapter;
 import net.manhica.dss.explorer.data.FormDataLoader;
@@ -18,11 +20,9 @@ import net.manhica.dss.explorer.listeners.MemberActionListener;
 import net.manhica.dss.explorer.model.Form;
 import net.manhica.dss.explorer.model.Household;
 import net.manhica.dss.explorer.model.Member;
-import net.manhica.dss.explorer.model.Module;
 import net.manhica.dss.explorer.model.User;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import mz.betainteractive.utilities.StringUtil;
@@ -33,11 +33,14 @@ public class SurveyMembersActivity extends Activity implements MemberFilterFragm
     private MemberListFragment memberListFragment;
 
     private User loggedUser;
+    private Database database;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.survey_members);
+
+        this.database = new Database(this);
 
         this.loggedUser = (User) getIntent().getExtras().get("user");
 
@@ -70,6 +73,39 @@ public class SurveyMembersActivity extends Activity implements MemberFilterFragm
         intent.putExtra("dataloaders", dataLoaders);
 
         startActivity(intent);
+    }
+
+    @Override
+    public void onClosestMembersResult(Member member, MWMPoint[] points, MWMPoint[] originalPoints, ArrayList<Member> members) {
+        FormDataLoader[] dataLoaders = getFormLoaders();
+        Household household = getHousehold(member);
+        loadFormValues(dataLoaders, household, member);
+
+        Intent intent = new Intent(this, GpsSearchedListActivity.class);
+        intent.putExtra("main_member", member);
+        intent.putExtra("main_household", household);
+        intent.putExtra("members", members);
+        intent.putExtra("points", points);
+        intent.putExtra("points_original", originalPoints);
+
+        intent.putExtra("dataloaders", dataLoaders);
+
+        startActivity(intent);
+    }
+
+    @Override
+    public void onClosestHouseholdsResult(Household household, MWMPoint[] points, ArrayList<Household> households) {
+
+    }
+
+    private Household getHousehold(Member member){
+        if (member == null || member.getHouseNumber()==null) return null;
+
+        database.open();
+        Household household = Queries.getHouseholdBy(database, DatabaseHelper.Household.COLUMN_HOUSE_NUMBER+"=?", new String[]{ member.getHouseNumber() });
+        database.close();
+
+        return household;
     }
 
     public FormDataLoader[] getFormLoaders(){

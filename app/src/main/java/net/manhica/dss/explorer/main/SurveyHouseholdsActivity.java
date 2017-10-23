@@ -6,11 +6,12 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.mapswithme.maps.api.MWMPoint;
+
 import net.manhica.dss.explorer.R;
 import net.manhica.dss.explorer.adapter.MemberArrayAdapter;
 import net.manhica.dss.explorer.data.FormDataLoader;
 import net.manhica.dss.explorer.database.Database;
-import net.manhica.dss.explorer.database.DatabaseHelper;
 import net.manhica.dss.explorer.database.Queries;
 import net.manhica.dss.explorer.fragment.HouseholdFilterFragment;
 import net.manhica.dss.explorer.fragment.MemberListFragment;
@@ -18,7 +19,6 @@ import net.manhica.dss.explorer.listeners.MemberActionListener;
 import net.manhica.dss.explorer.model.Form;
 import net.manhica.dss.explorer.model.Household;
 import net.manhica.dss.explorer.model.Member;
-import net.manhica.dss.explorer.model.Module;
 import net.manhica.dss.explorer.model.User;
 
 import java.util.ArrayList;
@@ -65,6 +65,27 @@ public class SurveyHouseholdsActivity extends Activity implements HouseholdFilte
 
         Intent intent = new Intent(this, MemberDetailsActivity.class);
         intent.putExtra("member", member);
+        intent.putExtra("dataloaders", dataLoaders);
+
+        startActivity(intent);
+    }
+
+    @Override
+    public void onClosestMembersResult(Member member, MWMPoint[] points, MWMPoint[] originalPoints, ArrayList<Member> members) {
+
+    }
+
+    @Override
+    public void onClosestHouseholdsResult(Household household, MWMPoint[] points, ArrayList<Household> households) {
+        FormDataLoader[] dataLoaders = getFormLoaders();
+        loadFormValues(dataLoaders, household, null);
+
+        Intent intent = new Intent(this, GpsSearchedListActivity.class);
+
+        intent.putExtra("main_household", household);
+        intent.putExtra("households", households);
+        intent.putExtra("points", points);
+
         intent.putExtra("dataloaders", dataLoaders);
 
         startActivity(intent);

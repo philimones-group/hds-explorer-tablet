@@ -18,7 +18,6 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.mapswithme.maps.api.MWMPoint;
 import com.mapswithme.maps.api.MapsWithMeApi;
@@ -275,7 +274,7 @@ public class MemberListFragment extends Fragment {
         String where = "WHERE ((" + cur_sin_lat + " * sinLatitude) + (" + cur_cos_lat + " * cosLatitude) * (cosLongitude * " + cur_cos_lng + " + sinLongitude*" + cur_sin_lng + ")) > " + cur_allowed_distance;
 
 
-        List<Household> households = new ArrayList<>();
+        ArrayList<Household> households = new ArrayList<>();
 
         database.open();
         Cursor cursor = database.rawQuery(sql + where, new String[]{});
@@ -305,8 +304,8 @@ public class MemberListFragment extends Fragment {
             return;
         }
 
-        MapsWithMeApi.showPointsOnMap(this.getActivity(), getString(R.string.map_closest_houses_from_lbl) + " " + household.getHouseNumber(), points);
-
+        //call the main activity to open GPSList Activity
+        this.memberActionListener.onClosestHouseholdsResult(household, points, households);
     }
 
     private void showClosestMembers(Member member, double distance, String distanceDescription) {
@@ -315,6 +314,8 @@ public class MemberListFragment extends Fragment {
             buildOkDialog(getString(R.string.map_gps_not_available_title_lbl), getString(R.string.member_list_member_gps_not_available_lbl));
             return;
         }
+
+        Household household = getHousehold(member);
 
         double cur_cos_lat = member.getCosLatitude();
         double cur_sin_lat = member.getSinLatitude();
@@ -325,10 +326,11 @@ public class MemberListFragment extends Fragment {
         //SELECT * FROM position WHERE CUR_sin_lat * sin_lat + CUR_cos_lat * cos_lat * (cos_lng* CUR_cos_lng + sin_lng * CUR_sin_lng) > cos_allowed_distance;
 
         String sql = "SELECT * FROM " + DatabaseHelper.Member.TABLE_NAME + " ";
-        String where = "WHERE ((" + cur_sin_lat + " * sinLatitude) + (" + cur_cos_lat + " * cosLatitude) * (cosLongitude * " + cur_cos_lng + " + sinLongitude*" + cur_sin_lng + ")) >= " + cur_allowed_distance;
+        String where = "WHERE ((" + cur_sin_lat + " * sinLatitude) + (" + cur_cos_lat + " * cosLatitude) * (cosLongitude * " + cur_cos_lng + " + sinLongitude*" + cur_sin_lng + ")) >= " + cur_allowed_distance +
+                       " ORDER BY "+DatabaseHelper.Member.COLUMN_HOUSE_NUMBER;
 
 
-        List<Member> members = new ArrayList<>();
+        ArrayList<Member> members = new ArrayList<>();
 
         database.open();
         Cursor cursor = database.rawQuery(sql + where, new String[]{});
@@ -342,16 +344,20 @@ public class MemberListFragment extends Fragment {
             return;
         }
 
-        members.add(member); //add the selected member to the map
+        //members.add(member); //add the selected member to the map
 
         final MWMPoint[] points = new MWMPoint[members.size()+1];
+        final MWMPoint[] points_bak = new MWMPoint[members.size()+1];
         Map<String, List<MWMPoint>> gpsMapHouseMembers = new HashMap<>();
         boolean hasAnyCoords = false;
         int i = 0;
 
+        putMainHouseholdOnBegining(member, members);
+
         for (Member m : members) {
             if (!m.isGpsNull()) {
                 points[i] = new MWMPoint(m.getGpsLatitude(), m.getGpsLongitude(), m.getName());
+                points_bak[i] = new MWMPoint(m.getGpsLatitude(), m.getGpsLongitude(), m.getName());
 
                 //put point on a java map organized by houseNumber
                 if (gpsMapHouseMembers.containsKey(m.getHouseNumber())){
@@ -373,9 +379,11 @@ public class MemberListFragment extends Fragment {
             return;
         }
 
-        //organizeHouseMembersCoordinates(gpsMapHouseMembers);
 
-        MapsWithMeApi.showPointsOnMap(this.getActivity(), getString(R.string.map_closest_members_from_lbl) + " " + member.getPermId(), points);
+        organizeHouseMembersCoordinates(gpsMapHouseMembers);
+
+        //call the main activity to open GPSList Activity
+        this.memberActionListener.onClosestMembersResult(member, points, points_bak, members);
 
     }
 
@@ -386,8 +394,8 @@ public class MemberListFragment extends Fragment {
             return;
         }
 
-        final String[] items = new String[]{ "100m", "200m", "500m", "1 Km", "2 Km", "5 Km"};
-        final double[] values = new double[]{ 0.1,    0.2,    0.5,    1.0,    2.0,    5.0};
+        final String[] items = new String[]{ "50m", "100m", "200m", "500m", "1 Km", "2 Km", "5 Km" };
+        final double[] values = new double[]{ 0.05,  0.1,    0.2,    0.5,    1.0,    2.0,    5.0 };
         final ArrayAdapter adapter = new ArrayAdapter<String>(this.getActivity(), android.R.layout.simple_list_item_1, items);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this.getActivity());
@@ -411,8 +419,8 @@ public class MemberListFragment extends Fragment {
             return;
         }
 
-        final String[] items = new String[]{ "100m", "200m", "500m", "1 Km", "2 Km", "5 Km"};
-        final double[] values = new double[]{ 0.1,    0.2,    0.5,    1.0,    2.0,    5.0};
+        final String[] items = new String[]{ "50m", "100m", "200m", "500m", "1 Km", "2 Km", "5 Km" };
+        final double[] values = new double[]{ 0.05,  0.1,    0.2,    0.5,    1.0,    2.0,    5.0 };
         final ArrayAdapter adapter = new ArrayAdapter<String>(this.getActivity(), android.R.layout.simple_list_item_1, items);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this.getActivity());
@@ -608,6 +616,21 @@ public class MemberListFragment extends Fragment {
                 }
             }
         }
+    }
+
+    private void putMainHouseholdOnBegining(Member mainMember, ArrayList<Member> members) {
+        List<Member> houseMembers = new ArrayList<>();
+
+        for (Member m : members)
+            if (m.getHouseNumber().equals(mainMember.getHouseNumber()))
+                houseMembers.add(m);
+
+
+        houseMembers.remove(mainMember);
+        houseMembers.add(0, mainMember);
+
+        members.removeAll(houseMembers);
+        members.addAll(0, houseMembers);
     }
 
     private void onMemberLongClicked(int position) {

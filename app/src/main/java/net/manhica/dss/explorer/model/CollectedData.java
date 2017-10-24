@@ -16,6 +16,8 @@ public class CollectedData implements Serializable, Table {
     private String formId;
     private String formUri;
     private String formXmlPath;
+    private String formInstanceName;
+    private String formLastUpdatedDate;
     private int recordId;
     private String tableName;
     private boolean supervised;
@@ -64,6 +66,22 @@ public class CollectedData implements Serializable, Table {
         this.formXmlPath = formXmlPath;
     }
 
+    public String getFormInstanceName() {
+        return formInstanceName;
+    }
+
+    public void setFormInstanceName(String formInstanceName) {
+        this.formInstanceName = formInstanceName;
+    }
+
+    public String getFormLastUpdatedDate() {
+        return formLastUpdatedDate;
+    }
+
+    public void setFormLastUpdatedDate(String formLastUpdatedDate) {
+        this.formLastUpdatedDate = formLastUpdatedDate;
+    }
+
     public boolean isFormFinalized(){
         return this.formXmlPath!=null;
     }
@@ -87,6 +105,8 @@ public class CollectedData implements Serializable, Table {
         cv.put(DatabaseHelper.CollectedData.COLUMN_FORM_ID, formId);
         cv.put(DatabaseHelper.CollectedData.COLUMN_FORM_URI, formUri);
         cv.put(DatabaseHelper.CollectedData.COLUMN_FORM_XML_PATH, formXmlPath);
+        cv.put(DatabaseHelper.CollectedData.COLUMN_FORM_INSTANCE_NAME, formInstanceName);
+        cv.put(DatabaseHelper.CollectedData.COLUMN_FORM_LAST_UPDATED_DATE, formLastUpdatedDate);
         cv.put(DatabaseHelper.CollectedData.COLUMN_RECORD_ID, recordId);
         cv.put(DatabaseHelper.CollectedData.COLUMN_TABLE_NAME, tableName);
         cv.put(DatabaseHelper.CollectedData.COLUMN_SUPERVISED, supervised ? 1 : 0);

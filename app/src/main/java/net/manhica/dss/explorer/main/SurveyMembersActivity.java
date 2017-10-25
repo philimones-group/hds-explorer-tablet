@@ -69,6 +69,7 @@ public class SurveyMembersActivity extends Activity implements MemberFilterFragm
         loadFormValues(dataLoaders, household, member);
 
         Intent intent = new Intent(this, MemberDetailsActivity.class);
+        intent.putExtra("user", loggedUser);
         intent.putExtra("member", member);
         intent.putExtra("dataloaders", dataLoaders);
 

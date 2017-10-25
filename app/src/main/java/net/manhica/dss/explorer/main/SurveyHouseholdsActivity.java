@@ -64,6 +64,7 @@ public class SurveyHouseholdsActivity extends Activity implements HouseholdFilte
         loadFormValues(dataLoaders, household, member);
 
         Intent intent = new Intent(this, MemberDetailsActivity.class);
+        intent.putExtra("user", loggedUser);
         intent.putExtra("member", member);
         intent.putExtra("dataloaders", dataLoaders);
 

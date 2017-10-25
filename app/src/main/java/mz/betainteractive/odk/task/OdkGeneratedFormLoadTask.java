@@ -82,7 +82,9 @@ public class OdkGeneratedFormLoadTask extends AsyncTask<Void, Void, Boolean> {
                 //fill up the variables automatically
                 String jrFormId = filledForm.getFormName();
                 String formFilePath = getXmlFilePath(odkUri);
+
                 Log.d("file", formFilePath);
+
                 processXmlDirectly(jrFormId, formFilePath);
                 //File targetFile = saveOpenedFile(xml,jrFormId);
             }
@@ -134,10 +136,7 @@ public class OdkGeneratedFormLoadTask extends AsyncTask<Void, Void, Boolean> {
     }
 
     private String getXmlFilePath(Uri contentUri){
-        Cursor cursor = resolver.query(contentUri, new String[] { InstanceProviderAPI.InstanceColumns.STATUS,
-                        InstanceProviderAPI.InstanceColumns.INSTANCE_FILE_PATH },
-                InstanceProviderAPI.InstanceColumns.STATUS + "=?",
-                new String[] { InstanceProviderAPI.STATUS_INCOMPLETE }, null);
+        Cursor cursor = resolver.query(contentUri, new String[] { InstanceProviderAPI.InstanceColumns.STATUS, InstanceProviderAPI.InstanceColumns.INSTANCE_FILE_PATH }, null, null, null);
 
         String xmlFilePath = "";
         Log.d("Running check form", "");
@@ -237,6 +236,7 @@ public class OdkGeneratedFormLoadTask extends AsyncTask<Void, Void, Boolean> {
 
             SAXBuilder builder = new SAXBuilder();
             File xmlFile = new File(formFilePath);
+
             org.jdom2.Document doc = (org.jdom2.Document) builder.build(xmlFile);
             org.jdom2.Element element = (org.jdom2.Element) doc.getRootElement();
 

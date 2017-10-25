@@ -15,11 +15,13 @@ import android.widget.Toast;
 import net.manhica.dss.explorer.R;
 
 import java.io.File;
+import java.sql.Date;
 
 import mz.betainteractive.odk.listener.OdkFormLoadListener;
 import mz.betainteractive.odk.listener.OdkFormResultListener;
 import mz.betainteractive.odk.model.FilledForm;
 import mz.betainteractive.odk.task.OdkGeneratedFormLoadTask;
+import mz.betainteractive.utilities.StringUtil;
 
 public class FormUtilities {
     public static final int SELECTED_ODK_FORM = 51;
@@ -32,6 +34,9 @@ public class FormUtilities {
     private boolean formUnFinished;
     private String xmlFilePath;
     private OdkFormResultListener formResultListener;
+
+    private String metaInstanceName;
+    private String lastUpdatedDate;
 
 	public FormUtilities(Activity context) {
 		this.mContext = context;
@@ -69,7 +74,9 @@ public class FormUtilities {
     }
 
     public void loadForm(FilledForm filledForm, String contentUriAsString){
-        contentUri = Uri.parse(contentUriAsString);
+        this.contentUri = Uri.parse(contentUriAsString);
+        this.metaInstanceName = "";
+        this.lastUpdatedDate = "";
 
         new OdkGeneratedFormLoadTask(mContext, filledForm, contentUri, new OdkFormLoadListener() {
             public void onOdkFormLoadSuccess(Uri contentUri) {
@@ -156,7 +163,7 @@ public class FormUtilities {
         @Override
         protected Boolean doInBackground(Void... arg0) {
             Cursor cursor = resolver.query(contentUri, new String[] { InstanceProviderAPI.InstanceColumns.STATUS,
-                            InstanceProviderAPI.InstanceColumns.INSTANCE_FILE_PATH },
+                            InstanceProviderAPI.InstanceColumns.INSTANCE_FILE_PATH, InstanceProviderAPI.InstanceColumns.DISPLAY_NAME, InstanceProviderAPI.InstanceColumns.LAST_STATUS_CHANGE_DATE },
                     InstanceProviderAPI.InstanceColumns.STATUS + "=?",
                     new String[] { InstanceProviderAPI.STATUS_COMPLETE }, null);
 
@@ -166,6 +173,15 @@ public class FormUtilities {
             if (cursor.moveToNext()) {
                 Log.d("move next", ""+cursor.getString(0));
                 xmlFilePath = cursor.getString(cursor.getColumnIndex(InstanceProviderAPI.InstanceColumns.INSTANCE_FILE_PATH)); //used to read the xml file
+
+                String sdate = cursor.getString(cursor.getColumnIndex(InstanceProviderAPI.InstanceColumns.LAST_STATUS_CHANGE_DATE));
+                java.util.Date ludate = new java.util.Date(Long.parseLong(sdate)) ;
+
+                metaInstanceName = cursor.getString(cursor.getColumnIndex(InstanceProviderAPI.InstanceColumns.DISPLAY_NAME));
+                lastUpdatedDate = StringUtil.format(ludate, "yyyy-MM-dd HH:mm:ss");
+
+                //Log.d("content-x", "" + metaInstanceName );
+                //Log.d("last-date", "" + lastUpdatedDate );
 
                 resultToReturn = true;
             } else {
@@ -191,7 +207,7 @@ public class FormUtilities {
                 //When everything is OK - save current form location
 
                 //pass contentUri and filepath to a listener - onFormFinalized, onFormUnfinalized
-                formResultListener.onFormFinalized(contentUri, new File(xmlFilePath));
+                formResultListener.onFormFinalized(contentUri, new File(xmlFilePath), metaInstanceName, lastUpdatedDate);
             } else {
                 createUnfinishedFormDialog();
             }
@@ -203,7 +219,7 @@ public class FormUtilities {
         ContentResolver resolver = mContext.getContentResolver();
 
         Cursor cursor = resolver.query(contentUri, new String[] { InstanceProviderAPI.InstanceColumns.STATUS,
-                        InstanceProviderAPI.InstanceColumns.INSTANCE_FILE_PATH },
+                        InstanceProviderAPI.InstanceColumns.INSTANCE_FILE_PATH, InstanceProviderAPI.InstanceColumns.DISPLAY_NAME, InstanceProviderAPI.InstanceColumns.LAST_STATUS_CHANGE_DATE },
                 InstanceProviderAPI.InstanceColumns.STATUS + "=?",
                 new String[] { InstanceProviderAPI.STATUS_INCOMPLETE }, null);
 
@@ -242,7 +258,7 @@ public class FormUtilities {
                     //save form contentUri
                     saveUnfinalizedFile();
 
-                    formResultListener.onFormUnFinalized(contentUri, new File(xmlFilePath));
+                    formResultListener.onFormUnFinalized(contentUri, new File(xmlFilePath), metaInstanceName, lastUpdatedDate);
                 }
             });
 

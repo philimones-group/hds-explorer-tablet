@@ -9,9 +9,9 @@ import java.io.File;
  */
 public interface OdkFormResultListener {
 
-    public void onFormFinalized(Uri contentUri, File xmlFile);
+    public void onFormFinalized(Uri contentUri, File xmlFile, String metaInstanceName, String lastUpdatedDate);
 
-    public void onFormUnFinalized(Uri contentUri, File xmlFile);
+    public void onFormUnFinalized(Uri contentUri, File xmlFile, String metaInstanceName, String lastUpdatedDate);
 
     public void onDeleteForm(Uri contentUri);
 

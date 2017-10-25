@@ -9,11 +9,15 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import net.manhica.dss.explorer.R;
+import net.manhica.dss.explorer.adapter.CollectedDataArrayAdapter;
+import net.manhica.dss.explorer.adapter.CollectedDataItem;
 import net.manhica.dss.explorer.adapter.FormLoaderAdapter;
 import net.manhica.dss.explorer.data.FormDataLoader;
 import net.manhica.dss.explorer.database.Database;
@@ -22,6 +26,7 @@ import net.manhica.dss.explorer.database.Queries;
 import net.manhica.dss.explorer.model.CollectedData;
 import net.manhica.dss.explorer.model.Form;
 import net.manhica.dss.explorer.model.Member;
+import net.manhica.dss.explorer.model.User;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -44,6 +49,7 @@ public class MemberDetailsActivity extends Activity implements OdkFormResultList
     private TextView mbDetailsFather;
     private TextView mbDetailsMother;
     private TextView mbDetailsSpouse;
+    private ListView lvCollectedForms;
     private Button btMemDetailsCollectData;
     private Button btMemDetailsBack;
     private ImageView iconView;
@@ -52,6 +58,8 @@ public class MemberDetailsActivity extends Activity implements OdkFormResultList
     private List<FormDataLoader> formDataLoaders = new ArrayList<>();
     private FormDataLoader lastLoadedForm;
 
+    private User loggedUser;
+
     private FormUtilities formUtilities;
 
     @Override
@@ -59,6 +67,7 @@ public class MemberDetailsActivity extends Activity implements OdkFormResultList
         super.onCreate(savedInstanceState);
         setContentView(R.layout.member_details);
 
+        this.loggedUser = (User) getIntent().getExtras().get("user");
         this.member = (Member) getIntent().getExtras().get("member");
         readFormDataLoader();
 
@@ -100,6 +109,7 @@ public class MemberDetailsActivity extends Activity implements OdkFormResultList
         mbDetailsFather = (TextView) findViewById(R.id.mbDetailsFather);
         mbDetailsMother = (TextView) findViewById(R.id.mbDetailsMother);
         mbDetailsSpouse = (TextView) findViewById(R.id.mbDetailsSpouse);
+        lvCollectedForms = (ListView) findViewById(R.id.lvCollectedForms);
         btMemDetailsCollectData = (Button) findViewById(R.id.btMemDetailsCollectData);
         btMemDetailsBack = (Button) findViewById(R.id.btMemDetailsBack);
         iconView = (ImageView) findViewById(R.id.iconView);
@@ -115,6 +125,13 @@ public class MemberDetailsActivity extends Activity implements OdkFormResultList
             @Override
             public void onClick(View v) {
                 onCollectDataClicked();
+            }
+        });
+
+        lvCollectedForms.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                onCollectedDataItemClicked(position);
             }
         });
 
@@ -159,6 +176,48 @@ public class MemberDetailsActivity extends Activity implements OdkFormResultList
         if (member.isSubsHouseholdHead()){
             iconView.setImageResource(R.mipmap.member_big_subs_icon);
         }
+
+        showCollectedData();
+    }
+
+    private void onCollectedDataItemClicked(int position) {
+        CollectedDataArrayAdapter adapter = (CollectedDataArrayAdapter) this.lvCollectedForms.getAdapter();
+        CollectedDataItem dataItem = adapter.getItem(position);
+
+        CollectedData collectedData = dataItem.getCollectedData();
+        Member member = dataItem.getMember();
+        FormDataLoader formDataLoader = getFormDataLoader(collectedData);
+
+        openOdkForm(formDataLoader, collectedData);
+    }
+
+    private void showCollectedData() {
+        //this.showProgress(true);
+
+        Database db = new Database(this);
+        db.open();
+
+        List<CollectedData> list = Queries.getAllCollectedDataBy(db, DatabaseHelper.CollectedData.COLUMN_RECORD_ID + "=?", new String[]{ member.getId()+"" } );
+        List<Form> forms = Queries.getAllFormBy(db, null, null);
+        List<CollectedDataItem> cdl = new ArrayList<>();
+
+        for (CollectedData cd : list){
+            Form form = getFormById(forms, cd.getFormId());
+            cdl.add(new CollectedDataItem(member, form, cd));
+        }
+
+        db.close();
+
+        CollectedDataArrayAdapter adapter = new CollectedDataArrayAdapter(this, cdl);
+        this.lvCollectedForms.setAdapter(adapter);
+    }
+
+    private Form getFormById(List<Form> forms, String formId){
+        for (Form f : forms){
+            if (f.getFormId().equals(formId)) return f;
+        }
+
+        return null;
     }
 
     private String getEndTypeMsg(Member member){
@@ -209,6 +268,17 @@ public class MemberDetailsActivity extends Activity implements OdkFormResultList
         }
     }
 
+    private FormDataLoader getFormDataLoader(CollectedData collectedData){
+
+        for (FormDataLoader dl : this.formDataLoaders){
+            if (dl.getForm().getFormId().equals(collectedData.getFormId())){
+                return dl;
+            }
+        }
+
+        return null;
+    }
+
     private CollectedData getCollectedData(FormDataLoader formDataLoader){
         Database db = new Database(this);
         db.open();
@@ -226,6 +296,23 @@ public class MemberDetailsActivity extends Activity implements OdkFormResultList
     private void openOdkForm(FormDataLoader formDataLoader) {
 
         CollectedData collectedData = getCollectedData(formDataLoader);
+
+        this.lastLoadedForm = formDataLoader;
+
+        Form form = formDataLoader.getForm();
+
+        FilledForm filledForm = new FilledForm(form.getFormId());
+        filledForm.putAll(formDataLoader.getValues());
+
+        if (collectedData == null){
+            formUtilities.loadForm(filledForm);
+        }else{
+            formUtilities.loadForm(filledForm, collectedData.getFormUri());
+        }
+
+    }
+
+    private void openOdkForm(FormDataLoader formDataLoader, CollectedData collectedData) {
 
         this.lastLoadedForm = formDataLoader;
 
@@ -268,7 +355,7 @@ public class MemberDetailsActivity extends Activity implements OdkFormResultList
     }
 
     @Override
-    public void onFormFinalized(Uri contentUri, File xmlFile) {
+    public void onFormFinalized(Uri contentUri, File xmlFile, String metaInstanceName, String lastUpdatedDate) {
         Log.d("form finalized"," "+contentUri+", "+xmlFile);
 
         //save Collected data
@@ -287,6 +374,14 @@ public class MemberDetailsActivity extends Activity implements OdkFormResultList
             collectedData.setFormId(lastLoadedForm.getForm().getFormId());
             collectedData.setFormUri(contentUri.toString());
             collectedData.setFormXmlPath(xmlFile.toString());
+            collectedData.setFormInstanceName(metaInstanceName);
+            collectedData.setFormLastUpdatedDate(lastUpdatedDate);
+
+            collectedData.setFormModule(lastLoadedForm.getForm().getModules());
+            collectedData.setCollectedBy(loggedUser.getUsername());
+            collectedData.setUpdatedBy("");
+            collectedData.setSupervisedBy("");
+
             collectedData.setRecordId(member.getId());
             collectedData.setTableName(member.getTableName());
 
@@ -296,6 +391,14 @@ public class MemberDetailsActivity extends Activity implements OdkFormResultList
             collectedData.setFormId(lastLoadedForm.getForm().getFormId());
             collectedData.setFormUri(contentUri.toString());
             collectedData.setFormXmlPath(xmlFile.toString());
+            collectedData.setFormInstanceName(metaInstanceName);
+            collectedData.setFormLastUpdatedDate(lastUpdatedDate);
+
+            //collectedData.setFormModule(lastLoadedForm.getForm().getModules());
+            //collectedData.setCollectedBy(loggedUser.getUsername());
+            collectedData.setUpdatedBy(loggedUser.getUsername());
+            //collectedData.setSupervisedBy("");
+
             collectedData.setRecordId(member.getId());
             collectedData.setTableName(member.getTableName());
 
@@ -304,10 +407,12 @@ public class MemberDetailsActivity extends Activity implements OdkFormResultList
         }
 
         db.close();
+
+        showCollectedData();
     }
 
     @Override
-    public void onFormUnFinalized(Uri contentUri, File xmlFile) {
+    public void onFormUnFinalized(Uri contentUri, File xmlFile, String metaInstanceName, String lastUpdatedDate) {
         Log.d("form unfinalized"," "+contentUri);
 
         //save Collected data
@@ -326,6 +431,14 @@ public class MemberDetailsActivity extends Activity implements OdkFormResultList
             collectedData.setFormId(lastLoadedForm.getForm().getFormId());
             collectedData.setFormUri(contentUri.toString());
             collectedData.setFormXmlPath("");
+            collectedData.setFormInstanceName(metaInstanceName);
+            collectedData.setFormLastUpdatedDate(lastUpdatedDate);
+
+            collectedData.setFormModule(lastLoadedForm.getForm().getModules());
+            collectedData.setCollectedBy(loggedUser.getUsername());
+            collectedData.setUpdatedBy("");
+            collectedData.setSupervisedBy("");
+
             collectedData.setRecordId(member.getId());
             collectedData.setTableName(member.getTableName());
 
@@ -335,6 +448,14 @@ public class MemberDetailsActivity extends Activity implements OdkFormResultList
             collectedData.setFormId(lastLoadedForm.getForm().getFormId());
             collectedData.setFormUri(contentUri.toString());
             collectedData.setFormXmlPath("");
+            collectedData.setFormInstanceName(metaInstanceName);
+            collectedData.setFormLastUpdatedDate(lastUpdatedDate);
+
+            //collectedData.setFormModule(lastLoadedForm.getForm().getModules());
+            //collectedData.setCollectedBy(loggedUser.getUsername());
+            collectedData.setUpdatedBy(loggedUser.getUsername());
+            //collectedData.setSupervisedBy("");
+
             collectedData.setRecordId(member.getId());
             collectedData.setTableName(member.getTableName());
 
@@ -343,6 +464,8 @@ public class MemberDetailsActivity extends Activity implements OdkFormResultList
         }
 
         db.close();
+
+        showCollectedData();
     }
 
     @Override
@@ -352,5 +475,7 @@ public class MemberDetailsActivity extends Activity implements OdkFormResultList
         db.open();
         db.delete(CollectedData.class, DatabaseHelper.CollectedData.COLUMN_FORM_URI+"=?", new String[]{ contentUri.toString() } );
         db.close();
+
+        showCollectedData();
     }
 }

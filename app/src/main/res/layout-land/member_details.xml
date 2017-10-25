@@ -9,15 +9,15 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="120dp"
+        android:layout_height="110dp"
         android:background="@drawable/m_details_header"
         android:orientation="horizontal">
 
         <ImageView
             android:id="@+id/iconView"
-            android:layout_width="80dp"
-            android:layout_height="90dp"
-            android:layout_marginTop="20dp"
+            android:layout_width="70dp"
+            android:layout_height="80dp"
+            android:layout_marginTop="14dp"
             android:layout_gravity="left|top"
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
@@ -32,7 +32,7 @@
                 android:id="@+id/mbDetailsName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="30dp"
+                android:layout_marginTop="20dp"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:text="MARGARIDA MOLUSCO MBUTI"
                 android:textColor="#ffffff"
@@ -141,7 +141,7 @@
 
     </LinearLayout>
 
-    <!-- Extra data details -->
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -149,181 +149,199 @@
         android:layout_marginTop="5dp"
         android:layout_marginLeft="5dp"
         android:layout_marginRight="10dp"
-        android:orientation="vertical">
+        android:orientation="horizontal">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/member_details_other_info_lbl"
-            android:textSize="@dimen/member_details_other_info_txtsize_land"
-            android:textAppearance="?android:attr/textAppearanceLarge" />
-
-
+        <!-- Extra data details -->
         <LinearLayout
-            android:id="@+id/layout_md_xdata"
-            android:layout_width="match_parent"
-            android:layout_height="205dp"
-            android:background="@drawable/corner_border"
+            android:layout_width="550dp"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="3dp"
             android:orientation="vertical">
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/member_details_other_info_lbl"
+                android:textSize="@dimen/member_details_other_info_txtsize"
+                android:textAppearance="?android:attr/textAppearanceLarge" />
+
             <LinearLayout
+                android:id="@+id/layout_md_xdata"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal">
+                android:layout_height="wrap_content"
+                android:background="@drawable/corner_border"
+                android:orientation="vertical">
 
-                <!-- Layout Info 1 -->
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical">
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="30dp"
-                        android:layout_marginLeft="@dimen/member_filter_xdata_margin_left"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:layout_width="@dimen/member_details_txtview_width"
-                            android:layout_height="wrap_content"
-                            android:textAppearance="?android:attr/textAppearanceLarge"
-                            android:text="@string/member_details_houseno_lbl"/>
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textAppearance="?android:attr/textAppearanceLarge"
-                            android:textStyle="bold"
-                            android:text="05-1233-123"
-                            android:id="@+id/mbDetailsHouseNo" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:layout_marginLeft="@dimen/member_filter_xdata_margin_left"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:layout_width="@dimen/member_details_txtview_width"
-                            android:layout_height="wrap_content"
-                            android:textAppearance="?android:attr/textAppearanceLarge"
-                            android:text="@string/member_details_member_endtype_lbl"/>
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textAppearance="?android:attr/textAppearanceLarge"
-                            android:textStyle="bold"
-                            android:text="Esta a residir nesta casa"
-                            android:id="@+id/mbDetailsEndType" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:layout_marginLeft="@dimen/member_filter_xdata_margin_left"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:layout_width="@dimen/member_details_txtview_width"
-                            android:layout_height="wrap_content"
-                            android:textAppearance="?android:attr/textAppearanceLarge"
-                            android:text="@string/member_details_member_enddate_lbl"/>
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textAppearance="?android:attr/textAppearanceLarge"
-                            android:textStyle="bold"
-                            android:text="2015-01-01"
-                            android:id="@+id/mbDetailsEndDate" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:layout_marginLeft="@dimen/member_filter_xdata_margin_left"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:layout_width="@dimen/member_details_txtview_width"
-                            android:layout_height="wrap_content"
-                            android:textAppearance="?android:attr/textAppearanceLarge"
-                            android:text="@string/member_details_forms_spouse_lbl"/>
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textAppearance="?android:attr/textAppearanceLarge"
-                            android:textStyle="bold"
-                            android:text="AIAI MARIA AI XIHORA MATI"
-                            android:id="@+id/mbDetailsSpouse" />
-                    </LinearLayout>
-
-
-
-                </LinearLayout>
-
-                <!-- Layout Info 2 -->
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical">
+                    android:layout_height="270dp"
+                    android:orientation="horizontal">
 
+                    <!-- Layout Info 1 -->
                     <LinearLayout
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="30dp"
-                        android:layout_marginLeft="@dimen/member_filter_xdata_margin_left"
-                        android:orientation="horizontal">
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
 
-                        <TextView
-                            android:layout_width="@dimen/member_details_txtview_width_p2"
-                            android:layout_height="wrap_content"
-                            android:textAppearance="?android:attr/textAppearanceLarge"
-                            android:text="@string/member_details_father_lbl"/>
-
-                        <TextView
+                        <LinearLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textAppearance="?android:attr/textAppearanceLarge"
-                            android:textStyle="bold"
-                            android:text="JOAO MACACO SIMANGO"
-                            android:id="@+id/mbDetailsFather" />
-                    </LinearLayout>
+                            android:layout_marginTop="16dp"
+                            android:layout_marginLeft="@dimen/member_details_land_dtlayout_margin_left"
+                            android:orientation="horizontal">
 
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:layout_marginLeft="@dimen/member_filter_xdata_margin_left"
-                        android:orientation="horizontal">
+                            <TextView
+                                android:layout_width="@dimen/member_details_txtview_width"
+                                android:layout_height="wrap_content"
+                                android:textAppearance="?android:attr/textAppearanceLarge"
+                                android:text="@string/member_details_houseno_lbl"/>
 
-                        <TextView
-                            android:layout_width="@dimen/member_details_txtview_width_p2"
-                            android:layout_height="wrap_content"
-                            android:textAppearance="?android:attr/textAppearanceLarge"
-                            android:text="@string/member_details_mother_lbl"/>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textAppearance="?android:attr/textAppearanceLarge"
+                                android:textStyle="bold"
+                                android:text="05-1233-123"
+                                android:id="@+id/mbDetailsHouseNo" />
+                        </LinearLayout>
 
-                        <TextView
+                        <LinearLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textAppearance="?android:attr/textAppearanceLarge"
-                            android:textStyle="bold"
-                            android:text="Desconhecida"
-                            android:id="@+id/mbDetailsMother" />
-                    </LinearLayout>
+                            android:layout_marginTop="@dimen/member_details_land_dtlayout_margin_top"
+                            android:layout_marginLeft="@dimen/member_details_land_dtlayout_margin_left"
+                            android:orientation="horizontal">
 
+                            <TextView
+                                android:layout_width="@dimen/member_details_txtview_width"
+                                android:layout_height="wrap_content"
+                                android:textAppearance="?android:attr/textAppearanceLarge"
+                                android:text="@string/member_details_member_endtype_lbl"/>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textAppearance="?android:attr/textAppearanceLarge"
+                                android:textStyle="bold"
+                                android:text="Esta a residir nesta casa"
+                                android:id="@+id/mbDetailsEndType" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/member_details_land_dtlayout_margin_top"
+                            android:layout_marginLeft="@dimen/member_details_land_dtlayout_margin_left"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="@dimen/member_details_txtview_width"
+                                android:layout_height="wrap_content"
+                                android:textAppearance="?android:attr/textAppearanceLarge"
+                                android:text="@string/member_details_member_enddate_lbl"/>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textAppearance="?android:attr/textAppearanceLarge"
+                                android:textStyle="bold"
+                                android:text="2015-01-01"
+                                android:id="@+id/mbDetailsEndDate" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/member_details_land_dtlayout_margin_top"
+                            android:layout_marginLeft="@dimen/member_details_land_dtlayout_margin_left"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="@dimen/member_details_txtview_width"
+                                android:layout_height="wrap_content"
+                                android:textAppearance="?android:attr/textAppearanceLarge"
+                                android:text="@string/member_details_forms_spouse_lbl"/>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textAppearance="?android:attr/textAppearanceLarge"
+                                android:textStyle="bold"
+                                android:text="AIAI MARIA AI XIHORA MATI"
+                                android:id="@+id/mbDetailsSpouse" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/member_details_land_dtlayout_margin_top"
+                            android:layout_marginLeft="@dimen/member_details_land_dtlayout_margin_left"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="@dimen/member_details_txtview_width"
+                                android:layout_height="wrap_content"
+                                android:textAppearance="?android:attr/textAppearanceLarge"
+                                android:text="@string/member_details_father_lbl"/>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textAppearance="?android:attr/textAppearanceLarge"
+                                android:textStyle="bold"
+                                android:text="JOAO MACACO SIMANGO"
+                                android:id="@+id/mbDetailsFather" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/member_details_land_dtlayout_margin_top"
+                            android:layout_marginLeft="@dimen/member_details_land_dtlayout_margin_left"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="@dimen/member_details_txtview_width"
+                                android:layout_height="wrap_content"
+                                android:textAppearance="?android:attr/textAppearanceLarge"
+                                android:text="@string/member_details_mother_lbl"/>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textAppearance="?android:attr/textAppearanceLarge"
+                                android:textStyle="bold"
+                                android:text="Desconhecida"
+                                android:id="@+id/mbDetailsMother" />
+                        </LinearLayout>
+
+                    </LinearLayout>
 
                 </LinearLayout>
 
             </LinearLayout>
 
+        </LinearLayout>
+
+        <!-- List of CollectedExtra data details -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/member_details_col_data_info_lbl"
+                android:textSize="@dimen/member_details_other_info_txtsize"
+                android:textAppearance="?android:attr/textAppearanceLarge" />
+
+            <ListView
+                android:layout_width="match_parent"
+                android:layout_height="270dp"
+                android:background="@drawable/list_bevel_corner"
+                android:id="@+id/lvCollectedForms"
+                />
 
         </LinearLayout>
 

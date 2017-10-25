@@ -139,8 +139,9 @@
     <string name="member_details_gender_male_lbl">Male</string>
     <string name="member_details_gender_female_lbl">Female</string>
     <string name="member_details_age_lbl">Age:</string>
-    <string name="member_details_dob_lbl">Birth Date:</string>
+    <string name="member_details_dob_lbl">D.O.B:</string>
     <string name="member_details_other_info_lbl">Member Details</string>
+    <string name="member_details_col_data_info_lbl">Collected Forms</string>
     <string name="member_details_houseno_lbl">House Number:</string>
     <string name="member_details_member_endtype_lbl">Current Status:</string>
     <string name="member_details_father_lbl">Father:</string>

@@ -9,14 +9,14 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="200dp"
+        android:layout_height="150dp"
         android:background="@drawable/m_details_header"
         android:orientation="horizontal">
 
         <ImageView
             android:id="@+id/iconView"
-            android:layout_width="120dp"
-            android:layout_height="130dp"
+            android:layout_width="100dp"
+            android:layout_height="110dp"
             android:layout_marginTop="20dp"
             android:layout_gravity="left|top"
             android:layout_marginLeft="5dp"
@@ -84,7 +84,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
                     android:layout_marginRight="1dp"
-                    android:layout_marginLeft="27dp"
+                    android:layout_marginLeft="20dp"
                     android:text="@string/member_details_age_lbl"
                     android:textAppearance="?android:attr/textAppearanceLarge"
                     android:textColor="#c4daca"
@@ -103,18 +103,13 @@
                     android:textSize="@dimen/member_filter_titlesize"
                     android:textStyle="bold"
                      />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
                     android:layout_marginRight="1dp"
+                    android:layout_marginLeft="20dp"
                     android:text="@string/member_details_dob_lbl"
                     android:textAppearance="?android:attr/textAppearanceLarge"
                     android:textColor="#c4daca"
@@ -136,6 +131,14 @@
 
             </LinearLayout>
 
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+
+            </LinearLayout>
+
         </LinearLayout>
 
     </LinearLayout>
@@ -144,7 +147,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="20dp"
+        android:layout_marginBottom="5dp"
         android:layout_marginTop="10dp"
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
@@ -161,14 +164,14 @@
         <LinearLayout
             android:id="@+id/layout_md_xdata"
             android:layout_width="match_parent"
-            android:layout_height="420dp"
+            android:layout_height="260dp"
             android:background="@drawable/corner_border"
             android:orientation="vertical">
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="40dp"
+                android:layout_marginTop="20dp"
                 android:layout_marginLeft="@dimen/member_filter_xdata_margin_left"
                 android:orientation="horizontal">
 
@@ -190,7 +193,7 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="30dp"
+                android:layout_marginTop="10dp"
                 android:layout_marginLeft="@dimen/member_filter_xdata_margin_left"
                 android:orientation="horizontal">
 
@@ -212,7 +215,7 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="30dp"
+                android:layout_marginTop="10dp"
                 android:layout_marginLeft="@dimen/member_filter_xdata_margin_left"
                 android:orientation="horizontal">
 
@@ -234,7 +237,7 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="30dp"
+                android:layout_marginTop="10dp"
                 android:layout_marginLeft="@dimen/member_filter_xdata_margin_left"
                 android:orientation="horizontal">
 
@@ -256,7 +259,7 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="30dp"
+                android:layout_marginTop="10dp"
                 android:layout_marginLeft="@dimen/member_filter_xdata_margin_left"
                 android:orientation="horizontal">
 
@@ -278,7 +281,7 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="30dp"
+                android:layout_marginTop="10dp"
                 android:layout_marginLeft="@dimen/member_filter_xdata_margin_left"
                 android:orientation="horizontal">
 
@@ -299,6 +302,31 @@
 
 
         </LinearLayout>
+
+    </LinearLayout>
+
+    <!-- List of CollectedExtra data details -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/member_details_col_data_info_lbl"
+            android:textSize="@dimen/member_details_other_info_txtsize"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+
+        <ListView
+            android:layout_width="match_parent"
+            android:layout_height="255dp"
+            android:background="@drawable/list_bevel_corner"
+            android:id="@+id/lvCollectedForms"
+            />
 
     </LinearLayout>
 

@@ -63,8 +63,14 @@ public class CollectedDataArrayAdapter extends ArrayAdapter {
         String processed = "0";
 
         txtName.setText(cd.getFormInstanceName());
-        txtForm.setText(cd.getFormModule() + " -> " + cd.getFormId());
         txtExtra.setText(cd.getFormLastUpdatedDate());
+
+        if (cdi.getForm()!=null){
+            txtForm.setText(cd.getFormModule() + " -> " + cdi.getForm().getFormName());
+        }else {
+            txtForm.setText(cd.getFormModule() + " -> " + cd.getFormId());
+        }
+
 
         return rowView;
     }

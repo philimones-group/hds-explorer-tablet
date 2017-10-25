@@ -191,7 +191,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         public static final String COLUMN_FORM_XML_PATH = "formXmlPath";
         public static final String COLUMN_FORM_INSTANCE_NAME = "formInstanceName";
         public static final String COLUMN_FORM_LAST_UPDATED_DATE = "formLastUpdatedDate";
-        
+
         public static final String COLUMN_FORM_MODULE = "formModule";
         public static final String COLUMN_COLLECTED_BY = "collectedBy";
         public static final String COLUMN_UPDATED_BY = "updatedBy";

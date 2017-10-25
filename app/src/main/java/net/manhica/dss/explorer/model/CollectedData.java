@@ -18,9 +18,17 @@ public class CollectedData implements Serializable, Table {
     private String formXmlPath;
     private String formInstanceName;
     private String formLastUpdatedDate;
+    private String formModule;
     private int recordId;
     private String tableName;
+
+    private String collectedBy;
+    private String updatedBy;
+    private String supervisedBy;
     private boolean supervised;
+
+
+
 
     public int getId() {
         return id;
@@ -82,6 +90,38 @@ public class CollectedData implements Serializable, Table {
         this.formLastUpdatedDate = formLastUpdatedDate;
     }
 
+    public String getFormModule() {
+        return formModule;
+    }
+
+    public void setFormModule(String formModule) {
+        this.formModule = formModule;
+    }
+
+    public String getCollectedBy() {
+        return collectedBy;
+    }
+
+    public void setCollectedBy(String collectedBy) {
+        this.collectedBy = collectedBy;
+    }
+
+    public String getUpdatedBy() {
+        return updatedBy;
+    }
+
+    public void setUpdatedBy(String updatedBy) {
+        this.updatedBy = updatedBy;
+    }
+
+    public String getSupervisedBy() {
+        return supervisedBy;
+    }
+
+    public void setSupervisedBy(String supervisedBy) {
+        this.supervisedBy = supervisedBy;
+    }
+
     public boolean isFormFinalized(){
         return this.formXmlPath!=null;
     }
@@ -107,6 +147,10 @@ public class CollectedData implements Serializable, Table {
         cv.put(DatabaseHelper.CollectedData.COLUMN_FORM_XML_PATH, formXmlPath);
         cv.put(DatabaseHelper.CollectedData.COLUMN_FORM_INSTANCE_NAME, formInstanceName);
         cv.put(DatabaseHelper.CollectedData.COLUMN_FORM_LAST_UPDATED_DATE, formLastUpdatedDate);
+        cv.put(DatabaseHelper.CollectedData.COLUMN_FORM_MODULE, formModule);
+        cv.put(DatabaseHelper.CollectedData.COLUMN_COLLECTED_BY, collectedBy);
+        cv.put(DatabaseHelper.CollectedData.COLUMN_UPDATED_BY, updatedBy);
+        cv.put(DatabaseHelper.CollectedData.COLUMN_SUPERVISED_BY, supervisedBy);
         cv.put(DatabaseHelper.CollectedData.COLUMN_RECORD_ID, recordId);
         cv.put(DatabaseHelper.CollectedData.COLUMN_TABLE_NAME, tableName);
         cv.put(DatabaseHelper.CollectedData.COLUMN_SUPERVISED, supervised ? 1 : 0);

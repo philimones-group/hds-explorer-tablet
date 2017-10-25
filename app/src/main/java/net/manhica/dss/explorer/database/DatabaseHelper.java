@@ -191,11 +191,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         public static final String COLUMN_FORM_XML_PATH = "formXmlPath";
         public static final String COLUMN_FORM_INSTANCE_NAME = "formInstanceName";
         public static final String COLUMN_FORM_LAST_UPDATED_DATE = "formLastUpdatedDate";
+        
+        public static final String COLUMN_FORM_MODULE = "formModule";
+        public static final String COLUMN_COLLECTED_BY = "collectedBy";
+        public static final String COLUMN_UPDATED_BY = "updatedBy";
+        public static final String COLUMN_SUPERVISED_BY = "supervisedBy";
+
         public static final String COLUMN_RECORD_ID = "recordId";
         public static final String COLUMN_TABLE_NAME = "tableName";
         public static final String COLUMN_SUPERVISED = "supervised";
 
-        public static final String[] ALL_COLUMNS = {_ID, COLUMN_FORM_ID, COLUMN_FORM_URI, COLUMN_FORM_XML_PATH, COLUMN_FORM_INSTANCE_NAME, COLUMN_FORM_LAST_UPDATED_DATE, COLUMN_RECORD_ID, COLUMN_TABLE_NAME, COLUMN_SUPERVISED};
+        public static final String[] ALL_COLUMNS = {_ID, COLUMN_FORM_ID, COLUMN_FORM_URI, COLUMN_FORM_XML_PATH, COLUMN_FORM_INSTANCE_NAME, COLUMN_FORM_LAST_UPDATED_DATE,
+                COLUMN_FORM_MODULE, COLUMN_COLLECTED_BY, COLUMN_UPDATED_BY, COLUMN_SUPERVISED_BY, COLUMN_RECORD_ID, COLUMN_TABLE_NAME, COLUMN_SUPERVISED};
     }
 
     private static final String CREATE_TABLE_SYNC_REPORT = " "
@@ -340,6 +347,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + CollectedData.COLUMN_FORM_XML_PATH + " TEXT,"
             + CollectedData.COLUMN_FORM_INSTANCE_NAME + " TEXT,"
             + CollectedData.COLUMN_FORM_LAST_UPDATED_DATE + " TEXT,"
+
+            + CollectedData.COLUMN_FORM_MODULE + " TEXT,"
+            + CollectedData.COLUMN_COLLECTED_BY + " TEXT,"
+            + CollectedData.COLUMN_UPDATED_BY + " TEXT,"
+            + CollectedData.COLUMN_SUPERVISED_BY + " TEXT,"
+
             + CollectedData.COLUMN_RECORD_ID + " INTEGER,"
             + CollectedData.COLUMN_TABLE_NAME + " TEXT,"
             + CollectedData.COLUMN_SUPERVISED + " INTEGER NOT NULL DEFAULT 0);"

@@ -33,12 +33,14 @@ public class Bootstrap {
             SyncReport sr3 = new SyncReport(SyncReport.REPORT_USERS, null, SyncReport.STATUS_NOT_SYNCED, "Sync. Users");
             SyncReport sr4 = new SyncReport(SyncReport.REPORT_HOUSEHOLDS, null, SyncReport.STATUS_NOT_SYNCED, "Sync. Households");
             SyncReport sr5 = new SyncReport(SyncReport.REPORT_MEMBERS, null, SyncReport.STATUS_NOT_SYNCED, "Sync. Members");
+            SyncReport sr6 = new SyncReport(SyncReport.REPORT_TRACKING_LISTS, null, SyncReport.STATUS_NOT_SYNCED, "Sync. Tracking Lists");
 
             database.insert(sr1);
             database.insert(sr2);
             database.insert(sr3);
             database.insert(sr4);
             database.insert(sr5);
+            database.insert(sr6);
         }
 
         database.close();

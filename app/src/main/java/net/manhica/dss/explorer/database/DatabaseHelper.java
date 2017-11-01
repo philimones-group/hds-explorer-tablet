@@ -23,6 +23,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		    db.execSQL(CREATE_TABLE_HOUSEHOLD);
 		    db.execSQL(CREATE_TABLE_MEMBER);
             db.execSQL(CREATE_TABLE_COLLECTED_DATA);
+            db.execSQL(CREATE_TABLE_TRACKING_LIST);
+            db.execSQL(CREATE_TABLE_TRACKING_MEMBER_LIST);
         }catch (Exception ex){
             ex.printStackTrace();
         }
@@ -205,6 +207,34 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 COLUMN_FORM_MODULE, COLUMN_COLLECTED_BY, COLUMN_UPDATED_BY, COLUMN_SUPERVISED_BY, COLUMN_RECORD_ID, COLUMN_TABLE_NAME, COLUMN_SUPERVISED};
     }
 
+    public static final class TrackingList implements BaseColumns { //Lista de Seguimento - FollowUp
+        public static final String TABLE_NAME = "tracking_list";
+
+        public static final String COLUMN_LABEL = "label";
+        public static final String COLUMN_TITLE = "title";
+        public static final String COLUMN_MODULE = "module";
+        public static final String COLUMN_COMPLETION_RATE = "completionRate";
+
+        public static final String[] ALL_COLUMNS = { _ID, COLUMN_LABEL, COLUMN_TITLE, COLUMN_MODULE, COLUMN_COMPLETION_RATE };
+    }
+
+    public static final class TrackingMemberList implements BaseColumns { //List of members
+        public static final String TABLE_NAME = "tracking_members_list";
+
+        public static final String COLUMN_TRACKING_ID = "tracking_id";
+        public static final String COLUMN_TITLE = "title";
+        public static final String COLUMN_FORMS = "list_forms";
+
+        public static final String COLUMN_MEMBER_EXT_ID = "member_ext_id";
+        public static final String COLUMN_MEMBER_PERM_ID = "member_perm_id";
+        public static final String COLUMN_MEMBER_STUDY_CODE = "member_study_code";
+        public static final String COLUMN_MEMBER_FORMS = "member_forms";
+
+        public static final String COLUMN_COMPLETION_RATE = "completionRate";
+
+        public static final String[] ALL_COLUMNS = { _ID, COLUMN_TRACKING_ID, COLUMN_TITLE, COLUMN_FORMS, COLUMN_MEMBER_EXT_ID, COLUMN_MEMBER_PERM_ID, COLUMN_MEMBER_STUDY_CODE, COLUMN_MEMBER_FORMS, COLUMN_COMPLETION_RATE };
+    }
+
     private static final String CREATE_TABLE_SYNC_REPORT = " "
             + "CREATE TABLE " + SyncReport.TABLE_NAME + "("
             + SyncReport._ID  + " INTEGER PRIMARY KEY AUTOINCREMENT, "
@@ -359,6 +389,37 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
             + " CREATE UNIQUE INDEX IDX_FORM_URI ON " + CollectedData.TABLE_NAME
             + "(" +  CollectedData.COLUMN_FORM_URI + ");"
+            ;
+
+    private static final String CREATE_TABLE_TRACKING_LIST = " "
+            + "CREATE TABLE " + TrackingList.TABLE_NAME + "("
+            + TrackingList._ID  + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+            + TrackingList.COLUMN_LABEL + " TEXT,"
+            + TrackingList.COLUMN_TITLE + " TEXT,"
+            + TrackingList.COLUMN_MODULE + " TEXT,"
+            + TrackingList.COLUMN_COMPLETION_RATE + " REAL);"
+
+            + " CREATE INDEX IDX_MODULE ON " + TrackingList.TABLE_NAME
+            + "(" +  TrackingList.COLUMN_MODULE  + ");"
+            ;
+    ;
+
+    private static final String CREATE_TABLE_TRACKING_MEMBER_LIST = " "
+            + "CREATE TABLE " + TrackingMemberList.TABLE_NAME + "("
+            + TrackingMemberList._ID  + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+
+            + TrackingMemberList.COLUMN_TRACKING_ID + " INTEGER,"
+            + TrackingMemberList.COLUMN_TITLE + " TEXT,"
+            + TrackingMemberList.COLUMN_FORMS + " TEXT,"
+
+            + TrackingMemberList.COLUMN_MEMBER_EXT_ID + " TEXT,"
+            + TrackingMemberList.COLUMN_MEMBER_PERM_ID + " TEXT,"
+            + TrackingMemberList.COLUMN_MEMBER_STUDY_CODE + " TEXT,"
+            + TrackingMemberList.COLUMN_MEMBER_FORMS + " TEXT,"
+            + TrackingMemberList.COLUMN_COMPLETION_RATE + " REAL);"
+
+            + " CREATE INDEX IDX_TRCK_ID ON " + TrackingMemberList.TABLE_NAME
+            + "(" +  TrackingMemberList.COLUMN_TRACKING_ID  + ");"
             ;
 
 }

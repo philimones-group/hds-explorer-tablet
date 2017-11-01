@@ -19,6 +19,7 @@ public class SyncReport implements Serializable, Table {
     public final static int REPORT_USERS = 3;
     public final static int REPORT_HOUSEHOLDS = 4;
     public final static int REPORT_MEMBERS = 5;
+    public final static int REPORT_TRACKING_LISTS = 6;
 
     public final static int STATUS_NOT_SYNCED = 0;
     public final static int STATUS_SYNCED = 1;

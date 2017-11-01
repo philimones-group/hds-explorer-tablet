@@ -9,6 +9,8 @@ import net.manhica.dss.explorer.model.Member;
 import net.manhica.dss.explorer.model.Module;
 import net.manhica.dss.explorer.model.SyncReport;
 import net.manhica.dss.explorer.model.User;
+import net.manhica.dss.explorer.model.followup.TrackingList;
+import net.manhica.dss.explorer.model.followup.TrackingMemberList;
 
 
 public class Converter {
@@ -154,5 +156,35 @@ public class Converter {
 		cd.setSupervised(cursor.getInt(cursor.getColumnIndex(DatabaseHelper.CollectedData.COLUMN_SUPERVISED))==1);
 
 		return cd;
+	}
+
+	public static TrackingList cursorToTrackingList(Cursor cursor){
+		TrackingList tl = new TrackingList();
+
+		tl.setId(cursor.getInt(cursor.getColumnIndex(DatabaseHelper.TrackingList._ID)));
+		tl.setLabel(cursor.getString(cursor.getColumnIndex(DatabaseHelper.TrackingList.COLUMN_LABEL)));
+		tl.setTitle(cursor.getString(cursor.getColumnIndex(DatabaseHelper.TrackingList.COLUMN_TITLE)));
+		tl.setModule(cursor.getString(cursor.getColumnIndex(DatabaseHelper.TrackingList.COLUMN_MODULE)));
+		tl.setCompletionRate(cursor.getDouble(cursor.getColumnIndex(DatabaseHelper.TrackingList.COLUMN_COMPLETION_RATE)));
+
+		return tl;
+	}
+
+	public static TrackingMemberList cursorToTrackingMembersList(Cursor cursor){
+		TrackingMemberList tml = new TrackingMemberList();
+
+		tml.setId(cursor.getInt(cursor.getColumnIndex(DatabaseHelper.TrackingMemberList._ID)));
+		tml.setTrackingId(cursor.getInt(cursor.getColumnIndex(DatabaseHelper.TrackingMemberList.COLUMN_TRACKING_ID)));
+		tml.setTitle(cursor.getString(cursor.getColumnIndex(DatabaseHelper.TrackingMemberList.COLUMN_TITLE)));
+		tml.setForms(cursor.getString(cursor.getColumnIndex(DatabaseHelper.TrackingMemberList.COLUMN_FORMS)));
+
+		tml.setMemberExtId(cursor.getString(cursor.getColumnIndex(DatabaseHelper.TrackingMemberList.COLUMN_MEMBER_EXT_ID)));
+		tml.setMemberPermId(cursor.getString(cursor.getColumnIndex(DatabaseHelper.TrackingMemberList.COLUMN_MEMBER_PERM_ID)));
+		tml.setMemberStudyCode(cursor.getString(cursor.getColumnIndex(DatabaseHelper.TrackingMemberList.COLUMN_MEMBER_STUDY_CODE)));
+		tml.setMemberForms(cursor.getString(cursor.getColumnIndex(DatabaseHelper.TrackingMemberList.COLUMN_MEMBER_FORMS)));
+
+		tml.setCompletionRate(cursor.getDouble(cursor.getColumnIndex(DatabaseHelper.TrackingMemberList.COLUMN_COMPLETION_RATE)));
+
+		return tml;
 	}
 }

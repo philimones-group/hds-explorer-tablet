@@ -6,6 +6,7 @@ import net.manhica.dss.explorer.model.CollectedData;
 import net.manhica.dss.explorer.model.Form;
 import net.manhica.dss.explorer.model.Household;
 import net.manhica.dss.explorer.model.SyncReport;
+import net.manhica.dss.explorer.model.followup.TrackingList;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -109,6 +110,31 @@ public class Queries {
         while (cursor.moveToNext()){
             Household household = Converter.cursorToHousehold(cursor);
             list.add(household);
+        }
+
+        return list;
+    }
+
+    public static TrackingList getTrackingListBy(Database database, String whereClause, String[] clauseArgs){
+        TrackingList trackingList = null;
+
+        Cursor cursor = database.query(TrackingList.class, whereClause, clauseArgs, null, null, null);
+
+        if (cursor.moveToFirst()){
+            trackingList = Converter.cursorToTrackingList(cursor);
+        }
+
+        return trackingList;
+    }
+
+    public static List<TrackingList> getAllTrackingListBy(Database database, String whereClause, String[] clauseArgs){
+        List<TrackingList> list = new ArrayList<>();
+
+        Cursor cursor = database.query(TrackingList.class, whereClause, clauseArgs, null, null, null);
+
+        while (cursor.moveToNext()){
+            TrackingList trackingList = Converter.cursorToTrackingList(cursor);
+            list.add(trackingList);
         }
 
         return list;

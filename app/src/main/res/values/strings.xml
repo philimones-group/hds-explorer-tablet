@@ -42,6 +42,7 @@
     <string name="sync_modules_lbl">Modules</string>
     <string name="sync_forms_lbl">ODK Forms</string>
     <string name="sync_users_lbl">Users</string>
+    <string name="sync_tracking_lists_lbl">FollowUp Lists</string>
     <string name="sync_households_lbl">Households</string>
     <string name="sync_members_lbl">Members</string>
     <string name="sync_saved_lbl">Saved</string>
@@ -57,6 +58,7 @@
     <string name="server_sync_status_sync_error_lbl">Error during last Sync on</string>
     <string name="server_sync_bt_modules_lbl">Download Modules</string>
     <string name="server_sync_bt_forms_lbl">Download Forms</string>
+    <string name="server_sync_bt_tracking_lists_lbl">Download Follow Up Lists</string>
     <string name="server_sync_bt_users_lbl">Download Users</string>
     <string name="server_sync_bt_households_lbl">Download Households</string>
     <string name="server_sync_bt_members_lbl">Download Members</string>

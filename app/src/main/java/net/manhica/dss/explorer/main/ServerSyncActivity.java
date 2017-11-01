@@ -23,12 +23,14 @@ public class ServerSyncActivity extends Activity implements SyncDatabaseListener
 
     private Button btSyncModules;
     private Button btSyncForms;
+    private Button btSyncTrackingLists;
     private Button btSyncUsers;
     private Button btSyncHouseholds;
     private Button btSyncMembers;
 
     private TextView txtSyncModulesStatus;
     private TextView txtSyncFormsStatus;
+    private TextView txtSyncTrackingListsStatus;
     private TextView txtSyncUsersStatus;
     private TextView txtSyncHouseholdsStatus;
     private TextView txtSyncMembersStatus;
@@ -76,6 +78,7 @@ public class ServerSyncActivity extends Activity implements SyncDatabaseListener
             switch (report.getReportId()){
                 case SyncReport.REPORT_MODULES: txtSyncModulesStatus.setText(status+"");  break;
                 case SyncReport.REPORT_FORMS: txtSyncFormsStatus.setText(status+"");  break;
+                case SyncReport.REPORT_TRACKING_LISTS: txtSyncTrackingListsStatus.setText(status+"");  break;
                 case SyncReport.REPORT_USERS: txtSyncUsersStatus.setText(status+"");  break;
                 case SyncReport.REPORT_HOUSEHOLDS: txtSyncHouseholdsStatus.setText(status+"");  break;
                 case SyncReport.REPORT_MEMBERS: txtSyncMembersStatus.setText(status+"");  break;
@@ -88,12 +91,14 @@ public class ServerSyncActivity extends Activity implements SyncDatabaseListener
     private void initialize() {
         this.btSyncModules = (Button) findViewById(R.id.btSyncModules);
         this.btSyncForms = (Button) findViewById(R.id.btSyncForms);
+        this.btSyncTrackingLists = (Button) findViewById(R.id.btSyncTrackingLists);
         this.btSyncUsers = (Button) findViewById(R.id.btSyncUsers);
         this.btSyncHouseholds = (Button) findViewById(R.id.btSyncHouseholds);
         this.btSyncMembers = (Button) findViewById(R.id.btSyncMembers);
 
         this.txtSyncModulesStatus = (TextView) findViewById(R.id.txtSyncModulesStatus);
         this.txtSyncFormsStatus = (TextView) findViewById(R.id.txtSyncFormsStatus);
+        this.txtSyncTrackingListsStatus = (TextView) findViewById(R.id.txtSyncTrackingListsStatus);
         this.txtSyncUsersStatus = (TextView) findViewById(R.id.txtSyncUsersStatus);
         this.txtSyncHouseholdsStatus = (TextView) findViewById(R.id.txtSyncHouseholdsStatus);
         this.txtSyncMembersStatus = (TextView) findViewById(R.id.txtSyncMembersStatus);
@@ -111,6 +116,13 @@ public class ServerSyncActivity extends Activity implements SyncDatabaseListener
             @Override
             public void onClick(View v) {
                 syncForms();
+            }
+        });
+
+        this.btSyncTrackingLists.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                syncTrackingLists();
             }
         });
 
@@ -155,6 +167,11 @@ public class ServerSyncActivity extends Activity implements SyncDatabaseListener
 
     private void syncForms() {
         SyncEntitiesTask syncEntitiesTask = new SyncEntitiesTask(this, progressDialog, this, serverUrl, username, password, SyncEntitiesTask.Entity.FORMS);
+        syncEntitiesTask.execute();
+    }
+
+    private void syncTrackingLists() {
+        SyncEntitiesTask syncEntitiesTask = new SyncEntitiesTask(this, progressDialog, this, serverUrl, username, password, SyncEntitiesTask.Entity.TRACKING_LISTS);
         syncEntitiesTask.execute();
     }
 

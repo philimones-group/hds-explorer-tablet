@@ -28,7 +28,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_weight="0.04"
-                android:background="@drawable/btsync"
+                android:background="@drawable/button_ngreen"
                 android:text="@string/server_sync_bt_modules_lbl" />
 
             <LinearLayout
@@ -64,7 +64,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_weight="0.04"
-                android:background="@drawable/btsync"
+                android:background="@drawable/button_ngreen"
                 android:text="@string/server_sync_bt_forms_lbl" />
 
             <LinearLayout
@@ -95,12 +95,48 @@
             android:weightSum="1">
 
             <Button
+                android:id="@+id/btSyncTrackingLists"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_weight="0.04"
+                android:background="@drawable/button_ngreen"
+                android:text="@string/server_sync_bt_tracking_lists_lbl" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/server_sync_status_lbl"
+                    android:textAppearance="?android:attr/textAppearanceMedium" />
+
+                <TextView
+                    android:id="@+id/txtSyncTrackingListsStatus"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="10dp"
+                    android:text=""
+                    android:textAppearance="?android:attr/textAppearanceMedium" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:weightSum="1">
+
+            <Button
                 android:id="@+id/btSyncUsers"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_weight="0.04"
-                android:background="@drawable/btsync"
+                android:background="@drawable/button_ngreen"
                 android:text="@string/server_sync_bt_users_lbl" />
 
             <LinearLayout
@@ -136,7 +172,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_weight="0.04"
-                android:background="@drawable/btsync"
+                android:background="@drawable/button_ngreen"
                 android:text="@string/server_sync_bt_households_lbl" />
 
             <LinearLayout
@@ -172,7 +208,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_weight="0.04"
-                android:background="@drawable/btsync"
+                android:background="@drawable/button_ngreen"
                 android:text="@string/server_sync_bt_members_lbl" />
 
             <LinearLayout

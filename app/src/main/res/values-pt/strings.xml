@@ -42,6 +42,7 @@
     <string name="sync_modules_lbl">Módulos</string>
     <string name="sync_forms_lbl">Formulários ODK</string>
     <string name="sync_users_lbl">Usuários</string>
+    <string name="sync_tracking_lists_lbl">Listas de seguimento</string>
     <string name="sync_households_lbl">Agregados/Casas</string>
     <string name="sync_members_lbl">Membros</string>
     <string name="sync_saved_lbl">Guardado</string>
@@ -57,6 +58,7 @@
     <string name="server_sync_status_sync_error_lbl">Data da ultima sincr. com erro</string>
     <string name="server_sync_bt_modules_lbl">Baixar Módulos</string>
     <string name="server_sync_bt_forms_lbl">Baixar Formulários</string>
+    <string name="server_sync_bt_tracking_lists_lbl">Baixar Listas de Seguimento</string>
     <string name="server_sync_bt_users_lbl">Baixar Usuários</string>
     <string name="server_sync_bt_households_lbl">Baixar Agregados</string>
     <string name="server_sync_bt_members_lbl">Baixar Membros</string>

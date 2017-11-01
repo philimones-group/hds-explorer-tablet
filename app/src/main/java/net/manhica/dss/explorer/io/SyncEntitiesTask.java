@@ -38,6 +38,8 @@ import net.manhica.dss.explorer.model.Member;
 import net.manhica.dss.explorer.model.Module;
 import net.manhica.dss.explorer.model.SyncReport;
 import net.manhica.dss.explorer.model.User;
+import net.manhica.dss.explorer.model.followup.TrackingList;
+import net.manhica.dss.explorer.model.followup.TrackingMemberList;
 
 import mz.betainteractive.utilities.StringUtil;
 
@@ -78,7 +80,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 	}
 
 	public enum Entity {
-		SETTINGS, MODULES, FORMS, USERS, MEMBERS, HOUSEHOLDS
+		SETTINGS, MODULES, FORMS, TRACKING_LISTS, USERS, MEMBERS, HOUSEHOLDS
 	}
 
 	public SyncEntitiesTask(Context context, ProgressDialog dialog, SyncDatabaseListener listener, String url, String username, String password, Entity... entityToDownload) {
@@ -152,6 +154,9 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 			case FORMS:
 				builder.append(" " + mContext.getString(R.string.sync_forms_lbl));
 				break;
+			case TRACKING_LISTS:
+				builder.append(" " + mContext.getString(R.string.sync_tracking_lists_lbl));
+				break;
 			case USERS:
 				builder.append(" " + mContext.getString(R.string.sync_users_lbl));
 				break;
@@ -194,6 +199,11 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 						deleteAll(Form.class);
 						processUrl(baseurl + API_PATH + "/forms/zip", "forms.zip");
 						break;
+					case TRACKING_LISTS: /*testing*/
+						deleteAll(DatabaseHelper.TrackingList.TABLE_NAME);
+						deleteAll(DatabaseHelper.TrackingMemberList.TABLE_NAME);
+						processUrl(baseurl + API_PATH + "/trackinglists", "trackinglists.xml");
+						break;
 					case USERS:
 						deleteAll(User.class);
 						processUrl(baseurl + API_PATH + "/users/zip", "users.zip");
@@ -204,7 +214,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 						break;
 					case MEMBERS:
 						deleteAll(Member.class);
-						deleteAll(CollectedData.class, DatabaseHelper.CollectedData.COLUMN_SUPERVISED+"=1", null);
+						deleteAll(CollectedData.class /*, DatabaseHelper.CollectedData.COLUMN_SUPERVISED+"=1", null*/ ); //remove supervision for now
 						processUrl(baseurl + API_PATH + "/members/zip", "members.zip");
 						break;
 				}
@@ -237,6 +247,13 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 		database.delete(Member.class, null, null);
 		database.delete(CollectedData.class, DatabaseHelper.CollectedData.COLUMN_SUPERVISED+"=?", new String[]{ "1"}); //delete all collected data that was supervised
 
+		database.close();
+	}
+
+	private void deleteAll(String tableName){
+		Database database = getDatabase();
+		database.open();
+		database.delete(tableName, null, null);
 		database.close();
 	}
 
@@ -332,6 +349,8 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 					processModulesParams(parser);
 				} else if (name.equalsIgnoreCase("forms")) {
 					processFormsParams(parser);
+				} else if (name.equalsIgnoreCase("trackinglists")) {
+					processTrackingListsParams(parser);
 				} else if (name.equalsIgnoreCase("users")) {
 					processUsersParams(parser);
 				} else if (name.equalsIgnoreCase("households")) {
@@ -398,6 +417,10 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 
 	private boolean isEmptyTag(String element, XmlPullParser parser) throws XmlPullParserException {
 		return (element.equals(parser.getName()) && parser.isEmptyElementTag());
+	}
+
+	private boolean isTag(String tagName, XmlPullParser parser) throws XmlPullParserException {
+		return (tagName.equals(parser.getName()));
 	}
 
 	private void processModulesParams(XmlPullParser parser) throws XmlPullParserException, IOException {
@@ -644,6 +667,132 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 		database.close();
 
 		updateSyncReport(SyncReport.REPORT_FORMS, new Date(), SyncReport.STATUS_SYNCED);
+	}
+
+	private void processTrackingListsParams(XmlPullParser parser) throws XmlPullParserException, IOException {
+
+		//clear sync_report
+		updateSyncReport(SyncReport.REPORT_TRACKING_LISTS, null, SyncReport.STATUS_NOT_SYNCED);
+
+		int count = 0;
+		values.clear();
+
+		parser.nextTag();
+
+		Database database = getDatabase();
+		database.open();
+		database.beginTransaction();
+
+		while (notEndOfXmlDoc("trackinglists", parser)) {
+			count++;
+
+			if (isEndTag("tracking_list", parser) || isEmptyTag("tracking_list", parser)){
+				parser.nextTag();
+				continue;
+			}
+
+			int trackingId = 0;
+			String trlId = null;
+			String trlLabel = null;
+			String trlTitle = null;
+			String trlModule = null;
+
+			if (isTag("tracking_list", parser)) {
+				//read tracking-list
+				Log.d("trl-attr-id", "" + parser.getAttributeValue("", "id"));
+				Log.d("trl-attr-label", "" + parser.getAttributeValue("", "label"));
+				Log.d("trl-attr-title", "" + parser.getAttributeValue("", "title"));
+				Log.d("trl-attr-module", "" + parser.getAttributeValue("", "module"));
+
+				trlId = parser.getAttributeValue("", "id");
+				trlLabel = parser.getAttributeValue("", "label");
+				trlTitle = parser.getAttributeValue("", "title");
+				trlModule = parser.getAttributeValue("", "module");
+
+				//save to database
+				TrackingList trackingList = new TrackingList();
+				trackingList.setLabel(trlLabel);
+				trackingList.setTitle(trlTitle);
+				trackingList.setModule(trlModule);
+				trackingList.setCompletionRate(0D);
+
+				trackingId = (int) database.insert(trackingList); //insert on db
+			}
+
+			//read lists
+			parser.nextTag(); //jump to <list> tag
+			while(!isEndTag("tracking_list", parser)){
+				//read list tag
+				String listId = null;
+				String listTitle = null;
+				String listForms = null;
+
+				if (isEndTag("list", parser) || isEmptyTag("list", parser)){
+					parser.nextTag();
+					continue;
+				}
+				if (isTag("list", parser)){
+					Log.d("list-attr-id", "" + parser.getAttributeValue("", "id"));
+					Log.d("list-attr-label", "" + parser.getAttributeValue("", "title"));
+					Log.d("list-attr-forms", "" + parser.getAttributeValue("", "forms"));
+
+					listId = parser.getAttributeValue("", "id");
+					listTitle = parser.getAttributeValue("", "title");
+					listForms = parser.getAttributeValue("", "forms");
+
+				}
+
+				//read members
+				parser.nextTag(); //jump to <member end tag> if exists
+				while (!isEndTag("list", parser)){
+					if (isTag("member", parser)){
+						Log.d("mem-attr-extid", "" + parser.getAttributeValue("", "extid"));
+						Log.d("mem-attr-prmid", "" + parser.getAttributeValue("", "permid"));
+						Log.d("mem-attr-scode", "" + parser.getAttributeValue("", "studycode"));
+						Log.d("mem-attr-forms", "" + parser.getAttributeValue("", "forms"));
+						Log.d("end","end");
+
+						String mExtId = parser.getAttributeValue("", "extid");
+						String mPrmId = parser.getAttributeValue("", "permid");
+						String mScode = parser.getAttributeValue("", "studycode");
+						String mForms = parser.getAttributeValue("", "forms");
+
+						//save track member list to database
+						TrackingMemberList tml = new TrackingMemberList();
+						tml.setTrackingId(trackingId);
+						tml.setTitle(listTitle);
+						tml.setForms(listForms==null ? "" : listForms);
+						tml.setMemberExtId(mExtId);
+						tml.setMemberPermId(mPrmId);
+						tml.setMemberStudyCode(mScode);
+						tml.setMemberForms(mForms);
+						tml.setCompletionRate(0D);
+
+						database.insert(tml);
+
+					}
+					parser.nextTag();
+					parser.nextTag(); //jump to next tag eg. <member> or </list>
+				}
+
+			}
+
+
+           /*
+
+			//values.add(table);
+			database.insert(table);
+			*/
+
+			publishProgress(count);
+
+		}
+
+		database.setTransactionSuccessful();
+		database.endTransaction();
+		database.close();
+
+		updateSyncReport(SyncReport.REPORT_TRACKING_LISTS, new Date(), SyncReport.STATUS_SYNCED);
 	}
 
 	private void processUsersParams(XmlPullParser parser) throws XmlPullParserException, IOException {

@@ -67,7 +67,12 @@ public class Database {
     	
     	return insertId;
     }
-    
+
+	public int delete(String tableName, String whereClause, String[] whereArgs){
+		int deleteRows = database.delete(tableName, whereClause, whereArgs);
+		return deleteRows;
+	}
+
     public int delete(Class<? extends Table> table, String whereClause, String[] whereArgs){
     	Table entity = newInstance(table);
     	

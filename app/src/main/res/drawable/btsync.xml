@@ -3,14 +3,14 @@
 
     <item>
         <shape android:shape="rectangle" >
-            <corners android:radius="6dp" />
+            <corners android:radius="3dp" />
 
             <solid android:color="@android:color/transparent" />
         </shape>
     </item>
     <item android:top="2dp">
         <shape android:shape="rectangle" >
-            <corners android:radius="16dp" />
+            <corners android:radius="8dp" />
             <solid android:color="@android:color/holo_purple" />
         </shape>
     </item>
@@ -21,7 +21,7 @@
         android:right="2dp"
         >
         <shape android:shape="rectangle" >
-            <corners android:radius="16dp" />
+            <corners android:radius="8dp" />
             <solid android:color="@android:color/holo_green_light" />
         </shape>
     </item>

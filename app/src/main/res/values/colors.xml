@@ -3,4 +3,16 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
+
+    <color name="white">#FFFFFF</color>
+    <color name="light_gray">#ABBAC2</color>
+    <color name="text_gray">#6B767D</color>
+    <color name="coral_blue">#1DAEFA</color>
+    <color name="dark_blue">#125D9D</color>
+    <color name="black">#ff000000</color>
+
+    <color name="circleProgressCompleteStartGradient">@color/dark_blue</color>
+    <color name="circleProgressCompleteEndGradient">@color/coral_blue</color>
+    <color name="circleProgressIncompleteStartGradient">@color/light_gray</color>
+    <color name="circleProgressIncompleteEndGradient">@color/light_gray</color>
 </resources>

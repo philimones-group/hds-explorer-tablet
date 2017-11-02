@@ -3,6 +3,9 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
 
+    <dimen name="circleProgressRadius">20dp</dimen>
+    <dimen name="circleProgressThickness">5dp</dimen>
+
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="fagm_margin_left">2dp</dimen>
     <dimen name="fagm_margin_top">10dp</dimen>

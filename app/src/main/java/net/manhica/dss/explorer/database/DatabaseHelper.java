@@ -211,11 +211,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         public static final String TABLE_NAME = "tracking_list";
 
         public static final String COLUMN_LABEL = "label";
+        public static final String COLUMN_CODE = "code";
         public static final String COLUMN_TITLE = "title";
         public static final String COLUMN_MODULE = "module";
         public static final String COLUMN_COMPLETION_RATE = "completionRate";
 
-        public static final String[] ALL_COLUMNS = { _ID, COLUMN_LABEL, COLUMN_TITLE, COLUMN_MODULE, COLUMN_COMPLETION_RATE };
+        public static final String[] ALL_COLUMNS = { _ID, COLUMN_LABEL, COLUMN_CODE, COLUMN_TITLE, COLUMN_MODULE, COLUMN_COMPLETION_RATE };
     }
 
     public static final class TrackingMemberList implements BaseColumns { //List of members
@@ -395,6 +396,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + "CREATE TABLE " + TrackingList.TABLE_NAME + "("
             + TrackingList._ID  + " INTEGER PRIMARY KEY AUTOINCREMENT, "
             + TrackingList.COLUMN_LABEL + " TEXT,"
+            + TrackingList.COLUMN_CODE + " TEXT,"
             + TrackingList.COLUMN_TITLE + " TEXT,"
             + TrackingList.COLUMN_MODULE + " TEXT,"
             + TrackingList.COLUMN_COMPLETION_RATE + " REAL);"

@@ -694,6 +694,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 			int trackingId = 0;
 			String trlId = null;
 			String trlLabel = null;
+			String trlCode = null;
 			String trlTitle = null;
 			String trlModule = null;
 
@@ -706,12 +707,14 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 
 				trlId = parser.getAttributeValue("", "id");
 				trlLabel = parser.getAttributeValue("", "label");
+				trlCode = parser.getAttributeValue("", "code");
 				trlTitle = parser.getAttributeValue("", "title");
 				trlModule = parser.getAttributeValue("", "module");
 
 				//save to database
 				TrackingList trackingList = new TrackingList();
 				trackingList.setLabel(trlLabel);
+				trackingList.setCode(trlCode);
 				trackingList.setTitle(trlTitle);
 				trackingList.setModule(trlModule);
 				trackingList.setCompletionRate(0D);

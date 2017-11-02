@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    android:background="@mipmap/form_background_1"
+    tools:context=".main.SurveyActivity"
+    android:weightSum="1">
+
+    <ImageView
+        android:layout_marginTop="50dp"
+        android:layout_marginBottom="10dp"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:id="@+id/imageView"
+        android:layout_gravity="center_horizontal"
+        android:alpha="0.65"
+        android:background="@mipmap/dss_explorer_bevel" />
+
+    <Button
+        android:id="@+id/btSurveyHouseholds"
+        style="?android:textAppearanceSmall"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="50dp"
+        android:layout_marginRight="50dp"
+        android:text="@string/survey_households_btn_lbl"
+        android:textSize="20dp"
+        android:textStyle="bold"
+        android:textColor="@android:color/background_light"
+        android:background="@drawable/button_lblue_house"
+        android:shadowColor="@android:color/transparent"
+        />
+
+    <Button
+        android:id="@+id/btSurveyMembers"
+        style="?android:textAppearanceSmall"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="50dp"
+        android:layout_marginRight="50dp"
+        android:text="@string/survey_members_btn_lbl"
+        android:textSize="20dp"
+        android:textStyle="bold"
+        android:textColor="@android:color/background_light"
+        android:background="@drawable/button_lblue_member"
+        android:shadowColor="@android:color/transparent"
+        />
+
+    <Button
+        android:id="@+id/btTrackingLists"
+        style="?android:textAppearanceSmall"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="50dp"
+        android:layout_marginRight="50dp"
+        android:text="@string/survey_tracking_lists_btn_lbl"
+        android:textSize="20dp"
+        android:textStyle="bold"
+        android:textColor="@android:color/background_light"
+        android:background="@drawable/button_lblue_lists"
+        android:shadowColor="@android:color/transparent"
+        />
+</LinearLayout>

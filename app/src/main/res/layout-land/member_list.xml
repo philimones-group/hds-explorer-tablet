@@ -22,7 +22,7 @@
             <RelativeLayout
                 android:id="@+id/viewListProgressBar"
                 android:layout_width="match_parent"
-                android:layout_height="345dp"
+                android:layout_height="330dp"
                 android:background="@drawable/list_corner_border"
                 android:visibility="gone">
 

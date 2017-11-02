@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="net.manhica.dss.explorer.main.TrackingListActivity">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/m_details_header"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_marginTop="5dp"
+                android:layout_gravity="left|top"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:src="@drawable/list_members" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="@string/trackinglist_title_lbl"
+                android:textColor="#ffffff"
+                android:textSize="25dp"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:id="@+id/txtTrackListModule"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_marginLeft="5dp"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="DSS-SURVEY"
+                android:textColor="#ffccff"
+                android:textSize="25dp"
+                android:textStyle="bold"/>
+
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="10dp"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:id="@+id/viewListProgressBar"
+                android:layout_width="match_parent"
+                android:layout_height="360dp"
+                android:background="@drawable/list_corner_border"
+                android:visibility="gone">
+
+                <ProgressBar
+                    style="?android:attr/progressBarStyleLarge"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true"
+                    />
+
+            </RelativeLayout>
+
+            <ListView
+                android:id="@+id/lvTrackingList"
+                android:layout_width="match_parent"
+                android:layout_height="360dp"
+                android:background="@drawable/list_corner_border"
+                />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="0"
+            android:gravity="center|bottom"
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btTrackListUpdate"
+                android:layout_width="match_parent"
+                android:layout_height="70dp"
+                android:layout_weight="1"
+                android:textSize="25dp"
+                android:text="@string/trackinglist_bt_update_lbl"
+                android:background="@drawable/button_normal"/>
+
+            <Button
+                android:id="@+id/btTrackListBack"
+                android:layout_width="match_parent"
+                android:layout_height="70dp"
+                android:layout_weight="1"
+                android:textSize="25dp"
+                android:text="@string/trackinglist_bt_back_lbl"
+                android:background="@drawable/button_normal"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+</ScrollView>

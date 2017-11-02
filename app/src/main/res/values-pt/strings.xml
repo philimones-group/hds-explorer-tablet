@@ -177,6 +177,7 @@
 
     <string name="survey_households_btn_lbl">Procurar por Agregado</string>
     <string name="survey_members_btn_lbl">Procurar por membros</string>
+    <string name="survey_tracking_lists_btn_lbl">Ver Listas de seguimento</string>
 
     <!-- GPS Maps -->
     <string name="map_gps_not_available_title_lbl">Não será possivel visualizar o mapa</string>

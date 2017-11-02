@@ -14,6 +14,7 @@ public class SurveyActivity extends Activity {
     private User loggedUser;
     private Button btSurveyHouseholds;
     private Button btSurveyMembers;
+    private Button btTrackingLists;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,6 +25,7 @@ public class SurveyActivity extends Activity {
 
         this.btSurveyHouseholds = (Button) findViewById(R.id.btSurveyHouseholds);
         this.btSurveyMembers = (Button) findViewById(R.id.btSurveyMembers);
+        this.btTrackingLists = (Button) findViewById(R.id.btTrackingLists);
 
         this.btSurveyHouseholds.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -38,6 +40,13 @@ public class SurveyActivity extends Activity {
                 openSurveyMembers();
             }
         });
+
+        this.btTrackingLists.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openTrackingLists();
+            }
+        });
     }
 
     private void openSurveyMembers() {
@@ -48,6 +57,12 @@ public class SurveyActivity extends Activity {
 
     private void openSurveyHouseholds() {
         Intent intent = new Intent(this, SurveyHouseholdsActivity.class);
+        intent.putExtra("user", loggedUser);
+        startActivity(intent);
+    }
+
+    private void openTrackingLists() {
+        Intent intent = new Intent(this, TrackingListActivity.class);
         intent.putExtra("user", loggedUser);
         startActivity(intent);
     }

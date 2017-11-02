@@ -178,6 +178,7 @@
 
     <string name="survey_households_btn_lbl">Search By Household</string>
     <string name="survey_members_btn_lbl">Search By Members</string>
+    <string name="survey_tracking_lists_btn_lbl">Show Follow-up Lists</string>
 
     <!-- GPS Maps -->
     <string name="map_gps_not_available_title_lbl">Cannot view GPS Map</string>
@@ -191,6 +192,7 @@
 
     <!-- GPS Searched Result List -->
     <string name="gps_searched_list_back_lbl">Back</string>
+
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

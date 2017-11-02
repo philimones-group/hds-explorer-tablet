@@ -35,7 +35,6 @@
         android:shadowColor="@android:color/transparent"
         />
 
-
     <Button
         android:id="@+id/btSurveyMembers"
         style="?android:textAppearanceSmall"
@@ -49,6 +48,22 @@
         android:textStyle="bold"
         android:textColor="@android:color/background_light"
         android:background="@drawable/button_lblue_member"
+        android:shadowColor="@android:color/transparent"
+        />
+
+    <Button
+        android:id="@+id/btTrackingLists"
+        style="?android:textAppearanceSmall"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:layout_marginTop="50dp"
+        android:layout_marginLeft="50dp"
+        android:layout_marginRight="50dp"
+        android:text="@string/survey_tracking_lists_btn_lbl"
+        android:textSize="20dp"
+        android:textStyle="bold"
+        android:textColor="@android:color/background_light"
+        android:background="@drawable/button_lblue_lists"
         android:shadowColor="@android:color/transparent"
         />
 </LinearLayout>

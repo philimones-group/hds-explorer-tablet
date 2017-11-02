@@ -5,8 +5,8 @@
 
     <item android:top="5dp"
           android:bottom="5dp"
-          android:left="25dp">
-        <bitmap android:src="@drawable/member" android:gravity="left" />
+          android:left="20dp">
+        <bitmap android:src="@drawable/list_members"  android:gravity="left"  />
     </item>
 
 </layer-list>

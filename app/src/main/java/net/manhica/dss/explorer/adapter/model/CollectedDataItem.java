@@ -1,4 +1,4 @@
-package net.manhica.dss.explorer.adapter;
+package net.manhica.dss.explorer.adapter.model;
 
 import android.content.ContentValues;
 

@@ -222,6 +222,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final class TrackingMemberList implements BaseColumns { //List of members
         public static final String TABLE_NAME = "tracking_members_list";
 
+        public static final String COLUMN_LIST_ID = "list_id";
         public static final String COLUMN_TRACKING_ID = "tracking_id";
         public static final String COLUMN_TITLE = "title";
         public static final String COLUMN_FORMS = "list_forms";
@@ -233,7 +234,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         public static final String COLUMN_COMPLETION_RATE = "completionRate";
 
-        public static final String[] ALL_COLUMNS = { _ID, COLUMN_TRACKING_ID, COLUMN_TITLE, COLUMN_FORMS, COLUMN_MEMBER_EXT_ID, COLUMN_MEMBER_PERM_ID, COLUMN_MEMBER_STUDY_CODE, COLUMN_MEMBER_FORMS, COLUMN_COMPLETION_RATE };
+        public static final String[] ALL_COLUMNS = { _ID, COLUMN_LIST_ID, COLUMN_TRACKING_ID, COLUMN_TITLE, COLUMN_FORMS, COLUMN_MEMBER_EXT_ID, COLUMN_MEMBER_PERM_ID, COLUMN_MEMBER_STUDY_CODE, COLUMN_MEMBER_FORMS, COLUMN_COMPLETION_RATE };
     }
 
     private static final String CREATE_TABLE_SYNC_REPORT = " "
@@ -410,6 +411,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + "CREATE TABLE " + TrackingMemberList.TABLE_NAME + "("
             + TrackingMemberList._ID  + " INTEGER PRIMARY KEY AUTOINCREMENT, "
 
+            + TrackingMemberList.COLUMN_LIST_ID + " INTEGER,"
             + TrackingMemberList.COLUMN_TRACKING_ID + " INTEGER,"
             + TrackingMemberList.COLUMN_TITLE + " TEXT,"
             + TrackingMemberList.COLUMN_FORMS + " TEXT,"

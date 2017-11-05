@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -17,7 +16,7 @@ import android.widget.TextView;
 
 import net.manhica.dss.explorer.R;
 import net.manhica.dss.explorer.adapter.CollectedDataArrayAdapter;
-import net.manhica.dss.explorer.adapter.CollectedDataItem;
+import net.manhica.dss.explorer.adapter.model.CollectedDataItem;
 import net.manhica.dss.explorer.adapter.FormLoaderAdapter;
 import net.manhica.dss.explorer.data.FormDataLoader;
 import net.manhica.dss.explorer.database.Database;

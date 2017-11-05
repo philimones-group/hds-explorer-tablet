@@ -202,7 +202,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 					case TRACKING_LISTS: /*testing*/
 						deleteAll(DatabaseHelper.TrackingList.TABLE_NAME);
 						deleteAll(DatabaseHelper.TrackingMemberList.TABLE_NAME);
-						processUrl(baseurl + API_PATH + "/trackinglists", "trackinglists.xml");
+						processUrl(baseurl + API_PATH + "/trackinglists/zip", "trackinglists.zip");
 						break;
 					case USERS:
 						deleteAll(User.class);
@@ -762,6 +762,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 
 						//save track member list to database
 						TrackingMemberList tml = new TrackingMemberList();
+						tml.setListId(Integer.parseInt(listId));
 						tml.setTrackingId(trackingId);
 						tml.setTitle(listTitle);
 						tml.setForms(listForms==null ? "" : listForms);

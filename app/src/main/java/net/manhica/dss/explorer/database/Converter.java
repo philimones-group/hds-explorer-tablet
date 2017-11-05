@@ -175,6 +175,7 @@ public class Converter {
 		TrackingMemberList tml = new TrackingMemberList();
 
 		tml.setId(cursor.getInt(cursor.getColumnIndex(DatabaseHelper.TrackingMemberList._ID)));
+		tml.setListId(cursor.getInt(cursor.getColumnIndex(DatabaseHelper.TrackingMemberList.COLUMN_LIST_ID)));
 		tml.setTrackingId(cursor.getInt(cursor.getColumnIndex(DatabaseHelper.TrackingMemberList.COLUMN_TRACKING_ID)));
 		tml.setTitle(cursor.getString(cursor.getColumnIndex(DatabaseHelper.TrackingMemberList.COLUMN_TITLE)));
 		tml.setForms(cursor.getString(cursor.getColumnIndex(DatabaseHelper.TrackingMemberList.COLUMN_FORMS)));

@@ -10,6 +10,7 @@ import java.io.Serializable;
 public class TrackingMemberList implements Serializable, Table {
 
     private int id;
+    private int listId;
     private int trackingId;
     private String title;
     private String forms;
@@ -26,6 +27,14 @@ public class TrackingMemberList implements Serializable, Table {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public int getListId() {
+        return listId;
+    }
+
+    public void setListId(int listId) {
+        this.listId = listId;
     }
 
     public int getTrackingId() {
@@ -101,6 +110,7 @@ public class TrackingMemberList implements Serializable, Table {
     public ContentValues getContentValues() {
         ContentValues cv = new ContentValues();
 
+        cv.put(DatabaseHelper.TrackingMemberList.COLUMN_LIST_ID, listId);
         cv.put(DatabaseHelper.TrackingMemberList.COLUMN_TRACKING_ID, trackingId);
         cv.put(DatabaseHelper.TrackingMemberList.COLUMN_TITLE, title);
         cv.put(DatabaseHelper.TrackingMemberList.COLUMN_FORMS, forms);
@@ -118,6 +128,6 @@ public class TrackingMemberList implements Serializable, Table {
 
     @Override
     public String[] getColumnNames() {
-        return DatabaseHelper.TrackingList.ALL_COLUMNS;
+        return DatabaseHelper.TrackingMemberList.ALL_COLUMNS;
     }
 }

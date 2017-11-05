@@ -5,8 +5,10 @@ import android.database.Cursor;
 import net.manhica.dss.explorer.model.CollectedData;
 import net.manhica.dss.explorer.model.Form;
 import net.manhica.dss.explorer.model.Household;
+import net.manhica.dss.explorer.model.Member;
 import net.manhica.dss.explorer.model.SyncReport;
 import net.manhica.dss.explorer.model.followup.TrackingList;
+import net.manhica.dss.explorer.model.followup.TrackingMemberList;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -115,6 +117,31 @@ public class Queries {
         return list;
     }
 
+    public static Member getMemberBy(Database database, String whereClause, String[] clauseArgs){
+        Member member = null;
+
+        Cursor cursor = database.query(Member.class, whereClause, clauseArgs, null, null, null);
+
+        if (cursor.moveToFirst()){
+            member = Converter.cursorToMember(cursor);
+        }
+
+        return member;
+    }
+
+    public static List<Member> getAllMemberBy(Database database, String whereClause, String[] clauseArgs){
+        List<Member> list = new ArrayList<>();
+
+        Cursor cursor = database.query(Member.class, whereClause, clauseArgs, null, null, null);
+
+        while (cursor.moveToNext()){
+            Member member = Converter.cursorToMember(cursor);
+            list.add(member);
+        }
+
+        return list;
+    }
+
     public static TrackingList getTrackingListBy(Database database, String whereClause, String[] clauseArgs){
         TrackingList trackingList = null;
 
@@ -134,6 +161,31 @@ public class Queries {
 
         while (cursor.moveToNext()){
             TrackingList trackingList = Converter.cursorToTrackingList(cursor);
+            list.add(trackingList);
+        }
+
+        return list;
+    }
+
+    public static TrackingMemberList getTrackingMemberListBy(Database database, String whereClause, String[] clauseArgs){
+        TrackingMemberList trackingList = null;
+
+        Cursor cursor = database.query(TrackingMemberList.class, whereClause, clauseArgs, null, null, null);
+
+        if (cursor.moveToFirst()){
+            trackingList = Converter.cursorToTrackingMembersList(cursor);
+        }
+
+        return trackingList;
+    }
+
+    public static List<TrackingMemberList> getAllTrackingMemberListBy(Database database, String whereClause, String[] clauseArgs){
+        List<TrackingMemberList> list = new ArrayList<>();
+
+        Cursor cursor = database.query(TrackingMemberList.class, whereClause, clauseArgs, null, null, null);
+
+        while (cursor.moveToNext()){
+            TrackingMemberList trackingList = Converter.cursorToTrackingMembersList(cursor);
             list.add(trackingList);
         }
 

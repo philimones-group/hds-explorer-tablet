@@ -8,6 +8,7 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import net.manhica.dss.explorer.R;
+import net.manhica.dss.explorer.adapter.model.CollectedDataItem;
 import net.manhica.dss.explorer.model.CollectedData;
 import net.manhica.dss.explorer.model.Member;
 

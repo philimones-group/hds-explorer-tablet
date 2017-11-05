@@ -310,4 +310,19 @@ public class StringUtil {
 
         return false;
     }
+
+    public static String toInClause(String[] items){
+        //"'name1', 'name2"
+        String str = "";
+
+        for (String s : items){
+            str += "'" + s + "',";
+        }
+
+        if (str.length()>0){
+            str = str.substring(0,str.length()-1);
+        }
+
+        return str;
+    }
 }

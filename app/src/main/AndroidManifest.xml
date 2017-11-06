@@ -34,7 +34,8 @@
         <activity android:name=".main.SurveyMembersActivity" />
         <activity android:name=".main.MemberDetailsActivity" />
         <activity android:name=".main.GpsSearchedListActivity" />
-        <activity android:name=".main.TrackingListActivity"></activity>
+        <activity android:name=".main.TrackingListActivity" />
+        <activity android:name=".main.TrackingListDetailsActivity"></activity>
     </application>
 
 </manifest>

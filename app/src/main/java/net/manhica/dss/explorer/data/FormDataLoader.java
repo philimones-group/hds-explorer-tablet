@@ -2,6 +2,7 @@ package net.manhica.dss.explorer.data;
 
 import android.util.Log;
 
+import net.manhica.dss.explorer.adapter.model.TrackingMemberItem;
 import net.manhica.dss.explorer.database.DatabaseHelper;
 import net.manhica.dss.explorer.model.Form;
 import net.manhica.dss.explorer.model.Household;
@@ -231,7 +232,7 @@ public class FormDataLoader implements Serializable {
     }
 
     /* loading special constant values */
-    public void loadSpecialConstantValues(Household household, Member member, User user){
+    public void loadSpecialConstantValues(Household household, Member member, User user, TrackingMemberItem memberItem){
         Map<String, String> map = form.getBindMap();
         for (String key : map.keySet()){
             //Log.d("special constant", ""+key );
@@ -250,6 +251,10 @@ public class FormDataLoader implements Serializable {
                 //check on constants
                 if (internalVariableName.equals("MemberExists")){
                     value = (member!=null && member.getId()>0) ? "true" : "false";
+                }
+                //check for studyCode that is used on Tracking/Follow-up Lists of studies modules
+                if (internalVariableName.equals("studyCode") && memberItem!=null){
+                    value = memberItem.getStudyCode();
                 }
 
                 //get variable format from odkVariable eg. variableName->format => patientName->yes,no

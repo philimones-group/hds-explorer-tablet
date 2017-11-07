@@ -149,7 +149,7 @@ public class SurveyHouseholdsActivity extends Activity implements HouseholdFilte
         }
 
         loader.loadConstantValues();
-        loader.loadSpecialConstantValues(household, member, loggedUser);
+        loader.loadSpecialConstantValues(household, member, loggedUser, null);
     }
 
     private void loadFormValues(FormDataLoader[] loaders, Household household, Member member){

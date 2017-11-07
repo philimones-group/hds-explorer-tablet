@@ -9,7 +9,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="110dp"
+        android:layout_height="120dp"
         android:background="@drawable/m_details_header"
         android:orientation="horizontal">
 
@@ -32,11 +32,11 @@
                 android:id="@+id/mbDetailsName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="8dp"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:text="MARGARIDA MOLUSCO MBUTI"
                 android:textColor="#ffffff"
-                android:textSize="30dp"
+                android:textSize="25dp"
                 android:textStyle="bold"/>
 
             <LinearLayout
@@ -48,22 +48,22 @@
                     android:id="@+id/mbDetailsPermId"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="2dp"
+                    android:layout_marginTop="0dp"
                     android:textAppearance="?android:attr/textAppearanceLarge"
                     android:text="01-0101-011-01"
                     android:textColor="#92edb3"
-                    android:textSize="30dp"
+                    android:textSize="25dp"
                     android:textStyle="bold" />
 
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="50dp"
+                    android:layout_marginTop="0dp"
                     android:orientation="horizontal">
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
                         android:layout_marginRight="1dp"
                         android:text="@string/member_details_gender_lbl"
                         android:textAppearance="?android:attr/textAppearanceLarge"
@@ -75,7 +75,6 @@
                         android:id="@+id/mbDetailsGender"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
                         android:layout_marginLeft="4dp"
                         android:text="M"
                         android:textAppearance="?android:attr/textAppearanceLarge"
@@ -87,7 +86,6 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
                         android:layout_marginRight="1dp"
                         android:layout_marginLeft="27dp"
                         android:text="@string/member_details_age_lbl"
@@ -100,7 +98,6 @@
                         android:id="@+id/mbDetailsAge"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
                         android:layout_marginLeft="4dp"
                         android:text="16"
                         android:textAppearance="?android:attr/textAppearanceLarge"
@@ -112,7 +109,6 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
                         android:layout_marginRight="1dp"
                         android:layout_marginLeft="27dp"
                         android:text="@string/member_details_dob_lbl"
@@ -125,7 +121,6 @@
                         android:id="@+id/mbDetailsDob"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
                         android:layout_marginLeft="4dp"
                         android:text="2010-08-23"
                         android:textAppearance="?android:attr/textAppearanceLarge"
@@ -137,6 +132,42 @@
 
 
             </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/mbDetailsLayoutSc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:background="@drawable/rect_corner_border">
+
+                <TextView
+                    android:id="@+id/mbDetailsStudyCodeLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginLeft="8dp"
+                    android:text="@string/member_details_studycode_lbl"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textColor="#c4daca"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/mbDetailsStudyCode"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="8dp"
+                    android:text="W1-IC-000001"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textColor="#83d34a"
+                    android:textStyle="bold"
+                    />
+
+            </LinearLayout>
+
         </LinearLayout>
 
     </LinearLayout>
@@ -145,6 +176,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_weight="1"
         android:layout_marginBottom="15dp"
         android:layout_marginTop="5dp"
         android:layout_marginLeft="5dp"
@@ -154,7 +186,7 @@
         <!-- Extra data details -->
         <LinearLayout
             android:layout_width="550dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_marginRight="3dp"
             android:orientation="vertical">
 
@@ -168,13 +200,13 @@
             <LinearLayout
                 android:id="@+id/layout_md_xdata"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:background="@drawable/corner_border"
                 android:orientation="vertical">
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="270dp"
+                    android:layout_height="match_parent"
                     android:orientation="horizontal">
 
                     <!-- Layout Info 1 -->
@@ -326,7 +358,7 @@
         <!-- List of CollectedExtra data details -->
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:orientation="vertical">
 
             <TextView
@@ -338,7 +370,7 @@
 
             <ListView
                 android:layout_width="match_parent"
-                android:layout_height="270dp"
+                android:layout_height="match_parent"
                 android:background="@drawable/list_bevel_corner"
                 android:id="@+id/lvCollectedForms"
                 />

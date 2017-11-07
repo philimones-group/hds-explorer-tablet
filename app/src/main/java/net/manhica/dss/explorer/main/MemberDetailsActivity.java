@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -52,6 +53,11 @@ public class MemberDetailsActivity extends Activity implements OdkFormResultList
     private Button btMemDetailsCollectData;
     private Button btMemDetailsBack;
     private ImageView iconView;
+
+    private LinearLayout mbDetailsLayoutSc;
+    private TextView mbDetailsStudyCodeLabel;
+    private TextView mbDetailsStudyCode;
+    private String studyCode;
             
     private Member member;
     private List<FormDataLoader> formDataLoaders = new ArrayList<>();
@@ -68,6 +74,7 @@ public class MemberDetailsActivity extends Activity implements OdkFormResultList
 
         this.loggedUser = (User) getIntent().getExtras().get("user");
         this.member = (Member) getIntent().getExtras().get("member");
+        this.studyCode = getIntent().getExtras().getString("member_studycode");
         readFormDataLoader();
 
         formUtilities = new FormUtilities(this);
@@ -112,6 +119,10 @@ public class MemberDetailsActivity extends Activity implements OdkFormResultList
         btMemDetailsCollectData = (Button) findViewById(R.id.btMemDetailsCollectData);
         btMemDetailsBack = (Button) findViewById(R.id.btMemDetailsBack);
         iconView = (ImageView) findViewById(R.id.iconView);
+
+        mbDetailsLayoutSc = (LinearLayout) findViewById(R.id.mbDetailsLayoutSc);
+        mbDetailsStudyCode = (TextView) findViewById(R.id.mbDetailsStudyCode);
+        mbDetailsStudyCodeLabel = (TextView) findViewById(R.id.mbDetailsStudyCodeLabel);
 
         btMemDetailsBack.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -174,6 +185,16 @@ public class MemberDetailsActivity extends Activity implements OdkFormResultList
 
         if (member.isSubsHouseholdHead()){
             iconView.setImageResource(R.mipmap.member_big_subs_icon);
+        }
+
+        if (studyCode != null){
+            mbDetailsLayoutSc.setVisibility(View.VISIBLE);
+
+            String codeLabel = getString(R.string.member_details_studycode_lbl); //.replace("#", loggedUser.getModules());
+            mbDetailsStudyCodeLabel.setText(codeLabel);
+            mbDetailsStudyCode.setText(studyCode);
+        }else{
+            mbDetailsLayoutSc.setVisibility(View.GONE);
         }
 
         showCollectedData();

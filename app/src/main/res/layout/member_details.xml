@@ -9,18 +9,19 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="150dp"
+        android:layout_height="wrap_content"
         android:background="@drawable/m_details_header"
         android:orientation="horizontal">
 
         <ImageView
             android:id="@+id/iconView"
-            android:layout_width="100dp"
-            android:layout_height="110dp"
+            android:layout_width="90dp"
+            android:layout_height="100dp"
             android:layout_marginTop="20dp"
             android:layout_gravity="left|top"
             android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"
+            android:layout_marginRight="0dp"
+            android:layout_marginBottom="20dp"
             android:src="@mipmap/member_big_icon" />
 
         <LinearLayout
@@ -32,22 +33,21 @@
                 android:id="@+id/mbDetailsName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="5dp"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:text="MARGARIDA MOLUSCO MBUTI"
                 android:textColor="#ffffff"
-                android:textSize="30dp"
+                android:textSize="@dimen/member_details_info_name_layout_txtsize"
                 android:textStyle="bold"/>
 
             <TextView
                 android:id="@+id/mbDetailsPermId"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="2dp"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:text="01-0101-011-01"
                 android:textColor="#92edb3"
-                android:textSize="30dp"
+                android:textSize="@dimen/member_details_info_name_layout_txtsize"
                 android:textStyle="bold" />
 
             <LinearLayout
@@ -58,84 +58,113 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
+                    android:layout_marginTop="0dp"
                     android:layout_marginRight="1dp"
                     android:text="@string/member_details_gender_lbl"
                     android:textAppearance="?android:attr/textAppearanceLarge"
                     android:textColor="#c4daca"
-                    android:textSize="@dimen/member_filter_titlesize"
+                    android:textSize="@dimen/member_details_info_gender_layout_txtsize"
                     android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/mbDetailsGender"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
+                    android:layout_marginTop="0dp"
                     android:layout_marginLeft="4dp"
                     android:text="M"
                     android:textAppearance="?android:attr/textAppearanceLarge"
                     android:textColor="#83d34a"
-                    android:textSize="@dimen/member_filter_titlesize"
+                    android:textSize="@dimen/member_details_info_gender_layout_txtsize"
                     android:textStyle="bold"
                     />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
+                    android:layout_marginTop="0dp"
                     android:layout_marginRight="1dp"
                     android:layout_marginLeft="20dp"
                     android:text="@string/member_details_age_lbl"
                     android:textAppearance="?android:attr/textAppearanceLarge"
                     android:textColor="#c4daca"
-                    android:textSize="@dimen/member_filter_titlesize"
+                    android:textSize="@dimen/member_details_info_gender_layout_txtsize"
                     android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/mbDetailsAge"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
+                    android:layout_marginTop="0dp"
                     android:layout_marginLeft="4dp"
                     android:text="16"
                     android:textAppearance="?android:attr/textAppearanceLarge"
                     android:textColor="#83d34a"
-                    android:textSize="@dimen/member_filter_titlesize"
+                    android:textSize="@dimen/member_details_info_gender_layout_txtsize"
                     android:textStyle="bold"
                      />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
+                    android:layout_marginTop="0dp"
                     android:layout_marginRight="1dp"
                     android:layout_marginLeft="20dp"
                     android:text="@string/member_details_dob_lbl"
                     android:textAppearance="?android:attr/textAppearanceLarge"
                     android:textColor="#c4daca"
-                    android:textSize="@dimen/member_filter_titlesize"
+                    android:textSize="@dimen/member_details_info_gender_layout_txtsize"
                     android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/mbDetailsDob"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
+                    android:layout_marginTop="0dp"
                     android:layout_marginLeft="4dp"
                     android:text="2010-08-23"
                     android:textAppearance="?android:attr/textAppearanceLarge"
                     android:textColor="#83d34a"
-                    android:textSize="@dimen/member_filter_titlesize"
+                    android:textSize="@dimen/member_details_info_gender_layout_txtsize"
                     android:textStyle="bold"
                     />
 
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/mbDetailsLayoutSc"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:background="@drawable/rect_corner_border">
 
+                <TextView
+                    android:id="@+id/mbDetailsStudyCodeLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginLeft="8dp"
+                    android:text="@string/member_details_studycode_lbl"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textSize="@dimen/member_details_info_gender_layout_txtsize"
+                    android:textColor="#c4daca"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/mbDetailsStudyCode"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="8dp"
+                    android:text="W1-IC-000001"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textSize="@dimen/member_details_info_gender_layout_txtsize"
+                    android:textColor="#83d34a"
+                    android:textStyle="bold"
+                    />
 
             </LinearLayout>
 
@@ -170,7 +199,7 @@
 
             <LinearLayout
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="26dp"
                 android:layout_marginTop="20dp"
                 android:layout_marginLeft="@dimen/member_filter_xdata_margin_left"
                 android:orientation="horizontal">
@@ -308,8 +337,9 @@
     <!-- List of CollectedExtra data details -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="20dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:layout_marginBottom="5dp"
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
         android:orientation="vertical">
@@ -323,7 +353,7 @@
 
         <ListView
             android:layout_width="match_parent"
-            android:layout_height="255dp"
+            android:layout_height="match_parent"
             android:background="@drawable/list_bevel_corner"
             android:id="@+id/lvCollectedForms"
             />
@@ -335,10 +365,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="0"
-        android:gravity="center|bottom"
-        android:layout_marginBottom="@dimen/fagm_margin_bottom"
-        android:layout_marginLeft="@dimen/fagm_margin_left"
-        android:layout_marginRight="@dimen/fagm_margin_right"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
         android:orientation="vertical">
 
         <Button

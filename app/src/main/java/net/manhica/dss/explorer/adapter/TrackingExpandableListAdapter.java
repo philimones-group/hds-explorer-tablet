@@ -98,6 +98,7 @@ public class TrackingExpandableListAdapter extends BaseExpandableListAdapter imp
 
         txtTitle.setText(listItem.getTitle());
         txtExtras.setText(n+" Members");
+        pBar.setPercentageValue(getCompletionOfList(listItem));
 
         return convertView;
     }
@@ -132,5 +133,32 @@ public class TrackingExpandableListAdapter extends BaseExpandableListAdapter imp
     @Override
     public boolean isChildSelectable(int groupPosition, int childPosition) {
         return true;
+    }
+
+    public int getCompletionOfList(TrackingSubListItem listItem){
+        int to_collect = 0;
+        int collected = 0;
+
+        for (TrackingMemberItem memberItem : this.trackingCollection.get(listItem)){
+            to_collect += memberItem.getForms().size();
+            collected += memberItem.getCollectedForms().size();
+        }
+
+        if (to_collect==0) return 100;
+
+        return (collected / to_collect)*100;
+    }
+
+    public int getCompletionOfTrackingList(){
+        int n = groupItems.size();
+        int c = 0;
+
+        for (TrackingSubListItem listItem : groupItems){
+            c += getCompletionOfList(listItem);
+        }
+
+        if (n==0) return 0;
+
+        return (c / n);
     }
 }

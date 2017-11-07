@@ -190,6 +190,10 @@ public class MemberDetailsActivity extends Activity implements OdkFormResultList
         openOdkForm(formDataLoader, collectedData);
     }
 
+    /*
+     * Show the data collected for the selected individual - but only shows data that belongs to Forms that the user can view (FormDataLoader)
+     * With this if we selected a follow_up list member we will view only the forms of that individual
+     */
     private void showCollectedData() {
         //this.showProgress(true);
 
@@ -201,8 +205,10 @@ public class MemberDetailsActivity extends Activity implements OdkFormResultList
         List<CollectedDataItem> cdl = new ArrayList<>();
 
         for (CollectedData cd : list){
-            Form form = getFormById(forms, cd.getFormId());
-            cdl.add(new CollectedDataItem(member, form, cd));
+            if (hasFormDataLoadersContains(cd.getFormId())){
+                Form form = getFormById(forms, cd.getFormId());
+                cdl.add(new CollectedDataItem(member, form, cd));
+            }
         }
 
         db.close();
@@ -217,6 +223,15 @@ public class MemberDetailsActivity extends Activity implements OdkFormResultList
         }
 
         return null;
+    }
+
+    private boolean hasFormDataLoadersContains(String formId){
+        for (FormDataLoader fdl : formDataLoaders){
+            if (fdl.getForm().getFormId().equals(formId)){
+                return true;
+            }
+        }
+        return false;
     }
 
     private String getEndTypeMsg(Member member){

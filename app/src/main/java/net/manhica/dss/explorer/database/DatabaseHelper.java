@@ -92,11 +92,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         public static final String COLUMN_MODULES = "modules";
         public static final String COLUMN_IS_HOUSEHOLD = "isHouseholdForm";
         public static final String COLUMN_IS_MEMBER = "isMemberForm";
+        public static final String COLUMN_IS_FOLLOW_UP_ONLY = "isFollowUpOnly";
         public static final String COLUMN_BIND_MAP = "bindMap";
         public static final String COLUMN_REDCAP_API = "redcapApi";
         public static final String COLUMN_REDCAP_MAP = "redcapMap";
 
-		public static final String[] ALL_COLUMNS = {COLUMN_FORM_ID, COLUMN_FORM_NAME, COLUMN_FORM_DESCRIPTION, COLUMN_GENDER, COLUMN_MIN_AGE, COLUMN_MAX_AGE, COLUMN_MODULES, COLUMN_IS_HOUSEHOLD, COLUMN_IS_MEMBER, COLUMN_BIND_MAP, COLUMN_REDCAP_API, COLUMN_REDCAP_MAP};
+		public static final String[] ALL_COLUMNS = {COLUMN_FORM_ID, COLUMN_FORM_NAME, COLUMN_FORM_DESCRIPTION, COLUMN_GENDER, COLUMN_MIN_AGE, COLUMN_MAX_AGE, COLUMN_MODULES, COLUMN_IS_HOUSEHOLD, COLUMN_IS_MEMBER, COLUMN_IS_FOLLOW_UP_ONLY, COLUMN_BIND_MAP, COLUMN_REDCAP_API, COLUMN_REDCAP_MAP};
 	}
 
     public static final class Module implements BaseColumns {
@@ -276,6 +277,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + Form.COLUMN_MODULES + " TEXT,"
             + Form.COLUMN_IS_HOUSEHOLD + " INTEGER,"
             + Form.COLUMN_IS_MEMBER + " INTEGER,"
+            + Form.COLUMN_IS_FOLLOW_UP_ONLY + " INTEGER,"
             + Form.COLUMN_BIND_MAP + " TEXT,"
             + Form.COLUMN_REDCAP_API + " TEXT,"
             + Form.COLUMN_REDCAP_MAP + " TEXT);"

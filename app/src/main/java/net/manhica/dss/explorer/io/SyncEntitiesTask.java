@@ -614,6 +614,17 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 				parser.nextTag();
 			}
 
+			parser.nextTag(); //process isFollowUpOnly
+			if (!isEmptyTag("isFollowUpOnly", parser)) {
+				parser.next();
+				table.setFollowUpOnly(Boolean.parseBoolean(parser.getText()));
+				parser.nextTag(); //process </isFollowUpOnly>
+				//Log.d(count+"-isFollowUpOnly", "value="+ parser.getText());
+			}else{
+				table.setFollowUpOnly(false);
+				parser.nextTag();
+			}
+
 			parser.nextTag(); //process bindMap
 			if (!isEmptyTag("bindMap", parser)) {
 				parser.next();

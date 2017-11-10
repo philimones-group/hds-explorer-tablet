@@ -23,6 +23,7 @@ public class  Form implements Serializable, Table {
     private String modules; //if null - is accessed by all
     private boolean isHouseholdForm;
     private boolean isMemberForm;
+    private boolean isFollowUpOnly;
     private String bindMapText;
     private Map<String, String> bindMap;
     private String redcapApi;
@@ -104,6 +105,14 @@ public class  Form implements Serializable, Table {
         isMemberForm = memberForm;
     }
 
+    public boolean isFollowUpOnly() {
+        return isFollowUpOnly;
+    }
+
+    public void setFollowUpOnly(boolean followUpOnly) {
+        isFollowUpOnly = followUpOnly;
+    }
+
     public void setBindMap(String bindMapAsText){
         this.bindMapText = bindMapAsText;
         convertBindMapTextToMap();
@@ -152,6 +161,7 @@ public class  Form implements Serializable, Table {
         cv.put(DatabaseHelper.Form.COLUMN_MODULES, modules);
         cv.put(DatabaseHelper.Form.COLUMN_IS_HOUSEHOLD, isHouseholdForm ? 1 : 0);
         cv.put(DatabaseHelper.Form.COLUMN_IS_MEMBER, isMemberForm ? 1 : 0);
+        cv.put(DatabaseHelper.Form.COLUMN_IS_FOLLOW_UP_ONLY, isFollowUpOnly ? 1 : 0);
         cv.put(DatabaseHelper.Form.COLUMN_BIND_MAP, bindMapText);
         cv.put(DatabaseHelper.Form.COLUMN_REDCAP_API, redcapApi);
         cv.put(DatabaseHelper.Form.COLUMN_REDCAP_MAP, redcapMapText);

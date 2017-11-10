@@ -3,7 +3,6 @@ package net.manhica.dss.explorer.main;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ExpandableListView;
 import android.widget.TextView;
@@ -16,6 +15,7 @@ import net.manhica.dss.explorer.data.FormDataLoader;
 import net.manhica.dss.explorer.database.Database;
 import net.manhica.dss.explorer.database.DatabaseHelper;
 import net.manhica.dss.explorer.database.Queries;
+import net.manhica.dss.explorer.model.CollectedData;
 import net.manhica.dss.explorer.model.Form;
 import net.manhica.dss.explorer.model.Household;
 import net.manhica.dss.explorer.model.Member;
@@ -24,12 +24,13 @@ import net.manhica.dss.explorer.model.followup.TrackingList;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 
 import mz.betainteractive.utilities.StringUtil;
 
 public class TrackingListDetailsActivity extends Activity {
+
+    public static final int RC_MEMBER_DETAILS_TRACKINGLIST = 20;
 
     private TextView txtTrackListTitleLabel;
     private TextView txtTrackListExtras;
@@ -42,6 +43,9 @@ public class TrackingListDetailsActivity extends Activity {
     private View viewLoadingList;
 
     private Database database;
+
+    private int lastSelectedGroupPosition;
+    private int lastSelectedChildPosition;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,9 +110,10 @@ public class TrackingListDetailsActivity extends Activity {
         intent.putExtra("user", loggedUser);
         intent.putExtra("member", memberItem.getMember());
         intent.putExtra("member_studycode", memberItem.getStudyCode());
+        intent.putExtra("request_code", RC_MEMBER_DETAILS_TRACKINGLIST);
         intent.putExtra("dataloaders", dataLoaders);
 
-        startActivity(intent);
+        startActivityForResult(intent, RC_MEMBER_DETAILS_TRACKINGLIST);
     }
 
     private Household getHousehold(Member member){
@@ -164,6 +169,29 @@ public class TrackingListDetailsActivity extends Activity {
         for (FormDataLoader loader : loaders){
             loadFormValues(loader, household, member, memberItem);
         }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode== RC_MEMBER_DETAILS_TRACKINGLIST){
+            refreshCurrentList();
+        }
+    }
+
+    private void refreshCurrentList() {
+        TrackingSubListItem groupItem = (TrackingSubListItem) adapter.getGroup(lastSelectedGroupPosition);
+        TrackingMemberItem memberItem = (TrackingMemberItem) adapter.getChild(lastSelectedGroupPosition, lastSelectedChildPosition);
+        Member member = memberItem.getMember();
+
+        List<CollectedData> list = Queries.getAllCollectedDataBy(database, DatabaseHelper.CollectedData.COLUMN_RECORD_ID + "=? AND "+DatabaseHelper.CollectedData.COLUMN_FORM_ID+" IN (?)",
+                                                                           new String[]{ member.getId()+"", StringUtil.toInClause(memberItem.getForms()) } );
+
+        memberItem.getCollectedForms().clear();
+        memberItem.addCollectedData(list);
+
+        elvTrackingListDetails.setAdapter(adapter);
     }
 }
 

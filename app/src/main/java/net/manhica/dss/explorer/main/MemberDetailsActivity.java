@@ -67,6 +67,8 @@ public class MemberDetailsActivity extends Activity implements OdkFormResultList
 
     private FormUtilities formUtilities;
 
+    private int activityRequestCode;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,6 +77,8 @@ public class MemberDetailsActivity extends Activity implements OdkFormResultList
         this.loggedUser = (User) getIntent().getExtras().get("user");
         this.member = (Member) getIntent().getExtras().get("member");
         this.studyCode = getIntent().getExtras().getString("member_studycode");
+        this.activityRequestCode = getIntent().getExtras().getInt("request_code");
+
         readFormDataLoader();
 
         formUtilities = new FormUtilities(this);
@@ -96,6 +100,11 @@ public class MemberDetailsActivity extends Activity implements OdkFormResultList
     }
 
     private boolean isVisualizableForm(Form form) {
+        if (activityRequestCode != TrackingListDetailsActivity.RC_MEMBER_DETAILS_TRACKINGLIST){ //MemberDetails was not opened via Tracking/FollowUp lists
+            if (form.isFollowUpOnly()){ //forms flagged with followUpOnly can only be opened using FollowUp Lists, to be able to open via normal surveys remove the flag on the server
+                return false;
+            }
+        }
         return  (member.getAge() >= form.getMinAge() && member.getAge() <= form.getMaxAge()) && (member.getGender().equals(form.getGender()) || form.getGender().equals("ALL"));
     }
 

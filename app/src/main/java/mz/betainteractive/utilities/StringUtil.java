@@ -325,4 +325,19 @@ public class StringUtil {
 
         return str;
     }
+
+    public static String toInClause(List<String> items){
+        //"'name1', 'name2"
+        String str = "";
+
+        for (String s : items){
+            str += "'" + s + "',";
+        }
+
+        if (str.length()>0){
+            str = str.substring(0,str.length()-1);
+        }
+
+        return str;
+    }
 }

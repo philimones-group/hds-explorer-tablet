@@ -508,11 +508,26 @@ public class MemberListFragment extends Fragment {
             return;
         }
 
+        //check if permid exists
+        if (checkIfPermIdExists(member.getPermId())){
+            buildOkDialog(getString(R.string.member_list_newmem_permid_exists_lbl));
+            dialogNewMember.show();
+            return;
+        }
+
         //buildOkDialog("data: "+ GeneralUtil.getDate(dtpNmDob));
 
         dialogNewMember.dismiss();
 
         memberActionListener.onMemberSelected(null, member);
+    }
+
+    private boolean checkIfPermIdExists(String permId){
+        database.open();
+        Member member = Queries.getMemberBy(database, DatabaseHelper.Member.COLUMN_PERM_ID+"=?", new String[] { permId });
+        database.close();
+
+        return member != null;
     }
 
     private void buildOkDialog(String message){

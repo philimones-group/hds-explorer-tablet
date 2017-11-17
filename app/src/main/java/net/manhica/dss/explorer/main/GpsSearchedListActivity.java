@@ -111,6 +111,9 @@ public class GpsSearchedListActivity extends Activity {
 
         this.database = new Database(this);
 
+        btGpsListShowMap.setEnabled(false);
+        btGpsOrigListShowMap.setEnabled(false);
+
         loadData();
     }
 
@@ -152,12 +155,19 @@ public class GpsSearchedListActivity extends Activity {
     private void loadData() {
         if (isMemberMap){
             loadMembers();
+
+            this.btGpsListShowMap.setEnabled(true);
+            this.btGpsOrigListShowMap.setEnabled(true);
         }else {
             loadHouseholds();
+
+            this.btGpsListShowMap.setEnabled(true);
         }
     }
 
     private MWMPoint[] convertToMWMPoint(Object[] o_points){
+        if (o_points == null) return new MWMPoint[0];
+
         MWMPoint[] ps = new MWMPoint[o_points.length];
         for (int i=0; i<ps.length; i++){
             ps[i] = (MWMPoint) o_points[i];

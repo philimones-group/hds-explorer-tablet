@@ -26,6 +26,7 @@ import net.manhica.dss.explorer.model.followup.TrackingList;
 import net.manhica.dss.explorer.model.followup.TrackingMemberList;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -171,17 +172,33 @@ public class TrackingListActivity extends Activity {
 
     private TrackingExpandableListAdapter readTrackingMemberLists(TrackingList trackingList){
         Database db = new Database(this);
-        db.open();
 
-        List<TrackingMemberList> list = Queries.getAllTrackingMemberListBy(db, DatabaseHelper.TrackingMemberList.COLUMN_TRACKING_ID+"=?", new String[]{ trackingList.getId()+"" });
+
+        db.open();
+        List<TrackingMemberList> listTml = Queries.getAllTrackingMemberListBy(db, DatabaseHelper.TrackingMemberList.COLUMN_TRACKING_ID+"=?", new String[]{ trackingList.getId()+"" });
+        List<CollectedData> listCollectedData = Queries.getAllCollectedDataBy(db, DatabaseHelper.CollectedData.COLUMN_FORM_MODULE+"=?", new String[]{ txtTrackListModule.getText()+"" });
+        db.close();
+
+        List<String> extIds = new ArrayList<>();
+
+        for (TrackingMemberList tm : listTml){
+            extIds.add(tm.getMemberExtId());
+            Log.d("extId-", ""+tm.getMemberExtId());
+        }
+
+        List<Member> members = getMembers(db, extIds);
+
+        Log.d("listTml", ""+listTml.size());
+        Log.d("listCollectedData", ""+listCollectedData.size());
+        Log.d("members", ""+members.size());
 
         ArrayList<TrackingSubListItem> groupItems = new ArrayList<>();
         HashMap<TrackingSubListItem, ArrayList<TrackingMemberItem>> trackingCollection = new HashMap<>();
 
         //I need member, collectedData
-        for (TrackingMemberList item : list){
-            TrackingSubListItem tsi = getSubListItem(item, trackingList);
-            TrackingMemberItem tMember = getMemberItem(db, item, tsi);
+        for (TrackingMemberList item : listTml){
+            TrackingSubListItem tsi = getSubListItem(members, listCollectedData, item, trackingList);
+            TrackingMemberItem tMember = getMemberItem(members, listCollectedData, item, tsi);
             ArrayList<TrackingMemberItem> listMembers = trackingCollection.get(tsi);
 
             if (listMembers == null){
@@ -196,32 +213,59 @@ public class TrackingListActivity extends Activity {
             }
         }
 
-        db.close();
+        //db.close();
 
         TrackingExpandableListAdapter adapter = new TrackingExpandableListAdapter(this, groupItems, trackingCollection);
         return adapter;
     }
 
-    private TrackingMemberItem getMemberItem(Database db, TrackingMemberList item, TrackingSubListItem subListItem) {
+    private List<Member> getMembers(Database db, List<String> extIds){
+        db.open();
+        List<Member> members = Queries.getAllMemberBy(db, DatabaseHelper.Member.COLUMN_EXT_ID+" IN ("+ StringUtil.toInClause(extIds) +")", null);
+        db.close();
+
+        if (members==null) return new ArrayList<>();
+
+        return members;
+    }
+
+    private TrackingMemberItem getMemberItem(List<Member> members, List<CollectedData> collectedDataList, TrackingMemberList item, TrackingSubListItem subListItem) {
         TrackingMemberItem tMember = new TrackingMemberItem();
 
 
+        Member member = null;
+        List<CollectedData> listCollected = new ArrayList<>();
         String[] forms = item.getMemberForms().split(",");
+        List<String> formsList = Arrays.asList(forms);
 
-        Member member = Queries.getMemberBy(db, DatabaseHelper.Member.COLUMN_EXT_ID+"=? AND "+DatabaseHelper.Member.COLUMN_PERM_ID+"=?", new String[]{ item.getMemberExtId(), item.getMemberPermId() });
+        for (Member mb : members){
+            if (mb.getExtId().equals(item.getMemberExtId())){
+                member = mb;
+                break;
+            }
+        }
+
+
         Log.d("member", ""+member);
-        List<CollectedData> list = Queries.getAllCollectedDataBy(db, DatabaseHelper.CollectedData.COLUMN_RECORD_ID+"=? AND "+DatabaseHelper.CollectedData.COLUMN_FORM_ID+" IN (?)", new String[]{ member.getId()+"", StringUtil.toInClause(forms)});
+
+        for (CollectedData cd : collectedDataList){
+            if (formsList.contains(cd.getFormId()) && cd.getRecordId()==member.getId()){
+                listCollected.add(cd);
+            }
+        }
+
+        //List<CollectedData> list = Queries.getAllCollectedDataBy(db, DatabaseHelper.CollectedData.COLUMN_RECORD_ID+"=? AND "+DatabaseHelper.CollectedData.COLUMN_FORM_ID+" IN (?)", new String[]{ member.getId()+"", StringUtil.toInClause(forms)});
 
         tMember.setMember(member);
         tMember.setListItem(subListItem);
         tMember.setStudyCode(item.getMemberStudyCode());
         tMember.addForms(forms);
-        tMember.addCollectedData(list);
+        tMember.addCollectedData(listCollected);
 
         return tMember;
     }
 
-    private TrackingSubListItem getSubListItem(TrackingMemberList trackingMemberList, TrackingList trackingList){
+    private TrackingSubListItem getSubListItem(List<Member> members, List<CollectedData> collectedDataList, TrackingMemberList trackingMemberList, TrackingList trackingList){
         TrackingSubListItem tsi = new TrackingSubListItem();
 
         tsi.setId(trackingMemberList.getListId());

@@ -185,8 +185,12 @@ public class TrackingListDetailsActivity extends Activity {
         TrackingMemberItem memberItem = (TrackingMemberItem) adapter.getChild(lastSelectedGroupPosition, lastSelectedChildPosition);
         Member member = memberItem.getMember();
 
+        database.open();
+
         List<CollectedData> list = Queries.getAllCollectedDataBy(database, DatabaseHelper.CollectedData.COLUMN_RECORD_ID + "=? AND "+DatabaseHelper.CollectedData.COLUMN_FORM_ID+" IN (?)",
                                                                            new String[]{ member.getId()+"", StringUtil.toInClause(memberItem.getForms()) } );
+
+        database.close();
 
         memberItem.getCollectedForms().clear();
         memberItem.addCollectedData(list);

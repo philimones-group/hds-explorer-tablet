@@ -12,6 +12,7 @@ public class TrackingList implements Serializable, Table {
     private int id;
     private String label;
     private String code;
+    private String codeLabel;
     private String title;
     private String module;
     private Double completionRate;
@@ -38,6 +39,14 @@ public class TrackingList implements Serializable, Table {
 
     public void setCode(String code) {
         this.code = code;
+    }
+
+    public String getCodeLabel() {
+        return codeLabel;
+    }
+
+    public void setCodeLabel(String codeLabel) {
+        this.codeLabel = codeLabel;
     }
 
     public String getTitle() {
@@ -75,6 +84,7 @@ public class TrackingList implements Serializable, Table {
 
         cv.put(DatabaseHelper.TrackingList.COLUMN_LABEL, label);
         cv.put(DatabaseHelper.TrackingList.COLUMN_CODE, code);
+        cv.put(DatabaseHelper.TrackingList.COLUMN_CODE_LABEL, codeLabel);
         cv.put(DatabaseHelper.TrackingList.COLUMN_TITLE, title);
         cv.put(DatabaseHelper.TrackingList.COLUMN_MODULE, module);
         cv.put(DatabaseHelper.TrackingList.COLUMN_COMPLETION_RATE, completionRate);

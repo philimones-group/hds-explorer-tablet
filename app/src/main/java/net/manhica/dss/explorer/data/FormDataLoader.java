@@ -8,6 +8,7 @@ import net.manhica.dss.explorer.model.Form;
 import net.manhica.dss.explorer.model.Household;
 import net.manhica.dss.explorer.model.Member;
 import net.manhica.dss.explorer.model.User;
+import net.manhica.dss.explorer.model.followup.TrackingList;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -255,6 +256,16 @@ public class FormDataLoader implements Serializable {
                 //check for studyCode that is used on Tracking/Follow-up Lists of studies modules
                 if (internalVariableName.equals("studyCode") && memberItem!=null){
                     value = memberItem.getStudyCode();
+                }
+                //check for the of the tracking list
+                if (internalVariableName.equals("trackListCode") && memberItem!=null){
+                    if (memberItem.getListItem()!=null){
+                        if (memberItem.getListItem().getTrackingList()!=null){
+                            TrackingList trackingList = memberItem.getListItem().getTrackingList();
+                            value = trackingList.getCode();
+                        }
+                    }
+
                 }
 
                 //get variable format from odkVariable eg. variableName->format => patientName->yes,no

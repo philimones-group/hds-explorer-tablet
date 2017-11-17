@@ -165,6 +165,7 @@ public class Converter {
 		tl.setId(cursor.getInt(cursor.getColumnIndex(DatabaseHelper.TrackingList._ID)));
 		tl.setLabel(cursor.getString(cursor.getColumnIndex(DatabaseHelper.TrackingList.COLUMN_LABEL)));
 		tl.setCode(cursor.getString(cursor.getColumnIndex(DatabaseHelper.TrackingList.COLUMN_CODE)));
+		tl.setCodeLabel(cursor.getString(cursor.getColumnIndex(DatabaseHelper.TrackingList.COLUMN_CODE_LABEL)));
 		tl.setTitle(cursor.getString(cursor.getColumnIndex(DatabaseHelper.TrackingList.COLUMN_TITLE)));
 		tl.setModule(cursor.getString(cursor.getColumnIndex(DatabaseHelper.TrackingList.COLUMN_MODULE)));
 		tl.setCompletionRate(cursor.getDouble(cursor.getColumnIndex(DatabaseHelper.TrackingList.COLUMN_COMPLETION_RATE)));

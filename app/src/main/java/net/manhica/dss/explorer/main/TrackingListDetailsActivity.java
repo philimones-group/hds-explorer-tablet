@@ -2,7 +2,9 @@ package net.manhica.dss.explorer.main;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ExpandableListView;
 import android.widget.TextView;
@@ -21,8 +23,10 @@ import net.manhica.dss.explorer.model.Household;
 import net.manhica.dss.explorer.model.Member;
 import net.manhica.dss.explorer.model.User;
 import net.manhica.dss.explorer.model.followup.TrackingList;
+import net.manhica.dss.explorer.model.followup.TrackingMemberList;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -55,14 +59,20 @@ public class TrackingListDetailsActivity extends Activity {
         initialize();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        //the activity is now visible
+        showProgress(true);
+
+        new TrackingMemberListSearchTask(trackingList).execute();
+    }
+
     private void initialize() {
         this.database = new Database(this);
         this.loggedUser = (User) getIntent().getExtras().get("user");
         this.trackingList = (TrackingList) getIntent().getExtras().get("trackinglist");
-
-        ArrayList<TrackingSubListItem> groups = (ArrayList<TrackingSubListItem>) getIntent().getExtras().get("adapter_groups");
-        HashMap<TrackingSubListItem, ArrayList<TrackingMemberItem>> map = (HashMap<TrackingSubListItem, ArrayList<TrackingMemberItem>>) getIntent().getExtras().get("adapter_map");
-        this.adapter = new TrackingExpandableListAdapter(this, groups, map);
 
         this.txtTrackListExtras = (TextView) findViewById(R.id.txtTrackListExtras);
         this.txtTrackListTitleLabel = (TextView) findViewById(R.id.txtTrackListTitleLabel);
@@ -78,13 +88,19 @@ public class TrackingListDetailsActivity extends Activity {
         });
 
         setDataToComponents();
-        expandAllGroups();
     }
 
     private void setDataToComponents() {
         txtTrackListTitleLabel.setText(trackingList.getTitle());
         txtTrackListExtras.setText(trackingList.getCode());
-        elvTrackingListDetails.setAdapter(adapter);
+    }
+
+    private void setTrackingListAdapter(TrackingExpandableListAdapter mAdapter){
+        this.adapter = mAdapter;
+        elvTrackingListDetails.setAdapter(this.adapter);
+
+        showProgress(false);
+        expandAllGroups();
     }
 
     private void expandAllGroups(){
@@ -196,6 +212,132 @@ public class TrackingListDetailsActivity extends Activity {
         memberItem.addCollectedData(list);
 
         elvTrackingListDetails.setAdapter(adapter);
+    }
+
+    //reading tracking list
+    private TrackingExpandableListAdapter readTrackingMemberLists(TrackingList trackingList){
+        Database db = new Database(this);
+
+
+        db.open();
+        List<TrackingMemberList> listTml = Queries.getAllTrackingMemberListBy(db, DatabaseHelper.TrackingMemberList.COLUMN_TRACKING_ID+"=?", new String[]{ trackingList.getId()+"" });
+        List<CollectedData> listCollectedData = Queries.getAllCollectedDataBy(db, DatabaseHelper.CollectedData.COLUMN_FORM_MODULE+"=?", new String[]{ trackingList.getModule()+"" });
+        db.close();
+
+        List<String> extIds = new ArrayList<>();
+
+        for (TrackingMemberList tm : listTml){
+            extIds.add(tm.getMemberExtId());
+            Log.d("extId-", ""+tm.getMemberExtId());
+        }
+
+        List<Member> members = getMembers(db, extIds);
+
+        Log.d("listTml", ""+listTml.size());
+        Log.d("listCollectedData", ""+listCollectedData.size());
+        Log.d("members", ""+members.size());
+
+        ArrayList<TrackingSubListItem> groupItems = new ArrayList<>();
+        HashMap<TrackingSubListItem, ArrayList<TrackingMemberItem>> trackingCollection = new HashMap<>();
+
+        //I need member, collectedData
+        for (TrackingMemberList item : listTml){
+            TrackingSubListItem tsi = getSubListItem(members, listCollectedData, item, trackingList);
+            TrackingMemberItem tMember = getMemberItem(members, listCollectedData, item, tsi);
+            ArrayList<TrackingMemberItem> listMembers = trackingCollection.get(tsi);
+
+            if (listMembers == null){
+                listMembers = new ArrayList<>();
+
+                groupItems.add(tsi);
+                listMembers.add(tMember);
+
+                trackingCollection.put(tsi, listMembers);
+            }else{
+                listMembers.add(tMember);
+            }
+        }
+
+        //db.close();
+
+        TrackingExpandableListAdapter adapter = new TrackingExpandableListAdapter(this, groupItems, trackingCollection);
+        return adapter;
+    }
+
+    private List<Member> getMembers(Database db, List<String> extIds){
+        db.open();
+        List<Member> members = Queries.getAllMemberBy(db, DatabaseHelper.Member.COLUMN_EXT_ID+" IN ("+ StringUtil.toInClause(extIds) +")", null);
+        db.close();
+
+        if (members==null) return new ArrayList<>();
+
+        return members;
+    }
+
+    private TrackingMemberItem getMemberItem(List<Member> members, List<CollectedData> collectedDataList, TrackingMemberList item, TrackingSubListItem subListItem) {
+        TrackingMemberItem tMember = new TrackingMemberItem();
+
+
+        Member member = null;
+        List<CollectedData> listCollected = new ArrayList<>();
+        String[] forms = item.getMemberForms().split(",");
+        List<String> formsList = Arrays.asList(forms);
+
+        for (Member mb : members){
+            if (mb.getExtId().equals(item.getMemberExtId())){
+                member = mb;
+                break;
+            }
+        }
+
+
+        Log.d("member", ""+member);
+
+        for (CollectedData cd : collectedDataList){
+            if (formsList.contains(cd.getFormId()) && cd.getRecordId()==member.getId()){
+                listCollected.add(cd);
+            }
+        }
+
+        //List<CollectedData> list = Queries.getAllCollectedDataBy(db, DatabaseHelper.CollectedData.COLUMN_RECORD_ID+"=? AND "+DatabaseHelper.CollectedData.COLUMN_FORM_ID+" IN (?)", new String[]{ member.getId()+"", StringUtil.toInClause(forms)});
+
+        tMember.setMember(member);
+        tMember.setListItem(subListItem);
+        tMember.setStudyCode(item.getMemberStudyCode());
+        tMember.addForms(forms);
+        tMember.addCollectedData(listCollected);
+
+        return tMember;
+    }
+
+    private TrackingSubListItem getSubListItem(List<Member> members, List<CollectedData> collectedDataList, TrackingMemberList trackingMemberList, TrackingList trackingList){
+        TrackingSubListItem tsi = new TrackingSubListItem();
+
+        tsi.setId(trackingMemberList.getListId());
+        tsi.setTrackingList(trackingList);
+        tsi.setTitle(trackingMemberList.getTitle());
+        tsi.setForms(trackingMemberList.getForms().split(","));
+
+        return tsi;
+    }
+
+    class TrackingMemberListSearchTask extends AsyncTask<Void, Void, TrackingExpandableListAdapter> {
+
+        private TrackingList trackingList;
+
+        public TrackingMemberListSearchTask(TrackingList trackingList){
+            this.trackingList = trackingList;
+        }
+
+        @Override
+        protected TrackingExpandableListAdapter doInBackground(Void... params) {
+            return readTrackingMemberLists(trackingList);
+        }
+
+        @Override
+        protected void onPostExecute(TrackingExpandableListAdapter mAdapter) {
+            setTrackingListAdapter(mAdapter);
+        }
     }
 }
 

@@ -149,14 +149,17 @@ public class ServerSyncActivity extends Activity implements SyncDatabaseListener
 
         this.username = (String) getIntent().getExtras().get("username");
         this.password = (String) getIntent().getExtras().get("password");
+        this.serverUrl = (String) getIntent().getExtras().get("server-url");
 
         this.progressDialog.setCancelable(false);
 
-        if (BuildConfig.DEBUG){
-            this.serverUrl = "http://172.16.234.123:8080/manhica-dbsync";
+        /*
+        if (BuildConfig.DEBUG){ //this is working perfectly - if is a release version wont use my personal computer
+            this.serverUrl = "http://172.16.234.123:8080/manhica-dbsync"; //getString(R.string.server_url);//"getString("http://172.16.234.123:8080/manhica-dbsync");
         }else{
             this.serverUrl = getString(R.string.server_url);
         }
+        */
 
     }
 

@@ -25,6 +25,7 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import net.manhica.dss.explorer.BuildConfig;
 import net.manhica.dss.explorer.R;
@@ -62,6 +63,7 @@ public class LoginActivity extends Activity implements SyncDatabaseListener{
     private TextView txtCopyrightAppName;
     private TextView txtCopyrightCompany;
     private TextView txtCopyrightDevs;
+    private View loginIconView;
     private View mProgressView;
     private View mLoginFormView;
     private ProgressDialog progressDialog;
@@ -70,12 +72,16 @@ public class LoginActivity extends Activity implements SyncDatabaseListener{
     private User loggedUser;
     private String adminUser;
     private String adminPassword;
+    private String serverUrl;
+
+    private boolean useLocalServer = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login);
         // Set up the login form.
+        loginIconView = (View) findViewById(R.id.imageView);
         txtUsername = (AutoCompleteTextView) findViewById(R.id.login_username_txt);
         txtPassword = (EditText) findViewById(R.id.login_password_txt);
         txtCopyrightAppName = (TextView) findViewById(R.id.txtCopyrightAppName);
@@ -114,6 +120,16 @@ public class LoginActivity extends Activity implements SyncDatabaseListener{
         mProgressView = findViewById(R.id.login_progress);
 
         this.progressDialog = new ProgressDialog(this);
+
+        //Extra Settings
+        this.loginIconView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                Toast.makeText(LoginActivity.this, "Xtra settings mode activated! Shira Tensei Jutsu!!!", Toast.LENGTH_LONG);
+                useLocalServer = false;
+                return true;
+            }
+        });
 
         //txtUsername.setText("FWPF1"); //txtUsername.setText("supervisor");
         //txtPassword.setText("test"); //txtPassword.setText("dssmanhica");
@@ -398,10 +414,8 @@ public class LoginActivity extends Activity implements SyncDatabaseListener{
                 return false;
             }
 
-            String serverUrl = "";
-
-            if (BuildConfig.DEBUG){
-                serverUrl = "http://172.16.234.123:8080/manhica-dbsync";
+            if (BuildConfig.DEBUG && useLocalServer){ //this is working perfectly - if is a release version wont use my personal computer
+                serverUrl = "http://172.16.234.123:8080/manhica-dbsync"; // getString(R.string.server_url_not_secure);
             }else{
                 serverUrl = getString(R.string.server_url_not_secure);
             }
@@ -468,6 +482,7 @@ public class LoginActivity extends Activity implements SyncDatabaseListener{
         Intent intent = new Intent(this, ServerSyncActivity.class);
         intent.putExtra("username", adminUser);
         intent.putExtra("password", adminPassword);
+        intent.putExtra("server-url", serverUrl);
 
         //usernameEditText.setText("");
         //passwordEditText.setText("");

@@ -134,6 +134,8 @@
     <string name="member_list_newmem_permid_exists_lbl">The PermId of this Individual already exists</string>
     <string name="member_list_newmem_name_err_lbl">The name must not be empty</string>
     <string name="member_list_newmem_dob_err_lbl">The Date of birth cannot be after today date</string>
+    <string name="member_list_newmem_gender_err1_lbl">Select only one of the genders, please!</string>
+    <string name="member_list_newmem_gender_err2_lbl">Select one of the genders, please!</string>
 
     <string name="member_details_title_lbl">Member Details</string>
     <string name="member_details_name_lbl">Name</string>

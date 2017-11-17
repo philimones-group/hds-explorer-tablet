@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -475,6 +476,8 @@ public class MemberListFragment extends Fragment {
         EditText txtNmHouseNumber = (EditText) dialogNewMember.findViewById(R.id.txtNmHouseNumber);
         EditText txtNmPermId = (EditText) dialogNewMember.findViewById(R.id.txtNmPermId);
         EditText txtNmName = (EditText) dialogNewMember.findViewById(R.id.txtNmName);
+        CheckBox chkNmGMale = (CheckBox) dialogNewMember.findViewById(R.id.chkNmGMale);
+        CheckBox chkNmGFemale = (CheckBox) dialogNewMember.findViewById(R.id.chkNmGFemale);
         DatePicker dtpNmDob = (DatePicker) dialogNewMember.findViewById(R.id.dtpNmDob);
 
         Member member = Member.getEmptyMember();
@@ -508,12 +511,26 @@ public class MemberListFragment extends Fragment {
             return;
         }
 
+        if (chkNmGFemale.isChecked() && chkNmGMale.isChecked()){
+            buildOkDialog(getString(R.string.member_list_newmem_gender_err1_lbl));
+            dialogNewMember.show();
+            return;
+        }
+
+        if (!chkNmGFemale.isChecked() && !chkNmGMale.isChecked()){
+            buildOkDialog(getString(R.string.member_list_newmem_gender_err2_lbl));
+            dialogNewMember.show();
+            return;
+        }
+
         //check if permid exists
         if (checkIfPermIdExists(member.getPermId())){
             buildOkDialog(getString(R.string.member_list_newmem_permid_exists_lbl));
             dialogNewMember.show();
             return;
         }
+
+        member.setGender( chkNmGFemale.isChecked() ? "F" : "M" );
 
         //buildOkDialog("data: "+ GeneralUtil.getDate(dtpNmDob));
 

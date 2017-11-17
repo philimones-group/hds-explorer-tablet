@@ -85,6 +85,46 @@
         </android.support.design.widget.TextInputLayout>
     </LinearLayout>
 
+    <!-- Gender Info -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/member_filter_gender_lbl"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <LinearLayout
+            android:id="@+id/layout_nm_gender"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <CheckBox
+                android:id="@+id/chkNmGFemale"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:text="@string/member_filter_gender_female_lbl"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:checked="true"/>
+
+            <CheckBox
+                android:id="@+id/chkNmGMale"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:text="@string/member_filter_gender_male_lbl"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:layout_marginLeft="60dp"/>
+        </LinearLayout>
+
+    </LinearLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

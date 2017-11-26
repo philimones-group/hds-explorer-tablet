@@ -1,6 +1,7 @@
 package net.manhica.dss.explorer.adapter;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -136,17 +137,17 @@ public class TrackingExpandableListAdapter extends BaseExpandableListAdapter imp
     }
 
     public int getCompletionOfList(TrackingSubListItem listItem){
-        int to_collect = 0;
-        int collected = 0;
+        double to_collect = 0;
+        double collected = 0;
 
         for (TrackingMemberItem memberItem : this.trackingCollection.get(listItem)){
-            to_collect += memberItem.getForms().size();
-            collected += memberItem.getCollectedForms().size();
+            to_collect += memberItem.getForms().size()*1D;
+            collected += memberItem.getCollectedForms().size()*1D;
         }
 
         if (to_collect==0) return 100;
 
-        return (collected / to_collect)*100;
+        return (int)((collected / to_collect) *100);
     }
 
     public int getCompletionOfTrackingList(){

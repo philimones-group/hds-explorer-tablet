@@ -187,32 +187,16 @@ public class TrackingListDetailsActivity extends Activity {
         }
     }
 
+    /*
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode== RC_MEMBER_DETAILS_TRACKINGLIST){
-            refreshCurrentList();
+
         }
     }
-
-    private void refreshCurrentList() {
-        TrackingSubListItem groupItem = (TrackingSubListItem) adapter.getGroup(lastSelectedGroupPosition);
-        TrackingMemberItem memberItem = (TrackingMemberItem) adapter.getChild(lastSelectedGroupPosition, lastSelectedChildPosition);
-        Member member = memberItem.getMember();
-
-        database.open();
-
-        List<CollectedData> list = Queries.getAllCollectedDataBy(database, DatabaseHelper.CollectedData.COLUMN_RECORD_ID + "=? AND "+DatabaseHelper.CollectedData.COLUMN_FORM_ID+" IN (?)",
-                                                                           new String[]{ member.getId()+"", StringUtil.toInClause(memberItem.getForms()) } );
-
-        database.close();
-
-        memberItem.getCollectedForms().clear();
-        memberItem.addCollectedData(list);
-
-        elvTrackingListDetails.setAdapter(adapter);
-    }
+    */
 
     //reading tracking list
     private TrackingExpandableListAdapter readTrackingMemberLists(TrackingList trackingList){
@@ -336,7 +320,19 @@ public class TrackingListDetailsActivity extends Activity {
 
         @Override
         protected void onPostExecute(TrackingExpandableListAdapter mAdapter) {
+            saveCompletionOfList(mAdapter);
             setTrackingListAdapter(mAdapter);
+        }
+
+        private void saveCompletionOfList(TrackingExpandableListAdapter adapter) {
+            int c = adapter.getCompletionOfTrackingList();
+
+            trackingList.setCompletionRate(c/100D);
+
+            Database db = new Database(TrackingListDetailsActivity.this);
+            db.open();
+            db.update(TrackingList.class, trackingList.getContentValues(), DatabaseHelper.TrackingList._ID+"=?", new String[]{ trackingList.getId()+"" });
+            db.close();
         }
     }
 }

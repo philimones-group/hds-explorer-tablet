@@ -35,6 +35,8 @@ import mz.betainteractive.utilities.StringUtil;
 
 public class TrackingListActivity extends Activity {
 
+    public static final int RC_TRACKING_LIST_DETAILS = 10;
+
     private User loggedUser;
     private TextView txtTrackListModule;
     private ListView lvTrackingList;
@@ -63,7 +65,6 @@ public class TrackingListActivity extends Activity {
         this.btTrackListUpdate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                updateTrackingLists();
                 showTrackingLists();
             }
         });
@@ -97,7 +98,7 @@ public class TrackingListActivity extends Activity {
         intent.putExtra("user", loggedUser);
         intent.putExtra("trackinglist", trackingList);
 
-        startActivity(intent);
+        startActivityForResult(intent, RC_TRACKING_LIST_DETAILS);
     }
 
     private void showTrackingLists() {
@@ -136,32 +137,14 @@ public class TrackingListActivity extends Activity {
         return list;
     }
 
-    private void updateTrackingLists() {
-        showProgress(true);
-
-        //TODO - get all tracking member list and their respective collectedData to calculate if we collected the forms or not
-
-        for (TrackingList trackingList : getTrackingLists()){
-            /*
-            TrackingExpandableListAdapter adapter = readTrackingMemberLists(trackingList);
-            int c = adapter.getCompletionOfTrackingList();
-
-            trackingList.setCompletionRate(c/100D);
-
-            Database db = new Database(this);
-            db.open();
-            db.update(TrackingList.class, trackingList.getContentValues(), DatabaseHelper.TrackingList._ID+"=?", new String[]{ trackingList.getId()+"" });
-            db.close();
-            */
-        }
-
-        showProgress(false);
-    }
-
     public void showProgress(final boolean show) {
         viewLoadingList.setVisibility(show ? View.VISIBLE : View.GONE);
         lvTrackingList.setVisibility(show ? View.GONE : View.VISIBLE);
     }
 
-
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        showTrackingLists();
+    }
 }

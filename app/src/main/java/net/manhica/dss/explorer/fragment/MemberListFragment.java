@@ -25,12 +25,15 @@ import com.mapswithme.maps.api.MapsWithMeApi;
 
 import net.manhica.dss.explorer.R;
 import net.manhica.dss.explorer.adapter.MemberArrayAdapter;
+import net.manhica.dss.explorer.adapter.model.CollectedDataItem;
 import net.manhica.dss.explorer.database.Converter;
 import net.manhica.dss.explorer.database.Database;
 import net.manhica.dss.explorer.database.DatabaseHelper;
 import net.manhica.dss.explorer.database.Queries;
 import net.manhica.dss.explorer.listeners.ActionListener;
 import net.manhica.dss.explorer.listeners.MemberActionListener;
+import net.manhica.dss.explorer.model.CollectedData;
+import net.manhica.dss.explorer.model.Form;
 import net.manhica.dss.explorer.model.Household;
 import net.manhica.dss.explorer.model.Member;
 
@@ -56,6 +59,7 @@ public class MemberListFragment extends Fragment {
     private Button btMemListShowClosestMembers;
     private Button btMemListShowClosestHouses;
     private Button btMemListNewMemberCollect;
+    private Button btMemListShowCollectedData;
 
     private View mProgressView;
 
@@ -69,7 +73,7 @@ public class MemberListFragment extends Fragment {
     private AlertDialog dialogNewMember;
 
     public enum Buttons {
-        MEMBERS_MAP, CLOSEST_MEMBERS, CLOSEST_HOUSES, NEW_MEMBER_COLLECT
+        MEMBERS_MAP, CLOSEST_MEMBERS, CLOSEST_HOUSES, NEW_MEMBER_COLLECT, COLLECTED_DATA
     }
 
     public MemberListFragment() {
@@ -116,6 +120,9 @@ public class MemberListFragment extends Fragment {
             if (button==Buttons.NEW_MEMBER_COLLECT){
                 btMemListNewMemberCollect.setVisibility(View.GONE);
             }
+            if (button==Buttons.COLLECTED_DATA){
+                btMemListShowCollectedData.setVisibility(View.GONE);
+            }
         }
     }
 
@@ -133,6 +140,9 @@ public class MemberListFragment extends Fragment {
             }
             if (button==Buttons.NEW_MEMBER_COLLECT){
                 btMemListNewMemberCollect.setEnabled(enabled);
+            }
+            if (button==Buttons.COLLECTED_DATA){
+                btMemListShowCollectedData.setEnabled(enabled);
             }
         }
     }
@@ -202,6 +212,7 @@ public class MemberListFragment extends Fragment {
         this.btMemListShowClosestHouses = (Button) view.findViewById(R.id.btMemListShowClosestHouses);
         this.btMemListShowClosestMembers = (Button) view.findViewById(R.id.btMemListShowClosestMembers);
         this.btMemListNewMemberCollect = (Button) view.findViewById(R.id.btMemListNewMemberCollect);
+        this.btMemListShowCollectedData = (Button) view.findViewById(R.id.btMemListShowCollectedData);
         this.listButtons = (LinearLayout) view.findViewById(R.id.viewListButtons);
         this.mProgressView = view.findViewById(R.id.viewListProgressBar);
 
@@ -235,6 +246,13 @@ public class MemberListFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 buildNewMemberDialog();
+            }
+        });
+
+        this.btMemListShowCollectedData.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onShowCollectedData();
             }
         });
         
@@ -663,6 +681,57 @@ public class MemberListFragment extends Fragment {
 
         members.removeAll(houseMembers);
         members.addAll(0, houseMembers);
+    }
+
+    private void onShowCollectedData(){
+        showProgress(true);
+
+
+        Map<Member, Integer> mapMembers = new HashMap<>();
+
+
+        List<Member> members = new ArrayList<>();
+        ArrayList<String> extras = new ArrayList<>();
+
+        //load collected data
+        database.open();
+
+        List<CollectedData> list = Queries.getAllCollectedDataBy(database, null, null);
+        List<Form> forms = Queries.getAllFormBy(database, null, null);
+
+        for (CollectedData cd : list){
+            Member member = Queries.getMemberBy(database, DatabaseHelper.Member._ID+"=?", new String[]{ cd.getRecordId()+"" });
+            if (member != null){
+                Integer value = mapMembers.get(member);
+                if (value==null){
+                    mapMembers.put(member, 1);
+                }else{
+                    mapMembers.put(member, ++value);
+                }
+            }
+        }
+
+        database.close();
+
+
+        String extraText = getString(R.string.member_list_item_extra_collected_lbl);
+
+        for (Member m : mapMembers.keySet()){
+            members.add(m);
+            extras.add(extraText.replace("#", ""+mapMembers.get(m)));
+        }
+
+        mapMembers.clear();
+
+        //put on list
+        MemberArrayAdapter adapter = new MemberArrayAdapter(this.getActivity(), members, extras);
+        adapter.setShowHouseholdAndPermId(true);
+        adapter.setIgnoreHeadOfHousehold(true);
+        adapter.setMemberIcon(MemberArrayAdapter.MemberIcon.NORMAL_GREEN_ICON);
+        this.lvMembersList.setAdapter(adapter);
+
+
+        showProgress(false);
     }
 
     private void onMemberLongClicked(int position) {

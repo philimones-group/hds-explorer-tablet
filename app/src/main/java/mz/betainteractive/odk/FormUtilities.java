@@ -68,12 +68,12 @@ public class FormUtilities {
         }).execute();
     }
 
-    public void loadForm(String contentUriAsString){
+    public void loadForm(String contentUriAsString, final OdkFormResultListener listener){
         contentUri = Uri.parse(contentUriAsString);
-        loadForm(contentUri);
+        loadForm(contentUri, listener);
     }
 
-    public void loadForm(FilledForm filledForm, String contentUriAsString){
+    public void loadForm(FilledForm filledForm, String contentUriAsString, final OdkFormResultListener listener){
         this.contentUri = Uri.parse(contentUriAsString);
         this.metaInstanceName = "";
         this.lastUpdatedDate = "";
@@ -85,12 +85,22 @@ public class FormUtilities {
             }
 
             public void onOdkFormLoadFailure() {
-                createXFormNotFoundDialog();
+                //createSavedXFormNotFoundDialog();
+
+                if (listener != null){
+                    listener.onFormNotFound(contentUri);
+                }else{
+                    createSavedXFormNotFoundDialog();
+                }
             }
         }).execute();
     }
 
-    public void loadForm(Uri content_uri){
+    /**
+     * Load Uri that represents a saved xml form
+     * @param content_uri
+     */
+    public void loadForm(final Uri content_uri, final OdkFormResultListener listener){
 
         new OdkGeneratedFormLoadTask(mContext, content_uri, new OdkFormLoadListener() {
             public void onOdkFormLoadSuccess(Uri contentUri) {
@@ -99,7 +109,15 @@ public class FormUtilities {
             }
 
             public void onOdkFormLoadFailure() {
-                createXFormNotFoundDialog();
+                Log.d("not",""+listener);
+                System.err.println("not-"+listener);
+                //createSavedXFormNotFoundDialog();
+
+                if (listener != null){
+                    listener.onFormNotFound(content_uri);
+                }else{
+                    createSavedXFormNotFoundDialog();
+                }
             }
         }).execute();
 
@@ -118,7 +136,21 @@ public class FormUtilities {
         AlertDialog alertDialog = alertDialogBuilder.create();
         alertDialog.show();
     }
-	
+
+    private void createSavedXFormNotFoundDialog() {
+        //xFormNotFound = true;
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(mContext);
+        alertDialogBuilder.setTitle(mContext.getString(R.string.warning_lbl));
+        alertDialogBuilder.setMessage(mContext.getString(R.string.odk_couldnt_reopen_xform_lbl));
+        alertDialogBuilder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                //xFormNotFound = false;
+            }
+        });
+        AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.show();
+    }
+
 	private Cursor getCursorForFormsProvider(String name) {
     	ContentResolver resolver = mContext.getContentResolver();
         return resolver.query(FormsProviderAPI.FormsColumns.CONTENT_URI, new String[] {

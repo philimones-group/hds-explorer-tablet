@@ -30,6 +30,9 @@ public class MemberArrayAdapter  extends ArrayAdapter<Member> {
     private int selectedIndex = -1;
     private boolean ignoreHeadOfHousehold = false;
     private boolean showHouseholdAndPermId = false;
+    private MemberIcon memberIcon;
+
+    public enum MemberIcon {  NORMAL_BLUE_ICON, NORMAL_GREEN_ICON, NORMAL_GREEN_2_ICON  }
 
     /**
      * Adapter of a List View Item for members (name and perm-id are displayed)
@@ -126,6 +129,14 @@ public class MemberArrayAdapter  extends ArrayAdapter<Member> {
         this.showHouseholdAndPermId = showHouseholdAndPermId;
     }
 
+    public void setIgnoreHeadOfHousehold(boolean ignoreHeadOfHousehold) {
+        this.ignoreHeadOfHousehold = ignoreHeadOfHousehold;
+    }
+
+    public void setMemberIcon(MemberIcon memberIcon) {
+        this.memberIcon = memberIcon;
+    }
+
     @Override
     public Member getItem(int position) {
         return members.get(position);
@@ -176,6 +187,14 @@ public class MemberArrayAdapter  extends ArrayAdapter<Member> {
             if (mb.isSubsHouseholdHead()){
                 txtName.setTypeface(null, Typeface.BOLD);
                 iconView.setImageResource(R.mipmap.member_green_2);
+            }
+        }
+
+        if (memberIcon != null){
+            switch (memberIcon){
+                case NORMAL_BLUE_ICON:iconView.setImageResource(R.mipmap.member); break;
+                case NORMAL_GREEN_ICON:iconView.setImageResource(R.mipmap.member_green); break;
+                case NORMAL_GREEN_2_ICON:iconView.setImageResource(R.mipmap.member_green_2); break;
             }
         }
 

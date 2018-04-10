@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -351,7 +352,7 @@ public class MemberDetailsActivity extends Activity implements OdkFormResultList
         if (collectedData == null){
             formUtilities.loadForm(filledForm);
         }else{
-            formUtilities.loadForm(filledForm, collectedData.getFormUri());
+            formUtilities.loadForm(filledForm, collectedData.getFormUri(), this);
         }
 
     }
@@ -368,7 +369,7 @@ public class MemberDetailsActivity extends Activity implements OdkFormResultList
         if (collectedData == null){
             formUtilities.loadForm(filledForm);
         }else{
-            formUtilities.loadForm(filledForm, collectedData.getFormUri());
+            formUtilities.loadForm(filledForm, collectedData.getFormUri(), this);
         }
 
     }
@@ -407,11 +408,19 @@ public class MemberDetailsActivity extends Activity implements OdkFormResultList
         db.open();
         //update or insert
 
+        //Save Member and Update the object member
+        if (member.getId()==0){
+            int id = (int) db.insert(member);
+            member.setId(id);
+        }
+
+
         //search existing record
         String whereClause = DatabaseHelper.CollectedData.COLUMN_RECORD_ID + "=? AND "+DatabaseHelper.CollectedData.COLUMN_FORM_URI + "=?";
         String[] whereArgs = new String[]{ ""+member.getId(), contentUri.toString() };
 
         CollectedData collectedData = Queries.getCollectedDataBy(db, whereClause, whereArgs);
+
 
         if (collectedData == null){ //insert
             collectedData = new CollectedData();
@@ -464,6 +473,12 @@ public class MemberDetailsActivity extends Activity implements OdkFormResultList
         db.open();
         //update or insert
 
+        //Save Member and Update the object member
+        if (member.getId()==0){
+            int id = (int) db.insert(member);
+            member.setId(id);
+        }
+
         //search existing record
         String whereClause = DatabaseHelper.CollectedData.COLUMN_RECORD_ID + "=? AND "+DatabaseHelper.CollectedData.COLUMN_FORM_URI + "=?";
         String[] whereArgs = new String[]{ ""+member.getId(), contentUri.toString() };
@@ -514,12 +529,44 @@ public class MemberDetailsActivity extends Activity implements OdkFormResultList
 
     @Override
     public void onDeleteForm(Uri contentUri) {
-        Log.d("delete uri", "needs to be implemented");
         Database db = new Database(this);
         db.open();
         db.delete(CollectedData.class, DatabaseHelper.CollectedData.COLUMN_FORM_URI+"=?", new String[]{ contentUri.toString() } );
         db.close();
 
         showCollectedData();
+    }
+
+    AlertDialog dialogNewMember;
+
+    @Override
+    public void onFormNotFound(final Uri contenUri) {
+        buildDeleteSavedFormDialog(contenUri);
+    }
+
+    private void buildDeleteSavedFormDialog(final Uri contenUri){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(getString(R.string.member_details_dialog_del_saved_form_title_lbl));
+        builder.setMessage(getString(R.string.member_details_dialog_del_saved_form_msg_lbl));
+        builder.setCancelable(false);
+        builder.setPositiveButton(R.string.bt_yes_lbl, null);
+        builder.setNegativeButton(R.string.bt_no_lbl, null);
+        dialogNewMember = builder.create();
+
+        dialogNewMember.setOnShowListener(new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(DialogInterface dialog) {
+                final Button b = dialogNewMember.getButton(AlertDialog.BUTTON_POSITIVE);
+                b.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        onDeleteForm(contenUri);
+                        dialogNewMember.dismiss();
+                    }
+                });
+            }
+        });
+
+        dialogNewMember.show();
     }
 }

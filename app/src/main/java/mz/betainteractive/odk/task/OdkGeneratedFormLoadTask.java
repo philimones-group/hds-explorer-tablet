@@ -85,8 +85,16 @@ public class OdkGeneratedFormLoadTask extends AsyncTask<Void, Void, Boolean> {
 
                 Log.d("file", formFilePath);
 
-                processXmlDirectly(jrFormId, formFilePath);
-                //File targetFile = saveOpenedFile(xml,jrFormId);
+
+                if (new File(formFilePath).exists()){
+                    processXmlDirectly(jrFormId, formFilePath);
+                    //File targetFile = saveOpenedFile(xml,jrFormId);
+                }else{
+                    //file doesnt exists
+                    return false;
+                }
+
+
             }
 
             return odkUri != null;

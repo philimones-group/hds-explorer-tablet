@@ -26,6 +26,7 @@
 
     <!-- Strings related to ODK -->
     <string name="odk_couldnt_open_xform_lbl">Não foi possivel abrir o formulario ODK</string>
+    <string name="odk_couldnt_reopen_xform_lbl">O formulário ODK salvo não foi encontrado, não sera possivel abri-lo</string>
     <string name="odk_problem_lbl">Ocorreu um problema com o ODK</string>
     <string name="odk_unfinished_dialog_msg">O formulário foi aberto mas não foi finalizado. Esta instância do formulário será apagada. O que deseja fazer?</string>
     <string name="odk_unfinished_button_delete">Apagar formulário</string>
@@ -110,6 +111,8 @@
     <string name="member_list_bt_show_closest_houses_lbl">Mapa de Casas prox.</string>
     <string name="member_list_bt_show_closest_members_lbl">Mapa de Membros prox.</string>
     <string name="member_list_bt_new_member_collect_lbl">Colher Novo Membro</string>
+    <string name="member_list_bt_show_collected_data_lbl">Mostrar Dados Colhidos</string>
+    <string name="member_list_item_extra_collected_lbl"># Formulario(s) Colhido(s)</string>
     <string name="member_list_select_distance_radius_lbl">Selecione a distância maxima apartir da casa (raio)</string>
     <string name="member_list_bt_facility_form_lbl">Abrir Form. de Facility</string>
     <string name="member_list_no_members_lbl">A lista de membros/individuos esta vazia</string>
@@ -164,6 +167,9 @@
     <string name="member_details_endtype_ext_lbl">Emigrou</string>
     <string name="member_details_endtype_dth_lbl">Faleceu</string>
     <string name="member_details_name_unknown_lbl">Nome Desconhecido</string>
+
+    <string name="member_details_dialog_del_saved_form_title_lbl">Apagar informação salva</string>
+    <string name="member_details_dialog_del_saved_form_msg_lbl">O formulario ODK salvo não foi encontrado, a informação salva será apagada para permitir colheita de novos formularios\nDeseja prosseguir com a execução deste processo?</string>
 
     <string name="facility_supervise_collected_form_lbl">Marcar Formulário como supervisionado?</string>
     <string name="facility_supervise_title_lbl">Supervisão de dados</string>

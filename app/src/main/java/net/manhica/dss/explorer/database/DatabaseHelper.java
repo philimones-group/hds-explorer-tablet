@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.provider.BaseColumns;
+import android.util.Log;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
@@ -33,15 +34,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         if (newVersion > oldVersion) {
-            /*
-            Log.d("alter table", "runinng"); //OLD VERSION
+
+            Log.d("alter table", "add ageAtDeath"); //OLD VERSION
             try {
-                db.execSQL("ALTER TABLE " + CollectedData.TABLE_NAME + " ADD COLUMN " + CollectedData.COLUMN_SUPERVISED + " INTEGER NOT NULL DEFAULT 0"); //upgrade CollectedData
+                db.execSQL("ALTER TABLE " + Member.TABLE_NAME + " ADD COLUMN " + Member.COLUMN_AGE_AT_DEATH + " INTEGER NOT NULL DEFAULT 0"); //upgrade CollectedData
             }catch (Exception ex){
                 Log.d("error on database alter", ""+ex.getMessage());
                 ex.printStackTrace();
             }
-
+            /*
             //NEW DB VERSION with BindMap
             try {
                 db.execSQL("ALTER TABLE " + Form.TABLE_NAME + " ADD COLUMN " + Form.COLUMN_BIND_MAP + " TEXT"); //upgrade CollectedData
@@ -150,6 +151,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         public static final String COLUMN_GENDER = "gender";
         public static final String COLUMN_DOB = "dob";
         public static final String COLUMN_AGE = "age";
+        public static final String COLUMN_AGE_AT_DEATH = "ageAtDeath";
         public static final String COLUMN_SPOUSE_EXT_ID = "spouseExtId";
         public static final String COLUMN_SPOUSE_NAME = "spouseName";
         public static final String COLUMN_SPOUSE_PERM_ID = "spousePermId";
@@ -178,7 +180,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         public static final String COLUMN_EXTRAS_VALUES = "extrasValues";
 
 
-        public static final String[] ALL_COLUMNS = {_ID, COLUMN_EXT_ID, COLUMN_PERM_ID, COLUMN_NAME, COLUMN_GENDER, COLUMN_DOB, COLUMN_AGE, COLUMN_SPOUSE_EXT_ID,
+        public static final String[] ALL_COLUMNS = {_ID, COLUMN_EXT_ID, COLUMN_PERM_ID, COLUMN_NAME, COLUMN_GENDER, COLUMN_DOB, COLUMN_AGE, COLUMN_AGE_AT_DEATH, COLUMN_SPOUSE_EXT_ID,
                 COLUMN_SPOUSE_NAME, COLUMN_SPOUSE_PERM_ID, COLUMN_MOTHER_EXT_ID,
                 COLUMN_MOTHER_NAME, COLUMN_MOTHER_PERM_ID, COLUMN_FATHER_EXT_ID, COLUMN_FATHER_NAME, COLUMN_FATHER_PERM_ID, COLUMN_HOUSE_EXT_ID, COLUMN_HOUSE_NUMBER,
                 COLUMN_START_TYPE, COLUMN_START_DATE, COLUMN_END_TYPE, COLUMN_END_DATE, COLUMN_GPS_NULL,
@@ -340,6 +342,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + Member.COLUMN_GENDER + " TEXT,"
             + Member.COLUMN_DOB + " TEXT,"
             + Member.COLUMN_AGE + " INTEGER,"
+            + Member.COLUMN_AGE_AT_DEATH + " INTEGER,"
             + Member.COLUMN_SPOUSE_EXT_ID + " TEXT,"
             + Member.COLUMN_SPOUSE_NAME + " TEXT,"
             + Member.COLUMN_SPOUSE_PERM_ID + " TEXT,"

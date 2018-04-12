@@ -1256,6 +1256,16 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
                 parser.nextTag();
             }
 
+			parser.nextTag(); //process <ageAtDeath>
+			if (!isEmptyTag(DatabaseHelper.Member.COLUMN_AGE_AT_DEATH, parser)) {
+				parser.next();
+				table.setAgeAtDeath(Integer.parseInt(parser.getText()));
+				parser.nextTag(); //process </ageAtDeath>
+			}else{
+				table.setAgeAtDeath(-1);
+				parser.nextTag();
+			}
+
             parser.nextTag(); //process <motherExtId>
             if (!isEmptyTag(DatabaseHelper.Member.COLUMN_MOTHER_EXT_ID, parser)) {
                 parser.next();

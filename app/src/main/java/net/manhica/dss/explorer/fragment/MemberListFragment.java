@@ -831,16 +831,31 @@ public class MemberListFragment extends Fragment {
             whereClause += DatabaseHelper.Member.COLUMN_GENDER + " = ?";
             whereValues.add(gender);
         }
-        if (minAge != null){
-            whereClause += (whereClause.isEmpty()? "" : " AND ");
-            whereClause += DatabaseHelper.Member.COLUMN_AGE + " >= ?";
-            whereValues.add(minAge.toString());
+
+        if (endType != null && endType=="DTH"){
+            if (minAge != null){
+                whereClause += (whereClause.isEmpty()? "" : " AND ");
+                whereClause += DatabaseHelper.Member.COLUMN_AGE_AT_DEATH + " >= ?";
+                whereValues.add(minAge.toString());
+            }
+            if (maxAge != null){
+                whereClause += (whereClause.isEmpty()? "" : " AND ");
+                whereClause += DatabaseHelper.Member.COLUMN_AGE_AT_DEATH + " <= ?";
+                whereValues.add(maxAge.toString());
+            }
+        }else {
+            if (minAge != null){
+                whereClause += (whereClause.isEmpty()? "" : " AND ");
+                whereClause += DatabaseHelper.Member.COLUMN_AGE + " >= ?";
+                whereValues.add(minAge.toString());
+            }
+            if (maxAge != null){
+                whereClause += (whereClause.isEmpty()? "" : " AND ");
+                whereClause += DatabaseHelper.Member.COLUMN_AGE + " <= ?";
+                whereValues.add(maxAge.toString());
+            }
         }
-        if (maxAge != null){
-            whereClause += (whereClause.isEmpty()? "" : " AND ");
-            whereClause += DatabaseHelper.Member.COLUMN_AGE + " <= ?";
-            whereValues.add(maxAge.toString());
-        }
+
         if (!endType.isEmpty()){
             whereClause += (whereClause.isEmpty()? "" : " AND ");
             whereClause += DatabaseHelper.Member.COLUMN_END_TYPE + " = ?";

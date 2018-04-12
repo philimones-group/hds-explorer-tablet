@@ -23,6 +23,7 @@ public class Member implements Serializable, Table {
     private String gender;
     private String dob;
     private int age;
+    private int ageAtDeath;
 
     private String spouseExtId;
     private String spouseName;
@@ -121,6 +122,14 @@ public class Member implements Serializable, Table {
 
     public void setAge(int age) {
         this.age = age;
+    }
+
+    public int getAgeAtDeath() {
+        return ageAtDeath;
+    }
+
+    public void setAgeAtDeath(int ageAtDeath) {
+        this.ageAtDeath = ageAtDeath;
     }
 
     public String getMotherExtId() {
@@ -359,6 +368,7 @@ public class Member implements Serializable, Table {
         member.gender = "";
         member.dob = "";
         member.age = 0;
+        member.ageAtDeath = 0;
 
         member.spouseExtId = "";
         member.spouseName = "";
@@ -410,6 +420,7 @@ public class Member implements Serializable, Table {
         cv.put(DatabaseHelper.Member.COLUMN_GENDER, gender);
         cv.put(DatabaseHelper.Member.COLUMN_DOB, dob);
         cv.put(DatabaseHelper.Member.COLUMN_AGE, age);
+        cv.put(DatabaseHelper.Member.COLUMN_AGE_AT_DEATH, ageAtDeath);
         cv.put(DatabaseHelper.Member.COLUMN_SPOUSE_EXT_ID, spouseExtId);
         cv.put(DatabaseHelper.Member.COLUMN_SPOUSE_NAME, spouseName);
         cv.put(DatabaseHelper.Member.COLUMN_SPOUSE_PERM_ID, spousePermId);

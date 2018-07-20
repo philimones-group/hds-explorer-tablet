@@ -37,7 +37,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
             Log.d("alter table", "add ageAtDeath"); //OLD VERSION
             try {
-                db.execSQL("ALTER TABLE " + Member.TABLE_NAME + " ADD COLUMN " + Member.COLUMN_AGE_AT_DEATH + " INTEGER NOT NULL DEFAULT 0"); //upgrade CollectedData
+                //db.execSQL("ALTER TABLE " + Member.TABLE_NAME + " ADD COLUMN " + Member.COLUMN_AGE_AT_DEATH + " INTEGER NOT NULL DEFAULT 0"); //upgrage
+
+                db.execSQL("ALTER TABLE " + TrackingMemberList.TABLE_NAME + " ADD COLUMN " + TrackingMemberList.COLUMN_MEMBER_VISIT + " INTEGER  NOT NULL DEFAULT 0"); //add MemberVisit
+
             }catch (Exception ex){
                 Log.d("error on database alter", ""+ex.getMessage());
                 ex.printStackTrace();
@@ -234,11 +237,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         public static final String COLUMN_MEMBER_EXT_ID = "member_ext_id";
         public static final String COLUMN_MEMBER_PERM_ID = "member_perm_id";
         public static final String COLUMN_MEMBER_STUDY_CODE = "member_study_code";
+        public static final String COLUMN_MEMBER_VISIT = "member_visit";
         public static final String COLUMN_MEMBER_FORMS = "member_forms";
 
         public static final String COLUMN_COMPLETION_RATE = "completionRate";
 
-        public static final String[] ALL_COLUMNS = { _ID, COLUMN_LIST_ID, COLUMN_TRACKING_ID, COLUMN_TITLE, COLUMN_FORMS, COLUMN_MEMBER_EXT_ID, COLUMN_MEMBER_PERM_ID, COLUMN_MEMBER_STUDY_CODE, COLUMN_MEMBER_FORMS, COLUMN_COMPLETION_RATE };
+        public static final String[] ALL_COLUMNS = { _ID, COLUMN_LIST_ID, COLUMN_TRACKING_ID, COLUMN_TITLE, COLUMN_FORMS, COLUMN_MEMBER_EXT_ID, COLUMN_MEMBER_PERM_ID, COLUMN_MEMBER_STUDY_CODE, COLUMN_MEMBER_VISIT, COLUMN_MEMBER_FORMS, COLUMN_COMPLETION_RATE };
     }
 
     private static final String CREATE_TABLE_SYNC_REPORT = " "
@@ -426,6 +430,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + TrackingMemberList.COLUMN_MEMBER_EXT_ID + " TEXT,"
             + TrackingMemberList.COLUMN_MEMBER_PERM_ID + " TEXT,"
             + TrackingMemberList.COLUMN_MEMBER_STUDY_CODE + " TEXT,"
+            + TrackingMemberList.COLUMN_MEMBER_VISIT + " INTEGER  NOT NULL DEFAULT 0,"
             + TrackingMemberList.COLUMN_MEMBER_FORMS + " TEXT,"
             + TrackingMemberList.COLUMN_COMPLETION_RATE + " REAL);"
 

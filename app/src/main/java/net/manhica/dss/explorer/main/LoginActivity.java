@@ -74,7 +74,7 @@ public class LoginActivity extends Activity implements SyncDatabaseListener{
     private String adminPassword;
     private String serverUrl;
 
-    private boolean useLocalServer = true;
+    private boolean useLocalServer = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -126,7 +126,8 @@ public class LoginActivity extends Activity implements SyncDatabaseListener{
             @Override
             public boolean onLongClick(View v) {
                 Toast.makeText(LoginActivity.this, "Xtra settings mode activated! Shira Tensei Jutsu!!!", Toast.LENGTH_LONG);
-                useLocalServer = false;
+                Log.d("justu", "Xtra settings mode activated! Shira Tensei Jutsu!!! - "+!useLocalServer) ;
+                useLocalServer = !useLocalServer;
                 return true;
             }
         });
@@ -414,7 +415,7 @@ public class LoginActivity extends Activity implements SyncDatabaseListener{
                 return false;
             }
 
-            if (BuildConfig.DEBUG && useLocalServer){ //this is working perfectly - if is a release version wont use my personal computer
+            if (useLocalServer){ //this is working perfectly - if is a release version wont use my personal computer
                 serverUrl = "http://172.16.234.123:8080/manhica-dbsync"; // getString(R.string.server_url_not_secure);
             }else{
                 serverUrl = getString(R.string.server_url_not_secure);

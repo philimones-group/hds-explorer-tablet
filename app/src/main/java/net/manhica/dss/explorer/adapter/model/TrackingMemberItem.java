@@ -13,6 +13,7 @@ public class TrackingMemberItem implements Serializable {
     private Member member;
     private TrackingSubListItem listItem;
     private String studyCode;
+    private int visitNumber;
     private List<String> forms;
     private List<CollectedData> collectedForms;
 
@@ -51,6 +52,14 @@ public class TrackingMemberItem implements Serializable {
 
     public void setStudyCode(String studyCode) {
         this.studyCode = studyCode;
+    }
+
+    public int getVisitNumber() {
+        return visitNumber;
+    }
+
+    public void setVisitNumber(int visitNumber) {
+        this.visitNumber = visitNumber;
     }
 
     public List<String> getForms() {

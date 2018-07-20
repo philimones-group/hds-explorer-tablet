@@ -19,6 +19,7 @@ public class TrackingMemberList implements Serializable, Table {
     private String memberPermId;
     private String memberStudyCode;
     private String memberForms;
+    private int    memberVisit;
     private Double completionRate;
 
     public int getId() {
@@ -85,6 +86,14 @@ public class TrackingMemberList implements Serializable, Table {
         this.memberStudyCode = memberStudyCode;
     }
 
+    public int getMemberVisit() {
+        return memberVisit;
+    }
+
+    public void setMemberVisit(int memberVisit) {
+        this.memberVisit = memberVisit;
+    }
+
     public String getMemberForms() {
         return memberForms;
     }
@@ -118,6 +127,7 @@ public class TrackingMemberList implements Serializable, Table {
         cv.put(DatabaseHelper.TrackingMemberList.COLUMN_MEMBER_EXT_ID, memberExtId);
         cv.put(DatabaseHelper.TrackingMemberList.COLUMN_MEMBER_PERM_ID, memberPermId);
         cv.put(DatabaseHelper.TrackingMemberList.COLUMN_MEMBER_STUDY_CODE, memberStudyCode);
+        cv.put(DatabaseHelper.TrackingMemberList.COLUMN_MEMBER_VISIT, memberVisit);
         cv.put(DatabaseHelper.TrackingMemberList.COLUMN_MEMBER_FORMS, memberForms);
 
         cv.put(DatabaseHelper.TrackingMemberList.COLUMN_COMPLETION_RATE, completionRate);

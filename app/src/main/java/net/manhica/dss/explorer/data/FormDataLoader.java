@@ -265,7 +265,10 @@ public class FormDataLoader implements Serializable {
                             value = trackingList.getCode();
                         }
                     }
-
+                }
+                //check for trackingListMember visitNumber/visit
+                if (internalVariableName.equals("visitNumber") && memberItem!=null){
+                    value = memberItem.getVisitNumber()+"";
                 }
 
                 //get variable format from odkVariable eg. variableName->format => patientName->yes,no

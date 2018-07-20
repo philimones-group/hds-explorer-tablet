@@ -767,12 +767,14 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 						Log.d("mem-attr-prmid", "" + parser.getAttributeValue("", "permid"));
 						Log.d("mem-attr-scode", "" + parser.getAttributeValue("", "studycode"));
 						Log.d("mem-attr-forms", "" + parser.getAttributeValue("", "forms"));
+						Log.d("mem-attr-visit", "" + parser.getAttributeValue("", "visit"));
 						Log.d("end","end");
 
 						String mExtId = parser.getAttributeValue("", "extid");
 						String mPrmId = parser.getAttributeValue("", "permid");
 						String mScode = parser.getAttributeValue("", "studycode");
 						String mForms = parser.getAttributeValue("", "forms");
+						String mVisit = parser.getAttributeValue("", "visit");
 
 						//save track member list to database
 						TrackingMemberList tml = new TrackingMemberList();
@@ -785,6 +787,10 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 						tml.setMemberStudyCode(mScode);
 						tml.setMemberForms(mForms);
 						tml.setCompletionRate(0D);
+
+						if (mVisit != null){
+							tml.setMemberVisit(Integer.parseInt(mVisit));
+						}
 
 						database.insert(tml);
 

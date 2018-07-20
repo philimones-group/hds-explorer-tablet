@@ -288,6 +288,7 @@ public class TrackingListDetailsActivity extends Activity {
         tMember.setMember(member);
         tMember.setListItem(subListItem);
         tMember.setStudyCode(item.getMemberStudyCode());
+        tMember.setVisitNumber(item.getMemberVisit());
         tMember.addForms(forms);
         tMember.addCollectedData(listCollected);
 

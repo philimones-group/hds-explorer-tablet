@@ -9,7 +9,7 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:gravity="center"
-    tools:context=".main.ServerSyncActivity">
+    tools:context="org.philimone.hds.explorer.main.ServerSyncActivity">
 
     <LinearLayout
         android:layout_width="match_parent"

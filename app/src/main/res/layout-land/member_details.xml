@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".main.MemberDetailsActivity"
+    tools:context="org.philimone.hds.explorer.main.MemberDetailsActivity"
     android:background="#acdde9">
 
     <LinearLayout

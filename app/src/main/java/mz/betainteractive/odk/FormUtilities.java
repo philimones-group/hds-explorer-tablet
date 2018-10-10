@@ -12,7 +12,7 @@ import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
 
-import net.manhica.dss.explorer.R;
+import org.philimone.hds.explorer.R;
 
 import java.io.File;
 import java.sql.Date;

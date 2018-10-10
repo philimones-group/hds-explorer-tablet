@@ -38,7 +38,7 @@ import android.util.Log;
 
 public class OdkGeneratedFormLoadTask extends AsyncTask<Void, Void, Boolean> {
 
-	private static String FORMS_PATH = "net.manhica.dss.explorer";
+	private static String FORMS_PATH = "org.philimone.hds.explorer";
 	
     private OdkFormLoadListener listener;
     private ContentResolver resolver;

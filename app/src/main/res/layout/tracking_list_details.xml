@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="net.manhica.dss.explorer.main.TrackingListDetailsActivity">
+    tools:context="org.philimone.hds.explorer.main.TrackingListDetailsActivity">
 
     <LinearLayout
         android:layout_width="match_parent"

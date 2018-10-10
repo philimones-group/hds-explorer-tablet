@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragment.MemberFilterFragment">
+    tools:context="org.philimone.hds.explorer.fragment.MemberFilterFragment">
 
     <LinearLayout
         android:orientation="vertical"
@@ -176,7 +176,7 @@
                         android:text="@string/member_filter_age_min_lbl"
                         android:textAppearance="?android:attr/textAppearanceLarge" />
 
-                    <net.manhica.dss.explorer.widget.NumberPicker
+                    <org.philimone.hds.explorer.widget.NumberPicker
                         android:layout_width="wrap_content"
                         android:layout_height="110dp"
                         min_value="0"
@@ -192,7 +192,7 @@
                         android:text="@string/member_filter_age_max_lbl"
                         android:textAppearance="?android:attr/textAppearanceLarge" />
 
-                    <net.manhica.dss.explorer.widget.NumberPicker
+                    <org.philimone.hds.explorer.widget.NumberPicker
                         android:layout_width="wrap_content"
                         android:layout_height="110dp"
                         min_value="0"

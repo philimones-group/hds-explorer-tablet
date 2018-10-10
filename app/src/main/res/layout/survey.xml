@@ -5,8 +5,8 @@
     android:layout_height="match_parent"
     android:gravity="center_horizontal"
     android:orientation="vertical"
-    android:background="@mipmap/form_background_1"
-    tools:context=".main.SurveyActivity"
+    android:background="@mipmap/form_back2_port_a075"
+    tools:context="org.philimone.hds.explorer.main.SurveyActivity"
     android:weightSum="1">
 
     <ImageView

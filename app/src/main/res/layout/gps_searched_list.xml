@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="net.manhica.dss.explorer.main.GpsSearchedListActivity">
+    tools:context="org.philimone.hds.explorer.main.GpsSearchedListActivity">
 
 <LinearLayout
     android:orientation="vertical"

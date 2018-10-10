@@ -8,8 +8,8 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    android:background="@mipmap/form_background_1"
-    tools:context=".main.LoginActivity">
+    android:background="@mipmap/form_back2_land_a075"
+    tools:context="org.philimone.hds.explorer.main.LoginActivity">
 
     <!-- Login progress -->
     <ImageView

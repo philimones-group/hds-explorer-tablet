@@ -58,8 +58,8 @@
         
     </LinearLayout>
 
-    <net.manhica.dss.explorer.widget.CirclePercentageBar
-        xmlns:androidx="http://schemas.android.com/apk/res/net.manhica.dss.explorer"
+    <org.philimone.hds.explorer.widget.CirclePercentageBar
+        xmlns:androidx="http://schemas.android.com/apk/res/org.philimone.hds.explorer"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_marginLeft="3dp"

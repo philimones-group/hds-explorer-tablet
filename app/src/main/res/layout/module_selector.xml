@@ -9,7 +9,7 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     android:gravity="center"
     android:background="@mipmap/form_background_1"
-    tools:context=".main.ModuleSelectorActivity">
+    tools:context="org.philimone.hds.explorer.main.ModuleSelectorActivity">
 
     <LinearLayout
         android:orientation="vertical"

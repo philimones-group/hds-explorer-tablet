@@ -20,7 +20,7 @@
         android:id="@+id/imageView"
         android:layout_gravity="center_horizontal"
         android:alpha="0.75"
-        android:background="@mipmap/dss_explorer_bevel" />
+        android:background="@mipmap/hds_explorer_bevel" />
 
     <ProgressBar
         android:id="@+id/login_progress"

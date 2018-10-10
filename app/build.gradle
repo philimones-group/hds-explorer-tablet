@@ -4,10 +4,10 @@ android {
 
     signingConfigs {
         config {
-            keyAlias 'cism android'
-            keyPassword 'cismandroid'
-            storeFile file('/home/paul/local/workspace/android-keys/cismandroid.keystore')
-            storePassword 'cismandroid'
+            keyAlias 'PG Android Key'
+            keyPassword 'android47jks'
+            storeFile file('/home/paul/local/personal/usefull-information/keystores/android-apk-key.jks')
+            storePassword 'android47jks'
         }
     }
     compileSdkVersion 23
@@ -17,7 +17,7 @@ android {
         minSdkVersion 19
         targetSdkVersion 19
         versionCode 8
-        versionName "1.3.7"
+        versionName "1.0"
         archivesBaseName = "$applicationName-v$versionName"
     }
     buildTypes {

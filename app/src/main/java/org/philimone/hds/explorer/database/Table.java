@@ -3,10 +3,12 @@ package org.philimone.hds.explorer.database;
 import android.content.ContentValues;
 
 public interface Table {
+
+	int getId();
+
+	String getTableName();
 	
-	public String getTableName();
+	ContentValues getContentValues();
 	
-	public ContentValues getContentValues();
-	
-	public String[] getColumnNames();
+	String[] getColumnNames();
 }

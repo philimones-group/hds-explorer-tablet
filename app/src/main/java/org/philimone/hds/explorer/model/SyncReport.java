@@ -25,6 +25,7 @@ public class SyncReport implements Serializable, Table {
     public final static int STATUS_SYNCED = 1;
     public final static int STATUS_SYNC_ERROR = 2;
 
+    private int id;
     private int reportId;
     private Date date;
     private int status;
@@ -39,6 +40,15 @@ public class SyncReport implements Serializable, Table {
         this.date = date;
         this.status = status;
         this.description = description;
+    }
+
+    @Override
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public int getReportId() {

@@ -14,6 +14,7 @@ import mz.betainteractive.utilities.ReflectionUtils;
  */
 public class User implements Serializable, Table {
 
+    private int id;
     private String firstName;
     private String lastName;
     private String fullName;
@@ -34,6 +35,15 @@ public class User implements Serializable, Table {
         this.password = password;
         this.modules = modules;
         this.extras = extras;
+    }
+
+    @Override
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getFirstName() {

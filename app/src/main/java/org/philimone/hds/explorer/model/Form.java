@@ -14,6 +14,7 @@ import java.util.Map;
  */
 public class  Form implements Serializable, Table {
 
+    private int id;
     private String formId;
     private String formName;
     private String formDescription;
@@ -31,6 +32,15 @@ public class  Form implements Serializable, Table {
 
     public Form(){
         bindMap = new HashMap<>();
+    }
+
+    @Override
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getFormId() {

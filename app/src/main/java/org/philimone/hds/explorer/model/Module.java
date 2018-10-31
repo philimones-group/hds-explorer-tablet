@@ -16,9 +16,19 @@ public class Module implements Serializable, Table {
     public final static String DSS_SUPERVISOR = "DSS-SUPERVISOR";
     public final static String DSS_OTHERS = "DSS-ANY";
 
+    private int id;
     private String code;
     private String name;
     private String description;
+
+    @Override
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public String getCode() {
         return code;

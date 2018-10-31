@@ -1,7 +1,5 @@
 <resources>
     <string name="app_name">HDS Explorer</string>
-    <string name="server_url">https://apps.betainteractive.net/hds-explorer-server</string>
-    <string name="server_url_not_secure">http://apps.betainteractive.net/hds-explorer-server</string>
 
     <!-- Copyright    -->
     <string name="copyright_app_name_lbl">HDS Explorer v1.0</string>
@@ -70,6 +68,7 @@
     <string name="login_button_lbl">Login</string>
     <string name="login_password_short_lbl">Log in</string>
     <string name="login_synchronize_lbl">Synchronize Database</string>
+    <string name="login_settings_lbl">Change Settings</string>
     <string name="error_no_modules_permission">This user doesnt have any permission on this system</string>
     <string name="error_invalid_email">This email address is invalid</string>
     <string name="error_invalid_password">This password is too short</string>
@@ -209,10 +208,17 @@
     <string name="trackinglist_title_lbl">Follow-up lists for module: </string>
     <string name="trackinglist_module_lbl">Module</string>
 
+    <!-- settings fragment -->
+    <string name="settings_lbl">Settings</string>
+    <string name="settings_server_group_lbl">HDS-Explorer</string>
+    <string name="settings_server_group_url_lbl">Server URL</string>
+    <string name="settings_odk_group_lbl">ODK</string>
+    <string name="settings_odk_group_url_lbl">Aggregate URL</string>
+    <string name="settings_redcap_group_lbl">REDCap</string>
+    <string name="settings_redcap_group_url_lbl">Server URL</string>
 
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-
 
 </resources>

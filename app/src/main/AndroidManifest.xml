@@ -18,7 +18,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name="org.philimone.hds.explorer.main.LoginActivity"
+            android:name=".main.LoginActivity"
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -27,15 +27,16 @@
             </intent-filter>
             >
         </activity>
-        <activity android:name="org.philimone.hds.explorer.main.ServerSyncActivity" />
-        <activity android:name="org.philimone.hds.explorer.main.ModuleSelectorActivity" />
-        <activity android:name="org.philimone.hds.explorer.main.SurveyActivity" />
-        <activity android:name="org.philimone.hds.explorer.main.SurveyHouseholdsActivity" />
-        <activity android:name="org.philimone.hds.explorer.main.SurveyMembersActivity" />
-        <activity android:name="org.philimone.hds.explorer.main.MemberDetailsActivity" />
-        <activity android:name="org.philimone.hds.explorer.main.GpsSearchedListActivity" />
-        <activity android:name="org.philimone.hds.explorer.main.TrackingListActivity" />
-        <activity android:name="org.philimone.hds.explorer.main.TrackingListDetailsActivity"></activity>
+        <activity android:name=".main.ServerSyncActivity" />
+        <activity android:name=".main.ModuleSelectorActivity" />
+        <activity android:name=".main.SurveyActivity" />
+        <activity android:name=".main.SurveyHouseholdsActivity" />
+        <activity android:name=".main.SurveyMembersActivity" />
+        <activity android:name=".main.MemberDetailsActivity" />
+        <activity android:name=".main.GpsSearchedListActivity" />
+        <activity android:name=".main.TrackingListActivity" />
+        <activity android:name=".main.TrackingListDetailsActivity" />
+        <activity android:name=".main.SettingsActivity" />
     </application>
 
 </manifest>

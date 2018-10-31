@@ -54,7 +54,7 @@ import mz.betainteractive.utilities.StringUtil;
  */
 public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 
-	private static final String API_PATH = "/api/dss-explorer";
+	private static final String API_PATH = "/api/explorer";
 	private static final String ZIP_MIME_TYPE = "application/zip;charset=utf-8";
 	private static final String XML_MIME_TYPE = "text/xml;charset=utf-8";
 

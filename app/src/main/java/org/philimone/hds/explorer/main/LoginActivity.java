@@ -33,7 +33,9 @@ import org.philimone.hds.explorer.database.Bootstrap;
 import org.philimone.hds.explorer.database.Converter;
 import org.philimone.hds.explorer.database.Database;
 import org.philimone.hds.explorer.database.DatabaseHelper;
+import org.philimone.hds.explorer.database.Queries;
 import org.philimone.hds.explorer.io.SyncDatabaseListener;
+import org.philimone.hds.explorer.model.ApplicationParam;
 import org.philimone.hds.explorer.model.Module;
 import org.philimone.hds.explorer.model.User;
 
@@ -113,6 +115,14 @@ public class LoginActivity extends Activity implements SyncDatabaseListener{
             }
         });
 
+        Button btSettings = (Button) findViewById(R.id.settings_button);
+        btSettings.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openSettings();
+            }
+        });
+
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
 
@@ -177,6 +187,11 @@ public class LoginActivity extends Activity implements SyncDatabaseListener{
     @Override
     public void collectionComplete(String result) {
 
+    }
+
+    private void openSettings(){
+        Intent intent = new Intent(this, SettingsActivity.class);
+        startActivity(intent);
     }
 
     /**
@@ -396,10 +411,12 @@ public class LoginActivity extends Activity implements SyncDatabaseListener{
 
         private final String mUsername;
         private final String mPassword;
+        private final String mServerUrl;
 
         SyncLoginTask(String username, String password) {
             mUsername = username;
             mPassword = password;
+            mServerUrl = Queries.getApplicationParamValue(ApplicationParam.APP_URL, LoginActivity.this);
         }
 
         @Override
@@ -413,9 +430,9 @@ public class LoginActivity extends Activity implements SyncDatabaseListener{
             }
 
             if (useLocalServer){ //this is working perfectly - if is a release version wont use my personal computer
-                serverUrl = "http://172.16.234.123:8080/manhica-dbsync"; // getString(R.string.server_url_not_secure);
+                serverUrl = "http://172.16.234.123:8080/hds-explorer-server";
             }else{
-                serverUrl = getString(R.string.server_url_not_secure);
+                serverUrl = mServerUrl;
             }
 
             //http request
@@ -423,7 +440,7 @@ public class LoginActivity extends Activity implements SyncDatabaseListener{
                 HttpURLConnection connection = null;
                 String basicAuth = "Basic " + new String(Base64.encode((this.mUsername+":"+this.mPassword).getBytes(),Base64.NO_WRAP ));
 
-                URL url = new URL(serverUrl+"/api/dss-explorer/login");
+                URL url = new URL(serverUrl+"/api/explorer/login");
 
                 connection = (HttpURLConnection) url.openConnection();
                 connection.setRequestMethod("GET");

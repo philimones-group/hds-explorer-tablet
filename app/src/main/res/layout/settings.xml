@@ -1,0 +1,55 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    android:background="@mipmap/form_background_2"
+    tools:context=".main.LoginActivity">
+
+    <!-- Header -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:orientation="horizontal"
+        android:background="@drawable/bottom_border">
+
+        <ImageView
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:alpha="0.75"
+            android:background="@mipmap/hds_explorer_bevel"
+            android:visibility="gone"/>
+
+        <ImageView
+            android:layout_marginTop="5dp"
+            android:layout_marginLeft="5dp"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:alpha="0.75"
+            android:background="@drawable/settings_icon_large" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="@string/settings_lbl"
+            android:textStyle="bold"
+            android:textColor="@android:color/tertiary_text_dark"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:layout_marginLeft="10dp"
+            android:gravity="center_vertical"/>
+
+    </LinearLayout>
+
+
+    <fragment android:name="org.philimone.hds.explorer.fragment.SettingsFragment"
+        android:id="@+id/settingsFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="15dp"
+        tools:layout="@xml/settings" />
+
+
+</LinearLayout>

@@ -101,6 +101,19 @@
                 android:background="@drawable/button_green"
                 />
 
+            <Button
+                android:id="@+id/settings_button"
+                style="?android:textAppearanceSmall"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/login_settings_lbl"
+                android:textStyle="bold"
+                android:textColor="#6c6c6c"
+                android:background="@drawable/button_ngreen_stg"
+                android:shadowColor="@android:color/transparent"
+                />
+
         </LinearLayout>
 
 

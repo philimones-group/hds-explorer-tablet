@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+    <PreferenceCategory
+
+        android:title="@string/settings_server_group_lbl"
+        android:key="server">
+        <EditTextPreference
+            android:key="app-url"
+            android:title="@string/settings_server_group_url_lbl"
+            android:persistent="false"
+            android:summary="https://www.example.com/hds-explorer-server"
+            android:defaultValue="https://www.example.com/hds-explorer-server"/>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="@string/settings_odk_group_lbl"
+        android:key="odk">
+
+        <EditTextPreference
+            android:key="odk-url"
+            android:title="@string/settings_odk_group_url_lbl"
+            android:persistent="false"
+            android:summary="https://www.example.com/odk-aggregate"
+            android:defaultValue="https://www.example.com/odk-aggregate"
+            android:enabled="false"/>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="@string/settings_redcap_group_lbl"
+        android:key="redcap">
+
+        <EditTextPreference
+            android:key="redcap-url"
+            android:title="@string/settings_redcap_group_url_lbl"
+            android:persistent="false"
+            android:summary="https://www.example.com/redcap"
+            android:defaultValue="https://www.example.com/redcap"/>
+
+    </PreferenceCategory>
+
+</PreferenceScreen>
+
+

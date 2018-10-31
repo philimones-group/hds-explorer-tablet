@@ -1,7 +1,9 @@
 package org.philimone.hds.explorer.database;
 
+import android.content.Context;
 import android.database.Cursor;
 
+import org.philimone.hds.explorer.model.ApplicationParam;
 import org.philimone.hds.explorer.model.CollectedData;
 import org.philimone.hds.explorer.model.Form;
 import org.philimone.hds.explorer.model.Household;
@@ -17,6 +19,49 @@ import java.util.List;
  * Created by paul on 5/27/16.
  */
 public class Queries {
+
+    public static ApplicationParam getApplicationParamBy(Database database, String whereClause, String[] clauseArgs){
+        ApplicationParam param = null;
+
+        Cursor cursor = database.query(ApplicationParam.class, whereClause, clauseArgs, null, null, null);
+
+        if (cursor.moveToFirst()){
+            param = Converter.cursorToApplicationParam(cursor);
+        }
+
+        return param;
+    }
+
+    public static List<ApplicationParam> getAllApplicationParamBy(Database database, String whereClause, String[] clauseArgs){
+        List<ApplicationParam> list = new ArrayList<>();
+
+        Cursor cursor = database.query(ApplicationParam.class, whereClause, clauseArgs, null, null, null);
+
+        while (cursor.moveToNext()){
+            ApplicationParam param = Converter.cursorToApplicationParam(cursor);
+            list.add(param);
+        }
+
+        return list;
+    }
+
+    public static String getApplicationParamValue(String name, Context context){
+        String value = null;
+
+        Database database = new Database(context);
+        database.open();
+
+        ApplicationParam param = getApplicationParamBy(database, DatabaseHelper.ApplicationParam.COLUMN_NAME+"=?", new String[]{ name });
+
+        if (param != null){
+            value = param.getValue();
+        }
+
+        database.close();
+
+        return value;
+    }
+
     public static SyncReport getSyncReportBy(Database database, String whereClause, String[] clauseArgs){
         SyncReport report = null;
 

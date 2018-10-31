@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.os.Environment;
 import android.util.Log;
 
+import org.philimone.hds.explorer.model.ApplicationParam;
 import org.philimone.hds.explorer.model.SyncReport;
 
 import java.io.File;
@@ -41,6 +42,18 @@ public class Bootstrap {
             database.insert(sr4);
             database.insert(sr5);
             database.insert(sr6);
+        }
+
+        Cursor cursorParams = database.query(ApplicationParam.class, null, null, null, null, null);
+
+        if (cursorParams.getCount()==0){
+            ApplicationParam param1 = new ApplicationParam(ApplicationParam.APP_URL, "string", "https://apps.betainteractive.net/hds-explorer-server"); // Server URL
+            ApplicationParam param2 = new ApplicationParam(ApplicationParam.ODK_URL, "string", "https://apps.betainteractive.net/odk-aggregate");      // ODK Aggregate Server URL
+            ApplicationParam param3 = new ApplicationParam(ApplicationParam.REDCAP_URL, "string", "https://apps.betainteractive.net/redcap");           // REDCap Server URL
+
+            database.insert(param1);
+            database.insert(param2);
+            database.insert(param3);
         }
 
         database.close();

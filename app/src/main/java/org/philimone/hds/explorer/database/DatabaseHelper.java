@@ -17,6 +17,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	@Override
 	public void onCreate(SQLiteDatabase db) {
         try {
+            db.execSQL(CREATE_TABLE_APPLICATION_PARAM);
             db.execSQL(CREATE_TABLE_SYNC_REPORT);
 		    db.execSQL(CREATE_TABLE_USER);
 		    db.execSQL(CREATE_TABLE_FORM);
@@ -57,7 +58,19 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
 	}
 
-    public static final String[] ALL_TABLES = {User.TABLE_NAME, Form.TABLE_NAME, Module.TABLE_NAME, Household.TABLE_NAME, Member.TABLE_NAME, SyncReport.TABLE_NAME };
+    public static final String[] ALL_TABLES = {ApplicationParam.TABLE_NAME, User.TABLE_NAME, Form.TABLE_NAME, Module.TABLE_NAME, Household.TABLE_NAME, Member.TABLE_NAME, SyncReport.TABLE_NAME };
+
+    public static final class ApplicationParam implements BaseColumns {
+        public static final String TABLE_NAME = "application_param";
+
+        public static final String COLUMN_NAME = "name";
+        public static final String COLUMN_TYPE = "type";
+        public static final String COLUMN_VALUE = "value";
+
+        public static final String[] ALL_COLUMNS = {
+                _ID, COLUMN_NAME, COLUMN_TYPE, COLUMN_VALUE
+        };
+    }
 
     public static final class SyncReport implements BaseColumns {
         public static final String TABLE_NAME = "sync_report";
@@ -244,6 +257,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         public static final String[] ALL_COLUMNS = { _ID, COLUMN_LIST_ID, COLUMN_TRACKING_ID, COLUMN_TITLE, COLUMN_FORMS, COLUMN_MEMBER_EXT_ID, COLUMN_MEMBER_PERM_ID, COLUMN_MEMBER_STUDY_CODE, COLUMN_MEMBER_VISIT, COLUMN_MEMBER_FORMS, COLUMN_COMPLETION_RATE };
     }
+
+    private static final String CREATE_TABLE_APPLICATION_PARAM = " "
+            + "CREATE TABLE " + ApplicationParam.TABLE_NAME + "("
+            + ApplicationParam._ID  + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+            + ApplicationParam.COLUMN_NAME + " TEXT,"
+            + ApplicationParam.COLUMN_TYPE + " TEXT,"
+            + ApplicationParam.COLUMN_VALUE + " TEXT);"
+            ;
 
     private static final String CREATE_TABLE_SYNC_REPORT = " "
             + "CREATE TABLE " + SyncReport.TABLE_NAME + "("

@@ -2,6 +2,7 @@ package org.philimone.hds.explorer.database;
 
 import android.database.Cursor;
 
+import org.philimone.hds.explorer.model.ApplicationParam;
 import org.philimone.hds.explorer.model.CollectedData;
 import org.philimone.hds.explorer.model.Form;
 import org.philimone.hds.explorer.model.Household;
@@ -14,6 +15,18 @@ import org.philimone.hds.explorer.model.followup.TrackingMemberList;
 
 
 public class Converter {
+
+	public static ApplicationParam cursorToApplicationParam(Cursor cursor) {
+		ApplicationParam param = new ApplicationParam();
+
+		param.setId(cursor.getInt(cursor.getColumnIndex(DatabaseHelper.ApplicationParam._ID)));
+		param.setName(cursor.getString(cursor.getColumnIndex(DatabaseHelper.ApplicationParam.COLUMN_NAME)));
+		param.setType(cursor.getString(cursor.getColumnIndex(DatabaseHelper.ApplicationParam.COLUMN_TYPE)));
+		param.setValue(cursor.getString(cursor.getColumnIndex(DatabaseHelper.ApplicationParam.COLUMN_VALUE)));
+
+		return param;
+	}
+
 	public static SyncReport cursorToSyncReport(Cursor cursor){
 		SyncReport syncReport = new SyncReport();
 

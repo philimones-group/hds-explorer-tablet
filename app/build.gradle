@@ -11,7 +11,7 @@ android {
         }
     }
     compileSdkVersion 23
-    buildToolsVersion "23.0.3"
+    buildToolsVersion '27.0.3'
     defaultConfig {
         applicationId "org.philimone.hds.explorer"
         minSdkVersion 19
@@ -35,11 +35,11 @@ android {
 }
 
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
-    testCompile 'junit:junit:4.12'
-    compile project(path: ':mapsme-lib')
-    compile 'com.android.support:appcompat-v7:23.4.0'
-    compile 'com.android.support:design:23.4.0'
-    compile 'com.android.support:support-v4:23.4.0'
-    compile 'org.jdom:jdom2:2.0.6'
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    testImplementation 'junit:junit:4.12'
+    api project(path: ':mapsme-lib')
+    implementation 'com.android.support:appcompat-v7:23.4.0'
+    implementation 'com.android.support:design:23.4.0'
+    implementation 'com.android.support:support-v4:23.4.0'
+    implementation 'org.jdom:jdom2:2.0.6'
 }

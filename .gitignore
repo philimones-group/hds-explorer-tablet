@@ -5,5 +5,7 @@
 /.idea/libraries
 .DS_Store
 /build
+/app/build/
 /captures
-/mapsme-lib/build
+/mapsme-lib/build/
+

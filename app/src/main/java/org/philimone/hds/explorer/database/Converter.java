@@ -192,8 +192,7 @@ public class Converter {
 		tml.setTitle(cursor.getString(cursor.getColumnIndex(DatabaseHelper.TrackingMemberList.COLUMN_TITLE)));
 		tml.setForms(cursor.getString(cursor.getColumnIndex(DatabaseHelper.TrackingMemberList.COLUMN_FORMS)));
 
-		tml.setMemberExtId(cursor.getString(cursor.getColumnIndex(DatabaseHelper.TrackingMemberList.COLUMN_MEMBER_EXT_ID)));
-		tml.setMemberPermId(cursor.getString(cursor.getColumnIndex(DatabaseHelper.TrackingMemberList.COLUMN_MEMBER_PERM_ID)));
+		tml.setMemberCode(cursor.getString(cursor.getColumnIndex(DatabaseHelper.TrackingMemberList.COLUMN_MEMBER_CODE)));
 		tml.setMemberStudyCode(cursor.getString(cursor.getColumnIndex(DatabaseHelper.TrackingMemberList.COLUMN_MEMBER_STUDY_CODE)));
 		tml.setMemberVisit(cursor.getInt(cursor.getColumnIndex(DatabaseHelper.TrackingMemberList.COLUMN_MEMBER_VISIT)));
 		tml.setMemberForms(cursor.getString(cursor.getColumnIndex(DatabaseHelper.TrackingMemberList.COLUMN_MEMBER_FORMS)));

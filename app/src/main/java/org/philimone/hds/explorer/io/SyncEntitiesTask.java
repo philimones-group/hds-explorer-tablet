@@ -763,15 +763,15 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 				parser.nextTag(); //jump to <member end tag> if exists
 				while (!isEndTag("list", parser)){
 					if (isTag("member", parser)){
-						Log.d("mem-attr-extid", "" + parser.getAttributeValue("", "extid"));
-						Log.d("mem-attr-prmid", "" + parser.getAttributeValue("", "permid"));
+						Log.d("mem-attr-extid", "" + parser.getAttributeValue("", "code"));
+						//Log.d("mem-attr-prmid", "" + parser.getAttributeValue("", "permid"));
 						Log.d("mem-attr-scode", "" + parser.getAttributeValue("", "studycode"));
 						Log.d("mem-attr-forms", "" + parser.getAttributeValue("", "forms"));
 						Log.d("mem-attr-visit", "" + parser.getAttributeValue("", "visit"));
 						Log.d("end","end");
 
-						String mExtId = parser.getAttributeValue("", "extid");
-						String mPrmId = parser.getAttributeValue("", "permid");
+						String mCode = parser.getAttributeValue("", "code");
+						//String mPrmId = parser.getAttributeValue("", "permid");
 						String mScode = parser.getAttributeValue("", "studycode");
 						String mForms = parser.getAttributeValue("", "forms");
 						String mVisit = parser.getAttributeValue("", "visit");
@@ -782,8 +782,8 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 						tml.setTrackingId(trackingId);
 						tml.setTitle(listTitle);
 						tml.setForms(listForms==null ? "" : listForms);
-						tml.setMemberExtId(mExtId);
-						tml.setMemberPermId(mPrmId);
+						tml.setMemberCode(mCode);
+						//tml.setMemberPermId(mPrmId);
 						tml.setMemberStudyCode(mScode);
 						tml.setMemberForms(mForms);
 						tml.setCompletionRate(0D);

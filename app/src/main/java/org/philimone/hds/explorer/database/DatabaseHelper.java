@@ -241,15 +241,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         public static final String COLUMN_TITLE = "title";
         public static final String COLUMN_FORMS = "list_forms";
 
-        public static final String COLUMN_MEMBER_EXT_ID = "member_ext_id";
-        public static final String COLUMN_MEMBER_PERM_ID = "member_perm_id";
+        public static final String COLUMN_MEMBER_CODE = "member_ext_id";
         public static final String COLUMN_MEMBER_STUDY_CODE = "member_study_code";
         public static final String COLUMN_MEMBER_VISIT = "member_visit";
         public static final String COLUMN_MEMBER_FORMS = "member_forms";
 
         public static final String COLUMN_COMPLETION_RATE = "completionRate";
 
-        public static final String[] ALL_COLUMNS = { _ID, COLUMN_LIST_ID, COLUMN_TRACKING_ID, COLUMN_TITLE, COLUMN_FORMS, COLUMN_MEMBER_EXT_ID, COLUMN_MEMBER_PERM_ID, COLUMN_MEMBER_STUDY_CODE, COLUMN_MEMBER_VISIT, COLUMN_MEMBER_FORMS, COLUMN_COMPLETION_RATE };
+        public static final String[] ALL_COLUMNS = { _ID, COLUMN_LIST_ID, COLUMN_TRACKING_ID, COLUMN_TITLE, COLUMN_FORMS, COLUMN_MEMBER_CODE, COLUMN_MEMBER_STUDY_CODE, COLUMN_MEMBER_VISIT, COLUMN_MEMBER_FORMS, COLUMN_COMPLETION_RATE };
     }
 
     private static final String CREATE_TABLE_APPLICATION_PARAM = " "
@@ -343,7 +342,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + Household.COLUMN_EXTRAS_COLUMNS + " TEXT,"
             + Household.COLUMN_EXTRAS_VALUES + " TEXT);"
 
-            + " CREATE UNIQUE INDEX IDX_HOUSEHOLD_EXTID ON " + Household.TABLE_NAME
+            + " CREATE UNIQUE INDEX IDX_HOUSEHOLD_CODE ON " + Household.TABLE_NAME
             + "(" +  Household.COLUMN_CODE + ");"
 
             + " CREATE UNIQUE INDEX IDX_HOUSEHOLD_NUMBER ON " + Household.TABLE_NAME
@@ -433,8 +432,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + TrackingMemberList.COLUMN_TITLE + " TEXT,"
             + TrackingMemberList.COLUMN_FORMS + " TEXT,"
 
-            + TrackingMemberList.COLUMN_MEMBER_EXT_ID + " TEXT,"
-            + TrackingMemberList.COLUMN_MEMBER_PERM_ID + " TEXT,"
+            + TrackingMemberList.COLUMN_MEMBER_CODE + " TEXT,"
             + TrackingMemberList.COLUMN_MEMBER_STUDY_CODE + " TEXT,"
             + TrackingMemberList.COLUMN_MEMBER_VISIT + " INTEGER  NOT NULL DEFAULT 0,"
             + TrackingMemberList.COLUMN_MEMBER_FORMS + " TEXT,"

@@ -211,8 +211,8 @@ public class TrackingListDetailsActivity extends Activity {
         List<String> extIds = new ArrayList<>();
 
         for (TrackingMemberList tm : listTml){
-            extIds.add(tm.getMemberExtId());
-            Log.d("extId-", ""+tm.getMemberExtId());
+            extIds.add(tm.getMemberCode());
+            Log.d("extId-", ""+tm.getMemberCode());
         }
 
         List<Member> members = getMembers(db, extIds);
@@ -268,7 +268,7 @@ public class TrackingListDetailsActivity extends Activity {
         List<String> formsList = Arrays.asList(forms);
 
         for (Member mb : members){
-            if (mb.getCode().equals(item.getMemberExtId())){
+            if (mb.getCode().equals(item.getMemberCode())){
                 member = mb;
                 break;
             }

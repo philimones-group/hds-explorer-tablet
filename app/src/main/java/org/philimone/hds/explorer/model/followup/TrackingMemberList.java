@@ -15,8 +15,7 @@ public class TrackingMemberList implements Serializable, Table {
     private String title;
     private String forms;
 
-    private String memberExtId;
-    private String memberPermId;
+    private String memberCode;
     private String memberStudyCode;
     private String memberForms;
     private int    memberVisit;
@@ -54,14 +53,6 @@ public class TrackingMemberList implements Serializable, Table {
         this.forms = forms;
     }
 
-    public String getMemberPermId() {
-        return memberPermId;
-    }
-
-    public void setMemberPermId(String memberPermId) {
-        this.memberPermId = memberPermId;
-    }
-
     public String getTitle() {
         return title;
     }
@@ -70,12 +61,12 @@ public class TrackingMemberList implements Serializable, Table {
         this.title = title;
     }
 
-    public String getMemberExtId() {
-        return memberExtId;
+    public String getMemberCode() {
+        return memberCode;
     }
 
-    public void setMemberExtId(String memberExtId) {
-        this.memberExtId = memberExtId;
+    public void setMemberCode(String memberCode) {
+        this.memberCode = memberCode;
     }
 
     public String getMemberStudyCode() {
@@ -124,8 +115,7 @@ public class TrackingMemberList implements Serializable, Table {
         cv.put(DatabaseHelper.TrackingMemberList.COLUMN_TITLE, title);
         cv.put(DatabaseHelper.TrackingMemberList.COLUMN_FORMS, forms);
 
-        cv.put(DatabaseHelper.TrackingMemberList.COLUMN_MEMBER_EXT_ID, memberExtId);
-        cv.put(DatabaseHelper.TrackingMemberList.COLUMN_MEMBER_PERM_ID, memberPermId);
+        cv.put(DatabaseHelper.TrackingMemberList.COLUMN_MEMBER_CODE, memberCode);
         cv.put(DatabaseHelper.TrackingMemberList.COLUMN_MEMBER_STUDY_CODE, memberStudyCode);
         cv.put(DatabaseHelper.TrackingMemberList.COLUMN_MEMBER_VISIT, memberVisit);
         cv.put(DatabaseHelper.TrackingMemberList.COLUMN_MEMBER_FORMS, memberForms);

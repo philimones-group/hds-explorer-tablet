@@ -87,8 +87,8 @@ public class Converter {
 		hh.setId(cursor.getInt(cursor.getColumnIndex(DatabaseHelper.Household._ID)));
 		hh.setCode(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Household.COLUMN_CODE)));
 		hh.setName(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Household.COLUMN_NAME)));
-		hh.setHeadPermId(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Household.COLUMN_HEAD_PERM_ID)));
-		hh.setSubsHeadPermId(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Household.COLUMN_SUBSHEAD_PERM_ID)));
+		hh.setHeadCode(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Household.COLUMN_HEAD_CODE)));
+		hh.setSubsHeadCode(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Household.COLUMN_SUBSHEAD_CODE)));
 		hh.setNeighborhood(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Household.COLUMN_NEIGHBORHOOD)));
 		hh.setLocality(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Household.COLUMN_LOCALITY)));
 		hh.setAdminPost(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Household.COLUMN_ADMIN_POST)));
@@ -103,8 +103,6 @@ public class Converter {
 		hh.setSinLatitude(cursor.getDouble(cursor.getColumnIndex(DatabaseHelper.Household.COLUMN_SIN_LATITUDE)));
 		hh.setCosLongitude(cursor.getDouble(cursor.getColumnIndex(DatabaseHelper.Household.COLUMN_COS_LONGITUDE)));
 		hh.setSinLongitude(cursor.getDouble(cursor.getColumnIndex(DatabaseHelper.Household.COLUMN_SIN_LONGITUDE)));
-		hh.setPopulationDensity(cursor.getDouble(cursor.getColumnIndex(DatabaseHelper.Household.COLUMN_POPULATION_DENSITY)));
-		hh.setDensityType(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Household.COLUMN_DENSITY_TYPE)));
         hh.setExtrasColumns(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Household.COLUMN_EXTRAS_COLUMNS)));
         hh.setExtrasValues(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Household.COLUMN_EXTRAS_VALUES)));
 		

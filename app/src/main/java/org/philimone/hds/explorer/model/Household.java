@@ -24,8 +24,8 @@ public class Household implements Serializable, Table {
 
     private String neighborhood;
     private String name;
-    private String headPermId;
-    private String subsHeadPermId;
+    private String headCode;
+    private String subsHeadCode;
 
     private boolean gpsNull;
     private Double gpsAccuracy;
@@ -37,9 +37,6 @@ public class Household implements Serializable, Table {
     private Double sinLatitude;
     private Double cosLongitude;
     private Double sinLongitude;
-
-    private Double populationDensity;
-    private String densityType;
 
     /* Extras Variables*/ //separated by semicolon :
     String extrasColumns;
@@ -109,20 +106,20 @@ public class Household implements Serializable, Table {
         this.province = province;
     }
 
-    public String getHeadPermId() {
-        return headPermId;
+    public String getHeadCode() {
+        return headCode;
     }
 
-    public void setHeadPermId(String headPermId) {
-        this.headPermId = headPermId;
+    public void setHeadCode(String headCode) {
+        this.headCode = headCode;
     }
 
-    public String getSubsHeadPermId() {
-        return subsHeadPermId;
+    public String getSubsHeadCode() {
+        return subsHeadCode;
     }
 
-    public void setSubsHeadPermId(String subsHeadPermId) {
-        this.subsHeadPermId = subsHeadPermId;
+    public void setSubsHeadCode(String subsHeadCode) {
+        this.subsHeadCode = subsHeadCode;
     }
 
     public String getExtrasColumns() {
@@ -213,22 +210,6 @@ public class Household implements Serializable, Table {
         this.gpsNull = gpsNull;
     }
 
-    public Double getPopulationDensity() {
-        return populationDensity;
-    }
-
-    public void setPopulationDensity(Double populationDensity) {
-        this.populationDensity = populationDensity;
-    }
-
-    public String getDensityType() {
-        return densityType;
-    }
-
-    public void setDensityType(String densityType) {
-        this.densityType = densityType;
-    }
-
     public String getValueByName(String variableName){
         return ReflectionUtils.getValueByName(this, variableName);
     }
@@ -243,8 +224,8 @@ public class Household implements Serializable, Table {
         ContentValues cv = new ContentValues();
         cv.put(DatabaseHelper.Household.COLUMN_CODE, code);
         cv.put(DatabaseHelper.Household.COLUMN_NAME, name);
-        cv.put(DatabaseHelper.Household.COLUMN_HEAD_PERM_ID, headPermId);
-        cv.put(DatabaseHelper.Household.COLUMN_SUBSHEAD_PERM_ID, subsHeadPermId);
+        cv.put(DatabaseHelper.Household.COLUMN_HEAD_CODE, headCode);
+        cv.put(DatabaseHelper.Household.COLUMN_SUBSHEAD_CODE, subsHeadCode);
         cv.put(DatabaseHelper.Household.COLUMN_NEIGHBORHOOD, neighborhood);
         cv.put(DatabaseHelper.Household.COLUMN_LOCALITY, locality);
         cv.put(DatabaseHelper.Household.COLUMN_ADMIN_POST, adminPost);
@@ -259,8 +240,6 @@ public class Household implements Serializable, Table {
         cv.put(DatabaseHelper.Household.COLUMN_SIN_LATITUDE, sinLatitude);
         cv.put(DatabaseHelper.Household.COLUMN_COS_LONGITUDE, cosLongitude);
         cv.put(DatabaseHelper.Household.COLUMN_SIN_LONGITUDE, sinLongitude);
-        cv.put(DatabaseHelper.Household.COLUMN_POPULATION_DENSITY, populationDensity);
-        cv.put(DatabaseHelper.Household.COLUMN_DENSITY_TYPE, densityType);
         cv.put(DatabaseHelper.Household.COLUMN_EXTRAS_COLUMNS, extrasColumns);
         cv.put(DatabaseHelper.Household.COLUMN_EXTRAS_VALUES, extrasValues);
 

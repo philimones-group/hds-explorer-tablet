@@ -872,12 +872,12 @@ public class MemberListFragment extends Fragment {
             Member member = Converter.cursorToMember(cursor);
             members.add(member);
             //Log.d("household", ""+household);
-            //Log.d("head", ""+(household!=null ? household.getHeadPermId():"null"));
-            if (household != null && household.getHeadPermId().equals(member.getCode())){
+            //Log.d("head", ""+(household!=null ? household.getHeadCode():"null"));
+            if (household != null && household.getHeadCode().equals(member.getCode())){
                 member.setHouseholdHead(true);
             }
 
-            if (household != null && household.getSubsHeadPermId().equals(member.getCode())){
+            if (household != null && household.getSubsHeadCode().equals(member.getCode())){
                 member.setSubsHouseholdHead(true);
             }
         }

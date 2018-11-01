@@ -103,7 +103,7 @@ public class SurveyMembersActivity extends Activity implements MemberFilterFragm
         if (member == null || member.getHouseNumber()==null) return null;
 
         database.open();
-        Household household = Queries.getHouseholdBy(database, DatabaseHelper.Household.COLUMN_HOUSE_NUMBER+"=?", new String[]{ member.getHouseNumber() });
+        Household household = Queries.getHouseholdBy(database, DatabaseHelper.Household.COLUMN_NAME +"=?", new String[]{ member.getHouseNumber() });
         database.close();
 
         return household;

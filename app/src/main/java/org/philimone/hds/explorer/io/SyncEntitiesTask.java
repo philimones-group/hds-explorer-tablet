@@ -970,22 +970,22 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 
 
             parser.nextTag(); //process <extId>
-            if (!isEmptyTag(DatabaseHelper.Household.COLUMN_EXT_ID, parser)) {
+            if (!isEmptyTag(DatabaseHelper.Household.COLUMN_CODE, parser)) {
                 parser.next();
-                table.setExtId(parser.getText());
+                table.setCode(parser.getText());
                 parser.nextTag(); //process </extId>
             }else{
-                table.setExtId("");
+                table.setCode("");
                 parser.nextTag();
             }
 
             parser.nextTag(); //process <houseNumber>
-            if (!isEmptyTag(DatabaseHelper.Household.COLUMN_HOUSE_NUMBER, parser)) {
+            if (!isEmptyTag(DatabaseHelper.Household.COLUMN_NAME, parser)) {
                 parser.next();
-                table.setHouseNumber(parser.getText());
+                table.setName(parser.getText());
                 parser.nextTag(); //process </houseNumber>
             }else{
-                table.setHouseNumber("");
+                table.setName("");
                 parser.nextTag();
             }
 
@@ -1201,24 +1201,14 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 
             //Log.d("TAG", parser.getPositionDescription());
 
-            parser.nextTag(); //process <extId>
+            parser.nextTag(); //process <code>
             //Log.d("TAG2", parser.getPositionDescription());
-            if (!isEmptyTag(DatabaseHelper.Member.COLUMN_EXT_ID, parser)) {
+            if (!isEmptyTag(DatabaseHelper.Member.COLUMN_CODE, parser)) {
                 parser.next();
-                table.setExtId(parser.getText());
-                parser.nextTag(); //process </extId>
+                table.setCode(parser.getText());
+                parser.nextTag(); //process </code>
             }else{
-                table.setExtId("");
-                parser.nextTag();
-            }
-
-            parser.nextTag(); //process <permId>
-            if (!isEmptyTag(DatabaseHelper.Member.COLUMN_PERM_ID, parser)) {
-                parser.next();
-                table.setPermId(parser.getText());
-                parser.nextTag(); //process </permId>
-            }else{
-                table.setPermId("");
+                table.setCode("");
                 parser.nextTag();
             }
 

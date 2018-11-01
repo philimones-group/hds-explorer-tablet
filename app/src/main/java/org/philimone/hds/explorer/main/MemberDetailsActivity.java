@@ -177,7 +177,7 @@ public class MemberDetailsActivity extends Activity implements OdkFormResultList
 
     private void setMemberData(){
         mbDetailsName.setText(member.getName());
-        mbDetailsPermId.setText(member.getPermId());
+        mbDetailsPermId.setText(member.getCode());
         mbDetailsGender.setText(member.getGender());
         mbDetailsAge.setText(member.getAge()+"");
         mbDetailsDob.setText(member.getDob());

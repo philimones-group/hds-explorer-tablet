@@ -312,7 +312,7 @@ public class MemberListFragment extends Fragment {
 
         for (Household h : households) {
             if (!h.isGpsNull()) {
-                points[i++] = new MWMPoint(h.getGpsLatitude(), h.getGpsLongitude(), h.getHouseNumber());
+                points[i++] = new MWMPoint(h.getGpsLatitude(), h.getGpsLongitude(), h.getName());
                 hasAnyCoords = true;
             }
         }
@@ -500,8 +500,7 @@ public class MemberListFragment extends Fragment {
         Member member = Member.getEmptyMember();
         member.setHouseExtId(txtNmHouseNumber.getText().toString());
         member.setHouseNumber(txtNmHouseNumber.getText().toString());
-        member.setExtId(txtNmPermId.getText().toString());
-        member.setPermId(txtNmPermId.getText().toString());
+        member.setCode(txtNmPermId.getText().toString());
         member.setName(txtNmName.getText().toString());
         member.setDob(StringUtil.format(GeneralUtil.getDate(dtpNmDob), "yyyy-MM-dd" ));
         member.setAge(GeneralUtil.getAge(GeneralUtil.getDate(dtpNmDob)));
@@ -512,11 +511,13 @@ public class MemberListFragment extends Fragment {
             dialogNewMember.show();
             return;
         }
+        /*
         if (!member.getPermId().matches("[0-9]{4}-[0-9]{3}-[0-9]{2}")){
             buildOkDialog(getString(R.string.member_list_newmem_permid_err_lbl));
             dialogNewMember.show();
             return;
         }
+        */
         if (member.getName().trim().isEmpty()){
             buildOkDialog(getString(R.string.member_list_newmem_name_err_lbl));
             dialogNewMember.show();
@@ -541,7 +542,7 @@ public class MemberListFragment extends Fragment {
         }
 
         //check if permid exists
-        if (checkIfPermIdExists(member.getPermId())){
+        if (checkIfCodeExists(member.getCode())){
             buildOkDialog(getString(R.string.member_list_newmem_permid_exists_lbl));
             dialogNewMember.show();
             return;
@@ -556,9 +557,9 @@ public class MemberListFragment extends Fragment {
         memberActionListener.onMemberSelected(null, member);
     }
 
-    private boolean checkIfPermIdExists(String permId){
+    private boolean checkIfCodeExists(String permId){
         database.open();
-        Member member = Queries.getMemberBy(database, DatabaseHelper.Member.COLUMN_PERM_ID+"=?", new String[] { permId });
+        Member member = Queries.getMemberBy(database, DatabaseHelper.Member.COLUMN_CODE+"=?", new String[] { permId });
         database.close();
 
         return member != null;
@@ -591,7 +592,7 @@ public class MemberListFragment extends Fragment {
         final MWMPoint[] points = new MWMPoint[1];
 
         if (!household.isGpsNull()){
-            points[0] = new MWMPoint(household.getGpsLatitude(), household.getGpsLongitude(), household.getHouseNumber());
+            points[0] = new MWMPoint(household.getGpsLatitude(), household.getGpsLongitude(), household.getName());
 
             MapsWithMeApi.showPointsOnMap(this.getActivity(), getString(R.string.map_households), points);
         }else{
@@ -758,7 +759,7 @@ public class MemberListFragment extends Fragment {
         if (member == null || member.getHouseNumber()==null) return null;
 
         database.open();
-        Household household = Queries.getHouseholdBy(database, DatabaseHelper.Household.COLUMN_HOUSE_NUMBER+"=?", new String[]{ member.getHouseNumber() });
+        Household household = Queries.getHouseholdBy(database, DatabaseHelper.Household.COLUMN_NAME +"=?", new String[]{ member.getHouseNumber() });
         database.close();
 
         return household;
@@ -778,14 +779,14 @@ public class MemberListFragment extends Fragment {
         return household;
     }
 
-    public MemberArrayAdapter loadMembersByFilters(Household household, String name, String permId, String houseNumber, String gender, Integer minAge, Integer maxAge, Boolean isDead, Boolean hasOutmigrated, Boolean liveResident) {
+    public MemberArrayAdapter loadMembersByFilters(Household household, String name, String memberCode, String houseNumber, String gender, Integer minAge, Integer maxAge, Boolean isDead, Boolean hasOutmigrated, Boolean liveResident) {
         //open loader
         this.currentHousehold = household;
 
         String endType = "";
 
         if (name == null) name = "";
-        if (permId == null) permId = "";
+        if (memberCode == null) memberCode = "";
         if (houseNumber == null) houseNumber = "";
         if (gender == null) gender = "";
         if (isDead != null && isDead) endType = "DTH";
@@ -796,7 +797,7 @@ public class MemberListFragment extends Fragment {
         this.lastSearch = new ArrayList();
         this.lastSearch.add(household!=null ? household.getId()+"" : "");
         this.lastSearch.add(name);
-        this.lastSearch.add(permId);
+        this.lastSearch.add(memberCode);
         this.lastSearch.add(houseNumber);
         this.lastSearch.add(gender);
         this.lastSearch.add(minAge==null ? "" : minAge.toString());
@@ -815,10 +816,10 @@ public class MemberListFragment extends Fragment {
             whereClause = DatabaseHelper.Member.COLUMN_NAME + " like ?";
             whereValues.add(name+"%");
         }
-        if (!permId.isEmpty()){
+        if (!memberCode.isEmpty()){
             whereClause += (whereClause.isEmpty()? "" : " AND ");
-            whereClause += DatabaseHelper.Member.COLUMN_PERM_ID + " like ?";
-            whereValues.add(permId+"%");
+            whereClause += DatabaseHelper.Member.COLUMN_CODE + " like ?";
+            whereValues.add(memberCode+"%");
         }
         if (!houseNumber.isEmpty()){
             whereClause += (whereClause.isEmpty()? "" : " AND ");
@@ -865,18 +866,18 @@ public class MemberListFragment extends Fragment {
         database.open();
 
         String[] ar = new String[whereValues.size()];
-        Cursor cursor = database.query(Member.class, DatabaseHelper.Member.ALL_COLUMNS, whereClause, whereValues.toArray(ar), null, null, DatabaseHelper.Member.COLUMN_PERM_ID);
+        Cursor cursor = database.query(Member.class, DatabaseHelper.Member.ALL_COLUMNS, whereClause, whereValues.toArray(ar), null, null, DatabaseHelper.Member.COLUMN_CODE);
 
         while (cursor.moveToNext()){
             Member member = Converter.cursorToMember(cursor);
             members.add(member);
             //Log.d("household", ""+household);
             //Log.d("head", ""+(household!=null ? household.getHeadPermId():"null"));
-            if (household != null && household.getHeadPermId().equals(member.getPermId())){
+            if (household != null && household.getHeadPermId().equals(member.getCode())){
                 member.setHouseholdHead(true);
             }
 
-            if (household != null && household.getSubsHeadPermId().equals(member.getPermId())){
+            if (household != null && household.getSubsHeadPermId().equals(member.getCode())){
                 member.setSubsHouseholdHead(true);
             }
         }

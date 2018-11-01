@@ -54,7 +54,7 @@ public class SurveyHouseholdsActivity extends Activity implements HouseholdFilte
     @Override
     public void onHouseholdClick(Household household) {
         Log.d("survey-household", ""+household);
-        MemberSearchTask task = new MemberSearchTask(household, null, null, null, household.getHouseNumber());
+        MemberSearchTask task = new MemberSearchTask(household, null, null, null, household.getName());
         task.execute();
     }
 

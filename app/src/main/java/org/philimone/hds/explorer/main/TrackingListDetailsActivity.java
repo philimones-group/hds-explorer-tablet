@@ -137,7 +137,7 @@ public class TrackingListDetailsActivity extends Activity {
 
 
         database.open();
-        Household household = Queries.getHouseholdBy(database, DatabaseHelper.Household.COLUMN_HOUSE_NUMBER+"=?", new String[]{ member.getHouseNumber() });
+        Household household = Queries.getHouseholdBy(database, DatabaseHelper.Household.COLUMN_NAME +"=?", new String[]{ member.getHouseNumber() });
         database.close();
 
         return household;
@@ -250,7 +250,7 @@ public class TrackingListDetailsActivity extends Activity {
 
     private List<Member> getMembers(Database db, List<String> extIds){
         db.open();
-        List<Member> members = Queries.getAllMemberBy(db, DatabaseHelper.Member.COLUMN_EXT_ID+" IN ("+ StringUtil.toInClause(extIds) +")", null);
+        List<Member> members = Queries.getAllMemberBy(db, DatabaseHelper.Member.COLUMN_CODE +" IN ("+ StringUtil.toInClause(extIds) +")", null);
         db.close();
 
         if (members==null) return new ArrayList<>();
@@ -268,7 +268,7 @@ public class TrackingListDetailsActivity extends Activity {
         List<String> formsList = Arrays.asList(forms);
 
         for (Member mb : members){
-            if (mb.getExtId().equals(item.getMemberExtId())){
+            if (mb.getCode().equals(item.getMemberExtId())){
                 member = mb;
                 break;
             }

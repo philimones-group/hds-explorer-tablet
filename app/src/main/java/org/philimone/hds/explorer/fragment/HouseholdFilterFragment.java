@@ -146,7 +146,7 @@ public class HouseholdFilterFragment extends Fragment {
 
         for (int i=0; i < points.length; i++){
             Household h = adapter.getHouseholds().get(i);
-            String name = h.getHouseNumber();
+            String name = h.getName();
 
             if (!h.isGpsNull()) {
                 double lat = h.getGpsLatitude();
@@ -183,7 +183,7 @@ public class HouseholdFilterFragment extends Fragment {
         List<String> whereValues = new ArrayList<>();
         String[] arrayWhereValues;
 
-        String whereClause = DatabaseHelper.Household.COLUMN_HOUSE_NUMBER + " like ?";
+        String whereClause = DatabaseHelper.Household.COLUMN_NAME + " like ?";
         whereValues.add(houseNumber+"%");
 
         arrayWhereValues = new String[whereValues.size()];
@@ -191,7 +191,7 @@ public class HouseholdFilterFragment extends Fragment {
         //search
         database.open();
 
-        Cursor cursor = database.query(Household.class, DatabaseHelper.Household.ALL_COLUMNS, whereClause, whereValues.toArray(arrayWhereValues), null, null, DatabaseHelper.Household.COLUMN_HOUSE_NUMBER);
+        Cursor cursor = database.query(Household.class, DatabaseHelper.Household.ALL_COLUMNS, whereClause, whereValues.toArray(arrayWhereValues), null, null, DatabaseHelper.Household.COLUMN_NAME);
 
         while (cursor.moveToNext()){
             households.add(Converter.cursorToHousehold(cursor));

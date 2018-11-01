@@ -15,7 +15,7 @@ import mz.betainteractive.utilities.ReflectionUtils;
 public class Household implements Serializable, Table {
 
     private int id;
-    private String extId;
+    private String code;
 
     private String locality;
     private String adminPost;
@@ -23,7 +23,7 @@ public class Household implements Serializable, Table {
     private String province;
 
     private String neighborhood;
-    private String houseNumber;
+    private String name;
     private String headPermId;
     private String subsHeadPermId;
 
@@ -53,20 +53,20 @@ public class Household implements Serializable, Table {
         this.id = id;
     }
 
-    public String getExtId() {
-        return extId;
+    public String getCode() {
+        return code;
     }
 
-    public void setExtId(String extId) {
-        this.extId = extId;
+    public void setCode(String code) {
+        this.code = code;
     }
 
-    public String getHouseNumber() {
-        return houseNumber;
+    public String getName() {
+        return name;
     }
 
-    public void setHouseNumber(String houseNumber) {
-        this.houseNumber = houseNumber;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getNeighborhood() {
@@ -241,8 +241,8 @@ public class Household implements Serializable, Table {
     @Override
     public ContentValues getContentValues() {
         ContentValues cv = new ContentValues();
-        cv.put(DatabaseHelper.Household.COLUMN_EXT_ID, extId);
-        cv.put(DatabaseHelper.Household.COLUMN_HOUSE_NUMBER, houseNumber);
+        cv.put(DatabaseHelper.Household.COLUMN_CODE, code);
+        cv.put(DatabaseHelper.Household.COLUMN_NAME, name);
         cv.put(DatabaseHelper.Household.COLUMN_HEAD_PERM_ID, headPermId);
         cv.put(DatabaseHelper.Household.COLUMN_SUBSHEAD_PERM_ID, subsHeadPermId);
         cv.put(DatabaseHelper.Household.COLUMN_NEIGHBORHOOD, neighborhood);

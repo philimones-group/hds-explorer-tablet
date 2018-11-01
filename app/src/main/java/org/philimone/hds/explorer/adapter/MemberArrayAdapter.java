@@ -157,10 +157,10 @@ public class MemberArrayAdapter  extends ArrayAdapter<Member> {
         Member mb = members.get(position);
 
         txtName.setText(mb.getName());
-        txtPermId.setText(mb.getPermId());
+        txtPermId.setText(mb.getCode());
 
         if (showHouseholdAndPermId){
-            txtPermId.setText(mb.getHouseNumber() +" -> "+mb.getPermId());
+            txtPermId.setText(mb.getHouseNumber() +" -> "+mb.getCode());
         }
 
         if (chkVBprocessed != null && checkableMembers != null){

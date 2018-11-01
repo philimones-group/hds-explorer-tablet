@@ -129,8 +129,8 @@ public class HouseholdArrayAdapter extends ArrayAdapter<Household> {
 
         Household hh = households.get(position);
 
-        txtName.setText(hh.getHouseNumber());
-        txtExtId.setText(hh.getExtId());
+        txtName.setText(hh.getName());
+        txtExtId.setText(hh.getCode());
 
         if (chkVBprocessed != null && checkableHouseholds != null){
             chkVBprocessed.setChecked(checkableHouseholds.get(position));

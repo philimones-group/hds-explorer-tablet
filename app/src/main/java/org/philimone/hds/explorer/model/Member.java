@@ -17,8 +17,7 @@ import mz.betainteractive.utilities.StringUtil;
 public class Member implements Serializable, Table {
 
     private int id;
-    private String extId;
-    private String permId;
+    private String code;
     private String name;
     private String gender;
     private String dob;
@@ -72,20 +71,12 @@ public class Member implements Serializable, Table {
         this.id = id;
     }
 
-    public String getExtId() {
-        return extId;
+    public String getCode() {
+        return code;
     }
 
-    public void setExtId(String extId) {
-        this.extId = extId;
-    }
-
-    public String getPermId() {
-        return permId;
-    }
-
-    public void setPermId(String permId) {
-        this.permId = permId;
+    public void setCode(String code) {
+        this.code = code;
     }
 
     public String getName() {
@@ -362,8 +353,7 @@ public class Member implements Serializable, Table {
 
     public static Member getEmptyMember(){
         Member member = new Member();
-        member.extId = "";
-        member.permId = "";
+        member.code = "";
         member.name = "";
         member.gender = "";
         member.dob = "";
@@ -414,8 +404,7 @@ public class Member implements Serializable, Table {
     @Override
     public ContentValues getContentValues() {
         ContentValues cv = new ContentValues();
-        cv.put(DatabaseHelper.Member.COLUMN_EXT_ID, extId);
-        cv.put(DatabaseHelper.Member.COLUMN_PERM_ID, permId);
+        cv.put(DatabaseHelper.Member.COLUMN_CODE, code);
         cv.put(DatabaseHelper.Member.COLUMN_NAME, name);
         cv.put(DatabaseHelper.Member.COLUMN_GENDER, gender);
         cv.put(DatabaseHelper.Member.COLUMN_DOB, dob);

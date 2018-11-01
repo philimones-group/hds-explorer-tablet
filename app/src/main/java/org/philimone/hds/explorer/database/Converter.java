@@ -85,8 +85,8 @@ public class Converter {
 		Household hh = new Household();
 
 		hh.setId(cursor.getInt(cursor.getColumnIndex(DatabaseHelper.Household._ID)));
-		hh.setExtId(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Household.COLUMN_EXT_ID)));
-		hh.setHouseNumber(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Household.COLUMN_HOUSE_NUMBER)));
+		hh.setCode(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Household.COLUMN_CODE)));
+		hh.setName(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Household.COLUMN_NAME)));
 		hh.setHeadPermId(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Household.COLUMN_HEAD_PERM_ID)));
 		hh.setSubsHeadPermId(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Household.COLUMN_SUBSHEAD_PERM_ID)));
 		hh.setNeighborhood(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Household.COLUMN_NEIGHBORHOOD)));
@@ -115,8 +115,7 @@ public class Converter {
 		Member mb = new Member();
 
 		mb.setId(cursor.getInt(cursor.getColumnIndex(DatabaseHelper.Member._ID)));
-		mb.setExtId(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Member.COLUMN_EXT_ID)));
-		mb.setPermId(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Member.COLUMN_PERM_ID)));
+		mb.setCode(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Member.COLUMN_CODE)));
 		mb.setName(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Member.COLUMN_NAME)));
 		mb.setGender(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Member.COLUMN_GENDER)));
 		mb.setDob(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Member.COLUMN_DOB)));

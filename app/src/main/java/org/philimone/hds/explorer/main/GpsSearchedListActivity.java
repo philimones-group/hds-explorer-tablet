@@ -146,7 +146,7 @@ public class GpsSearchedListActivity extends Activity {
         if (member == null || member.getHouseNumber()==null) return null;
 
         database.open();
-        Household household = Queries.getHouseholdBy(database, DatabaseHelper.Household.COLUMN_HOUSE_NUMBER+"=?", new String[]{ member.getHouseNumber() });
+        Household household = Queries.getHouseholdBy(database, DatabaseHelper.Household.COLUMN_NAME +"=?", new String[]{ member.getHouseNumber() });
         database.close();
 
         return household;
@@ -241,12 +241,12 @@ public class GpsSearchedListActivity extends Activity {
     private void showMap() {
         if (isMemberMap){
             if (showOriginalMap){
-                MapsWithMeApi.showPointsOnMap(this, getString(R.string.map_closest_members_from_lbl) + " " + mainMember.getPermId(), points_bak);
+                MapsWithMeApi.showPointsOnMap(this, getString(R.string.map_closest_members_from_lbl) + " " + mainMember.getCode(), points_bak);
             }else {
-                MapsWithMeApi.showPointsOnMap(this, getString(R.string.map_closest_members_from_lbl) + " " + mainMember.getPermId(), points);
+                MapsWithMeApi.showPointsOnMap(this, getString(R.string.map_closest_members_from_lbl) + " " + mainMember.getCode(), points);
             }
         }else{
-            MapsWithMeApi.showPointsOnMap(this, getString(R.string.map_closest_houses_from_lbl) + " " + mainHousehold.getHouseNumber(), points);
+            MapsWithMeApi.showPointsOnMap(this, getString(R.string.map_closest_houses_from_lbl) + " " + mainHousehold.getName(), points);
         }
     }
 }

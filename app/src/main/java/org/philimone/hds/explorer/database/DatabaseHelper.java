@@ -130,8 +130,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	public static final class Household implements BaseColumns  {
 		public static final String TABLE_NAME = "household";
 
-        public static final String COLUMN_EXT_ID = "extId";
-        public static final String COLUMN_HOUSE_NUMBER = "houseNumber";
+        public static final String COLUMN_CODE = "code";
+        public static final String COLUMN_NAME = "name";
         public static final String COLUMN_HEAD_PERM_ID = "headPermId";
         public static final String COLUMN_SUBSHEAD_PERM_ID = "subsHeadPermId";
         public static final String COLUMN_NEIGHBORHOOD = "neighborhood";
@@ -153,7 +153,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         public static final String COLUMN_EXTRAS_COLUMNS = "extrasColumns";
         public static final String COLUMN_EXTRAS_VALUES = "extrasValues";
 
-		public static final String[] ALL_COLUMNS = {_ID, COLUMN_EXT_ID, COLUMN_HOUSE_NUMBER, COLUMN_HEAD_PERM_ID, COLUMN_SUBSHEAD_PERM_ID, COLUMN_NEIGHBORHOOD, COLUMN_LOCALITY,
+		public static final String[] ALL_COLUMNS = {_ID, COLUMN_CODE, COLUMN_NAME, COLUMN_HEAD_PERM_ID, COLUMN_SUBSHEAD_PERM_ID, COLUMN_NEIGHBORHOOD, COLUMN_LOCALITY,
                 COLUMN_ADMIN_POST, COLUMN_DISTRICT, COLUMN_PROVINCE, COLUMN_GPS_NULL, COLUMN_GPS_ACCURACY, COLUMN_GPS_ALTITUDE, COLUMN_GPS_LATITUDE, COLUMN_GPS_LONGITUDE,
                 COLUMN_COS_LATITUDE, COLUMN_SIN_LATITUDE, COLUMN_COS_LONGITUDE, COLUMN_SIN_LONGITUDE, COLUMN_POPULATION_DENSITY, COLUMN_DENSITY_TYPE, COLUMN_EXTRAS_COLUMNS, COLUMN_EXTRAS_VALUES};
 	}
@@ -161,8 +161,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	public static final class Member implements BaseColumns  {
 		public static final String TABLE_NAME = "member";
 
-        public static final String COLUMN_EXT_ID = "extId";
-        public static final String COLUMN_PERM_ID = "permId";
+        public static final String COLUMN_CODE = "code";
         public static final String COLUMN_NAME = "name";
         public static final String COLUMN_GENDER = "gender";
         public static final String COLUMN_DOB = "dob";
@@ -196,7 +195,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         public static final String COLUMN_EXTRAS_VALUES = "extrasValues";
 
 
-        public static final String[] ALL_COLUMNS = {_ID, COLUMN_EXT_ID, COLUMN_PERM_ID, COLUMN_NAME, COLUMN_GENDER, COLUMN_DOB, COLUMN_AGE, COLUMN_AGE_AT_DEATH, COLUMN_SPOUSE_EXT_ID,
+        public static final String[] ALL_COLUMNS = {_ID, COLUMN_CODE, COLUMN_NAME, COLUMN_GENDER, COLUMN_DOB, COLUMN_AGE, COLUMN_AGE_AT_DEATH, COLUMN_SPOUSE_EXT_ID,
                 COLUMN_SPOUSE_NAME, COLUMN_SPOUSE_PERM_ID, COLUMN_MOTHER_EXT_ID,
                 COLUMN_MOTHER_NAME, COLUMN_MOTHER_PERM_ID, COLUMN_FATHER_EXT_ID, COLUMN_FATHER_NAME, COLUMN_FATHER_PERM_ID, COLUMN_HOUSE_EXT_ID, COLUMN_HOUSE_NUMBER,
                 COLUMN_START_TYPE, COLUMN_START_DATE, COLUMN_END_TYPE, COLUMN_END_DATE, COLUMN_GPS_NULL,
@@ -328,10 +327,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String CREATE_TABLE_HOUSEHOLD = " "
             + "CREATE TABLE " + Household.TABLE_NAME + "("
             + Household._ID  + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-            + Household.COLUMN_EXT_ID + " TEXT,"
+            + Household.COLUMN_CODE + " TEXT,"
             + Household.COLUMN_HEAD_PERM_ID + " TEXT,"
             + Household.COLUMN_SUBSHEAD_PERM_ID + " TEXT,"
-            + Household.COLUMN_HOUSE_NUMBER + " TEXT,"
+            + Household.COLUMN_NAME + " TEXT,"
             + Household.COLUMN_NEIGHBORHOOD + " TEXT,"
             + Household.COLUMN_LOCALITY + " TEXT,"
             + Household.COLUMN_ADMIN_POST + " TEXT,"
@@ -352,17 +351,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + Household.COLUMN_EXTRAS_VALUES + " TEXT);"
 
             + " CREATE UNIQUE INDEX IDX_HOUSEHOLD_EXTID ON " + Household.TABLE_NAME
-            + "(" +  Household.COLUMN_EXT_ID + ");"
+            + "(" +  Household.COLUMN_CODE + ");"
 
             + " CREATE UNIQUE INDEX IDX_HOUSEHOLD_NUMBER ON " + Household.TABLE_NAME
-            + "(" +  Household.COLUMN_HOUSE_NUMBER + ");"
+            + "(" +  Household.COLUMN_NAME + ");"
             ;
 
     private static final String CREATE_TABLE_MEMBER = " "
             + "CREATE TABLE " + Member.TABLE_NAME + "("
             + Member._ID  + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-            + Member.COLUMN_EXT_ID + " TEXT,"
-            + Member.COLUMN_PERM_ID + " TEXT,"
+            + Member.COLUMN_CODE + " TEXT,"
             + Member.COLUMN_NAME + " TEXT,"
             + Member.COLUMN_GENDER + " TEXT,"
             + Member.COLUMN_DOB + " TEXT,"
@@ -395,11 +393,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + Member.COLUMN_EXTRAS_COLUMNS + " TEXT,"
             + Member.COLUMN_EXTRAS_VALUES + " TEXT);"
 
-            + " CREATE UNIQUE INDEX IDX_MEMBER_EXT_ID ON " + Member.TABLE_NAME
-            + "(" +  Member.COLUMN_EXT_ID + ");"
-
-            + " CREATE UNIQUE INDEX IDX_MEMBER_PERMID ON " + Member.TABLE_NAME
-            + "(" +  Member.COLUMN_PERM_ID + ");"
+            + " CREATE UNIQUE INDEX IDX_MEMBER_CODE ON " + Member.TABLE_NAME
+            + "(" +  Member.COLUMN_CODE + ");"
             ;
 
     private static final String CREATE_TABLE_COLLECTED_DATA = " "

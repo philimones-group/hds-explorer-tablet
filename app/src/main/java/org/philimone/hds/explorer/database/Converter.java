@@ -122,18 +122,17 @@ public class Converter {
 		mb.setAge(cursor.getInt(cursor.getColumnIndex(DatabaseHelper.Member.COLUMN_AGE)));
 		mb.setAgeAtDeath(cursor.getInt(cursor.getColumnIndex(DatabaseHelper.Member.COLUMN_AGE_AT_DEATH)));
 
-        mb.setSpouseExtId(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Member.COLUMN_SPOUSE_EXT_ID)));
+        mb.setSpouseCode(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Member.COLUMN_SPOUSE_CODE)));
         mb.setSpouseName(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Member.COLUMN_SPOUSE_NAME)));
-        mb.setSpousePermId(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Member.COLUMN_SPOUSE_PERM_ID)));
 
-		mb.setMotherExtId(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Member.COLUMN_MOTHER_EXT_ID)));
+		mb.setMotherCode(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Member.COLUMN_MOTHER_CODE)));
 		mb.setMotherName(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Member.COLUMN_MOTHER_NAME)));
-		mb.setMotherPermId(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Member.COLUMN_MOTHER_PERM_ID)));
-		mb.setFatherExtId(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Member.COLUMN_FATHER_EXT_ID)));
+
+		mb.setFatherCode(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Member.COLUMN_FATHER_CODE)));
 		mb.setFatherName(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Member.COLUMN_FATHER_NAME)));
-		mb.setFatherPermId(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Member.COLUMN_FATHER_PERM_ID)));
-		mb.setHouseExtId(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Member.COLUMN_HOUSE_EXT_ID)));
-		mb.setHouseNumber(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Member.COLUMN_HOUSE_NUMBER)));
+
+		mb.setHouseholdCode(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Member.COLUMN_HOUSE_CODE)));
+		mb.setHouseholdName(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Member.COLUMN_HOUSE_NAME)));
 		mb.setStartType(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Member.COLUMN_START_TYPE)));
 		mb.setStartDate(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Member.COLUMN_START_DATE)));
 		mb.setEndType(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Member.COLUMN_END_TYPE)));

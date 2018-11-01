@@ -345,7 +345,7 @@ public class MemberListFragment extends Fragment {
 
         String sql = "SELECT * FROM " + DatabaseHelper.Member.TABLE_NAME + " ";
         String where = "WHERE ((" + cur_sin_lat + " * sinLatitude) + (" + cur_cos_lat + " * cosLatitude) * (cosLongitude * " + cur_cos_lng + " + sinLongitude*" + cur_sin_lng + ")) >= " + cur_allowed_distance +
-                       " ORDER BY "+DatabaseHelper.Member.COLUMN_HOUSE_NUMBER;
+                       " ORDER BY "+DatabaseHelper.Member.COLUMN_HOUSE_NAME;
 
 
         ArrayList<Member> members = new ArrayList<>();
@@ -378,13 +378,13 @@ public class MemberListFragment extends Fragment {
                 points_bak[i] = new MWMPoint(m.getGpsLatitude(), m.getGpsLongitude(), m.getName());
 
                 //put point on a java map organized by houseNumber
-                if (gpsMapHouseMembers.containsKey(m.getHouseNumber())){
-                    List<MWMPoint> list = gpsMapHouseMembers.get(m.getHouseNumber());
+                if (gpsMapHouseMembers.containsKey(m.getHouseholdName())){
+                    List<MWMPoint> list = gpsMapHouseMembers.get(m.getHouseholdName());
                     list.add(points[i]);
                 }else{
                     List<MWMPoint> list = new ArrayList<MWMPoint>();
                     list.add(points[i]);
-                    gpsMapHouseMembers.put(m.getHouseNumber(), list);
+                    gpsMapHouseMembers.put(m.getHouseholdName(), list);
                 }
 
                 hasAnyCoords = true;
@@ -498,15 +498,15 @@ public class MemberListFragment extends Fragment {
         DatePicker dtpNmDob = (DatePicker) dialogNewMember.findViewById(R.id.dtpNmDob);
 
         Member member = Member.getEmptyMember();
-        member.setHouseExtId(txtNmHouseNumber.getText().toString());
-        member.setHouseNumber(txtNmHouseNumber.getText().toString());
+        member.setHouseholdCode(txtNmHouseNumber.getText().toString());
+        member.setHouseholdName(txtNmHouseNumber.getText().toString());
         member.setCode(txtNmPermId.getText().toString());
         member.setName(txtNmName.getText().toString());
         member.setDob(StringUtil.format(GeneralUtil.getDate(dtpNmDob), "yyyy-MM-dd" ));
         member.setAge(GeneralUtil.getAge(GeneralUtil.getDate(dtpNmDob)));
 
         //
-        if (!member.getHouseNumber().matches("[0-9]{4}-[0-9]{3}")){
+        if (!member.getHouseholdName().matches("[0-9]{4}-[0-9]{3}")){
             buildOkDialog(getString(R.string.member_list_newmem_houseno_err_lbl));
             dialogNewMember.show();
             return;
@@ -622,13 +622,13 @@ public class MemberListFragment extends Fragment {
                 points[i] = new MWMPoint(lat, lon, name);
 
                 //put point on a java map organized by houseNumber
-                if (gpsMapHouseMembers.containsKey(m.getHouseNumber())){
-                    List<MWMPoint> list = gpsMapHouseMembers.get(m.getHouseNumber());
+                if (gpsMapHouseMembers.containsKey(m.getHouseholdName())){
+                    List<MWMPoint> list = gpsMapHouseMembers.get(m.getHouseholdName());
                     list.add(points[i]);
                 }else{
                     List<MWMPoint> list = new ArrayList<MWMPoint>();
                     list.add(points[i]);
-                    gpsMapHouseMembers.put(m.getHouseNumber(), list);
+                    gpsMapHouseMembers.put(m.getHouseholdName(), list);
                 }
 
                 hasAnyCoords = true;
@@ -672,7 +672,7 @@ public class MemberListFragment extends Fragment {
         List<Member> houseMembers = new ArrayList<>();
 
         for (Member m : members)
-            if (m.getHouseNumber().equals(mainMember.getHouseNumber()))
+            if (m.getHouseholdName().equals(mainMember.getHouseholdName()))
                 houseMembers.add(m);
 
 
@@ -756,10 +756,10 @@ public class MemberListFragment extends Fragment {
     }
 
     private Household getHousehold(Member member){
-        if (member == null || member.getHouseNumber()==null) return null;
+        if (member == null || member.getHouseholdName()==null) return null;
 
         database.open();
-        Household household = Queries.getHouseholdBy(database, DatabaseHelper.Household.COLUMN_NAME +"=?", new String[]{ member.getHouseNumber() });
+        Household household = Queries.getHouseholdBy(database, DatabaseHelper.Household.COLUMN_NAME +"=?", new String[]{ member.getHouseholdName() });
         database.close();
 
         return household;
@@ -823,7 +823,7 @@ public class MemberListFragment extends Fragment {
         }
         if (!houseNumber.isEmpty()){
             whereClause += (whereClause.isEmpty()? "" : " AND ");
-            whereClause += DatabaseHelper.Member.COLUMN_HOUSE_NUMBER + " like ?";
+            whereClause += DatabaseHelper.Member.COLUMN_HOUSE_NAME + " like ?";
             whereValues.add(houseNumber+"%");
         }
         if (!gender.isEmpty()){

@@ -181,7 +181,7 @@ public class MemberDetailsActivity extends Activity implements OdkFormResultList
         mbDetailsGender.setText(member.getGender());
         mbDetailsAge.setText(member.getAge()+"");
         mbDetailsDob.setText(member.getDob());
-        mbDetailsHouseNo.setText(member.getHouseNumber());
+        mbDetailsHouseNo.setText(member.getHouseholdName());
         mbDetailsEndType.setText(getEndTypeMsg(member));
         mbDetailsEndDate.setText(getEndDateMsg(member));
         mbDetailsFather.setText(getParentName(member.getFatherName()));

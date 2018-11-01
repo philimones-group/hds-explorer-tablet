@@ -1263,12 +1263,12 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 			}
 
             parser.nextTag(); //process <motherExtId>
-            if (!isEmptyTag(DatabaseHelper.Member.COLUMN_MOTHER_EXT_ID, parser)) {
+            if (!isEmptyTag(DatabaseHelper.Member.COLUMN_MOTHER_CODE, parser)) {
                 parser.next();
-                table.setMotherExtId(parser.getText());
+                table.setMotherCode(parser.getText());
                 parser.nextTag(); //process </motherExtId>
             }else{
-                table.setMotherExtId("");
+                table.setMotherCode("");
                 parser.nextTag();
             }
 
@@ -1282,23 +1282,13 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
                 parser.nextTag();
             }
 
-            parser.nextTag(); //process <motherPermId>
-            if (!isEmptyTag(DatabaseHelper.Member.COLUMN_MOTHER_PERM_ID, parser)) {
+            parser.nextTag(); //process <fatherCode>
+            if (!isEmptyTag(DatabaseHelper.Member.COLUMN_FATHER_CODE, parser)) {
                 parser.next();
-                table.setMotherPermId(parser.getText());
-                parser.nextTag(); //process </motherPermId>
+                table.setFatherCode(parser.getText());
+                parser.nextTag(); //process </fatherCode>
             }else{
-                table.setMotherPermId("");
-                parser.nextTag();
-            }
-
-            parser.nextTag(); //process <fatherExtId>
-            if (!isEmptyTag(DatabaseHelper.Member.COLUMN_FATHER_EXT_ID, parser)) {
-                parser.next();
-                table.setFatherExtId(parser.getText());
-                parser.nextTag(); //process </fatherExtId>
-            }else{
-                table.setFatherExtId("");
+                table.setFatherCode("");
                 parser.nextTag();
             }
 
@@ -1312,23 +1302,13 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
                 parser.nextTag();
             }
 
-            parser.nextTag(); //process <fatherPermId>
-            if (!isEmptyTag(DatabaseHelper.Member.COLUMN_FATHER_PERM_ID, parser)) {
-                parser.next();
-                table.setFatherPermId(parser.getText());
-                parser.nextTag(); //process </fatherPermId>
-            }else{
-                table.setFatherPermId("");
-                parser.nextTag();
-            }
-
             parser.nextTag(); //process <spouseExtId>
-            if (!isEmptyTag(DatabaseHelper.Member.COLUMN_SPOUSE_EXT_ID, parser)) {
+            if (!isEmptyTag(DatabaseHelper.Member.COLUMN_SPOUSE_CODE, parser)) {
                 parser.next();
-                table.setSpouseExtId(parser.getText());
+                table.setSpouseCode(parser.getText());
                 parser.nextTag(); //process </spouseExtId>
             }else{
-                table.setSpouseExtId("");
+                table.setSpouseCode("");
                 parser.nextTag();
             }
 
@@ -1342,33 +1322,23 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
                 parser.nextTag();
             }
 
-            parser.nextTag(); //process <spousePermId>
-            if (!isEmptyTag(DatabaseHelper.Member.COLUMN_SPOUSE_PERM_ID, parser)) {
-                parser.next();
-                table.setSpousePermId(parser.getText());
-                parser.nextTag(); //process </spousePermId>
-            }else{
-                table.setSpousePermId("");
-                parser.nextTag();
-            }
-
             parser.nextTag(); //process <houseExtId>
-            if (!isEmptyTag(DatabaseHelper.Member.COLUMN_HOUSE_EXT_ID, parser)) {
+            if (!isEmptyTag(DatabaseHelper.Member.COLUMN_HOUSE_CODE, parser)) {
                 parser.next();
-                table.setHouseExtId(parser.getText());
+                table.setHouseholdCode(parser.getText());
                 parser.nextTag(); //process </houseExtId>
             }else{
-                table.setHouseExtId("");
+                table.setHouseholdCode("");
                 parser.nextTag();
             }
 
             parser.nextTag(); //process <houseNumber>
-            if (!isEmptyTag(DatabaseHelper.Member.COLUMN_HOUSE_NUMBER, parser)) {
+            if (!isEmptyTag(DatabaseHelper.Member.COLUMN_HOUSE_NAME, parser)) {
                 parser.next();
-                table.setHouseNumber(parser.getText());
+                table.setHouseholdName(parser.getText());
                 parser.nextTag(); //process </houseNumber>
             }else{
-                table.setHouseNumber("");
+                table.setHouseholdName("");
                 parser.nextTag();
             }
 

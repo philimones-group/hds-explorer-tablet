@@ -100,10 +100,10 @@ public class SurveyMembersActivity extends Activity implements MemberFilterFragm
     }
 
     private Household getHousehold(Member member){
-        if (member == null || member.getHouseNumber()==null) return null;
+        if (member == null || member.getHouseholdName()==null) return null;
 
         database.open();
-        Household household = Queries.getHouseholdBy(database, DatabaseHelper.Household.COLUMN_NAME +"=?", new String[]{ member.getHouseNumber() });
+        Household household = Queries.getHouseholdBy(database, DatabaseHelper.Household.COLUMN_NAME +"=?", new String[]{ member.getHouseholdName() });
         database.close();
 
         return household;

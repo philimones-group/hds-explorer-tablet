@@ -119,7 +119,7 @@ public class TrackingExpandableListAdapter extends BaseExpandableListAdapter imp
         Member member = memberItem.getMember();
 
         txtName.setText(member.getName());
-        txtId.setText(member.getHouseNumber() +" -> "+member.getCode());
+        txtId.setText(member.getHouseholdName() +" -> "+member.getCode());
         txtDetails.setText(memberItem.getStudyCode());
 
         pBar.setMaxValue(memberItem.getForms().size());

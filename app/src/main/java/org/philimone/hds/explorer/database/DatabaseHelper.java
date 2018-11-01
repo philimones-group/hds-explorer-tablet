@@ -167,17 +167,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         public static final String COLUMN_DOB = "dob";
         public static final String COLUMN_AGE = "age";
         public static final String COLUMN_AGE_AT_DEATH = "ageAtDeath";
-        public static final String COLUMN_SPOUSE_EXT_ID = "spouseExtId";
+        public static final String COLUMN_SPOUSE_CODE = "spouseCode";
         public static final String COLUMN_SPOUSE_NAME = "spouseName";
-        public static final String COLUMN_SPOUSE_PERM_ID = "spousePermId";
-        public static final String COLUMN_MOTHER_EXT_ID = "motherExtId";
+        public static final String COLUMN_MOTHER_CODE = "motherCode";
         public static final String COLUMN_MOTHER_NAME = "motherName";
-        public static final String COLUMN_MOTHER_PERM_ID = "motherPermId";
-        public static final String COLUMN_FATHER_EXT_ID = "fatherExtId";
+        public static final String COLUMN_FATHER_CODE = "fatherCode";
         public static final String COLUMN_FATHER_NAME = "fatherName";
-        public static final String COLUMN_FATHER_PERM_ID = "fatherPermId";
-        public static final String COLUMN_HOUSE_EXT_ID = "houseExtId";
-        public static final String COLUMN_HOUSE_NUMBER = "houseNumber";
+        public static final String COLUMN_HOUSE_CODE = "houseCode";
+        public static final String COLUMN_HOUSE_NAME = "houseName";
         public static final String COLUMN_START_TYPE = "startType";
         public static final String COLUMN_START_DATE = "startDate";
         public static final String COLUMN_END_TYPE = "endType";
@@ -195,9 +192,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         public static final String COLUMN_EXTRAS_VALUES = "extrasValues";
 
 
-        public static final String[] ALL_COLUMNS = {_ID, COLUMN_CODE, COLUMN_NAME, COLUMN_GENDER, COLUMN_DOB, COLUMN_AGE, COLUMN_AGE_AT_DEATH, COLUMN_SPOUSE_EXT_ID,
-                COLUMN_SPOUSE_NAME, COLUMN_SPOUSE_PERM_ID, COLUMN_MOTHER_EXT_ID,
-                COLUMN_MOTHER_NAME, COLUMN_MOTHER_PERM_ID, COLUMN_FATHER_EXT_ID, COLUMN_FATHER_NAME, COLUMN_FATHER_PERM_ID, COLUMN_HOUSE_EXT_ID, COLUMN_HOUSE_NUMBER,
+        public static final String[] ALL_COLUMNS = {_ID, COLUMN_CODE, COLUMN_NAME, COLUMN_GENDER, COLUMN_DOB, COLUMN_AGE, COLUMN_AGE_AT_DEATH, COLUMN_SPOUSE_CODE,
+                COLUMN_SPOUSE_NAME, COLUMN_MOTHER_CODE,
+                COLUMN_MOTHER_NAME, COLUMN_FATHER_CODE, COLUMN_FATHER_NAME, COLUMN_HOUSE_CODE, COLUMN_HOUSE_NAME,
                 COLUMN_START_TYPE, COLUMN_START_DATE, COLUMN_END_TYPE, COLUMN_END_DATE, COLUMN_GPS_NULL,
                 COLUMN_GPS_ACCURACY, COLUMN_GPS_ALTITUDE, COLUMN_GPS_LATITUDE, COLUMN_GPS_LONGITUDE,
                 COLUMN_COS_LATITUDE, COLUMN_SIN_LATITUDE, COLUMN_COS_LONGITUDE, COLUMN_SIN_LONGITUDE, COLUMN_EXTRAS_COLUMNS, COLUMN_EXTRAS_VALUES};
@@ -366,17 +363,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + Member.COLUMN_DOB + " TEXT,"
             + Member.COLUMN_AGE + " INTEGER,"
             + Member.COLUMN_AGE_AT_DEATH + " INTEGER,"
-            + Member.COLUMN_SPOUSE_EXT_ID + " TEXT,"
+            + Member.COLUMN_SPOUSE_CODE + " TEXT,"
             + Member.COLUMN_SPOUSE_NAME + " TEXT,"
-            + Member.COLUMN_SPOUSE_PERM_ID + " TEXT,"
-            + Member.COLUMN_MOTHER_EXT_ID + " TEXT,"
+            + Member.COLUMN_MOTHER_CODE + " TEXT,"
             + Member.COLUMN_MOTHER_NAME + " TEXT,"
-            + Member.COLUMN_MOTHER_PERM_ID + " TEXT,"
-            + Member.COLUMN_FATHER_EXT_ID + " TEXT,"
+            + Member.COLUMN_FATHER_CODE + " TEXT,"
             + Member.COLUMN_FATHER_NAME + " TEXT,"
-            + Member.COLUMN_FATHER_PERM_ID + " TEXT,"
-            + Member.COLUMN_HOUSE_EXT_ID + " TEXT,"
-            + Member.COLUMN_HOUSE_NUMBER + " TEXT,"
+            + Member.COLUMN_HOUSE_CODE + " TEXT,"
+            + Member.COLUMN_HOUSE_NAME + " TEXT,"
             + Member.COLUMN_START_TYPE + " TEXT,"
             + Member.COLUMN_START_DATE + " TEXT,"
             + Member.COLUMN_END_TYPE + " TEXT,"

@@ -24,21 +24,18 @@ public class Member implements Serializable, Table {
     private int age;
     private int ageAtDeath;
 
-    private String spouseExtId;
+    private String spouseCode;
     private String spouseName;
-    private String spousePermId;
 
-    private String motherExtId;
+    private String motherCode;
     private String motherName;
-    private String motherPermId;
-    private String fatherExtId;
+    private String fatherCode;
     private String fatherName;
-    private String fatherPermId;
     /**
      * Current HouseHold Status
      */
-    private String houseExtId;
-    private String houseNumber;
+    private String householdCode;
+    private String householdName;
     private String startType;
     private String startDate;
     private String endType;
@@ -123,12 +120,12 @@ public class Member implements Serializable, Table {
         this.ageAtDeath = ageAtDeath;
     }
 
-    public String getMotherExtId() {
-        return motherExtId;
+    public String getMotherCode() {
+        return motherCode;
     }
 
-    public void setMotherExtId(String motherExtId) {
-        this.motherExtId = motherExtId;
+    public void setMotherCode(String motherCode) {
+        this.motherCode = motherCode;
     }
 
     public String getMotherName() {
@@ -139,20 +136,12 @@ public class Member implements Serializable, Table {
         this.motherName = motherName;
     }
 
-    public String getMotherPermId() {
-        return motherPermId;
+    public String getFatherCode() {
+        return fatherCode;
     }
 
-    public void setMotherPermId(String motherPermId) {
-        this.motherPermId = motherPermId;
-    }
-
-    public String getFatherExtId() {
-        return fatherExtId;
-    }
-
-    public void setFatherExtId(String fatherExtId) {
-        this.fatherExtId = fatherExtId;
+    public void setFatherCode(String fatherCode) {
+        this.fatherCode = fatherCode;
     }
 
     public String getFatherName() {
@@ -163,28 +152,20 @@ public class Member implements Serializable, Table {
         this.fatherName = fatherName;
     }
 
-    public String getFatherPermId() {
-        return fatherPermId;
+    public String getHouseholdCode() {
+        return householdCode;
     }
 
-    public void setFatherPermId(String fatherPermId) {
-        this.fatherPermId = fatherPermId;
+    public void setHouseholdCode(String householdCode) {
+        this.householdCode = householdCode;
     }
 
-    public String getHouseExtId() {
-        return houseExtId;
+    public String getHouseholdName() {
+        return householdName;
     }
 
-    public void setHouseExtId(String houseExtId) {
-        this.houseExtId = houseExtId;
-    }
-
-    public String getHouseNumber() {
-        return houseNumber;
-    }
-
-    public void setHouseNumber(String houseNumber) {
-        this.houseNumber = houseNumber;
+    public void setHouseholdName(String householdName) {
+        this.householdName = householdName;
     }
 
     public String getStartType() {
@@ -283,12 +264,12 @@ public class Member implements Serializable, Table {
         this.sinLongitude = sinLongitude;
     }
 
-    public String getSpouseExtId() {
-        return spouseExtId;
+    public String getSpouseCode() {
+        return spouseCode;
     }
 
-    public void setSpouseExtId(String spouseExtId) {
-        this.spouseExtId = spouseExtId;
+    public void setSpouseCode(String spouseCode) {
+        this.spouseCode = spouseCode;
     }
 
     public String getSpouseName() {
@@ -297,14 +278,6 @@ public class Member implements Serializable, Table {
 
     public void setSpouseName(String spouseName) {
         this.spouseName = spouseName;
-    }
-
-    public String getSpousePermId() {
-        return spousePermId;
-    }
-
-    public void setSpousePermId(String spousePermId) {
-        this.spousePermId = spousePermId;
     }
 
     public String getExtrasColumns() {
@@ -360,19 +333,16 @@ public class Member implements Serializable, Table {
         member.age = 0;
         member.ageAtDeath = 0;
 
-        member.spouseExtId = "";
+        member.spouseCode = "";
         member.spouseName = "";
-        member.spousePermId = "";
 
-        member.motherExtId = "";
+        member.motherCode = "";
         member.motherName = "";
-        member.motherPermId = "";
-        member.fatherExtId = "";
+        member.fatherCode = "";
         member.fatherName = "";
-        member.fatherPermId = "";
 
-        member.houseExtId = "";
-        member.houseNumber = "";
+        member.householdCode = "";
+        member.householdName = "";
         member.startType = "";
         member.startDate = "";
         member.endType = "";
@@ -410,17 +380,14 @@ public class Member implements Serializable, Table {
         cv.put(DatabaseHelper.Member.COLUMN_DOB, dob);
         cv.put(DatabaseHelper.Member.COLUMN_AGE, age);
         cv.put(DatabaseHelper.Member.COLUMN_AGE_AT_DEATH, ageAtDeath);
-        cv.put(DatabaseHelper.Member.COLUMN_SPOUSE_EXT_ID, spouseExtId);
+        cv.put(DatabaseHelper.Member.COLUMN_SPOUSE_CODE, spouseCode);
         cv.put(DatabaseHelper.Member.COLUMN_SPOUSE_NAME, spouseName);
-        cv.put(DatabaseHelper.Member.COLUMN_SPOUSE_PERM_ID, spousePermId);
-        cv.put(DatabaseHelper.Member.COLUMN_MOTHER_EXT_ID, motherExtId);
+        cv.put(DatabaseHelper.Member.COLUMN_MOTHER_CODE, motherCode);
         cv.put(DatabaseHelper.Member.COLUMN_MOTHER_NAME, motherName);
-        cv.put(DatabaseHelper.Member.COLUMN_MOTHER_PERM_ID, motherPermId);
-        cv.put(DatabaseHelper.Member.COLUMN_FATHER_EXT_ID, fatherExtId);
+        cv.put(DatabaseHelper.Member.COLUMN_FATHER_CODE, fatherCode);
         cv.put(DatabaseHelper.Member.COLUMN_FATHER_NAME, fatherName);
-        cv.put(DatabaseHelper.Member.COLUMN_FATHER_PERM_ID, fatherPermId);
-        cv.put(DatabaseHelper.Member.COLUMN_HOUSE_EXT_ID, houseExtId);
-        cv.put(DatabaseHelper.Member.COLUMN_HOUSE_NUMBER, houseNumber);
+        cv.put(DatabaseHelper.Member.COLUMN_HOUSE_CODE, householdCode);
+        cv.put(DatabaseHelper.Member.COLUMN_HOUSE_NAME, householdName);
         cv.put(DatabaseHelper.Member.COLUMN_START_TYPE, startType);
         cv.put(DatabaseHelper.Member.COLUMN_START_DATE, startDate);
         cv.put(DatabaseHelper.Member.COLUMN_END_TYPE, endType);

@@ -198,7 +198,7 @@ public class GpsSearchedListActivity extends Activity {
         }
 
         MemberArrayAdapter adapter = new MemberArrayAdapter(this, this.members, extras);
-        adapter.setShowHouseholdAndPermId(true);
+        adapter.setShowHouseholdAndCode(true);
         adapter.setSelectedIndex(0);
         setAdapter(adapter);
     }

@@ -19,8 +19,8 @@ import org.philimone.hds.explorer.widget.NumberPicker;
 public class MemberFilterFragment extends Fragment {
 
     private EditText txtMemFilterName;
-    private EditText txtMemFilterPermId;
-    private EditText txtMemFilterHouseNr;
+    private EditText txtMemFilterCode;
+    private EditText txtMemFilterHouseNm;
     private CheckBox chkMemFilterGFemale;
     private CheckBox chkMemFilterGMale;
     private NumberPicker nbpMemFilterMinAge;
@@ -53,8 +53,8 @@ public class MemberFilterFragment extends Fragment {
         }
 
         this.txtMemFilterName = (EditText) view.findViewById(R.id.txtMemFilterName);
-        this.txtMemFilterPermId = (EditText) view.findViewById(R.id.txtMemFilterPermId);
-        this.txtMemFilterHouseNr = (EditText) view.findViewById(R.id.txtMemFilterCurrHousenumber);
+        this.txtMemFilterCode = (EditText) view.findViewById(R.id.txtMemFilterCode);
+        this.txtMemFilterHouseNm = (EditText) view.findViewById(R.id.txtMemFilterCurrHousenumber);
         this.chkMemFilterGFemale = (CheckBox) view.findViewById(R.id.chkMemFilterGFemale);
         this.chkMemFilterGMale = (CheckBox) view.findViewById(R.id.chkMemFilterGMale);
         this.chkMemFilter1dt = (CheckBox) view.findViewById(R.id.chkMemFilter1);
@@ -79,15 +79,15 @@ public class MemberFilterFragment extends Fragment {
             }
         });
 
-        if (txtMemFilterPermId.getText().length()>0){
+        if (txtMemFilterCode.getText().length()>0){
             onSearch();
         }
     }
 
     private void onSearch() {
         String name = txtMemFilterName.getText().toString();
-        String permid = txtMemFilterPermId.getText().toString();
-        String houseNr = txtMemFilterHouseNr.getText().toString();
+        String code = txtMemFilterCode.getText().toString();
+        String houseNr = txtMemFilterHouseNm.getText().toString();
         String gender = (chkMemFilterGMale.isChecked() && chkMemFilterGFemale.isChecked()) ? "" : chkMemFilterGMale.isChecked() ? "M" : chkMemFilterGFemale.isChecked() ? "F" : "";
         boolean filter1 = chkMemFilter1dt.isChecked();
         boolean filter2 = chkMemFilter2om.isChecked();
@@ -95,13 +95,13 @@ public class MemberFilterFragment extends Fragment {
         int minAge = this.nbpMemFilterMinAge.getValue();
         int maxAge = this.nbpMemFilterMaxAge.getValue();
 
-        listener.onSearch(name, permid, houseNr, gender, minAge, maxAge, filter1, filter2, filter3);
+        listener.onSearch(name, code, houseNr, gender, minAge, maxAge, filter1, filter2, filter3);
     }
 
     private void clear(){
         this.txtMemFilterName.setText("");
-        this.txtMemFilterPermId.setText("");
-        this.txtMemFilterHouseNr.setText("");
+        this.txtMemFilterCode.setText("");
+        this.txtMemFilterHouseNm.setText("");
         this.chkMemFilterGMale.setChecked(false);
         this.chkMemFilterGFemale.setChecked(false);
         this.nbpMemFilterMinAge.setValue(0);
@@ -111,6 +111,6 @@ public class MemberFilterFragment extends Fragment {
     }
 
     public interface Listener {
-        void onSearch(String name, String permId, String houseNumber, String gender, Integer minAge, Integer maxAge, Boolean isDead, Boolean hasOutmigrated, Boolean liveResident);
+        void onSearch(String name, String code, String houseNumber, String gender, Integer minAge, Integer maxAge, Boolean isDead, Boolean hasOutmigrated, Boolean liveResident);
     }
 }

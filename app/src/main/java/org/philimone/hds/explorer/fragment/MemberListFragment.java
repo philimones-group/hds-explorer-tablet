@@ -173,7 +173,7 @@ public class MemberListFragment extends Fragment {
         if (list != null && list.size()>0){
             Household household = getHousehold(list.get(0));
             String name = list.get(1);
-            String peid = list.get(2);
+            String code = list.get(2);
             String hsnr = list.get(3);
             String gndr = list.get(4);
             Integer min = Integer.getInteger(list.get(5));
@@ -182,21 +182,8 @@ public class MemberListFragment extends Fragment {
             Boolean filter2 = list.get(8).equals("true"); //ext
             Boolean filter3 = list.get(9).equals("true"); //na
 
-            /*
-            this.lastSearch.add(household);
-            this.lastSearch.add(name);
-            this.lastSearch.add(permId);
-            this.lastSearch.add(houseNumber);
-            this.lastSearch.add(gender);
-            this.lastSearch.add(minAge==null ? "" : minAge.toString());
-            this.lastSearch.add(maxAge==null ? "" : maxAge.toString());
-            this.lastSearch.add(isDead==null ? "" : isDead+"");
-            this.lastSearch.add(hasOutmigrated==null ? "" : hasOutmigrated+"");
-            this.lastSearch.add(liveResident==null ? "" : liveResident+"");
-             */
-
             Log.d("restoring",""+name);
-            MemberArrayAdapter ma = loadMembersByFilters(household, name, peid, hsnr, gndr, min, max, filter1, filter2, filter3);
+            MemberArrayAdapter ma = loadMembersByFilters(household, name, code, hsnr, gndr, min, max, filter1, filter2, filter3);
             setMemberAdapter(ma);
         }
     }
@@ -491,7 +478,7 @@ public class MemberListFragment extends Fragment {
         if (dialogNewMember == null) return;
 
         EditText txtNmHouseNumber = (EditText) dialogNewMember.findViewById(R.id.txtNmHouseNumber);
-        EditText txtNmPermId = (EditText) dialogNewMember.findViewById(R.id.txtNmPermId);
+        EditText txtNmCode = (EditText) dialogNewMember.findViewById(R.id.txtNmCode);
         EditText txtNmName = (EditText) dialogNewMember.findViewById(R.id.txtNmName);
         CheckBox chkNmGMale = (CheckBox) dialogNewMember.findViewById(R.id.chkNmGMale);
         CheckBox chkNmGFemale = (CheckBox) dialogNewMember.findViewById(R.id.chkNmGFemale);
@@ -500,20 +487,22 @@ public class MemberListFragment extends Fragment {
         Member member = Member.getEmptyMember();
         member.setHouseholdCode(txtNmHouseNumber.getText().toString());
         member.setHouseholdName(txtNmHouseNumber.getText().toString());
-        member.setCode(txtNmPermId.getText().toString());
+        member.setCode(txtNmCode.getText().toString());
         member.setName(txtNmName.getText().toString());
         member.setDob(StringUtil.format(GeneralUtil.getDate(dtpNmDob), "yyyy-MM-dd" ));
         member.setAge(GeneralUtil.getAge(GeneralUtil.getDate(dtpNmDob)));
 
-        //
+        //REVISE REGULAR EXPRESSIONS FOR VARIABLES BELOW
+        /*
         if (!member.getHouseholdName().matches("[0-9]{4}-[0-9]{3}")){
             buildOkDialog(getString(R.string.member_list_newmem_houseno_err_lbl));
             dialogNewMember.show();
             return;
-        }
+        }*/
+
         /*
-        if (!member.getPermId().matches("[0-9]{4}-[0-9]{3}-[0-9]{2}")){
-            buildOkDialog(getString(R.string.member_list_newmem_permid_err_lbl));
+        if (!member.getCode().matches("[0-9]{4}-[0-9]{3}-[0-9]{2}")){
+            buildOkDialog(getString(R.string.member_list_newmem_code_err_lbl));
             dialogNewMember.show();
             return;
         }
@@ -541,9 +530,9 @@ public class MemberListFragment extends Fragment {
             return;
         }
 
-        //check if permid exists
+        //check if code exists
         if (checkIfCodeExists(member.getCode())){
-            buildOkDialog(getString(R.string.member_list_newmem_permid_exists_lbl));
+            buildOkDialog(getString(R.string.member_list_newmem_code_exists_lbl));
             dialogNewMember.show();
             return;
         }
@@ -557,9 +546,9 @@ public class MemberListFragment extends Fragment {
         memberActionListener.onMemberSelected(null, member);
     }
 
-    private boolean checkIfCodeExists(String permId){
+    private boolean checkIfCodeExists(String code){
         database.open();
-        Member member = Queries.getMemberBy(database, DatabaseHelper.Member.COLUMN_CODE+"=?", new String[] { permId });
+        Member member = Queries.getMemberBy(database, DatabaseHelper.Member.COLUMN_CODE+"=?", new String[] { code });
         database.close();
 
         return member != null;
@@ -725,7 +714,7 @@ public class MemberListFragment extends Fragment {
 
         //put on list
         MemberArrayAdapter adapter = new MemberArrayAdapter(this.getActivity(), members, extras);
-        adapter.setShowHouseholdAndPermId(true);
+        adapter.setShowHouseholdAndCode(true);
         adapter.setIgnoreHeadOfHousehold(true);
         adapter.setMemberIcon(MemberArrayAdapter.MemberIcon.NORMAL_GREEN_ICON);
         this.lvMembersList.setAdapter(adapter);

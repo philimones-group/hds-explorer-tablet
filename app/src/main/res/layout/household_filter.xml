@@ -29,17 +29,17 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/household_filter_permid_lbl"
+                    android:text="@string/household_filter_code_lbl"
                     android:textAppearance="?android:attr/textAppearanceLarge"
                     android:visibility="gone"/>
 
                 <EditText
-                    android:id="@+id/txtHouseFilterNr"
+                    android:id="@+id/txtHouseFilterNm"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/member_filter_textbox_size"
                     android:background="@drawable/textinputborder"
                     android:gravity="center_vertical"
-                    android:hint="@string/household_filter_permid_hint_lbl"
+                    android:hint="@string/household_filter_code_hint_lbl"
                     android:paddingLeft="10dp"
                     android:textSize="@dimen/member_filter_textsize" />
             </LinearLayout>

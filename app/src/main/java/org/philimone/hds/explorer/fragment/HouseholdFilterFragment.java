@@ -70,7 +70,7 @@ public class HouseholdFilterFragment extends Fragment {
             this.listener = (Listener) getActivity();
         }
 
-        this.txtHouseFilterNr = (EditText) view.findViewById(R.id.txtHouseFilterNr);
+        this.txtHouseFilterNr = (EditText) view.findViewById(R.id.txtHouseFilterNm);
         this.hfHousesList = (ListView) view.findViewById(R.id.hfHousesList);
         this.btHouseFilterClear = (Button) view.findViewById(R.id.btHouseFilterClear);
         this.btHouseFilterSearch = (Button) view.findViewById(R.id.btHouseFilterSearch);
@@ -225,17 +225,17 @@ public class HouseholdFilterFragment extends Fragment {
     }
 
     class HouseholdSearchTask extends AsyncTask<Void, Void, HouseholdArrayAdapter> {
-        private String extId;
-        private String houseNumber;
+        private String code;
+        private String houseName;
 
-        public HouseholdSearchTask(String extId, String houseNumber) {
-            this.extId = extId;
-            this.houseNumber = houseNumber;
+        public HouseholdSearchTask(String code, String houseName) {
+            this.code = code;
+            this.houseName = houseName;
         }
 
         @Override
         protected HouseholdArrayAdapter doInBackground(Void... params) {
-            return loadHouseholdsByFilters(houseNumber);
+            return loadHouseholdsByFilters(houseName);
         }
 
         @Override

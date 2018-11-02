@@ -65,16 +65,16 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/member_filter_permid_lbl"
+                    android:text="@string/member_filter_code_lbl"
                     android:textAppearance="?android:attr/textAppearanceLarge" />
 
                 <EditText
-                    android:id="@+id/txtMemFilterPermId"
+                    android:id="@+id/txtMemFilterCode"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/member_filter_textbox_size"
                     android:background="@drawable/textinputborder"
                     android:gravity="center_vertical"
-                    android:hint="@string/member_filter_permid_hint"
+                    android:hint="@string/member_filter_code_hint"
                     android:paddingLeft="10dp"
                     android:textSize="@dimen/member_filter_textsize" />
             </LinearLayout>
@@ -89,7 +89,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/member_filter_curr_housenumber_lbl"
+                    android:text="@string/member_filter_curr_housename_lbl"
                     android:textAppearance="?android:attr/textAppearanceLarge" />
 
                 <EditText
@@ -98,7 +98,7 @@
                     android:layout_height="@dimen/member_filter_textbox_size"
                     android:background="@drawable/textinputborder"
                     android:gravity="center_vertical"
-                    android:hint="@string/member_filter_curr_housenumber_hint"
+                    android:hint="@string/member_filter_curr_housename_hint"
                     android:paddingLeft="10dp"
                     android:textSize="@dimen/member_filter_textsize" />
             </LinearLayout>

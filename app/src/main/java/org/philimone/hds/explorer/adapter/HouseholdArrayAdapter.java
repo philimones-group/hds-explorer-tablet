@@ -30,7 +30,7 @@ public class HouseholdArrayAdapter extends ArrayAdapter<Household> {
     private int selectedIndex = -1;
 
     /**
-     * Adapter of a List View Item for households (number and extId are displayed)
+     * Adapter of a List View Item for households (name and code are displayed)
      * @param context
      * @param objects
      */
@@ -44,7 +44,7 @@ public class HouseholdArrayAdapter extends ArrayAdapter<Household> {
     }
 
     /**
-     * Adapter of a List View Item for households (name, extId, and a check box are displayed)
+     * Adapter of a List View Item for households (name, code, and a check box are displayed)
      * @param context
      * @param objects
      * @param checks
@@ -65,7 +65,7 @@ public class HouseholdArrayAdapter extends ArrayAdapter<Household> {
     }
 
     /**
-     * Adapter of a List View Item for households (name, extId, checkbox and different icon for supervised household are displayed)
+     * Adapter of a List View Item for households (name, code, checkbox and different icon for supervised household are displayed)
      * @param context
      * @param objects
      * @param checks
@@ -81,7 +81,7 @@ public class HouseholdArrayAdapter extends ArrayAdapter<Household> {
     }
 
     /**
-     * Adapter of a List View Item for households (name, extId, extra text view and a large sized icon are displayed)
+     * Adapter of a List View Item for households (name, code, extra text view and a large sized icon are displayed)
      * @param context
      * @param objects
      * @param checks
@@ -122,15 +122,15 @@ public class HouseholdArrayAdapter extends ArrayAdapter<Household> {
         View rowView = inflater.inflate(layoutResId, parent, false);
 
         ImageView iconView = (ImageView) rowView.findViewById(R.id.iconView);
-        TextView txtName = (TextView) rowView.findViewById(R.id.txtHousenumber);
-        TextView txtExtId = (TextView) rowView.findViewById(R.id.txtHouseExtID);
+        TextView txtName = (TextView) rowView.findViewById(R.id.txtHousename);
+        TextView txtCode = (TextView) rowView.findViewById(R.id.txtHouseCode);
         TextView txtExtra = (TextView) rowView.findViewById(R.id.txtExtras);
         CheckBox chkVBprocessed = (CheckBox) rowView.findViewById(R.id.chkProcessed);
 
         Household hh = households.get(position);
 
         txtName.setText(hh.getName());
-        txtExtId.setText(hh.getCode());
+        txtCode.setText(hh.getCode());
 
         if (chkVBprocessed != null && checkableHouseholds != null){
             chkVBprocessed.setChecked(checkableHouseholds.get(position));
@@ -152,7 +152,7 @@ public class HouseholdArrayAdapter extends ArrayAdapter<Household> {
 
             rowView.setBackgroundColor(colorB);
             txtName.setTextColor(Color.WHITE);
-            txtExtId.setTextColor(Color.WHITE);
+            txtCode.setTextColor(Color.WHITE);
         }
 
         return rowView;

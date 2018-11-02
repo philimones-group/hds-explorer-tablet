@@ -29,7 +29,7 @@ public class MemberArrayAdapter  extends ArrayAdapter<Member> {
     private int layoutResId;
     private int selectedIndex = -1;
     private boolean ignoreHeadOfHousehold = false;
-    private boolean showHouseholdAndPermId = false;
+    private boolean showHouseholdAndCode = false;
     private MemberIcon memberIcon;
 
     public enum MemberIcon {  NORMAL_BLUE_ICON, NORMAL_GREEN_ICON, NORMAL_GREEN_2_ICON  }
@@ -125,8 +125,8 @@ public class MemberArrayAdapter  extends ArrayAdapter<Member> {
         return (selectedIndex < 0 || selectedIndex >= members.size()) ? null : members.get(selectedIndex);
     }
 
-    public void setShowHouseholdAndPermId(boolean showHouseholdAndPermId) {
-        this.showHouseholdAndPermId = showHouseholdAndPermId;
+    public void setShowHouseholdAndCode(boolean showHouseholdAndCode) {
+        this.showHouseholdAndCode = showHouseholdAndCode;
     }
 
     public void setIgnoreHeadOfHousehold(boolean ignoreHeadOfHousehold) {
@@ -150,17 +150,17 @@ public class MemberArrayAdapter  extends ArrayAdapter<Member> {
 
         ImageView iconView = (ImageView) rowView.findViewById(R.id.iconView);
         TextView txtName = (TextView) rowView.findViewById(R.id.txtMemberItemName);
-        TextView txtPermId = (TextView) rowView.findViewById(R.id.txtMemberItemPermId);
+        TextView txtCode = (TextView) rowView.findViewById(R.id.txtMemberItemCode);
         TextView txtExtra = (TextView) rowView.findViewById(R.id.txtMemberItemExtras);
         CheckBox chkVBprocessed = (CheckBox) rowView.findViewById(R.id.chkProcessed);
 
         Member mb = members.get(position);
 
         txtName.setText(mb.getName());
-        txtPermId.setText(mb.getCode());
+        txtCode.setText(mb.getCode());
 
-        if (showHouseholdAndPermId){
-            txtPermId.setText(mb.getHouseholdName() +" -> "+mb.getCode());
+        if (showHouseholdAndCode){
+            txtCode.setText(mb.getHouseholdName() +" -> "+mb.getCode());
         }
 
         if (chkVBprocessed != null && checkableMembers != null){
@@ -203,7 +203,7 @@ public class MemberArrayAdapter  extends ArrayAdapter<Member> {
 
             rowView.setBackgroundColor(colorB);
             txtName.setTextColor(Color.WHITE);
-            txtPermId.setTextColor(Color.WHITE);
+            txtCode.setTextColor(Color.WHITE);
             if (txtExtra!=null) txtExtra.setTextColor(Color.WHITE);
         }
 

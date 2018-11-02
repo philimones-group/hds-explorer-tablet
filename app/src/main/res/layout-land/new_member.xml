@@ -20,7 +20,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="@string/member_list_newmem_houseno_lbl"/>
+                android:text="@string/member_list_newmem_housename_lbl"/>
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
@@ -29,7 +29,7 @@
                     android:id="@+id/txtNmHouseNumber"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/member_list_newmem_houseno_hint"
+                    android:hint="@string/member_list_newmem_housename_hint"
                     android:inputType="textFilter|number"
                     android:digits="0123456789-"
                     android:maxLines="1"
@@ -48,16 +48,16 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="@string/member_list_newmem_permid_lbl"/>
+                android:text="@string/member_list_newmem_code_lbl"/>
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
                 <EditText
-                    android:id="@+id/txtNmPermId"
+                    android:id="@+id/txtNmCode"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/member_list_newmem_permid_hint"
+                    android:hint="@string/member_list_newmem_code_hint"
                     android:inputType="textFilter|number"
                     android:digits="0123456789-"
                     android:maxLines="1"

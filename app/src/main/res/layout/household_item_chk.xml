@@ -19,7 +19,7 @@
         android:orientation="vertical" >
     
         <TextView
-            android:id="@+id/txtHousenumber"
+            android:id="@+id/txtHousename"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center|left"
@@ -30,7 +30,7 @@
             android:textSize="24sp" />
         
         <TextView
-            android:id="@+id/txtHouseExtID"
+            android:id="@+id/txtHouseCode"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Medium Text"

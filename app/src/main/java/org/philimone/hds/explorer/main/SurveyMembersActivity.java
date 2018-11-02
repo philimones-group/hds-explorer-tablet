@@ -56,10 +56,10 @@ public class SurveyMembersActivity extends Activity implements MemberFilterFragm
     }
 
     @Override
-    public void onSearch(String name, String permId, String houseNumber, String gender, Integer minAge, Integer maxAge, Boolean isDead, Boolean hasOutmigrated, Boolean liveResident) {
+    public void onSearch(String name, String code, String houseNumber, String gender, Integer minAge, Integer maxAge, Boolean isDead, Boolean hasOutmigrated, Boolean liveResident) {
         this.memberListFragment.showProgress(true);
 
-        MemberSearchTask task = new MemberSearchTask(name, permId, houseNumber, gender, minAge, maxAge, isDead, hasOutmigrated, liveResident);
+        MemberSearchTask task = new MemberSearchTask(name, code, houseNumber, gender, minAge, maxAge, isDead, hasOutmigrated, liveResident);
         task.execute();
     }
 
@@ -177,7 +177,7 @@ public class SurveyMembersActivity extends Activity implements MemberFilterFragm
 
     class MemberSearchTask extends AsyncTask<Void, Void, MemberArrayAdapter> {
         private String name;
-        private String permId;
+        private String code;
         private String gender;
         private String houseNr;
         private Integer minAge;
@@ -186,9 +186,9 @@ public class SurveyMembersActivity extends Activity implements MemberFilterFragm
         private Boolean outmigrated;
         private Boolean resident;
 
-        public MemberSearchTask(String name, String permId, String houseNumber, String gender, Integer minAge, Integer maxAge, Boolean isDead, Boolean hasOutmigrated, Boolean liveResident) {
+        public MemberSearchTask(String name, String code, String houseNumber, String gender, Integer minAge, Integer maxAge, Boolean isDead, Boolean hasOutmigrated, Boolean liveResident) {
             this.name = name;
-            this.permId = permId;
+            this.code = code;
             this.houseNr = houseNumber;
             this.gender = gender;
             this.minAge = minAge;
@@ -200,7 +200,7 @@ public class SurveyMembersActivity extends Activity implements MemberFilterFragm
 
         @Override
         protected MemberArrayAdapter doInBackground(Void... params) {
-            return memberListFragment.loadMembersByFilters(null, name, permId, houseNr, gender, minAge, maxAge, dead, outmigrated, resident);
+            return memberListFragment.loadMembersByFilters(null, name, code, houseNr, gender, minAge, maxAge, dead, outmigrated, resident);
         }
 
         @Override

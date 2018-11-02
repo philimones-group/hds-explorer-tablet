@@ -110,7 +110,7 @@ public class TrackingExpandableListAdapter extends BaseExpandableListAdapter imp
         }
 
         TextView txtName = (TextView) convertView.findViewById(R.id.txtMemberItemName);
-        TextView txtId = (TextView) convertView.findViewById(R.id.txtMemberItemId);
+        TextView txtId = (TextView) convertView.findViewById(R.id.txtMemberItemCode);
         TextView txtDetails = (TextView) convertView.findViewById(R.id.txtMemberItemExtras);
         CirclePercentageBar pBar = (CirclePercentageBar) convertView.findViewById(R.id.pbarTrackListItem);
 

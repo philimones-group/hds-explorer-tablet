@@ -36,9 +36,9 @@ public class TrackingListDetailsActivity extends Activity {
 
     public static final int RC_MEMBER_DETAILS_TRACKINGLIST = 20;
 
-    private TextView txtTrackListTitleLabel;
-    private TextView txtTrackListExtras;
-    private ExpandableListView elvTrackingListDetails;
+    private TextView txtTrackListTitle;
+    private TextView txtTrackListDetails;
+    private ExpandableListView elvTrackingLists;
 
     private TrackingExpandableListAdapter adapter;
     private TrackingList trackingList;
@@ -74,12 +74,12 @@ public class TrackingListDetailsActivity extends Activity {
         this.loggedUser = (User) getIntent().getExtras().get("user");
         this.trackingList = (TrackingList) getIntent().getExtras().get("trackinglist");
 
-        this.txtTrackListExtras = (TextView) findViewById(R.id.txtTrackListExtras);
-        this.txtTrackListTitleLabel = (TextView) findViewById(R.id.txtTrackListTitleLabel);
-        this.elvTrackingListDetails = (ExpandableListView) findViewById(R.id.elvTrackingListDetails);
+        this.txtTrackListTitle = (TextView) findViewById(R.id.txtTrackListTitle);
+        this.txtTrackListDetails = (TextView) findViewById(R.id.txtTrackListDetails);
+        this.elvTrackingLists = (ExpandableListView) findViewById(R.id.elvTrackingLists);
         this.viewLoadingList = findViewById(R.id.viewListProgressBar);
 
-        this.elvTrackingListDetails.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
+        this.elvTrackingLists.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
             @Override
             public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
                 onMemberItemClicked(groupPosition, childPosition);
@@ -91,13 +91,13 @@ public class TrackingListDetailsActivity extends Activity {
     }
 
     private void setDataToComponents() {
-        txtTrackListTitleLabel.setText(trackingList.getTitle());
-        txtTrackListExtras.setText(trackingList.getCode());
+        txtTrackListTitle.setText(trackingList.getTitle());
+        txtTrackListDetails.setText(trackingList.getCode());
     }
 
     private void setTrackingListAdapter(TrackingExpandableListAdapter mAdapter){
         this.adapter = mAdapter;
-        elvTrackingListDetails.setAdapter(this.adapter);
+        elvTrackingLists.setAdapter(this.adapter);
 
         showProgress(false);
         expandAllGroups();
@@ -106,13 +106,13 @@ public class TrackingListDetailsActivity extends Activity {
     private void expandAllGroups(){
         if (adapter != null)
         for ( int i = 0; i < adapter.getGroupCount(); i++ ){
-            elvTrackingListDetails.expandGroup(i);
+            elvTrackingLists.expandGroup(i);
         }
     }
 
     public void showProgress(final boolean show) {
         viewLoadingList.setVisibility(show ? View.VISIBLE : View.GONE);
-        elvTrackingListDetails.setVisibility(show ? View.GONE : View.VISIBLE);
+        elvTrackingLists.setVisibility(show ? View.GONE : View.VISIBLE);
     }
 
     private void onMemberItemClicked(int groupPosition, int childPosition) {
@@ -208,14 +208,14 @@ public class TrackingListDetailsActivity extends Activity {
         List<CollectedData> listCollectedData = Queries.getAllCollectedDataBy(db, DatabaseHelper.CollectedData.COLUMN_FORM_MODULE+"=?", new String[]{ trackingList.getModule()+"" });
         db.close();
 
-        List<String> extIds = new ArrayList<>();
+        List<String> codes = new ArrayList<>();
 
         for (TrackingMemberList tm : listTml){
-            extIds.add(tm.getMemberCode());
-            Log.d("extId-", ""+tm.getMemberCode());
+            codes.add(tm.getMemberCode());
+            Log.d("code-", ""+tm.getMemberCode());
         }
 
-        List<Member> members = getMembers(db, extIds);
+        List<Member> members = getMembers(db, codes);
 
         Log.d("listTml", ""+listTml.size());
         Log.d("listCollectedData", ""+listCollectedData.size());
@@ -248,9 +248,9 @@ public class TrackingListDetailsActivity extends Activity {
         return adapter;
     }
 
-    private List<Member> getMembers(Database db, List<String> extIds){
+    private List<Member> getMembers(Database db, List<String> codes){
         db.open();
-        List<Member> members = Queries.getAllMemberBy(db, DatabaseHelper.Member.COLUMN_CODE +" IN ("+ StringUtil.toInClause(extIds) +")", null);
+        List<Member> members = Queries.getAllMemberBy(db, DatabaseHelper.Member.COLUMN_CODE +" IN ("+ StringUtil.toInClause(codes) +")", null);
         db.close();
 
         if (members==null) return new ArrayList<>();

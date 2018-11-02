@@ -160,14 +160,14 @@ public class SurveyHouseholdsActivity extends Activity implements HouseholdFilte
 
     class MemberSearchTask extends AsyncTask<Void, Void, MemberArrayAdapter> {
         private String name;
-        private String permId;
+        private String code;
         private String gender;
         private String houseNumber;
         private Household household;
 
-        public MemberSearchTask(Household household, String name, String permId, String gender, String houseNumber) {
+        public MemberSearchTask(Household household, String name, String code, String gender, String houseNumber) {
             this.name = name;
-            this.permId = permId;
+            this.code = code;
             this.gender = gender;
             this.houseNumber = houseNumber;
             this.household = household;
@@ -175,7 +175,7 @@ public class SurveyHouseholdsActivity extends Activity implements HouseholdFilte
 
         @Override
         protected MemberArrayAdapter doInBackground(Void... params) {
-            return memberListFragment.loadMembersByFilters(household, name, permId, houseNumber, gender, null, null, null, null, null);
+            return memberListFragment.loadMembersByFilters(household, name, code, houseNumber, gender, null, null, null, null, null);
         }
 
         @Override

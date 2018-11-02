@@ -7,13 +7,16 @@ import org.philimone.hds.explorer.database.Table;
 
 import java.io.Serializable;
 
+/*
+ * Represents a FollowUp List Description, is the parent object for a List of Members that will be followed-up
+ */
 public class TrackingList implements Serializable, Table {
 
     private int id;
-    private String label;
     private String code;
-    private String codeLabel;
+    private String label;
     private String title;
+    private String codeLabel;
     private String module;
     private Double completionRate;
 

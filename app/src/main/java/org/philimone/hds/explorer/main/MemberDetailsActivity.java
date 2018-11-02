@@ -39,7 +39,7 @@ import mz.betainteractive.odk.model.FilledForm;
 public class MemberDetailsActivity extends Activity implements OdkFormResultListener {
 
     private TextView mbDetailsName;
-    private TextView mbDetailsPermId;
+    private TextView mbDetailsCode;
     private TextView mbDetailsGender;
     private TextView mbDetailsAge;
     private TextView mbDetailsDob;
@@ -56,8 +56,8 @@ public class MemberDetailsActivity extends Activity implements OdkFormResultList
 
     private LinearLayout mbDetailsLayoutSc;
     private TextView mbDetailsStudyCodeLabel;
-    private TextView mbDetailsStudyCode;
-    private String studyCode;
+    private TextView mbDetailsStudyCodeValue;
+    private String studyCodeValue;
             
     private Member member;
     private List<FormDataLoader> formDataLoaders = new ArrayList<>();
@@ -76,7 +76,7 @@ public class MemberDetailsActivity extends Activity implements OdkFormResultList
 
         this.loggedUser = (User) getIntent().getExtras().get("user");
         this.member = (Member) getIntent().getExtras().get("member");
-        this.studyCode = getIntent().getExtras().getString("member_studycode");
+        this.studyCodeValue = getIntent().getExtras().getString("member_studycode");
         this.activityRequestCode = getIntent().getExtras().getInt("request_code");
 
         readFormDataLoader();
@@ -114,11 +114,11 @@ public class MemberDetailsActivity extends Activity implements OdkFormResultList
 
     private void initialize() {
         mbDetailsName = (TextView) findViewById(R.id.mbDetailsName);
-        mbDetailsPermId = (TextView) findViewById(R.id.mbDetailsPermId);
+        mbDetailsCode = (TextView) findViewById(R.id.mbDetailsCode);
         mbDetailsGender = (TextView) findViewById(R.id.mbDetailsGender);
         mbDetailsAge = (TextView) findViewById(R.id.mbDetailsAge);
         mbDetailsDob = (TextView) findViewById(R.id.mbDetailsDob);
-        mbDetailsHouseNo = (TextView) findViewById(R.id.mbDetailsHouseNo);
+        mbDetailsHouseNo = (TextView) findViewById(R.id.mbDetailsHouseName);
         mbDetailsEndType = (TextView) findViewById(R.id.mbDetailsEndType);
         mbDetailsEndDate = (TextView) findViewById(R.id.mbDetailsEndDate);
         mbDetailsFather = (TextView) findViewById(R.id.mbDetailsFather);
@@ -130,8 +130,9 @@ public class MemberDetailsActivity extends Activity implements OdkFormResultList
         iconView = (ImageView) findViewById(R.id.iconView);
 
         mbDetailsLayoutSc = (LinearLayout) findViewById(R.id.mbDetailsLayoutSc);
-        mbDetailsStudyCode = (TextView) findViewById(R.id.mbDetailsStudyCode);
         mbDetailsStudyCodeLabel = (TextView) findViewById(R.id.mbDetailsStudyCodeLabel);
+        mbDetailsStudyCodeValue = (TextView) findViewById(R.id.mbDetailsStudyCodeValue);
+
 
         btMemDetailsBack.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -177,7 +178,7 @@ public class MemberDetailsActivity extends Activity implements OdkFormResultList
 
     private void setMemberData(){
         mbDetailsName.setText(member.getName());
-        mbDetailsPermId.setText(member.getCode());
+        mbDetailsCode.setText(member.getCode());
         mbDetailsGender.setText(member.getGender());
         mbDetailsAge.setText(member.getAge()+"");
         mbDetailsDob.setText(member.getDob());
@@ -196,12 +197,12 @@ public class MemberDetailsActivity extends Activity implements OdkFormResultList
             iconView.setImageResource(R.mipmap.member_big_subs_icon);
         }
 
-        if (studyCode != null){
+        if (studyCodeValue != null){
             mbDetailsLayoutSc.setVisibility(View.VISIBLE);
 
-            String codeLabel = getString(R.string.member_details_studycode_lbl); //.replace("#", loggedUser.getModules());
-            mbDetailsStudyCodeLabel.setText(codeLabel);
-            mbDetailsStudyCode.setText(studyCode);
+            String studyCodeLabel = getString(R.string.member_details_studycode_lbl); //.replace("#", loggedUser.getModules());
+            mbDetailsStudyCodeLabel.setText(studyCodeLabel);
+            mbDetailsStudyCodeValue.setText(studyCodeValue);
         }else{
             mbDetailsLayoutSc.setVisibility(View.GONE);
         }

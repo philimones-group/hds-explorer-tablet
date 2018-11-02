@@ -763,15 +763,13 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 				parser.nextTag(); //jump to <member end tag> if exists
 				while (!isEndTag("list", parser)){
 					if (isTag("member", parser)){
-						Log.d("mem-attr-extid", "" + parser.getAttributeValue("", "code"));
-						//Log.d("mem-attr-prmid", "" + parser.getAttributeValue("", "permid"));
+						Log.d("mem-attr-code", "" + parser.getAttributeValue("", "code"));
 						Log.d("mem-attr-scode", "" + parser.getAttributeValue("", "studycode"));
 						Log.d("mem-attr-forms", "" + parser.getAttributeValue("", "forms"));
 						Log.d("mem-attr-visit", "" + parser.getAttributeValue("", "visit"));
 						Log.d("end","end");
 
 						String mCode = parser.getAttributeValue("", "code");
-						//String mPrmId = parser.getAttributeValue("", "permid");
 						String mScode = parser.getAttributeValue("", "studycode");
 						String mForms = parser.getAttributeValue("", "forms");
 						String mVisit = parser.getAttributeValue("", "visit");
@@ -783,7 +781,6 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 						tml.setTitle(listTitle);
 						tml.setForms(listForms==null ? "" : listForms);
 						tml.setMemberCode(mCode);
-						//tml.setMemberPermId(mPrmId);
 						tml.setMemberStudyCode(mScode);
 						tml.setMemberForms(mForms);
 						tml.setCompletionRate(0D);
@@ -969,11 +966,11 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 			Household table = new Household();
 
 
-            parser.nextTag(); //process <extId>
+            parser.nextTag(); //process <code>
             if (!isEmptyTag(DatabaseHelper.Household.COLUMN_CODE, parser)) {
                 parser.next();
                 table.setCode(parser.getText());
-                parser.nextTag(); //process </extId>
+                parser.nextTag(); //process </code>
             }else{
                 table.setCode("");
                 parser.nextTag();
@@ -989,21 +986,21 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
                 parser.nextTag();
             }
 
-            parser.nextTag(); //process <headPermId>
+            parser.nextTag(); //process <headCode>
             if (!isEmptyTag(DatabaseHelper.Household.COLUMN_HEAD_CODE, parser)) {
                 parser.next();
                 table.setHeadCode(parser.getText());
-                parser.nextTag(); //process </headPermId>
+                parser.nextTag(); //process </headCode>
             }else{
                 table.setHeadCode("");
                 parser.nextTag();
             }
 
-            parser.nextTag(); //process <subsHeadPermId>
+            parser.nextTag(); //process <subsHeadCode>
             if (!isEmptyTag(DatabaseHelper.Household.COLUMN_SUBSHEAD_CODE, parser)) {
                 parser.next();
                 table.setSubsHeadCode(parser.getText());
-                parser.nextTag(); //process </subsHeadPermId>
+                parser.nextTag(); //process </subsHeadCode>
             }else{
                 table.setSubsHeadCode("");
                 parser.nextTag();
@@ -1240,11 +1237,11 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 				parser.nextTag();
 			}
 
-            parser.nextTag(); //process <motherExtId>
+            parser.nextTag(); //process <motherCode>
             if (!isEmptyTag(DatabaseHelper.Member.COLUMN_MOTHER_CODE, parser)) {
                 parser.next();
                 table.setMotherCode(parser.getText());
-                parser.nextTag(); //process </motherExtId>
+                parser.nextTag(); //process </motherCode>
             }else{
                 table.setMotherCode("");
                 parser.nextTag();
@@ -1280,11 +1277,11 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
                 parser.nextTag();
             }
 
-            parser.nextTag(); //process <spouseExtId>
+            parser.nextTag(); //process <spouseCode>
             if (!isEmptyTag(DatabaseHelper.Member.COLUMN_SPOUSE_CODE, parser)) {
                 parser.next();
                 table.setSpouseCode(parser.getText());
-                parser.nextTag(); //process </spouseExtId>
+                parser.nextTag(); //process </spouseCode>
             }else{
                 table.setSpouseCode("");
                 parser.nextTag();
@@ -1300,11 +1297,11 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
                 parser.nextTag();
             }
 
-            parser.nextTag(); //process <houseExtId>
+            parser.nextTag(); //process <houseCode>
             if (!isEmptyTag(DatabaseHelper.Member.COLUMN_HOUSE_CODE, parser)) {
                 parser.next();
                 table.setHouseholdCode(parser.getText());
-                parser.nextTag(); //process </houseExtId>
+                parser.nextTag(); //process </houseCode>
             }else{
                 table.setHouseholdCode("");
                 parser.nextTag();

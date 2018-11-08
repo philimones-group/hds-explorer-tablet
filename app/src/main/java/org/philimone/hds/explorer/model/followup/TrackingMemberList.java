@@ -10,10 +10,10 @@ import java.io.Serializable;
 public class TrackingMemberList implements Serializable, Table {
 
     private int id;
-    private int listId;
-    private int trackingId;
-    private String title;
-    private String forms;
+    private int listId;     /* Id of the MemberList */
+    private int trackingId; /* Id of the TrackingList/Follow-up List */
+    private String title;   /* Title of the List */
+    private String forms;   /* List of the Forms that all Members will have to collect */
 
     private String memberCode;
     private String memberStudyCode;

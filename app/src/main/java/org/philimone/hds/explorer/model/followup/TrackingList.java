@@ -13,12 +13,12 @@ import java.io.Serializable;
 public class TrackingList implements Serializable, Table {
 
     private int id;
-    private String code;
-    private String label;
-    private String title;
-    private String codeLabel;
-    private String module;
-    private Double completionRate;
+    private String code;    /** The Follow-up List identification code **/
+    private String name;    /** The name of the Follow-up List (eg. HIV Case or Index Case) - will be displyed as the top left header label**/
+    private String title;   /** The title of the Follow-up List  **/
+    private String details; /** The details of the Follow-up List **/
+    private String module;  /** The module(s) that the Follow-up List belongs to **/
+    private Double completionRate; /** Rate of completion in % **/
 
     public int getId() {
         return id;
@@ -28,12 +28,12 @@ public class TrackingList implements Serializable, Table {
         this.id = id;
     }
 
-    public String getLabel() {
-        return label;
+    public String getName() {
+        return name;
     }
 
-    public void setLabel(String label) {
-        this.label = label;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getCode() {
@@ -44,12 +44,12 @@ public class TrackingList implements Serializable, Table {
         this.code = code;
     }
 
-    public String getCodeLabel() {
-        return codeLabel;
+    public String getDetails() {
+        return details;
     }
 
-    public void setCodeLabel(String codeLabel) {
-        this.codeLabel = codeLabel;
+    public void setDetails(String details) {
+        this.details = details;
     }
 
     public String getTitle() {
@@ -85,9 +85,9 @@ public class TrackingList implements Serializable, Table {
     public ContentValues getContentValues() {
         ContentValues cv = new ContentValues();
 
-        cv.put(DatabaseHelper.TrackingList.COLUMN_LABEL, label);
         cv.put(DatabaseHelper.TrackingList.COLUMN_CODE, code);
-        cv.put(DatabaseHelper.TrackingList.COLUMN_CODE_LABEL, codeLabel);
+        cv.put(DatabaseHelper.TrackingList.COLUMN_NAME, name);
+        cv.put(DatabaseHelper.TrackingList.COLUMN_DETAILS, details);
         cv.put(DatabaseHelper.TrackingList.COLUMN_TITLE, title);
         cv.put(DatabaseHelper.TrackingList.COLUMN_MODULE, module);
         cv.put(DatabaseHelper.TrackingList.COLUMN_COMPLETION_RATE, completionRate);

@@ -83,11 +83,11 @@
     <string name="member_filter_list_lbl"><u>List of Members Found</u></string>
     <string name="member_filter_xdata_lbl">Other Information</string>
     <string name="member_filter_name_lbl">Name</string>
-    <string name="member_filter_permid_lbl">Perm Id</string>
+    <string name="member_filter_code_lbl">Code</string>
     <string name="member_filter_name_hint">Insert Name Here</string>
-    <string name="member_filter_permid_hint">eg. 0101-001-01</string>
-    <string name="member_filter_curr_housenumber_lbl">Neigh/House Number</string>
-    <string name="member_filter_curr_housenumber_hint">eg. 0101-001</string>
+    <string name="member_filter_code_hint">eg. Your site individual code or ExtID</string>
+    <string name="member_filter_curr_housename_lbl">House Name/Number</string>
+    <string name="member_filter_curr_housename_hint">eg. ACA00001 or LANGA FAMILY</string>
     <string name="member_filter_gender_lbl">Gender</string>
     <string name="member_filter_gender_male_lbl">Male</string>
     <string name="member_filter_gender_female_lbl">Female</string>
@@ -122,18 +122,18 @@
 
     <string name="member_list_newmem_title_lbl">Add New Member to Collect Data</string>
     <string name="member_list_newmem_collect_lbl">Save and Collect</string>
-    <string name="member_list_newmem_houseno_lbl">Household Number</string>
-    <string name="member_list_newmem_houseno_hint">eg. 0101-001</string>
-    <string name="member_list_newmem_permid_lbl">Perm Id</string>
-    <string name="member_list_newmem_permid_hint">eg. 0101-001-01</string>
+    <string name="member_list_newmem_housename_lbl">Household Name/Number</string>
+    <string name="member_list_newmem_housename_hint">eg. ACA00001 or LANGA FAMILY</string>
+    <string name="member_list_newmem_code_lbl">Code</string>
+    <string name="member_list_newmem_code_hint">eg. ACA000001, 0101-001-01</string>
     <string name="member_list_newmem_name_lbl">Fullname</string>
     <string name="member_list_newmem_name_hint">eg. JON SNOW</string>
     <string name="member_list_newmem_dob_lbl">Date of Birth</string>
     <string name="member_list_newmem_dob_hint">eg. 2017-12-25</string>
 
     <string name="member_list_newmem_houseno_err_lbl">The format of the Household Number is incorrect</string>
-    <string name="member_list_newmem_permid_err_lbl">The format of the PermId is incorrect</string>
-    <string name="member_list_newmem_permid_exists_lbl">The PermId of this Individual already exists</string>
+    <string name="member_list_newmem_code_err_lbl">The format of the Code is incorrect</string>
+    <string name="member_list_newmem_code_exists_lbl">The Code of this Individual already exists</string>
     <string name="member_list_newmem_name_err_lbl">The name must not be empty</string>
     <string name="member_list_newmem_dob_err_lbl">The Date of birth cannot be after today date</string>
     <string name="member_list_newmem_gender_err1_lbl">Select only one of the genders, please!</string>
@@ -141,7 +141,7 @@
 
     <string name="member_details_title_lbl">Member Details</string>
     <string name="member_details_name_lbl">Name</string>
-    <string name="member_details_permid_lbl">Perm Id</string>
+    <string name="member_details_code_lbl">Code</string>
     <string name="member_details_studycode_lbl">Study Code:</string>
     <string name="member_details_gender_lbl">Gender:</string>
     <string name="member_details_gender_male_lbl">Male</string>
@@ -150,7 +150,7 @@
     <string name="member_details_dob_lbl">D.O.B:</string>
     <string name="member_details_other_info_lbl">Member Details</string>
     <string name="member_details_col_data_info_lbl">Collected Forms</string>
-    <string name="member_details_houseno_lbl">House Number:</string>
+    <string name="member_details_housename_lbl">House Name/Number:</string>
     <string name="member_details_member_endtype_lbl">Current Status:</string>
     <string name="member_details_father_lbl">Father:</string>
     <string name="member_details_mother_lbl">Mother:</string>
@@ -176,8 +176,8 @@
     <string name="facility_supervise_mark_all_done_lbl">Forms supervised sucessfully!</string>
 
     <!-- Household Filter -->
-    <string name="household_filter_permid_lbl">House Number</string>
-    <string name="household_filter_permid_hint_lbl">eg. 0101-001</string>
+    <string name="household_filter_code_lbl">Household Name/Number</string>
+    <string name="household_filter_code_hint_lbl">eg. 0101-001</string>
     <string name="household_filter_search_lbl">Search House</string>
     <string name="household_filter_gpsmap_lbl">View GPS Map</string>
     <string name="household_filter_gps_not_available_title_lbl">Cannot view GPS Map</string>

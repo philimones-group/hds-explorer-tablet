@@ -704,31 +704,31 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 
 			int trackingId = 0;
 			String trlId = null;
-			String trlLabel = null;
 			String trlCode = null;
-			String trlCodeLabel = null;
+			String trlName = null;
+			String trlDetails = null;
 			String trlTitle = null;
 			String trlModule = null;
 
 			if (isTag("tracking_list", parser)) {
 				//read tracking-list
 				Log.d("trl-attr-id", "" + parser.getAttributeValue("", "id"));
-				Log.d("trl-attr-label", "" + parser.getAttributeValue("", "label"));
+				Log.d("trl-attr-name", "" + parser.getAttributeValue("", "name"));
 				Log.d("trl-attr-title", "" + parser.getAttributeValue("", "title"));
 				Log.d("trl-attr-module", "" + parser.getAttributeValue("", "module"));
 
 				trlId = parser.getAttributeValue("", "id");
-				trlLabel = parser.getAttributeValue("", "label");
 				trlCode = parser.getAttributeValue("", "code");
-				trlCodeLabel = parser.getAttributeValue("", "codelabel");
+				trlName = parser.getAttributeValue("", "name");
+				trlDetails = parser.getAttributeValue("", "details");
 				trlTitle = parser.getAttributeValue("", "title");
 				trlModule = parser.getAttributeValue("", "module");
 
 				//save to database
 				TrackingList trackingList = new TrackingList();
-				trackingList.setLabel(trlLabel);
 				trackingList.setCode(trlCode);
-				trackingList.setCodeLabel(trlCodeLabel);
+				trackingList.setName(trlName);
+				trackingList.setDetails(trlDetails);
 				trackingList.setTitle(trlTitle);
 				trackingList.setModule(trlModule);
 				trackingList.setCompletionRate(0D);

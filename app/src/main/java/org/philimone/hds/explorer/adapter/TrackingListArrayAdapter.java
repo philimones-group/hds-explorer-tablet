@@ -65,8 +65,8 @@ public class TrackingListArrayAdapter extends ArrayAdapter {
 
         int completion = (int) (trackingList.getCompletionRate()*100);  // df.format(trackingList.getCompletionRate()*100D) + "%";
 
-        txtTitle.setText(trackingList.getLabel() + ":  " + trackingList.getTitle());
-        txtModule.setText(trackingList.getCodeLabel());
+        txtTitle.setText(trackingList.getName() + ":  " + trackingList.getTitle());
+        txtModule.setText(trackingList.getDetails());
         txtDetails.setText(mContext.getString(R.string.trackinglist_module_lbl) + ":" + trackingList.getModule());
         pBar.setPercentageValue(completion);
 

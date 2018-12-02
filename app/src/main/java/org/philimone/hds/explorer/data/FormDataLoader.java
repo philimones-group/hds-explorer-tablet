@@ -63,7 +63,7 @@ public class FormDataLoader implements Serializable {
     }
 
     public void loadHouseholdValues(Household household){
-        Map<String, String> map = form.getBindMap();
+        Map<String, String> map = form.getFormMap();
         for (String key : map.keySet()){
             if (key.startsWith(householdPrefix)) {
                 String internalVariableName = key.replace(householdPrefix, "");
@@ -106,7 +106,7 @@ public class FormDataLoader implements Serializable {
     }
 
     public void loadMemberValues(Member member){
-        Map<String, String> map = form.getBindMap();
+        Map<String, String> map = form.getFormMap();
         for (String key : map.keySet()){
             if (key.startsWith(memberPrefix)) {
                 String internalVariableName = key.replace(memberPrefix, "");
@@ -148,7 +148,7 @@ public class FormDataLoader implements Serializable {
     }
 
     public void loadUserValues(User user){
-        Map<String, String> map = form.getBindMap();
+        Map<String, String> map = form.getFormMap();
         for (String key : map.keySet()){
             if (key.startsWith(userPrefix)) {
                 String internalVariableName = key.replace(userPrefix, "");
@@ -191,7 +191,7 @@ public class FormDataLoader implements Serializable {
 
     /*When were loading constant values: the key of map will be "#.value" where "value" is the exact value to be used = internalVariableName*/
     public void loadConstantValues(){
-        Map<String, String> map = form.getBindMap();
+        Map<String, String> map = form.getFormMap();
         for (String key : map.keySet()){
             if (key.startsWith(constPrefix)) {
                 String internalVariableName = key.replace(constPrefix, "");
@@ -233,7 +233,7 @@ public class FormDataLoader implements Serializable {
 
     /* loading special constant values */
     public void loadSpecialConstantValues(Household household, Member member, User user, TrackingMemberItem memberItem){
-        Map<String, String> map = form.getBindMap();
+        Map<String, String> map = form.getFormMap();
         for (String key : map.keySet()){
             //Log.d("special constant", ""+key );
             if (key.startsWith(specialConstPrefix)) {

@@ -548,6 +548,17 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 				parser.nextTag();
 			}
 
+			parser.nextTag(); //process formDependencies
+			if (!isEmptyTag("formDependencies", parser)) {
+				parser.next();
+				table.setFormDependencies(parser.getText());
+				parser.nextTag(); //process </formDependencies>
+				//Log.d(count+"-formDependencies", "value="+ parser.getText());
+			}else{
+				table.setFormDependencies("");
+				parser.nextTag();
+			}
+
 			parser.nextTag(); //process gender
 			if (!isEmptyTag("gender", parser)) {
 				parser.next();
@@ -603,6 +614,17 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 				parser.nextTag();
 			}
 
+			parser.nextTag(); //process isHouseholdHeadForm
+			if (!isEmptyTag("isHouseholdHeadForm", parser)) {
+				parser.next();
+				table.setHouseholdHeadForm(Boolean.parseBoolean(parser.getText()));
+				parser.nextTag(); //process </isHouseholdHeadForm>
+				//Log.d(count+"-isHouseholdHeadForm", "value="+ parser.getText());
+			}else{
+				table.setHouseholdHeadForm(false);
+				parser.nextTag();
+			}
+
 			parser.nextTag(); //process isMemberForm
 			if (!isEmptyTag("isMemberForm", parser)) {
 				parser.next();
@@ -625,14 +647,14 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 				parser.nextTag();
 			}
 
-			parser.nextTag(); //process bindMap
-			if (!isEmptyTag("bindMap", parser)) {
+			parser.nextTag(); //process formMap
+			if (!isEmptyTag("formMap", parser)) {
 				parser.next();
-				table.setBindMap(parser.getText());
-				//Log.d(count+"-bindMap", "value="+ parser.getText());
-				parser.nextTag(); //process </bindMap>
+				table.setFormMap(parser.getText());
+				//Log.d(count+"-formMap", "value="+ parser.getText());
+				parser.nextTag(); //process </formMap>
 			}else{
-				table.setBindMap("");
+				table.setFormMap("");
 				parser.nextTag();
 
 			}

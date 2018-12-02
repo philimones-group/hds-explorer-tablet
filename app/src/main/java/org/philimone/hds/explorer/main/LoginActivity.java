@@ -166,7 +166,7 @@ public class LoginActivity extends Activity implements SyncDatabaseListener{
 
         List<Form> list = Queries.getAllFormBy(db, null, null);
         for (Form f : list){
-            Log.d("form", ""+f.getFormId()+", bind->"+f.getBindMap());
+            Log.d("form", ""+f.getFormId()+", bind->"+f.getFormMap());
         }
 
         db.close();

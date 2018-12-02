@@ -49,7 +49,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             /*
             //NEW DB VERSION with BindMap
             try {
-                db.execSQL("ALTER TABLE " + Form.TABLE_NAME + " ADD COLUMN " + Form.COLUMN_BIND_MAP + " TEXT"); //upgrade CollectedData
+                db.execSQL("ALTER TABLE " + Form.TABLE_NAME + " ADD COLUMN " + Form.COLUMN_FORM_MAP + " TEXT"); //upgrade CollectedData
             }catch (Exception ex){
                 Log.d("error on database alter", ""+ex.getMessage());
                 ex.printStackTrace();
@@ -104,18 +104,20 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         public static final String COLUMN_FORM_ID = "formId";
         public static final String COLUMN_FORM_NAME = "formName";
         public static final String COLUMN_FORM_DESCRIPTION = "formDescription";
+        public static final String COLUMN_FORM_DEPENDENCIES = "formDependencies";
         public static final String COLUMN_GENDER = "gender";
         public static final String COLUMN_MIN_AGE = "minAge";
         public static final String COLUMN_MAX_AGE = "maxAge";
         public static final String COLUMN_MODULES = "modules";
         public static final String COLUMN_IS_HOUSEHOLD = "isHouseholdForm";
+        public static final String COLUMN_IS_HOUSEHOLD_HEAD = "isHouseholdHeadForm";
         public static final String COLUMN_IS_MEMBER = "isMemberForm";
         public static final String COLUMN_IS_FOLLOW_UP_ONLY = "isFollowUpOnly";
-        public static final String COLUMN_BIND_MAP = "bindMap";
+        public static final String COLUMN_FORM_MAP = "formMap";
         public static final String COLUMN_REDCAP_API = "redcapApi";
         public static final String COLUMN_REDCAP_MAP = "redcapMap";
 
-		public static final String[] ALL_COLUMNS = {COLUMN_FORM_ID, COLUMN_FORM_NAME, COLUMN_FORM_DESCRIPTION, COLUMN_GENDER, COLUMN_MIN_AGE, COLUMN_MAX_AGE, COLUMN_MODULES, COLUMN_IS_HOUSEHOLD, COLUMN_IS_MEMBER, COLUMN_IS_FOLLOW_UP_ONLY, COLUMN_BIND_MAP, COLUMN_REDCAP_API, COLUMN_REDCAP_MAP};
+		public static final String[] ALL_COLUMNS = {COLUMN_FORM_ID, COLUMN_FORM_NAME, COLUMN_FORM_DESCRIPTION, COLUMN_FORM_DEPENDENCIES, COLUMN_GENDER, COLUMN_MIN_AGE, COLUMN_MAX_AGE, COLUMN_MODULES, COLUMN_IS_HOUSEHOLD, COLUMN_IS_HOUSEHOLD_HEAD, COLUMN_IS_MEMBER, COLUMN_IS_FOLLOW_UP_ONLY, COLUMN_FORM_MAP, COLUMN_REDCAP_API, COLUMN_REDCAP_MAP};
 	}
 
     public static final class Module implements BaseColumns {
@@ -289,14 +291,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + Form.COLUMN_FORM_ID + " TEXT,"
             + Form.COLUMN_FORM_NAME + " TEXT,"
             + Form.COLUMN_FORM_DESCRIPTION + " TEXT,"
+            + Form.COLUMN_FORM_DEPENDENCIES + " TEXT,"
             + Form.COLUMN_GENDER + " TEXT,"
             + Form.COLUMN_MIN_AGE + " INTEGER,"
             + Form.COLUMN_MAX_AGE + " INTEGER,"
             + Form.COLUMN_MODULES + " TEXT,"
             + Form.COLUMN_IS_HOUSEHOLD + " INTEGER,"
+            + Form.COLUMN_IS_HOUSEHOLD_HEAD + " INTEGER,"
             + Form.COLUMN_IS_MEMBER + " INTEGER,"
             + Form.COLUMN_IS_FOLLOW_UP_ONLY + " INTEGER,"
-            + Form.COLUMN_BIND_MAP + " TEXT,"
+            + Form.COLUMN_FORM_MAP + " TEXT,"
             + Form.COLUMN_REDCAP_API + " TEXT,"
             + Form.COLUMN_REDCAP_MAP + " TEXT);"
 

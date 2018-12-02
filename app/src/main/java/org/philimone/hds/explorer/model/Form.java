@@ -18,20 +18,22 @@ public class  Form implements Serializable, Table {
     private String formId;
     private String formName;
     private String formDescription;
+    private String formDependencies;
     private String gender; /*M, F, ALL*/
     private int minAge; //0
     private int maxAge; //Default - 120
     private String modules; //if null - is accessed by all
     private boolean isHouseholdForm;
+    private boolean isHouseholdHeadForm;
     private boolean isMemberForm;
     private boolean isFollowUpOnly;
-    private String bindMapText;
-    private Map<String, String> bindMap;
+    private String formMapText;
+    private Map<String, String> formMap;
     private String redcapApi;
     private String redcapMapText;
 
     public Form(){
-        bindMap = new HashMap<>();
+        formMap = new HashMap<>();
     }
 
     @Override
@@ -65,6 +67,14 @@ public class  Form implements Serializable, Table {
 
     public void setFormDescription(String formDescription) {
         this.formDescription = formDescription;
+    }
+
+    public String getFormDependencies() {
+        return formDependencies;
+    }
+
+    public void setFormDependencies(String formDependencies) {
+        this.formDependencies = formDependencies;
     }
 
     public String getGender() {
@@ -107,6 +117,14 @@ public class  Form implements Serializable, Table {
         isHouseholdForm = householdForm;
     }
 
+    public boolean isHouseholdHeadForm() {
+        return isHouseholdHeadForm;
+    }
+
+    public void setHouseholdHeadForm(boolean householdHeadForm) {
+        isHouseholdHeadForm = householdHeadForm;
+    }
+
     public boolean isMemberForm() {
         return isMemberForm;
     }
@@ -123,24 +141,24 @@ public class  Form implements Serializable, Table {
         isFollowUpOnly = followUpOnly;
     }
 
-    public void setBindMap(String bindMapAsText){
-        this.bindMapText = bindMapAsText;
-        convertBindMapTextToMap();
+    public void setFormMap(String bindMapAsText){
+        this.formMapText = bindMapAsText;
+        convertFormMapTextToMap();
     }
 
-    public Map<String, String> getBindMap(){
-        return this.bindMap;
+    public Map<String, String> getFormMap(){
+        return this.formMap;
     }
 
-    private void convertBindMapTextToMap() {
-        if (bindMapText != null && !bindMapText.isEmpty()){
-            this.bindMap.clear();
+    private void convertFormMapTextToMap() {
+        if (formMapText != null && !formMapText.isEmpty()){
+            this.formMap.clear();
 
-            String[] entries = bindMapText.split(";");
+            String[] entries = formMapText.split(";");
             for (String entry : entries){
                 String[] keyValue = entry.split(":");
                 if (keyValue.length == 2){
-                    this.bindMap.put(keyValue[0], keyValue[1]);
+                    this.formMap.put(keyValue[0], keyValue[1]);
                 }
             }
         }
@@ -165,14 +183,16 @@ public class  Form implements Serializable, Table {
         cv.put(DatabaseHelper.Form.COLUMN_FORM_ID, formId);
         cv.put(DatabaseHelper.Form.COLUMN_FORM_NAME, formName);
         cv.put(DatabaseHelper.Form.COLUMN_FORM_DESCRIPTION, formDescription);
+        cv.put(DatabaseHelper.Form.COLUMN_FORM_DEPENDENCIES, formDependencies);
         cv.put(DatabaseHelper.Form.COLUMN_GENDER, gender);
         cv.put(DatabaseHelper.Form.COLUMN_MIN_AGE, minAge);
         cv.put(DatabaseHelper.Form.COLUMN_MAX_AGE, maxAge);
         cv.put(DatabaseHelper.Form.COLUMN_MODULES, modules);
         cv.put(DatabaseHelper.Form.COLUMN_IS_HOUSEHOLD, isHouseholdForm ? 1 : 0);
+        cv.put(DatabaseHelper.Form.COLUMN_IS_HOUSEHOLD_HEAD, isHouseholdHeadForm ? 1 : 0);
         cv.put(DatabaseHelper.Form.COLUMN_IS_MEMBER, isMemberForm ? 1 : 0);
         cv.put(DatabaseHelper.Form.COLUMN_IS_FOLLOW_UP_ONLY, isFollowUpOnly ? 1 : 0);
-        cv.put(DatabaseHelper.Form.COLUMN_BIND_MAP, bindMapText);
+        cv.put(DatabaseHelper.Form.COLUMN_FORM_MAP, formMapText);
         cv.put(DatabaseHelper.Form.COLUMN_REDCAP_API, redcapApi);
         cv.put(DatabaseHelper.Form.COLUMN_REDCAP_MAP, redcapMapText);
         return cv;

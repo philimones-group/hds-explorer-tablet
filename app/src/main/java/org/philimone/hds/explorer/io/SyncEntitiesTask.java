@@ -890,6 +890,17 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 				parser.nextTag();
 			}
 
+			parser.nextTag(); //process <email>
+			if (!isEmptyTag("email", parser)){ //its not <email/>
+				parser.next();
+				table.setEmail(parser.getText());
+				parser.nextTag(); // </email>
+				//Log.d(count+"-email", "value="+ table.getEmail());
+			}else{
+				table.setEmail("");
+				parser.nextTag();
+			}
+
 			parser.nextTag(); //process <modules>
 			if (!isEmptyTag("modules", parser)) {
 				parser.next();
@@ -898,17 +909,6 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 				//Log.d(count+"-modules", "value="+ table.getModules());
 			}else{
 				table.setModules("");
-				parser.nextTag();
-			}
-
-			parser.nextTag(); //process <extras>
-			if (!isEmptyTag("extras", parser)){ //its not <extras/>
-				parser.next();
-				table.setExtras(parser.getText());
-				parser.nextTag(); // </extras>
-				//Log.d(count+"-extras", "value="+ table.getExtras());
-			}else{
-				table.setExtras("");
 				parser.nextTag();
 			}
 

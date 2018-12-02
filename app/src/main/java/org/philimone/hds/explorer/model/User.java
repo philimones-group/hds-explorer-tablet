@@ -20,21 +20,22 @@ public class User implements Serializable, Table {
     private String fullName;
     private String username;
     private String password;
+    private String email;
     private String modules;
-    private String extras;
+
 
     public User(){
 
     }
 
-    public User(String firstName, String lastName, String fullName, String username, String password, String modules, String extras) {
+    public User(String firstName, String lastName, String fullName, String username, String password, String modules, String email) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.fullName = fullName;
         this.username = username;
         this.password = password;
         this.modules = modules;
-        this.extras = extras;
+        this.email = email;
     }
 
     @Override
@@ -94,12 +95,12 @@ public class User implements Serializable, Table {
         this.modules = modules;
     }
 
-    public String getExtras() {
-        return extras;
+    public String getEmail() {
+        return email;
     }
 
-    public void setExtras(String extras) {
-        this.extras = extras;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String toString(){
@@ -123,8 +124,8 @@ public class User implements Serializable, Table {
         cv.put(DatabaseHelper.User.COLUMN_USERNAME, username);
         cv.put(DatabaseHelper.User.COLUMN_FULLNAME, fullName);
         cv.put(DatabaseHelper.User.COLUMN_PASSWORD, password);
+        cv.put(DatabaseHelper.User.COLUMN_EMAIL, email);
         cv.put(DatabaseHelper.User.COLUMN_MODULES, modules);
-        cv.put(DatabaseHelper.User.COLUMN_EXTRAS, extras);
         return cv;
     }
 

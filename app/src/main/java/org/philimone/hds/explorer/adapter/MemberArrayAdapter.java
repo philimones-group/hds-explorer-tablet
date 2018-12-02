@@ -184,7 +184,7 @@ public class MemberArrayAdapter  extends ArrayAdapter<Member> {
                 iconView.setImageResource(R.mipmap.member_green);
             }
 
-            if (mb.isSubsHouseholdHead()){
+            if (mb.isSecHouseholdHead()){
                 txtName.setTypeface(null, Typeface.BOLD);
                 iconView.setImageResource(R.mipmap.member_green_2);
             }

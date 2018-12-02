@@ -173,6 +173,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         public static final String COLUMN_AGE_AT_DEATH = "ageAtDeath";
         public static final String COLUMN_SPOUSE_CODE = "spouseCode";
         public static final String COLUMN_SPOUSE_NAME = "spouseName";
+        public static final String COLUMN_SPOUSE_TYPE = "spouseType";
         public static final String COLUMN_MOTHER_CODE = "motherCode";
         public static final String COLUMN_MOTHER_NAME = "motherName";
         public static final String COLUMN_FATHER_CODE = "fatherCode";
@@ -183,6 +184,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         public static final String COLUMN_START_DATE = "startDate";
         public static final String COLUMN_END_TYPE = "endType";
         public static final String COLUMN_END_DATE = "endDate";
+        public static final String COLUMN_ENTRY_HOUSEHOLD = "entryHousehold";
+        public static final String COLUMN_ENTRY_TYPE = "entryType";
+        public static final String COLUMN_ENTRY_DATE = "entryDate";
+        public static final String COLUMN_IS_HOUSEHOLD_HEAD = "isHouseholdHead";
+        public static final String COLUMN_IS_SEC_HOUSEHOLD_HEAD = "isSecHouseholdHead";
         public static final String COLUMN_GPS_NULL = "hasGps";
         public static final String COLUMN_GPS_ACCURACY = "gpsAccuracy";
         public static final String COLUMN_GPS_ALTITUDE = "gpsAltitude";
@@ -195,10 +201,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 
         public static final String[] ALL_COLUMNS = {_ID, COLUMN_CODE, COLUMN_NAME, COLUMN_GENDER, COLUMN_DOB, COLUMN_AGE, COLUMN_AGE_AT_DEATH, COLUMN_SPOUSE_CODE,
-                COLUMN_SPOUSE_NAME, COLUMN_MOTHER_CODE,
+                COLUMN_SPOUSE_NAME, COLUMN_SPOUSE_TYPE, COLUMN_MOTHER_CODE,
                 COLUMN_MOTHER_NAME, COLUMN_FATHER_CODE, COLUMN_FATHER_NAME, COLUMN_HOUSE_CODE, COLUMN_HOUSE_NAME,
-                COLUMN_START_TYPE, COLUMN_START_DATE, COLUMN_END_TYPE, COLUMN_END_DATE, COLUMN_GPS_NULL,
-                COLUMN_GPS_ACCURACY, COLUMN_GPS_ALTITUDE, COLUMN_GPS_LATITUDE, COLUMN_GPS_LONGITUDE,
+                COLUMN_START_TYPE, COLUMN_START_DATE, COLUMN_END_TYPE, COLUMN_END_DATE, COLUMN_ENTRY_HOUSEHOLD, COLUMN_ENTRY_TYPE, COLUMN_ENTRY_DATE,
+                COLUMN_IS_HOUSEHOLD_HEAD, COLUMN_IS_SEC_HOUSEHOLD_HEAD,
+                COLUMN_GPS_NULL, COLUMN_GPS_ACCURACY, COLUMN_GPS_ALTITUDE, COLUMN_GPS_LATITUDE, COLUMN_GPS_LONGITUDE,
                 COLUMN_COS_LATITUDE, COLUMN_SIN_LATITUDE, COLUMN_COS_LONGITUDE, COLUMN_SIN_LONGITUDE};
 	}
 
@@ -368,6 +375,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + Member.COLUMN_AGE_AT_DEATH + " INTEGER,"
             + Member.COLUMN_SPOUSE_CODE + " TEXT,"
             + Member.COLUMN_SPOUSE_NAME + " TEXT,"
+            + Member.COLUMN_SPOUSE_TYPE + " TEXT,"
             + Member.COLUMN_MOTHER_CODE + " TEXT,"
             + Member.COLUMN_MOTHER_NAME + " TEXT,"
             + Member.COLUMN_FATHER_CODE + " TEXT,"
@@ -378,6 +386,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + Member.COLUMN_START_DATE + " TEXT,"
             + Member.COLUMN_END_TYPE + " TEXT,"
             + Member.COLUMN_END_DATE + " TEXT,"
+            + Member.COLUMN_ENTRY_HOUSEHOLD + " TEXT,"
+            + Member.COLUMN_ENTRY_TYPE + " TEXT,"
+            + Member.COLUMN_ENTRY_DATE + " TEXT,"
+            + Member.COLUMN_IS_HOUSEHOLD_HEAD + " INTEGER,"
+            + Member.COLUMN_IS_SEC_HOUSEHOLD_HEAD + " INTEGER,"
             + Member.COLUMN_GPS_NULL + " INTEGER,"
             + Member.COLUMN_GPS_ACCURACY + " REAL,"
             + Member.COLUMN_GPS_ALTITUDE + " REAL,"

@@ -24,13 +24,15 @@ public class Member implements Serializable, Table {
     private int age;
     private int ageAtDeath;
 
-    private String spouseCode;
-    private String spouseName;
-
     private String motherCode;
     private String motherName;
     private String fatherCode;
     private String fatherName;
+
+    private String spouseCode;
+    private String spouseName;
+    private String spouseType;
+
     /**
      * Current HouseHold Status
      */
@@ -40,6 +42,14 @@ public class Member implements Serializable, Table {
     private String startDate;
     private String endType;
     private String endDate;
+
+    private String entryHousehold;
+    private String entryType;
+    private String entryDate;
+
+    private boolean isHouseholdHead; /*not on database*/
+    private boolean isSecHouseholdHead; /*not on database*/
+
     /** GPS Status */
     private boolean gpsNull;
     private Double gpsAccuracy;
@@ -52,8 +62,7 @@ public class Member implements Serializable, Table {
     private Double cosLongitude;
     private Double sinLongitude;
 
-    private boolean isHouseholdHead; /*not on database*/
-    private boolean isSubsHouseholdHead; /*not on database*/
+
 
     public int getId() {
         return id;
@@ -275,6 +284,38 @@ public class Member implements Serializable, Table {
         this.spouseName = spouseName;
     }
 
+    public String getSpouseType() {
+        return spouseType;
+    }
+
+    public void setSpouseType(String spouseType) {
+        this.spouseType = spouseType;
+    }
+
+    public String getEntryHousehold() {
+        return entryHousehold;
+    }
+
+    public void setEntryHousehold(String entryHousehold) {
+        this.entryHousehold = entryHousehold;
+    }
+
+    public String getEntryType() {
+        return entryType;
+    }
+
+    public void setEntryType(String entryType) {
+        this.entryType = entryType;
+    }
+
+    public String getEntryDate() {
+        return entryDate;
+    }
+
+    public void setEntryDate(String entryDate) {
+        this.entryDate = entryDate;
+    }
+
     public boolean isHouseholdHead() {
         return isHouseholdHead;
     }
@@ -283,12 +324,12 @@ public class Member implements Serializable, Table {
         isHouseholdHead = householdHead;
     }
 
-    public boolean isSubsHouseholdHead() {
-        return isSubsHouseholdHead;
+    public boolean isSecHouseholdHead() {
+        return isSecHouseholdHead;
     }
 
-    public void setSubsHouseholdHead(boolean subsHouseholdHead) {
-        isSubsHouseholdHead = subsHouseholdHead;
+    public void setSecHouseholdHead(boolean secHouseholdHead) {
+        isSecHouseholdHead = secHouseholdHead;
     }
 
     public boolean isGpsNull() {
@@ -314,6 +355,7 @@ public class Member implements Serializable, Table {
 
         member.spouseCode = "";
         member.spouseName = "";
+        member.spouseType = "";
 
         member.motherCode = "";
         member.motherName = "";
@@ -326,6 +368,10 @@ public class Member implements Serializable, Table {
         member.startDate = "";
         member.endType = "";
         member.endDate = "";
+
+        member.entryHousehold = "";
+        member.entryType = "";
+        member.entryDate = null;
 
         member.gpsNull = true;
         member.gpsAccuracy = 0.0;
@@ -358,6 +404,7 @@ public class Member implements Serializable, Table {
         cv.put(DatabaseHelper.Member.COLUMN_AGE_AT_DEATH, ageAtDeath);
         cv.put(DatabaseHelper.Member.COLUMN_SPOUSE_CODE, spouseCode);
         cv.put(DatabaseHelper.Member.COLUMN_SPOUSE_NAME, spouseName);
+        cv.put(DatabaseHelper.Member.COLUMN_SPOUSE_TYPE, spouseType);
         cv.put(DatabaseHelper.Member.COLUMN_MOTHER_CODE, motherCode);
         cv.put(DatabaseHelper.Member.COLUMN_MOTHER_NAME, motherName);
         cv.put(DatabaseHelper.Member.COLUMN_FATHER_CODE, fatherCode);
@@ -368,6 +415,11 @@ public class Member implements Serializable, Table {
         cv.put(DatabaseHelper.Member.COLUMN_START_DATE, startDate);
         cv.put(DatabaseHelper.Member.COLUMN_END_TYPE, endType);
         cv.put(DatabaseHelper.Member.COLUMN_END_DATE, endDate);
+        cv.put(DatabaseHelper.Member.COLUMN_ENTRY_HOUSEHOLD, entryHousehold);
+        cv.put(DatabaseHelper.Member.COLUMN_ENTRY_TYPE, entryType);
+        cv.put(DatabaseHelper.Member.COLUMN_ENTRY_DATE, entryDate);
+        cv.put(DatabaseHelper.Member.COLUMN_IS_HOUSEHOLD_HEAD, isHouseholdHead ? 1 : 0);
+        cv.put(DatabaseHelper.Member.COLUMN_IS_SEC_HOUSEHOLD_HEAD, isSecHouseholdHead ? 1 : 0);
         cv.put(DatabaseHelper.Member.COLUMN_GPS_NULL, gpsNull ? 1 : 0);
         cv.put(DatabaseHelper.Member.COLUMN_GPS_ACCURACY, gpsAccuracy);
         cv.put(DatabaseHelper.Member.COLUMN_GPS_ALTITUDE, gpsAltitude);

@@ -193,7 +193,7 @@ public class MemberDetailsActivity extends Activity implements OdkFormResultList
             iconView.setImageResource(R.mipmap.member_big_head_icon);
         }
 
-        if (member.isSubsHouseholdHead()){
+        if (member.isSecHouseholdHead()){
             iconView.setImageResource(R.mipmap.member_big_subs_icon);
         }
 

@@ -1335,6 +1335,16 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
                 parser.nextTag();
             }
 
+			parser.nextTag(); //process <spouseType>
+			if (!isEmptyTag(DatabaseHelper.Member.COLUMN_SPOUSE_TYPE, parser)) {
+				parser.next();
+				table.setSpouseType(parser.getText());
+				parser.nextTag(); //process </spouseType>
+			}else{
+				table.setSpouseType("");
+				parser.nextTag();
+			}
+
             parser.nextTag(); //process <houseCode>
             if (!isEmptyTag(DatabaseHelper.Member.COLUMN_HOUSE_CODE, parser)) {
                 parser.next();
@@ -1396,8 +1406,79 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
             }else{
                 table.setEndDate("");
                 parser.nextTag();
-                //Log.d("e gpsacc", table.getEndDate());
+                //Log.d("e endDate", table.getEndDate());
             }
+
+			parser.nextTag(); //process <entryHousehold>
+			if (!isEmptyTag(DatabaseHelper.Member.COLUMN_ENTRY_HOUSEHOLD, parser)) { //endtag is temp
+				parser.next();
+				//Log.d("note entryHousehold", parser.getText() + ", " +parser.getPositionDescription());
+				if (parser.getText()!=null){
+					table.setEntryHousehold(parser.getText());
+					parser.nextTag(); //process </entryHousehold>
+				}
+			}else{
+				table.setEntryHousehold("");
+				parser.nextTag();
+				//Log.d("e entryHousehold", table.getEntryHousehold());
+			}
+
+			parser.nextTag(); //process <entryType>
+			if (!isEmptyTag(DatabaseHelper.Member.COLUMN_ENTRY_TYPE, parser)) { //endtag is temp
+				parser.next();
+				//Log.d("note entryType", parser.getText() + ", " +parser.getPositionDescription());
+				if (parser.getText()!=null){
+					table.setEntryType(parser.getText());
+					parser.nextTag(); //process </entryType>
+				}
+			}else{
+				table.setEntryType("");
+				parser.nextTag();
+				//Log.d("e entryType", table.getEntryType());
+			}
+
+			parser.nextTag(); //process <entryDate>
+			if (!isEmptyTag(DatabaseHelper.Member.COLUMN_ENTRY_DATE, parser)) { //endtag is temp
+				parser.next();
+				//Log.d("note entryDate", parser.getText() + ", " +parser.getPositionDescription());
+				if (parser.getText()!=null){
+					table.setEntryDate(parser.getText());
+					parser.nextTag(); //process </entryDate>
+				}
+			}else{
+				table.setEntryDate("");
+				parser.nextTag();
+				//Log.d("e entryDate", table.getEntryDate());
+			}
+
+
+			parser.nextTag(); //process <isHouseholdHead>
+			if (!isEmptyTag(DatabaseHelper.Member.COLUMN_IS_HOUSEHOLD_HEAD, parser)) { //endtag is temp
+				parser.next();
+				//Log.d("note isHouseholdHead", parser.getText() + ", " +parser.getPositionDescription());
+				if (parser.getText()!=null){
+					table.setHouseholdHead(Boolean.parseBoolean(parser.getText()));
+					parser.nextTag(); //process </entryDate>
+				}
+			}else{
+				table.setHouseholdHead(false);
+				parser.nextTag();
+				//Log.d("e isHouseholdHead", table.isHouseholdHead());
+			}
+
+			parser.nextTag(); //process <isSecHouseholdHead>
+			if (!isEmptyTag(DatabaseHelper.Member.COLUMN_IS_SEC_HOUSEHOLD_HEAD, parser)) { //endtag is temp
+				parser.next();
+				//Log.d("note isSecHouseholdHead", parser.getText() + ", " +parser.getPositionDescription());
+				if (parser.getText()!=null){
+					table.setSecHouseholdHead(Boolean.parseBoolean(parser.getText()));
+					parser.nextTag(); //process </isSecHouseholdHead>
+				}
+			}else{
+				table.setSecHouseholdHead(false);
+				parser.nextTag();
+				//Log.d("e isSecHouseholdHead", table.isHouseholdHead());
+			}
 
             //CORRECT THE BUG AROUND HERE
             parser.nextTag(); //process <gpsAccuracy>

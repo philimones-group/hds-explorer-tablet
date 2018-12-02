@@ -440,7 +440,7 @@ public class LoginActivity extends Activity implements SyncDatabaseListener{
                 HttpURLConnection connection = null;
                 String basicAuth = "Basic " + new String(Base64.encode((this.mUsername+":"+this.mPassword).getBytes(),Base64.NO_WRAP ));
 
-                URL url = new URL(serverUrl+"/api/explorer/login");
+                URL url = new URL(serverUrl+"/api/login");
 
                 connection = (HttpURLConnection) url.openConnection();
                 connection.setRequestMethod("GET");

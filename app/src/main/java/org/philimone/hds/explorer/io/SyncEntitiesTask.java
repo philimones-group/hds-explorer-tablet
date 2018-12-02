@@ -998,6 +998,16 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
                 parser.nextTag();
             }
 
+			parser.nextTag(); //process <region>
+			if (!isEmptyTag(DatabaseHelper.Household.COLUMN_REGION, parser)) {
+				parser.next();
+				table.setRegion(parser.getText());
+				parser.nextTag(); //process </region>
+			}else{
+				table.setRegion("");
+				parser.nextTag();
+			}
+
             parser.nextTag(); //process <houseNumber>
             if (!isEmptyTag(DatabaseHelper.Household.COLUMN_NAME, parser)) {
                 parser.next();
@@ -1028,55 +1038,85 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
                 parser.nextTag();
             }
 
-            parser.nextTag(); //process <neighborhood>
-            if (!isEmptyTag(DatabaseHelper.Household.COLUMN_NEIGHBORHOOD, parser)) {
+            parser.nextTag(); //process <hierarchy1>
+            if (!isEmptyTag(DatabaseHelper.Household.COLUMN_HIERARCHY_1, parser)) {
                 parser.next();
-                table.setNeighborhood(parser.getText());
-                parser.nextTag(); //process </neighborhood>
+                table.setHierarchy1(parser.getText());
+                parser.nextTag(); //process </hierarchy1>
             }else{
-                table.setNeighborhood("");
+                table.setHierarchy1("");
                 parser.nextTag();
             }
 
-            parser.nextTag(); //process <locality>
-            if (!isEmptyTag(DatabaseHelper.Household.COLUMN_LOCALITY, parser)) {
+            parser.nextTag(); //process <hierarchy2>
+            if (!isEmptyTag(DatabaseHelper.Household.COLUMN_HIERARCHY_2, parser)) {
                 parser.next();
-                table.setLocality(parser.getText());
-                parser.nextTag(); //process </locality>
+                table.setHierarchy2(parser.getText());
+                parser.nextTag(); //process </hierarchy2>
             }else{
-                table.setLocality("");
+                table.setHierarchy2("");
                 parser.nextTag();
             }
 
-            parser.nextTag(); //process <adminPost>
-            if (!isEmptyTag(DatabaseHelper.Household.COLUMN_ADMIN_POST, parser)) {
+            parser.nextTag(); //process <hierarchy3>
+            if (!isEmptyTag(DatabaseHelper.Household.COLUMN_HIERARCHY_3, parser)) {
                 parser.next();
-                table.setAdminPost(parser.getText());
-                parser.nextTag(); //process </adminPost>
+                table.setHierarchy3(parser.getText());
+                parser.nextTag(); //process </hierarchy3>
             }else{
-                table.setAdminPost("");
+                table.setHierarchy3("");
                 parser.nextTag();
             }
 
-            parser.nextTag(); //process <district>
-            if (!isEmptyTag(DatabaseHelper.Household.COLUMN_DISTRICT, parser)) {
+            parser.nextTag(); //process <hierarchy4>
+            if (!isEmptyTag(DatabaseHelper.Household.COLUMN_HIERARCHY_4, parser)) {
                 parser.next();
-                table.setDistrict(parser.getText());
-                parser.nextTag(); //process </district>
+                table.setHierarchy4(parser.getText());
+                parser.nextTag(); //process </hierarchy4>
             }else{
-                table.setDistrict("");
+                table.setHierarchy4("");
                 parser.nextTag();
             }
 
-            parser.nextTag(); //process <province>
-            if (!isEmptyTag(DatabaseHelper.Household.COLUMN_PROVINCE, parser)) {
-                parser.next();
-                table.setProvince(parser.getText());
-                parser.nextTag(); //process </province>
-            }else{
-                table.setProvince("");
-                parser.nextTag();
-            }
+			parser.nextTag(); //process <hierarchy5>
+			if (!isEmptyTag(DatabaseHelper.Household.COLUMN_HIERARCHY_5, parser)) {
+				parser.next();
+				table.setHierarchy5(parser.getText());
+				parser.nextTag(); //process </hierarchy5>
+			}else{
+				table.setHierarchy5("");
+				parser.nextTag();
+			}
+
+			parser.nextTag(); //process <hierarchy6>
+			if (!isEmptyTag(DatabaseHelper.Household.COLUMN_HIERARCHY_6, parser)) {
+				parser.next();
+				table.setHierarchy6(parser.getText());
+				parser.nextTag(); //process </hierarchy6>
+			}else{
+				table.setHierarchy6("");
+				parser.nextTag();
+			}
+
+			parser.nextTag(); //process <hierarchy7>
+			if (!isEmptyTag(DatabaseHelper.Household.COLUMN_HIERARCHY_7, parser)) {
+				parser.next();
+				table.setHierarchy7(parser.getText());
+				parser.nextTag(); //process </hierarchy7>
+			}else{
+				table.setHierarchy7("");
+				parser.nextTag();
+			}
+
+			parser.nextTag(); //process <hierarchy8>
+			if (!isEmptyTag(DatabaseHelper.Household.COLUMN_HIERARCHY_8, parser)) {
+				parser.next();
+				table.setHierarchy8(parser.getText());
+				parser.nextTag(); //process </hierarchy8>
+			}else{
+				table.setHierarchy8("");
+				parser.nextTag();
+			}
 
             parser.nextTag(); //process <gpsAccuracy>
             if (!isEmptyTag(DatabaseHelper.Household.COLUMN_GPS_ACCURACY, parser)) {

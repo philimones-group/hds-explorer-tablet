@@ -16,16 +16,20 @@ public class Household implements Serializable, Table {
 
     private int id;
     private String code;
-
-    private String locality;
-    private String adminPost;
-    private String district;
-    private String province;
-
-    private String neighborhood;
+    private String region;
     private String name;
     private String headCode;
     private String secHeadCode;
+
+    private String hierarchy1;
+    private String hierarchy2;
+    private String hierarchy3;
+    private String hierarchy4;
+    private String hierarchy5;
+    private String hierarchy6;
+    private String hierarchy7;
+    private String hierarchy8;
+
 
     private boolean gpsNull;
     private Double gpsAccuracy;
@@ -62,44 +66,76 @@ public class Household implements Serializable, Table {
         this.name = name;
     }
 
-    public String getNeighborhood() {
-        return neighborhood;
+    public String getRegion() {
+        return region;
     }
 
-    public void setNeighborhood(String neighborhood) {
-        this.neighborhood = neighborhood;
+    public void setRegion(String region) {
+        this.region = region;
     }
 
-    public String getLocality() {
-        return locality;
+    public String getHierarchy1() {
+        return hierarchy1;
     }
 
-    public void setLocality(String locality) {
-        this.locality = locality;
+    public void setHierarchy1(String hierarchy1) {
+        this.hierarchy1 = hierarchy1;
     }
 
-    public String getAdminPost() {
-        return adminPost;
+    public String getHierarchy2() {
+        return hierarchy2;
     }
 
-    public void setAdminPost(String adminPost) {
-        this.adminPost = adminPost;
+    public void setHierarchy2(String hierarchy2) {
+        this.hierarchy2 = hierarchy2;
     }
 
-    public String getDistrict() {
-        return district;
+    public String getHierarchy3() {
+        return hierarchy3;
     }
 
-    public void setDistrict(String district) {
-        this.district = district;
+    public void setHierarchy3(String hierarchy3) {
+        this.hierarchy3 = hierarchy3;
     }
 
-    public String getProvince() {
-        return province;
+    public String getHierarchy4() {
+        return hierarchy4;
     }
 
-    public void setProvince(String province) {
-        this.province = province;
+    public void setHierarchy4(String hierarchy4) {
+        this.hierarchy4 = hierarchy4;
+    }
+
+    public String getHierarchy5() {
+        return hierarchy5;
+    }
+
+    public void setHierarchy5(String hierarchy5) {
+        this.hierarchy5 = hierarchy5;
+    }
+
+    public String getHierarchy6() {
+        return hierarchy6;
+    }
+
+    public void setHierarchy6(String hierarchy6) {
+        this.hierarchy6 = hierarchy6;
+    }
+
+    public String getHierarchy7() {
+        return hierarchy7;
+    }
+
+    public void setHierarchy7(String hierarchy7) {
+        this.hierarchy7 = hierarchy7;
+    }
+
+    public String getHierarchy8() {
+        return hierarchy8;
+    }
+
+    public void setHierarchy8(String hierarchy8) {
+        this.hierarchy8 = hierarchy8;
     }
 
     public String getHeadCode() {
@@ -206,11 +242,15 @@ public class Household implements Serializable, Table {
         cv.put(DatabaseHelper.Household.COLUMN_NAME, name);
         cv.put(DatabaseHelper.Household.COLUMN_HEAD_CODE, headCode);
         cv.put(DatabaseHelper.Household.COLUMN_SECHEAD_CODE, secHeadCode);
-        cv.put(DatabaseHelper.Household.COLUMN_NEIGHBORHOOD, neighborhood);
-        cv.put(DatabaseHelper.Household.COLUMN_LOCALITY, locality);
-        cv.put(DatabaseHelper.Household.COLUMN_ADMIN_POST, adminPost);
-        cv.put(DatabaseHelper.Household.COLUMN_DISTRICT, district);
-        cv.put(DatabaseHelper.Household.COLUMN_PROVINCE, province);
+        cv.put(DatabaseHelper.Household.COLUMN_REGION, region);
+        cv.put(DatabaseHelper.Household.COLUMN_HIERARCHY_1, hierarchy1);
+        cv.put(DatabaseHelper.Household.COLUMN_HIERARCHY_2, hierarchy2);
+        cv.put(DatabaseHelper.Household.COLUMN_HIERARCHY_3, hierarchy3);
+        cv.put(DatabaseHelper.Household.COLUMN_HIERARCHY_4, hierarchy4);
+        cv.put(DatabaseHelper.Household.COLUMN_HIERARCHY_5, hierarchy5);
+        cv.put(DatabaseHelper.Household.COLUMN_HIERARCHY_6, hierarchy6);
+        cv.put(DatabaseHelper.Household.COLUMN_HIERARCHY_7, hierarchy7);
+        cv.put(DatabaseHelper.Household.COLUMN_HIERARCHY_8, hierarchy8);
         cv.put(DatabaseHelper.Household.COLUMN_GPS_NULL, gpsNull ? 1 : 0);
         cv.put(DatabaseHelper.Household.COLUMN_GPS_ACCURACY, gpsAccuracy);
         cv.put(DatabaseHelper.Household.COLUMN_GPS_ALTITUDE, gpsAltitude);

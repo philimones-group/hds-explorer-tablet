@@ -52,11 +52,6 @@ public class Member implements Serializable, Table {
     private Double cosLongitude;
     private Double sinLongitude;
 
-    /* Extras Variables*/ //separated by semicolon :
-    private String extrasColumns;
-    private String extrasValues;
-
-
     private boolean isHouseholdHead; /*not on database*/
     private boolean isSubsHouseholdHead; /*not on database*/
 
@@ -280,22 +275,6 @@ public class Member implements Serializable, Table {
         this.spouseName = spouseName;
     }
 
-    public String getExtrasColumns() {
-        return extrasColumns;
-    }
-
-    public void setExtrasColumns(String extrasColumns) {
-        this.extrasColumns = extrasColumns;
-    }
-
-    public String getExtrasValues() {
-        return extrasValues;
-    }
-
-    public void setExtrasValues(String extrasValues) {
-        this.extrasValues = extrasValues;
-    }
-
     public boolean isHouseholdHead() {
         return isHouseholdHead;
     }
@@ -360,9 +339,6 @@ public class Member implements Serializable, Table {
         member.sinLongitude = 0.0;
 
 
-        member.extrasColumns = "";
-        member.extrasValues = "";
-
         return member;
     }
 
@@ -401,8 +377,6 @@ public class Member implements Serializable, Table {
         cv.put(DatabaseHelper.Member.COLUMN_SIN_LATITUDE, sinLatitude);
         cv.put(DatabaseHelper.Member.COLUMN_COS_LONGITUDE, cosLongitude);
         cv.put(DatabaseHelper.Member.COLUMN_SIN_LONGITUDE, sinLongitude);
-        cv.put(DatabaseHelper.Member.COLUMN_EXTRAS_COLUMNS, extrasColumns);
-        cv.put(DatabaseHelper.Member.COLUMN_EXTRAS_VALUES, extrasValues);
         return cv;
     }
 

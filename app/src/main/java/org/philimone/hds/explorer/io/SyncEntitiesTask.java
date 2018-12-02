@@ -997,12 +997,12 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
             }
 
             parser.nextTag(); //process <subsHeadCode>
-            if (!isEmptyTag(DatabaseHelper.Household.COLUMN_SUBSHEAD_CODE, parser)) {
+            if (!isEmptyTag(DatabaseHelper.Household.COLUMN_SECHEAD_CODE, parser)) {
                 parser.next();
-                table.setSubsHeadCode(parser.getText());
+                table.setSecHeadCode(parser.getText());
                 parser.nextTag(); //process </subsHeadCode>
             }else{
-                table.setSubsHeadCode("");
+                table.setSecHeadCode("");
                 parser.nextTag();
             }
 
@@ -1104,30 +1104,6 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
             }else{
                 table.setGpsLongitude(null);
 				table.setGpsNull(true);
-                parser.nextTag();
-            }
-
-            //Log.d("position now ", ""+parser.getName() + ", " +parser.getPositionDescription() );
-            parser.nextTag(); //process <extrasColumns>
-            //Log.d("extraColumns "+isEmptyTag(DatabaseHelper.Household.COLUMN_EXTRAS_COLUMNS,parser), ""+parser.getName() + ", " +parser.getPositionDescription() );
-            if (!isEmptyTag(DatabaseHelper.Household.COLUMN_EXTRAS_COLUMNS, parser)) {
-                parser.next();
-                table.setExtrasColumns(parser.getText());
-                parser.nextTag(); //process </extrasColumns>
-                //Log.d("note excol", table.getExtrasColumns());
-            }else{
-                table.setExtrasColumns("");
-                parser.nextTag();
-                //Log.d("e excol", table.getExtrasColumns());
-            }
-
-            parser.nextTag(); //process <extrasValues>
-            if (!isEmptyTag(DatabaseHelper.Household.COLUMN_EXTRAS_VALUES, parser)) {
-                parser.next();
-                table.setExtrasValues(parser.getText());
-                parser.nextTag(); //process </extrasValues>
-            }else{
-                table.setExtrasValues("");
                 parser.nextTag();
             }
 
@@ -1409,26 +1385,6 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
             }else{
                 table.setGpsLongitude(null);
 				table.setGpsNull(true);
-                parser.nextTag();
-            }
-
-            parser.nextTag(); //process <extrasColumns>
-            if (!isEmptyTag(DatabaseHelper.Member.COLUMN_EXTRAS_COLUMNS, parser)) {
-                parser.next();
-                table.setExtrasColumns(parser.getText());
-                parser.nextTag(); //process </extrasColumns>
-            }else{
-                table.setExtrasColumns("");
-                parser.nextTag();
-            }
-
-            parser.nextTag(); //process <extrasValues>
-            if (!isEmptyTag(DatabaseHelper.Member.COLUMN_EXTRAS_VALUES, parser)) {
-                parser.next();
-                table.setExtrasValues(parser.getText());
-                parser.nextTag(); //process </extrasValues>
-            }else{
-                table.setExtrasValues("");
                 parser.nextTag();
             }
 

@@ -25,7 +25,7 @@ public class Household implements Serializable, Table {
     private String neighborhood;
     private String name;
     private String headCode;
-    private String subsHeadCode;
+    private String secHeadCode;
 
     private boolean gpsNull;
     private Double gpsAccuracy;
@@ -37,10 +37,6 @@ public class Household implements Serializable, Table {
     private Double sinLatitude;
     private Double cosLongitude;
     private Double sinLongitude;
-
-    /* Extras Variables*/ //separated by semicolon :
-    String extrasColumns;
-    String extrasValues;
 
     public int getId() {
         return id;
@@ -114,28 +110,12 @@ public class Household implements Serializable, Table {
         this.headCode = headCode;
     }
 
-    public String getSubsHeadCode() {
-        return subsHeadCode;
+    public String getSecHeadCode() {
+        return secHeadCode;
     }
 
-    public void setSubsHeadCode(String subsHeadCode) {
-        this.subsHeadCode = subsHeadCode;
-    }
-
-    public String getExtrasColumns() {
-        return extrasColumns;
-    }
-
-    public void setExtrasColumns(String extrasColumns) {
-        this.extrasColumns = extrasColumns;
-    }
-
-    public String getExtrasValues() {
-        return extrasValues;
-    }
-
-    public void setExtrasValues(String extrasValues) {
-        this.extrasValues = extrasValues;
+    public void setSecHeadCode(String secHeadCode) {
+        this.secHeadCode = secHeadCode;
     }
 
     public Double getGpsAccuracy() {
@@ -225,7 +205,7 @@ public class Household implements Serializable, Table {
         cv.put(DatabaseHelper.Household.COLUMN_CODE, code);
         cv.put(DatabaseHelper.Household.COLUMN_NAME, name);
         cv.put(DatabaseHelper.Household.COLUMN_HEAD_CODE, headCode);
-        cv.put(DatabaseHelper.Household.COLUMN_SUBSHEAD_CODE, subsHeadCode);
+        cv.put(DatabaseHelper.Household.COLUMN_SECHEAD_CODE, secHeadCode);
         cv.put(DatabaseHelper.Household.COLUMN_NEIGHBORHOOD, neighborhood);
         cv.put(DatabaseHelper.Household.COLUMN_LOCALITY, locality);
         cv.put(DatabaseHelper.Household.COLUMN_ADMIN_POST, adminPost);
@@ -240,8 +220,6 @@ public class Household implements Serializable, Table {
         cv.put(DatabaseHelper.Household.COLUMN_SIN_LATITUDE, sinLatitude);
         cv.put(DatabaseHelper.Household.COLUMN_COS_LONGITUDE, cosLongitude);
         cv.put(DatabaseHelper.Household.COLUMN_SIN_LONGITUDE, sinLongitude);
-        cv.put(DatabaseHelper.Household.COLUMN_EXTRAS_COLUMNS, extrasColumns);
-        cv.put(DatabaseHelper.Household.COLUMN_EXTRAS_VALUES, extrasValues);
 
         return cv;
     }

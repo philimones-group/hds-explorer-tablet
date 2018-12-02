@@ -866,7 +866,7 @@ public class MemberListFragment extends Fragment {
                 member.setHouseholdHead(true);
             }
 
-            if (household != null && household.getSubsHeadCode().equals(member.getCode())){
+            if (household != null && household.getSecHeadCode().equals(member.getCode())){
                 member.setSubsHouseholdHead(true);
             }
         }

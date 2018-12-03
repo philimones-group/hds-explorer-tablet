@@ -92,20 +92,29 @@ public class MemberDetailsActivity extends Activity implements OdkFormResultList
 
         for (int i=0; i < objs.length; i++){
             FormDataLoader formDataLoader = (FormDataLoader) objs[i];
-
-            if (isVisualizableForm(formDataLoader.getForm())){
+            Log.d("tag", ""+formDataLoader.getForm().getFormId());
+            if (isMenmberVisualizableForm(formDataLoader.getForm())){
                 this.formDataLoaders.add(formDataLoader);
             }
         }
     }
 
-    private boolean isVisualizableForm(Form form) {
+    private boolean isMenmberVisualizableForm(Form form) {
         if (activityRequestCode != TrackingListDetailsActivity.RC_MEMBER_DETAILS_TRACKINGLIST){ //MemberDetails was not opened via Tracking/FollowUp lists
             if (form.isFollowUpOnly()){ //forms flagged with followUpOnly can only be opened using FollowUp Lists, to be able to open via normal surveys remove the flag on the server
                 return false;
             }
         }
-        return  (member.getAge() >= form.getMinAge() && member.getAge() <= form.getMaxAge()) && (member.getGender().equals(form.getGender()) || form.getGender().equals("ALL"));
+
+        if (form.isHouseholdForm()){ //Dont Show Household Form
+            return false;
+        }
+
+        if (form.isHouseholdHeadForm() && (!member.isHouseholdHead() || !member.isSecHouseholdHead() )){ //Dont show HouseholdHead Form for non-head members
+            return false;
+        }
+
+        return  (member.getAge() >= form.getMinAge() && member.getAge() <= form.getMaxAge()) && (member.getGender().equals(form.getGender()) || form.getGender().equals("ALL")) && (form.isMemberForm());
     }
 
     public void setMember(Member member){

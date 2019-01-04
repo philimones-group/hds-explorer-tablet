@@ -38,10 +38,12 @@
     <string name="sync_prepare_download_lbl">Preparing Syncronization</string>
     <string name="sync_downloading_lbl">Downloading</string>
     <string name="sync_saving_lbl">Saving data</string>
+    <string name="sync_params_lbl">App. Parameters</string>
     <string name="sync_modules_lbl">Modules</string>
     <string name="sync_forms_lbl">ODK Forms</string>
     <string name="sync_users_lbl">Users</string>
     <string name="sync_tracking_lists_lbl">FollowUp Lists</string>
+    <string name="sync_regions_lbl">Regions</string>
     <string name="sync_households_lbl">Households</string>
     <string name="sync_members_lbl">Members</string>
     <string name="sync_saved_lbl">Saved</string>

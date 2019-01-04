@@ -14,6 +14,8 @@ import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+import org.philimone.hds.explorer.model.ApplicationParam;
+import org.philimone.hds.explorer.model.Region;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
@@ -80,7 +82,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 	}
 
 	public enum Entity {
-		SETTINGS, MODULES, FORMS, TRACKING_LISTS, USERS, MEMBERS, HOUSEHOLDS
+		SETTINGS, PARAMETERS, MODULES, FORMS, TRACKING_LISTS, USERS, REGIONS, HOUSEHOLDS, MEMBERS
 	}
 
 	public SyncEntitiesTask(Context context, ProgressDialog dialog, SyncDatabaseListener listener, String url, String username, String password, Entity... entityToDownload) {
@@ -148,6 +150,9 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 		}
 
 		switch (entity) {
+			case PARAMETERS:
+				builder.append(" " + mContext.getString(R.string.sync_params_lbl));
+				break;
 			case MODULES:
 				builder.append(" " + mContext.getString(R.string.sync_modules_lbl));
 				break;
@@ -159,6 +164,9 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 				break;
 			case USERS:
 				builder.append(" " + mContext.getString(R.string.sync_users_lbl));
+				break;
+			case REGIONS:
+				builder.append(" " + mContext.getString(R.string.sync_regions_lbl));
 				break;
 			case HOUSEHOLDS:
 				builder.append(" " + mContext.getString(R.string.sync_households_lbl));
@@ -191,6 +199,10 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 			for (Entity ent : entities){
 				entity = ent;
 				switch (entity) {
+					case PARAMETERS:
+						//deleteAll(ApplicationParam.class);
+						processUrl(baseurl + API_PATH + "/params/zip", "params.zip");
+						break;
 					case MODULES:
 						deleteAll(Module.class);
 						processUrl(baseurl + API_PATH + "/modules/zip", "modules.zip");
@@ -207,6 +219,10 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 					case USERS:
 						deleteAll(User.class);
 						processUrl(baseurl + API_PATH + "/users/zip", "users.zip");
+						break;
+					case REGIONS:
+						deleteAll(Region.class);
+						processUrl(baseurl + API_PATH + "/regions/zip", "regions.zip");
 						break;
 					case HOUSEHOLDS:
 						deleteAll(Household.class);
@@ -243,6 +259,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 		database.delete(User.class, null, null);
 		database.delete(Form.class, null, null);
 		database.delete(Module.class, null, null);
+		database.delete(Region.class, null, null);
 		database.delete(Household.class, null, null);
 		database.delete(Member.class, null, null);
 		database.delete(CollectedData.class, DatabaseHelper.CollectedData.COLUMN_SUPERVISED+"=?", new String[]{ "1"}); //delete all collected data that was supervised
@@ -345,7 +362,9 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 			switch (eventType) {
 			case XmlPullParser.START_TAG:
 				name = parser.getName();
-				if (name.equalsIgnoreCase("modules")) {
+				if (name.equalsIgnoreCase("applicationParams")) {
+					processApplicationParams(parser);
+				} else if (name.equalsIgnoreCase("modules")) {
 					processModulesParams(parser);
 				} else if (name.equalsIgnoreCase("forms")) {
 					processFormsParams(parser);
@@ -353,6 +372,8 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 					processTrackingListsParams(parser);
 				} else if (name.equalsIgnoreCase("users")) {
 					processUsersParams(parser);
+				} else if (name.equalsIgnoreCase("regions")) {
+					processRegions(parser);
 				} else if (name.equalsIgnoreCase("households")) {
 					processHouseholds(parser);
 				} else if (name.equalsIgnoreCase("members")) {
@@ -421,6 +442,83 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 
 	private boolean isTag(String tagName, XmlPullParser parser) throws XmlPullParserException {
 		return (tagName.equals(parser.getName()));
+	}
+
+	private void processApplicationParams(XmlPullParser parser) throws XmlPullParserException, IOException {
+
+		//clear sync_report
+		updateSyncReport(SyncReport.REPORT_PARAMETERS, null, SyncReport.STATUS_NOT_SYNCED);
+
+		int count = 0;
+		values.clear();
+
+		parser.nextTag(); //<applicationParam>
+
+		while (notEndOfXmlDoc("applicationParams", parser)) {
+
+			count++;
+			ApplicationParam table = new ApplicationParam();
+
+			parser.nextTag(); //name
+			if (!isEmptyTag(DatabaseHelper.ApplicationParam.COLUMN_NAME, parser)) {
+				parser.next();
+				table.setName(parser.getText());
+				parser.nextTag();
+			}else{
+				table.setName("");
+				parser.nextTag();
+			}
+
+			parser.nextTag(); //type
+			if (!isEmptyTag(DatabaseHelper.ApplicationParam.COLUMN_TYPE, parser)) {
+				parser.next();
+				table.setType(parser.getText());
+				parser.nextTag();
+			}else{
+				table.setType("");
+				parser.nextTag();
+			}
+
+			parser.nextTag(); //value
+			if (!isEmptyTag(DatabaseHelper.ApplicationParam.COLUMN_VALUE, parser)) {
+				parser.next();
+				table.setValue(parser.getText());
+				parser.nextTag();
+			}else{
+				table.setValue("");
+				parser.nextTag();
+			}
+
+
+			parser.nextTag();
+			parser.next();
+
+			values.add(table);
+			publishProgress(count);
+
+		}
+
+		state = State.SAVING;
+		entity = Entity.PARAMETERS;
+
+		Database database = getDatabase();
+		database.open();
+		if (!values.isEmpty()) {
+			count = 0;
+			for (Table t : values){
+				count++;
+
+				//delete if exists
+				ApplicationParam p = (ApplicationParam) t;
+				database.delete(ApplicationParam.class, DatabaseHelper.ApplicationParam.COLUMN_NAME+"=?", new String[]{ p.getName() });
+
+				database.insert(t);
+				publishProgress(count);
+			}
+		}
+		database.close();
+
+		updateSyncReport(SyncReport.REPORT_PARAMETERS, new Date(), SyncReport.STATUS_SYNCED);
 	}
 
 	private void processModulesParams(XmlPullParser parser) throws XmlPullParserException, IOException {
@@ -968,6 +1066,89 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 		updateSyncReport(SyncReport.REPORT_USERS, new Date(), SyncReport.STATUS_SYNCED);
 	}
 
+	private void processRegions(XmlPullParser parser) throws XmlPullParserException, IOException {
+
+		//clear sync_report
+		updateSyncReport(SyncReport.REPORT_REGIONS, null, SyncReport.STATUS_NOT_SYNCED);
+
+		int count = 0;
+		values.clear();
+
+		parser.nextTag(); //<region>
+
+		while (notEndOfXmlDoc("regions", parser)) {
+
+			count++;
+			Region table = new Region();
+
+			parser.nextTag(); //<code>
+			if (!isEmptyTag(DatabaseHelper.Region.COLUMN_CODE, parser)) {
+				parser.next();
+				table.setCode(parser.getText());
+				parser.nextTag();
+			}else{
+				table.setCode("");
+				parser.nextTag();
+			}
+
+			parser.nextTag(); //name
+			if (!isEmptyTag(DatabaseHelper.Region.COLUMN_NAME, parser)) {
+				parser.next();
+				table.setName(parser.getText());
+				parser.nextTag();
+			}else{
+				table.setName("");
+				parser.nextTag();
+			}
+
+			parser.nextTag(); //hierarchyLevel
+			if (!isEmptyTag(DatabaseHelper.Region.COLUMN_LEVEL, parser)) {
+				parser.next();
+				table.setLevel(parser.getText());
+				parser.nextTag();
+			}else{
+				table.setLevel("");
+				parser.nextTag();
+			}
+
+			parser.nextTag(); //parent
+			if (!isEmptyTag(DatabaseHelper.Region.COLUMN_PARENT, parser)) {
+				parser.next();
+				table.setParent(parser.getText());
+				parser.nextTag();
+			}else{
+				table.setParent("");
+				parser.nextTag();
+			}
+
+			parser.nextTag();
+			parser.next();
+
+			values.add(table);
+			publishProgress(count);
+
+
+		}
+
+		state = State.SAVING;
+		entity = Entity.REGIONS;
+
+		Database database = getDatabase();
+		database.open();
+		if (!values.isEmpty()) {
+			count = 0;
+			for (Table t : values){
+				count++;
+				database.insert(t);
+				publishProgress(count);
+			}
+		}
+		database.close();
+
+
+		updateSyncReport(SyncReport.REPORT_REGIONS, new Date(), SyncReport.STATUS_SYNCED);
+	}
+
 	private void processHouseholds(XmlPullParser parser) throws XmlPullParserException, IOException {
 
 		//clear sync_report
@@ -1027,6 +1208,16 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
                 table.setHeadCode("");
                 parser.nextTag();
             }
+
+			parser.nextTag(); //process <headName>
+			if (!isEmptyTag(DatabaseHelper.Household.COLUMN_HEAD_NAME, parser)) {
+				parser.next();
+				table.setHeadName(parser.getText());
+				parser.nextTag(); //process </headName>
+			}else{
+				table.setHeadName("");
+				parser.nextTag();
+			}
 
             parser.nextTag(); //process <subsHeadCode>
             if (!isEmptyTag(DatabaseHelper.Household.COLUMN_SECHEAD_CODE, parser)) {

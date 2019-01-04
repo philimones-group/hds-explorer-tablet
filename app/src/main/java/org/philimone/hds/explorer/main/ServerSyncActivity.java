@@ -163,7 +163,7 @@ public class ServerSyncActivity extends Activity implements SyncDatabaseListener
     }
 
     private void syncModules() {
-        SyncEntitiesTask syncEntitiesTask = new SyncEntitiesTask(this, progressDialog, this, serverUrl, username, password, SyncEntitiesTask.Entity.MODULES);
+        SyncEntitiesTask syncEntitiesTask = new SyncEntitiesTask(this, progressDialog, this, serverUrl, username, password, SyncEntitiesTask.Entity.MODULES, SyncEntitiesTask.Entity.PARAMETERS);
         syncEntitiesTask.execute();
     }
 
@@ -183,7 +183,7 @@ public class ServerSyncActivity extends Activity implements SyncDatabaseListener
     }
 
     private void syncHouseholds() {
-        SyncEntitiesTask syncEntitiesTask = new SyncEntitiesTask(this, progressDialog, this, serverUrl, username, password, SyncEntitiesTask.Entity.HOUSEHOLDS);
+        SyncEntitiesTask syncEntitiesTask = new SyncEntitiesTask(this, progressDialog, this, serverUrl, username, password, SyncEntitiesTask.Entity.REGIONS, SyncEntitiesTask.Entity.HOUSEHOLDS);
         syncEntitiesTask.execute();
     }
 

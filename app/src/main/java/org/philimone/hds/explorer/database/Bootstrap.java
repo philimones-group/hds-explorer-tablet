@@ -35,6 +35,8 @@ public class Bootstrap {
             SyncReport sr4 = new SyncReport(SyncReport.REPORT_HOUSEHOLDS, null, SyncReport.STATUS_NOT_SYNCED, "Sync. Households");
             SyncReport sr5 = new SyncReport(SyncReport.REPORT_MEMBERS, null, SyncReport.STATUS_NOT_SYNCED, "Sync. Members");
             SyncReport sr6 = new SyncReport(SyncReport.REPORT_TRACKING_LISTS, null, SyncReport.STATUS_NOT_SYNCED, "Sync. Tracking Lists");
+            SyncReport sr7 = new SyncReport(SyncReport.REPORT_PARAMETERS, null, SyncReport.STATUS_NOT_SYNCED, "Sync. App Parameters");
+            SyncReport sr8 = new SyncReport(SyncReport.REPORT_REGIONS, null, SyncReport.STATUS_NOT_SYNCED, "Sync. Regions");
 
             database.insert(sr1);
             database.insert(sr2);
@@ -42,13 +44,15 @@ public class Bootstrap {
             database.insert(sr4);
             database.insert(sr5);
             database.insert(sr6);
+            database.insert(sr7);
+            database.insert(sr8);
         }
 
         Cursor cursorParams = database.query(ApplicationParam.class, null, null, null, null, null);
 
         if (cursorParams.getCount()==0){
-            ApplicationParam param1 = new ApplicationParam(ApplicationParam.APP_URL, "string", "https://apps.betainteractive.net/hds-explorer-server"); // Server URL
-            ApplicationParam param2 = new ApplicationParam(ApplicationParam.ODK_URL, "string", "https://apps.betainteractive.net/odk-aggregate");      // ODK Aggregate Server URL
+            ApplicationParam param1 = new ApplicationParam(ApplicationParam.APP_URL, "string", "https://icemr2-aws.medcol.mw:8443/hds-explorer-server"); // Server URL
+            ApplicationParam param2 = new ApplicationParam(ApplicationParam.ODK_URL, "string", "https://icemr2-aws.medcol.mw:8443/ODKAggregate");      // ODK Aggregate Server URL
             ApplicationParam param3 = new ApplicationParam(ApplicationParam.REDCAP_URL, "string", "https://apps.betainteractive.net/redcap");           // REDCap Server URL
 
             database.insert(param1);

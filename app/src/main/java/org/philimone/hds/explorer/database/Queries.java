@@ -8,6 +8,7 @@ import org.philimone.hds.explorer.model.CollectedData;
 import org.philimone.hds.explorer.model.Form;
 import org.philimone.hds.explorer.model.Household;
 import org.philimone.hds.explorer.model.Member;
+import org.philimone.hds.explorer.model.Region;
 import org.philimone.hds.explorer.model.SyncReport;
 import org.philimone.hds.explorer.model.followup.TrackingList;
 import org.philimone.hds.explorer.model.followup.TrackingMemberList;
@@ -132,6 +133,31 @@ public class Queries {
         while (cursor.moveToNext()){
             CollectedData cd = Converter.cursorToCollectedData(cursor);
             list.add(cd);
+        }
+
+        return list;
+    }
+
+    public static Region getRegionBy(Database database, String whereClause, String[] clauseArgs){
+        Region region = null;
+
+        Cursor cursor = database.query(Region.class, whereClause, clauseArgs, null, null, null);
+
+        if (cursor.moveToFirst()){
+            region = Converter.cursorToRegion(cursor);
+        }
+
+        return region;
+    }
+
+    public static List<Region> getAllRegionBy(Database database, String whereClause, String[] clauseArgs){
+        List<Region> list = new ArrayList<>();
+
+        Cursor cursor = database.query(Region.class, whereClause, clauseArgs, null, null, null);
+
+        while (cursor.moveToNext()){
+            Region region = Converter.cursorToRegion(cursor);
+            list.add(region);
         }
 
         return list;

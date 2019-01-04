@@ -22,6 +22,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		    db.execSQL(CREATE_TABLE_USER);
 		    db.execSQL(CREATE_TABLE_FORM);
             db.execSQL(CREATE_TABLE_MODULE);
+            db.execSQL(CREATE_TABLE_REGION);
 		    db.execSQL(CREATE_TABLE_HOUSEHOLD);
 		    db.execSQL(CREATE_TABLE_MEMBER);
             db.execSQL(CREATE_TABLE_COLLECTED_DATA);
@@ -130,12 +131,24 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         public static final String[] ALL_COLUMNS = {COLUMN_CODE, COLUMN_NAME, COLUMN_DESCRIPTION};
     }
 
+    public static final class Region implements BaseColumns {
+        public static final String TABLE_NAME = "region";
+
+        public static final String COLUMN_CODE = "code";
+        public static final String COLUMN_NAME = "name";
+        public static final String COLUMN_LEVEL = "hierarchyLevel";
+        public static final String COLUMN_PARENT = "parent";
+
+        public static final String[] ALL_COLUMNS = {COLUMN_CODE, COLUMN_NAME, COLUMN_LEVEL, COLUMN_PARENT};
+    }
+
 	public static final class Household implements BaseColumns  {
 		public static final String TABLE_NAME = "household";
 
         public static final String COLUMN_CODE = "code";
         public static final String COLUMN_NAME = "name";
         public static final String COLUMN_HEAD_CODE = "headCode";
+        public static final String COLUMN_HEAD_NAME = "headName";
         public static final String COLUMN_SECHEAD_CODE = "secHeadCode";
         public static final String COLUMN_REGION = "region";
         public static final String COLUMN_HIERARCHY_1 = "hierarchy1";
@@ -156,7 +169,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         public static final String COLUMN_COS_LONGITUDE = "cosLongitude";
         public static final String COLUMN_SIN_LONGITUDE = "sinLongitude";
 
-		public static final String[] ALL_COLUMNS = {_ID, COLUMN_CODE, COLUMN_NAME, COLUMN_HEAD_CODE, COLUMN_SECHEAD_CODE, COLUMN_REGION, COLUMN_HIERARCHY_1,
+		public static final String[] ALL_COLUMNS = {_ID, COLUMN_CODE, COLUMN_NAME, COLUMN_HEAD_CODE, COLUMN_HEAD_NAME, COLUMN_SECHEAD_CODE, COLUMN_REGION, COLUMN_HIERARCHY_1,
                 COLUMN_HIERARCHY_2, COLUMN_HIERARCHY_3, COLUMN_HIERARCHY_4, COLUMN_HIERARCHY_5, COLUMN_HIERARCHY_6, COLUMN_HIERARCHY_7, COLUMN_HIERARCHY_8,
                 COLUMN_GPS_NULL, COLUMN_GPS_ACCURACY, COLUMN_GPS_ALTITUDE, COLUMN_GPS_LATITUDE, COLUMN_GPS_LONGITUDE,
                 COLUMN_COS_LATITUDE, COLUMN_SIN_LATITUDE, COLUMN_COS_LONGITUDE, COLUMN_SIN_LONGITUDE};
@@ -268,6 +281,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + ApplicationParam.COLUMN_NAME + " TEXT,"
             + ApplicationParam.COLUMN_TYPE + " TEXT,"
             + ApplicationParam.COLUMN_VALUE + " TEXT);"
+
+            + " CREATE UNIQUE INDEX IDX_APPARAM_NAME ON " + ApplicationParam.TABLE_NAME
+            + "(" +  ApplicationParam.COLUMN_NAME  + ");"
             ;
 
     private static final String CREATE_TABLE_SYNC_REPORT = " "
@@ -327,8 +343,20 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + Module.COLUMN_NAME + " TEXT,"
             + Module.COLUMN_DESCRIPTION + " TEXT);"
 
-            + " CREATE UNIQUE INDEX IDX_MODULE_CODE ON " + Form.TABLE_NAME
+            + " CREATE UNIQUE INDEX IDX_MODULE_CODE ON " + Module.TABLE_NAME
             + "(" +  Module.COLUMN_CODE + ");"
+            ;
+
+    private static final String CREATE_TABLE_REGION = " "
+            + "CREATE TABLE " + Region.TABLE_NAME + "("
+            + Region._ID  + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+            + Region.COLUMN_CODE + " TEXT,"
+            + Region.COLUMN_NAME + " TEXT,"
+            + Region.COLUMN_LEVEL + " TEXT,"
+            + Region.COLUMN_PARENT + " TEXT);"
+
+            + " CREATE UNIQUE INDEX IDX_MODULE_CODE ON " + Region.TABLE_NAME
+            + "(" +  Region.COLUMN_CODE + ");"
             ;
 
     private static final String CREATE_TABLE_HOUSEHOLD = " "
@@ -336,6 +364,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + Household._ID  + " INTEGER PRIMARY KEY AUTOINCREMENT, "
             + Household.COLUMN_CODE + " TEXT,"
             + Household.COLUMN_HEAD_CODE + " TEXT,"
+            + Household.COLUMN_HEAD_NAME + " TEXT,"
             + Household.COLUMN_SECHEAD_CODE + " TEXT,"
             + Household.COLUMN_NAME + " TEXT,"
             + Household.COLUMN_REGION + " TEXT,"

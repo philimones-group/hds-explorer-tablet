@@ -19,6 +19,7 @@ public class Household implements Serializable, Table {
     private String region;
     private String name;
     private String headCode;
+    private String headName;
     private String secHeadCode;
 
     private String hierarchy1;
@@ -154,6 +155,14 @@ public class Household implements Serializable, Table {
         this.secHeadCode = secHeadCode;
     }
 
+    public String getHeadName() {
+        return headName;
+    }
+
+    public void setHeadName(String headName) {
+        this.headName = headName;
+    }
+
     public Double getGpsAccuracy() {
         return gpsAccuracy;
     }
@@ -241,6 +250,7 @@ public class Household implements Serializable, Table {
         cv.put(DatabaseHelper.Household.COLUMN_CODE, code);
         cv.put(DatabaseHelper.Household.COLUMN_NAME, name);
         cv.put(DatabaseHelper.Household.COLUMN_HEAD_CODE, headCode);
+        cv.put(DatabaseHelper.Household.COLUMN_HEAD_NAME, headName);
         cv.put(DatabaseHelper.Household.COLUMN_SECHEAD_CODE, secHeadCode);
         cv.put(DatabaseHelper.Household.COLUMN_REGION, region);
         cv.put(DatabaseHelper.Household.COLUMN_HIERARCHY_1, hierarchy1);

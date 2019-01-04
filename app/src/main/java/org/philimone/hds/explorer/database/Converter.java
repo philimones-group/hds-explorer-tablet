@@ -8,6 +8,7 @@ import org.philimone.hds.explorer.model.Form;
 import org.philimone.hds.explorer.model.Household;
 import org.philimone.hds.explorer.model.Member;
 import org.philimone.hds.explorer.model.Module;
+import org.philimone.hds.explorer.model.Region;
 import org.philimone.hds.explorer.model.SyncReport;
 import org.philimone.hds.explorer.model.User;
 import org.philimone.hds.explorer.model.followup.TrackingList;
@@ -83,6 +84,18 @@ public class Converter {
 		return module;
 	}
 
+	public static Region cursorToRegion(Cursor cursor){
+		Region region = new Region();
+
+		region.setId(cursor.getInt(cursor.getColumnIndex(DatabaseHelper.Region._ID)));
+		region.setCode(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Region.COLUMN_CODE)));
+		region.setName(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Region.COLUMN_NAME)));
+		region.setLevel(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Region.COLUMN_LEVEL)));
+		region.setParent(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Region.COLUMN_PARENT)));
+
+		return region;
+	}
+
 	public static Household cursorToHousehold(Cursor cursor){
 		Household hh = new Household();
 
@@ -90,6 +103,7 @@ public class Converter {
 		hh.setCode(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Household.COLUMN_CODE)));
 		hh.setName(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Household.COLUMN_NAME)));
 		hh.setHeadCode(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Household.COLUMN_HEAD_CODE)));
+		hh.setHeadName(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Household.COLUMN_HEAD_NAME)));
 		hh.setSecHeadCode(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Household.COLUMN_SECHEAD_CODE)));
 		hh.setRegion(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Household.COLUMN_REGION)));
 		hh.setHierarchy1(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Household.COLUMN_HIERARCHY_1)));

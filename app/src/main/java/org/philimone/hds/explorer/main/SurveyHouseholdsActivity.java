@@ -72,6 +72,19 @@ public class SurveyHouseholdsActivity extends Activity implements HouseholdFilte
     }
 
     @Override
+    public void onMemberHouseholdSelected(Household household, Member member) {
+        FormDataLoader[] dataLoaders = getFormLoaders();
+        loadFormValues(dataLoaders, household, member);
+
+        Intent intent = new Intent(this, HouseholdDetailsActivity.class);
+        intent.putExtra("user", loggedUser);
+        intent.putExtra("household", household);
+        intent.putExtra("dataloaders", dataLoaders);
+
+        startActivity(intent);
+    }
+
+    @Override
     public void onClosestMembersResult(Member member, MWMPoint[] points, MWMPoint[] originalPoints, ArrayList<Member> members) {
 
     }

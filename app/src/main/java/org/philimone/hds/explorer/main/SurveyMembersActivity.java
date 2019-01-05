@@ -33,14 +33,11 @@ public class SurveyMembersActivity extends Activity implements MemberFilterFragm
     private MemberListFragment memberListFragment;
 
     private User loggedUser;
-    private Database database;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.survey_members);
-
-        this.database = new Database(this);
 
         this.loggedUser = (User) getIntent().getExtras().get("user");
 
@@ -77,6 +74,19 @@ public class SurveyMembersActivity extends Activity implements MemberFilterFragm
     }
 
     @Override
+    public void onMemberHouseholdSelected(Household household, Member member) {
+        FormDataLoader[] dataLoaders = getFormLoaders();
+        loadFormValues(dataLoaders, household, member);
+
+        Intent intent = new Intent(this, HouseholdDetailsActivity.class);
+        intent.putExtra("user", loggedUser);
+        intent.putExtra("household", household);
+        intent.putExtra("dataloaders", dataLoaders);
+
+        startActivity(intent);
+    }
+
+    @Override
     public void onClosestMembersResult(Member member, MWMPoint[] points, MWMPoint[] originalPoints, ArrayList<Member> members) {
         FormDataLoader[] dataLoaders = getFormLoaders();
         Household household = getHousehold(member);
@@ -102,9 +112,10 @@ public class SurveyMembersActivity extends Activity implements MemberFilterFragm
     private Household getHousehold(Member member){
         if (member == null || member.getHouseholdName()==null) return null;
 
-        database.open();
-        Household household = Queries.getHouseholdBy(database, DatabaseHelper.Household.COLUMN_NAME +"=?", new String[]{ member.getHouseholdName() });
-        database.close();
+        Database db = new Database(this);
+        db.open();
+        Household household = Queries.getHouseholdBy(db, DatabaseHelper.Household.COLUMN_NAME +"=?", new String[]{ member.getHouseholdName() });
+        db.close();
 
         return household;
     }

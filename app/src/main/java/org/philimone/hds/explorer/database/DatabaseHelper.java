@@ -139,7 +139,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         public static final String COLUMN_LEVEL = "hierarchyLevel";
         public static final String COLUMN_PARENT = "parent";
 
-        public static final String[] ALL_COLUMNS = {COLUMN_CODE, COLUMN_NAME, COLUMN_LEVEL, COLUMN_PARENT};
+        public static final String[] ALL_COLUMNS = {_ID, COLUMN_CODE, COLUMN_NAME, COLUMN_LEVEL, COLUMN_PARENT};
     }
 
 	public static final class Household implements BaseColumns  {
@@ -355,7 +355,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + Region.COLUMN_LEVEL + " TEXT,"
             + Region.COLUMN_PARENT + " TEXT);"
 
-            + " CREATE UNIQUE INDEX IDX_MODULE_CODE ON " + Region.TABLE_NAME
+            + " CREATE UNIQUE INDEX IDX_REGION_CODE ON " + Region.TABLE_NAME
             + "(" +  Region.COLUMN_CODE + ");"
             ;
 

@@ -143,7 +143,7 @@ public class Queries {
 
         Cursor cursor = database.query(Region.class, whereClause, clauseArgs, null, null, null);
 
-        if (cursor.moveToFirst()){
+        if (cursor.moveToNext()){
             region = Converter.cursorToRegion(cursor);
         }
 
@@ -203,7 +203,7 @@ public class Queries {
     public static List<Member> getAllMemberBy(Database database, String whereClause, String[] clauseArgs){
         List<Member> list = new ArrayList<>();
 
-        Cursor cursor = database.query(Member.class, whereClause, clauseArgs, null, null, null);
+        Cursor cursor = database.query(Member.class, whereClause, clauseArgs, null, null, DatabaseHelper.Member.COLUMN_CODE);
 
         while (cursor.moveToNext()){
             Member member = Converter.cursorToMember(cursor);

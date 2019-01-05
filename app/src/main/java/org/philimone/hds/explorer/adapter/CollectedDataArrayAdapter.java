@@ -58,7 +58,7 @@ public class CollectedDataArrayAdapter extends ArrayAdapter {
         TextView txtExtra = (TextView) rowView.findViewById(R.id.txtItem3);
 
         CollectedDataItem cdi = collectedDataList.get(position);
-        Member mb = cdi.getMember();
+        //Member mb = cdi.getMember();
         CollectedData cd = cdi.getCollectedData();
 
         String processed = "0";

@@ -37,6 +37,7 @@ import org.philimone.hds.explorer.database.Queries;
 import org.philimone.hds.explorer.io.SyncDatabaseListener;
 import org.philimone.hds.explorer.model.ApplicationParam;
 import org.philimone.hds.explorer.model.Module;
+import org.philimone.hds.explorer.model.Region;
 import org.philimone.hds.explorer.model.User;
 
 import org.mindrot.jbcrypt.BCrypt;
@@ -161,16 +162,24 @@ public class LoginActivity extends Activity implements SyncDatabaseListener{
             //db.update(CollectedData.class, cv, DatabaseHelper.CollectedData._ID+"=?", new String[]{ cd.getId()+"" });
         }*/
 
-       /*
-        loggedUser = user;
 
-        List<Form> list = Queries.getAllFormBy(db, null, null);
-        for (Form f : list){
-            Log.d("form", ""+f.getFormId()+", bind->"+f.getFormMap());
-        }
+        //loggedUser = user;
+/*
+        java.util.List<ApplicationParam> list = Queries.getAllApplicationParamBy(db, null, null);
+        for (ApplicationParam f : list){
+            Log.d("data", ""+f.getName()+", bind->"+f.getValue());
+        }*/
+/*
+        //Region obj = Queries.getRegionBy(db, DatabaseHelper.Region.COLUMN_CODE+"=?", new String[]{"CHE"});
+        //Log.d("reg", ""+obj);
+        //java.util.List<Region> list2 = Queries.getAllRegionBy(db, null, null);
+        //for (Region f : list2){
+        //    Log.d("data", ""+f.getCode()+", bind->"+f.getName()+", "+f.getLevel());
+        //}
 
         db.close();
         */
+
 
     }
 

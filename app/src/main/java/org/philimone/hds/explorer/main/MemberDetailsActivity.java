@@ -224,7 +224,6 @@ public class MemberDetailsActivity extends Activity implements OdkFormResultList
         CollectedDataItem dataItem = adapter.getItem(position);
 
         CollectedData collectedData = dataItem.getCollectedData();
-        Member member = dataItem.getMember();
         FormDataLoader formDataLoader = getFormDataLoader(collectedData);
 
         openOdkForm(formDataLoader, collectedData);
@@ -240,7 +239,7 @@ public class MemberDetailsActivity extends Activity implements OdkFormResultList
         Database db = new Database(this);
         db.open();
 
-        List<CollectedData> list = Queries.getAllCollectedDataBy(db, DatabaseHelper.CollectedData.COLUMN_RECORD_ID + "=?", new String[]{ member.getId()+"" } );
+        List<CollectedData> list = Queries.getAllCollectedDataBy(db, DatabaseHelper.CollectedData.COLUMN_RECORD_ID + "=? AND " +DatabaseHelper.CollectedData.COLUMN_TABLE_NAME + "=?"  , new String[]{ member.getId()+"", member.getTableName() } );
         List<Form> forms = Queries.getAllFormBy(db, null, null);
         List<CollectedDataItem> cdl = new ArrayList<>();
 
@@ -425,8 +424,8 @@ public class MemberDetailsActivity extends Activity implements OdkFormResultList
 
 
         //search existing record
-        String whereClause = DatabaseHelper.CollectedData.COLUMN_RECORD_ID + "=? AND "+DatabaseHelper.CollectedData.COLUMN_FORM_URI + "=?";
-        String[] whereArgs = new String[]{ ""+member.getId(), contentUri.toString() };
+        String whereClause = DatabaseHelper.CollectedData.COLUMN_RECORD_ID + "=? AND "+DatabaseHelper.CollectedData.COLUMN_FORM_URI + "=? AND " +DatabaseHelper.CollectedData.COLUMN_TABLE_NAME + "=?";
+        String[] whereArgs = new String[]{ ""+member.getId(), contentUri.toString(), member.getTableName() };
 
         CollectedData collectedData = Queries.getCollectedDataBy(db, whereClause, whereArgs);
 
@@ -489,8 +488,8 @@ public class MemberDetailsActivity extends Activity implements OdkFormResultList
         }
 
         //search existing record
-        String whereClause = DatabaseHelper.CollectedData.COLUMN_RECORD_ID + "=? AND "+DatabaseHelper.CollectedData.COLUMN_FORM_URI + "=?";
-        String[] whereArgs = new String[]{ ""+member.getId(), contentUri.toString() };
+        String whereClause = DatabaseHelper.CollectedData.COLUMN_RECORD_ID + "=? AND "+DatabaseHelper.CollectedData.COLUMN_FORM_URI + "=? AND " +DatabaseHelper.CollectedData.COLUMN_TABLE_NAME + "=?";
+        String[] whereArgs = new String[]{ ""+member.getId(), contentUri.toString(), member.getTableName() };
 
         CollectedData collectedData = Queries.getCollectedDataBy(db, whereClause, whereArgs);
 

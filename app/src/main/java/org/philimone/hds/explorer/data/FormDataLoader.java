@@ -65,9 +65,12 @@ public class FormDataLoader implements Serializable {
     public void loadHouseholdValues(Household household){
         Map<String, String> map = form.getFormMap();
         for (String key : map.keySet()){
-            if (key.startsWith(householdPrefix)) {
-                String internalVariableName = key.replace(householdPrefix, "");
-                String odkVariable = map.get(key);
+            //key   - odkVariable
+            //value - domain column name
+            String mapValue = map.get(key); //Domain ColumnName that we will get its content
+            if (mapValue.startsWith(householdPrefix)) {
+                String internalVariableName = mapValue.replace(householdPrefix, "");
+                String odkVariable = key;
                 String value = null;
                 ExtrasVariable extrasVariable = tryParseExtrasVariable(internalVariableName);
 
@@ -108,9 +111,12 @@ public class FormDataLoader implements Serializable {
     public void loadMemberValues(Member member){
         Map<String, String> map = form.getFormMap();
         for (String key : map.keySet()){
-            if (key.startsWith(memberPrefix)) {
-                String internalVariableName = key.replace(memberPrefix, "");
-                String odkVariable = map.get(key);
+            //key   - odkVariable
+            //value - domain column name
+            String mapValue = map.get(key); //Domain ColumnName that we will get its content
+            if (mapValue.startsWith(memberPrefix)) {
+                String internalVariableName = mapValue.replace(memberPrefix, "");
+                String odkVariable = key;
                 String value = null;
                 ExtrasVariable extrasVariable = tryParseExtrasVariable(internalVariableName);
 
@@ -150,9 +156,12 @@ public class FormDataLoader implements Serializable {
     public void loadUserValues(User user){
         Map<String, String> map = form.getFormMap();
         for (String key : map.keySet()){
-            if (key.startsWith(userPrefix)) {
-                String internalVariableName = key.replace(userPrefix, "");
-                String odkVariable = map.get(key);
+            //key   - odkVariable
+            //value - domain column name
+            String mapValue = map.get(key); //Domain ColumnName that we will get its content
+            if (mapValue.startsWith(userPrefix)) {
+                String internalVariableName = mapValue.replace(userPrefix, "");
+                String odkVariable = key;
                 String value = null;
                 ExtrasVariable extrasVariable = tryParseExtrasVariable(internalVariableName);
 
@@ -193,9 +202,12 @@ public class FormDataLoader implements Serializable {
     public void loadConstantValues(){
         Map<String, String> map = form.getFormMap();
         for (String key : map.keySet()){
-            if (key.startsWith(constPrefix)) {
-                String internalVariableName = key.replace(constPrefix, "");
-                String odkVariable = map.get(key);
+            //key   - odkVariable
+            //value - domain column name
+            String mapValue = map.get(key); //Domain ColumnName that we will get its content
+            if (mapValue.startsWith(constPrefix)) {
+                String internalVariableName = mapValue.replace(constPrefix, "");
+                String odkVariable = key;
                 String value = null;
                 ExtrasVariable extrasVariable = tryParseExtrasVariable(internalVariableName);
 
@@ -236,9 +248,12 @@ public class FormDataLoader implements Serializable {
         Map<String, String> map = form.getFormMap();
         for (String key : map.keySet()){
             //Log.d("special constant", ""+key );
-            if (key.startsWith(specialConstPrefix)) {
-                final String internalVariableName = key.replace(specialConstPrefix, "");
-                String odkVariable = map.get(key);
+            //key   - odkVariable
+            //value - domain column name
+            String mapValue = map.get(key); //Domain ColumnName that we will get its content
+            if (mapValue.startsWith(specialConstPrefix)) {
+                final String internalVariableName = mapValue.replace(specialConstPrefix, "");
+                String odkVariable = key;
                 String value = null;
                 ExtrasVariable extrasVariable = tryParseExtrasVariable(internalVariableName);
 

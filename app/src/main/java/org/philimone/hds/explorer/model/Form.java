@@ -158,7 +158,7 @@ public class  Form implements Serializable, Table {
             for (String entry : entries){
                 String[] keyValue = entry.split(":");
                 if (keyValue.length == 2){
-                    this.formMap.put(keyValue[0], keyValue[1]);
+                    this.formMap.put(keyValue[1], keyValue[0]); //mapping unique items (odk variables) as Key, the values a the domain column names (TableName.columnName)
                 }
             }
         }

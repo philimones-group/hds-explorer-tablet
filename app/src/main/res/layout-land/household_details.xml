@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="org.philimone.hds.explorer.main.MemberDetailsActivity"
+    android:background="#acdde9">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:background="@drawable/m_details_header"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/iconView"
+            android:layout_width="70dp"
+            android:layout_height="80dp"
+            android:layout_marginTop="14dp"
+            android:layout_gravity="left|top"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="10dp"
+            android:src="@mipmap/home_m_2" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/hhDetailsName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="MARGARIDA MOLUSCO MBUTI"
+                android:textColor="#ffffff"
+                android:textSize="25dp"
+                android:textStyle="bold"/>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/hhDetailsCode"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="0dp"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="ACA0000101"
+                    android:textColor="#92edb3"
+                    android:textSize="25dp"
+                    android:textStyle="bold" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="50dp"
+                    android:layout_marginTop="0dp"
+                    android:orientation="horizontal">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="1dp"
+                        android:text="@string/household_details_head_name_lbl"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:textColor="#c4daca"
+                        android:textSize="@dimen/member_filter_titlesize"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/hhDetailsHeadName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="4dp"
+                        android:text="BOB ESPONJA"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:textColor="#83d34a"
+                        android:textSize="@dimen/member_filter_titlesize"
+                        android:textStyle="bold"
+                        />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="1dp"
+                        android:layout_marginLeft="27dp"
+                        android:text="@string/household_details_head_code_lbl"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:textColor="#c4daca"
+                        android:textSize="@dimen/member_filter_titlesize"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/hhDetailsHeadCode"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="4dp"
+                        android:text="ACA0100123"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:textColor="#83d34a"
+                        android:textSize="@dimen/member_filter_titlesize"
+                        android:textStyle="bold"
+                        />
+
+                </LinearLayout>
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:id="@+id/hhDetailsRegionLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="1dp"
+                    android:text="@string/household_details_region_lbl"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textColor="#c4daca"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/hhDetailsRegionValue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="4dp"
+                    android:text="34th Street, Maputo"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textColor="#83d34a"
+                    android:textStyle="bold"
+                    />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_marginBottom="15dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="10dp"
+        android:orientation="horizontal">
+
+        <!-- List of Members -->
+        <LinearLayout
+            android:layout_width="550dp"
+            android:layout_height="match_parent"
+            android:layout_marginRight="3dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/household_details_members_list_lbl"
+                android:textSize="@dimen/member_details_other_info_txtsize"
+                android:textAppearance="?android:attr/textAppearanceLarge" />
+
+            <LinearLayout
+                android:id="@+id/layout_hh_xdata"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/corner_border"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
+
+                        <ListView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@drawable/list_bevel_corner_2"
+                            android:id="@+id/lvHouseholdMembers"
+                            />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <!-- List of Collected data -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/member_details_col_data_info_lbl"
+                android:textSize="@dimen/member_details_other_info_txtsize"
+                android:textAppearance="?android:attr/textAppearanceLarge" />
+
+            <ListView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/list_bevel_corner"
+                android:id="@+id/lvCollectedForms"
+                />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/hhLayoutButtons"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0"
+        android:gravity="center|bottom"
+        android:layout_marginBottom="@dimen/fagm_margin_bottom"
+        android:layout_marginLeft="@dimen/fagm_margin_right"
+        android:layout_marginRight="@dimen/fagm_margin_right"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btHouseDetailsBack"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/member_details_bt_height"
+            android:textSize="@dimen/member_details_buttons_size"
+            android:textStyle="bold"
+            android:text="@string/member_details_bt_back_lbl"
+            android:background="@drawable/button_normal"/>
+
+        <Button
+            android:id="@+id/btHouseDetailsCollectData"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/member_details_bt_height"
+            android:textSize="@dimen/member_details_buttons_size"
+            android:textStyle="bold"
+            android:text="@string/member_details_bt_openform_lbl"
+            android:background="@drawable/button_normal"/>
+
+
+    </LinearLayout>
+
+</LinearLayout>

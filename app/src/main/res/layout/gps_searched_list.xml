@@ -45,7 +45,7 @@
             android:layout_width="match_parent"
             android:layout_height="70dp"
             android:textSize="25dp"
-            android:text="@string/member_list_bt_show_houses_members_lbl"
+            android:text="@string/member_list_bt_show_gps_housemembers_lbl"
             android:background="@drawable/button_normal"/>
 
         <Button

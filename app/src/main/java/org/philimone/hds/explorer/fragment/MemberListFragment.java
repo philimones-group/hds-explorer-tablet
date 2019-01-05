@@ -54,6 +54,7 @@ public class MemberListFragment extends Fragment {
     private LinearLayout listButtons;
     private List<Button> buttons = new ArrayList<>();
     /*Default buttons*/
+    private Button btMemListShowHousehold;
     private Button btMemListShowMmbMap;
     private Button btMemListShowClosestMembers;
     private Button btMemListShowClosestHouses;
@@ -61,8 +62,6 @@ public class MemberListFragment extends Fragment {
     private Button btMemListShowCollectedData;
 
     private View mProgressView;
-
-    private Database database;
 
     private ArrayList<String> lastSearch;
 
@@ -194,6 +193,7 @@ public class MemberListFragment extends Fragment {
         }
 
         this.lvMembersList = (ListView) view.findViewById(R.id.lvMembersList);
+        this.btMemListShowHousehold = (Button) view.findViewById(R.id.btMemListShowHousehold);
         this.btMemListShowMmbMap = (Button) view.findViewById(R.id.btMemListShowMmbMap);
         this.btMemListShowClosestHouses = (Button) view.findViewById(R.id.btMemListShowClosestHouses);
         this.btMemListShowClosestMembers = (Button) view.findViewById(R.id.btMemListShowClosestMembers);
@@ -202,10 +202,18 @@ public class MemberListFragment extends Fragment {
         this.listButtons = (LinearLayout) view.findViewById(R.id.viewListButtons);
         this.mProgressView = view.findViewById(R.id.viewListProgressBar);
 
+        this.btMemListShowHousehold.setEnabled(false);
         this.btMemListShowMmbMap.setEnabled(false);
         this.btMemListShowClosestHouses.setEnabled(false);
         this.btMemListShowClosestMembers.setEnabled(false);
         this.btMemListNewMemberCollect.setEnabled(true);
+
+        this.btMemListShowHousehold.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onShowHouseholdClicked();
+            }
+        });
 
         this.btMemListShowMmbMap.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -257,7 +265,6 @@ public class MemberListFragment extends Fragment {
             }
         });
 
-        this.database = new Database(getActivity());
     }
 
     private void showClosestHouses(Household household, double distance, String distanceDescription) {
@@ -281,6 +288,7 @@ public class MemberListFragment extends Fragment {
 
         ArrayList<Household> households = new ArrayList<>();
 
+        Database database = new Database(this.getActivity());
         database.open();
         Cursor cursor = database.rawQuery(sql + where, new String[]{});
         while (cursor.moveToNext()) {
@@ -337,6 +345,7 @@ public class MemberListFragment extends Fragment {
 
         ArrayList<Member> members = new ArrayList<>();
 
+        Database database = new Database(this.getActivity());
         database.open();
         Cursor cursor = database.rawQuery(sql + where, new String[]{});
         while (cursor.moveToNext()) {
@@ -547,6 +556,7 @@ public class MemberListFragment extends Fragment {
     }
 
     private boolean checkIfCodeExists(String code){
+        Database database = new Database(this.getActivity());
         database.open();
         Member member = Queries.getMemberBy(database, DatabaseHelper.Member.COLUMN_CODE+"=?", new String[] { code });
         database.close();
@@ -683,9 +693,10 @@ public class MemberListFragment extends Fragment {
         ArrayList<String> extras = new ArrayList<>();
 
         //load collected data
+        Database database = new Database(this.getActivity());
         database.open();
 
-        List<CollectedData> list = Queries.getAllCollectedDataBy(database, null, null);
+        List<CollectedData> list = Queries.getAllCollectedDataBy(database, DatabaseHelper.CollectedData.COLUMN_TABLE_NAME + "=?", new String[]{ DatabaseHelper.Member.TABLE_NAME }); //only collected data from members
         List<Form> forms = Queries.getAllFormBy(database, null, null);
 
         for (CollectedData cd : list){
@@ -727,6 +738,7 @@ public class MemberListFragment extends Fragment {
         MemberArrayAdapter adapter = (MemberArrayAdapter) this.lvMembersList.getAdapter();
 
         adapter.setSelectedIndex(position);
+        this.btMemListShowHousehold.setEnabled(true);
         this.btMemListShowClosestMembers.setEnabled(true);
         this.btMemListNewMemberCollect.setEnabled(false);
     }
@@ -744,14 +756,40 @@ public class MemberListFragment extends Fragment {
         }
     }
 
+    private void onShowHouseholdClicked(){
+        Member member = getMemberAdapter().getSelectedMember();
+        Household household = getHousehold(member);
+
+        if (household == null){
+            buildOkDialog(getString(R.string.member_list_household_not_found_lbl));
+            return;
+        }
+
+        Member head = getHouseholdHead(household);
+
+        memberActionListener.onMemberHouseholdSelected(household, head);
+    }
+
     private Household getHousehold(Member member){
         if (member == null || member.getHouseholdName()==null) return null;
 
+        Database database = new Database(this.getActivity());
         database.open();
         Household household = Queries.getHouseholdBy(database, DatabaseHelper.Household.COLUMN_NAME +"=?", new String[]{ member.getHouseholdName() });
         database.close();
 
         return household;
+    }
+
+    private Member getHouseholdHead(Household household){
+        if (household == null || household.getHeadCode()==null) return null;
+
+        Database database = new Database(this.getActivity());
+        database.open();
+        Member member = Queries.getMemberBy(database, DatabaseHelper.Member.COLUMN_CODE +"=?", new String[]{ household.getHeadCode() });
+        database.close();
+
+        return member;
     }
 
     private Household getHousehold(int id){
@@ -761,6 +799,7 @@ public class MemberListFragment extends Fragment {
     private Household getHousehold(String id){
         if (Integer.getInteger(id) == null) return null;
 
+        Database database = new Database(this.getActivity());
         database.open();
         Household household = Queries.getHouseholdBy(database, DatabaseHelper.Household._ID+"=?", new String[]{ id });
         database.close();
@@ -851,7 +890,7 @@ public class MemberListFragment extends Fragment {
             whereValues.add(endType);
         }
 
-
+        Database database = new Database(this.getActivity());
         database.open();
 
         String[] ar = new String[whereValues.size()];
@@ -862,6 +901,7 @@ public class MemberListFragment extends Fragment {
             members.add(member);
             //Log.d("household", ""+household);
             //Log.d("head", ""+(household!=null ? household.getHeadCode():"null"));
+            /*
             if (household != null && household.getHeadCode().equals(member.getCode())){
                 member.setHouseholdHead(true);
             }
@@ -869,6 +909,7 @@ public class MemberListFragment extends Fragment {
             if (household != null && household.getSecHeadCode().equals(member.getCode())){
                 member.setSecHouseholdHead(true);
             }
+            */
         }
 
         database.close();

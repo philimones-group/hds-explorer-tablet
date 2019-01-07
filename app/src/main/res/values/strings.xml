@@ -7,7 +7,7 @@
     <string name="copyright_app_developers_lbl">Developed by Paulo Filimone</string>
 
     <!-- General buttons and Strings-->
-    <string name="bt_ok_lbl">Ok</string>
+    <string name="bt_ok_lbl">OK</string>
     <string name="bt_yes_lbl">Yes</string>
     <string name="bt_no_lbl">No</string>
     <string name="bt_cancel_lbl">Cancel</string>
@@ -35,6 +35,7 @@
 
 
     <!-- Sync Tasks -->
+    <string name="sync_title_lbl">Database Synchronization</string>
     <string name="sync_prepare_download_lbl">Preparing Syncronization</string>
     <string name="sync_downloading_lbl">Downloading</string>
     <string name="sync_saving_lbl">Saving data</string>
@@ -53,6 +54,8 @@
     <string name="sync_successfully_lbl">Data was successfully synchronized.</string>
     <string name="sync_failure_file_not_found_lbl">Couldnt find file on the Server to Download</string>
     <string name="sync_failure_unknow_lbl">Couldnt download file from the Server</string>
+    <string name="sync_synchronized_msg_lbl">Total #1 records downloaded: #2</string>
+    <string name="sync_downloaded_msg_lbl">Total size of #1 data downloaded: #2 KB</string>
 
     <!-- Sync Activity -->
     <string name="server_sync_status_lbl">Status:</string>
@@ -231,6 +234,8 @@
     <string name="settings_odk_group_url_lbl">Aggregate URL</string>
     <string name="settings_redcap_group_lbl">REDCap</string>
     <string name="settings_redcap_group_url_lbl">Server URL</string>
+
+
 
 
     <!-- TODO: Remove or change this placeholder text -->

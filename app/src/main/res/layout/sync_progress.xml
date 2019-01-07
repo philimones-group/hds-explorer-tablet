@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/layoutStatus"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:orientation="vertical"
+        >
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layoutProgress"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="20dp"
+        android:orientation="horizontal">
+
+        <ProgressBar style="?android:attr/progressBarStyle"
+            android:id="@+id/progressBar"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_marginLeft="10dp"
+            android:layout_centerInParent="true"
+            android:indeterminate="true"
+            android:max="100"
+            android:progress="100" />
+
+        <TextView
+            android:id="@+id/progressMessage"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:textSize="@dimen/sync_progress_textsize"
+            android:text="Downloading 1000 Households" />
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="25dp">
+
+        <Button
+            android:id="@+id/btProgressOk"
+            android:layout_width="200dp"
+            android:layout_height="@dimen/member_details_bt_height"
+            android:layout_centerInParent="true"
+            android:textSize="@dimen/sync_progress_button_textsize"
+            android:textStyle="bold"
+            android:text="@string/bt_ok_lbl"
+            android:background="@drawable/button_normal"/>
+
+    </RelativeLayout>
+
+
+</LinearLayout>

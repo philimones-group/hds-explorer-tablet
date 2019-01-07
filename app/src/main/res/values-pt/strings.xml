@@ -35,6 +35,7 @@
 
 
     <!-- Sync Tasks -->
+    <string name="sync_title_lbl">Sincronização</string>
     <string name="sync_prepare_download_lbl">Iniciando Sincronização...</string>
     <string name="sync_downloading_lbl">Baixando</string>
     <string name="sync_saving_lbl">Guardando dados</string>
@@ -53,6 +54,8 @@
     <string name="sync_successfully_lbl">Os dados foram sincronizados com sucesso.</string>
     <string name="sync_failure_file_not_found_lbl">O ficheiro não foi encontrado no servidor para ser baixado.</string>
     <string name="sync_failure_unknow_lbl">Não foi possivel baixar o ficheiro do servidor</string>
+    <string name="sync_synchronized_msg_lbl">Total #1 dados baixados: #2</string>
+    <string name="sync_downloaded_msg_lbl">Tamanho total de #1 baixados: #2 KB</string>
 
     <!-- Sync Activity -->
     <string name="server_sync_status_lbl">Estado:</string>

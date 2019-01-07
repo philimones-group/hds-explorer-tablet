@@ -51,4 +51,7 @@
     <dimen name="member_details_info_name_layout_txtsize">23dp</dimen>
     <dimen name="member_details_info_gender_layout_txtsize">21dp</dimen>
 
+    <dimen name="sync_progress_textsize">20dp</dimen>
+    <dimen name="sync_progress_button_textsize">22dp</dimen>
+
 </resources>

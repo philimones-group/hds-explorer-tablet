@@ -10,13 +10,16 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import org.philimone.hds.explorer.model.ApplicationParam;
 import org.philimone.hds.explorer.model.DataSet;
 import org.philimone.hds.explorer.model.Region;
+import org.philimone.hds.explorer.widget.SyncProgressDialog;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
@@ -63,7 +66,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 
 	private SyncDatabaseListener listener;
 
-	private ProgressDialog dialog;
+	private SyncProgressDialog dialog;
 	private HttpURLConnection connection;
 
 	private String baseurl;
@@ -72,6 +75,9 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 	private List<Entity> entities;
 
 	private final List<Table> values = new ArrayList<Table>();
+
+	private Map<Entity, Integer> downloadedValues = new LinkedHashMap<>();
+	private Map<Entity, Integer> savedValues = new LinkedHashMap<>();
 
 	private State state;
 	private Entity entity;
@@ -86,7 +92,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 		SETTINGS, PARAMETERS, MODULES, FORMS, DATASETS, TRACKING_LISTS, USERS, REGIONS, HOUSEHOLDS, MEMBERS
 	}
 
-	public SyncEntitiesTask(Context context, ProgressDialog dialog, SyncDatabaseListener listener, String url, String username, String password, Entity... entityToDownload) {
+	public SyncEntitiesTask(Context context, SyncProgressDialog dialog, SyncDatabaseListener listener, String url, String username, String password, Entity... entityToDownload) {
 		this.baseurl = url;
 		this.username = username;
 		this.password = password;
@@ -98,7 +104,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 		initDialog();
 	}
 
-	public SyncEntitiesTask(Context context, ProgressDialog dialog, String url, String username, String password, Entity... entityToDownload) {
+	public SyncEntitiesTask(Context context, SyncProgressDialog dialog, String url, String username, String password, Entity... entityToDownload) {
 		this.baseurl = url;
 		this.username = username;
 		this.password = password;
@@ -109,7 +115,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 		initDialog();
 	}
 
-	public SyncEntitiesTask(Context context, ProgressDialog dialog, String url, String username, String password) {
+	public SyncEntitiesTask(Context context, SyncProgressDialog dialog, String url, String username, String password) {
 		this.baseurl = url;
 		this.username = username;
 		this.password = password;
@@ -120,6 +126,8 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 	}
 
 	private void initDialog(){
+		dialog.syncInitialize();;
+		dialog.setTitle(mContext.getString(R.string.sync_title_lbl));
 		dialog.setMessage(mContext.getString(R.string.sync_prepare_download_lbl));
 		dialog.show();
 	}
@@ -144,9 +152,19 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 		switch (state) {
 		case DOWNLOADING:
 			builder.append(mContext.getString(R.string.sync_downloading_lbl));
+
+			if (values.length > 0){
+				downloadedValues.put(entity, values[0]);
+			}
+
 			break;
 		case SAVING:
 			builder.append(mContext.getString(R.string.sync_saving_lbl));
+
+			if (values.length > 0){
+				savedValues.put(entity, values[0]);
+			}
+
 			break;
 		}
 
@@ -242,6 +260,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 						processUrl(baseurl + API_PATH + "/members/zip", "members.zip");
 						break;
 				}
+
 			}
 
 		} catch (FileNotFoundException e) {
@@ -1921,8 +1940,62 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 
 	protected void onPostExecute(String result) {
 		listener.collectionComplete(result);
-		dialog.dismiss();
+		addSavedSynchronizedMessages(dialog);
+		dialog.setMessage(result);
+		dialog.syncFinalize();
 		Toast.makeText(mContext, result, Toast.LENGTH_LONG).show();
+	}
+
+	private void addSavedSynchronizedMessages(SyncProgressDialog pDialog){
+
+		String downloadedEntity = "";
+
+		for (Entity entity : savedValues.keySet()){
+			switch (entity) {
+				case PARAMETERS: 	 downloadedEntity = mContext.getString(R.string.sync_params_lbl); break;
+				case MODULES: 		 downloadedEntity = mContext.getString(R.string.sync_modules_lbl);   break;
+				case FORMS: 		 downloadedEntity = mContext.getString(R.string.sync_forms_lbl);     break;
+				case DATASETS: 		 downloadedEntity = mContext.getString(R.string.sync_datasets_lbl); 	break;
+				case TRACKING_LISTS: downloadedEntity = mContext.getString(R.string.sync_tracking_lists_lbl);	break;
+				case USERS: 		 downloadedEntity = mContext.getString(R.string.sync_users_lbl); 	break;
+				case REGIONS: 		 downloadedEntity = mContext.getString(R.string.sync_regions_lbl);	break;
+				case HOUSEHOLDS: 	 downloadedEntity = mContext.getString(R.string.sync_households_lbl);	break;
+				case MEMBERS: 		 downloadedEntity = mContext.getString(R.string.sync_members_lbl); 	  break;
+			}
+
+			String msg = mContext.getString(R.string.sync_synchronized_msg_lbl);
+			msg = msg.replace("#2", savedValues.get(entity).toString());
+			msg = msg.replace("#1", downloadedEntity);
+
+			pDialog.addSynchronizedMessage(msg, true);
+		}
+
+	}
+
+	private void addDownloadSynchronizedMessages(SyncProgressDialog pDialog){
+
+		String downloadedEntity = "";
+
+		for (Entity entity : downloadedValues.keySet()){
+			switch (entity) {
+				case PARAMETERS: 	 downloadedEntity = mContext.getString(R.string.sync_params_lbl); break;
+				case MODULES: 		 downloadedEntity = mContext.getString(R.string.sync_modules_lbl);   break;
+				case FORMS: 		 downloadedEntity = mContext.getString(R.string.sync_forms_lbl);     break;
+				case DATASETS: 		 downloadedEntity = mContext.getString(R.string.sync_datasets_lbl); 	break;
+				case TRACKING_LISTS: downloadedEntity = mContext.getString(R.string.sync_tracking_lists_lbl);	break;
+				case USERS: 		 downloadedEntity = mContext.getString(R.string.sync_users_lbl); 	break;
+				case REGIONS: 		 downloadedEntity = mContext.getString(R.string.sync_regions_lbl);	break;
+				case HOUSEHOLDS: 	 downloadedEntity = mContext.getString(R.string.sync_households_lbl);	break;
+				case MEMBERS: 		 downloadedEntity = mContext.getString(R.string.sync_members_lbl); 	  break;
+			}
+
+			String msg = mContext.getString(R.string.sync_downloaded_msg_lbl);
+			msg = msg.replace("#1", downloadedValues.get(entity).toString());
+			msg = msg.replace("#2", downloadedEntity);
+
+			pDialog.addSynchronizedMessage(msg, true);
+		}
+
 	}
 
 	private class DownloadResponse {

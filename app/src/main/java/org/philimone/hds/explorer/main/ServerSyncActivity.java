@@ -13,6 +13,7 @@ import org.philimone.hds.explorer.database.Queries;
 import org.philimone.hds.explorer.io.SyncDatabaseListener;
 import org.philimone.hds.explorer.io.SyncEntitiesTask;
 import org.philimone.hds.explorer.model.SyncReport;
+import org.philimone.hds.explorer.widget.SyncProgressDialog;
 
 import java.util.List;
 
@@ -34,7 +35,7 @@ public class ServerSyncActivity extends Activity implements SyncDatabaseListener
     private TextView txtSyncHouseholdsStatus;
     private TextView txtSyncMembersStatus;
 
-    private ProgressDialog progressDialog;
+    private SyncProgressDialog progressDialog;
 
 
     private String username;
@@ -102,7 +103,7 @@ public class ServerSyncActivity extends Activity implements SyncDatabaseListener
         this.txtSyncHouseholdsStatus = (TextView) findViewById(R.id.txtSyncHouseholdsStatus);
         this.txtSyncMembersStatus = (TextView) findViewById(R.id.txtSyncMembersStatus);
 
-        this.progressDialog = new ProgressDialog(this);
+        this.progressDialog = new SyncProgressDialog(this);
 
         this.btSyncModules.setOnClickListener(new View.OnClickListener() {
             @Override

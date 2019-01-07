@@ -5,6 +5,7 @@ import android.database.Cursor;
 
 import org.philimone.hds.explorer.model.ApplicationParam;
 import org.philimone.hds.explorer.model.CollectedData;
+import org.philimone.hds.explorer.model.DataSet;
 import org.philimone.hds.explorer.model.Form;
 import org.philimone.hds.explorer.model.Household;
 import org.philimone.hds.explorer.model.Member;
@@ -258,6 +259,31 @@ public class Queries {
         while (cursor.moveToNext()){
             TrackingMemberList trackingList = Converter.cursorToTrackingMembersList(cursor);
             list.add(trackingList);
+        }
+
+        return list;
+    }
+
+    public static DataSet getDataSetBy(Database database, String whereClause, String[] clauseArgs){
+        DataSet dataSet = null;
+
+        Cursor cursor = database.query(DataSet.class, whereClause, clauseArgs, null, null, null);
+
+        if (cursor.moveToFirst()){
+            dataSet = Converter.cursorToDataSet(cursor);
+        }
+
+        return dataSet;
+    }
+
+    public static List<DataSet> getAllDataSetBy(Database database, String whereClause, String[] clauseArgs){
+        List<DataSet> list = new ArrayList<>();
+
+        Cursor cursor = database.query(DataSet.class, whereClause, clauseArgs, null, null, null);
+
+        while (cursor.moveToNext()){
+            DataSet dataSet = Converter.cursorToDataSet(cursor);
+            list.add(dataSet);
         }
 
         return list;

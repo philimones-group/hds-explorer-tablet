@@ -4,6 +4,7 @@ import android.database.Cursor;
 
 import org.philimone.hds.explorer.model.ApplicationParam;
 import org.philimone.hds.explorer.model.CollectedData;
+import org.philimone.hds.explorer.model.DataSet;
 import org.philimone.hds.explorer.model.Form;
 import org.philimone.hds.explorer.model.Household;
 import org.philimone.hds.explorer.model.Member;
@@ -224,5 +225,24 @@ public class Converter {
 		tml.setCompletionRate(cursor.getDouble(cursor.getColumnIndex(DatabaseHelper.TrackingMemberList.COLUMN_COMPLETION_RATE)));
 
 		return tml;
+	}
+
+	public static DataSet cursorToDataSet(Cursor cursor){
+		DataSet dataSet = new DataSet();
+
+		dataSet.setId(cursor.getInt(cursor.getColumnIndex(DatabaseHelper.DataSet._ID)));
+		dataSet.setDatasetId(cursor.getInt(cursor.getColumnIndex(DatabaseHelper.DataSet.COLUMN_DATASET_ID)));
+		dataSet.setTableName(cursor.getString(cursor.getColumnIndex(DatabaseHelper.DataSet.COLUMN_TABLE_NAME)));
+		dataSet.setTableColumn(cursor.getString(cursor.getColumnIndex(DatabaseHelper.DataSet.COLUMN_TABLE_COLUMN)));
+		dataSet.setFilename(cursor.getString(cursor.getColumnIndex(DatabaseHelper.DataSet.COLUMN_FILENAME)));
+
+		dataSet.setCreatedBy(cursor.getString(cursor.getColumnIndex(DatabaseHelper.DataSet.COLUMN_CREATED_BY)));
+		dataSet.setCreationDate(cursor.getString(cursor.getColumnIndex(DatabaseHelper.DataSet.COLUMN_CREATION_DATE)));
+		dataSet.setUpdatedBy(cursor.getString(cursor.getColumnIndex(DatabaseHelper.DataSet.COLUMN_UPDATED_BY)));
+		dataSet.setUpdatedDate(cursor.getString(cursor.getColumnIndex(DatabaseHelper.DataSet.COLUMN_UPDATED_DATE)));
+
+		dataSet.setLabels(cursor.getString(cursor.getColumnIndex(DatabaseHelper.DataSet.COLUMN_LABELS)));
+
+		return dataSet;
 	}
 }

@@ -28,6 +28,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             db.execSQL(CREATE_TABLE_COLLECTED_DATA);
             db.execSQL(CREATE_TABLE_TRACKING_LIST);
             db.execSQL(CREATE_TABLE_TRACKING_MEMBER_LIST);
+            db.execSQL(CREATE_TABLE_DATASET);
         }catch (Exception ex){
             ex.printStackTrace();
         }
@@ -275,6 +276,25 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         public static final String[] ALL_COLUMNS = { _ID, COLUMN_LIST_ID, COLUMN_TRACKING_ID, COLUMN_TITLE, COLUMN_FORMS, COLUMN_MEMBER_CODE, COLUMN_MEMBER_STUDY_CODE, COLUMN_MEMBER_VISIT, COLUMN_MEMBER_FORMS, COLUMN_COMPLETION_RATE };
     }
 
+    public static final class DataSet implements BaseColumns {
+        public static final String TABLE_NAME = "dataset";
+
+        public static final String COLUMN_DATASET_ID = "datasetId";
+        public static final String COLUMN_NAME = "name";
+        public static final String COLUMN_KEYCOLUMN = "keyColumn";
+        public static final String COLUMN_TABLE_NAME = "tableName";
+        public static final String COLUMN_TABLE_COLUMN = "tableColumn";
+        public static final String COLUMN_FILENAME = "filename";
+        public static final String COLUMN_CREATED_BY = "createdBy";
+        public static final String COLUMN_CREATION_DATE = "creationDate";
+        public static final String COLUMN_UPDATED_BY = "updatedBy";
+        public static final String COLUMN_UPDATED_DATE = "updatedDate";
+        public static final String COLUMN_LABELS = "labels";
+
+        public static final String[] ALL_COLUMNS = {_ID, COLUMN_DATASET_ID, COLUMN_NAME, COLUMN_KEYCOLUMN, COLUMN_TABLE_NAME, COLUMN_TABLE_COLUMN, COLUMN_FILENAME,
+                                                         COLUMN_CREATED_BY, COLUMN_CREATION_DATE, COLUMN_UPDATED_BY, COLUMN_UPDATED_DATE, COLUMN_LABELS};
+    }
+
     private static final String CREATE_TABLE_APPLICATION_PARAM = " "
             + "CREATE TABLE " + ApplicationParam.TABLE_NAME + "("
             + ApplicationParam._ID  + " INTEGER PRIMARY KEY AUTOINCREMENT, "
@@ -488,6 +508,25 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
             + " CREATE INDEX IDX_TRCK_ID ON " + TrackingMemberList.TABLE_NAME
             + "(" +  TrackingMemberList.COLUMN_TRACKING_ID  + ");"
+            ;
+
+    private static final String CREATE_TABLE_DATASET = " "
+            + "CREATE TABLE " + DataSet.TABLE_NAME + "("
+            + DataSet._ID  + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+            + DataSet.COLUMN_DATASET_ID + " INTEGER,"
+            + DataSet.COLUMN_NAME + " TEXT,"
+            + DataSet.COLUMN_KEYCOLUMN + " TEXT,"
+            + DataSet.COLUMN_TABLE_NAME + " TEXT,"
+            + DataSet.COLUMN_TABLE_COLUMN + " TEXT,"
+            + DataSet.COLUMN_FILENAME + " TEXT,"
+            + DataSet.COLUMN_CREATED_BY + " TEXT,"
+            + DataSet.COLUMN_CREATION_DATE + " TEXT,"
+            + DataSet.COLUMN_UPDATED_BY + " TEXT,"
+            + DataSet.COLUMN_UPDATED_DATE + " TEXT,"
+            + DataSet.COLUMN_LABELS + " TEXT);"
+
+            + " CREATE UNIQUE INDEX IDX_DATASET_NAME ON " + DataSet.TABLE_NAME
+            + "(" +  DataSet.COLUMN_NAME + ");"
             ;
 
 }

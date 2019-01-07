@@ -88,8 +88,8 @@ public class ServerSyncActivity extends Activity implements SyncDatabaseListener
     }
 
     private void initialize() {
-        this.btSyncModules = (Button) findViewById(R.id.btSyncModules);
-        this.btSyncForms = (Button) findViewById(R.id.btSyncForms);
+        this.btSyncModules = (Button) findViewById(R.id.btSyncSettings);
+        this.btSyncForms = (Button) findViewById(R.id.btSyncDatasets);
         this.btSyncTrackingLists = (Button) findViewById(R.id.btSyncTrackingLists);
         this.btSyncUsers = (Button) findViewById(R.id.btSyncUsers);
         this.btSyncHouseholds = (Button) findViewById(R.id.btSyncHouseholds);
@@ -163,12 +163,12 @@ public class ServerSyncActivity extends Activity implements SyncDatabaseListener
     }
 
     private void syncModules() {
-        SyncEntitiesTask syncEntitiesTask = new SyncEntitiesTask(this, progressDialog, this, serverUrl, username, password, SyncEntitiesTask.Entity.MODULES, SyncEntitiesTask.Entity.PARAMETERS);
+        SyncEntitiesTask syncEntitiesTask = new SyncEntitiesTask(this, progressDialog, this, serverUrl, username, password, SyncEntitiesTask.Entity.MODULES, SyncEntitiesTask.Entity.PARAMETERS, SyncEntitiesTask.Entity.FORMS);
         syncEntitiesTask.execute();
     }
 
     private void syncForms() {
-        SyncEntitiesTask syncEntitiesTask = new SyncEntitiesTask(this, progressDialog, this, serverUrl, username, password, SyncEntitiesTask.Entity.FORMS);
+        SyncEntitiesTask syncEntitiesTask = new SyncEntitiesTask(this, progressDialog, this, serverUrl, username, password, SyncEntitiesTask.Entity.DATASETS);
         syncEntitiesTask.execute();
     }
 

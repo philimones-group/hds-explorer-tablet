@@ -22,6 +22,8 @@ public class SyncReport implements Serializable, Table {
     public final static int REPORT_TRACKING_LISTS = 6;
     public final static int REPORT_PARAMETERS = 7;
     public final static int REPORT_REGIONS = 8;
+    public final static int REPORT_DATASETS = 9;
+    public final static int REPORT_DATASET_FILES = 10;
 
 
     public final static int STATUS_NOT_SYNCED = 0;

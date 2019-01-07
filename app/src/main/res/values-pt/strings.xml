@@ -42,6 +42,8 @@
     <string name="sync_modules_lbl">Módulos</string>
     <string name="sync_forms_lbl">Formulários ODK</string>
     <string name="sync_users_lbl">Usuários</string>
+    <string name="sync_datasets_lbl">Datasets</string>
+    <string name="sync_datasets_csv_lbl">Datasets CSV/ZIP</string>
     <string name="sync_tracking_lists_lbl">Listas de seguimento</string>
     <string name="sync_regions_lbl">Regiões</string>
     <string name="sync_households_lbl">Agregados/Casas</string>
@@ -57,8 +59,9 @@
     <string name="server_sync_status_notsynced_lbl">Não foi sincronizado</string>
     <string name="server_sync_status_synced_lbl">Data da ultima sincronização</string>
     <string name="server_sync_status_sync_error_lbl">Data da ultima sincr. com erro</string>
-    <string name="server_sync_bt_modules_lbl">Baixar Módulos</string>
+    <string name="server_sync_bt_settings_lbl">Baixar Definições</string>
     <string name="server_sync_bt_forms_lbl">Baixar Formulários</string>
+    <string name="server_sync_bt_datasets_lbl">Baixar Datasets externos</string>
     <string name="server_sync_bt_tracking_lists_lbl">Baixar Listas de Seguimento</string>
     <string name="server_sync_bt_users_lbl">Baixar Usuários</string>
     <string name="server_sync_bt_households_lbl">Baixar Agregados</string>

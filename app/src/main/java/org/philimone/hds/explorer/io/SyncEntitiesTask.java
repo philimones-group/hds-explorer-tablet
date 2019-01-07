@@ -15,6 +15,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import org.philimone.hds.explorer.model.ApplicationParam;
+import org.philimone.hds.explorer.model.DataSet;
 import org.philimone.hds.explorer.model.Region;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -82,7 +83,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 	}
 
 	public enum Entity {
-		SETTINGS, PARAMETERS, MODULES, FORMS, TRACKING_LISTS, USERS, REGIONS, HOUSEHOLDS, MEMBERS
+		SETTINGS, PARAMETERS, MODULES, FORMS, DATASETS, TRACKING_LISTS, USERS, REGIONS, HOUSEHOLDS, MEMBERS
 	}
 
 	public SyncEntitiesTask(Context context, ProgressDialog dialog, SyncDatabaseListener listener, String url, String username, String password, Entity... entityToDownload) {
@@ -159,6 +160,9 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 			case FORMS:
 				builder.append(" " + mContext.getString(R.string.sync_forms_lbl));
 				break;
+			case DATASETS:
+				builder.append(" " + mContext.getString(R.string.sync_datasets_lbl));
+				break;
 			case TRACKING_LISTS:
 				builder.append(" " + mContext.getString(R.string.sync_tracking_lists_lbl));
 				break;
@@ -211,6 +215,10 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 						deleteAll(Form.class);
 						processUrl(baseurl + API_PATH + "/forms/zip", "forms.zip");
 						break;
+					case DATASETS:
+						deleteAll(DataSet.class);
+						processUrl(baseurl + API_PATH + "/datasets/zip", "datasets.zip");
+						break;
 					case TRACKING_LISTS: /*testing*/
 						deleteAll(DatabaseHelper.TrackingList.TABLE_NAME);
 						deleteAll(DatabaseHelper.TrackingMemberList.TABLE_NAME);
@@ -260,6 +268,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 		database.delete(Form.class, null, null);
 		database.delete(Module.class, null, null);
 		database.delete(Region.class, null, null);
+		database.delete(DataSet.class, null, null);
 		database.delete(Household.class, null, null);
 		database.delete(Member.class, null, null);
 		database.delete(CollectedData.class, DatabaseHelper.CollectedData.COLUMN_SUPERVISED+"=?", new String[]{ "1"}); //delete all collected data that was supervised
@@ -368,6 +377,8 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 					processModulesParams(parser);
 				} else if (name.equalsIgnoreCase("forms")) {
 					processFormsParams(parser);
+				} else if (name.equalsIgnoreCase("datasets")) {
+					processDatasetsParams(parser);
 				} else if (name.equalsIgnoreCase("trackinglists")) {
 					processTrackingListsParams(parser);
 				} else if (name.equalsIgnoreCase("users")) {
@@ -798,6 +809,157 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 		database.close();
 
 		updateSyncReport(SyncReport.REPORT_FORMS, new Date(), SyncReport.STATUS_SYNCED);
+	}
+
+	private void processDatasetsParams(XmlPullParser parser) throws XmlPullParserException, IOException {
+
+		//clear sync_report
+		updateSyncReport(SyncReport.REPORT_DATASETS, null, SyncReport.STATUS_NOT_SYNCED);
+
+		int count = 0;
+		values.clear();
+
+		Database database = getDatabase();
+		database.open();
+		database.beginTransaction();
+
+		parser.nextTag(); //<dataSet>
+
+		while (notEndOfXmlDoc("datasets", parser)) {
+			count++;
+
+			DataSet table = new DataSet();
+
+			parser.nextTag(); //process COLUMN_DATASET_ID
+			if (!isEmptyTag(DatabaseHelper.DataSet.COLUMN_DATASET_ID, parser)) {
+				parser.next();
+				table.setDatasetId(Integer.parseInt(parser.getText()));
+				parser.nextTag(); //process </COLUMN_DATASET_ID>
+				//Log.d(count+"-COLUMN_DATASET_ID", "value="+ parser.getText());
+			}else{
+				table.setDatasetId(0);
+				parser.nextTag();
+			}
+
+			parser.nextTag(); //process COLUMN_NAME
+			if (!isEmptyTag(DatabaseHelper.DataSet.COLUMN_NAME, parser)) {
+				parser.next();
+				table.setName(parser.getText());
+				parser.nextTag(); //process </COLUMN_NAME>
+				//Log.d(count+"-COLUMN_NAME", "value="+ parser.getText());
+			}else{
+				table.setName("");
+				parser.nextTag();
+			}
+
+			parser.nextTag(); //process COLUMN_KEYCOLUMN
+			if (!isEmptyTag(DatabaseHelper.DataSet.COLUMN_KEYCOLUMN, parser)) {
+				parser.next();
+				table.setKeyColumn(parser.getText());
+				parser.nextTag(); //process </COLUMN_KEYCOLUMN>
+				//Log.d(count+"-COLUMN_KEYCOLUMN", "value="+ parser.getText());
+			}else{
+				table.setKeyColumn("");
+				parser.nextTag();
+			}
+
+			parser.nextTag(); //process COLUMN_TABLE_NAME
+			if (!isEmptyTag(DatabaseHelper.DataSet.COLUMN_TABLE_NAME, parser)) {
+				parser.next();
+				table.setTableName(parser.getText());
+				parser.nextTag(); //process </COLUMN_TABLE_NAME>
+				//Log.d(count+"-COLUMN_TABLE_NAME", "value="+ parser.getText());
+			}else{
+				table.setTableName("");
+				parser.nextTag();
+			}
+
+			parser.nextTag(); //process COLUMN_TABLE_COLUMN
+			if (!isEmptyTag(DatabaseHelper.DataSet.COLUMN_TABLE_COLUMN, parser)) {
+				parser.next();
+				table.setTableColumn(parser.getText());
+				parser.nextTag(); //process </COLUMN_TABLE_COLUMN>
+				//Log.d(count+"-COLUMN_TABLE_COLUMN", "value="+ parser.getText());
+			}else{
+				table.setTableColumn("");
+				parser.nextTag();
+			}
+
+			parser.nextTag(); //process COLUMN_CREATED_BY
+			if (!isEmptyTag(DatabaseHelper.DataSet.COLUMN_CREATED_BY, parser)) {
+				parser.next();
+				table.setCreatedBy(parser.getText());
+				parser.nextTag(); //process </COLUMN_CREATED_BY>
+				//Log.d(count+"-COLUMN_CREATED_BY", "value="+ parser.getText());
+			}else{
+				table.setCreatedBy("");
+				parser.nextTag();
+			}
+
+			parser.nextTag(); //process COLUMN_CREATION_DATE
+			if (!isEmptyTag(DatabaseHelper.DataSet.COLUMN_CREATION_DATE, parser)) {
+				parser.next();
+				table.setCreationDate(parser.getText());
+				parser.nextTag(); //process </COLUMN_CREATION_DATE>
+				//Log.d(count+"-COLUMN_CREATION_DATE", "value="+ parser.getText());
+			}else{
+				table.setCreationDate("");
+				parser.nextTag();
+			}
+
+			parser.nextTag(); //process COLUMN_UPDATED_BY
+			if (!isEmptyTag(DatabaseHelper.DataSet.COLUMN_UPDATED_BY, parser)) {
+				parser.next();
+				table.setUpdatedBy(parser.getText());
+				parser.nextTag(); //process </COLUMN_UPDATED_BY>
+				//Log.d(count+"-COLUMN_UPDATED_BY", "value="+ parser.getText());
+			}else{
+				table.setUpdatedBy("");
+				parser.nextTag();
+			}
+
+			parser.nextTag(); //process COLUMN_UPDATED_DATE
+			if (!isEmptyTag(DatabaseHelper.DataSet.COLUMN_UPDATED_DATE, parser)) {
+				parser.next();
+				table.setUpdatedDate(parser.getText());
+				parser.nextTag(); //process </COLUMN_UPDATED_DATE>
+				//Log.d(count+"-COLUMN_UPDATED_DATE", "value="+ parser.getText());
+			}else{
+				table.setUpdatedDate("");
+				parser.nextTag();
+			}
+
+			parser.nextTag(); //process COLUMN_LABELS
+			if (!isEmptyTag(DatabaseHelper.DataSet.COLUMN_LABELS, parser)) {
+				parser.next();
+				table.setLabels(parser.getText());
+				//Log.d(count+"-COLUMN_LABELS", "value="+ parser.getText());
+				parser.nextTag(); //process </COLUMN_LABELS>
+			}else{
+				table.setLabels("");
+				parser.nextTag();
+
+			}
+
+			table.setFilename(""); //an empty filename - the variable will be set after downloading data
+
+			parser.nextTag();
+			parser.next();
+
+
+			database.insert(table);
+			publishProgress(count);
+
+		}
+
+		state = State.SAVING;
+		entity = Entity.DATASETS;
+
+		database.setTransactionSuccessful();
+		database.endTransaction();
+		database.close();
+
+		updateSyncReport(SyncReport.REPORT_DATASETS, new Date(), SyncReport.STATUS_SYNCED);
 	}
 
 	private void processTrackingListsParams(XmlPullParser parser) throws XmlPullParserException, IOException {
@@ -1800,4 +1962,5 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 			return fileMimeType.equalsIgnoreCase(ZIP_MIME_TYPE);
 		}
 	}
+
 }

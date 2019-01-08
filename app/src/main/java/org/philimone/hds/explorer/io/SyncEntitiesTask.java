@@ -16,6 +16,7 @@ import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+import org.philimone.hds.explorer.database.Queries;
 import org.philimone.hds.explorer.model.ApplicationParam;
 import org.philimone.hds.explorer.model.DataSet;
 import org.philimone.hds.explorer.model.Region;
@@ -24,7 +25,6 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
 
-import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.Context;
 import android.os.AsyncTask;
@@ -89,7 +89,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 	}
 
 	public enum Entity {
-		SETTINGS, PARAMETERS, MODULES, FORMS, DATASETS, TRACKING_LISTS, USERS, REGIONS, HOUSEHOLDS, MEMBERS
+		SETTINGS, PARAMETERS, MODULES, FORMS, DATASETS, DATASETS_CSV_FILES, TRACKING_LISTS, USERS, REGIONS, HOUSEHOLDS, MEMBERS
 	}
 
 	public SyncEntitiesTask(Context context, SyncProgressDialog dialog, SyncDatabaseListener listener, String url, String username, String password, Entity... entityToDownload) {
@@ -181,6 +181,9 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 			case DATASETS:
 				builder.append(" " + mContext.getString(R.string.sync_datasets_lbl));
 				break;
+			case DATASETS_CSV_FILES:
+				builder.append(" " + mContext.getString(R.string.sync_datasets_csv_lbl));
+				break;
 			case TRACKING_LISTS:
 				builder.append(" " + mContext.getString(R.string.sync_tracking_lists_lbl));
 				break;
@@ -236,6 +239,9 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 					case DATASETS:
 						deleteAll(DataSet.class);
 						processUrl(baseurl + API_PATH + "/datasets/zip", "datasets.zip");
+						break;
+					case DATASETS_CSV_FILES:
+						downloadExternalDatasetFiles();
 						break;
 					case TRACKING_LISTS: /*testing*/
 						deleteAll(DatabaseHelper.TrackingList.TABLE_NAME);
@@ -325,7 +331,38 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 		database.close();
 	}
 
+	private void downloadExternalDatasetFiles() throws Exception {
+
+		Database database = getDatabase();
+		database.open();
+		List<DataSet> dataSets = Queries.getAllDataSetBy(database, null, null);
+		database.close();
+
+		for (DataSet dataSet : dataSets){
+			String url = baseurl + API_PATH + "/dataset/zip/" + dataSet.getDatasetId();
+			String name = dataSet.getName()+".zip";
+			processUrl(url, name, dataSet);
+		}
+
+	}
+
+	/**
+	 * Exclusively to Download CSV/ZIP Datasets
+	 * @param strUrl
+	 * @param exportedFileName
+	 * @param dataSet
+	 * @throws Exception
+	 */
+	private void processUrl(String strUrl, String exportedFileName, DataSet dataSet) throws Exception {
+		DownloadResponse response = processUrl(strUrl, exportedFileName, false);
+		updateDataset(dataSet, response);
+	}
+
 	private void processUrl(String strUrl, String exportedFileName) throws Exception {
+		processUrl(strUrl, exportedFileName, true);
+	}
+
+	private DownloadResponse processUrl(String strUrl, String exportedFileName, boolean processDataContent) throws Exception {
 		state = State.DOWNLOADING;
 		publishProgress();
 
@@ -343,10 +380,10 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 
 		connection.connect();
 
-		processResponse(exportedFileName);
+		return processResponse(exportedFileName, processDataContent);
 	}
 
-	private void processResponse(String exportedFileName) throws Exception {
+	private DownloadResponse processResponse(String exportedFileName, boolean processData) throws Exception {
 		DownloadResponse response = getResponse(exportedFileName);
 
 		Log.d("is", ""+response.getInputStream()+", xml-"+response.isXmlFile()+", zip-"+response.isZipFile());
@@ -354,14 +391,18 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 		//save file
 		InputStream fileInputStream = saveFileToStorage(response);
 
-		if (fileInputStream != null){
-			if (response.isXmlFile()){
-				processXMLDocument(fileInputStream);
-			}
-			if (response.isZipFile()){
-				processZIPDocument(fileInputStream);
+		if (processData){ //is it necessary to process ZIP/XML Files
+			if (fileInputStream != null){
+				if (response.isXmlFile()){
+					processXMLDocument(fileInputStream);
+				}
+				if (response.isZipFile()){
+					processZIPDocument(fileInputStream);
+				}
 			}
 		}
+
+		return response;
 	}
 
 	private DownloadResponse getResponse(String exportedFileName) throws IOException {
@@ -885,11 +926,11 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 			parser.nextTag(); //process COLUMN_TABLE_NAME
 			if (!isEmptyTag(DatabaseHelper.DataSet.COLUMN_TABLE_NAME, parser)) {
 				parser.next();
-				table.setTableName(parser.getText());
+				table.setTableNameField(parser.getText());
 				parser.nextTag(); //process </COLUMN_TABLE_NAME>
 				//Log.d(count+"-COLUMN_TABLE_NAME", "value="+ parser.getText());
 			}else{
-				table.setTableName("");
+				table.setTableNameField("");
 				parser.nextTag();
 			}
 
@@ -1938,9 +1979,24 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 		database.close();
 	}
 
+	private void updateDataset(DataSet dataSet, DownloadResponse response){
+		String filename = Bootstrap.getAppPath() + response.getFileName();
+
+		Database database = getDatabase();
+		database.open();
+
+		ContentValues cv = new ContentValues();
+		cv.put(DatabaseHelper.DataSet.COLUMN_FILENAME, filename);
+
+		database.update(DataSet.class, cv, DatabaseHelper.DataSet._ID+"=?", new String[]{ dataSet.getId()+"" });
+
+		database.close();
+	}
+
 	protected void onPostExecute(String result) {
 		listener.collectionComplete(result);
 		addSavedSynchronizedMessages(dialog);
+		addDownloadSynchronizedMessages(dialog);
 		dialog.setMessage(result);
 		dialog.syncFinalize();
 		Toast.makeText(mContext, result, Toast.LENGTH_LONG).show();
@@ -1956,6 +2012,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 				case MODULES: 		 downloadedEntity = mContext.getString(R.string.sync_modules_lbl);   break;
 				case FORMS: 		 downloadedEntity = mContext.getString(R.string.sync_forms_lbl);     break;
 				case DATASETS: 		 downloadedEntity = mContext.getString(R.string.sync_datasets_lbl); 	break;
+				case DATASETS_CSV_FILES: downloadedEntity = mContext.getString(R.string.sync_datasets_csv_lbl); 	break;
 				case TRACKING_LISTS: downloadedEntity = mContext.getString(R.string.sync_tracking_lists_lbl);	break;
 				case USERS: 		 downloadedEntity = mContext.getString(R.string.sync_users_lbl); 	break;
 				case REGIONS: 		 downloadedEntity = mContext.getString(R.string.sync_regions_lbl);	break;

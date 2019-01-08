@@ -169,7 +169,7 @@ public class ServerSyncActivity extends Activity implements SyncDatabaseListener
     }
 
     private void syncForms() {
-        SyncEntitiesTask syncEntitiesTask = new SyncEntitiesTask(this, progressDialog, this, serverUrl, username, password, SyncEntitiesTask.Entity.DATASETS);
+        SyncEntitiesTask syncEntitiesTask = new SyncEntitiesTask(this, progressDialog, this, serverUrl, username, password, SyncEntitiesTask.Entity.DATASETS, SyncEntitiesTask.Entity.DATASETS_CSV_FILES);
         syncEntitiesTask.execute();
     }
 

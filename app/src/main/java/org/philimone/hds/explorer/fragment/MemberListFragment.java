@@ -71,7 +71,7 @@ public class MemberListFragment extends Fragment {
     private AlertDialog dialogNewMember;
 
     public enum Buttons {
-        MEMBERS_MAP, CLOSEST_MEMBERS, CLOSEST_HOUSES, NEW_MEMBER_COLLECT, COLLECTED_DATA
+        SHOW_HOUSEHOLD, MEMBERS_MAP, CLOSEST_MEMBERS, CLOSEST_HOUSES, NEW_MEMBER_COLLECT, COLLECTED_DATA
     }
 
     public MemberListFragment() {
@@ -106,6 +106,9 @@ public class MemberListFragment extends Fragment {
     public void setButtonVisibilityGone(Buttons... buttons){
 
         for (Buttons button : buttons){
+            if (button==Buttons.SHOW_HOUSEHOLD){
+                btMemListShowHousehold.setVisibility(View.GONE);
+            }
             if (button==Buttons.MEMBERS_MAP){
                 btMemListShowMmbMap.setVisibility(View.GONE);
             }
@@ -127,6 +130,9 @@ public class MemberListFragment extends Fragment {
     public void setButtonEnabled(boolean enabled, Buttons... buttons){
 
         for (Buttons button : buttons){
+            if (button==Buttons.SHOW_HOUSEHOLD){
+                btMemListShowHousehold.setEnabled(enabled);
+            }
             if (button==Buttons.MEMBERS_MAP){
                 btMemListShowMmbMap.setEnabled(enabled);
             }
@@ -771,11 +777,11 @@ public class MemberListFragment extends Fragment {
     }
 
     private Household getHousehold(Member member){
-        if (member == null || member.getHouseholdName()==null) return null;
+        if (member == null || member.getHouseholdCode()==null) return null;
 
         Database database = new Database(this.getActivity());
         database.open();
-        Household household = Queries.getHouseholdBy(database, DatabaseHelper.Household.COLUMN_NAME +"=?", new String[]{ member.getHouseholdName() });
+        Household household = Queries.getHouseholdBy(database, DatabaseHelper.Household.COLUMN_CODE +"=?", new String[]{ member.getHouseholdCode() });
         database.close();
 
         return household;

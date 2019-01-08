@@ -143,10 +143,10 @@ public class GpsSearchedListActivity extends Activity {
     }
 
     private Household getHousehold(Member member){
-        if (member == null || member.getHouseholdName()==null) return null;
+        if (member == null || member.getHouseholdCode()==null) return null;
 
         database.open();
-        Household household = Queries.getHouseholdBy(database, DatabaseHelper.Household.COLUMN_NAME +"=?", new String[]{ member.getHouseholdName() });
+        Household household = Queries.getHouseholdBy(database, DatabaseHelper.Household.COLUMN_CODE +"=?", new String[]{ member.getHouseholdCode() });
         database.close();
 
         return household;

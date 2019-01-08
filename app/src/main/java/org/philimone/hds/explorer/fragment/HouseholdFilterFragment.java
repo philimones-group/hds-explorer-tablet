@@ -175,7 +175,7 @@ public class HouseholdFilterFragment extends Fragment {
         listener.onHouseholdClick(household);
     }
 
-    public HouseholdArrayAdapter loadHouseholdsByFilters(String houseNumber) {
+    public HouseholdArrayAdapter loadHouseholdsByFilters(String houseCode) {
         //open loader
 
         //search on database
@@ -183,15 +183,15 @@ public class HouseholdFilterFragment extends Fragment {
         List<String> whereValues = new ArrayList<>();
         String[] arrayWhereValues;
 
-        String whereClause = DatabaseHelper.Household.COLUMN_NAME + " like ?";
-        whereValues.add(houseNumber+"%");
+        String whereClause = DatabaseHelper.Household.COLUMN_CODE + " like ?";
+        whereValues.add(houseCode+"%");
 
         arrayWhereValues = new String[whereValues.size()];
 
         //search
         database.open();
 
-        Cursor cursor = database.query(Household.class, DatabaseHelper.Household.ALL_COLUMNS, whereClause, whereValues.toArray(arrayWhereValues), null, null, DatabaseHelper.Household.COLUMN_NAME);
+        Cursor cursor = database.query(Household.class, DatabaseHelper.Household.ALL_COLUMNS, whereClause, whereValues.toArray(arrayWhereValues), null, null, DatabaseHelper.Household.COLUMN_CODE);
 
         while (cursor.moveToNext()){
             households.add(Converter.cursorToHousehold(cursor));

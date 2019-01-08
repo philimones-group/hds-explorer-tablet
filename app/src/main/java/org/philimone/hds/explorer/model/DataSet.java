@@ -15,7 +15,7 @@ public class DataSet  implements Table, Serializable {
     private int datasetId;
     private String name;
     private String keyColumn;
-    private String tableName;
+    private String tableNameField;
     private String tableColumn;
     private String filename;
 
@@ -66,8 +66,12 @@ public class DataSet  implements Table, Serializable {
         this.keyColumn = keyColumn;
     }
 
-    public void setTableName(String tableName) {
-        this.tableName = tableName;
+    public void setTableNameField(String tableName) {
+        this.tableNameField = tableName;
+    }
+
+    public String getTableNameField() {
+        return tableNameField;
     }
 
     public String getTableColumn() {
@@ -153,7 +157,7 @@ public class DataSet  implements Table, Serializable {
         cv.put(DatabaseHelper.DataSet.COLUMN_DATASET_ID, datasetId);
         cv.put(DatabaseHelper.DataSet.COLUMN_NAME, name);
         cv.put(DatabaseHelper.DataSet.COLUMN_KEYCOLUMN, keyColumn);
-        cv.put(DatabaseHelper.DataSet.COLUMN_TABLE_NAME, tableName);
+        cv.put(DatabaseHelper.DataSet.COLUMN_TABLE_NAME, tableNameField);
         cv.put(DatabaseHelper.DataSet.COLUMN_TABLE_COLUMN, tableColumn);
         cv.put(DatabaseHelper.DataSet.COLUMN_FILENAME, filename);
         cv.put(DatabaseHelper.DataSet.COLUMN_CREATED_BY, createdBy);

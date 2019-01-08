@@ -232,8 +232,10 @@ public class Converter {
 
 		dataSet.setId(cursor.getInt(cursor.getColumnIndex(DatabaseHelper.DataSet._ID)));
 		dataSet.setDatasetId(cursor.getInt(cursor.getColumnIndex(DatabaseHelper.DataSet.COLUMN_DATASET_ID)));
-		dataSet.setTableName(cursor.getString(cursor.getColumnIndex(DatabaseHelper.DataSet.COLUMN_TABLE_NAME)));
+		dataSet.setName(cursor.getString(cursor.getColumnIndex(DatabaseHelper.DataSet.COLUMN_NAME)));
+		dataSet.setTableNameField(cursor.getString(cursor.getColumnIndex(DatabaseHelper.DataSet.COLUMN_TABLE_NAME)));
 		dataSet.setTableColumn(cursor.getString(cursor.getColumnIndex(DatabaseHelper.DataSet.COLUMN_TABLE_COLUMN)));
+        dataSet.setKeyColumn(cursor.getString(cursor.getColumnIndex(DatabaseHelper.DataSet.COLUMN_KEYCOLUMN)));
 		dataSet.setFilename(cursor.getString(cursor.getColumnIndex(DatabaseHelper.DataSet.COLUMN_FILENAME)));
 
 		dataSet.setCreatedBy(cursor.getString(cursor.getColumnIndex(DatabaseHelper.DataSet.COLUMN_CREATED_BY)));

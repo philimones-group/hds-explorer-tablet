@@ -17,6 +17,7 @@ import org.philimone.hds.explorer.database.Queries;
 import org.philimone.hds.explorer.fragment.MemberFilterFragment;
 import org.philimone.hds.explorer.fragment.MemberListFragment;
 import org.philimone.hds.explorer.listeners.MemberActionListener;
+import org.philimone.hds.explorer.model.DataSet;
 import org.philimone.hds.explorer.model.Form;
 import org.philimone.hds.explorer.model.Household;
 import org.philimone.hds.explorer.model.Member;
@@ -110,11 +111,11 @@ public class SurveyMembersActivity extends Activity implements MemberFilterFragm
     }
 
     private Household getHousehold(Member member){
-        if (member == null || member.getHouseholdName()==null) return null;
+        if (member == null || member.getHouseholdCode()==null) return null;
 
         Database db = new Database(this);
         db.open();
-        Household household = Queries.getHouseholdBy(db, DatabaseHelper.Household.COLUMN_NAME +"=?", new String[]{ member.getHouseholdName() });
+        Household household = Queries.getHouseholdBy(db, DatabaseHelper.Household.COLUMN_CODE +"=?", new String[]{ member.getHouseholdCode() });
         db.close();
 
         return household;
@@ -178,12 +179,31 @@ public class SurveyMembersActivity extends Activity implements MemberFilterFragm
 
         loader.loadConstantValues();
         loader.loadSpecialConstantValues(household, member, loggedUser, null);
+
+        //Load variables on datasets
+        for (DataSet dataSet : getDataSets()){
+            if (loader.hasMappedDatasetVariable(dataSet)){
+                //Log.d("hasMappedVariables", ""+dataSet.getName());
+                loader.loadDataSetValues(dataSet, household, member);
+            }
+        }
     }
 
     private void loadFormValues(FormDataLoader[] loaders, Household household, Member member){
         for (FormDataLoader loader : loaders){
             loadFormValues(loader, household, member);
         }
+    }
+
+    private List<DataSet> getDataSets(){
+        List<DataSet> list = null;
+
+        Database db = new Database(this);
+        db.open();
+        list = Queries.getAllDataSetBy(db, null, null);
+        db.close();
+
+        return list;
     }
 
     class MemberSearchTask extends AsyncTask<Void, Void, MemberArrayAdapter> {

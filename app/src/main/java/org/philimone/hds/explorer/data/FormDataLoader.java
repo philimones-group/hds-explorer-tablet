@@ -3,17 +3,25 @@ package org.philimone.hds.explorer.data;
 import android.util.Log;
 
 import org.philimone.hds.explorer.adapter.model.TrackingMemberItem;
+import org.philimone.hds.explorer.model.DataSet;
 import org.philimone.hds.explorer.model.Form;
 import org.philimone.hds.explorer.model.Household;
 import org.philimone.hds.explorer.model.Member;
 import org.philimone.hds.explorer.model.User;
 import org.philimone.hds.explorer.model.followup.TrackingList;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
+import mz.betainteractive.io.readers.CSVReader;
 import mz.betainteractive.utilities.StringUtil;
 
 /**
@@ -60,6 +68,17 @@ public class FormDataLoader implements Serializable {
 
     public void putExtra(String key, String value){
         this.values.put(key, value);
+    }
+
+    public boolean hasMappedDatasetVariable(DataSet dataSet){
+
+        for (String mapValue : form.getFormMap().values()){
+            if (mapValue.startsWith(dataSet.getName())){
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public void loadHouseholdValues(Household household){
@@ -370,5 +389,108 @@ public class FormDataLoader implements Serializable {
     private class ExtrasVariable {
         public String columnName;
         public int arrayIndex;
+    }
+
+    /* Load Datasets Values */
+    public void loadDataSetValues(DataSet dataSet, Household household, Member member) {
+        String tableName = dataSet.getTableNameField()+".";
+        String tableColumnName = dataSet.getTableColumn();
+        String linkValue = "";
+        CSVReader.CSVRow valueRow = null;
+
+        Log.d("tableName", tableName+", "+tableColumnName);
+
+        if (tableName.startsWith(householdPrefix)){
+            linkValue = household.getValueByName(tableColumnName);
+        }
+        if (tableName.startsWith(memberPrefix)){
+            linkValue = member.getValueByName(tableColumnName);
+        }
+
+        //process zip file - get row with ${dtKeyColumn}=linkValue  -
+
+        valueRow = getRowFromCSVFile(dataSet, linkValue);
+
+        Log.d("found row", ""+valueRow+", linkValue: "+linkValue);
+
+        if (valueRow != null){
+
+        }
+
+        Map<String, String> map = form.getFormMap();
+        for (String odkVariable : map.keySet()){
+            String mapVariable = map.get(odkVariable);
+
+            if (mapVariable.startsWith(dataSet.getName())){ // Get DatasetName.csvColumn
+                String internalVariableName = mapVariable.replace(dataSet.getName()+".", "");
+                String value = valueRow.getField(internalVariableName);
+
+                if (value == null) value = "";
+
+                //get variable format from odkVariable eg. variableName->format => patientName->yes,no
+                Log.d("xxx-odkvar", ""+odkVariable);
+                String[] splt = odkVariable.split("->");
+                odkVariable = splt[0]; //variableName
+                String format = splt[1];      //format of the value
+
+                if (!format.equalsIgnoreCase("None")){
+                    if (format.startsWith(boolFormatPrefix)){
+                        value = getBooleanFormattedValue(format, value);
+                    }
+                    if (format.startsWith(choiceFormatPrefix)){
+                        value = getChoicesFormattedValue(format, value);
+                    }
+                    if (format.startsWith(dateFormatPrefix)){
+                        value = getDateFormattedValue(format, value);
+                    }
+                }
+
+                this.values.put(odkVariable, value);
+                Log.d("xxx-odk auto-loadable", odkVariable + ", " + value);
+            }
+
+
+        }
+
+    }
+
+    private CSVReader.CSVRow getRowFromCSVFile(DataSet dataSet, String linkValue) {
+
+        Log.d("zip", "processing zip file");
+
+        try {
+            InputStream inputStream = new FileInputStream(dataSet.getFilename());
+
+            ZipInputStream zin = new ZipInputStream(inputStream);
+            ZipEntry entry = zin.getNextEntry();
+
+            if (entry != null){ //has a file inside (supposed to be a csv file)
+                //processXMLDocument(zin);
+
+                CSVReader csvReader = new CSVReader(zin, true, ",");
+                //Log.d("fields", csvReader.getFieldNames()+", "+csvReader.getMapFields()+", "+dataSet.getKeyColumn());
+                for (CSVReader.CSVRow row : csvReader.getRows()){
+                    String csvKeyCol = row.getField(dataSet.getKeyColumn());
+                    //Log.d("keyColValue", ""+csvKeyCol+" == "+linkValue);
+                    if (csvKeyCol!=null && csvKeyCol.equals(linkValue)){
+
+                        return row; //break the loop
+                    }
+                }
+
+
+                zin.closeEntry();
+            }
+
+            zin.close();
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+
     }
 }

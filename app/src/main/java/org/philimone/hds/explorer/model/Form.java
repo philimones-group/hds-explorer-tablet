@@ -19,10 +19,12 @@ public class  Form implements Serializable, Table {
     private String formName;
     private String formDescription;
     private String formDependencies;
+    private String regionLevel;
     private String gender; /*M, F, ALL*/
     private int minAge; //0
     private int maxAge; //Default - 120
     private String modules; //if null - is accessed by all
+    private boolean isRegionForm;
     private boolean isHouseholdForm;
     private boolean isHouseholdHeadForm;
     private boolean isMemberForm;
@@ -77,6 +79,14 @@ public class  Form implements Serializable, Table {
         this.formDependencies = formDependencies;
     }
 
+    public String getRegionLevel() {
+        return regionLevel;
+    }
+
+    public void setRegionLevel(String regionLevel) {
+        this.regionLevel = regionLevel;
+    }
+
     public String getGender() {
         return gender;
     }
@@ -107,6 +117,14 @@ public class  Form implements Serializable, Table {
 
     public void setModules(String modules) {
         this.modules = modules;
+    }
+
+    public boolean isRegionForm() {
+        return isRegionForm;
+    }
+
+    public void setRegionForm(boolean regionForm) {
+        isRegionForm = regionForm;
     }
 
     public boolean isHouseholdForm() {
@@ -184,10 +202,12 @@ public class  Form implements Serializable, Table {
         cv.put(DatabaseHelper.Form.COLUMN_FORM_NAME, formName);
         cv.put(DatabaseHelper.Form.COLUMN_FORM_DESCRIPTION, formDescription);
         cv.put(DatabaseHelper.Form.COLUMN_FORM_DEPENDENCIES, formDependencies);
+        cv.put(DatabaseHelper.Form.COLUMN_REGION_LEVEL, regionLevel);
         cv.put(DatabaseHelper.Form.COLUMN_GENDER, gender);
         cv.put(DatabaseHelper.Form.COLUMN_MIN_AGE, minAge);
         cv.put(DatabaseHelper.Form.COLUMN_MAX_AGE, maxAge);
         cv.put(DatabaseHelper.Form.COLUMN_MODULES, modules);
+        cv.put(DatabaseHelper.Form.COLUMN_IS_REGION, isRegionForm ? 1 : 0);
         cv.put(DatabaseHelper.Form.COLUMN_IS_HOUSEHOLD, isHouseholdForm ? 1 : 0);
         cv.put(DatabaseHelper.Form.COLUMN_IS_HOUSEHOLD_HEAD, isHouseholdHeadForm ? 1 : 0);
         cv.put(DatabaseHelper.Form.COLUMN_IS_MEMBER, isMemberForm ? 1 : 0);

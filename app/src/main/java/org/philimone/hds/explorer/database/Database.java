@@ -11,7 +11,7 @@ import android.database.sqlite.SQLiteDatabase;
 public class Database {
 	
 	public static final String DATABASE_NAME = "hds_explorer.db";
-	public static final int DATABASE_VERSION = 3;
+	public static final int DATABASE_VERSION = 4;
 	
 	private DatabaseHelper dbHelper;
 	private SQLiteDatabase database;

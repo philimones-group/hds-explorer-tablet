@@ -728,6 +728,17 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 				parser.nextTag();
 			}
 
+			parser.nextTag(); //process COLUMN_REGION_LEVEL
+			if (!isEmptyTag(DatabaseHelper.Form.COLUMN_REGION_LEVEL, parser)) {
+				parser.next();
+				table.setRegionLevel(parser.getText());
+				parser.nextTag(); //process </COLUMN_REGION_LEVEL>
+				//Log.d(count+"-COLUMN_REGION_LEVEL", "value="+ parser.getText());
+			}else{
+				table.setRegionLevel("");
+				parser.nextTag();
+			}
+
 			parser.nextTag(); //process gender
 			if (!isEmptyTag("gender", parser)) {
 				parser.next();
@@ -769,6 +780,17 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 				//Log.d(count+"-modules", "value="+ parser.getText());
 			}else{
 				table.setModules("");
+				parser.nextTag();
+			}
+
+			parser.nextTag(); //process COLUMN_IS_REGION
+			if (!isEmptyTag(DatabaseHelper.Form.COLUMN_IS_REGION, parser)) {
+				parser.next();
+				table.setRegionForm(Boolean.parseBoolean(parser.getText()));
+				parser.nextTag(); //process </COLUMN_IS_REGION>
+				//Log.d(count+"-COLUMN_IS_REGION", "value="+ parser.getText());
+			}else{
+				table.setRegionForm(false);
 				parser.nextTag();
 			}
 

@@ -42,7 +42,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             try {
                 //db.execSQL("ALTER TABLE " + Member.TABLE_NAME + " ADD COLUMN " + Member.COLUMN_AGE_AT_DEATH + " INTEGER NOT NULL DEFAULT 0"); //upgrage
 
-                db.execSQL("ALTER TABLE " + TrackingMemberList.TABLE_NAME + " ADD COLUMN " + TrackingMemberList.COLUMN_MEMBER_VISIT + " INTEGER  NOT NULL DEFAULT 0"); //add MemberVisit
+                //db.execSQL("ALTER TABLE " + TrackingMemberList.TABLE_NAME + " ADD COLUMN " + TrackingMemberList.COLUMN_MEMBER_VISIT + " INTEGER  NOT NULL DEFAULT 0"); //add MemberVisit
+
+                //db.execSQL("ALTER TABLE " + TrackingMemberList.TABLE_NAME + " ADD COLUMN " + TrackingMemberList.COLUMN_MEMBER_VISIT + " INTEGER  NOT NULL DEFAULT 0"); //add MemberVisit
+
+                db.execSQL("ALTER TABLE " + Form.TABLE_NAME + " ADD COLUMN " + Form.COLUMN_REGION_LEVEL + " TEXT "); //add regionLevel
+                db.execSQL("ALTER TABLE " + Form.TABLE_NAME + " ADD COLUMN " + Form.COLUMN_IS_REGION + " INTEGER NOT NULL DEFAULT 0"); //add isRegion
 
             }catch (Exception ex){
                 Log.d("error on database alter", ""+ex.getMessage());
@@ -107,10 +112,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         public static final String COLUMN_FORM_NAME = "formName";
         public static final String COLUMN_FORM_DESCRIPTION = "formDescription";
         public static final String COLUMN_FORM_DEPENDENCIES = "formDependencies";
+        public static final String COLUMN_REGION_LEVEL = "regionLevel";
         public static final String COLUMN_GENDER = "gender";
         public static final String COLUMN_MIN_AGE = "minAge";
         public static final String COLUMN_MAX_AGE = "maxAge";
         public static final String COLUMN_MODULES = "modules";
+        public static final String COLUMN_IS_REGION = "isRegionForm";
         public static final String COLUMN_IS_HOUSEHOLD = "isHouseholdForm";
         public static final String COLUMN_IS_HOUSEHOLD_HEAD = "isHouseholdHeadForm";
         public static final String COLUMN_IS_MEMBER = "isMemberForm";
@@ -119,7 +126,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         public static final String COLUMN_REDCAP_API = "redcapApi";
         public static final String COLUMN_REDCAP_MAP = "redcapMap";
 
-		public static final String[] ALL_COLUMNS = {COLUMN_FORM_ID, COLUMN_FORM_NAME, COLUMN_FORM_DESCRIPTION, COLUMN_FORM_DEPENDENCIES, COLUMN_GENDER, COLUMN_MIN_AGE, COLUMN_MAX_AGE, COLUMN_MODULES, COLUMN_IS_HOUSEHOLD, COLUMN_IS_HOUSEHOLD_HEAD, COLUMN_IS_MEMBER, COLUMN_IS_FOLLOW_UP_ONLY, COLUMN_FORM_MAP, COLUMN_REDCAP_API, COLUMN_REDCAP_MAP};
+		public static final String[] ALL_COLUMNS = {COLUMN_FORM_ID, COLUMN_FORM_NAME, COLUMN_FORM_DESCRIPTION, COLUMN_FORM_DEPENDENCIES, COLUMN_REGION_LEVEL, COLUMN_GENDER, COLUMN_MIN_AGE, COLUMN_MAX_AGE, COLUMN_MODULES, COLUMN_IS_REGION, COLUMN_IS_HOUSEHOLD, COLUMN_IS_HOUSEHOLD_HEAD, COLUMN_IS_MEMBER, COLUMN_IS_FOLLOW_UP_ONLY, COLUMN_FORM_MAP, COLUMN_REDCAP_API, COLUMN_REDCAP_MAP};
 	}
 
     public static final class Module implements BaseColumns {
@@ -340,10 +347,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + Form.COLUMN_FORM_NAME + " TEXT,"
             + Form.COLUMN_FORM_DESCRIPTION + " TEXT,"
             + Form.COLUMN_FORM_DEPENDENCIES + " TEXT,"
+            + Form.COLUMN_REGION_LEVEL + " TEXT,"
             + Form.COLUMN_GENDER + " TEXT,"
             + Form.COLUMN_MIN_AGE + " INTEGER,"
             + Form.COLUMN_MAX_AGE + " INTEGER,"
             + Form.COLUMN_MODULES + " TEXT,"
+            + Form.COLUMN_IS_REGION + " INTEGER,"
             + Form.COLUMN_IS_HOUSEHOLD + " INTEGER,"
             + Form.COLUMN_IS_HOUSEHOLD_HEAD + " INTEGER,"
             + Form.COLUMN_IS_MEMBER + " INTEGER,"

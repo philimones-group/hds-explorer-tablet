@@ -6,9 +6,11 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
+import java.util.concurrent.TimeUnit;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -18,6 +20,7 @@ import mz.betainteractive.odk.FormsProviderAPI;
 import mz.betainteractive.odk.InstanceProviderAPI;
 import mz.betainteractive.odk.listener.OdkFormLoadListener;
 import mz.betainteractive.odk.model.FilledForm;
+import mz.betainteractive.utilities.StringUtil;
 
 import org.jdom2.JDOMException;
 import org.jdom2.input.SAXBuilder;
@@ -31,8 +34,12 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.os.Environment;
+import android.provider.Settings;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 
 
@@ -217,14 +224,21 @@ public class OdkGeneratedFormLoadTask extends AsyncTask<Void, Void, Boolean> {
             	
                 String name = n.getNodeName();
 
+                //Log.d("odk-xml-param", ""+name+", "+n.getNodeValue()+", "+n.getNodeType());
+                
                 if (params.contains(name)) {
                 	
                 	Object value = filledForm.get(name);                	
                 	sbuilder.append(value==null ? "<"+name+" />" + "\r\n" : "<"+name+">" + value + "</"+name+">" + "\r\n");
                     
+                } else if(name.equalsIgnoreCase("start")){
+                    sbuilder.append("<"+name+">" + getStartTimestamp() + "</"+name+">" + "\r\n");
+                } else if(name.equalsIgnoreCase("deviceId")){
+                    sbuilder.append("<"+name+">" + getDeviceId() + "</"+name+">" + "\r\n");
                 } else {
                     if (!n.hasChildNodes())
                         sbuilder.append("<" + name + " />" + "\r\n");
+                        //n.getNodeValue(); //not doing anything, didnt want to break the  if
                     else {
                         sbuilder.append("<" + name + ">" + "\r\n");
                         processNodeChildren(n, sbuilder);
@@ -288,6 +302,71 @@ public class OdkGeneratedFormLoadTask extends AsyncTask<Void, Void, Boolean> {
                 processNodeChildrenDirectly(n);
             }
         }
+    }
+
+    private String getStartTimestamp(){
+        TimeZone tz = TimeZone.getDefault();
+        Calendar cal = Calendar.getInstance(tz);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+        long gmt = TimeUnit.HOURS.convert(tz.getRawOffset(), TimeUnit.MILLISECONDS);
+
+        sdf.setCalendar(cal);
+        cal.setTime(new Date());
+
+
+        //Log.d("timezone", "GMT "+gmt);
+        //Log.d("realtime", StringUtil.format(new Date(), "yyyy-MM-dd HH:mm:ss.SSS"));
+        //Log.d("original-date", ""+sdf.format(cal.getTime()));
+
+        cal.add(Calendar.HOUR_OF_DAY, (int)(-1*gmt)); //Fixing ODK Error on this variable (ODK is adding GMT Hours number to the datetime of "start" variable)
+
+        String dateString = sdf.format(cal.getTime());
+        //Log.d("fixed-datetime", ""+dateString);
+
+
+        return dateString;
+    }
+
+    private String getDeviceId(){
+        TelephonyManager mTelephonyManager = (TelephonyManager) mContext.getSystemService(Context.TELEPHONY_SERVICE);
+
+        String deviceId = mTelephonyManager.getDeviceId();
+        String orDeviceId;
+
+        if (deviceId != null ) {
+            if ((deviceId.contains("*") || deviceId.contains("000000000000000"))) {
+                deviceId = Settings.Secure.getString(mContext.getContentResolver(), Settings.Secure.ANDROID_ID);
+                orDeviceId = Settings.Secure.ANDROID_ID + ":" + deviceId;
+            } else {
+                orDeviceId = "imei:" + deviceId;
+            }
+        }
+        if ( deviceId == null ) {
+            // no SIM -- WiFi only
+            // Retrieve WiFiManager
+            WifiManager wifi = (WifiManager) mContext.getSystemService(Context.WIFI_SERVICE);
+
+            // Get WiFi status
+            WifiInfo info = wifi.getConnectionInfo();
+
+            if ( info != null ) {
+                deviceId = info.getMacAddress();
+                orDeviceId = "mac:" + deviceId;
+            }
+        }
+        // if it is still null, use ANDROID_ID
+        if ( deviceId == null ) {
+            deviceId = Settings.Secure.getString(mContext.getContentResolver(), Settings.Secure.ANDROID_ID);
+            orDeviceId = Settings.Secure.ANDROID_ID + ":" + deviceId;
+
+            //sbuilder.append("<deviceId>"+ orDeviceId +"</deviceId>" + "\r\n");
+
+            return  orDeviceId;
+        }
+
+        //sbuilder.append("<deviceId>"+ deviceId +"</deviceId>" + "\r\n");
+
+        return deviceId;
     }
 
     private File saveFile(String xml, String jrFormId) {

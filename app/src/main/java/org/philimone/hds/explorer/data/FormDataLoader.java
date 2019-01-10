@@ -496,8 +496,8 @@ public class FormDataLoader implements Serializable {
 
         Log.d("found row", ""+valueRow+", linkValue: "+linkValue);
 
-        if (valueRow != null){
-
+        if (valueRow == null){
+            return;
         }
 
         Map<String, String> map = form.getFormMap();

@@ -15,9 +15,9 @@ android {
     defaultConfig {
         applicationId "org.philimone.hds.explorer"
         minSdkVersion 19
-        targetSdkVersion 19
-        versionCode 8
-        versionName "1.0"
+        targetSdkVersion 22
+        versionCode 9
+        versionName "1.0 RC2"
         archivesBaseName = "$applicationName-v$versionName"
     }
     buildTypes {

@@ -763,8 +763,16 @@ public class MemberListFragment extends Fragment {
     }
 
     private void onShowHouseholdClicked(){
-        Member member = getMemberAdapter().getSelectedMember();
-        Household household = getHousehold(member);
+
+        Member member = null;
+        Household household = null;
+
+        if (currentHousehold != null){ //is HouseholdMembers Activity based
+            household = currentHousehold;
+        }else {
+            member = getMemberAdapter().getSelectedMember();
+            household = getHousehold(member);
+        }
 
         if (household == null){
             buildOkDialog(getString(R.string.member_list_household_not_found_lbl));

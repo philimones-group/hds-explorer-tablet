@@ -312,6 +312,9 @@ public class HouseholdDetailsActivity extends Activity implements OdkFormResultL
 
         Form form = formDataLoader.getForm();
 
+        //reload timestamp constants
+        formDataLoader.reloadTimestampConstants();
+
         FilledForm filledForm = new FilledForm(form.getFormId());
         filledForm.putAll(formDataLoader.getValues());
 
@@ -328,6 +331,9 @@ public class HouseholdDetailsActivity extends Activity implements OdkFormResultL
         this.lastLoadedForm = formDataLoader;
 
         Form form = formDataLoader.getForm();
+
+        //reload timestamp constants
+        formDataLoader.reloadTimestampConstants();
 
         FilledForm filledForm = new FilledForm(form.getFormId());
         filledForm.putAll(formDataLoader.getValues());

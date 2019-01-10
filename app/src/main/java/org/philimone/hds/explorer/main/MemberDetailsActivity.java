@@ -354,6 +354,9 @@ public class MemberDetailsActivity extends Activity implements OdkFormResultList
 
         Form form = formDataLoader.getForm();
 
+        //reload timestamp constants
+        formDataLoader.reloadTimestampConstants();
+
         FilledForm filledForm = new FilledForm(form.getFormId());
         filledForm.putAll(formDataLoader.getValues());
 
@@ -370,6 +373,9 @@ public class MemberDetailsActivity extends Activity implements OdkFormResultList
         this.lastLoadedForm = formDataLoader;
 
         Form form = formDataLoader.getForm();
+
+        //reload timestamp constants
+        formDataLoader.reloadTimestampConstants();
 
         FilledForm filledForm = new FilledForm(form.getFormId());
         filledForm.putAll(formDataLoader.getValues());

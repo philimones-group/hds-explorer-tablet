@@ -283,9 +283,15 @@ public class FormDataLoader implements Serializable {
                 if (value == null) value = "";
 
                 //check on constants
-                if (internalVariableName.equals("MemberExists")){
+                if (internalVariableName.equals("MemberExists")){ //Member Exists on DSS Database
                     value = (member!=null && member.getId()>0) ? "true" : "false";
                 }
+
+                if (internalVariableName.equals("Timestamp")){ //Member Exists on DSS Database
+                    value = StringUtil.format(new Date(), "yyyy-MM-dd HH:mm:ss");
+                }
+
+                /** Both these variables should be well analyzed - we need to map them correctly with better names, TrackingList.studyCode should be removed and use DataSet instead
                 //check for studyCode that is used on Tracking/Follow-up Lists of studies modules
                 if (internalVariableName.equals("studyCode") && memberItem!=null){
                     value = memberItem.getStudyCode();
@@ -303,6 +309,7 @@ public class FormDataLoader implements Serializable {
                 if (internalVariableName.equals("visitNumber") && memberItem!=null){
                     value = memberItem.getVisitNumber()+"";
                 }
+                 */
 
                 //get variable format from odkVariable eg. variableName->format => patientName->yes,no
                 String[] splt = odkVariable.split("->");
@@ -316,12 +323,73 @@ public class FormDataLoader implements Serializable {
                         value = getChoicesFormattedValue(format, value);
                     }
                     if (format.startsWith(dateFormatPrefix)){
-                        value = getDateFormattedValue(format, value);
+
+                        if (internalVariableName.equals("Timestamp")) {
+                            value = getDateFormattedValue("yyyy-MM-dd HH:mm:ss", format, value);
+                        } else {
+                            value = getDateFormattedValue(format, value);
+                        }
+
                     }
                 }
 
                 this.values.put(odkVariable, value);
                 Log.d("u-odk spc auto-loadable", odkVariable + ", " + value);
+            }
+        }
+    }
+
+    /**
+     * Intended to be executed before starting to collect the form
+     */
+    public void reloadTimestampConstants(){
+        Map<String, String> map = form.getFormMap();
+        for (String key : map.keySet()){
+            //Log.d("special constant", ""+key );
+            //key   - odkVariable
+            //value - domain column name
+            String mapValue = map.get(key); //Domain ColumnName that we will get its content
+            if (mapValue.startsWith(specialConstPrefix)) {
+                final String internalVariableName = mapValue.replace(specialConstPrefix, "");
+                String odkVariable = key;
+                String value = "";
+                boolean foundTimestampVariable = false;
+                //check on constants
+
+                if (internalVariableName.equals("Timestamp")){ //Member Exists on DSS Database
+                    value = StringUtil.format(new Date(), "yyyy-MM-dd HH:mm:ss");
+                    foundTimestampVariable = true;
+                }
+
+                /* Only Execute if is a Timestamp Variable */
+                if (foundTimestampVariable){
+                    //get variable format from odkVariable eg. variableName->format => patientName->yes,no
+                    String[] splt = odkVariable.split("->");
+                    odkVariable = splt[0]; //variableName
+                    String format = splt[1];      //format of the value
+                    if (!format.equalsIgnoreCase("None")){
+                        if (format.startsWith(boolFormatPrefix)){
+                            value = getBooleanFormattedValue(format, value);
+                        }
+                        if (format.startsWith(choiceFormatPrefix)){
+                            value = getChoicesFormattedValue(format, value);
+                        }
+                        if (format.startsWith(dateFormatPrefix)){
+
+                            if (internalVariableName.equals("Timestamp")) {
+                                value = getDateFormattedValue("yyyy-MM-dd HH:mm:ss", format, value);
+                            } else {
+                                value = getDateFormattedValue(format, value);
+                            }
+
+                        }
+                    }
+
+                    //This will override the previous loaded value
+                    this.values.put(odkVariable, value);
+                    Log.d("u-odk spc auto-loadable", odkVariable + ", " + value);
+                }
+
             }
         }
     }
@@ -358,6 +426,21 @@ public class FormDataLoader implements Serializable {
 
         try{
             Date date = StringUtil.toDate(value, "yyyy-MM-dd"); // the default date format
+            String formattedDate = StringUtil.format(date, format); //format using the desired format
+            value = formattedDate;
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+        return value;
+    }
+
+    private String getDateFormattedValue(String originalFormat, String format, String value) {
+        format = format.replace(boolFormatPrefix, "");
+        format = format.replace("]","");
+
+        try{
+            Date date = StringUtil.toDate(value, originalFormat); // the original date format must be given
             String formattedDate = StringUtil.format(date, format); //format using the desired format
             value = formattedDate;
         }catch (Exception e){

@@ -6,7 +6,7 @@ import android.content.DialogInterface;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.app.Fragment;
-import android.support.v4.content.ContextCompat;
+//import android.support.v4.content.ContextCompat; - is not being used this import
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -35,6 +35,7 @@ import org.philimone.hds.explorer.model.CollectedData;
 import org.philimone.hds.explorer.model.Form;
 import org.philimone.hds.explorer.model.Household;
 import org.philimone.hds.explorer.model.Member;
+import org.philimone.hds.explorer.model.Region;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -158,7 +159,7 @@ public class MemberListFragment extends Fragment {
         Button button = new Button(this.getActivity());
         button.setText(buttonName);
         button.setLayoutParams(params);
-        button.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.button_normal));
+        //button.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.button_normal)); - is not being used this method
 
         //buttons.add(button);
         listButtons.addView(button);
@@ -558,7 +559,7 @@ public class MemberListFragment extends Fragment {
 
         dialogNewMember.dismiss();
 
-        memberActionListener.onMemberSelected(null, member);
+        memberActionListener.onMemberSelected(null, member, null);
     }
 
     private boolean checkIfCodeExists(String code){
@@ -753,12 +754,13 @@ public class MemberListFragment extends Fragment {
         MemberArrayAdapter adapter = (MemberArrayAdapter) this.lvMembersList.getAdapter();
         Member member = adapter.getItem(position);
         Household household = getHousehold(member);
+        Region region = getRegion(household);
 
         if (memberActionListener != null){
             adapter.setSelectedIndex(-1);
             this.btMemListShowClosestMembers.setEnabled(false);
 
-            memberActionListener.onMemberSelected(household, member);
+            memberActionListener.onMemberSelected(household, member, region);
         }
     }
 
@@ -780,8 +782,20 @@ public class MemberListFragment extends Fragment {
         }
 
         Member head = getHouseholdHead(household);
+        Region region = getRegion(household);
 
-        memberActionListener.onMemberHouseholdSelected(household, head);
+        memberActionListener.onMemberHouseholdSelected(household, head, region);
+    }
+
+    private Region getRegion(Household household){
+        if (household == null || household.getRegion()==null) return null;
+
+        Database database = new Database(this.getActivity());
+        database.open();
+        Region region = Queries.getRegionBy(database, DatabaseHelper.Region.COLUMN_CODE +"=?", new String[]{ household.getRegion() });
+        database.close();
+
+        return region;
     }
 
     private Household getHousehold(Member member){

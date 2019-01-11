@@ -4,6 +4,7 @@ import com.mapswithme.maps.api.MWMPoint;
 
 import org.philimone.hds.explorer.model.Household;
 import org.philimone.hds.explorer.model.Member;
+import org.philimone.hds.explorer.model.Region;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -12,9 +13,9 @@ import java.util.ArrayList;
  * Created by paul on 8/8/16.
  */
 public interface MemberActionListener extends Serializable {
-    void onMemberSelected(Household household, Member member);
+    void onMemberSelected(Household household, Member member, Region region);
 
-    void onMemberHouseholdSelected(Household household, Member member);
+    void onMemberHouseholdSelected(Household household, Member member, Region region);
 
     void onClosestMembersResult(Member member, MWMPoint[] points, MWMPoint[] originalPoints, ArrayList<Member> members);
 

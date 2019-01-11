@@ -6,13 +6,26 @@ import org.philimone.hds.explorer.database.DatabaseHelper;
 import org.philimone.hds.explorer.database.Table;
 import java.io.Serializable;
 
+import mz.betainteractive.utilities.ReflectionUtils;
+
 public class Region implements Table, Serializable {
+
+    public static String HIERARCHY_1 = "hierarchy1";
+    public static String HIERARCHY_2 = "hierarchy2";
+    public static String HIERARCHY_3 = "hierarchy3";
+    public static String HIERARCHY_4 = "hierarchy4";
+    public static String HIERARCHY_5 = "hierarchy5";
+    public static String HIERARCHY_6 = "hierarchy6";
+    public static String HIERARCHY_7 = "hierarchy7";
+    public static String HIERARCHY_8 = "hierarchy8";
 
     private int id;
     private String code;
     private String name;
     private String level;
     private String parent;
+
+    private boolean selected; /*USED ON EXPANDED SELECTION LIST*/
 
     @Override
     public int getId() {
@@ -58,6 +71,18 @@ public class Region implements Table, Serializable {
     @Override
     public String getTableName() {
         return DatabaseHelper.Region.TABLE_NAME;
+    }
+
+    public boolean isSelected() {
+        return selected;
+    }
+
+    public void setSelected(boolean selected) {
+        this.selected = selected;
+    }
+
+    public String getValueByName(String variableName){
+        return ReflectionUtils.getValueByName(this, variableName);
     }
 
     @Override

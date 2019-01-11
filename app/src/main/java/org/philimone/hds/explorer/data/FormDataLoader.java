@@ -7,6 +7,7 @@ import org.philimone.hds.explorer.model.DataSet;
 import org.philimone.hds.explorer.model.Form;
 import org.philimone.hds.explorer.model.Household;
 import org.philimone.hds.explorer.model.Member;
+import org.philimone.hds.explorer.model.Region;
 import org.philimone.hds.explorer.model.User;
 import org.philimone.hds.explorer.model.followup.TrackingList;
 
@@ -31,6 +32,7 @@ public class FormDataLoader implements Serializable {
     private final String householdPrefix = "Household.";
     private final String memberPrefix = "Member.";
     private final String userPrefix = "User.";
+    private final String regionPrefix = "Region.";
     private final String constPrefix = "#.";
     private final String specialConstPrefix = "$.";
 
@@ -217,6 +219,51 @@ public class FormDataLoader implements Serializable {
         }
     }
 
+    public void loadRegionValues(Region region){
+        Map<String, String> map = form.getFormMap();
+        for (String key : map.keySet()){
+            //key   - odkVariable
+            //value - domain column name
+            String mapValue = map.get(key); //Domain ColumnName that we will get its content
+            if (mapValue.startsWith(regionPrefix)) {
+                String internalVariableName = mapValue.replace(regionPrefix, "");
+                String odkVariable = key;
+                String value = null;
+                ExtrasVariable extrasVariable = tryParseExtrasVariable(internalVariableName);
+
+                if (extrasVariable == null){
+                    value = region.getValueByName(internalVariableName);
+                }else {
+                    internalVariableName = extrasVariable.columnName;
+                    String commaValue = region.getValueByName(internalVariableName);
+                    String[] values = commaValue.split(",");
+                    value = (extrasVariable.arrayIndex >= values.length) ? null : values[extrasVariable.arrayIndex];
+                }
+
+                if (value == null) value = "";
+
+                //get variable format from odkVariable eg. variableName->format => patientName->yes,no
+                String[] splt = odkVariable.split("->");
+                odkVariable = splt[0]; //variableName
+                String format = splt[1];      //format of the value
+                if (!format.equalsIgnoreCase("None")){
+                    if (format.startsWith(boolFormatPrefix)){
+                        value = getBooleanFormattedValue(format, value);
+                    }
+                    if (format.startsWith(choiceFormatPrefix)){
+                        value = getChoicesFormattedValue(format, value);
+                    }
+                    if (format.startsWith(dateFormatPrefix)){
+                        value = getDateFormattedValue(format, value);
+                    }
+                }
+
+                this.values.put(odkVariable, value);
+                Log.d("r-odk auto-loadable", odkVariable + ", " + value);
+            }
+        }
+    }
+
     /*When were loading constant values: the key of map will be "#.value" where "value" is the exact value to be used = internalVariableName*/
     public void loadConstantValues(){
         Map<String, String> map = form.getFormMap();
@@ -263,7 +310,7 @@ public class FormDataLoader implements Serializable {
     }
 
     /* loading special constant values */
-    public void loadSpecialConstantValues(Household household, Member member, User user, TrackingMemberItem memberItem){
+    public void loadSpecialConstantValues(Household household, Member member, User user, Region region, TrackingMemberItem memberItem){
         Map<String, String> map = form.getFormMap();
         for (String key : map.keySet()){
             //Log.d("special constant", ""+key );
@@ -475,19 +522,34 @@ public class FormDataLoader implements Serializable {
     }
 
     /* Load Datasets Values */
-    public void loadDataSetValues(DataSet dataSet, Household household, Member member) {
+    public void loadDataSetValues(DataSet dataSet, Household household, Member member, User user, Region region) {
         String tableName = dataSet.getTableNameField()+".";
         String tableColumnName = dataSet.getTableColumn();
         String linkValue = "";
         CSVReader.CSVRow valueRow = null;
+        String dataSetPrefix = dataSet.getName()+".";
 
         Log.d("tableName", tableName+", "+tableColumnName);
 
         if (tableName.startsWith(householdPrefix)){
-            linkValue = household.getValueByName(tableColumnName);
+            if (household != null){
+                linkValue = household.getValueByName(tableColumnName);
+            }
         }
         if (tableName.startsWith(memberPrefix)){
-            linkValue = member.getValueByName(tableColumnName);
+            if (member != null){
+                linkValue = member.getValueByName(tableColumnName);
+            }
+        }
+        if (tableName.startsWith(userPrefix)){
+            if (user != null){
+                linkValue = user.getValueByName(tableColumnName);
+            }
+        }
+        if (tableName.startsWith(regionPrefix)){
+            if (region != null){
+                linkValue = region.getValueByName(tableColumnName);
+            }
         }
 
         //process zip file - get row with ${dtKeyColumn}=linkValue  -
@@ -504,8 +566,9 @@ public class FormDataLoader implements Serializable {
         for (String odkVariable : map.keySet()){
             String mapVariable = map.get(odkVariable);
 
-            if (mapVariable.startsWith(dataSet.getName())){ // Get DatasetName.csvColumn
-                String internalVariableName = mapVariable.replace(dataSet.getName()+".", "");
+            if (mapVariable.startsWith(dataSetPrefix)){ // Get DatasetName.csvColumn
+                String internalVariableName = mapVariable.replace(dataSetPrefix, "");
+
                 String value = valueRow.getField(internalVariableName);
 
                 if (value == null) value = "";
@@ -539,7 +602,9 @@ public class FormDataLoader implements Serializable {
 
     private CSVReader.CSVRow getRowFromCSVFile(DataSet dataSet, String linkValue) {
 
-        Log.d("zip", "processing zip file");
+        Log.d("zip", "processing zip file, linkValue="+linkValue);
+
+        if (linkValue == null || linkValue == "") return null;  //dont need to read the csv without need
 
         try {
             InputStream inputStream = new FileInputStream(dataSet.getFilename());

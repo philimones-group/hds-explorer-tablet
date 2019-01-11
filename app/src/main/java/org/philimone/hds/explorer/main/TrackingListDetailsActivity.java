@@ -18,9 +18,11 @@ import org.philimone.hds.explorer.database.Database;
 import org.philimone.hds.explorer.database.DatabaseHelper;
 import org.philimone.hds.explorer.database.Queries;
 import org.philimone.hds.explorer.model.CollectedData;
+import org.philimone.hds.explorer.model.DataSet;
 import org.philimone.hds.explorer.model.Form;
 import org.philimone.hds.explorer.model.Household;
 import org.philimone.hds.explorer.model.Member;
+import org.philimone.hds.explorer.model.Region;
 import org.philimone.hds.explorer.model.User;
 import org.philimone.hds.explorer.model.followup.TrackingList;
 import org.philimone.hds.explorer.model.followup.TrackingMemberList;
@@ -120,7 +122,9 @@ public class TrackingListDetailsActivity extends Activity {
 
         FormDataLoader[] dataLoaders = getFormLoaders(memberItem);
         Household household = getHousehold(memberItem.getMember());
-        loadFormValues(dataLoaders, household, memberItem.getMember(), memberItem);
+        Region region = getRegion(household);
+
+        loadFormValues(dataLoaders, household, memberItem.getMember(), region, memberItem);
 
         Intent intent = new Intent(this, MemberDetailsActivity.class);
         intent.putExtra("user", loggedUser);
@@ -141,6 +145,17 @@ public class TrackingListDetailsActivity extends Activity {
         database.close();
 
         return household;
+    }
+
+    private Region getRegion(Household household){
+        if (household == null || household.getRegion()==null) return null;
+
+        Database database = new Database(this);
+        database.open();
+        Region region = Queries.getRegionBy(database, DatabaseHelper.Region.COLUMN_CODE +"=?", new String[]{ household.getRegion() });
+        database.close();
+
+        return region;
     }
 
     public FormDataLoader[] getFormLoaders(TrackingMemberItem memberItem){
@@ -166,7 +181,7 @@ public class TrackingListDetailsActivity extends Activity {
         return list.toArray(aList);
     }
 
-    private void loadFormValues(FormDataLoader loader, Household household, Member member, TrackingMemberItem memberItem){
+    private void loadFormValues(FormDataLoader loader, Household household, Member member, Region region, TrackingMemberItem memberItem){
         if (household != null){
             loader.loadHouseholdValues(household);
         }
@@ -176,15 +191,37 @@ public class TrackingListDetailsActivity extends Activity {
         if (loggedUser != null){
             loader.loadUserValues(loggedUser);
         }
+        if (region != null){
+            loader.loadRegionValues(region);
+        }
 
         loader.loadConstantValues();
-        loader.loadSpecialConstantValues(household, member, loggedUser, memberItem);
+        loader.loadSpecialConstantValues(household, member, loggedUser, region, memberItem);
+
+        //Load variables on datasets
+        for (DataSet dataSet : getDataSets()){
+            if (loader.hasMappedDatasetVariable(dataSet)){
+                //Log.d("hasMappedVariables", ""+dataSet.getName());
+                loader.loadDataSetValues(dataSet, household, member, loggedUser, region);
+            }
+        }
     }
 
-    private void loadFormValues(FormDataLoader[] loaders, Household household, Member member, TrackingMemberItem memberItem){
+    private void loadFormValues(FormDataLoader[] loaders, Household household, Member member, Region region, TrackingMemberItem memberItem){
         for (FormDataLoader loader : loaders){
-            loadFormValues(loader, household, member, memberItem);
+            loadFormValues(loader, household, member, region, memberItem);
         }
+    }
+
+    private List<DataSet> getDataSets(){
+        List<DataSet> list = null;
+
+        Database db = new Database(this);
+        db.open();
+        list = Queries.getAllDataSetBy(db, null, null);
+        db.close();
+
+        return list;
     }
 
     /*

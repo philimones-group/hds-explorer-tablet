@@ -21,9 +21,11 @@ import org.philimone.hds.explorer.model.DataSet;
 import org.philimone.hds.explorer.model.Form;
 import org.philimone.hds.explorer.model.Household;
 import org.philimone.hds.explorer.model.Member;
+import org.philimone.hds.explorer.model.Region;
 import org.philimone.hds.explorer.model.User;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import mz.betainteractive.utilities.StringUtil;
@@ -34,6 +36,10 @@ public class SurveyMembersActivity extends Activity implements MemberFilterFragm
     private MemberListFragment memberListFragment;
 
     private User loggedUser;
+
+    public enum FormFilter {
+        REGION, HOUSEHOLD, HOUSEHOLD_HEAD, MEMBER, FOLLOW_UP
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,9 +68,9 @@ public class SurveyMembersActivity extends Activity implements MemberFilterFragm
     }
 
     @Override
-    public void onMemberSelected(Household household, Member member) {
-        FormDataLoader[] dataLoaders = getFormLoaders();
-        loadFormValues(dataLoaders, household, member);
+    public void onMemberSelected(Household household, Member member, Region region) {
+        FormDataLoader[] dataLoaders = getFormLoaders(FormFilter.HOUSEHOLD_HEAD, FormFilter.MEMBER); //I only need MemberForm and HouseholdHead
+        loadFormValues(dataLoaders, household, member, region);
 
         Intent intent = new Intent(this, MemberDetailsActivity.class);
         intent.putExtra("user", loggedUser);
@@ -75,9 +81,9 @@ public class SurveyMembersActivity extends Activity implements MemberFilterFragm
     }
 
     @Override
-    public void onMemberHouseholdSelected(Household household, Member member) {
-        FormDataLoader[] dataLoaders = getFormLoaders();
-        loadFormValues(dataLoaders, household, member);
+    public void onMemberHouseholdSelected(Household household, Member member, Region region) {
+        FormDataLoader[] dataLoaders = getFormLoaders(FormFilter.HOUSEHOLD); //Only need Household Forms
+        loadFormValues(dataLoaders, household, member, region);
 
         Intent intent = new Intent(this, HouseholdDetailsActivity.class);
         intent.putExtra("user", loggedUser);
@@ -89,9 +95,9 @@ public class SurveyMembersActivity extends Activity implements MemberFilterFragm
 
     @Override
     public void onClosestMembersResult(Member member, MWMPoint[] points, MWMPoint[] originalPoints, ArrayList<Member> members) {
-        FormDataLoader[] dataLoaders = getFormLoaders();
+        FormDataLoader[] dataLoaders = getFormLoaders(FormFilter.HOUSEHOLD_HEAD, FormFilter.MEMBER); //only members
         Household household = getHousehold(member);
-        loadFormValues(dataLoaders, household, member);
+        loadFormValues(dataLoaders, household, member, null);
 
         Intent intent = new Intent(this, GpsSearchedListActivity.class);
         intent.putExtra("main_member", member);
@@ -121,7 +127,9 @@ public class SurveyMembersActivity extends Activity implements MemberFilterFragm
         return household;
     }
 
-    public FormDataLoader[] getFormLoaders(){
+    public FormDataLoader[] getFormLoaders(FormFilter... filters){
+
+        List<FormFilter> listFilters = Arrays.asList(filters);
 
         String[] userModules = loggedUser.getModules().split(",");
 
@@ -138,8 +146,30 @@ public class SurveyMembersActivity extends Activity implements MemberFilterFragm
             String[] formModules = form.getModules().split(",");
             Log.d("forms", ""+loggedUser.getModules() +" - " + form.getModules() );
             if (StringUtil.containsAny(userModules, formModules)){ //if the user has access to module specified on Form
+
                 FormDataLoader loader = new FormDataLoader(form);
-                list.add(loader);
+
+                if (form.isFollowUpOnly() && listFilters.contains(FormFilter.FOLLOW_UP)){
+                    list.add(loader);
+                    continue;
+                }
+                if (form.isRegionForm() && listFilters.contains(FormFilter.REGION)){
+                    list.add(loader);
+                    continue;
+                }
+                if (form.isHouseholdForm() && listFilters.contains(FormFilter.HOUSEHOLD)){
+                    list.add(loader);
+                    continue;
+                }
+                if (form.isHouseholdHeadForm() && listFilters.contains(FormFilter.HOUSEHOLD_HEAD)){
+                    list.add(loader);
+                    continue;
+                }
+                if (form.isMemberForm() && listFilters.contains(FormFilter.MEMBER)){
+                    list.add(loader);
+                    continue;
+                }
+
             }
         }
 
@@ -148,8 +178,16 @@ public class SurveyMembersActivity extends Activity implements MemberFilterFragm
         return list.toArray(aList);
     }
 
+    private List<FormFilter> toList(FormFilter... filters){
+        List<FormFilter> list = new ArrayList<>();
+        for (FormFilter f : filters){
+            list.add(f);
+        }
+        return list;
+    }
+
     private boolean hasMemberBoundForms(){
-        for (FormDataLoader fdls : getFormLoaders()){
+        for (FormDataLoader fdls : getFormLoaders(FormFilter.HOUSEHOLD_HEAD, FormFilter.MEMBER)){
             if (fdls.getForm().isMemberForm()){
                 return true;
             }
@@ -158,7 +196,7 @@ public class SurveyMembersActivity extends Activity implements MemberFilterFragm
     }
 
     private boolean hasHouseholdBoundForms(){
-        for (FormDataLoader fdls : getFormLoaders()){
+        for (FormDataLoader fdls : getFormLoaders(FormFilter.HOUSEHOLD)){
             if (fdls.getForm().isHouseholdForm()){
                 return true;
             }
@@ -166,7 +204,7 @@ public class SurveyMembersActivity extends Activity implements MemberFilterFragm
         return false;
     }
 
-    private void loadFormValues(FormDataLoader loader, Household household, Member member){
+    private void loadFormValues(FormDataLoader loader, Household household, Member member, Region region){
         if (household != null){
             loader.loadHouseholdValues(household);
         }
@@ -176,22 +214,25 @@ public class SurveyMembersActivity extends Activity implements MemberFilterFragm
         if (loggedUser != null){
             loader.loadUserValues(loggedUser);
         }
+        if (region != null){
+            loader.loadRegionValues(region);
+        }
 
         loader.loadConstantValues();
-        loader.loadSpecialConstantValues(household, member, loggedUser, null);
+        loader.loadSpecialConstantValues(household, member, loggedUser, region, null);
 
         //Load variables on datasets
         for (DataSet dataSet : getDataSets()){
             if (loader.hasMappedDatasetVariable(dataSet)){
                 //Log.d("hasMappedVariables", ""+dataSet.getName());
-                loader.loadDataSetValues(dataSet, household, member);
+                loader.loadDataSetValues(dataSet, household, member, loggedUser, region);
             }
         }
     }
 
-    private void loadFormValues(FormDataLoader[] loaders, Household household, Member member){
+    private void loadFormValues(FormDataLoader[] loaders, Household household, Member member, Region region){
         for (FormDataLoader loader : loaders){
-            loadFormValues(loader, household, member);
+            loadFormValues(loader, household, member, region);
         }
     }
 

@@ -27,6 +27,7 @@ import org.philimone.hds.explorer.database.DatabaseHelper;
 import org.philimone.hds.explorer.database.Queries;
 import org.philimone.hds.explorer.model.ApplicationParam;
 import org.philimone.hds.explorer.model.CollectedData;
+import org.philimone.hds.explorer.model.DataSet;
 import org.philimone.hds.explorer.model.Form;
 import org.philimone.hds.explorer.model.Household;
 import org.philimone.hds.explorer.model.Region;
@@ -35,11 +36,13 @@ import org.philimone.hds.explorer.model.User;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import mz.betainteractive.odk.FormUtilities;
 import mz.betainteractive.odk.listener.OdkFormResultListener;
 import mz.betainteractive.odk.model.FilledForm;
+import mz.betainteractive.utilities.StringUtil;
 
 public class HouseholdDetailsActivity extends Activity implements OdkFormResultListener {
 
@@ -64,6 +67,10 @@ public class HouseholdDetailsActivity extends Activity implements OdkFormResultL
     private FormUtilities formUtilities;
 
     private int activityRequestCode;
+
+    public enum FormFilter {
+        REGION, HOUSEHOLD, HOUSEHOLD_HEAD, MEMBER, FOLLOW_UP
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -129,6 +136,13 @@ public class HouseholdDetailsActivity extends Activity implements OdkFormResultL
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 onCollectedDataItemClicked(position);
+            }
+        });
+
+        lvHouseholdMembers.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                onMemberClicked(position);
             }
         });
 
@@ -215,15 +229,30 @@ public class HouseholdDetailsActivity extends Activity implements OdkFormResultL
         this.lvHouseholdMembers.setAdapter(adapter);
     }
 
+    private Household getHousehold(Member member){
+        if (member == null || member.getHouseholdCode()==null) return null;
+
+        Database database = new Database(this);
+        database.open();
+        Household household = Queries.getHouseholdBy(database, DatabaseHelper.Household.COLUMN_CODE +"=?", new String[]{ member.getHouseholdCode() });
+        database.close();
+
+        return household;
+    }
+
+    private Region getRegion(Household household){
+        return getRegion(household.getRegion());
+    }
+
     private Region getRegion(String code){
         Database db = new Database(this);
         db.open();
 
-        //Region region = Queries.getRegionBy(db, DatabaseHelper.Region.COLUMN_CODE + "=?", new String[]{ code } );
-        Cursor cursor = db.query(Region.class, null, null, null, null, null);
+        Region region = Queries.getRegionBy(db, DatabaseHelper.Region.COLUMN_CODE + "=?", new String[]{ code } );
+        //Cursor cursor = db.query(Region.class, null, null, null, null, null);
+        //cursor.moveToFirst();
 
-        cursor.moveToFirst();
-        Region region = Converter.cursorToRegion(cursor);
+        //Region region = Converter.cursorToRegion(cursor);
 
         db.close();
 
@@ -540,5 +569,119 @@ public class HouseholdDetailsActivity extends Activity implements OdkFormResultL
         });
 
         dialogNewhousehold.show();
+    }
+
+    /* LOAD FORM VALUES */
+
+    private void onMemberClicked(int position) {
+        MemberArrayAdapter adapter = (MemberArrayAdapter) this.lvHouseholdMembers.getAdapter();
+        Member member = adapter.getItem(position);
+        Household household = getHousehold(member);
+        Region region = getRegion(household);
+
+
+        adapter.setSelectedIndex(-1);
+
+        FormDataLoader[] dataLoaders = getFormLoaders(FormFilter.HOUSEHOLD_HEAD, FormFilter.MEMBER); //I only need MemberForm and HouseholdHead
+        loadFormValues(dataLoaders, household, member, region);
+
+        Intent intent = new Intent(this, MemberDetailsActivity.class);
+        intent.putExtra("user", loggedUser);
+        intent.putExtra("member", member);
+        intent.putExtra("dataloaders", dataLoaders);
+
+        startActivity(intent);
+    }
+
+    public FormDataLoader[] getFormLoaders(FormFilter... filters){
+
+        List<FormFilter> listFilters = Arrays.asList(filters);
+
+        String[] userModules = loggedUser.getModules().split(",");
+
+        Database db = new Database(this);
+
+        db.open();
+        List<Form> forms = Queries.getAllFormBy(db, null, null); //get all forms
+        db.close();
+
+        List<FormDataLoader> list = new ArrayList<>();
+
+        int i=0;
+        for (Form form : forms){
+            String[] formModules = form.getModules().split(",");
+
+            if (StringUtil.containsAny(userModules, formModules)){ //if the user has access to module specified on Form
+                FormDataLoader loader = new FormDataLoader(form);
+
+                if (form.isFollowUpOnly() && listFilters.contains(FormFilter.FOLLOW_UP)){
+                    list.add(loader);
+                    continue;
+                }
+                if (form.isRegionForm() && listFilters.contains(FormFilter.REGION)){
+                    list.add(loader);
+                    continue;
+                }
+                if (form.isHouseholdForm() && listFilters.contains(FormFilter.HOUSEHOLD)){
+                    list.add(loader);
+                    continue;
+                }
+                if (form.isHouseholdHeadForm() && listFilters.contains(FormFilter.HOUSEHOLD_HEAD)){
+                    list.add(loader);
+                    continue;
+                }
+                if (form.isMemberForm() && listFilters.contains(FormFilter.MEMBER)){
+                    list.add(loader);
+                    continue;
+                }
+            }
+        }
+
+        FormDataLoader[] aList = new FormDataLoader[list.size()];
+
+        return list.toArray(aList);
+    }
+
+    private void loadFormValues(FormDataLoader loader, Household household, Member member, Region region){
+        if (household != null){
+            loader.loadHouseholdValues(household);
+        }
+        if (member != null){
+            loader.loadMemberValues(member);
+        }
+        if (loggedUser != null){
+            loader.loadUserValues(loggedUser);
+        }
+        if (region != null){
+            loader.loadRegionValues(region);
+        }
+
+        loader.loadConstantValues();
+        loader.loadSpecialConstantValues(household, member, loggedUser, region, null);
+
+        //Load variables on datasets
+        for (DataSet dataSet : getDataSets()){
+            if (loader.hasMappedDatasetVariable(dataSet)){
+                //Log.d("hasMappedVariables", ""+dataSet.getName());
+                loader.loadDataSetValues(dataSet, household, member, loggedUser, region);
+            }
+        }
+    }
+
+    private void loadFormValues(FormDataLoader[] loaders, Household household, Member member, Region region){
+        for (FormDataLoader loader : loaders){
+            loadFormValues(loader, household, member, region);
+        }
+    }
+
+    private List<DataSet> getDataSets(){
+        List<DataSet> list = null;
+
+        Database db = new Database(this);
+        db.open();
+        list = Queries.getAllDataSetBy(db, null, null);
+        db.close();
+
+        return list;
     }
 }

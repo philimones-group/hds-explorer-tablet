@@ -4,6 +4,7 @@ import org.philimone.hds.explorer.model.CollectedData;
 import org.philimone.hds.explorer.model.Form;
 import org.philimone.hds.explorer.model.Household;
 import org.philimone.hds.explorer.model.Member;
+import org.philimone.hds.explorer.model.Region;
 
 import java.io.Serializable;
 
@@ -16,22 +17,20 @@ public class CollectedDataItem implements Serializable {
     private Household household;
     private Member member;
     private Form form;
+    private Region region;
     private CollectedData collectedData;
-    private boolean isHouseholdItem;
 
     public CollectedDataItem(int id, Member member, Form form, CollectedData collectedData) {
         this.id = id;
         this.member = member;
         this.form = form;
         this.collectedData = collectedData;
-        this.isHouseholdItem = false;
     }
 
     public CollectedDataItem(Member member, Form form, CollectedData collectedData) {
         this.member = member;
         this.form = form;
         this.collectedData = collectedData;
-        this.isHouseholdItem = false;
     }
 
     public CollectedDataItem(int id, Household household, Form form, CollectedData collectedData) {
@@ -39,14 +38,25 @@ public class CollectedDataItem implements Serializable {
         this.household = household;
         this.form = form;
         this.collectedData = collectedData;
-        this.isHouseholdItem = true;
     }
 
     public CollectedDataItem(Household household, Form form, CollectedData collectedData) {
         this.household = household;
         this.form = form;
         this.collectedData = collectedData;
-        this.isHouseholdItem = true;
+    }
+
+    public CollectedDataItem(int id, Region region, Form form, CollectedData collectedData) {
+        this.id = id;
+        this.region = region;
+        this.form = form;
+        this.collectedData = collectedData;
+    }
+
+    public CollectedDataItem(Region region, Form form, CollectedData collectedData) {
+        this.region = region;
+        this.form = form;
+        this.collectedData = collectedData;
     }
 
     public int getId() {
@@ -90,10 +100,14 @@ public class CollectedDataItem implements Serializable {
     }
 
     public boolean isHouseholdItem(){
-        return isHouseholdItem;
+        return household!=null;
     }
 
     public boolean isMemberItem(){
-        return !isHouseholdItem;
+        return member != null;
+    }
+
+    public boolean isRegionItem(){
+        return region != null;
     }
 }

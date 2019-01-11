@@ -7,117 +7,488 @@
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="1">
+        android:layout_height="match_parent">
 
+        <!-- top panel -->
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="5dp"
-            android:layout_marginLeft="@dimen/mf_margin_left"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="@dimen/fagm_margin_left"
             android:layout_marginRight="@dimen/mf_margin_right"
             android:layout_marginTop="@dimen/mf_margin_top"
+            android:layout_weight="1"
             android:gravity="top"
-            android:orientation="vertical">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginBottom="10dp"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/household_filter_code_lbl"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:visibility="gone"/>
-
-                <EditText
-                    android:id="@+id/txtHouseFilterNm"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/member_filter_textbox_size"
-                    android:background="@drawable/textinputborder"
-                    android:gravity="center_vertical"
-                    android:hint="@string/household_filter_code_hint_lbl"
-                    android:paddingLeft="10dp"
-                    android:textSize="@dimen/member_filter_textsize" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical">
-
-                <RelativeLayout
-                    android:id="@+id/hfListProgressBar"
-                    android:layout_width="match_parent"
-                    android:layout_height="700dp"
-                    android:background="@drawable/list_corner_border"
-                    android:visibility="gone">
-
-                    <ProgressBar
-                        style="?android:attr/progressBarStyleLarge"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerHorizontal="true"
-                        android:layout_centerVertical="true"
-                        />
-
-                </RelativeLayout>
-
-                <ListView
-                    android:layout_width="match_parent"
-                    android:layout_height="350dp"
-                    android:background="@drawable/list_corner_border"
-                    android:id="@+id/hfHousesList"
-                    />
-
-            </LinearLayout>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="5dp"
-            android:layout_marginLeft="@dimen/fagm_margin_left"
-            android:layout_marginRight="@dimen/fagm_margin_right"
             android:orientation="horizontal">
 
-            <Button
-                android:id="@+id/btHouseFilterClear"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+            <!-- left layout - region filer n visualization -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:textSize="@dimen/member_filter_buttons"
-                android:text="@string/household_filter_clear_lbl"
-                android:layout_gravity="left"
-                android:visibility="gone"
-                android:background="@drawable/button_normal"/>
+                android:orientation="vertical">
 
-            <Button
-                android:id="@+id/btHouseFilterSearch"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:textSize="@dimen/member_filter_buttons"
-                android:text="@string/household_filter_search_lbl"
-                android:layout_gravity="left"
-                android:enabled="false"
-                android:background="@drawable/button_normal"/>
+                <!-- region filter pane -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_marginLeft="@dimen/mf_margin_left"
+                    android:layout_marginRight="@dimen/mf_margin_right"
+                    android:gravity="top"
+                    android:layout_weight="3"
+                    android:orientation="vertical">
 
-            <Button
-                android:id="@+id/btHouseFilterGpsMap"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                    <ExpandableListView
+                        android:id="@+id/expListRegions"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/list_bevel_corner"
+                        android:layoutDirection="rtl">
+
+                    </ExpandableListView>
+
+                </LinearLayout>
+
+                <!-- selected regions visualizer -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginLeft="@dimen/mf_margin_left"
+                    android:layout_marginRight="@dimen/mf_margin_right"
+                    android:layout_marginTop="@dimen/mf_margin_top"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp"
+                    android:gravity="center_horizontal"
+                    android:orientation="horizontal"
+                    android:background="@drawable/list_bevel_corner_3">
+
+                    <!-- hierarchy labels 1 - 4 -->
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <LinearLayout
+                            android:id="@+id/layoutHierarchy1"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_marginTop="@dimen/household_filter_region_layout_top_margin"
+                            android:layout_marginBottom="@dimen/household_filter_region_layout_bottom_margin">
+
+                            <TextView
+                                android:id="@+id/txtHierarchy1_name"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="@dimen/household_filter_region_text_margin_left"
+                                android:textColor="@color/hh_filter_region_hierarchy_name_color"
+                                android:textStyle="bold"
+                                android:textSize="@dimen/household_filter_region_text_size"
+                                android:text="Hierarchy 1:" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/layoutHierarchy2"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_marginTop="@dimen/household_filter_region_layout_top_margin"
+                            android:layout_marginBottom="@dimen/household_filter_region_layout_bottom_margin">
+
+                            <TextView
+                                android:id="@+id/txtHierarchy2_name"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="@dimen/household_filter_region_text_margin_left"
+                                android:textColor="@color/hh_filter_region_hierarchy_name_color"
+                                android:textStyle="bold"
+                                android:textSize="@dimen/household_filter_region_text_size"
+                                android:text="Hierarchy 2:" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/layoutHierarchy3"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_marginTop="@dimen/household_filter_region_layout_top_margin"
+                            android:layout_marginBottom="@dimen/household_filter_region_layout_bottom_margin">
+
+                            <TextView
+                                android:id="@+id/txtHierarchy3_name"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="@dimen/household_filter_region_text_margin_left"
+                                android:textColor="@color/hh_filter_region_hierarchy_name_color"
+                                android:textStyle="bold"
+                                android:textSize="@dimen/household_filter_region_text_size"
+                                android:text="Hierarchy 3:" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/layoutHierarchy4"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_marginTop="@dimen/household_filter_region_layout_top_margin"
+                            android:layout_marginBottom="@dimen/household_filter_region_layout_bottom_margin">
+
+                            <TextView
+                                android:id="@+id/txtHierarchy4_name"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="@dimen/household_filter_region_text_margin_left"
+                                android:textColor="@color/hh_filter_region_hierarchy_name_color"
+                                android:textStyle="bold"
+                                android:textSize="@dimen/household_filter_region_text_size"
+                                android:text="Hierarchy 4:" />
+
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <!-- hierarchy values 1 - 4 -->
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="5dp"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/txtHierarchy1_value"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/household_filter_region_layout_top_margin"
+                            android:layout_marginBottom="@dimen/household_filter_region_layout_bottom_margin"
+                            android:textColor="@color/hh_filter_region_hierarchy_value_color"
+                            android:textStyle="bold"
+                            android:textSize="@dimen/household_filter_region_text_size"
+                            android:text="Malawi" />
+
+                        <TextView
+                            android:id="@+id/txtHierarchy2_value"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/household_filter_region_layout_top_margin"
+                            android:layout_marginBottom="@dimen/household_filter_region_layout_bottom_margin"
+                            android:textColor="@color/hh_filter_region_hierarchy_value_color"
+                            android:textStyle="bold"
+                            android:textSize="@dimen/household_filter_region_text_size"
+                            android:text="South Region" />
+
+                        <TextView
+                            android:id="@+id/txtHierarchy3_value"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/household_filter_region_layout_top_margin"
+                            android:layout_marginBottom="@dimen/household_filter_region_layout_bottom_margin"
+                            android:textColor="@color/hh_filter_region_hierarchy_value_color"
+                            android:textStyle="bold"
+                            android:textSize="@dimen/household_filter_region_text_size"
+                            android:text="South Region" />
+
+                        <TextView
+                            android:id="@+id/txtHierarchy4_value"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/household_filter_region_layout_top_margin"
+                            android:layout_marginBottom="@dimen/household_filter_region_layout_bottom_margin"
+                            android:textColor="@color/hh_filter_region_hierarchy_value_color"
+                            android:textStyle="bold"
+                            android:textSize="@dimen/household_filter_region_text_size"
+                            android:text="South Region" />
+
+                    </LinearLayout>
+
+                    <!-- hierarchy labels 5 - 8 -->
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <LinearLayout
+                            android:id="@+id/layoutHierarchy5"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_marginTop="@dimen/household_filter_region_layout_top_margin"
+                            android:layout_marginBottom="@dimen/household_filter_region_layout_bottom_margin">
+
+                            <TextView
+                                android:id="@+id/txtHierarchy5_name"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="@dimen/household_filter_region_text_margin_left"
+                                android:textColor="@color/hh_filter_region_hierarchy_name_color"
+                                android:textStyle="bold"
+                                android:textSize="@dimen/household_filter_region_text_size"
+                                android:text="Hierarchy 5:" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/layoutHierarchy6"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_marginTop="@dimen/household_filter_region_layout_top_margin"
+                            android:layout_marginBottom="@dimen/household_filter_region_layout_bottom_margin">
+
+                            <TextView
+                                android:id="@+id/txtHierarchy6_name"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="@dimen/household_filter_region_text_margin_left"
+                                android:textColor="@color/hh_filter_region_hierarchy_name_color"
+                                android:textStyle="bold"
+                                android:textSize="@dimen/household_filter_region_text_size"
+                                android:text="Hierarchy 6:" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/layoutHierarchy7"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_marginTop="@dimen/household_filter_region_layout_top_margin"
+                            android:layout_marginBottom="@dimen/household_filter_region_layout_bottom_margin">
+
+                            <TextView
+                                android:id="@+id/txtHierarchy7_name"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="@dimen/household_filter_region_text_margin_left"
+                                android:textColor="@color/hh_filter_region_hierarchy_name_color"
+                                android:textStyle="bold"
+                                android:textSize="@dimen/household_filter_region_text_size"
+                                android:text="Hierarchy 7:" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/layoutHierarchy8"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_marginTop="@dimen/household_filter_region_layout_top_margin"
+                            android:layout_marginBottom="@dimen/household_filter_region_layout_bottom_margin">
+
+                            <TextView
+                                android:id="@+id/txtHierarchy8_name"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="@dimen/household_filter_region_text_margin_left"
+                                android:textColor="@color/hh_filter_region_hierarchy_name_color"
+                                android:textStyle="bold"
+                                android:textSize="@dimen/household_filter_region_text_size"
+                                android:text="Hierarchy 8:" />
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <!-- hierarchy values 5 - 8 -->
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="5dp"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/txtHierarchy5_value"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/household_filter_region_layout_top_margin"
+                            android:layout_marginBottom="@dimen/household_filter_region_layout_bottom_margin"
+                            android:textColor="@color/hh_filter_region_hierarchy_value_color"
+                            android:textStyle="bold"
+                            android:textSize="@dimen/household_filter_region_text_size"
+                            android:text="South Region" />
+
+                        <TextView
+                            android:id="@+id/txtHierarchy6_value"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/household_filter_region_layout_top_margin"
+                            android:layout_marginBottom="@dimen/household_filter_region_layout_bottom_margin"
+                            android:textColor="@color/hh_filter_region_hierarchy_value_color"
+                            android:textStyle="bold"
+                            android:textSize="@dimen/household_filter_region_text_size"
+                            android:text="South Region" />
+
+                        <TextView
+                            android:id="@+id/txtHierarchy7_value"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/household_filter_region_layout_top_margin"
+                            android:layout_marginBottom="@dimen/household_filter_region_layout_bottom_margin"
+                            android:textColor="@color/hh_filter_region_hierarchy_value_color"
+                            android:textStyle="bold"
+                            android:textSize="@dimen/household_filter_region_text_size"
+                            android:text="South Region" />
+
+                        <TextView
+                            android:id="@+id/txtHierarchy8_value"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/household_filter_region_layout_top_margin"
+                            android:layout_marginBottom="@dimen/household_filter_region_layout_bottom_margin"
+                            android:textColor="@color/hh_filter_region_hierarchy_value_color"
+                            android:textStyle="bold"
+                            android:textSize="@dimen/household_filter_region_text_size"
+                            android:text="South Region" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+
+            </LinearLayout>
+
+            <!-- right layout - household searcher -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:layout_gravity="right"
-                android:textSize="@dimen/member_filter_buttons"
-                android:text="@string/household_filter_gpsmap_lbl"
-                android:background="@drawable/button_normal"/>
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:layout_weight="0"
+                    android:gravity="top"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/household_filter_code_lbl"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:visibility="gone"/>
+
+                    <EditText
+                        android:id="@+id/txtHouseFilterNm"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/member_filter_textbox_size"
+                        android:background="@drawable/textinputborder"
+                        android:gravity="center_vertical"
+                        android:hint="@string/household_filter_code_hint_lbl"
+                        android:paddingLeft="10dp"
+                        android:textSize="@dimen/member_filter_textsize" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <RelativeLayout
+                        android:id="@+id/hfListProgressBar"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/list_corner_border"
+                        android:visibility="gone">
+
+                        <ProgressBar
+                            style="?android:attr/progressBarStyleLarge"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerHorizontal="true"
+                            android:layout_centerVertical="true"
+                            />
+
+                    </RelativeLayout>
+
+                    <ListView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/list_corner_border"
+                        android:id="@+id/hfHousesList"
+                        />
+
+                </LinearLayout>
+
+
+            </LinearLayout>
+
+
         </LinearLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <!-- buttons layout -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:layout_marginLeft="@dimen/fagm_margin_left"
+                android:layout_marginRight="@dimen/fagm_margin_right"
+                android:gravity="bottom"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/btHouseFilterClear"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/household_filter_buttons"
+                        android:layout_weight="1"
+                        android:textSize="@dimen/household_filter_button_textsize"
+                        android:text="@string/household_filter_clear_lbl"
+                        android:visibility="gone"
+                        android:background="@drawable/button_normal"/>
+
+                    <Button
+                        android:id="@+id/btHouseFilterCollectData"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/household_filter_buttons"
+                        android:textSize="@dimen/household_filter_button_textsize"
+                        android:text="Collect Data"
+                        android:enabled="false"
+                        android:background="@drawable/button_normal"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/btHouseFilterSearch"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/household_filter_buttons"
+                        android:layout_weight="1"
+                        android:textSize="@dimen/household_filter_button_textsize"
+                        android:text="@string/household_filter_search_lbl"
+                        android:layout_gravity="left"
+                        android:enabled="false"
+                        android:background="@drawable/button_normal"/>
+
+                    <Button
+                        android:id="@+id/btHouseFilterGpsMap"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/household_filter_buttons"
+                        android:layout_weight="1"
+                        android:layout_gravity="right"
+                        android:textSize="@dimen/household_filter_button_textsize"
+                        android:text="@string/household_filter_gpsmap_lbl"
+                        android:background="@drawable/button_normal"/>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </RelativeLayout>
+
 
     </LinearLayout>
 

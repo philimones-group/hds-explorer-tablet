@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/MainLinearLayout"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="2dp"
+    android:background="@drawable/sublist_header"
+    android:layoutDirection="ltr"
+    android:orientation="horizontal" >
+
+    <ImageView
+        android:layout_width="40dp"
+        android:layout_height="50dp"
+        android:layout_gravity="left|center"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:src="@mipmap/region_2"
+        />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="left|center"
+        android:layout_marginRight="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/txtGroupRegion"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center|left"
+            android:gravity="left|center_horizontal"
+            android:text="Large Text"
+            android:singleLine="true"
+            android:textSize="@dimen/region_group_item_text_1_size"
+            android:textStyle="bold"
+            android:textColor="#444" />
+
+        <TextView
+            android:id="@+id/txtGroupRegionExtra"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Medium Text"
+            android:textSize="@dimen/region_group_item_text_2_size"
+            android:textColor="#444"
+            android:visibility="gone"/>
+
+
+        
+    </LinearLayout>
+
+
+</LinearLayout>

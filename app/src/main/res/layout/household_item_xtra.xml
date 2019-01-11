@@ -27,10 +27,10 @@
             android:layout_gravity="center|left"
             android:gravity="left"
             android:text="Large Text"
-            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textAppearance="?android:attr/textAppearanceMedium"
             android:textColor="#444"
             android:textStyle="bold"
-            android:textSize="24dp" />
+            android:textSize="@dimen/household_item_text_1_size" />
         
         <TextView
             android:id="@+id/txtHouseCode"
@@ -38,7 +38,7 @@
             android:layout_height="wrap_content"
             android:text="Medium Text"
             android:textColor="#444"
-            android:textAppearance="?android:attr/textAppearanceMedium" />
+            android:textAppearance="?android:attr/textAppearanceSmall" />
 
         <TextView
             android:id="@+id/txtExtras"

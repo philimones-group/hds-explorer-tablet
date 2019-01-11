@@ -10,8 +10,13 @@
     <dimen name="fagm_margin_left">2dp</dimen>
     <dimen name="fagm_margin_top">10dp</dimen>
     <dimen name="fagm_margin_bottom">10dp</dimen>
-    <dimen name="fagm_margin_right">10dp</dimen>
+    <dimen name="fagm_margin_right">5dp</dimen>
     <dimen name="fagm_margin">15dp</dimen>
+
+    <dimen name="hf_margin_left">5dp</dimen>
+    <dimen name="hf_margin_top">10dp</dimen>
+    <dimen name="hf_margin_bottom">10dp</dimen>
+    <dimen name="hf_margin_right">10dp</dimen>
 
     <dimen name="mf_margin_left">10dp</dimen>
     <dimen name="mf_margin_top">10dp</dimen>
@@ -23,7 +28,7 @@
     <dimen name="mf_land_margin_bottom">10dp</dimen>
     <dimen name="mf_land_margin_right">10dp</dimen>
 
-    <dimen name="member_filter_textsize">22dp</dimen>
+    <dimen name="member_filter_textsize">18sp</dimen>
     <dimen name="member_filter_titlesize">24dp</dimen>
     <dimen name="member_filter_textbox_size">50dp</dimen>
     <dimen name="member_filter_checkbox_textsize">22dp</dimen>
@@ -36,7 +41,7 @@
     <dimen name="member_filter_buttons_pad_left">20dp</dimen>
 
     <dimen name="member_list_titlesize">24dp</dimen>
-    <dimen name="member_list_buttons">20dp</dimen>
+    <dimen name="member_list_buttons">16dp</dimen>
     <dimen name="member_list_buttons_pad_left">20dp</dimen>
 
     <dimen name="member_details_txtview_width">180dp</dimen>
@@ -50,6 +55,26 @@
     <dimen name="member_details_land_dtlayout_margin_top">12dp</dimen>
     <dimen name="member_details_info_name_layout_txtsize">23dp</dimen>
     <dimen name="member_details_info_gender_layout_txtsize">21dp</dimen>
+
+    <dimen name="household_filter_buttons">60dp</dimen>">
+    <dimen name="household_filter_button_textsize">16dp</dimen>">
+    <dimen name="household_filter_region_text_width">100dp</dimen>"
+    <dimen name="household_filter_region_text_size">10dp</dimen>"
+    <dimen name="household_filter_region_layout_top_margin">2dp</dimen>"
+    <dimen name="household_filter_region_layout_bottom_margin">2dp</dimen>"
+    <dimen name="household_filter_region_text_margin_left">20dp</dimen>"
+    <dimen name="household_filter_region_text_margin_right">20dp</dimen>"
+
+    <dimen name="household_item_text_1_size">20sp</dimen>
+    <dimen name="household_item_text_2_size">16sp</dimen>
+    <dimen name="household_item_text_3_size">13sp</dimen>
+
+    <dimen name="region_group_item_text_1_size">18sp</dimen>
+    <dimen name="region_group_item_text_2_size">16sp</dimen>
+    <dimen name="region_child_item_text_1_size">16sp</dimen>
+    <dimen name="region_child_item_text_2_size">14sp</dimen>
+
+    <dimen name="region_details_txtview_width">150dp</dimen>
 
     <dimen name="sync_progress_textsize">20dp</dimen>
     <dimen name="sync_progress_button_textsize">22dp</dimen>

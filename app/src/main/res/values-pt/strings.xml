@@ -132,7 +132,7 @@
 
     <string name="member_list_newmem_title_lbl">Adicionar Novo Membro</string>
     <string name="member_list_newmem_collect_lbl">Adicionar e Colher Dados</string>
-    <string name="member_list_newmem_housename_lbl">Nome/Número da casa</string>
+    <string name="member_list_newmem_housename_lbl">Código/Número da casa</string>
     <string name="member_list_newmem_housename_hint">Ex: ACA00001 ou Familia Langa ou Código da casa</string>
     <string name="member_list_newmem_code_lbl">Código</string>
     <string name="member_list_newmem_code_hint">ex: ACA000001, 0101-001-01</string>
@@ -160,7 +160,7 @@
     <string name="member_details_dob_lbl">Data de Nasc.</string>
     <string name="member_details_other_info_lbl">Detalhes do Membro</string>
     <string name="member_details_col_data_info_lbl">Dados colhidos (formulários)</string>
-    <string name="member_details_housename_lbl">Número da casa:</string>
+    <string name="member_details_housename_lbl">Código da casa:</string>
     <string name="member_details_member_endtype_lbl">Estado atual:</string>
     <string name="member_details_father_lbl">Pai:</string>
     <string name="member_details_mother_lbl">Mãe:</string>
@@ -194,7 +194,7 @@
 
     <!-- Household Filter -->
     <string name="household_filter_code_lbl">Nome/Número da casa</string>
-    <string name="household_filter_code_hint_lbl">ex: 0101-001</string>
+    <string name="household_filter_code_hint_lbl">Household Code, eg. CHA00001ex: 0101-001</string>
     <string name="household_filter_search_lbl">Procurar casa</string>
     <string name="household_filter_gpsmap_lbl">Mapa GPS</string>
     <string name="household_filter_gps_not_available_title_lbl">Não será possivel visualizar o mapa</string>

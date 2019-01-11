@@ -189,13 +189,16 @@
     <string name="household_details_dialog_del_saved_form_msg_lbl">The associated ODK Form wasnt found, the system will delete the saved information in order to keep collecting data\nDo you want to execute this operation?</string>
     <string name="household_details_forms_selector_lbl">Select an Form</string>
 
+    <string name="region_details_code_lbl">Code:</string>
+    <string name="region_details_parent_lbl">Parent Region:</string>
+
     <string name="facility_supervise_collected_form_lbl">Mark Form as Supervised?</string>
     <string name="facility_supervise_title_lbl">Form Supervision</string>
     <string name="facility_supervise_mark_all_done_lbl">Forms supervised sucessfully!</string>
 
     <!-- Household Filter -->
     <string name="household_filter_code_lbl">Household Name/Number</string>
-    <string name="household_filter_code_hint_lbl">eg. 0101-001</string>
+    <string name="household_filter_code_hint_lbl">Household Code, eg. CHA00001</string>
     <string name="household_filter_search_lbl">Search House</string>
     <string name="household_filter_gpsmap_lbl">View GPS Map</string>
     <string name="household_filter_gps_not_available_title_lbl">Cannot view GPS Map</string>
@@ -234,8 +237,6 @@
     <string name="settings_odk_group_url_lbl">Aggregate URL</string>
     <string name="settings_redcap_group_lbl">REDCap</string>
     <string name="settings_redcap_group_url_lbl">Server URL</string>
-
-
 
 
     <!-- TODO: Remove or change this placeholder text -->

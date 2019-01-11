@@ -15,4 +15,7 @@
     <color name="circleProgressCompleteEndGradient">@color/coral_blue</color>
     <color name="circleProgressIncompleteStartGradient">@color/light_gray</color>
     <color name="circleProgressIncompleteEndGradient">@color/light_gray</color>
+
+    <color name="hh_filter_region_hierarchy_name_color">#000F0F</color>
+    <color name="hh_filter_region_hierarchy_value_color">#0e0354</color>
 </resources>

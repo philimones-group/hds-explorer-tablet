@@ -125,6 +125,7 @@
     <string name="member_list_select_distance_radius_lbl">Select the max distance from house (radius)</string>
     <string name="member_list_bt_facility_form_lbl">Open Facility Form</string>
     <string name="member_list_no_members_lbl">The members list is empty</string>
+    <string name="member_list_member_not_found_lbl">Members with the selected filters were not found</string>
 
     <string name="member_list_bt_add_patient_lbl">Add New Patient</string>
     <string name="member_list_bt_show_patients_lbl">Show Collected Patients</string>
@@ -205,6 +206,7 @@
     <string name="household_filter_gps_not_available_lbl">GPS locations for the households are not available</string>
     <string name="household_filter_no_houses_lbl">The households list is empty</string>
     <string name="household_filter_clear_lbl">Clear</string>
+    <string name="household_filter_household_not_found_lbl">Households with code like (%1$s) were not found</string>
 
     <string name="survey_households_btn_lbl">Search By Household</string>
     <string name="survey_members_btn_lbl">Search By Members</string>

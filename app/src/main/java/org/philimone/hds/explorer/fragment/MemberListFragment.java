@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.app.Fragment;
 //import android.support.v4.content.ContextCompat; - is not being used this import
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +20,7 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.mapswithme.maps.api.MWMPoint;
 import com.mapswithme.maps.api.MapsWithMeApi;
@@ -584,6 +586,12 @@ public class MemberListFragment extends Fragment {
         builder.setCancelable(false);
         builder.setPositiveButton("OK", null);
         builder.show();
+    }
+
+    public void showMemberNotFoundMessage(){
+        Toast toast = Toast.makeText(getActivity(), getString(R.string.member_list_member_not_found_lbl), Toast.LENGTH_LONG);
+        toast.setGravity(Gravity.CENTER,0,0);
+        toast.show();
     }
 
     private void showGpsMap() {

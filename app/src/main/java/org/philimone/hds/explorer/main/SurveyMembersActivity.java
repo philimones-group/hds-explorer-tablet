@@ -279,6 +279,10 @@ public class SurveyMembersActivity extends Activity implements MemberFilterFragm
         protected void onPostExecute(MemberArrayAdapter adapter) {
             memberListFragment.setMemberAdapter(adapter);
             memberListFragment.showProgress(false);
+
+            if (adapter.isEmpty()){
+                memberListFragment.showMemberNotFoundMessage();
+            }
         }
     }
 }

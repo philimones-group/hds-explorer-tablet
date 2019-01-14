@@ -63,7 +63,7 @@
                     android:text="@string/household_details_head_name_lbl"
                     android:textAppearance="?android:attr/textAppearanceLarge"
                     android:textColor="#c4daca"
-                    android:textSize="@dimen/member_details_info_gender_layout_txtsize"
+                    android:textSize="16dp"
                     android:textStyle="bold" />
 
                 <TextView
@@ -75,7 +75,7 @@
                     android:text="BOB ESPONJA"
                     android:textAppearance="?android:attr/textAppearanceLarge"
                     android:textColor="#83d34a"
-                    android:textSize="@dimen/member_details_info_gender_layout_txtsize"
+                    android:textSize="16dp"
                     android:textStyle="bold"
                     />
 
@@ -88,7 +88,7 @@
                     android:text="@string/household_details_head_code_lbl"
                     android:textAppearance="?android:attr/textAppearanceLarge"
                     android:textColor="#c4daca"
-                    android:textSize="@dimen/member_details_info_gender_layout_txtsize"
+                    android:textSize="16dp"
                     android:textStyle="bold" />
 
                 <TextView
@@ -100,7 +100,7 @@
                     android:text="ACA0100123"
                     android:textAppearance="?android:attr/textAppearanceLarge"
                     android:textColor="#83d34a"
-                    android:textSize="@dimen/member_details_info_gender_layout_txtsize"
+                    android:textSize="16dp"
                     android:textStyle="bold"
                      />
 
@@ -118,7 +118,7 @@
                     android:layout_marginRight="1dp"
                     android:text="@string/household_details_region_lbl"
                     android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:textSize="@dimen/member_details_info_gender_layout_txtsize"
+                    android:textSize="16dp"
                     android:textColor="#c4daca"
                     android:textStyle="bold" />
 
@@ -130,7 +130,7 @@
                     android:layout_marginLeft="4dp"
                     android:text="34th Street, Maputo"
                     android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:textSize="@dimen/member_details_info_gender_layout_txtsize"
+                    android:textSize="16dp"
                     android:textColor="#83d34a"
                     android:textStyle="bold"
                     />

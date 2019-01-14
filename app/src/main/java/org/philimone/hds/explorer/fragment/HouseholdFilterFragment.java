@@ -10,6 +10,7 @@ import android.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +21,7 @@ import android.widget.ExpandableListView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.mapswithme.maps.api.MWMPoint;
 import com.mapswithme.maps.api.MapsWithMeApi;
@@ -191,10 +193,9 @@ public class HouseholdFilterFragment extends Fragment implements RegionExpandabl
             this.btHouseFilterSearch.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    String text = txtHouseFilterNr.getText().toString();
-                    if (text.length() > 1) {
-                        searchHouses(text);
-                    }
+                    String regionCode = currentRegion.getCode();  //get the last selected region
+                    searchHouses(regionCode); //search households on that region
+
                 }
             });
         }
@@ -501,8 +502,9 @@ public class HouseholdFilterFragment extends Fragment implements RegionExpandabl
         MapsWithMeApi.showPointsOnMap(this.getActivity(), getString(R.string.map_households), points);
     }
 
-    private void searchHouses(String houseNumber){
-        HouseholdSearchTask task = new HouseholdSearchTask(null, houseNumber);
+    private void searchHouses(String householdCode){
+        showProgress(true);
+        HouseholdSearchTask task = new HouseholdSearchTask(householdCode, null);
         task.execute();
     }
 
@@ -513,7 +515,9 @@ public class HouseholdFilterFragment extends Fragment implements RegionExpandabl
 
     private void onSelectedRegion(Region region){
 
-        btHouseFilterSearch.setEnabled(true);
+        boolean lastLevel = region.getLevel().equals(lastRegionLevel);
+
+        btHouseFilterSearch.setEnabled(lastLevel);
 
         listener.onSelectedRegion(region);
     }
@@ -562,6 +566,12 @@ public class HouseholdFilterFragment extends Fragment implements RegionExpandabl
         return currentAdapter;
     }
 
+    public void showHouseholdNotFoundMessage(String code){
+        Toast toast = Toast.makeText(getActivity(), getString(R.string.household_filter_household_not_found_lbl, code), Toast.LENGTH_LONG);
+        toast.setGravity(Gravity.CENTER,0,0);
+        toast.show();
+    }
+
     private void buildOkDialog(String message){
         buildOkDialog(null, message);
     }
@@ -593,13 +603,17 @@ public class HouseholdFilterFragment extends Fragment implements RegionExpandabl
 
         @Override
         protected HouseholdArrayAdapter doInBackground(Void... params) {
-            return loadHouseholdsByFilters(houseName);
+            return loadHouseholdsByFilters(code);
         }
 
         @Override
         protected void onPostExecute(HouseholdArrayAdapter adapter) {
             hfHousesList.setAdapter(adapter);
-            //showProgress(false);
+            showProgress(false);
+
+            if (adapter.isEmpty()){
+                showHouseholdNotFoundMessage(code);
+            }
         }
     }
 

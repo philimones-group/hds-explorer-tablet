@@ -20,6 +20,7 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RadioButton;
 import android.widget.Toast;
 
 import com.mapswithme.maps.api.MWMPoint;
@@ -464,13 +465,22 @@ public class MemberListFragment extends Fragment {
         if (dialogNewMember == null){
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             LayoutInflater inflater = getActivity().getLayoutInflater();
+            View view = inflater.inflate(R.layout.new_member, null);
 
             builder.setTitle(getString(R.string.member_list_newmem_title_lbl));
-            builder.setView(inflater.inflate(R.layout.new_member, null));
+            builder.setView(view);
             builder.setCancelable(false);
             builder.setPositiveButton(R.string.member_list_newmem_collect_lbl, null);
             builder.setNegativeButton(R.string.bt_cancel_lbl, null);
+
+            EditText txtNmHouseNumber = (EditText) view.findViewById(R.id.txtNmHouseNumber);
+
+            if (txtNmHouseNumber != null && currentHousehold != null){
+                txtNmHouseNumber.setText(currentHousehold.getCode());
+            }
+
             dialogNewMember = builder.create();
+
 
             dialogNewMember.setOnShowListener(new DialogInterface.OnShowListener() {
                 @Override
@@ -498,8 +508,8 @@ public class MemberListFragment extends Fragment {
         EditText txtNmHouseNumber = (EditText) dialogNewMember.findViewById(R.id.txtNmHouseNumber);
         EditText txtNmCode = (EditText) dialogNewMember.findViewById(R.id.txtNmCode);
         EditText txtNmName = (EditText) dialogNewMember.findViewById(R.id.txtNmName);
-        CheckBox chkNmGMale = (CheckBox) dialogNewMember.findViewById(R.id.chkNmGMale);
-        CheckBox chkNmGFemale = (CheckBox) dialogNewMember.findViewById(R.id.chkNmGFemale);
+        RadioButton chkNmGMale = (RadioButton) dialogNewMember.findViewById(R.id.chkNmGMale);
+        RadioButton chkNmGFemale = (RadioButton) dialogNewMember.findViewById(R.id.chkNmGFemale);
         DatePicker dtpNmDob = (DatePicker) dialogNewMember.findViewById(R.id.dtpNmDob);
 
         Member member = Member.getEmptyMember();
@@ -843,7 +853,7 @@ public class MemberListFragment extends Fragment {
         return household;
     }
 
-    public MemberArrayAdapter loadMembersByFilters(Household household, String name, String memberCode, String houseNumber, String gender, Integer minAge, Integer maxAge, Boolean isDead, Boolean hasOutmigrated, Boolean liveResident) {
+    public MemberArrayAdapter loadMembersByFilters(Household household, String name, String memberCode, String houseCode, String gender, Integer minAge, Integer maxAge, Boolean isDead, Boolean hasOutmigrated, Boolean liveResident) {
         //open loader
         this.currentHousehold = household;
 
@@ -851,7 +861,7 @@ public class MemberListFragment extends Fragment {
 
         if (name == null) name = "";
         if (memberCode == null) memberCode = "";
-        if (houseNumber == null) houseNumber = "";
+        if (houseCode == null) houseCode = "";
         if (gender == null) gender = "";
         if (isDead != null && isDead) endType = "DTH";
         if (hasOutmigrated != null && hasOutmigrated) endType = "EXT";
@@ -862,7 +872,7 @@ public class MemberListFragment extends Fragment {
         this.lastSearch.add(household!=null ? household.getId()+"" : "");
         this.lastSearch.add(name);
         this.lastSearch.add(memberCode);
-        this.lastSearch.add(houseNumber);
+        this.lastSearch.add(houseCode);
         this.lastSearch.add(gender);
         this.lastSearch.add(minAge==null ? "" : minAge.toString());
         this.lastSearch.add(maxAge==null ? "" : maxAge.toString());
@@ -885,10 +895,10 @@ public class MemberListFragment extends Fragment {
             whereClause += DatabaseHelper.Member.COLUMN_CODE + " like ?";
             whereValues.add(memberCode+"%");
         }
-        if (!houseNumber.isEmpty()){
+        if (!houseCode.isEmpty()){
             whereClause += (whereClause.isEmpty()? "" : " AND ");
-            whereClause += DatabaseHelper.Member.COLUMN_HOUSE_NAME + " like ?";
-            whereValues.add(houseNumber+"%");
+            whereClause += DatabaseHelper.Member.COLUMN_HOUSE_CODE + " like ?";
+            whereValues.add(houseCode+"%");
         }
         if (!gender.isEmpty()){
             whereClause += (whereClause.isEmpty()? "" : " AND ");
@@ -970,6 +980,7 @@ public class MemberListFragment extends Fragment {
         this.btMemListShowMmbMap.setEnabled(!value);
         this.btMemListShowClosestHouses.setEnabled(!value);
         this.btMemListShowClosestMembers.setEnabled(false);
+        this.btMemListNewMemberCollect.setEnabled(true);
 
     }
 

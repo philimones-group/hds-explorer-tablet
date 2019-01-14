@@ -20,6 +20,7 @@ import android.widget.EditText;
 import android.widget.ExpandableListView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -56,7 +57,7 @@ public class HouseholdFilterFragment extends Fragment implements RegionExpandabl
     private Button btHouseFilterCollectData;
     private Button btHouseFilterSearch;
     private Button btHouseFilterGpsMap;
-    private View hfViewProgressBar;
+    private RelativeLayout hfViewProgressBar;
 
     private ExpandableListView expListRegions;
 
@@ -131,7 +132,7 @@ public class HouseholdFilterFragment extends Fragment implements RegionExpandabl
         this.btHouseFilterClear = (Button) view.findViewById(R.id.btHouseFilterClear);
         this.btHouseFilterSearch = (Button) view.findViewById(R.id.btHouseFilterSearch);
         this.btHouseFilterGpsMap = (Button) view.findViewById(R.id.btHouseFilterGpsMap);
-        this.hfViewProgressBar = (View) view.findViewById(R.id.hfViewProgressBar);
+        this.hfViewProgressBar = (RelativeLayout) view.findViewById(R.id.hfViewProgressBar);
 
         btHouseFilterCollectData = (Button) view.findViewById(R.id.btHouseFilterCollectData);
         expListRegions = (ExpandableListView) view.findViewById(R.id.expListRegions);
@@ -503,7 +504,7 @@ public class HouseholdFilterFragment extends Fragment implements RegionExpandabl
     }
 
     private void searchHouses(String householdCode){
-        showProgress(true);
+        //showProgress(true);
         HouseholdSearchTask task = new HouseholdSearchTask(householdCode, null);
         task.execute();
     }
@@ -609,7 +610,7 @@ public class HouseholdFilterFragment extends Fragment implements RegionExpandabl
         @Override
         protected void onPostExecute(HouseholdArrayAdapter adapter) {
             hfHousesList.setAdapter(adapter);
-            showProgress(false);
+            //showProgress(false);
 
             if (adapter.isEmpty()){
                 showHouseholdNotFoundMessage(code);

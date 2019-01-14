@@ -12,6 +12,7 @@ import org.philimone.hds.explorer.R;
 import org.philimone.hds.explorer.adapter.MemberArrayAdapter;
 import org.philimone.hds.explorer.data.FormDataLoader;
 import org.philimone.hds.explorer.database.Database;
+import org.philimone.hds.explorer.database.DatabaseHelper;
 import org.philimone.hds.explorer.database.Queries;
 import org.philimone.hds.explorer.fragment.HouseholdFilterFragment;
 import org.philimone.hds.explorer.fragment.MemberListFragment;
@@ -35,6 +36,8 @@ public class SurveyHouseholdsActivity extends Activity implements HouseholdFilte
     private MemberListFragment memberListFragment;
 
     private User loggedUser;
+
+    private final int MEMBER_DETAILS_REQUEST_CODE = 31;
 
     public enum FormFilter {
         REGION, HOUSEHOLD, HOUSEHOLD_HEAD, MEMBER, FOLLOW_UP
@@ -61,7 +64,7 @@ public class SurveyHouseholdsActivity extends Activity implements HouseholdFilte
     @Override
     public void onHouseholdClick(Household household) {
         Log.d("survey-household", ""+household);
-        MemberSearchTask task = new MemberSearchTask(household, null, null, null, household.getName());
+        MemberSearchTask task = new MemberSearchTask(household, null, null, null, household.getCode());
         task.execute();
     }
 
@@ -96,7 +99,7 @@ public class SurveyHouseholdsActivity extends Activity implements HouseholdFilte
         intent.putExtra("member", member);
         intent.putExtra("dataloaders", dataLoaders);
 
-        startActivity(intent);
+        startActivityForResult(intent, MEMBER_DETAILS_REQUEST_CODE);
     }
 
     @Override
@@ -190,7 +193,6 @@ public class SurveyHouseholdsActivity extends Activity implements HouseholdFilte
         return list;
     }
 
-
     private boolean hasMemberBoundForms(){
         for (FormDataLoader fdls : getFormLoaders(FormFilter.HOUSEHOLD_HEAD, FormFilter.MEMBER)){
             if (fdls.getForm().isMemberForm()){
@@ -261,24 +263,58 @@ public class SurveyHouseholdsActivity extends Activity implements HouseholdFilte
         return list;
     }
 
+    private Household getHousehold(String code){
+        if (code == null) return null;
+
+        Database database = new Database(this);
+        database.open();
+        Household household = Queries.getHouseholdBy(database, DatabaseHelper.Household.COLUMN_CODE+"=?", new String[]{ code });
+        database.close();
+
+        return household;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == MEMBER_DETAILS_REQUEST_CODE){ //if it is a return from MemberDetails - check if it was a new individual and thn update the list members
+
+            if (data != null && data.getExtras() != null){
+                String houseCode = data.getExtras().getString("household_code");
+                Boolean isNewMember = data.getExtras().getBoolean("is_new_member");
+
+                if (isNewMember != null && isNewMember==true){
+                    Household household = getHousehold(houseCode);
+                    MemberSearchTask task = new MemberSearchTask(household, null, null, null, houseCode);
+                    task.execute();
+                }
+                //Log.d("request code data1", ""+data.getExtras().getString("household_code"));
+                //Log.d("request code data2", ""+data.getExtras().getBoolean("is_new_member"));
+            }
+
+
+        }
+    }
+
     class MemberSearchTask extends AsyncTask<Void, Void, MemberArrayAdapter> {
         private String name;
         private String code;
         private String gender;
-        private String houseNumber;
+        private String houseCode;
         private Household household;
 
-        public MemberSearchTask(Household household, String name, String code, String gender, String houseNumber) {
+        public MemberSearchTask(Household household, String name, String code, String gender, String houseCode) {
             this.name = name;
             this.code = code;
             this.gender = gender;
-            this.houseNumber = houseNumber;
+            this.houseCode = houseCode;
             this.household = household;
         }
 
         @Override
         protected MemberArrayAdapter doInBackground(Void... params) {
-            return memberListFragment.loadMembersByFilters(household, name, code, houseNumber, gender, null, null, null, null, null);
+            return memberListFragment.loadMembersByFilters(household, name, code, houseCode, gender, null, null, null, null, null);
         }
 
         @Override

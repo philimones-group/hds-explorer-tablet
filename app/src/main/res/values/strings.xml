@@ -119,7 +119,7 @@
     <string name="member_list_bt_show_houses_lbl">Show GPS Map of Members Households</string>
     <string name="member_list_bt_show_closest_houses_lbl">View Closest Houses</string>
     <string name="member_list_bt_show_closest_members_lbl">View Closest Members</string>
-    <string name="member_list_bt_new_member_collect_lbl">Collect for New Member</string>
+    <string name="member_list_bt_new_member_collect_lbl">Collect New Member</string>
     <string name="member_list_bt_show_collected_data_lbl">Show Collected Data</string>
     <string name="member_list_item_extra_collected_lbl"># Collected Form(s)</string>
     <string name="member_list_select_distance_radius_lbl">Select the max distance from house (radius)</string>

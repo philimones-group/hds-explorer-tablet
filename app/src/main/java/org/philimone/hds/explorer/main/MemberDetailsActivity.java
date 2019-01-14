@@ -60,6 +60,7 @@ public class MemberDetailsActivity extends Activity implements OdkFormResultList
     private String studyCodeValue;
             
     private Member member;
+    private boolean isNewMember;
     private List<FormDataLoader> formDataLoaders = new ArrayList<>();
     private FormDataLoader lastLoadedForm;
 
@@ -164,10 +165,27 @@ public class MemberDetailsActivity extends Activity implements OdkFormResultList
             }
         });
 
+        isNewMember = member.getId()==0;
+
         setMemberData();
 
         enableButtonsByFormLoaders();
         enableButtonsByIntentData();
+    }
+
+    @Override
+    public void onBackPressed() {
+        onBackClicked();
+        //super.onBackPressed();
+    }
+
+    private void onBackClicked() {
+        Intent resultIntent = new Intent();
+
+        resultIntent.putExtra("household_code", member.getHouseholdCode());
+        resultIntent.putExtra("is_new_member", isNewMember);
+        setResult(Activity.RESULT_OK, resultIntent);
+        finish();
     }
 
     private void enableButtonsByFormLoaders() {

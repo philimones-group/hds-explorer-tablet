@@ -17,9 +17,6 @@
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="@string/member_list_newmem_housename_lbl"/>
 
-        <android.support.design.widget.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
             <EditText
                 android:id="@+id/txtNmHouseNumber"
                 android:layout_width="match_parent"
@@ -28,7 +25,7 @@
                 android:inputType="text"
                 android:maxLines="1"
                 android:singleLine="true" />
-        </android.support.design.widget.TextInputLayout>
+
     </LinearLayout>
 
     <LinearLayout
@@ -104,23 +101,33 @@
             android:gravity="center"
             android:orientation="horizontal">
 
-            <CheckBox
-                android:id="@+id/chkNmGFemale"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:text="@string/member_filter_gender_female_lbl"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:checked="true"/>
+            <RadioGroup
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:orientation="horizontal">
 
-            <CheckBox
-                android:id="@+id/chkNmGMale"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:text="@string/member_filter_gender_male_lbl"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:layout_marginLeft="60dp"/>
+                <RadioButton
+                    android:id="@+id/chkNmGFemale"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="@string/member_filter_gender_female_lbl"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:checked="true"/>
+
+                <RadioButton
+                    android:id="@+id/chkNmGMale"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="@string/member_filter_gender_male_lbl"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:layout_marginLeft="60dp"/>
+
+            </RadioGroup>
+
+
         </LinearLayout>
 
     </LinearLayout>

@@ -15,6 +15,7 @@ public class LoadingDialog extends Dialog {
     private Context mContext;
     private ProgressBar progressBarLoading;
     private TextView txtLoadingMessage;
+    private String message = "";
 
 
     public LoadingDialog(@NonNull Context context) {
@@ -31,15 +32,20 @@ public class LoadingDialog extends Dialog {
         progressBarLoading = (ProgressBar) findViewById(R.id.progressBarLoading);
         txtLoadingMessage = (TextView) findViewById(R.id.txtLoadingMessage);
 
+        if (txtLoadingMessage != null){
+            txtLoadingMessage.setText(message);
+        }
 
         setCancelable(false);
     }
 
     public String getMessage(){
-        return (txtLoadingMessage != null) ? txtLoadingMessage.getText().toString() : null;
+        return message;
     }
 
     public void setMessage(String message){
+        this.message = message;
+
         if (txtLoadingMessage != null){
             txtLoadingMessage.setText(message);
         }

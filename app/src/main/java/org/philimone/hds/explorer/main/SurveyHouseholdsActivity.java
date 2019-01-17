@@ -84,16 +84,10 @@ public class SurveyHouseholdsActivity extends Activity implements HouseholdFilte
 
     @Override
     public void onRegionCollectDataClicked(Region region) {
+        ShowRegionTask task = new ShowRegionTask(region);
+        task.execute();
 
-        FormDataLoader[] dataLoaders = getFormLoaders(FormFilter.REGION);
-        loadFormValues(dataLoaders, null, null, region);
-
-        Intent intent = new Intent(this, RegionDetailsActivity.class);
-        intent.putExtra("user", loggedUser);
-        intent.putExtra("region", region);
-        intent.putExtra("dataloaders", dataLoaders);
-
-        startActivity(intent);
+        showLoadingDialog(getString(R.string.loading_dialog_region_details_lbl), true);
     }
 
     @Override
@@ -106,15 +100,10 @@ public class SurveyHouseholdsActivity extends Activity implements HouseholdFilte
 
     @Override
     public void onShowHouseholdClicked(Household household, Member member, Region region) {
-        FormDataLoader[] dataLoaders = getFormLoaders(FormFilter.HOUSEHOLD);
-        loadFormValues(dataLoaders, household, member, region);
+        ShowHouseholdTask task = new ShowHouseholdTask(household, member, region);
+        task.execute();
 
-        Intent intent = new Intent(this, HouseholdDetailsActivity.class);
-        intent.putExtra("user", loggedUser);
-        intent.putExtra("household", household);
-        intent.putExtra("dataloaders", dataLoaders);
-
-        startActivity(intent);
+        showLoadingDialog(getString(R.string.loading_dialog_household_details_lbl), true);
     }
 
     @Override
@@ -308,7 +297,6 @@ public class SurveyHouseholdsActivity extends Activity implements HouseholdFilte
         }
     }
 
-
     class MemberSearchTask extends AsyncTask<Void, Void, MemberArrayAdapter> {
         private String name;
         private String code;
@@ -369,6 +357,72 @@ public class SurveyHouseholdsActivity extends Activity implements HouseholdFilte
             showLoadingDialog(null, false);
 
             startActivityForResult(intent, MEMBER_DETAILS_REQUEST_CODE);
+        }
+    }
+
+    class ShowHouseholdTask extends AsyncTask<Void, Void, Void> {
+        private Household household;
+        private Member member;
+        private Region region;
+        private FormDataLoader[] dataLoaders;
+
+        public ShowHouseholdTask(Household household, Member member, Region region) {
+            this.household = household;
+            this.member = member;
+            this.region = region;
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+
+            this.dataLoaders = getFormLoaders(FormFilter.HOUSEHOLD);
+            loadFormValues(dataLoaders, household, member, region);
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void result) {
+
+            Intent intent = new Intent(SurveyHouseholdsActivity.this, HouseholdDetailsActivity.class);
+            intent.putExtra("user", loggedUser);
+            intent.putExtra("household", household);
+            intent.putExtra("dataloaders", dataLoaders);
+
+            showLoadingDialog(null, false);
+
+            startActivity(intent);
+        }
+    }
+
+    class ShowRegionTask extends AsyncTask<Void, Void, Void> {
+        private Region region;
+        private FormDataLoader[] dataLoaders;
+
+        public ShowRegionTask(Region region) {
+            this.region = region;
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+
+            this.dataLoaders = getFormLoaders(FormFilter.REGION);
+            loadFormValues(dataLoaders, null, null, region);
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void result) {
+
+            Intent intent = new Intent(SurveyHouseholdsActivity.this, RegionDetailsActivity.class);
+            intent.putExtra("user", loggedUser);
+            intent.putExtra("region", region);
+            intent.putExtra("dataloaders", dataLoaders);
+
+            showLoadingDialog(null, false);
+
+            startActivity(intent);
         }
     }
 

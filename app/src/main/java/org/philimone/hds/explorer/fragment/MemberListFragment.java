@@ -15,7 +15,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -802,7 +801,7 @@ public class MemberListFragment extends Fragment {
         Member head = getHouseholdHead(household);
         Region region = getRegion(household);
 
-        memberActionListener.onMemberHouseholdSelected(household, head, region);
+        memberActionListener.onShowHouseholdClicked(household, head, region);
     }
 
     private Region getRegion(Household household){

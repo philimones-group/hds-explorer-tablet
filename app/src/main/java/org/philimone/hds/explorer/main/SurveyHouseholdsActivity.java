@@ -1,10 +1,14 @@
 package org.philimone.hds.explorer.main;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.TextView;
 
 import com.mapswithme.maps.api.MWMPoint;
 
@@ -23,6 +27,7 @@ import org.philimone.hds.explorer.model.Household;
 import org.philimone.hds.explorer.model.Member;
 import org.philimone.hds.explorer.model.Region;
 import org.philimone.hds.explorer.model.User;
+import org.philimone.hds.explorer.widget.LoadingDialog;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -36,6 +41,8 @@ public class SurveyHouseholdsActivity extends Activity implements HouseholdFilte
     private MemberListFragment memberListFragment;
 
     private User loggedUser;
+
+    private LoadingDialog loadingDialog;
 
     private final int MEMBER_DETAILS_REQUEST_CODE = 31;
 
@@ -59,11 +66,12 @@ public class SurveyHouseholdsActivity extends Activity implements HouseholdFilte
     private void initialize() {
         this.memberListFragment.setButtonVisibilityGone(MemberListFragment.Buttons.CLOSEST_MEMBERS);
         this.memberListFragment.setButtonEnabled(hasMemberBoundForms(), MemberListFragment.Buttons.NEW_MEMBER_COLLECT);
+
+        this.loadingDialog = new LoadingDialog(this);
     }
 
     @Override
     public void onHouseholdClick(Household household) {
-        Log.d("survey-household", ""+household);
         MemberSearchTask task = new MemberSearchTask(household, null, null, null, household.getCode());
         task.execute();
     }
@@ -71,13 +79,12 @@ public class SurveyHouseholdsActivity extends Activity implements HouseholdFilte
     @Override
     public void onSelectedRegion(Region region) {
         FormDataLoader[] dataLoaders = getFormLoaders(FormFilter.REGION);
-        //loadFormValues(dataLoaders, null, null, region);
-
         this.householdFilterFragment.checkSupportForRegionForms(dataLoaders);
     }
 
     @Override
     public void onRegionCollectDataClicked(Region region) {
+
         FormDataLoader[] dataLoaders = getFormLoaders(FormFilter.REGION);
         loadFormValues(dataLoaders, null, null, region);
 
@@ -91,19 +98,14 @@ public class SurveyHouseholdsActivity extends Activity implements HouseholdFilte
 
     @Override
     public void onMemberSelected(Household household, Member member, Region region) {
-        FormDataLoader[] dataLoaders = getFormLoaders(FormFilter.HOUSEHOLD_HEAD, FormFilter.MEMBER);
-        loadFormValues(dataLoaders, household, member, region);
+        OnMemberSelectedTask task = new OnMemberSelectedTask(household, member, region);
+        task.execute();
 
-        Intent intent = new Intent(this, MemberDetailsActivity.class);
-        intent.putExtra("user", loggedUser);
-        intent.putExtra("member", member);
-        intent.putExtra("dataloaders", dataLoaders);
-
-        startActivityForResult(intent, MEMBER_DETAILS_REQUEST_CODE);
+        showLoadingDialog(getString(R.string.loading_dialog_member_details_lbl), true);
     }
 
     @Override
-    public void onMemberHouseholdSelected(Household household, Member member, Region region) {
+    public void onShowHouseholdClicked(Household household, Member member, Region region) {
         FormDataLoader[] dataLoaders = getFormLoaders(FormFilter.HOUSEHOLD);
         loadFormValues(dataLoaders, household, member, region);
 
@@ -297,6 +299,16 @@ public class SurveyHouseholdsActivity extends Activity implements HouseholdFilte
         }
     }
 
+    private void showLoadingDialog(String msg, boolean show){
+        if (show) {
+            this.loadingDialog.setMessage(msg);
+            this.loadingDialog.show();
+        } else {
+            this.loadingDialog.hide();
+        }
+    }
+
+
     class MemberSearchTask extends AsyncTask<Void, Void, MemberArrayAdapter> {
         private String name;
         private String code;
@@ -322,6 +334,41 @@ public class SurveyHouseholdsActivity extends Activity implements HouseholdFilte
             memberListFragment.setMemberAdapter(adapter);
             memberListFragment.showProgress(false);
             memberListFragment.setButtonEnabled(true, MemberListFragment.Buttons.SHOW_HOUSEHOLD);
+        }
+    }
+
+    class OnMemberSelectedTask  extends AsyncTask<Void, Void, Void> {
+        private Household household;
+        private Member member;
+        private Region region;
+        private FormDataLoader[] dataLoaders;
+
+        public OnMemberSelectedTask(Household household, Member member, Region region) {
+            this.household = household;
+            this.member = member;
+            this.region = region;
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+
+            dataLoaders = getFormLoaders(FormFilter.HOUSEHOLD_HEAD, FormFilter.MEMBER);
+            loadFormValues(dataLoaders, household, member, region);
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void result) {
+
+            Intent intent = new Intent(SurveyHouseholdsActivity.this, MemberDetailsActivity.class);
+            intent.putExtra("user", loggedUser);
+            intent.putExtra("member", this.member);
+            intent.putExtra("dataloaders", dataLoaders);
+
+            showLoadingDialog(null, false);
+
+            startActivityForResult(intent, MEMBER_DETAILS_REQUEST_CODE);
         }
     }
 

@@ -129,6 +129,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 		dialog.syncInitialize();;
 		dialog.setTitle(mContext.getString(R.string.sync_title_lbl));
 		dialog.setMessage(mContext.getString(R.string.sync_prepare_download_lbl));
+		dialog.setButtonEnabled(false);
 		dialog.show();
 	}
 
@@ -2020,6 +2021,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 		addSavedSynchronizedMessages(dialog);
 		addDownloadSynchronizedMessages(dialog);
 		dialog.setMessage(result);
+		dialog.setButtonEnabled(true);
 		dialog.syncFinalize();
 		Toast.makeText(mContext, result, Toast.LENGTH_LONG).show();
 	}

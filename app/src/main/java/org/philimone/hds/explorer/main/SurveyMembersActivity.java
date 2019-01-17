@@ -81,7 +81,7 @@ public class SurveyMembersActivity extends Activity implements MemberFilterFragm
     }
 
     @Override
-    public void onMemberHouseholdSelected(Household household, Member member, Region region) {
+    public void onShowHouseholdClicked(Household household, Member member, Region region) {
         FormDataLoader[] dataLoaders = getFormLoaders(FormFilter.HOUSEHOLD); //Only need Household Forms
         loadFormValues(dataLoaders, household, member, region);
 

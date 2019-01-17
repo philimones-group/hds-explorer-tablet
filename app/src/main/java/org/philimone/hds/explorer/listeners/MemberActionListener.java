@@ -15,7 +15,7 @@ import java.util.ArrayList;
 public interface MemberActionListener extends Serializable {
     void onMemberSelected(Household household, Member member, Region region);
 
-    void onMemberHouseholdSelected(Household household, Member member, Region region);
+    void onShowHouseholdClicked(Household household, Member member, Region region);
 
     void onClosestMembersResult(Member member, MWMPoint[] points, MWMPoint[] originalPoints, ArrayList<Member> members);
 

@@ -23,6 +23,8 @@ public class SyncProgressDialog extends Dialog {
     private TextView progressMessage;
     private Button btProgressOk;
 
+    private boolean okButtonEnabled;
+
     private List<String> synchronizedMessages;
 
     public SyncProgressDialog(@NonNull Context context) {
@@ -49,6 +51,10 @@ public class SyncProgressDialog extends Dialog {
             }
         });
 
+        if (btProgressOk != null){
+            btProgressOk.setEnabled(okButtonEnabled);
+        }
+
     }
 
     public void syncInitialize(){
@@ -62,6 +68,14 @@ public class SyncProgressDialog extends Dialog {
     public void syncFinalize(){
         if (this.progressBar != null){
             this.progressBar.setVisibility(View.GONE);
+        }
+    }
+
+    public void setButtonEnabled(boolean enable){
+        this.okButtonEnabled = enable;
+
+        if (this.btProgressOk != null){
+            this.btProgressOk.setEnabled(enable);
         }
     }
 

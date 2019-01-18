@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -33,6 +34,7 @@ import org.philimone.hds.explorer.model.Household;
 import org.philimone.hds.explorer.model.Region;
 import org.philimone.hds.explorer.model.Member;
 import org.philimone.hds.explorer.model.User;
+import org.philimone.hds.explorer.widget.LoadingDialog;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -63,6 +65,8 @@ public class HouseholdDetailsActivity extends Activity implements OdkFormResultL
     private FormDataLoader lastLoadedForm;
 
     private User loggedUser;
+
+    private LoadingDialog loadingDialog;
 
     private FormUtilities formUtilities;
 
@@ -145,6 +149,8 @@ public class HouseholdDetailsActivity extends Activity implements OdkFormResultL
                 onMemberClicked(position);
             }
         });
+
+        this.loadingDialog = new LoadingDialog(this);
 
         setHouseholdData();
 
@@ -576,6 +582,13 @@ public class HouseholdDetailsActivity extends Activity implements OdkFormResultL
     private void onMemberClicked(int position) {
         MemberArrayAdapter adapter = (MemberArrayAdapter) this.lvHouseholdMembers.getAdapter();
         Member member = adapter.getItem(position);
+
+        MemberSelectedTask task = new MemberSelectedTask(member);
+        task.execute();
+
+        showLoadingDialog(getString(R.string.loading_dialog_member_details_lbl), true);
+
+        /*
         Household household = getHousehold(member);
         Region region = getRegion(household);
 
@@ -591,6 +604,7 @@ public class HouseholdDetailsActivity extends Activity implements OdkFormResultL
         intent.putExtra("dataloaders", dataLoaders);
 
         startActivity(intent);
+        */
     }
 
     public FormDataLoader[] getFormLoaders(FormFilter... filters){
@@ -683,5 +697,52 @@ public class HouseholdDetailsActivity extends Activity implements OdkFormResultL
         db.close();
 
         return list;
+    }
+
+    private void showLoadingDialog(String msg, boolean show){
+        if (show) {
+            this.loadingDialog.setMessage(msg);
+            this.loadingDialog.show();
+        } else {
+            this.loadingDialog.hide();
+        }
+    }
+
+    class MemberSelectedTask  extends AsyncTask<Void, Void, Void> {
+        private Household household;
+        private Member member;
+        private Region region;
+        private FormDataLoader[] dataLoaders;
+
+        public MemberSelectedTask(Member member) {
+            //this.household = household;
+            this.member = member;
+            //this.region = region;
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+
+            this.household = getHousehold(member);
+            this.region = getRegion(household);
+
+            dataLoaders = getFormLoaders(FormFilter.HOUSEHOLD_HEAD, FormFilter.MEMBER);
+            loadFormValues(dataLoaders, household, member, region);
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void result) {
+
+            Intent intent = new Intent(HouseholdDetailsActivity.this, MemberDetailsActivity.class);
+            intent.putExtra("user", loggedUser);
+            intent.putExtra("member", this.member);
+            intent.putExtra("dataloaders", dataLoaders);
+
+            showLoadingDialog(null, false);
+
+            startActivity(intent);
+        }
     }
 }

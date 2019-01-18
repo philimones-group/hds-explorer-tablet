@@ -3,6 +3,7 @@ package org.philimone.hds.explorer.main;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -92,7 +93,7 @@ public class TrackingListActivity extends Activity {
 
     private void showTrackingLists() {
         ArrayList<TrackingList> trackingLists = getTrackingLists();
-
+        //Log.d("tlistsssx", ""+trackingLists.size());
         TrackingListArrayAdapter adapter = new TrackingListArrayAdapter(this, trackingLists);
 
         this.lvTrackingList.setAdapter(adapter);
@@ -117,7 +118,7 @@ public class TrackingListActivity extends Activity {
         int i=0;
         for (TrackingList tl : tlists){
             String[] modules = tl.getModule().split(",");
-
+            //Log.d("tl", ""+tl.getCode()+", "+StringUtil.containsAny(userModules, modules)+", u:"+userModules[0]+", m:"+modules[0]);
             if (StringUtil.containsAny(userModules, modules)){ //if the user has access to module specified on Form
                 list.add(tl);
             }

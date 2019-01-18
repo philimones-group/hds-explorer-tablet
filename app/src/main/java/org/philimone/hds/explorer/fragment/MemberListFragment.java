@@ -473,9 +473,14 @@ public class MemberListFragment extends Fragment {
             builder.setNegativeButton(R.string.bt_cancel_lbl, null);
 
             EditText txtNmHouseNumber = (EditText) view.findViewById(R.id.txtNmHouseNumber);
+            EditText txtNmCode = (EditText) view.findViewById(R.id.txtNmCode);
 
             if (txtNmHouseNumber != null && currentHousehold != null){
                 txtNmHouseNumber.setText(currentHousehold.getCode());
+            }
+
+            if (txtNmCode != null && currentHousehold != null){
+                txtNmCode.setText(currentHousehold.getCode()+"XXX");
             }
 
             dialogNewMember = builder.create();

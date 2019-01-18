@@ -1150,7 +1150,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 						tml.setMemberForms(mForms);
 						tml.setCompletionRate(0D);
 
-						if (mVisit != null){
+						if (mVisit != null && !mVisit.isEmpty()){
 							tml.setMemberVisit(Integer.parseInt(mVisit));
 						}
 

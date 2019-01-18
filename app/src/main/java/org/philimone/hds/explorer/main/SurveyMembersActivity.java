@@ -23,6 +23,7 @@ import org.philimone.hds.explorer.model.Household;
 import org.philimone.hds.explorer.model.Member;
 import org.philimone.hds.explorer.model.Region;
 import org.philimone.hds.explorer.model.User;
+import org.philimone.hds.explorer.widget.LoadingDialog;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -36,6 +37,8 @@ public class SurveyMembersActivity extends Activity implements MemberFilterFragm
     private MemberListFragment memberListFragment;
 
     private User loggedUser;
+
+    private LoadingDialog loadingDialog;
 
     public enum FormFilter {
         REGION, HOUSEHOLD, HOUSEHOLD_HEAD, MEMBER, FOLLOW_UP
@@ -57,6 +60,8 @@ public class SurveyMembersActivity extends Activity implements MemberFilterFragm
     private void initialize() {
         this.memberListFragment.setButtonVisibilityGone(MemberListFragment.Buttons.CLOSEST_HOUSES);
         this.memberListFragment.setButtonEnabled(hasMemberBoundForms(), MemberListFragment.Buttons.NEW_MEMBER_COLLECT);
+
+        this.loadingDialog = new LoadingDialog(this);
     }
 
     @Override
@@ -69,28 +74,18 @@ public class SurveyMembersActivity extends Activity implements MemberFilterFragm
 
     @Override
     public void onMemberSelected(Household household, Member member, Region region) {
-        FormDataLoader[] dataLoaders = getFormLoaders(FormFilter.HOUSEHOLD_HEAD, FormFilter.MEMBER); //I only need MemberForm and HouseholdHead
-        loadFormValues(dataLoaders, household, member, region);
+        OnMemberSelectedTask task = new OnMemberSelectedTask(household, member, region);
+        task.execute();
 
-        Intent intent = new Intent(this, MemberDetailsActivity.class);
-        intent.putExtra("user", loggedUser);
-        intent.putExtra("member", member);
-        intent.putExtra("dataloaders", dataLoaders);
-
-        startActivity(intent);
+        showLoadingDialog(getString(R.string.loading_dialog_member_details_lbl), true);
     }
 
     @Override
     public void onShowHouseholdClicked(Household household, Member member, Region region) {
-        FormDataLoader[] dataLoaders = getFormLoaders(FormFilter.HOUSEHOLD); //Only need Household Forms
-        loadFormValues(dataLoaders, household, member, region);
+        ShowHouseholdTask task = new ShowHouseholdTask(household, member, region);
+        task.execute();
 
-        Intent intent = new Intent(this, HouseholdDetailsActivity.class);
-        intent.putExtra("user", loggedUser);
-        intent.putExtra("household", household);
-        intent.putExtra("dataloaders", dataLoaders);
-
-        startActivity(intent);
+        showLoadingDialog(getString(R.string.loading_dialog_household_details_lbl), true);
     }
 
     @Override
@@ -247,6 +242,15 @@ public class SurveyMembersActivity extends Activity implements MemberFilterFragm
         return list;
     }
 
+    private void showLoadingDialog(String msg, boolean show){
+        if (show) {
+            this.loadingDialog.setMessage(msg);
+            this.loadingDialog.show();
+        } else {
+            this.loadingDialog.hide();
+        }
+    }
+
     class MemberSearchTask extends AsyncTask<Void, Void, MemberArrayAdapter> {
         private String name;
         private String code;
@@ -283,6 +287,76 @@ public class SurveyMembersActivity extends Activity implements MemberFilterFragm
             if (adapter.isEmpty()){
                 memberListFragment.showMemberNotFoundMessage();
             }
+        }
+    }
+
+    class OnMemberSelectedTask  extends AsyncTask<Void, Void, Void> {
+        private Household household;
+        private Member member;
+        private Region region;
+        private FormDataLoader[] dataLoaders;
+
+        public OnMemberSelectedTask(Household household, Member member, Region region) {
+            this.household = household;
+            this.member = member;
+            this.region = region;
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+
+            dataLoaders = getFormLoaders(FormFilter.HOUSEHOLD_HEAD, FormFilter.MEMBER);
+            loadFormValues(dataLoaders, household, member, region);
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void result) {
+
+            Intent intent = new Intent(SurveyMembersActivity.this, MemberDetailsActivity.class);
+            intent.putExtra("user", loggedUser);
+            intent.putExtra("member", this.member);
+            intent.putExtra("dataloaders", dataLoaders);
+
+            showLoadingDialog(null, false);
+
+            startActivity(intent);
+        }
+    }
+
+    class ShowHouseholdTask extends AsyncTask<Void, Void, Void> {
+        private Household household;
+        private Member member;
+        private Region region;
+        private FormDataLoader[] dataLoaders;
+
+        public ShowHouseholdTask(Household household, Member member, Region region) {
+            this.household = household;
+            this.member = member;
+            this.region = region;
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+
+            this.dataLoaders = getFormLoaders(FormFilter.HOUSEHOLD);
+            loadFormValues(dataLoaders, household, member, region);
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void result) {
+
+            Intent intent = new Intent(SurveyMembersActivity.this, HouseholdDetailsActivity.class);
+            intent.putExtra("user", loggedUser);
+            intent.putExtra("household", household);
+            intent.putExtra("dataloaders", dataLoaders);
+
+            showLoadingDialog(null, false);
+
+            startActivity(intent);
         }
     }
 }

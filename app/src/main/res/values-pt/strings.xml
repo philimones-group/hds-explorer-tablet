@@ -208,6 +208,10 @@
     <string name="survey_members_btn_lbl">Procurar por membros</string>
     <string name="survey_tracking_lists_btn_lbl">Ver Listas de seguimento</string>
 
+    <string name="loading_dialog_member_details_lbl">Carregando Detalhes do Membro...</string>
+    <string name="loading_dialog_household_details_lbl">Carregando Detalhes da Casa...</string>
+    <string name="loading_dialog_region_details_lbl">Carregando Detalhes da Região...</string>
+
     <!-- GPS Maps -->
     <string name="map_gps_not_available_title_lbl">Não será possivel visualizar o mapa</string>
     <string name="map_closest_members">Individuos por perto</string>

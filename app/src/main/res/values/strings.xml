@@ -212,6 +212,10 @@
     <string name="survey_members_btn_lbl">Search By Members</string>
     <string name="survey_tracking_lists_btn_lbl">Show Follow-up Lists</string>
 
+    <string name="loading_dialog_member_details_lbl">Loading Member Details...</string>
+    <string name="loading_dialog_household_details_lbl">Loading Household Details...</string>
+    <string name="loading_dialog_region_details_lbl">Loading Region Details...</string>
+
     <!-- GPS Maps -->
     <string name="map_gps_not_available_title_lbl">Cannot view GPS Map</string>
     <string name="map_closest_members">Closest Individuals Localizations</string>

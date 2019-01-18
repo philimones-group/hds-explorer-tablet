@@ -415,12 +415,12 @@ public class SurveyHouseholdsActivity extends Activity implements HouseholdFilte
         @Override
         protected void onPostExecute(Void result) {
 
+            showLoadingDialog(null, false);
+
             Intent intent = new Intent(SurveyHouseholdsActivity.this, RegionDetailsActivity.class);
             intent.putExtra("user", loggedUser);
             intent.putExtra("region", region);
             intent.putExtra("dataloaders", dataLoaders);
-
-            showLoadingDialog(null, false);
 
             startActivity(intent);
         }

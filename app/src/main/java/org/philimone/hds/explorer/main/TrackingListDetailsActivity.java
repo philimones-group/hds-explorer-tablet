@@ -26,6 +26,7 @@ import org.philimone.hds.explorer.model.Region;
 import org.philimone.hds.explorer.model.User;
 import org.philimone.hds.explorer.model.followup.TrackingList;
 import org.philimone.hds.explorer.model.followup.TrackingMemberList;
+import org.philimone.hds.explorer.widget.LoadingDialog;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -49,6 +50,8 @@ public class TrackingListDetailsActivity extends Activity {
     private View viewLoadingList;
 
     private Database database;
+
+    private LoadingDialog loadingDialog;
 
     private int lastSelectedGroupPosition;
     private int lastSelectedChildPosition;
@@ -90,6 +93,8 @@ public class TrackingListDetailsActivity extends Activity {
         });
 
         setDataToComponents();
+
+        this.loadingDialog = new LoadingDialog(this);
     }
 
     private void setDataToComponents() {
@@ -117,9 +122,24 @@ public class TrackingListDetailsActivity extends Activity {
         elvTrackingLists.setVisibility(show ? View.GONE : View.VISIBLE);
     }
 
+    private void showLoadingDialog(String msg, boolean show){
+        if (show) {
+            this.loadingDialog.setMessage(msg);
+            this.loadingDialog.show();
+        } else {
+            this.loadingDialog.hide();
+        }
+    }
+
     private void onMemberItemClicked(int groupPosition, int childPosition) {
         TrackingMemberItem memberItem = (TrackingMemberItem) adapter.getChild(groupPosition, childPosition);
 
+        OnMemberSelectedTask task = new OnMemberSelectedTask(memberItem);
+        task.execute();
+
+        showLoadingDialog(getString(R.string.loading_dialog_member_details_lbl), true);
+
+        /*
         FormDataLoader[] dataLoaders = getFormLoaders(memberItem);
         Household household = getHousehold(memberItem.getMember());
         Region region = getRegion(household);
@@ -134,6 +154,7 @@ public class TrackingListDetailsActivity extends Activity {
         intent.putExtra("dataloaders", dataLoaders);
 
         startActivityForResult(intent, RC_MEMBER_DETAILS_TRACKINGLIST);
+        */
     }
 
     private Household getHousehold(Member member){
@@ -373,5 +394,45 @@ public class TrackingListDetailsActivity extends Activity {
             db.close();
         }
     }
+
+    class OnMemberSelectedTask extends AsyncTask<Void, Void, Void> {
+        private Household household;
+        private Member member;
+        private Region region;
+        private TrackingMemberItem memberItem;
+        private FormDataLoader[] dataLoaders;
+
+        public OnMemberSelectedTask(TrackingMemberItem memberItem) {
+            this.memberItem = memberItem;
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+
+            this.dataLoaders = getFormLoaders(memberItem);
+            this.household = getHousehold(memberItem.getMember());
+            this.region = getRegion(household);
+
+            loadFormValues(dataLoaders, household, memberItem.getMember(), region, memberItem);
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void result) {
+
+            Intent intent = new Intent(TrackingListDetailsActivity.this, MemberDetailsActivity.class);
+            intent.putExtra("user", loggedUser);
+            intent.putExtra("member", memberItem.getMember());
+            intent.putExtra("member_studycode", memberItem.getStudyCode());
+            intent.putExtra("request_code", RC_MEMBER_DETAILS_TRACKINGLIST);
+            intent.putExtra("dataloaders", dataLoaders);
+
+            showLoadingDialog(null, false);
+
+            startActivityForResult(intent, RC_MEMBER_DETAILS_TRACKINGLIST);
+        }
+    }
+
 }
 

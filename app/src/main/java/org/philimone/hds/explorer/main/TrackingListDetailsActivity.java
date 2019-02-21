@@ -25,7 +25,6 @@ import org.philimone.hds.explorer.model.Member;
 import org.philimone.hds.explorer.model.Region;
 import org.philimone.hds.explorer.model.User;
 import org.philimone.hds.explorer.model.followup.TrackingList;
-import org.philimone.hds.explorer.model.followup.TrackingMemberList;
 import org.philimone.hds.explorer.widget.LoadingDialog;
 
 import java.util.ArrayList;
@@ -262,15 +261,15 @@ public class TrackingListDetailsActivity extends Activity {
 
 
         db.open();
-        List<TrackingMemberList> listTml = Queries.getAllTrackingMemberListBy(db, DatabaseHelper.TrackingMemberList.COLUMN_TRACKING_ID+"=?", new String[]{ trackingList.getId()+"" });
+        List<org.philimone.hds.explorer.model.followup.TrackingSubjectList> listTml = Queries.getAllTrackingMemberListBy(db, DatabaseHelper.TrackingSubjectList.COLUMN_TRACKING_ID+"=?", new String[]{ trackingList.getId()+"" });
         List<CollectedData> listCollectedData = Queries.getAllCollectedDataBy(db, DatabaseHelper.CollectedData.COLUMN_FORM_MODULE+"=?", new String[]{ trackingList.getModule()+"" });
         db.close();
 
         List<String> codes = new ArrayList<>();
 
-        for (TrackingMemberList tm : listTml){
-            codes.add(tm.getMemberCode());
-            Log.d("code-", ""+tm.getMemberCode());
+        for (org.philimone.hds.explorer.model.followup.TrackingSubjectList tm : listTml){
+            codes.add(tm.getSubjectCode());
+            Log.d("code-", ""+tm.getSubjectCode());
         }
 
         List<Member> members = getMembers(db, codes);
@@ -283,7 +282,7 @@ public class TrackingListDetailsActivity extends Activity {
         HashMap<TrackingSubListItem, ArrayList<TrackingMemberItem>> trackingCollection = new HashMap<>();
 
         //I need member, collectedData
-        for (TrackingMemberList item : listTml){
+        for (org.philimone.hds.explorer.model.followup.TrackingSubjectList item : listTml){
             TrackingSubListItem tsi = getSubListItem(members, listCollectedData, item, trackingList);
             TrackingMemberItem tMember = getMemberItem(members, listCollectedData, item, tsi);
             ArrayList<TrackingMemberItem> listMembers = trackingCollection.get(tsi);
@@ -316,17 +315,17 @@ public class TrackingListDetailsActivity extends Activity {
         return members;
     }
 
-    private TrackingMemberItem getMemberItem(List<Member> members, List<CollectedData> collectedDataList, TrackingMemberList item, TrackingSubListItem subListItem) {
+    private TrackingMemberItem getMemberItem(List<Member> members, List<CollectedData> collectedDataList, org.philimone.hds.explorer.model.followup.TrackingSubjectList item, TrackingSubListItem subListItem) {
         TrackingMemberItem tMember = new TrackingMemberItem();
 
 
         Member member = null;
         List<CollectedData> listCollected = new ArrayList<>();
-        String[] forms = item.getMemberForms().split(",");
+        String[] forms = item.getSubjectForms().split(",");
         List<String> formsList = Arrays.asList(forms);
 
         for (Member mb : members){
-            if (mb.getCode().equals(item.getMemberCode())){
+            if (mb.getCode().equals(item.getSubjectCode())){
                 member = mb;
                 break;
             }
@@ -345,15 +344,15 @@ public class TrackingListDetailsActivity extends Activity {
 
         tMember.setMember(member);
         tMember.setListItem(subListItem);
-        tMember.setStudyCode(item.getMemberStudyCode());
-        tMember.setVisitNumber(item.getMemberVisit());
+        tMember.setStudyCode(item.getSubjectType());
+        tMember.setVisitNumber(item.getSubjectVisit());
         tMember.addForms(forms);
         tMember.addCollectedData(listCollected);
 
         return tMember;
     }
 
-    private TrackingSubListItem getSubListItem(List<Member> members, List<CollectedData> collectedDataList, TrackingMemberList trackingMemberList, TrackingList trackingList){
+    private TrackingSubListItem getSubListItem(List<Member> members, List<CollectedData> collectedDataList, org.philimone.hds.explorer.model.followup.TrackingSubjectList trackingMemberList, TrackingList trackingList){
         TrackingSubListItem tsi = new TrackingSubListItem();
 
         tsi.setId(trackingMemberList.getListId());

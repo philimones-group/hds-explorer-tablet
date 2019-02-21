@@ -45,7 +45,6 @@ import org.philimone.hds.explorer.model.Module;
 import org.philimone.hds.explorer.model.SyncReport;
 import org.philimone.hds.explorer.model.User;
 import org.philimone.hds.explorer.model.followup.TrackingList;
-import org.philimone.hds.explorer.model.followup.TrackingMemberList;
 
 import mz.betainteractive.utilities.StringUtil;
 
@@ -246,7 +245,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 						break;
 					case TRACKING_LISTS: /*testing*/
 						deleteAll(DatabaseHelper.TrackingList.TABLE_NAME);
-						deleteAll(DatabaseHelper.TrackingMemberList.TABLE_NAME);
+						deleteAll(DatabaseHelper.TrackingSubjectList.TABLE_NAME);
 						processUrl(baseurl + API_PATH + "/trackinglists/zip", "trackinglists.zip");
 						break;
 					case USERS:
@@ -1138,31 +1137,31 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 				//read members
 				parser.nextTag(); //jump to <member end tag> if exists
 				while (!isEndTag("list", parser)){
-					if (isTag("member", parser)){
+					if (isTag("subject", parser)){
 						Log.d("mem-attr-code", "" + parser.getAttributeValue("", "code"));
-						Log.d("mem-attr-scode", "" + parser.getAttributeValue("", "studycode"));
+						Log.d("mem-attr-type", "" + parser.getAttributeValue("", "type"));
 						Log.d("mem-attr-forms", "" + parser.getAttributeValue("", "forms"));
 						Log.d("mem-attr-visit", "" + parser.getAttributeValue("", "visit"));
 						Log.d("end","end");
 
 						String mCode = parser.getAttributeValue("", "code");
-						String mScode = parser.getAttributeValue("", "studycode");
+						String mType = parser.getAttributeValue("", "type");
 						String mForms = parser.getAttributeValue("", "forms");
 						String mVisit = parser.getAttributeValue("", "visit");
 
 						//save track member list to database
-						TrackingMemberList tml = new TrackingMemberList();
+						org.philimone.hds.explorer.model.followup.TrackingSubjectList tml = new org.philimone.hds.explorer.model.followup.TrackingSubjectList();
 						tml.setListId(Integer.parseInt(listId));
 						tml.setTrackingId(trackingId);
 						tml.setTitle(listTitle);
 						tml.setForms(listForms==null ? "" : listForms);
-						tml.setMemberCode(mCode);
-						tml.setMemberStudyCode(mScode);
-						tml.setMemberForms(mForms);
+						tml.setSubjectCode(mCode);
+						tml.setSubjectType(mType);
+						tml.setSubjectForms(mForms);
 						tml.setCompletionRate(0D);
 
 						if (mVisit != null && !mVisit.isEmpty()){
-							tml.setMemberVisit(Integer.parseInt(mVisit));
+							tml.setSubjectVisit(Integer.parseInt(mVisit));
 						}
 
 						database.insert(tml);

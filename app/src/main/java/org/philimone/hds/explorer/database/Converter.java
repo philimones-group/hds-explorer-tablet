@@ -13,7 +13,6 @@ import org.philimone.hds.explorer.model.Region;
 import org.philimone.hds.explorer.model.SyncReport;
 import org.philimone.hds.explorer.model.User;
 import org.philimone.hds.explorer.model.followup.TrackingList;
-import org.philimone.hds.explorer.model.followup.TrackingMemberList;
 
 
 public class Converter {
@@ -211,21 +210,21 @@ public class Converter {
 		return tl;
 	}
 
-	public static TrackingMemberList cursorToTrackingMembersList(Cursor cursor){
-		TrackingMemberList tml = new TrackingMemberList();
+	public static org.philimone.hds.explorer.model.followup.TrackingSubjectList cursorToTrackingMembersList(Cursor cursor){
+		org.philimone.hds.explorer.model.followup.TrackingSubjectList tml = new org.philimone.hds.explorer.model.followup.TrackingSubjectList();
 
-		tml.setId(cursor.getInt(cursor.getColumnIndex(DatabaseHelper.TrackingMemberList._ID)));
-		tml.setListId(cursor.getInt(cursor.getColumnIndex(DatabaseHelper.TrackingMemberList.COLUMN_LIST_ID)));
-		tml.setTrackingId(cursor.getInt(cursor.getColumnIndex(DatabaseHelper.TrackingMemberList.COLUMN_TRACKING_ID)));
-		tml.setTitle(cursor.getString(cursor.getColumnIndex(DatabaseHelper.TrackingMemberList.COLUMN_TITLE)));
-		tml.setForms(cursor.getString(cursor.getColumnIndex(DatabaseHelper.TrackingMemberList.COLUMN_FORMS)));
+		tml.setId(cursor.getInt(cursor.getColumnIndex(DatabaseHelper.TrackingSubjectList._ID)));
+		tml.setListId(cursor.getInt(cursor.getColumnIndex(DatabaseHelper.TrackingSubjectList.COLUMN_LIST_ID)));
+		tml.setTrackingId(cursor.getInt(cursor.getColumnIndex(DatabaseHelper.TrackingSubjectList.COLUMN_TRACKING_ID)));
+		tml.setTitle(cursor.getString(cursor.getColumnIndex(DatabaseHelper.TrackingSubjectList.COLUMN_TITLE)));
+		tml.setForms(cursor.getString(cursor.getColumnIndex(DatabaseHelper.TrackingSubjectList.COLUMN_FORMS)));
 
-		tml.setMemberCode(cursor.getString(cursor.getColumnIndex(DatabaseHelper.TrackingMemberList.COLUMN_MEMBER_CODE)));
-		tml.setMemberStudyCode(cursor.getString(cursor.getColumnIndex(DatabaseHelper.TrackingMemberList.COLUMN_MEMBER_STUDY_CODE)));
-		tml.setMemberVisit(cursor.getInt(cursor.getColumnIndex(DatabaseHelper.TrackingMemberList.COLUMN_MEMBER_VISIT)));
-		tml.setMemberForms(cursor.getString(cursor.getColumnIndex(DatabaseHelper.TrackingMemberList.COLUMN_MEMBER_FORMS)));
+		tml.setSubjectCode(cursor.getString(cursor.getColumnIndex(DatabaseHelper.TrackingSubjectList.COLUMN_SUBJECT_CODE)));
+		tml.setSubjectType(cursor.getString(cursor.getColumnIndex(DatabaseHelper.TrackingSubjectList.COLUMN_SUBJECT_TYPE)));
+		tml.setSubjectVisit(cursor.getInt(cursor.getColumnIndex(DatabaseHelper.TrackingSubjectList.COLUMN_SUBJECT_VISIT)));
+		tml.setSubjectForms(cursor.getString(cursor.getColumnIndex(DatabaseHelper.TrackingSubjectList.COLUMN_SUBJECT_FORMS)));
 
-		tml.setCompletionRate(cursor.getDouble(cursor.getColumnIndex(DatabaseHelper.TrackingMemberList.COLUMN_COMPLETION_RATE)));
+		tml.setCompletionRate(cursor.getDouble(cursor.getColumnIndex(DatabaseHelper.TrackingSubjectList.COLUMN_COMPLETION_RATE)));
 
 		return tml;
 	}

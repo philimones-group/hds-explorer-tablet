@@ -42,9 +42,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             try {
                 //db.execSQL("ALTER TABLE " + Member.TABLE_NAME + " ADD COLUMN " + Member.COLUMN_AGE_AT_DEATH + " INTEGER NOT NULL DEFAULT 0"); //upgrage
 
-                //db.execSQL("ALTER TABLE " + TrackingMemberList.TABLE_NAME + " ADD COLUMN " + TrackingMemberList.COLUMN_MEMBER_VISIT + " INTEGER  NOT NULL DEFAULT 0"); //add MemberVisit
+                //db.execSQL("ALTER TABLE " + TrackingSubjectList.TABLE_NAME + " ADD COLUMN " + TrackingSubjectList.COLUMN_SUBJECT_VISIT + " INTEGER  NOT NULL DEFAULT 0"); //add MemberVisit
 
-                //db.execSQL("ALTER TABLE " + TrackingMemberList.TABLE_NAME + " ADD COLUMN " + TrackingMemberList.COLUMN_MEMBER_VISIT + " INTEGER  NOT NULL DEFAULT 0"); //add MemberVisit
+                //db.execSQL("ALTER TABLE " + TrackingSubjectList.TABLE_NAME + " ADD COLUMN " + TrackingSubjectList.COLUMN_SUBJECT_VISIT + " INTEGER  NOT NULL DEFAULT 0"); //add MemberVisit
 
                 db.execSQL("ALTER TABLE " + Form.TABLE_NAME + " ADD COLUMN " + Form.COLUMN_REGION_LEVEL + " TEXT "); //add regionLevel
                 db.execSQL("ALTER TABLE " + Form.TABLE_NAME + " ADD COLUMN " + Form.COLUMN_IS_REGION + " INTEGER NOT NULL DEFAULT 0"); //add isRegion
@@ -266,22 +266,22 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         public static final String[] ALL_COLUMNS = { _ID, COLUMN_NAME, COLUMN_CODE, COLUMN_DETAILS, COLUMN_TITLE, COLUMN_MODULE, COLUMN_COMPLETION_RATE };
     }
 
-    public static final class TrackingMemberList implements BaseColumns { //List of members
-        public static final String TABLE_NAME = "tracking_members_list";
+    public static final class TrackingSubjectList implements BaseColumns { //List of members
+        public static final String TABLE_NAME = "tracking_subject_list";
 
         public static final String COLUMN_LIST_ID = "list_id";
         public static final String COLUMN_TRACKING_ID = "tracking_id";
         public static final String COLUMN_TITLE = "title";
         public static final String COLUMN_FORMS = "list_forms";
 
-        public static final String COLUMN_MEMBER_CODE = "member_ext_id";
-        public static final String COLUMN_MEMBER_STUDY_CODE = "member_study_code";
-        public static final String COLUMN_MEMBER_VISIT = "member_visit";
-        public static final String COLUMN_MEMBER_FORMS = "member_forms";
+        public static final String COLUMN_SUBJECT_CODE = "subject_ext_id";
+        public static final String COLUMN_SUBJECT_TYPE = "subject_type";
+        public static final String COLUMN_SUBJECT_VISIT = "subject_visit";
+        public static final String COLUMN_SUBJECT_FORMS = "subject_forms";
 
         public static final String COLUMN_COMPLETION_RATE = "completionRate";
 
-        public static final String[] ALL_COLUMNS = { _ID, COLUMN_LIST_ID, COLUMN_TRACKING_ID, COLUMN_TITLE, COLUMN_FORMS, COLUMN_MEMBER_CODE, COLUMN_MEMBER_STUDY_CODE, COLUMN_MEMBER_VISIT, COLUMN_MEMBER_FORMS, COLUMN_COMPLETION_RATE };
+        public static final String[] ALL_COLUMNS = { _ID, COLUMN_LIST_ID, COLUMN_TRACKING_ID, COLUMN_TITLE, COLUMN_FORMS, COLUMN_SUBJECT_CODE, COLUMN_SUBJECT_TYPE, COLUMN_SUBJECT_VISIT, COLUMN_SUBJECT_FORMS, COLUMN_COMPLETION_RATE };
     }
 
     public static final class DataSet implements BaseColumns {
@@ -503,22 +503,22 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     ;
 
     private static final String CREATE_TABLE_TRACKING_MEMBER_LIST = " "
-            + "CREATE TABLE " + TrackingMemberList.TABLE_NAME + "("
-            + TrackingMemberList._ID  + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+            + "CREATE TABLE " + TrackingSubjectList.TABLE_NAME + "("
+            + TrackingSubjectList._ID  + " INTEGER PRIMARY KEY AUTOINCREMENT, "
 
-            + TrackingMemberList.COLUMN_LIST_ID + " INTEGER,"
-            + TrackingMemberList.COLUMN_TRACKING_ID + " INTEGER,"
-            + TrackingMemberList.COLUMN_TITLE + " TEXT,"
-            + TrackingMemberList.COLUMN_FORMS + " TEXT,"
+            + TrackingSubjectList.COLUMN_LIST_ID + " INTEGER,"
+            + TrackingSubjectList.COLUMN_TRACKING_ID + " INTEGER,"
+            + TrackingSubjectList.COLUMN_TITLE + " TEXT,"
+            + TrackingSubjectList.COLUMN_FORMS + " TEXT,"
 
-            + TrackingMemberList.COLUMN_MEMBER_CODE + " TEXT,"
-            + TrackingMemberList.COLUMN_MEMBER_STUDY_CODE + " TEXT,"
-            + TrackingMemberList.COLUMN_MEMBER_VISIT + " INTEGER  NOT NULL DEFAULT 0,"
-            + TrackingMemberList.COLUMN_MEMBER_FORMS + " TEXT,"
-            + TrackingMemberList.COLUMN_COMPLETION_RATE + " REAL);"
+            + TrackingSubjectList.COLUMN_SUBJECT_CODE + " TEXT,"
+            + TrackingSubjectList.COLUMN_SUBJECT_TYPE + " TEXT,"
+            + TrackingSubjectList.COLUMN_SUBJECT_VISIT + " INTEGER  NOT NULL DEFAULT 0,"
+            + TrackingSubjectList.COLUMN_SUBJECT_FORMS + " TEXT,"
+            + TrackingSubjectList.COLUMN_COMPLETION_RATE + " REAL);"
 
-            + " CREATE INDEX IDX_TRCK_ID ON " + TrackingMemberList.TABLE_NAME
-            + "(" +  TrackingMemberList.COLUMN_TRACKING_ID  + ");"
+            + " CREATE INDEX IDX_TRCK_ID ON " + TrackingSubjectList.TABLE_NAME
+            + "(" +  TrackingSubjectList.COLUMN_TRACKING_ID  + ");"
             ;
 
     private static final String CREATE_TABLE_DATASET = " "

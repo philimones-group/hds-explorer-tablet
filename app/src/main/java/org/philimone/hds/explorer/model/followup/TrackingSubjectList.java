@@ -7,7 +7,7 @@ import org.philimone.hds.explorer.database.Table;
 
 import java.io.Serializable;
 
-public class TrackingMemberList implements Serializable, Table {
+public class TrackingSubjectList implements Serializable, Table {
 
     private int id;
     private int listId;     /* Id of the MemberList */
@@ -15,10 +15,10 @@ public class TrackingMemberList implements Serializable, Table {
     private String title;   /* Title of the List */
     private String forms;   /* List of the Forms that all Members will have to collect */
 
-    private String memberCode;
-    private String memberStudyCode;
-    private String memberForms;
-    private int    memberVisit;
+    private String subjectCode;
+    private String subjectType;
+    private String subjectForms;
+    private int subjectVisit;
     private Double completionRate;
 
     public int getId() {
@@ -61,36 +61,36 @@ public class TrackingMemberList implements Serializable, Table {
         this.title = title;
     }
 
-    public String getMemberCode() {
-        return memberCode;
+    public String getSubjectCode() {
+        return subjectCode;
     }
 
-    public void setMemberCode(String memberCode) {
-        this.memberCode = memberCode;
+    public void setSubjectCode(String subjectCode) {
+        this.subjectCode = subjectCode;
     }
 
-    public String getMemberStudyCode() {
-        return memberStudyCode;
+    public String getSubjectType() {
+        return subjectType;
     }
 
-    public void setMemberStudyCode(String memberStudyCode) {
-        this.memberStudyCode = memberStudyCode;
+    public void setSubjectType(String subjectType) {
+        this.subjectType = subjectType;
     }
 
-    public int getMemberVisit() {
-        return memberVisit;
+    public int getSubjectVisit() {
+        return subjectVisit;
     }
 
-    public void setMemberVisit(int memberVisit) {
-        this.memberVisit = memberVisit;
+    public void setSubjectVisit(int subjectVisit) {
+        this.subjectVisit = subjectVisit;
     }
 
-    public String getMemberForms() {
-        return memberForms;
+    public String getSubjectForms() {
+        return subjectForms;
     }
 
-    public void setMemberForms(String memberForms) {
-        this.memberForms = memberForms;
+    public void setSubjectForms(String subjectForms) {
+        this.subjectForms = subjectForms;
     }
 
     public Double getCompletionRate() {
@@ -103,24 +103,24 @@ public class TrackingMemberList implements Serializable, Table {
 
     @Override
     public String getTableName() {
-        return DatabaseHelper.TrackingMemberList.TABLE_NAME;
+        return DatabaseHelper.TrackingSubjectList.TABLE_NAME;
     }
 
     @Override
     public ContentValues getContentValues() {
         ContentValues cv = new ContentValues();
 
-        cv.put(DatabaseHelper.TrackingMemberList.COLUMN_LIST_ID, listId);
-        cv.put(DatabaseHelper.TrackingMemberList.COLUMN_TRACKING_ID, trackingId);
-        cv.put(DatabaseHelper.TrackingMemberList.COLUMN_TITLE, title);
-        cv.put(DatabaseHelper.TrackingMemberList.COLUMN_FORMS, forms);
+        cv.put(DatabaseHelper.TrackingSubjectList.COLUMN_LIST_ID, listId);
+        cv.put(DatabaseHelper.TrackingSubjectList.COLUMN_TRACKING_ID, trackingId);
+        cv.put(DatabaseHelper.TrackingSubjectList.COLUMN_TITLE, title);
+        cv.put(DatabaseHelper.TrackingSubjectList.COLUMN_FORMS, forms);
 
-        cv.put(DatabaseHelper.TrackingMemberList.COLUMN_MEMBER_CODE, memberCode);
-        cv.put(DatabaseHelper.TrackingMemberList.COLUMN_MEMBER_STUDY_CODE, memberStudyCode);
-        cv.put(DatabaseHelper.TrackingMemberList.COLUMN_MEMBER_VISIT, memberVisit);
-        cv.put(DatabaseHelper.TrackingMemberList.COLUMN_MEMBER_FORMS, memberForms);
+        cv.put(DatabaseHelper.TrackingSubjectList.COLUMN_SUBJECT_CODE, subjectCode);
+        cv.put(DatabaseHelper.TrackingSubjectList.COLUMN_SUBJECT_TYPE, subjectType);
+        cv.put(DatabaseHelper.TrackingSubjectList.COLUMN_SUBJECT_VISIT, subjectVisit);
+        cv.put(DatabaseHelper.TrackingSubjectList.COLUMN_SUBJECT_FORMS, subjectForms);
 
-        cv.put(DatabaseHelper.TrackingMemberList.COLUMN_COMPLETION_RATE, completionRate);
+        cv.put(DatabaseHelper.TrackingSubjectList.COLUMN_COMPLETION_RATE, completionRate);
 
 
         return cv;
@@ -128,6 +128,6 @@ public class TrackingMemberList implements Serializable, Table {
 
     @Override
     public String[] getColumnNames() {
-        return DatabaseHelper.TrackingMemberList.ALL_COLUMNS;
+        return DatabaseHelper.TrackingSubjectList.ALL_COLUMNS;
     }
 }

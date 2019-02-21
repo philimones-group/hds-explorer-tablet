@@ -12,7 +12,7 @@ import org.philimone.hds.explorer.model.Member;
 import org.philimone.hds.explorer.model.Region;
 import org.philimone.hds.explorer.model.SyncReport;
 import org.philimone.hds.explorer.model.followup.TrackingList;
-import org.philimone.hds.explorer.model.followup.TrackingMemberList;
+import org.philimone.hds.explorer.model.followup.TrackingSubjectList;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -239,10 +239,10 @@ public class Queries {
         return list;
     }
 
-    public static TrackingMemberList getTrackingMemberListBy(Database database, String whereClause, String[] clauseArgs){
-        TrackingMemberList trackingList = null;
+    public static TrackingSubjectList getTrackingMemberListBy(Database database, String whereClause, String[] clauseArgs){
+        TrackingSubjectList trackingList = null;
 
-        Cursor cursor = database.query(TrackingMemberList.class, whereClause, clauseArgs, null, null, null);
+        Cursor cursor = database.query(TrackingSubjectList.class, whereClause, clauseArgs, null, null, null);
 
         if (cursor.moveToFirst()){
             trackingList = Converter.cursorToTrackingMembersList(cursor);
@@ -251,13 +251,13 @@ public class Queries {
         return trackingList;
     }
 
-    public static List<TrackingMemberList> getAllTrackingMemberListBy(Database database, String whereClause, String[] clauseArgs){
-        List<TrackingMemberList> list = new ArrayList<>();
+    public static List<TrackingSubjectList> getAllTrackingMemberListBy(Database database, String whereClause, String[] clauseArgs){
+        List<TrackingSubjectList> list = new ArrayList<>();
 
-        Cursor cursor = database.query(TrackingMemberList.class, whereClause, clauseArgs, null, null, null);
+        Cursor cursor = database.query(TrackingSubjectList.class, whereClause, clauseArgs, null, null, null);
 
         while (cursor.moveToNext()){
-            TrackingMemberList trackingList = Converter.cursorToTrackingMembersList(cursor);
+            TrackingSubjectList trackingList = Converter.cursorToTrackingMembersList(cursor);
             list.add(trackingList);
         }
 

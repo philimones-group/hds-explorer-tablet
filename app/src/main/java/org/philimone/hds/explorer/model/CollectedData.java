@@ -123,7 +123,7 @@ public class CollectedData implements Serializable, Table {
     }
 
     public boolean isFormFinalized(){
-        return this.formXmlPath!=null;
+        return this.formXmlPath!=null && !this.formXmlPath.isEmpty();
     }
 
     public boolean isSupervised() {

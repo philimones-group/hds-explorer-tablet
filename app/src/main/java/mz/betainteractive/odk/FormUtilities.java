@@ -260,6 +260,13 @@ public class FormUtilities {
         if (cursor.moveToNext()) {
             Log.d("move next", ""+cursor.getString(0));
             xmlFilePath = cursor.getString(cursor.getColumnIndex(InstanceProviderAPI.InstanceColumns.INSTANCE_FILE_PATH)); //used to read the xml file
+
+            String sdate = cursor.getString(cursor.getColumnIndex(InstanceProviderAPI.InstanceColumns.LAST_STATUS_CHANGE_DATE));
+            java.util.Date ludate = new java.util.Date(Long.parseLong(sdate)) ;
+
+            metaInstanceName = cursor.getString(cursor.getColumnIndex(InstanceProviderAPI.InstanceColumns.DISPLAY_NAME));
+            lastUpdatedDate = StringUtil.format(ludate, "yyyy-MM-dd HH:mm:ss");
+
         } else {
             Log.d("move next", "couldnt find executed form");
         }

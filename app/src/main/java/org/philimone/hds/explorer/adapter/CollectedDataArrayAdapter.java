@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
 import android.widget.TextView;
 
 import org.philimone.hds.explorer.R;
@@ -56,6 +57,7 @@ public class CollectedDataArrayAdapter extends ArrayAdapter {
         TextView txtName = (TextView) rowView.findViewById(R.id.txtItem1);
         TextView txtForm = (TextView) rowView.findViewById(R.id.txtItem2);
         TextView txtExtra = (TextView) rowView.findViewById(R.id.txtItem3);
+        CheckBox chkProcessed = (CheckBox) rowView.findViewById(R.id.chkProcessed);
 
         CollectedDataItem cdi = collectedDataList.get(position);
         //Member mb = cdi.getMember();
@@ -65,6 +67,7 @@ public class CollectedDataArrayAdapter extends ArrayAdapter {
 
         txtName.setText(cd.getFormInstanceName());
         txtExtra.setText(cd.getFormLastUpdatedDate());
+        chkProcessed.setChecked(cd.isFormFinalized());
 
         if (cdi.getForm()!=null){
             txtForm.setText(cd.getFormModule() + " -> " + cdi.getForm().getFormName());

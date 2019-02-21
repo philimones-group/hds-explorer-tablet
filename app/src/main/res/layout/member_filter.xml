@@ -129,8 +129,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
                         android:text="@string/member_filter_gender_female_lbl"
-                        android:textSize="@dimen/member_filter_checkbox_textsize"
-                        android:checked="true"/>
+                        android:textSize="@dimen/member_filter_checkbox_textsize"/>
 
                     <CheckBox
                         android:id="@+id/chkMemFilterGMale"

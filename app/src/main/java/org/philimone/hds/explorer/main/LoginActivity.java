@@ -44,7 +44,11 @@ import org.mindrot.jbcrypt.BCrypt;
 
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Date;
 import java.util.Scanner;
+import java.util.concurrent.TimeUnit;
+
+import mz.betainteractive.utilities.StringUtil;
 
 /**
  * A login screen that offers login via email/password.
@@ -179,7 +183,7 @@ public class LoginActivity extends Activity implements SyncDatabaseListener{
 
         db.close();
         */
-
+        //getStartTimestamp();
 
     }
 

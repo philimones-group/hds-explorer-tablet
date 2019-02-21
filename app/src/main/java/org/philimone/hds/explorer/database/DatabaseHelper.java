@@ -122,11 +122,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         public static final String COLUMN_IS_HOUSEHOLD_HEAD = "isHouseholdHeadForm";
         public static final String COLUMN_IS_MEMBER = "isMemberForm";
         public static final String COLUMN_IS_FOLLOW_UP_ONLY = "isFollowUpOnly";
+        public static final String COLUMN_MULTI_COL_PER_SESSION = "multiCollPerSession";
         public static final String COLUMN_FORM_MAP = "formMap";
         public static final String COLUMN_REDCAP_API = "redcapApi";
         public static final String COLUMN_REDCAP_MAP = "redcapMap";
 
-		public static final String[] ALL_COLUMNS = {COLUMN_FORM_ID, COLUMN_FORM_NAME, COLUMN_FORM_DESCRIPTION, COLUMN_FORM_DEPENDENCIES, COLUMN_REGION_LEVEL, COLUMN_GENDER, COLUMN_MIN_AGE, COLUMN_MAX_AGE, COLUMN_MODULES, COLUMN_IS_REGION, COLUMN_IS_HOUSEHOLD, COLUMN_IS_HOUSEHOLD_HEAD, COLUMN_IS_MEMBER, COLUMN_IS_FOLLOW_UP_ONLY, COLUMN_FORM_MAP, COLUMN_REDCAP_API, COLUMN_REDCAP_MAP};
+		public static final String[] ALL_COLUMNS = {COLUMN_FORM_ID, COLUMN_FORM_NAME, COLUMN_FORM_DESCRIPTION, COLUMN_FORM_DEPENDENCIES, COLUMN_REGION_LEVEL, COLUMN_GENDER, COLUMN_MIN_AGE, COLUMN_MAX_AGE, COLUMN_MODULES, COLUMN_IS_REGION, COLUMN_IS_HOUSEHOLD, COLUMN_IS_HOUSEHOLD_HEAD, COLUMN_IS_MEMBER, COLUMN_IS_FOLLOW_UP_ONLY, COLUMN_MULTI_COL_PER_SESSION, COLUMN_FORM_MAP, COLUMN_REDCAP_API, COLUMN_REDCAP_MAP};
 	}
 
     public static final class Module implements BaseColumns {
@@ -357,6 +358,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + Form.COLUMN_IS_HOUSEHOLD_HEAD + " INTEGER,"
             + Form.COLUMN_IS_MEMBER + " INTEGER,"
             + Form.COLUMN_IS_FOLLOW_UP_ONLY + " INTEGER,"
+            + Form.COLUMN_MULTI_COL_PER_SESSION + " INTEGER,"
             + Form.COLUMN_FORM_MAP + " TEXT,"
             + Form.COLUMN_REDCAP_API + " TEXT,"
             + Form.COLUMN_REDCAP_MAP + " TEXT);"

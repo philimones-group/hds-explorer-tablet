@@ -839,6 +839,17 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 				parser.nextTag();
 			}
 
+			parser.nextTag(); //process multiCollPerSession
+			if (!isEmptyTag("multiCollPerSession", parser)) {
+				parser.next();
+				table.setMultiCollPerSession(Boolean.parseBoolean(parser.getText()));
+				parser.nextTag(); //process </multiCollPerSession>
+				//Log.d(count+"-multiCollPerSession", "value="+ parser.getText());
+			}else{
+				table.setMultiCollPerSession(false);
+				parser.nextTag();
+			}
+
 			parser.nextTag(); //process formMap
 			if (!isEmptyTag("formMap", parser)) {
 				parser.next();

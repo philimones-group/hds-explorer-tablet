@@ -71,6 +71,7 @@ public class Converter {
 		form.setHouseholdHeadForm(cursor.getInt(cursor.getColumnIndex(DatabaseHelper.Form.COLUMN_IS_HOUSEHOLD_HEAD))==1);
 		form.setMemberForm(cursor.getInt(cursor.getColumnIndex(DatabaseHelper.Form.COLUMN_IS_MEMBER))==1);
 		form.setFollowUpOnly(cursor.getInt(cursor.getColumnIndex(DatabaseHelper.Form.COLUMN_IS_FOLLOW_UP_ONLY))==1);
+		form.setMultiCollPerSession(cursor.getInt(cursor.getColumnIndex(DatabaseHelper.Form.COLUMN_MULTI_COL_PER_SESSION))==1);
 		form.setFormMap(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Form.COLUMN_FORM_MAP)));
 		form.setRedcapApi(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Form.COLUMN_REDCAP_API)));
 		form.setRedcapMap(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Form.COLUMN_REDCAP_MAP)));

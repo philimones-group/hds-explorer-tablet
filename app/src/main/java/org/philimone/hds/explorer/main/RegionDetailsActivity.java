@@ -291,7 +291,7 @@ public class RegionDetailsActivity extends Activity implements OdkFormResultList
         FilledForm filledForm = new FilledForm(form.getFormId());
         filledForm.putAll(formDataLoader.getValues());
 
-        if (collectedData == null){
+        if (collectedData == null || form.isMultiCollPerSession()){
             formUtilities.loadForm(filledForm);
         }else{
             formUtilities.loadForm(filledForm, collectedData.getFormUri(), this);

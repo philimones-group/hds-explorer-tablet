@@ -29,6 +29,7 @@ public class  Form implements Serializable, Table {
     private boolean isHouseholdHeadForm;
     private boolean isMemberForm;
     private boolean isFollowUpOnly;
+    private boolean multiCollPerSession;
     private String formMapText;
     private Map<String, String> formMap;
     private String redcapApi;
@@ -159,6 +160,14 @@ public class  Form implements Serializable, Table {
         isFollowUpOnly = followUpOnly;
     }
 
+    public boolean isMultiCollPerSession() {
+        return multiCollPerSession;
+    }
+
+    public void setMultiCollPerSession(boolean multiCollPerSession) {
+        this.multiCollPerSession = multiCollPerSession;
+    }
+
     public void setFormMap(String bindMapAsText){
         this.formMapText = bindMapAsText;
         convertFormMapTextToMap();
@@ -212,6 +221,7 @@ public class  Form implements Serializable, Table {
         cv.put(DatabaseHelper.Form.COLUMN_IS_HOUSEHOLD_HEAD, isHouseholdHeadForm ? 1 : 0);
         cv.put(DatabaseHelper.Form.COLUMN_IS_MEMBER, isMemberForm ? 1 : 0);
         cv.put(DatabaseHelper.Form.COLUMN_IS_FOLLOW_UP_ONLY, isFollowUpOnly ? 1 : 0);
+        cv.put(DatabaseHelper.Form.COLUMN_MULTI_COL_PER_SESSION, multiCollPerSession ? 1 : 0);
         cv.put(DatabaseHelper.Form.COLUMN_FORM_MAP, formMapText);
         cv.put(DatabaseHelper.Form.COLUMN_REDCAP_API, redcapApi);
         cv.put(DatabaseHelper.Form.COLUMN_REDCAP_MAP, redcapMapText);

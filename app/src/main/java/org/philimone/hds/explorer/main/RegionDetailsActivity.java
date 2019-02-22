@@ -208,6 +208,16 @@ public class RegionDetailsActivity extends Activity implements OdkFormResultList
         openOdkForm(formDataLoader, collectedData);
     }
 
+    private boolean isVisibleForm(Form form){
+        if (activityRequestCode != TrackingListDetailsActivity.RC_REGION_DETAILS_TRACKINGLIST){ //RegionDetails was not opened via Tracking/FollowUp lists
+            if (form.isFollowUpOnly()){ //forms flagged with followUpOnly can only be opened using FollowUp Lists, to be able to open via normal surveys remove the flag on the server
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     private void readFormDataLoader(){
 
         Object[] objs = (Object[]) getIntent().getExtras().get("dataloaders");
@@ -215,7 +225,7 @@ public class RegionDetailsActivity extends Activity implements OdkFormResultList
         for (int i=0; i < objs.length; i++){
             FormDataLoader formDataLoader = (FormDataLoader) objs[i];
             Log.d("tag", ""+formDataLoader.getForm().getFormId());
-            if (formDataLoader.getForm().isRegionForm() && formDataLoader.getForm().getRegionLevel().equals(region.getLevel())){
+            if (formDataLoader.getForm().isRegionForm() && formDataLoader.getForm().getRegionLevel().equals(region.getLevel()) && isVisibleForm(formDataLoader.getForm())){
                 this.formDataLoaders.add(formDataLoader);
             }
         }

@@ -94,13 +94,13 @@ public class MemberDetailsActivity extends Activity implements OdkFormResultList
         for (int i=0; i < objs.length; i++){
             FormDataLoader formDataLoader = (FormDataLoader) objs[i];
             Log.d("tag", ""+formDataLoader.getForm().getFormId());
-            if (isMenmberVisualizableForm(formDataLoader.getForm())){
+            if (isMemberVisualizableForm(formDataLoader.getForm())){
                 this.formDataLoaders.add(formDataLoader);
             }
         }
     }
 
-    private boolean isMenmberVisualizableForm(Form form) {
+    private boolean isMemberVisualizableForm(Form form) {
         if (activityRequestCode != TrackingListDetailsActivity.RC_MEMBER_DETAILS_TRACKINGLIST){ //MemberDetails was not opened via Tracking/FollowUp lists
             if (form.isFollowUpOnly()){ //forms flagged with followUpOnly can only be opened using FollowUp Lists, to be able to open via normal surveys remove the flag on the server
                 return false;

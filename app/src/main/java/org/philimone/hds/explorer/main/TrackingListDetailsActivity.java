@@ -11,7 +11,7 @@ import android.widget.TextView;
 
 import org.philimone.hds.explorer.R;
 import org.philimone.hds.explorer.adapter.TrackingExpandableListAdapter;
-import org.philimone.hds.explorer.adapter.model.TrackingMemberItem;
+import org.philimone.hds.explorer.adapter.model.TrackingSubjectItem;
 import org.philimone.hds.explorer.adapter.model.TrackingSubListItem;
 import org.philimone.hds.explorer.data.FormDataLoader;
 import org.philimone.hds.explorer.database.Database;
@@ -36,7 +36,10 @@ import mz.betainteractive.utilities.StringUtil;
 
 public class TrackingListDetailsActivity extends Activity {
 
-    public static final int RC_MEMBER_DETAILS_TRACKINGLIST = 20;
+    public static final int RC_REGION_DETAILS_TRACKINGLIST = 20;
+    public static final int RC_HOUSEHOLD_DETAILS_TRACKINGLIST = 21;
+    public static final int RC_MEMBER_DETAILS_TRACKINGLIST = 22;
+
 
     private TextView txtTrackListTitle;
     private TextView txtTrackListDetails;
@@ -70,7 +73,7 @@ public class TrackingListDetailsActivity extends Activity {
         //the activity is now visible
         showProgress(true);
 
-        new TrackingMemberListSearchTask(trackingList).execute();
+        new TrackingSubjectListSearchTask(trackingList).execute();
     }
 
     private void initialize() {
@@ -86,7 +89,7 @@ public class TrackingListDetailsActivity extends Activity {
         this.elvTrackingLists.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
             @Override
             public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
-                onMemberItemClicked(groupPosition, childPosition);
+                onSubjectItemClicked(groupPosition, childPosition);
                 return true;
             }
         });
@@ -130,30 +133,14 @@ public class TrackingListDetailsActivity extends Activity {
         }
     }
 
-    private void onMemberItemClicked(int groupPosition, int childPosition) {
-        TrackingMemberItem memberItem = (TrackingMemberItem) adapter.getChild(groupPosition, childPosition);
+    private void onSubjectItemClicked(int groupPosition, int childPosition) {
+        TrackingSubjectItem subjectItem = (TrackingSubjectItem) adapter.getChild(groupPosition, childPosition);
 
-        OnMemberSelectedTask task = new OnMemberSelectedTask(memberItem);
+        OnSubjectSelectedTask task = new OnSubjectSelectedTask(subjectItem);
         task.execute();
 
         showLoadingDialog(getString(R.string.loading_dialog_member_details_lbl), true);
 
-        /*
-        FormDataLoader[] dataLoaders = getFormLoaders(memberItem);
-        Household household = getHousehold(memberItem.getMember());
-        Region region = getRegion(household);
-
-        loadFormValues(dataLoaders, household, memberItem.getMember(), region, memberItem);
-
-        Intent intent = new Intent(this, MemberDetailsActivity.class);
-        intent.putExtra("user", loggedUser);
-        intent.putExtra("member", memberItem.getMember());
-        intent.putExtra("member_studycode", memberItem.getStudyCode());
-        intent.putExtra("request_code", RC_MEMBER_DETAILS_TRACKINGLIST);
-        intent.putExtra("dataloaders", dataLoaders);
-
-        startActivityForResult(intent, RC_MEMBER_DETAILS_TRACKINGLIST);
-        */
     }
 
     private Household getHousehold(Member member){
@@ -178,7 +165,7 @@ public class TrackingListDetailsActivity extends Activity {
         return region;
     }
 
-    public FormDataLoader[] getFormLoaders(TrackingMemberItem memberItem){
+    public FormDataLoader[] getFormLoaders(TrackingSubjectItem subjectItem){
 
         Database db = new Database(this);
 
@@ -190,7 +177,7 @@ public class TrackingListDetailsActivity extends Activity {
 
         int i=0;
         for (Form form : forms){
-            if (memberItem.getForms().contains(form.getFormId())){ //Create formloader for only the forms that the memberItem has to collect
+            if (subjectItem.getForms().contains(form.getFormId())){ //Create formloader for only the forms that the subjectItem has to collect
                 FormDataLoader loader = new FormDataLoader(form);
                 list.add(loader);
             }
@@ -201,7 +188,7 @@ public class TrackingListDetailsActivity extends Activity {
         return list.toArray(aList);
     }
 
-    private void loadFormValues(FormDataLoader loader, Household household, Member member, Region region, TrackingMemberItem memberItem){
+    private void loadFormValues(FormDataLoader loader, Household household, Member member, Region region, TrackingSubjectItem subjectItem){
         if (household != null){
             loader.loadHouseholdValues(household);
         }
@@ -216,7 +203,7 @@ public class TrackingListDetailsActivity extends Activity {
         }
 
         loader.loadConstantValues();
-        loader.loadSpecialConstantValues(household, member, loggedUser, region, memberItem);
+        loader.loadSpecialConstantValues(household, member, loggedUser, region, subjectItem);
 
         //Load variables on datasets
         for (DataSet dataSet : getDataSets()){
@@ -227,9 +214,9 @@ public class TrackingListDetailsActivity extends Activity {
         }
     }
 
-    private void loadFormValues(FormDataLoader[] loaders, Household household, Member member, Region region, TrackingMemberItem memberItem){
+    private void loadFormValues(FormDataLoader[] loaders, Household household, Member member, Region region, TrackingSubjectItem subjectItem){
         for (FormDataLoader loader : loaders){
-            loadFormValues(loader, household, member, region, memberItem);
+            loadFormValues(loader, household, member, region, subjectItem);
         }
     }
 
@@ -256,46 +243,78 @@ public class TrackingListDetailsActivity extends Activity {
     */
 
     //reading tracking list
-    private TrackingExpandableListAdapter readTrackingMemberLists(TrackingList trackingList){
+    private TrackingExpandableListAdapter readTrackingSubjectLists(TrackingList trackingList){
         Database db = new Database(this);
 
 
         db.open();
-        List<org.philimone.hds.explorer.model.followup.TrackingSubjectList> listTml = Queries.getAllTrackingMemberListBy(db, DatabaseHelper.TrackingSubjectList.COLUMN_TRACKING_ID+"=?", new String[]{ trackingList.getId()+"" });
+        List<org.philimone.hds.explorer.model.followup.TrackingSubjectList> listTml = Queries.getAllTrackingSubjectListBy(db, DatabaseHelper.TrackingSubjectList.COLUMN_TRACKING_ID+"=?", new String[]{ trackingList.getId()+"" });
         List<CollectedData> listCollectedData = Queries.getAllCollectedDataBy(db, DatabaseHelper.CollectedData.COLUMN_FORM_MODULE+"=?", new String[]{ trackingList.getModule()+"" });
         db.close();
 
-        List<String> codes = new ArrayList<>();
+        List<String> codesRegions = new ArrayList<>();
+        List<String> codesHouseholds = new ArrayList<>();
+        List<String> codesMembers = new ArrayList<>();
+
 
         for (org.philimone.hds.explorer.model.followup.TrackingSubjectList tm : listTml){
-            codes.add(tm.getSubjectCode());
-            Log.d("code-", ""+tm.getSubjectCode());
+
+            if (tm.isRegionSubject()){
+                codesRegions.add(tm.getSubjectCode());
+                Log.d("r-code-", ""+tm.getSubjectCode());
+            }
+            if (tm.isHouseholdSubject()){
+                codesHouseholds.add(tm.getSubjectCode());
+                Log.d("h-code-", ""+tm.getSubjectCode());
+            }
+            if (tm.isMemberSubject()){
+                codesMembers.add(tm.getSubjectCode());
+                Log.d("code-", ""+tm.getSubjectCode());
+            }
+
         }
 
-        List<Member> members = getMembers(db, codes);
+        List<Region> regions = getRegions(db, codesRegions);
+        List<Household> households = getHouseholds(db, codesHouseholds);
+        List<Member> members = getMembers(db, codesMembers);
 
         Log.d("listTml", ""+listTml.size());
         Log.d("listCollectedData", ""+listCollectedData.size());
+        Log.d("regions", ""+regions.size());
+        Log.d("households", ""+households.size());
         Log.d("members", ""+members.size());
 
         ArrayList<TrackingSubListItem> groupItems = new ArrayList<>();
-        HashMap<TrackingSubListItem, ArrayList<TrackingMemberItem>> trackingCollection = new HashMap<>();
+        HashMap<TrackingSubListItem, ArrayList<TrackingSubjectItem>> trackingCollection = new HashMap<>();
 
-        //I need member, collectedData
+        //I need member/region/household, collectedData
         for (org.philimone.hds.explorer.model.followup.TrackingSubjectList item : listTml){
-            TrackingSubListItem tsi = getSubListItem(members, listCollectedData, item, trackingList);
-            TrackingMemberItem tMember = getMemberItem(members, listCollectedData, item, tsi);
-            ArrayList<TrackingMemberItem> listMembers = trackingCollection.get(tsi);
 
-            if (listMembers == null){
-                listMembers = new ArrayList<>();
+            TrackingSubListItem tsi = getSubListItem(item, trackingList);
+
+            TrackingSubjectItem subjectItem = null;
+            if (item.isRegionSubject()){
+                subjectItem = getSubjectItem(regions, null, null, listCollectedData, item, tsi);
+            }
+            if (item.isHouseholdSubject()){
+                subjectItem = getSubjectItem(null, households, null, listCollectedData, item, tsi);
+            }
+            if (item.isMemberSubject()){
+                subjectItem = getSubjectItem(null, null, members, listCollectedData, item, tsi);
+            }
+
+
+            ArrayList<TrackingSubjectItem> listSubjects = trackingCollection.get(tsi);
+
+            if (listSubjects == null){
+                listSubjects = new ArrayList<>();
 
                 groupItems.add(tsi);
-                listMembers.add(tMember);
+                listSubjects.add(subjectItem);
 
-                trackingCollection.put(tsi, listMembers);
+                trackingCollection.put(tsi, listSubjects);
             }else{
-                listMembers.add(tMember);
+                listSubjects.add(subjectItem);
             }
         }
 
@@ -303,6 +322,26 @@ public class TrackingListDetailsActivity extends Activity {
 
         TrackingExpandableListAdapter adapter = new TrackingExpandableListAdapter(this, groupItems, trackingCollection);
         return adapter;
+    }
+
+    private List<Region> getRegions(Database db, List<String> codes){
+        db.open();
+        List<Region> regions = Queries.getAllRegionBy(db, DatabaseHelper.Region.COLUMN_CODE +" IN ("+ StringUtil.toInClause(codes) +")", null);
+        db.close();
+
+        if (regions==null) return new ArrayList<>();
+
+        return regions;
+    }
+
+    private List<Household> getHouseholds(Database db, List<String> codes){
+        db.open();
+        List<Household> households = Queries.getAllHouseholdBy(db, DatabaseHelper.Household.COLUMN_CODE +" IN ("+ StringUtil.toInClause(codes) +")", null);
+        db.close();
+
+        if (households==null) return new ArrayList<>();
+
+        return households;
     }
 
     private List<Member> getMembers(Database db, List<String> codes){
@@ -315,41 +354,76 @@ public class TrackingListDetailsActivity extends Activity {
         return members;
     }
 
-    private TrackingMemberItem getMemberItem(List<Member> members, List<CollectedData> collectedDataList, org.philimone.hds.explorer.model.followup.TrackingSubjectList item, TrackingSubListItem subListItem) {
-        TrackingMemberItem tMember = new TrackingMemberItem();
+    private TrackingSubjectItem getSubjectItem(List<Region> regions, List<Household> households, List<Member> members, List<CollectedData> collectedDataList, org.philimone.hds.explorer.model.followup.TrackingSubjectList item, TrackingSubListItem subListItem) {
+        TrackingSubjectItem tSubject = new TrackingSubjectItem();
 
 
+        Region region = null;
+        Household household = null;
         Member member = null;
+
         List<CollectedData> listCollected = new ArrayList<>();
         String[] forms = item.getSubjectForms().split(",");
         List<String> formsList = Arrays.asList(forms);
 
-        for (Member mb : members){
-            if (mb.getCode().equals(item.getSubjectCode())){
-                member = mb;
-                break;
+        if (regions != null){
+            for (Region rg : regions){
+                if (rg.getCode().equals(item.getSubjectCode())){
+                    region = rg;
+                    break;
+                }
+            }
+        } else if (households != null){
+            for (Household hh : households){
+                if (hh.getCode().equals(item.getSubjectCode())){
+                    household = hh;
+                    break;
+                }
+            }
+        } else if (members != null){
+            for (Member mb : members){
+                if (mb.getCode().equals(item.getSubjectCode())){
+                    member = mb;
+                    break;
+                }
             }
         }
 
-
+        Log.d("region", ""+region);
+        Log.d("household", ""+household);
         Log.d("member", ""+member);
 
+        int tableId = (region!=null) ? region.getId() : ( (household!=null) ? household.getId() : ((member!=null) ? member.getId() : 0) );
+
         for (CollectedData cd : collectedDataList){
-            if (formsList.contains(cd.getFormId()) && cd.getRecordId()==member.getId()){
+            if (formsList.contains(cd.getFormId()) && cd.getRecordId()==tableId){ //get the selected subject Collected Data
                 listCollected.add(cd);
             }
         }
 
         //List<CollectedData> list = Queries.getAllCollectedDataBy(db, DatabaseHelper.CollectedData.COLUMN_RECORD_ID+"=? AND "+DatabaseHelper.CollectedData.COLUMN_FORM_ID+" IN (?)", new String[]{ member.getId()+"", StringUtil.toInClause(forms)});
 
-        tMember.setMember(member);
-        tMember.setListItem(subListItem);
-        tMember.setStudyCode(item.getSubjectType());
-        tMember.setVisitNumber(item.getSubjectVisit());
-        tMember.addForms(forms);
-        tMember.addCollectedData(listCollected);
+        tSubject.setRegion(region);
+        tSubject.setHousehold(household);
+        tSubject.setMember(member);
+        tSubject.setListItem(subListItem);
+        tSubject.setSubjectType(item.getSubjectType());
+        tSubject.setVisitNumber(item.getSubjectVisit());
+        tSubject.addForms(forms);
+        tSubject.addCollectedData(listCollected);
 
-        return tMember;
+        return tSubject;
+    }
+
+    private TrackingSubListItem getSubListItem(org.philimone.hds.explorer.model.followup.TrackingSubjectList trackingSubjectList, TrackingList trackingList){
+        TrackingSubListItem tsi = new TrackingSubListItem();
+
+        tsi.setId(trackingSubjectList.getListId());
+        tsi.setTrackingList(trackingList);
+        tsi.setTitle(trackingSubjectList.getTitle());
+        tsi.setForms(trackingSubjectList.getForms().split(","));
+
+        return tsi;
     }
 
     private TrackingSubListItem getSubListItem(List<Member> members, List<CollectedData> collectedDataList, org.philimone.hds.explorer.model.followup.TrackingSubjectList trackingMemberList, TrackingList trackingList){
@@ -363,17 +437,17 @@ public class TrackingListDetailsActivity extends Activity {
         return tsi;
     }
 
-    class TrackingMemberListSearchTask extends AsyncTask<Void, Void, TrackingExpandableListAdapter> {
+    class TrackingSubjectListSearchTask extends AsyncTask<Void, Void, TrackingExpandableListAdapter> {
 
         private TrackingList trackingList;
 
-        public TrackingMemberListSearchTask(TrackingList trackingList){
+        public TrackingSubjectListSearchTask(TrackingList trackingList){
             this.trackingList = trackingList;
         }
 
         @Override
         protected TrackingExpandableListAdapter doInBackground(Void... params) {
-            return readTrackingMemberLists(trackingList);
+            return readTrackingSubjectLists(trackingList);
         }
 
         @Override
@@ -394,25 +468,42 @@ public class TrackingListDetailsActivity extends Activity {
         }
     }
 
-    class OnMemberSelectedTask extends AsyncTask<Void, Void, Void> {
+    class OnSubjectSelectedTask extends AsyncTask<Void, Void, Void> {
         private Household household;
         private Member member;
         private Region region;
-        private TrackingMemberItem memberItem;
+        private TrackingSubjectItem subjectItem;
         private FormDataLoader[] dataLoaders;
+        private boolean isRegion;
+        private boolean isHousehold;
+        private boolean isMember;
 
-        public OnMemberSelectedTask(TrackingMemberItem memberItem) {
-            this.memberItem = memberItem;
+        public OnSubjectSelectedTask(TrackingSubjectItem subjectItem) {
+            this.subjectItem = subjectItem;
+            this.isRegion = subjectItem.isRegionSubject();
+            this.isHousehold = subjectItem.isHouseholdSubject();
+            this.isMember = subjectItem.isMemberSubject();
         }
 
         @Override
         protected Void doInBackground(Void... voids) {
 
-            this.dataLoaders = getFormLoaders(memberItem);
-            this.household = getHousehold(memberItem.getMember());
-            this.region = getRegion(household);
+            this.dataLoaders = getFormLoaders(subjectItem);
 
-            loadFormValues(dataLoaders, household, memberItem.getMember(), region, memberItem);
+            if (isRegion){
+                this.region = subjectItem.getRegion();
+
+            } else if (isHousehold){
+                this.household = subjectItem.getHousehold();
+                this.region = getRegion(household);
+
+            } else if (isMember){
+                this.member = subjectItem.getMember();
+                this.household = getHousehold(subjectItem.getMember());
+                this.region = getRegion(household);
+            }
+
+            loadFormValues(dataLoaders, household, member, region, subjectItem);
 
             return null;
         }
@@ -420,12 +511,33 @@ public class TrackingListDetailsActivity extends Activity {
         @Override
         protected void onPostExecute(Void result) {
 
-            Intent intent = new Intent(TrackingListDetailsActivity.this, MemberDetailsActivity.class);
-            intent.putExtra("user", loggedUser);
-            intent.putExtra("member", memberItem.getMember());
-            intent.putExtra("member_studycode", memberItem.getStudyCode());
-            intent.putExtra("request_code", RC_MEMBER_DETAILS_TRACKINGLIST);
-            intent.putExtra("dataloaders", dataLoaders);
+            Intent intent = null;
+
+            if (isRegion) {
+                intent = new Intent(TrackingListDetailsActivity.this, RegionDetailsActivity.class);
+                intent.putExtra("user", loggedUser);
+                intent.putExtra("region", region);
+                intent.putExtra("dataloaders", dataLoaders);
+                intent.putExtra("request_code", RC_REGION_DETAILS_TRACKINGLIST);
+            }
+
+            if (isHousehold) {
+                intent = new Intent(TrackingListDetailsActivity.this, HouseholdDetailsActivity.class);
+                intent.putExtra("user", loggedUser);
+                intent.putExtra("household", household);
+                intent.putExtra("dataloaders", dataLoaders);
+                intent.putExtra("request_code", RC_HOUSEHOLD_DETAILS_TRACKINGLIST);
+            }
+
+            if (isMember) {
+                intent = new Intent(TrackingListDetailsActivity.this, MemberDetailsActivity.class);
+                intent.putExtra("user", loggedUser);
+                intent.putExtra("member", subjectItem.getMember());
+                intent.putExtra("member_studycode", subjectItem.getSubjectType());
+                intent.putExtra("request_code", RC_MEMBER_DETAILS_TRACKINGLIST);
+                intent.putExtra("dataloaders", dataLoaders);
+            }
+
 
             showLoadingDialog(null, false);
 

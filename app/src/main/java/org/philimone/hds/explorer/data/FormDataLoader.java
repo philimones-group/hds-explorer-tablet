@@ -2,14 +2,13 @@ package org.philimone.hds.explorer.data;
 
 import android.util.Log;
 
-import org.philimone.hds.explorer.adapter.model.TrackingMemberItem;
+import org.philimone.hds.explorer.adapter.model.TrackingSubjectItem;
 import org.philimone.hds.explorer.model.DataSet;
 import org.philimone.hds.explorer.model.Form;
 import org.philimone.hds.explorer.model.Household;
 import org.philimone.hds.explorer.model.Member;
 import org.philimone.hds.explorer.model.Region;
 import org.philimone.hds.explorer.model.User;
-import org.philimone.hds.explorer.model.followup.TrackingList;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -310,7 +309,7 @@ public class FormDataLoader implements Serializable {
     }
 
     /* loading special constant values */
-    public void loadSpecialConstantValues(Household household, Member member, User user, Region region, TrackingMemberItem memberItem){
+    public void loadSpecialConstantValues(Household household, Member member, User user, Region region, TrackingSubjectItem memberItem){
         Map<String, String> map = form.getFormMap();
         for (String key : map.keySet()){
             //Log.d("special constant", ""+key );
@@ -341,7 +340,7 @@ public class FormDataLoader implements Serializable {
                 /** Both these variables should be well analyzed - we need to map them correctly with better names, TrackingList.studyCode should be removed and use DataSet instead
                 //check for studyCode that is used on Tracking/Follow-up Lists of studies modules
                 if (internalVariableName.equals("studyCode") && memberItem!=null){
-                    value = memberItem.getStudyCode();
+                    value = memberItem.getSubjectType();
                 }
                 //check for the of the tracking list
                 if (internalVariableName.equals("trackListCode") && memberItem!=null){

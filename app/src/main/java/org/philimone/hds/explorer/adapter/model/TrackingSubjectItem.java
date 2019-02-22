@@ -1,22 +1,30 @@
 package org.philimone.hds.explorer.adapter.model;
 
 import org.philimone.hds.explorer.model.CollectedData;
+import org.philimone.hds.explorer.model.Household;
 import org.philimone.hds.explorer.model.Member;
+import org.philimone.hds.explorer.model.Region;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class TrackingMemberItem implements Serializable {
+import static org.philimone.hds.explorer.model.followup.TrackingSubjectList.TYPE_HOUSEHOLD;
+import static org.philimone.hds.explorer.model.followup.TrackingSubjectList.TYPE_MEMBER;
+import static org.philimone.hds.explorer.model.followup.TrackingSubjectList.TYPE_REGION;
+
+public class TrackingSubjectItem implements Serializable {
+    private Region region;
+    private Household  household;
     private Member member;
     private TrackingSubListItem listItem;
-    private String studyCode;
+    private String subjectType;
     private int visitNumber;
     private List<String> forms;
     private List<CollectedData> collectedForms;
 
-    public TrackingMemberItem() {
+    public TrackingSubjectItem() {
         forms = new ArrayList<>();
         collectedForms = new ArrayList<>();
     }
@@ -37,6 +45,34 @@ public class TrackingMemberItem implements Serializable {
         this.member = member;
     }
 
+    public Region getRegion() {
+        return region;
+    }
+
+    public void setRegion(Region region) {
+        this.region = region;
+    }
+
+    public Household getHousehold() {
+        return household;
+    }
+
+    public void setHousehold(Household household) {
+        this.household = household;
+    }
+
+    public boolean isRegionSubject(){
+        return subjectType.equalsIgnoreCase(TYPE_REGION);
+    }
+
+    public boolean isHouseholdSubject(){
+        return subjectType.equalsIgnoreCase(TYPE_HOUSEHOLD);
+    }
+
+    public boolean isMemberSubject(){
+        return subjectType.equalsIgnoreCase(TYPE_MEMBER);
+    }
+
     public TrackingSubListItem getListItem() {
         return listItem;
     }
@@ -45,12 +81,12 @@ public class TrackingMemberItem implements Serializable {
         this.listItem = listItem;
     }
 
-    public String getStudyCode() {
-        return studyCode;
+    public String getSubjectType() {
+        return subjectType;
     }
 
-    public void setStudyCode(String studyCode) {
-        this.studyCode = studyCode;
+    public void setSubjectType(String subjectType) {
+        this.subjectType = subjectType;
     }
 
     public int getVisitNumber() {

@@ -9,6 +9,11 @@ import java.io.Serializable;
 
 public class TrackingSubjectList implements Serializable, Table {
 
+    public static String TYPE_REGION = "Region";
+    public static String TYPE_HOUSEHOLD = "Household";
+    public static String TYPE_MEMBER = "Member";
+    public static String TYPE_USER = "User";
+
     private int id;
     private int listId;     /* Id of the MemberList */
     private int trackingId; /* Id of the TrackingList/Follow-up List */
@@ -75,6 +80,18 @@ public class TrackingSubjectList implements Serializable, Table {
 
     public void setSubjectType(String subjectType) {
         this.subjectType = subjectType;
+    }
+
+    public boolean isRegionSubject(){
+        return subjectType.equalsIgnoreCase(TYPE_REGION);
+    }
+
+    public boolean isHouseholdSubject(){
+        return subjectType.equalsIgnoreCase(TYPE_HOUSEHOLD);
+    }
+
+    public boolean isMemberSubject(){
+        return subjectType.equalsIgnoreCase(TYPE_MEMBER);
     }
 
     public int getSubjectVisit() {

@@ -239,25 +239,25 @@ public class Queries {
         return list;
     }
 
-    public static TrackingSubjectList getTrackingMemberListBy(Database database, String whereClause, String[] clauseArgs){
+    public static TrackingSubjectList getTrackingSubjectListBy(Database database, String whereClause, String[] clauseArgs){
         TrackingSubjectList trackingList = null;
 
         Cursor cursor = database.query(TrackingSubjectList.class, whereClause, clauseArgs, null, null, null);
 
         if (cursor.moveToFirst()){
-            trackingList = Converter.cursorToTrackingMembersList(cursor);
+            trackingList = Converter.cursorToTrackingSubjectList(cursor);
         }
 
         return trackingList;
     }
 
-    public static List<TrackingSubjectList> getAllTrackingMemberListBy(Database database, String whereClause, String[] clauseArgs){
+    public static List<TrackingSubjectList> getAllTrackingSubjectListBy(Database database, String whereClause, String[] clauseArgs){
         List<TrackingSubjectList> list = new ArrayList<>();
 
         Cursor cursor = database.query(TrackingSubjectList.class, whereClause, clauseArgs, null, null, null);
 
         while (cursor.moveToNext()){
-            TrackingSubjectList trackingList = Converter.cursorToTrackingMembersList(cursor);
+            TrackingSubjectList trackingList = Converter.cursorToTrackingSubjectList(cursor);
             list.add(trackingList);
         }
 

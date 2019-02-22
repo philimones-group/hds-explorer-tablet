@@ -92,6 +92,16 @@ public class HouseholdDetailsActivity extends Activity implements OdkFormResultL
         initialize();
     }
 
+    private boolean isVisibleForm(Form form){
+        if (activityRequestCode != TrackingListDetailsActivity.RC_HOUSEHOLD_DETAILS_TRACKINGLIST){ //HouseholdDetails was not opened via Tracking/FollowUp lists
+            if (form.isFollowUpOnly()){ //forms flagged with followUpOnly can only be opened using FollowUp Lists, to be able to open via normal surveys remove the flag on the server
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     private void readFormDataLoader(){
 
         Object[] objs = (Object[]) getIntent().getExtras().get("dataloaders");
@@ -99,7 +109,7 @@ public class HouseholdDetailsActivity extends Activity implements OdkFormResultL
         for (int i=0; i < objs.length; i++){
             FormDataLoader formDataLoader = (FormDataLoader) objs[i];
             Log.d("tag", ""+formDataLoader.getForm().getFormId());
-            if (formDataLoader.getForm().isHouseholdForm()){
+            if (formDataLoader.getForm().isHouseholdForm() && isVisibleForm(formDataLoader.getForm())){
                 this.formDataLoaders.add(formDataLoader);
             }
         }

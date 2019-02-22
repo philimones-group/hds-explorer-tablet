@@ -210,7 +210,7 @@ public class Converter {
 		return tl;
 	}
 
-	public static org.philimone.hds.explorer.model.followup.TrackingSubjectList cursorToTrackingMembersList(Cursor cursor){
+	public static org.philimone.hds.explorer.model.followup.TrackingSubjectList cursorToTrackingSubjectList(Cursor cursor){
 		org.philimone.hds.explorer.model.followup.TrackingSubjectList tml = new org.philimone.hds.explorer.model.followup.TrackingSubjectList();
 
 		tml.setId(cursor.getInt(cursor.getColumnIndex(DatabaseHelper.TrackingSubjectList._ID)));

@@ -45,7 +45,7 @@ public class MemberArrayAdapter  extends ArrayAdapter<Member> {
         this.members = new ArrayList<>();
         this.members.addAll(objects);
         this.mContext = context;
-        this.layoutResId = R.layout.member_item;
+        this.layoutResId = R.layout.member_item_xtra;
     }
 
     /**
@@ -172,6 +172,10 @@ public class MemberArrayAdapter  extends ArrayAdapter<Member> {
                 txtName.setTypeface(null, Typeface.BOLD);
                 iconView.setImageResource(R.mipmap.member_green_chk);
             }
+        }
+
+        if (txtExtra != null) {
+            txtExtra.setText(mb.getHouseholdCode() +" -> "+mb.getHouseholdName());
         }
 
         if (this.extras != null && position < this.extras.size()){

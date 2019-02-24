@@ -202,7 +202,8 @@
     <string name="household_filter_gps_not_available_lbl">As cooredenadas GPS das casas não estão disponíveis</string>
     <string name="household_filter_no_houses_lbl">A lista das casas está vazia</string>
     <string name="household_filter_clear_lbl">Limpar</string>
-    <string name="household_filter_member_not_found_lbl">Casas com código (%1$s) não foram encontradas</string>
+    <string name="household_filter_household_not_found_lbl">Casas com código (%1$s) não foram encontradas</string>
+    <string name="household_filter_head_label">Chefe:</string>
 
     <string name="survey_households_btn_lbl">Procurar por Agregado</string>
     <string name="survey_members_btn_lbl">Procurar por membros</string>

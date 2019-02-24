@@ -207,6 +207,7 @@
     <string name="household_filter_no_houses_lbl">The households list is empty</string>
     <string name="household_filter_clear_lbl">Clear</string>
     <string name="household_filter_household_not_found_lbl">Households with code like (%1$s) were not found</string>
+    <string name="household_filter_head_label">Head:</string>
 
     <string name="survey_households_btn_lbl">Search By Household</string>
     <string name="survey_members_btn_lbl">Search By Members</string>

@@ -124,6 +124,7 @@ public class HouseholdArrayAdapter extends ArrayAdapter<Household> {
         ImageView iconView = (ImageView) rowView.findViewById(R.id.iconView);
         TextView txtName = (TextView) rowView.findViewById(R.id.txtHousename);
         TextView txtCode = (TextView) rowView.findViewById(R.id.txtHouseCode);
+        TextView txtHead = (TextView) rowView.findViewById(R.id.txtHead);
         TextView txtExtra = (TextView) rowView.findViewById(R.id.txtExtras);
         CheckBox chkVBprocessed = (CheckBox) rowView.findViewById(R.id.chkProcessed);
 
@@ -131,6 +132,10 @@ public class HouseholdArrayAdapter extends ArrayAdapter<Household> {
 
         txtName.setText(hh.getName());
         txtCode.setText(hh.getCode());
+
+        if (txtHead != null){
+            txtHead.setText(hh.getHeadName());
+        }
 
         if (chkVBprocessed != null && checkableHouseholds != null){
             chkVBprocessed.setChecked(checkableHouseholds.get(position));

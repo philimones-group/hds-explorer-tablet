@@ -64,6 +64,8 @@ public class MemberDetailsActivity extends Activity implements OdkFormResultList
     private List<FormDataLoader> formDataLoaders = new ArrayList<>();
     private FormDataLoader lastLoadedForm;
 
+    private List<Member> allHouseholdMembers = new ArrayList<>();
+
     private User loggedUser;
 
     private FormUtilities formUtilities;
@@ -235,6 +237,20 @@ public class MemberDetailsActivity extends Activity implements OdkFormResultList
         }
 
         showCollectedData();
+        retrieveAllHouseholdMembers();
+
+    }
+
+    private void retrieveAllHouseholdMembers(){
+        Database db = new Database(this);
+        db.open();
+
+        List<Member> members = Queries.getAllMemberBy(db, DatabaseHelper.Member.COLUMN_HOUSE_CODE+"=?", new String[]{ this.member.getHouseholdCode() } );
+
+        db.close();
+
+        this.allHouseholdMembers.clear();
+        this.allHouseholdMembers.addAll(members);
     }
 
     private void onCollectedDataItemClicked(int position) {
@@ -377,6 +393,7 @@ public class MemberDetailsActivity extends Activity implements OdkFormResultList
 
         FilledForm filledForm = new FilledForm(form.getFormId());
         filledForm.putAll(formDataLoader.getValues());
+        filledForm.setHouseholdMembers(allHouseholdMembers);
 
         if (collectedData == null || form.isMultiCollPerSession()){
             formUtilities.loadForm(filledForm);
@@ -397,6 +414,7 @@ public class MemberDetailsActivity extends Activity implements OdkFormResultList
 
         FilledForm filledForm = new FilledForm(form.getFormId());
         filledForm.putAll(formDataLoader.getValues());
+        filledForm.setHouseholdMembers(allHouseholdMembers);
 
         if (collectedData == null){
             formUtilities.loadForm(filledForm);

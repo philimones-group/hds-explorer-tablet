@@ -241,6 +241,8 @@ public class HouseholdDetailsActivity extends Activity implements OdkFormResultL
 
         List<Member> members = Queries.getAllMemberBy(db, DatabaseHelper.Member.COLUMN_HOUSE_CODE+"=?", new String[]{ household.getCode() } );
 
+        db.close();
+
         MemberArrayAdapter adapter = new MemberArrayAdapter(this, members);
         this.lvHouseholdMembers.setAdapter(adapter);
     }
@@ -349,6 +351,11 @@ public class HouseholdDetailsActivity extends Activity implements OdkFormResultL
         return collectedData;
     }
 
+    private List<Member> getMemberOnListAdapter(){
+        MemberArrayAdapter adapter = (MemberArrayAdapter) this.lvHouseholdMembers.getAdapter();
+        return adapter.getMembers();
+    }
+
     private void openOdkForm(FormDataLoader formDataLoader) {
 
         CollectedData collectedData = getCollectedData(formDataLoader);
@@ -362,6 +369,7 @@ public class HouseholdDetailsActivity extends Activity implements OdkFormResultL
 
         FilledForm filledForm = new FilledForm(form.getFormId());
         filledForm.putAll(formDataLoader.getValues());
+        filledForm.setHouseholdMembers(getMemberOnListAdapter());
 
         if (collectedData == null || form.isMultiCollPerSession()){
             formUtilities.loadForm(filledForm);

@@ -337,25 +337,7 @@ public class FormDataLoader implements Serializable {
                     value = StringUtil.format(new Date(), "yyyy-MM-dd HH:mm:ss");
                 }
 
-                /** Both these variables should be well analyzed - we need to map them correctly with better names, TrackingList.studyCode should be removed and use DataSet instead
-                //check for studyCode that is used on Tracking/Follow-up Lists of studies modules
-                if (internalVariableName.equals("studyCode") && memberItem!=null){
-                    value = memberItem.getSubjectType();
-                }
-                //check for the of the tracking list
-                if (internalVariableName.equals("trackListCode") && memberItem!=null){
-                    if (memberItem.getListItem()!=null){
-                        if (memberItem.getListItem().getTrackingList()!=null){
-                            TrackingList trackingList = memberItem.getListItem().getTrackingList();
-                            value = trackingList.getCode();
-                        }
-                    }
-                }
-                //check for trackingListMember visitNumber/visit
-                if (internalVariableName.equals("visitNumber") && memberItem!=null){
-                    value = memberItem.getVisitNumber()+"";
-                }
-                 */
+
 
                 //get variable format from odkVariable eg. variableName->format => patientName->yes,no
                 String[] splt = odkVariable.split("->");
@@ -503,6 +485,7 @@ public class FormDataLoader implements Serializable {
      * @return
      */
     private ExtrasVariable tryParseExtrasVariable(String str){
+        /* // WE ARE NOT USING EXTRAS VARIABLES ON HDS-EXPLORER
         if (str.matches(".+\\[[0-9]+\\]")){
             ExtrasVariable extras = new ExtrasVariable();
             int indexPar = str.indexOf("[");
@@ -511,8 +494,9 @@ public class FormDataLoader implements Serializable {
 
             return extras;
         }
-
+        */
         return null;
+
     }
 
     private class ExtrasVariable {

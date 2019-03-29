@@ -1,6 +1,7 @@
 package org.philimone.hds.explorer.adapter;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,13 +22,16 @@ import java.util.List;
  */
 public class TrackingListArrayAdapter extends ArrayAdapter {
     private List<TrackingList> trackingLists;
+    private List<TrackingList> originalLists;
     private Context mContext;
 
     public TrackingListArrayAdapter(Context context, List<TrackingList> objects){
         super(context, R.layout.tracking_list_item, objects);
 
         this.trackingLists = new ArrayList<>();
+        this.originalLists = new ArrayList<>();
         this.trackingLists.addAll(objects);
+        this.originalLists.addAll(objects);
         this.mContext = context;
     }
 
@@ -35,8 +39,17 @@ public class TrackingListArrayAdapter extends ArrayAdapter {
         super(context, R.layout.tracking_list_item, objects);
 
         this.trackingLists = new ArrayList<>();
-        for (TrackingList tl : objects) this.trackingLists.add(tl);
+        this.originalLists = new ArrayList<>();
+        for (TrackingList tl : objects) {
+            this.trackingLists.add(tl);
+            this.originalLists.add(tl);
+        }
         this.mContext = context;
+    }
+
+    @Override
+    public int getCount() {
+        return this.trackingLists.size();
     }
 
     public List<TrackingList> getTrackingLists(){
@@ -60,6 +73,9 @@ public class TrackingListArrayAdapter extends ArrayAdapter {
         CirclePercentageBar pBar = (CirclePercentageBar) rowView.findViewById(R.id.pbarTrackListItem);
 
         DecimalFormat df = new DecimalFormat("#0.0");
+        Log.d("test", ""+trackingLists.size());
+
+        if (trackingLists.size()==0) return rowView;
 
         TrackingList trackingList = trackingLists.get(position);
 
@@ -72,5 +88,33 @@ public class TrackingListArrayAdapter extends ArrayAdapter {
 
 
         return rowView;
+    }
+
+    public void filterSubjects(String code){
+        Log.d("filtering", ""+code);
+
+        List<TrackingList> toRemove = new ArrayList<>();
+        this.trackingLists.clear();
+        this.trackingLists.addAll(originalLists);
+
+
+        for (TrackingList trackingList : this.originalLists){
+
+            //filter or remove from subjectItems
+            if (!codeMatches(trackingList, code)){
+                toRemove.add(trackingList);
+            }
+        }
+
+        this.trackingLists.removeAll(toRemove);
+    }
+
+    public boolean codeMatches(TrackingList trackingList, String code){
+
+        String codeRegex = ".*" + code + ".*";
+
+
+        return trackingList.getTitle().matches(codeRegex) || trackingList.getName().matches(codeRegex) || trackingList.getName().matches(codeRegex);
+
     }
 }

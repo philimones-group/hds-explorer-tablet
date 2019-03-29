@@ -3,10 +3,13 @@ package org.philimone.hds.explorer.main;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -29,6 +32,7 @@ public class TrackingListActivity extends Activity {
 
     private User loggedUser;
     private TextView txtTrackListModule;
+    private EditText txtTrackListFilter;
     private ListView lvTrackingList;
     private Button btTrackListUpdate;
     private Button btTrackListBack;
@@ -47,6 +51,7 @@ public class TrackingListActivity extends Activity {
         this.loggedUser = (User) getIntent().getExtras().get("user");
 
         this.txtTrackListModule = (TextView) findViewById(R.id.txtTrackListModule);
+        this.txtTrackListFilter = (EditText) findViewById(R.id.txtTrackListFilter);
         this.lvTrackingList = (ListView) findViewById(R.id.lvTrackingList);
         this.btTrackListUpdate = (Button) findViewById(R.id.btTrackListUpdate);
         this.btTrackListBack = (Button) findViewById(R.id.btTrackListBack);
@@ -73,6 +78,18 @@ public class TrackingListActivity extends Activity {
             }
         });
 
+        this.txtTrackListFilter.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                filterSubjectsByCode(s.toString());
+            }
+        });
 
         this.txtTrackListModule.setText(this.loggedUser.getModules());
 
@@ -89,6 +106,16 @@ public class TrackingListActivity extends Activity {
         intent.putExtra("trackinglist", trackingList);
 
         startActivityForResult(intent, RC_TRACKING_LIST_DETAILS);
+    }
+
+    private void filterSubjectsByCode(String code){
+        if (code != null){
+
+            TrackingListArrayAdapter adapter = (TrackingListArrayAdapter) this.lvTrackingList.getAdapter();
+            adapter.filterSubjects(code);
+            adapter.notifyDataSetChanged();
+            //this.elvTrackingLists.invalidateViews();
+        }
     }
 
     private void showTrackingLists() {

@@ -1,6 +1,7 @@
 package org.philimone.hds.explorer.adapter;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +19,7 @@ import org.philimone.hds.explorer.widget.CirclePercentageBar;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 /**
  * Created by paul on 11/4/17.
@@ -27,13 +29,28 @@ public class TrackingExpandableListAdapter extends BaseExpandableListAdapter imp
     private Context mContext;
     private ArrayList<TrackingSubListItem> groupItems;
     private HashMap<TrackingSubListItem, ArrayList<TrackingSubjectItem>> trackingCollection;
+    private HashMap<TrackingSubListItem, ArrayList<TrackingSubjectItem>> originalCollection;
 
     public TrackingExpandableListAdapter(Context context, ArrayList<TrackingSubListItem> listItems, HashMap<TrackingSubListItem, ArrayList<TrackingSubjectItem>> collection){
         this.mContext = context;
         this.groupItems = new ArrayList<>();
-        this.trackingCollection = new HashMap<>();
+        this.trackingCollection = new LinkedHashMap<>();
+        this.originalCollection = new LinkedHashMap<>();
         this.groupItems.addAll(listItems);
         this.trackingCollection.putAll(collection);
+        //backup collection
+        backupCollection();
+
+    }
+
+    private void backupCollection(){
+        for (TrackingSubListItem item : this.trackingCollection.keySet()){
+            ArrayList<TrackingSubjectItem> listNew = new ArrayList<>();
+            ArrayList<TrackingSubjectItem> list = this.trackingCollection.get(item);
+            listNew.addAll(list);
+
+            this.originalCollection.put(item, listNew);
+        }
     }
 
     public ArrayList<TrackingSubListItem> getGroupItems() {
@@ -187,5 +204,36 @@ public class TrackingExpandableListAdapter extends BaseExpandableListAdapter imp
         if (n==0) return 0;
 
         return (c / n);
+    }
+
+    public void filterSubjects(String code){
+        Log.d("filtering", ""+code);
+        for (TrackingSubListItem subList : this.originalCollection.keySet()){
+            ArrayList<TrackingSubjectItem> origSubjectItems = this.originalCollection.get(subList);
+            ArrayList<TrackingSubjectItem> subjectItems = this.trackingCollection.get(subList);
+
+            subjectItems.clear();
+            subjectItems.addAll(origSubjectItems);
+
+            //filter or remove from subjectItems
+            filterSubjects(subjectItems, code);
+
+        }
+    }
+
+    private void filterSubjects(ArrayList<TrackingSubjectItem> subjectItems, String code){
+        ArrayList<TrackingSubjectItem> toRemove = new ArrayList<>();
+
+        if (code.length()==0) return;
+
+        for (TrackingSubjectItem subject : subjectItems) {
+            if (!subject.codeMatches(code)){
+                toRemove.add(subject);
+            }
+        }
+
+        Log.d("to remove", ""+toRemove.size());
+
+        subjectItems.removeAll(toRemove);
     }
 }

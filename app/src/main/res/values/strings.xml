@@ -235,6 +235,8 @@
     <string name="trackinglist_bt_back_lbl">Back</string>
     <string name="trackinglist_title_lbl">Follow-up lists for module: </string>
     <string name="trackinglist_module_lbl">Module</string>
+    <string name="trackinglist_filter_code_hint_lbl">Household/Individual/Region Code or Name</string>
+    <string name="trackinglist_filter_name_hint_lbl">Follow-up List Name or Details</string>
 
     <!-- settings fragment -->
     <string name="settings_lbl">Settings</string>

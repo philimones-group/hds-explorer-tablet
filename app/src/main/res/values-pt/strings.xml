@@ -231,6 +231,8 @@
     <string name="trackinglist_bt_back_lbl">Voltar</string>
     <string name="trackinglist_title_lbl">Listas de seguimento de: </string>
     <string name="trackinglist_module_lbl">Módulo</string>
+    <string name="trackinglist_filter_code_hint_lbl">Codigo ou Nome da Casa/Membro/Região</string>
+    <string name="trackinglist_filter_name_hint_lbl">Nome ou detalhe das Listas de Seguim.</string>
 
     <!-- settings fragment -->
     <string name="settings_lbl">Definições</string>

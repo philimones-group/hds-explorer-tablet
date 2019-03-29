@@ -4,8 +4,11 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ExpandableListView;
 import android.widget.TextView;
 
@@ -30,6 +33,7 @@ import org.philimone.hds.explorer.widget.LoadingDialog;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 import mz.betainteractive.utilities.StringUtil;
@@ -43,6 +47,7 @@ public class TrackingListDetailsActivity extends Activity {
 
     private TextView txtTrackListTitle;
     private TextView txtTrackListDetails;
+    private EditText txtTrackListFilter;
     private ExpandableListView elvTrackingLists;
 
     private TrackingExpandableListAdapter adapter;
@@ -83,6 +88,7 @@ public class TrackingListDetailsActivity extends Activity {
 
         this.txtTrackListTitle = (TextView) findViewById(R.id.txtTrackListTitle);
         this.txtTrackListDetails = (TextView) findViewById(R.id.txtTrackListDetails);
+        this.txtTrackListFilter = (EditText) findViewById(R.id.txtTrackListFilter);
         this.elvTrackingLists = (ExpandableListView) findViewById(R.id.elvTrackingLists);
         this.viewLoadingList = findViewById(R.id.viewListProgressBar);
 
@@ -91,6 +97,19 @@ public class TrackingListDetailsActivity extends Activity {
             public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
                 onSubjectItemClicked(groupPosition, childPosition);
                 return true;
+            }
+        });
+
+        this.txtTrackListFilter.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                filterSubjectsByCode(s.toString());
             }
         });
 
@@ -110,6 +129,8 @@ public class TrackingListDetailsActivity extends Activity {
 
         showProgress(false);
         expandAllGroups();
+
+        //run filter data
     }
 
     private void expandAllGroups(){
@@ -285,7 +306,7 @@ public class TrackingListDetailsActivity extends Activity {
         Log.d("members", ""+members.size());
 
         ArrayList<TrackingSubListItem> groupItems = new ArrayList<>();
-        HashMap<TrackingSubListItem, ArrayList<TrackingSubjectItem>> trackingCollection = new HashMap<>();
+        HashMap<TrackingSubListItem, ArrayList<TrackingSubjectItem>> trackingCollection = new LinkedHashMap<>();
 
         //I need member/region/household, collectedData
         for (org.philimone.hds.explorer.model.followup.TrackingSubjectList item : listTml){
@@ -435,6 +456,15 @@ public class TrackingListDetailsActivity extends Activity {
         tsi.setForms(trackingMemberList.getForms().split(","));
 
         return tsi;
+    }
+
+    private void filterSubjectsByCode(String code){
+        if (code != null){
+
+            adapter.filterSubjects(code);
+            adapter.notifyDataSetChanged();
+            this.elvTrackingLists.invalidateViews();
+        }
     }
 
     class TrackingSubjectListSearchTask extends AsyncTask<Void, Void, TrackingExpandableListAdapter> {

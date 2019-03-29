@@ -11,13 +11,12 @@ android {
         }
     }
     compileSdkVersion 23
-    buildToolsVersion '27.0.3'
     defaultConfig {
         applicationId "org.philimone.hds.explorer"
         minSdkVersion 19
         targetSdkVersion 22
         versionCode 10
-        versionName "1.0 RC5"
+        versionName "1.0 RC6"
         archivesBaseName = "$applicationName-v$versionName"
     }
     buildTypes {

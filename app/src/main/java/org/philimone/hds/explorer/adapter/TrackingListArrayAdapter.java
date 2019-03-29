@@ -111,10 +111,13 @@ public class TrackingListArrayAdapter extends ArrayAdapter {
 
     public boolean codeMatches(TrackingList trackingList, String code){
 
-        String codeRegex = ".*" + code + ".*";
+        String codeRegex = ".*" + code.toLowerCase() + ".*";
 
+        String title = trackingList.getTitle().toLowerCase();
+        String name = trackingList.getName().toLowerCase();
+        String details = trackingList.getDetails().toLowerCase();
 
-        return trackingList.getTitle().matches(codeRegex) || trackingList.getName().matches(codeRegex) || trackingList.getName().matches(codeRegex);
+        return title.matches(codeRegex) || name.matches(codeRegex) || details.matches(codeRegex);
 
     }
 }

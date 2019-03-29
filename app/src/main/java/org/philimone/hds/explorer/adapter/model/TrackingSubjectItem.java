@@ -117,21 +117,4 @@ public class TrackingSubjectItem implements Serializable {
         this.collectedForms.addAll(collectedForms);
     }
 
-    public boolean codeMatches(String code){
-
-        String codeRegex = code + ".*";
-        String nameRegex = ".*" + code + ".*";
-
-        if (isMemberSubject()){
-            return this.member.getCode().matches(codeRegex) || this.member.getName().matches(nameRegex);
-        }
-        if (isHouseholdSubject()){
-            return this.household.getCode().matches(codeRegex) || this.household.getName().matches(nameRegex);
-        }
-        if (isRegionSubject()){
-            return this.region.getCode().matches(codeRegex) || this.region.getName().matches(nameRegex);
-        }
-
-        return false;
-    }
 }

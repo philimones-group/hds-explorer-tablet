@@ -320,6 +320,7 @@ public class SurveyHouseholdsActivity extends Activity implements HouseholdFilte
         @Override
         protected void onPostExecute(MemberArrayAdapter adapter) {
             memberListFragment.setMemberAdapter(adapter);
+            memberListFragment.setCurrentHouseld(household);
             memberListFragment.showProgress(false);
             memberListFragment.setButtonEnabled(true, MemberListFragment.Buttons.SHOW_HOUSEHOLD);
         }

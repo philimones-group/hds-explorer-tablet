@@ -276,6 +276,10 @@ public class MemberListFragment extends Fragment {
 
     }
 
+    public void setCurrentHouseld(Household household) {
+        this.currentHousehold = household;
+    }
+
     private void showClosestHouses(Household household, double distance, String distanceDescription) {
 
         if (currentHousehold == null || currentHousehold.isGpsNull()){
@@ -500,6 +504,17 @@ public class MemberListFragment extends Fragment {
             });
 
 
+        } else {
+            EditText txtNmHouseNumber = (EditText) dialogNewMember.findViewById(R.id.txtNmHouseNumber);
+            EditText txtNmCode = (EditText) dialogNewMember.findViewById(R.id.txtNmCode);
+
+            if (txtNmHouseNumber != null && currentHousehold != null){
+                txtNmHouseNumber.setText(currentHousehold.getCode());
+            }
+
+            if (txtNmCode != null && currentHousehold != null){
+                txtNmCode.setText(currentHousehold.getCode()+"XXX");
+            }
         }
 
         //dialogNewMember.setCancelable(false);

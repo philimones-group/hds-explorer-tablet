@@ -45,6 +45,13 @@ public class TrackingListActivity extends Activity {
         setContentView(R.layout.tracking_list);
 
         initialize();
+
+        if (savedInstanceState == null){
+            return;
+        }
+
+        String track_list_filter = savedInstanceState.getString("track_list_filter");
+        this.txtTrackListFilter.setText(track_list_filter);
     }
 
     private void initialize() {
@@ -96,6 +103,26 @@ public class TrackingListActivity extends Activity {
         showTrackingLists();
     }
 
+    @Override
+    protected void onSaveInstanceState(Bundle savedInstanceState) {
+
+        savedInstanceState.putString("track_list_filter", this.txtTrackListFilter.getText().toString());
+
+        super.onSaveInstanceState(savedInstanceState);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+
+        if (savedInstanceState == null){
+            return;
+        }
+
+        String track_list_filter = savedInstanceState.getString("track_list_filter");
+        this.txtTrackListFilter.setText(track_list_filter);
+    }
+
     private void onTrackingListClicked(int position) {
 
         TrackingListArrayAdapter adapter = (TrackingListArrayAdapter) this.lvTrackingList.getAdapter();
@@ -124,6 +151,9 @@ public class TrackingListActivity extends Activity {
         TrackingListArrayAdapter adapter = new TrackingListArrayAdapter(this, trackingLists);
 
         this.lvTrackingList.setAdapter(adapter);
+
+        //filter data
+        filterSubjectsByCode(this.txtTrackListFilter.getText().toString());
     }
 
     /**

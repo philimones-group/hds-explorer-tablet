@@ -227,7 +227,7 @@ public class TrackingExpandableListAdapter extends BaseExpandableListAdapter imp
         if (code.length()==0) return;
 
         for (TrackingSubjectItem subject : subjectItems) {
-            if (!subject.codeMatches(code)){
+            if (!codeMatches(subject, code)){
                 toRemove.add(subject);
             }
         }
@@ -235,5 +235,37 @@ public class TrackingExpandableListAdapter extends BaseExpandableListAdapter imp
         Log.d("to remove", ""+toRemove.size());
 
         subjectItems.removeAll(toRemove);
+    }
+
+    public boolean codeMatches(TrackingSubjectItem subjectItem, String strCode){
+
+        String codeRegex = strCode.toLowerCase() + ".*";
+        String nameRegex = ".*" + strCode.toLowerCase() + ".*";
+
+        String name = "";
+        String code = "";
+        String details = "";
+
+        if (subjectItem.isRegionSubject()) {
+            name = subjectItem.getRegion().getName().toLowerCase();
+            code = subjectItem.getRegion().getCode().toLowerCase() + "  " + subjectItem.getRegion().getLevel().toLowerCase();
+
+            return code.matches(nameRegex) || name.matches(nameRegex);
+        }
+        if (subjectItem.isHouseholdSubject()) {
+            name = subjectItem.getHousehold().getName().toLowerCase();
+            code = subjectItem.getHousehold().getCode().toLowerCase();
+            details = subjectItem.getHousehold().getHeadName().toLowerCase();
+
+            return code.matches(codeRegex) || name.matches(nameRegex) || details.matches(nameRegex);
+        }
+        if (subjectItem.isMemberSubject()) {
+            name = subjectItem.getMember().getName().toLowerCase();
+            code = subjectItem.getMember().getHouseholdName().toLowerCase() +"  "+subjectItem.getMember().getCode().toLowerCase();
+
+            return code.matches(nameRegex) || name.matches(nameRegex);
+        }
+
+        return false;
     }
 }

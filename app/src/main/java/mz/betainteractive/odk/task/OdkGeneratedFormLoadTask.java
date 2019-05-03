@@ -94,70 +94,76 @@ public class OdkGeneratedFormLoadTask extends AsyncTask<Void, Void, Boolean> {
     @Override
     protected Boolean doInBackground(Void... params) {
 
+        try {
 
-        if (openingSavedUri){
-            if (filledForm != null){
-                Log.d("saving file", ""+odkUri);
-                //fill up the variables automatically
-                String jrFormId = filledForm.getFormName();
-                String formFilePath = getXmlFilePath(odkUri);
+            if (openingSavedUri) {
+                if (filledForm != null) {
+                    Log.d("saving file", "" + odkUri);
+                    //fill up the variables automatically
+                    String jrFormId = filledForm.getFormName();
+                    String formFilePath = getXmlFilePath(odkUri);
+
+                    Log.d("file", formFilePath);
+
+
+                    if (new File(formFilePath).exists()) {
+                        processXmlDirectly(jrFormId, formFilePath);
+                        //File targetFile = saveOpenedFile(xml,jrFormId);
+                    } else {
+                        //file doesnt exists
+                        return false;
+                    }
+
+
+                }
+
+                return odkUri != null;
+            }
+
+            Cursor cursor = getCursorForFormsProvider(filledForm.getFormName());
+
+            //creating a new xml auto filled file and saving it
+            if (cursor.moveToFirst()) {
+                String jrFormId = cursor.getString(0);
+                String formFilePath = cursor.getString(1);
+                String formVersion = cursor.getString(2);
 
                 Log.d("file", formFilePath);
+                Log.d("loading forms", "" + cursor.toString() + ", " + cursor.getColumnName(0) + ", formVersion=" + formVersion);
 
+                /*
+                try {
+                    Scanner scanner = new Scanner(new File(formFilePath));
+                    int n=0;
+                    while (scanner.hasNextLine()){
+                        Log.d("file"+(++n), scanner.nextLine());
+                    }
+                    scanner.close();
+                }catch (Exception ex){
+                    ex.printStackTrace();
+                }
+                */
 
-                if (new File(formFilePath).exists()){
-                    processXmlDirectly(jrFormId, formFilePath);
-                    //File targetFile = saveOpenedFile(xml,jrFormId);
-                }else{
-                    //file doesnt exists
-                    return false;
+                String xml = processXml(jrFormId, formFilePath);
+                File targetFile = saveFile(xml, jrFormId);
+                boolean writeFile = false;
+                Log.d("xml", xml);
+                if (targetFile != null) {
+                    writeFile = writeContent(targetFile, filledForm.getFormName(), jrFormId, formVersion);
                 }
 
+                //Log.d("finished", "creating file");
 
+                cursor.close();
+                return writeFile;
             }
-
-            return odkUri != null;
-        }
-
-        Cursor cursor = getCursorForFormsProvider(filledForm.getFormName());
-
-        //creating a new xml auto filled file and saving it
-        if (cursor.moveToFirst()) {
-            String jrFormId = cursor.getString(0);
-            String formFilePath = cursor.getString(1);
-            String formVersion = cursor.getString(2);
-
-            Log.d("file", formFilePath);
-            Log.d("loading forms", ""+cursor.toString()+", "+cursor.getColumnName(0)+", formVersion="+formVersion);
-
-            /*
-            try {
-                Scanner scanner = new Scanner(new File(formFilePath));
-                int n=0;
-                while (scanner.hasNextLine()){
-                    Log.d("file"+(++n), scanner.nextLine());
-                }
-                scanner.close();
-            }catch (Exception ex){
-                ex.printStackTrace();
-            }
-            */
-
-            String xml = processXml(jrFormId, formFilePath);            
-            File targetFile = saveFile(xml,jrFormId);
-            boolean writeFile = false;
-            Log.d("xml", xml);
-            if (targetFile != null) {
-            	writeFile = writeContent(targetFile, filledForm.getFormName(), jrFormId, formVersion);
-            }
-
-            //Log.d("finished", "creating file");
 
             cursor.close();
-            return writeFile;
+
+        } catch (Exception ex){
+            ex.printStackTrace();
         }
 
-        cursor.close();
         return false;
     }
 

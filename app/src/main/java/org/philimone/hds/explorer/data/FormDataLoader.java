@@ -74,7 +74,7 @@ public class FormDataLoader implements Serializable {
     public boolean hasMappedDatasetVariable(DataSet dataSet){
 
         for (String mapValue : form.getFormMap().values()){
-            if (mapValue.startsWith(dataSet.getName())){
+            if (mapValue.equals(dataSet.getName())){
                 return true;
             }
         }

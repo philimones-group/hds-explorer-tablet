@@ -108,7 +108,7 @@ public class HouseholdDetailsActivity extends Activity implements OdkFormResultL
 
         for (int i=0; i < objs.length; i++){
             FormDataLoader formDataLoader = (FormDataLoader) objs[i];
-            Log.d("tag", ""+formDataLoader.getForm().getFormId());
+            //Log.d("tag", ""+formDataLoader.getForm().getFormId());
             if (formDataLoader.getForm().isHouseholdForm() && isVisibleForm(formDataLoader.getForm())){
                 this.formDataLoaders.add(formDataLoader);
             }
@@ -693,8 +693,9 @@ public class HouseholdDetailsActivity extends Activity implements OdkFormResultL
 
         //Load variables on datasets
         for (DataSet dataSet : getDataSets()){
+            Log.d("has-mapped-datasets", dataSet.getName()+", "+loader.hasMappedDatasetVariable(dataSet));
             if (loader.hasMappedDatasetVariable(dataSet)){
-                //Log.d("hasMappedVariables", ""+dataSet.getName());
+                Log.d("hasMappedVariables", ""+dataSet.getName());
                 loader.loadDataSetValues(dataSet, household, member, loggedUser, region);
             }
         }

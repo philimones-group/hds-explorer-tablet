@@ -224,7 +224,7 @@ public class RegionDetailsActivity extends Activity implements OdkFormResultList
 
         for (int i=0; i < objs.length; i++){
             FormDataLoader formDataLoader = (FormDataLoader) objs[i];
-            Log.d("tag", ""+formDataLoader.getForm().getFormId());
+            //Log.d("tag", ""+formDataLoader.getForm().getFormId());
             if (formDataLoader.getForm().isRegionForm() && formDataLoader.getForm().getRegionLevel().equals(region.getLevel()) && isVisibleForm(formDataLoader.getForm())){
                 this.formDataLoaders.add(formDataLoader);
             }

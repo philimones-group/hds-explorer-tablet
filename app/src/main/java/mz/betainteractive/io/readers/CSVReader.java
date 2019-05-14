@@ -1,5 +1,7 @@
 package mz.betainteractive.io.readers;
 
+import android.util.Log;
+
 import java.io.*;
 import java.util.*;
 import java.util.logging.Level;
@@ -277,8 +279,12 @@ public class CSVReader {
 
         public String getField(String fieldName) {
             //System.out.println(fieldName+", "+row);
-            int index = (int) csvReader.mapFields.get(fieldName);
-            return getField(index);
+            try{
+                int index = (int) csvReader.mapFields.get(fieldName);
+                return getField(index);
+            }catch (Exception ex){
+                return null;
+            }
         }
 
         public String getField(int index) {

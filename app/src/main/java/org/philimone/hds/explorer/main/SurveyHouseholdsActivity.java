@@ -31,7 +31,9 @@ import org.philimone.hds.explorer.widget.LoadingDialog;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import mz.betainteractive.utilities.StringUtil;
 
@@ -230,6 +232,7 @@ public class SurveyHouseholdsActivity extends Activity implements HouseholdFilte
 
         //Load variables on datasets
         for (DataSet dataSet : getDataSets()){
+            //Log.d("has-mapped-datasets", dataSet.getName()+", "+loader.hasMappedDatasetVariable(dataSet));
             if (loader.hasMappedDatasetVariable(dataSet)){
                 //Log.d("hasMappedVariables", ""+dataSet.getName());
                 loader.loadDataSetValues(dataSet, household, member, loggedUser, region);
@@ -237,7 +240,24 @@ public class SurveyHouseholdsActivity extends Activity implements HouseholdFilte
         }
     }
 
+    private Set<DataSet> getLoadableDatasets(FormDataLoader[] loaders){
+        Set<DataSet> list = new HashSet<>();
+        List<DataSet> dataSets = getDataSets();
+
+        for (FormDataLoader loader : loaders)
+        for (DataSet dataSet : dataSets){
+            if (loader.hasMappedDatasetVariable(dataSet)){
+                list.add(dataSet);
+            }
+        }
+        return list;
+    }
+
     private void loadFormValues(FormDataLoader[] loaders, Household household, Member member, Region region){
+
+        //get loadable datasets - to prevent reading unnecessary data
+        //Set<DataSet> dataSets = getLoadableDatasets(loaders);
+
         for (FormDataLoader loader : loaders){
             loadFormValues(loader, household, member, region);
         }

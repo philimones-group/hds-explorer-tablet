@@ -17,6 +17,7 @@ import java.io.InputStream;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -42,8 +43,15 @@ public class FormDataLoader implements Serializable {
     private Form form;
     private Map<String, Object> values;
 
+    private static Map<String, CSVReader.CSVRow> generalCSVRows;
+
     public FormDataLoader(){
         this.values = new HashMap<>();
+
+        if (generalCSVRows == null){
+            Log.d("initiating gnv-rows", "init status");
+            generalCSVRows = new LinkedHashMap<>();
+        }
     }
 
     public FormDataLoader(Form form){
@@ -74,7 +82,8 @@ public class FormDataLoader implements Serializable {
     public boolean hasMappedDatasetVariable(DataSet dataSet){
 
         for (String mapValue : form.getFormMap().values()){
-            if (mapValue.equals(dataSet.getName())){
+            //Log.d("mapValue", ""+mapValue);
+            if (mapValue.startsWith(dataSet.getName()+".")){ //add point at the end to match correctly
                 return true;
             }
         }
@@ -106,7 +115,7 @@ public class FormDataLoader implements Serializable {
                 if (value == null) value = "";
 
                 //get variable format from odkVariable eg. variableName->format => patientName->yes,no
-                Log.d("odkvar", ""+odkVariable);
+                //Log.d("odkvar", ""+odkVariable);
                 String[] splt = odkVariable.split("->");
                 odkVariable = splt[0]; //variableName
                 String format = splt[1];      //format of the value
@@ -123,7 +132,7 @@ public class FormDataLoader implements Serializable {
                 }
 
                 this.values.put(odkVariable, value);
-                Log.d("h-odk auto-loadable", odkVariable + ", " + value);
+                //Log.d("h-odk auto-loadable", odkVariable + ", " + value);
             }
         }
     }
@@ -168,7 +177,7 @@ public class FormDataLoader implements Serializable {
                 }
 
                 this.values.put(odkVariable, value);
-                Log.d("m-odk auto-loadable", odkVariable + ", " + value);
+                //Log.d("m-odk auto-loadable", odkVariable + ", " + value);
             }
         }
     }
@@ -213,7 +222,7 @@ public class FormDataLoader implements Serializable {
                 }
 
                 this.values.put(odkVariable, value);
-                Log.d("u-odk auto-loadable", odkVariable + ", " + value);
+                //Log.d("u-odk auto-loadable", odkVariable + ", " + value);
             }
         }
     }
@@ -258,7 +267,7 @@ public class FormDataLoader implements Serializable {
                 }
 
                 this.values.put(odkVariable, value);
-                Log.d("r-odk auto-loadable", odkVariable + ", " + value);
+                //Log.d("r-odk auto-loadable", odkVariable + ", " + value);
             }
         }
     }
@@ -303,7 +312,7 @@ public class FormDataLoader implements Serializable {
                 }
 
                 this.values.put(odkVariable, value);
-                Log.d("u-odk auto-loadable", odkVariable + ", " + value);
+                //Log.d("u-odk auto-loadable", odkVariable + ", " + value);
             }
         }
     }
@@ -362,7 +371,7 @@ public class FormDataLoader implements Serializable {
                 }
 
                 this.values.put(odkVariable, value);
-                Log.d("u-odk spc auto-loadable", odkVariable + ", " + value);
+                //Log.d("u-odk spc auto-loadable", odkVariable + ", " + value);
             }
         }
     }
@@ -415,7 +424,7 @@ public class FormDataLoader implements Serializable {
 
                     //This will override the previous loaded value
                     this.values.put(odkVariable, value);
-                    Log.d("u-odk spc auto-loadable", odkVariable + ", " + value);
+                    //Log.d("u-odk spc auto-loadable", odkVariable + ", " + value);
                 }
 
             }
@@ -512,8 +521,6 @@ public class FormDataLoader implements Serializable {
         CSVReader.CSVRow valueRow = null;
         String dataSetPrefix = dataSet.getName()+".";
 
-        Log.d("tableName", tableName+", "+tableColumnName);
-
         if (tableName.startsWith(householdPrefix)){
             if (household != null){
                 linkValue = household.getValueByName(tableColumnName);
@@ -535,11 +542,35 @@ public class FormDataLoader implements Serializable {
             }
         }
 
+
+
         //process zip file - get row with ${dtKeyColumn}=linkValue  -
 
-        valueRow = getRowFromCSVFile(dataSet, linkValue);
+        String csvRowKey = dataSet.getName()+"->"+tableName+tableColumnName+"="+linkValue;
 
-        Log.d("found row", ""+valueRow+", linkValue: "+linkValue);
+
+        boolean vrExists = this.generalCSVRows.containsKey(csvRowKey);
+        valueRow = this.generalCSVRows.get(csvRowKey);
+
+        if (!vrExists){
+
+            valueRow = getRowFromCSVFile(dataSet, linkValue);
+
+            Log.d("Key1: " +csvRowKey, "reading dataset: "+dataSet.getName()+ ", "+valueRow);
+
+
+            this.generalCSVRows.put(csvRowKey, valueRow);
+
+        } else {
+            if (valueRow == null){
+                Log.d("Key2: "+csvRowKey, "not reading data because it was not found before");
+            } else {
+                Log.d("Key2: "+csvRowKey, "get data from saved row");
+            }
+
+        }
+
+        //Log.d("found row", ""+valueRow+", linkValue: "+linkValue);
 
         if (valueRow == null){
             return;
@@ -557,7 +588,7 @@ public class FormDataLoader implements Serializable {
                 if (value == null) value = "";
 
                 //get variable format from odkVariable eg. variableName->format => patientName->yes,no
-                Log.d("xxx-odkvar", ""+odkVariable);
+                //Log.d("xxx-odkvar", ""+odkVariable);
                 String[] splt = odkVariable.split("->");
                 odkVariable = splt[0]; //variableName
                 String format = splt[1];      //format of the value
@@ -575,7 +606,7 @@ public class FormDataLoader implements Serializable {
                 }
 
                 this.values.put(odkVariable, value);
-                Log.d("xxx-odk auto-loadable", odkVariable + ", " + value);
+                //Log.d("xxx-odk auto-loadable", odkVariable + ", " + value);
             }
 
 
@@ -585,7 +616,7 @@ public class FormDataLoader implements Serializable {
 
     private CSVReader.CSVRow getRowFromCSVFile(DataSet dataSet, String linkValue) {
 
-        Log.d("zip", "processing zip file, linkValue="+linkValue);
+        //Log.d("zip", "processing zip file, linkValue="+linkValue);
 
         if (linkValue == null || linkValue == "") return null;  //dont need to read the csv without need
 

@@ -147,7 +147,7 @@ public class OdkGeneratedFormLoadTask extends AsyncTask<Void, Void, Boolean> {
                 String xml = processXml(jrFormId, formFilePath);
                 File targetFile = saveFile(xml, jrFormId);
                 boolean writeFile = false;
-                Log.d("xml", xml);
+                //Log.d("xml", xml);
                 if (targetFile != null) {
                     writeFile = writeContent(targetFile, filledForm.getFormName(), jrFormId, formVersion);
                 }
@@ -251,7 +251,7 @@ public class OdkGeneratedFormLoadTask extends AsyncTask<Void, Void, Boolean> {
         //Log.d("executing-pnc",""+params);
         for (int i = 0; i < childElements.getLength(); i++) {
             Node n = childElements.item(i);
-            Log.d("odk-xml-param", ""+n.getNodeName()+", "+n.getNodeValue()+", repeat="+isRepeatGroup(n));
+            //Log.d("odk-xml-param", ""+n.getNodeName()+", "+n.getNodeValue()+", repeat="+isRepeatGroup(n));
             if (n.getNodeType() == Node.ELEMENT_NODE) {
             	
                 String name = n.getNodeName();
@@ -328,7 +328,7 @@ public class OdkGeneratedFormLoadTask extends AsyncTask<Void, Void, Boolean> {
             for (int i = 0; i < nodeRepeatChilds.getLength(); i++) {
                 Node n = nodeRepeatChilds.item(i);
                 String name = n.getNodeName();
-                Log.d("inner-node"+i, ""+name);
+                //Log.d("inner-node"+i, ""+name);
                 if (n.getNodeType() == Node.ELEMENT_NODE){
                     if (repeatGroupMapping.containsKey(name)) {
                         String value = repeatGroupMapping.get(name);
@@ -360,7 +360,7 @@ public class OdkGeneratedFormLoadTask extends AsyncTask<Void, Void, Boolean> {
         for (int i = 0; i < childElements.getLength(); i++) {
             Node n = childElements.item(i);
             String name = n.getNodeName();
-            Log.d("inner-node2-FW"+i, ""+name);
+            //Log.d("inner-node2-FW"+i, ""+name);
             if (n.getNodeType() == Node.ELEMENT_NODE){
                 if (repeatGroupMapping.containsKey(name)) {
                     String value = repeatGroupMapping.get(name);

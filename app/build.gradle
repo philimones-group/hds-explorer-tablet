@@ -1,10 +1,15 @@
 apply plugin: 'com.android.application'
 
 android {
-
+    lintOptions {
+        checkReleaseBuilds false
+        // Or, if you prefer, you can continue to check for errors in release builds,
+        // but continue the build even when errors are found:
+        abortOnError false
+    }
     signingConfigs {
         config {
-            keyAlias 'PG Android Key'
+            keyAlias 'phils group'
             keyPassword 'android47jks'
             storeFile file('/home/paul/local/personal/usefull-information/keystores/android-apk-key.jks')
             storePassword 'android47jks'
@@ -15,8 +20,8 @@ android {
         applicationId "org.philimone.hds.explorer"
         minSdkVersion 19
         targetSdkVersion 22
-        versionCode 12
-        versionName "1.0.1"
+        versionCode 13
+        versionName "1.0.3"
         archivesBaseName = "$applicationName-v$versionName"
     }
     buildTypes {

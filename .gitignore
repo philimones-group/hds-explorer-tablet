@@ -1,4 +1,5 @@
 *.iml
+*.directory
 .gradle
 /local.properties
 /.idea/workspace.xml
@@ -6,6 +7,11 @@
 .DS_Store
 /build
 /app/build/
+/app/debug
+/app/release
 /captures
-/mapsme-lib/build/
-
+/mapsme-lib/build
+/projectFilesBackup
+# Android studio 3.1+ serialized cache file
+.idea/caches/build_file_checksums.ser
+/.idea/dbnavigator.xml

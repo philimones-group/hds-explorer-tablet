@@ -1,0 +1,317 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:background="@mipmap/form_background_1"
+    tools:context=".fragment.MemberFilterDialog">
+
+    <LinearLayout
+        android:id="@+id/memberFilterLayout"
+        android:layout_weight="1"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <!-- main layout -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/mf_margin_left"
+                android:layout_marginTop="@dimen/mf_margin_top"
+                android:layout_marginRight="@dimen/mf_margin_right"
+                android:gravity="top"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginBottom="40dp"
+                    android:text="@string/member_filter_search_lbl"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textSize="@dimen/member_filter_titlesize"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+
+                <!-- Name -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/member_filter_name_lbl"
+                        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+                    <EditText
+                        android:id="@+id/txtMemFilterName"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/member_filter_textbox_size"
+                        android:background="@drawable/textinputborder"
+                        android:gravity="center_vertical"
+                        android:hint="@string/member_filter_name_hint"
+                        android:paddingLeft="10dp"
+                        android:textSize="@dimen/member_filter_textsize" />
+                </LinearLayout>
+
+                <!-- Perm Id -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/member_filter_code_lbl"
+                        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+                    <EditText
+                        android:id="@+id/txtMemFilterCode"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/member_filter_textbox_size"
+                        android:background="@drawable/textinputborder"
+                        android:gravity="center_vertical"
+                        android:hint="@string/member_filter_code_hint"
+                        android:paddingLeft="10dp"
+                        android:textSize="@dimen/member_filter_textsize" />
+                </LinearLayout>
+
+                <!-- Current House/Neigh -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/member_filter_curr_housenumber_lbl"
+                        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+                    <EditText
+                        android:id="@+id/txtMemFilterCurrHousecode"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/member_filter_textbox_size"
+                        android:background="@drawable/textinputborder"
+                        android:gravity="center_vertical"
+                        android:hint="@string/member_filter_curr_housenumber_hint"
+                        android:paddingLeft="10dp"
+                        android:textSize="@dimen/member_filter_textsize" />
+                </LinearLayout>
+
+                <!-- Gender Info -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="80dp"
+                    android:layout_marginBottom="0dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/member_filter_gender_lbl"
+                        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+                    <LinearLayout
+                        android:id="@+id/layout_mf_gender"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:orientation="horizontal">
+
+                        <CheckBox
+                            android:id="@+id/chkMemFilterGFemale"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:checked="true"
+                            android:text="@string/member_filter_gender_female_lbl"
+                            android:textSize="@dimen/member_filter_checkbox_textsize" />
+
+                        <CheckBox
+                            android:id="@+id/chkMemFilterGMale"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginLeft="20dp"
+                            android:text="@string/member_filter_gender_male_lbl"
+                            android:textSize="@dimen/member_filter_checkbox_textsize" />
+
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <!-- Age Info -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/member_filter_age_details_lbl"
+                        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+
+                    <LinearLayout
+                        android:id="@+id/layout_mf_age"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/corner_border"
+                        android:gravity="center"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:text="@string/member_filter_age_min_lbl"
+                            android:textAppearance="?android:attr/textAppearanceLarge" />
+
+                        <net.manhica.dss.explorer.widget.NumberPicker
+                            android:id="@+id/nbpMemFilterMinAge"
+                            default_value="0"
+                            max_value="140"
+                            min_value="0"
+                            android:layout_width="wrap_content"
+                            android:layout_height="80dp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:text="@string/member_filter_age_max_lbl"
+                            android:textAppearance="?android:attr/textAppearanceLarge" />
+
+                        <net.manhica.dss.explorer.widget.NumberPicker
+                            android:id="@+id/nbpMemFilterMaxAge"
+                            default_value="120"
+                            max_value="140"
+                            min_value="0"
+                            android:layout_width="wrap_content"
+                            android:layout_height="80dp" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <!-- Current Status Details -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginBottom="20dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/member_filter_current_status_lbl"
+                        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+
+                    <LinearLayout
+                        android:id="@+id/layout_mf_xdata"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/corner_border"
+                        android:orientation="vertical">
+
+
+                        <Spinner
+                            android:id="@+id/spnMemFilterStatus"
+                            android:layout_width="match_parent"
+                            android:layout_height="50dp"
+                            android:entries="@array/member_current_status"
+                            android:prompt="@string/member_filter_choose_current_status_lbl" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <!-- Buttons -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/fagm_margin_left"
+                android:layout_marginTop="@dimen/fagm_margin_top"
+                android:layout_marginRight="@dimen/fagm_margin_right"
+                android:layout_marginBottom="@dimen/fagm_margin_bottom"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/btMemFilterClear"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="left"
+                    android:layout_weight="1"
+                    android:background="@drawable/button_normal"
+                    android:text="@string/member_filter_clear_lbl"
+                    android:textSize="@dimen/member_filter_buttons" />
+
+                <Button
+                    android:id="@+id/btMemFilterSearch"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right"
+                    android:layout_weight="1"
+                    android:background="@drawable/button_normal"
+                    android:text="@string/member_filter_search_btn_lbl"
+                    android:textSize="@dimen/member_filter_buttons" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/memberListLayout"
+        android:layout_weight="1"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:paddingBottom="5dp"
+        android:paddingTop="5dp"
+        android:paddingRight="5dp"
+        android:orientation="horizontal">
+
+        <RelativeLayout
+            android:id="@+id/viewListProgressBar"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/list_corner_border"
+            android:visibility="gone">
+
+            <ProgressBar
+                style="?android:attr/progressBarStyleLarge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                />
+
+        </RelativeLayout>
+
+        <ListView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/list_corner_border"
+            android:id="@+id/lvMembersList"
+            />
+
+    </LinearLayout>
+
+</LinearLayout>

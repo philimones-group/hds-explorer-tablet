@@ -103,6 +103,7 @@
     <string name="member_filter_age_min_lbl">Min.</string>
     <string name="member_filter_age_max_lbl">Max.</string>
     <string name="member_filter_current_status_lbl">Estado Corrente</string>
+    <string name="member_filter_choose_current_status_lbl">Escolher estado corrente</string>
     <string name="member_filter_death_status_lbl">Falecido</string>
     <string name="member_filter_ext_status_lbl">Emigrou</string>
     <string name="member_filter_na_status_lbl">Residente</string>
@@ -225,6 +226,14 @@
 
     <!-- GPS Searched Result List -->
     <string name="gps_searched_list_back_lbl">Voltar</string>
+
+    <!-- Member Filter Dialog -->
+    <string-array name="member_current_status">
+        <item></item>
+        <item>Falecido</item>
+        <item>Emigrou</item>
+        <item>Residente</item>
+    </string-array>
 
     <!-- Follow-up List - Tracking Lists -->
     <string name="trackinglist_bt_update_lbl">Atualizar listas de seguimento</string>

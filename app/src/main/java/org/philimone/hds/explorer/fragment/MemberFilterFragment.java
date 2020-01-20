@@ -54,7 +54,7 @@ public class MemberFilterFragment extends Fragment {
 
         this.txtMemFilterName = (EditText) view.findViewById(R.id.txtMemFilterName);
         this.txtMemFilterCode = (EditText) view.findViewById(R.id.txtMemFilterCode);
-        this.txtMemFilterHouseNm = (EditText) view.findViewById(R.id.txtMemFilterCurrHousenumber);
+        this.txtMemFilterHouseNm = (EditText) view.findViewById(R.id.txtMemFilterCurrHousecode);
         this.chkMemFilterGFemale = (CheckBox) view.findViewById(R.id.chkMemFilterGFemale);
         this.chkMemFilterGMale = (CheckBox) view.findViewById(R.id.chkMemFilterGMale);
         this.chkMemFilter1dt = (CheckBox) view.findViewById(R.id.chkMemFilter1);

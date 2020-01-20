@@ -93,7 +93,7 @@
                     android:textAppearance="?android:attr/textAppearanceLarge" />
 
                 <EditText
-                    android:id="@+id/txtMemFilterCurrHousenumber"
+                    android:id="@+id/txtMemFilterCurrHousecode"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/member_filter_textbox_size"
                     android:background="@drawable/textinputborder"

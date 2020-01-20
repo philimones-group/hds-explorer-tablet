@@ -103,6 +103,7 @@
     <string name="member_filter_age_min_lbl">Min</string>
     <string name="member_filter_age_max_lbl">Max</string>
     <string name="member_filter_current_status_lbl">Current Status</string>
+    <string name="member_filter_choose_current_status_lbl">Choose Current Status</string>
     <string name="member_filter_death_status_lbl">Is Dead</string>
     <string name="member_filter_ext_status_lbl">Outmigrated</string>
     <string name="member_filter_na_status_lbl">Resident</string>
@@ -229,6 +230,14 @@
 
     <!-- GPS Searched Result List -->
     <string name="gps_searched_list_back_lbl">Back</string>
+
+    <!-- Member Filter Dialog -->
+    <string-array name="member_current_status">
+        <item></item>
+        <item>Is Dead</item>
+        <item>Outmigrated</item>
+        <item>Resident</item>
+    </string-array>
 
     <!-- Follow-up List - Tracking Lists -->
     <string name="trackinglist_bt_update_lbl">Update Follow-up lists</string>

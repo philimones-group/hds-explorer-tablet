@@ -245,6 +245,40 @@ public class Household implements Serializable, Table {
         this.recentlyCreated = recentlyCreated;
     }
 
+    public static Household getEmptyHousehold(){
+        Household household = new Household();
+        household.code = "";
+        household.name = "";
+        household.region = "";
+        household.headCode = "";
+        household.headName = "";
+        household.secHeadCode = "";
+
+        household.hierarchy1 = "";
+        household.hierarchy2 = "";
+        household.hierarchy3 = "";
+        household.hierarchy4 = "";
+        household.hierarchy5 = "";
+        household.hierarchy6 = "";
+        household.hierarchy7 = "";
+        household.hierarchy8 = "";
+
+
+        household.gpsNull = true;
+        household.gpsAccuracy = 0.0;
+        household.gpsAltitude = 0.0;
+        household.gpsLatitude = 0.0;
+        household.gpsLongitude = 0.0;
+
+        household.cosLatitude = 0.0;
+        household.sinLatitude = 0.0;
+        household.cosLongitude = 0.0;
+        household.sinLongitude = 0.0;
+
+
+        return household;
+    }
+
     public String getValueByName(String variableName){
         return ReflectionUtils.getValueByName(this, variableName);
     }

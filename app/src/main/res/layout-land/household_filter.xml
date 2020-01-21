@@ -455,13 +455,6 @@
                         android:enabled="false"
                         android:background="@drawable/button_normal"/>
 
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal">
-
                     <Button
                         android:id="@+id/btHouseFilterSearch"
                         android:layout_width="match_parent"
@@ -481,6 +474,35 @@
                         android:layout_gravity="right"
                         android:textSize="@dimen/household_filter_button_textsize"
                         android:text="@string/household_filter_gpsmap_lbl"
+                        android:background="@drawable/button_normal"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <Button
+                        android:id="@+id/btHouseFilterEditHousehold"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/household_filter_buttons"
+                        android:layout_weight="1"
+                        android:textSize="@dimen/household_filter_button_textsize"
+                        android:text="@string/household_filter_edit_house_lbl"
+                        android:layout_gravity="left"
+                        android:enabled="false"
+                        android:visibility="gone"
+                        android:background="@drawable/button_normal"/>
+
+                    <Button
+                        android:id="@+id/btHouseFilterAddHousehold"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/household_filter_buttons"
+                        android:layout_weight="1"
+                        android:layout_gravity="right"
+                        android:textSize="@dimen/household_filter_button_textsize"
+                        android:text="@string/household_filter_add_house_lbl"
+                        android:visibility="gone"
                         android:background="@drawable/button_normal"/>
 
                 </LinearLayout>

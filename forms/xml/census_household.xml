@@ -1,0 +1,225 @@
+<?xml version="1.0"?>
+<h:html xmlns="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:h="http://www.w3.org/1999/xhtml" xmlns:jr="http://openrosa.org/javarosa" xmlns:orx="http://openrosa.org/xforms" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <h:head>
+    <h:title>Census - Household Form</h:title>
+    <model>
+      <itext>
+        <translation lang="Swahili">
+          <text id="/census_household/visit_date:jr:constraintMsg">
+            <value>Visit Date cannot be greater than today's date</value>
+          </text>
+          <text id="/census_household/head_code:label">
+            <value>1.7. Head of Household Id</value>
+          </text>
+          <text id="/census_household/household_id:label">
+            <value>1.5. Nambari ya Kaya</value>
+          </text>
+          <text id="/census_household/field_worker_id:label">
+            <value>1.1. Nambari ya Mhojaji</value>
+          </text>
+          <text id="/census_household/location_processed:label">
+            <value>Processed Location</value>
+          </text>
+          <text id="/census_household/gps:label">
+            <value>GPS Coordinates</value>
+          </text>
+          <text id="/census_household/start:label">
+            <value>-</value>
+          </text>
+          <text id="/census_household/end:label">
+            <value>-</value>
+          </text>
+          <text id="/census_household/region_name:label">
+            <value>1.4. Nambari ya Kijiji</value>
+          </text>
+          <text id="/census_household/visit_date:label">
+            <value>1.2. Tarehe ya Hudhurio</value>
+          </text>
+          <text id="/census_household/household_name:label">
+            <value>1.6. Jina la Kaya</value>
+          </text>
+          <text id="/census_household/region_id:label">
+            <value>1.3. Kijiji</value>
+          </text>
+          <text id="/census_household/head_name:label">
+            <value>1.9. Head of Household Name</value>
+          </text>
+          <text id="/census_household/deviceid:label">
+            <value>-</value>
+          </text>
+          <text id="/census_household/socialgroup_processed:label">
+            <value>Processed Household</value>
+          </text>
+        </translation>
+        <translation lang="Portuguese">
+          <text id="/census_household/visit_date:jr:constraintMsg">
+            <value>A data não pode ser maior que a data de hoje</value>
+          </text>
+          <text id="/census_household/head_code:label">
+            <value>1.7. Id do Chefe do Agregado</value>
+          </text>
+          <text id="/census_household/household_id:label">
+            <value>1.5. Id do Agregado</value>
+          </text>
+          <text id="/census_household/field_worker_id:label">
+            <value>1.1. Código do Trabalhador de Campo</value>
+          </text>
+          <text id="/census_household/location_processed:label">
+            <value>Casa Processada</value>
+          </text>
+          <text id="/census_household/gps:label">
+            <value>Coordenadas geográficas da Casa</value>
+          </text>
+          <text id="/census_household/start:label">
+            <value>-</value>
+          </text>
+          <text id="/census_household/end:label">
+            <value>-</value>
+          </text>
+          <text id="/census_household/region_name:label">
+            <value>1.4. Nome da Região</value>
+          </text>
+          <text id="/census_household/visit_date:label">
+            <value>1.2. Data de preenchimento do Inquerito</value>
+          </text>
+          <text id="/census_household/household_name:label">
+            <value>1.6. Nome do Agregado</value>
+          </text>
+          <text id="/census_household/region_id:label">
+            <value>1.3. Id da Região</value>
+          </text>
+          <text id="/census_household/head_name:label">
+            <value>1.9. Nome do Chefe do Agregado</value>
+          </text>
+          <text id="/census_household/deviceid:label">
+            <value>-</value>
+          </text>
+          <text id="/census_household/socialgroup_processed:label">
+            <value>Agregado Processado</value>
+          </text>
+        </translation>
+        <translation default="true()" lang="English">
+          <text id="/census_household/visit_date:jr:constraintMsg">
+            <value>Visit Date cannot be greater than today's date</value>
+          </text>
+          <text id="/census_household/head_code:label">
+            <value>1.7. Head of Household Id</value>
+          </text>
+          <text id="/census_household/household_id:label">
+            <value>1.5. Household Id</value>
+          </text>
+          <text id="/census_household/field_worker_id:label">
+            <value>1.1. Field Workder Id</value>
+          </text>
+          <text id="/census_household/location_processed:label">
+            <value>Processed Location</value>
+          </text>
+          <text id="/census_household/gps:label">
+            <value>GPS Coordinates</value>
+          </text>
+          <text id="/census_household/start:label">
+            <value>-</value>
+          </text>
+          <text id="/census_household/end:label">
+            <value>-</value>
+          </text>
+          <text id="/census_household/region_name:label">
+            <value>1.4. Lowest Region Name</value>
+          </text>
+          <text id="/census_household/visit_date:label">
+            <value>1.2. Visit Date</value>
+          </text>
+          <text id="/census_household/household_name:label">
+            <value>1.6. Household Name</value>
+          </text>
+          <text id="/census_household/region_id:label">
+            <value>1.3. Lowest Region Code</value>
+          </text>
+          <text id="/census_household/head_name:label">
+            <value>1.9. Head of Household Name</value>
+          </text>
+          <text id="/census_household/deviceid:label">
+            <value>-</value>
+          </text>
+          <text id="/census_household/socialgroup_processed:label">
+            <value>Processed Household</value>
+          </text>
+        </translation>
+      </itext>
+      <instance>
+        <census_household id="census_household" version="20200121">
+          <deviceid/>
+          <start/>
+          <end/>
+          <field_worker_id/>
+          <visit_date/>
+          <region_id/>
+          <region_name/>
+          <household_id/>
+          <household_name/>
+          <head_code/>
+          <head_name/>
+          <gps/>
+          <location_processed>0</location_processed>
+          <socialgroup_processed>0</socialgroup_processed>
+          <meta>
+            <instanceID/>
+            <instanceName/>
+          </meta>
+        </census_household>
+      </instance>
+      <bind jr:preload="property" jr:preloadParams="deviceid" nodeset="/census_household/deviceid" required="true()" type="string"/>
+      <bind jr:preload="timestamp" jr:preloadParams="start" nodeset="/census_household/start" required="true()" type="dateTime"/>
+      <bind jr:preload="timestamp" jr:preloadParams="end" nodeset="/census_household/end" required="true()" type="dateTime"/>
+      <bind nodeset="/census_household/field_worker_id" readonly="true()" required="true()" type="string"/>
+      <bind constraint=". &lt;= today()" jr:constraintMsg="jr:itext('/census_household/visit_date:jr:constraintMsg')" nodeset="/census_household/visit_date" required="true()" type="date"/>
+      <bind nodeset="/census_household/region_id" readonly="true()" required="true()" type="string"/>
+      <bind nodeset="/census_household/region_name" readonly="true()" required="true()" type="string"/>
+      <bind nodeset="/census_household/household_id" readonly="true()" required="true()" type="string"/>
+      <bind nodeset="/census_household/household_name" required="true()" type="string"/>
+      <bind nodeset="/census_household/head_code" readonly="true()" type="string"/>
+      <bind nodeset="/census_household/head_name" readonly="true()" type="string"/>
+      <bind nodeset="/census_household/gps" required="true()" type="geopoint"/>
+      <bind calculate="0" nodeset="/census_household/location_processed" readonly="true()" type="int"/>
+      <bind calculate="0" nodeset="/census_household/socialgroup_processed" readonly="true()" type="int"/>
+      <bind calculate="concat('uuid:', uuid())" nodeset="/census_household/meta/instanceID" readonly="true()" type="string"/>
+      <bind calculate="concat(&quot;household_&quot;,  /census_household/household_id )" nodeset="/census_household/meta/instanceName" type="string"/>
+    </model>
+  </h:head>
+  <h:body>
+    <input ref="/census_household/field_worker_id">
+      <label ref="jr:itext('/census_household/field_worker_id:label')"/>
+    </input>
+    <input appearance="no-calendar" ref="/census_household/visit_date">
+      <label ref="jr:itext('/census_household/visit_date:label')"/>
+    </input>
+    <input ref="/census_household/region_id">
+      <label ref="jr:itext('/census_household/region_id:label')"/>
+    </input>
+    <input ref="/census_household/region_name">
+      <label ref="jr:itext('/census_household/region_name:label')"/>
+    </input>
+    <input ref="/census_household/household_id">
+      <label ref="jr:itext('/census_household/household_id:label')"/>
+    </input>
+    <input ref="/census_household/household_name">
+      <label ref="jr:itext('/census_household/household_name:label')"/>
+    </input>
+    <input ref="/census_household/head_code">
+      <label ref="jr:itext('/census_household/head_code:label')"/>
+    </input>
+    <input ref="/census_household/head_name">
+      <label ref="jr:itext('/census_household/head_name:label')"/>
+    </input>
+    <input ref="/census_household/gps">
+      <label ref="jr:itext('/census_household/gps:label')"/>
+      <hint>GPS coordinates can only be collected when outside.</hint>
+    </input>
+    <input ref="/census_household/location_processed">
+      <label ref="jr:itext('/census_household/location_processed:label')"/>
+    </input>
+    <input ref="/census_household/socialgroup_processed">
+      <label ref="jr:itext('/census_household/socialgroup_processed:label')"/>
+    </input>
+  </h:body>
+</h:html>

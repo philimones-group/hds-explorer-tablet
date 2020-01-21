@@ -8,8 +8,8 @@
             android:key="app-url"
             android:title="@string/settings_server_group_url_lbl"
             android:persistent="false"
-            android:summary="https://www.example.com/hds-explorer-server"
-            android:defaultValue="https://www.example.com/hds-explorer-server"/>
+            android:summary="https://icemr2-aws.medcol.mw:8443/hds-explorer-server"
+            android:defaultValue="https://icemr2-aws.medcol.mw:8443/hds-explorer-server"/>
 
     </PreferenceCategory>
 

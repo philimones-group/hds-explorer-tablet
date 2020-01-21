@@ -64,6 +64,9 @@
     <dimen name="household_filter_region_layout_bottom_margin">2dp</dimen>"
     <dimen name="household_filter_region_text_margin_left">20dp</dimen>"
     <dimen name="household_filter_region_text_margin_right">20dp</dimen>"
+    <dimen name="household_filter_textsize">22dp</dimen>
+    <dimen name="household_filter_textbox_size">50dp</dimen>
+    <dimen name="household_filter_buttons_pad_left">20dp</dimen>
 
     <dimen name="household_item_text_1_size">20sp</dimen>
     <dimen name="household_item_text_2_size">16sp</dimen>
@@ -78,5 +81,7 @@
 
     <dimen name="sync_progress_textsize">20dp</dimen>
     <dimen name="sync_progress_button_textsize">22dp</dimen>
+
+
 
 </resources>

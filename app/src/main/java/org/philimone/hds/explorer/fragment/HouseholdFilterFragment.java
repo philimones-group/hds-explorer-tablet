@@ -40,6 +40,7 @@ import org.philimone.hds.explorer.model.ApplicationParam;
 import org.philimone.hds.explorer.model.Form;
 import org.philimone.hds.explorer.model.Household;
 import org.philimone.hds.explorer.model.Region;
+import org.philimone.hds.explorer.model.User;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -57,6 +58,8 @@ public class HouseholdFilterFragment extends Fragment implements RegionExpandabl
     private Button btHouseFilterCollectData;
     private Button btHouseFilterSearch;
     private Button btHouseFilterGpsMap;
+    private Button btHouseFilterEditHousehold;
+    private Button btHouseFilterAddHousehold;
     private RelativeLayout hfViewProgressBar;
 
     private ExpandableListView expListRegions;
@@ -96,6 +99,10 @@ public class HouseholdFilterFragment extends Fragment implements RegionExpandabl
     private RegionExpandableListAdapter regionAdapter;
     private Region currentRegion;
     private String lastRegionLevel = "";
+    private User loggedUser;
+    private Household household;
+
+    private boolean censusMode;
 
 
     public enum Buttons {
@@ -132,6 +139,8 @@ public class HouseholdFilterFragment extends Fragment implements RegionExpandabl
         this.btHouseFilterClear = (Button) view.findViewById(R.id.btHouseFilterClear);
         this.btHouseFilterSearch = (Button) view.findViewById(R.id.btHouseFilterSearch);
         this.btHouseFilterGpsMap = (Button) view.findViewById(R.id.btHouseFilterGpsMap);
+        this.btHouseFilterEditHousehold = (Button) view.findViewById(R.id.btHouseFilterEditHousehold);
+        this.btHouseFilterAddHousehold = (Button) view.findViewById(R.id.btHouseFilterAddHousehold);
         this.hfViewProgressBar = (RelativeLayout) view.findViewById(R.id.hfViewProgressBar);
 
         btHouseFilterCollectData = (Button) view.findViewById(R.id.btHouseFilterCollectData);
@@ -241,6 +250,61 @@ public class HouseholdFilterFragment extends Fragment implements RegionExpandabl
                 }
             });
         }
+
+        if (btHouseFilterEditHousehold != null){
+            btHouseFilterEditHousehold.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onEditHouseholdClicked();
+                }
+            });
+        }
+
+        if (btHouseFilterAddHousehold != null){
+            btHouseFilterAddHousehold.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onAddHouseholdClicked();
+                }
+            });
+        }
+    }
+
+    public User getLoggedUser() {
+        return loggedUser;
+    }
+
+    public void setLoggedUser(User loggedUser) {
+        this.loggedUser = loggedUser;
+    }
+
+    public boolean isCensusMode() {
+        return censusMode;
+    }
+
+    public void setCensusMode(boolean censusMode) {
+        this.censusMode = censusMode;
+
+        this.btHouseFilterAddHousehold.setVisibility(censusMode ? View.VISIBLE : View.GONE);
+        this.btHouseFilterEditHousehold.setVisibility(censusMode ? View.VISIBLE : View.GONE);
+        this.btHouseFilterAddHousehold.setEnabled(false);
+        this.btHouseFilterEditHousehold.setEnabled(false);
+    }
+
+    private void onEditHouseholdClicked() {
+        listener.onEditHousehold(household);
+    }
+
+    private void onAddHouseholdClicked() {
+
+
+        //1-Generate ExtId
+        //2-Show a dialog (with extId and name), and buttons cancel or collect new household
+
+        if (isLastRegionLevel()){
+            listener.onAddNewHousehold(currentRegion);
+        }
+
     }
 
     private void onCollectDataClicked() {
@@ -503,7 +567,7 @@ public class HouseholdFilterFragment extends Fragment implements RegionExpandabl
         MapsWithMeApi.showPointsOnMap(this.getActivity(), getString(R.string.map_households), points);
     }
 
-    private void searchHouses(String householdCode){
+    public void searchHouses(String householdCode){
         //showProgress(true);
         HouseholdSearchTask task = new HouseholdSearchTask(householdCode, null);
         task.execute();
@@ -511,6 +575,10 @@ public class HouseholdFilterFragment extends Fragment implements RegionExpandabl
 
     private void onHouseholdClicked(Household household){
         //paint item as selected
+        this.household = household;
+
+        this.btHouseFilterEditHousehold.setEnabled(isCensusMode() && household.isRecentlyCreated());
+
         listener.onHouseholdClick(household);
     }
 
@@ -519,8 +587,15 @@ public class HouseholdFilterFragment extends Fragment implements RegionExpandabl
         boolean lastLevel = region.getLevel().equals(lastRegionLevel);
 
         btHouseFilterSearch.setEnabled(lastLevel);
+        btHouseFilterAddHousehold.setEnabled(lastLevel);
 
         listener.onSelectedRegion(region);
+    }
+
+    private boolean isLastRegionLevel(){
+        if (currentRegion==null) return false;
+
+        return currentRegion.getLevel().equals(lastRegionLevel);
     }
 
     public void checkSupportForRegionForms(FormDataLoader[] formDataLoaders) {
@@ -609,6 +684,7 @@ public class HouseholdFilterFragment extends Fragment implements RegionExpandabl
 
         @Override
         protected void onPostExecute(HouseholdArrayAdapter adapter) {
+            HouseholdFilterFragment.this.household = household;
             hfHousesList.setAdapter(adapter);
             //showProgress(false);
 
@@ -624,5 +700,9 @@ public class HouseholdFilterFragment extends Fragment implements RegionExpandabl
         void onSelectedRegion(Region region);
 
         void onRegionCollectDataClicked(Region region);
+
+        void onAddNewHousehold(Region region);
+
+        void onEditHousehold(Household household);
     }
 }

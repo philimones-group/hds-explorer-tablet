@@ -9,9 +9,11 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -22,7 +24,6 @@ import org.philimone.hds.explorer.adapter.FormLoaderAdapter;
 import org.philimone.hds.explorer.adapter.MemberArrayAdapter;
 import org.philimone.hds.explorer.adapter.model.CollectedDataItem;
 import org.philimone.hds.explorer.data.FormDataLoader;
-import org.philimone.hds.explorer.database.Converter;
 import org.philimone.hds.explorer.database.Database;
 import org.philimone.hds.explorer.database.DatabaseHelper;
 import org.philimone.hds.explorer.database.Queries;
@@ -61,16 +62,23 @@ public class HouseholdDetailsActivity extends Activity implements OdkFormResultL
     private ImageView iconView;  
             
     private Household household;
+    private Region region;
     private List<FormDataLoader> formDataLoaders = new ArrayList<>();
     private FormDataLoader lastLoadedForm;
 
     private User loggedUser;
 
     private LoadingDialog loadingDialog;
+    private AlertDialog dialogNewHousehold;
+    private AlertDialog dialogNewMember;
 
     private FormUtilities formUtilities;
+    private Database database;
 
     private int activityRequestCode;
+    private boolean returningFromNewHousehold = false;
+
+    public static final int REQUEST_CODE_NEW_HOUSEHOLD = 1; /* Household Requests will be from 1 to 9 */
 
     public enum FormFilter {
         REGION, HOUSEHOLD, HOUSEHOLD_HEAD, MEMBER, FOLLOW_UP
@@ -83,13 +91,36 @@ public class HouseholdDetailsActivity extends Activity implements OdkFormResultL
 
         this.loggedUser = (User) getIntent().getExtras().get("user");
         this.household = (Household) getIntent().getExtras().get("household");
+        this.region = (Region) getIntent().getExtras().get("region");
         this.activityRequestCode = getIntent().getExtras().getInt("request_code");
 
         readFormDataLoader();
 
+        returningFromNewHousehold = false;
+
         formUtilities = new FormUtilities(this);
 
         initialize();
+    }
+
+    @Override
+    protected void onPostResume() {
+        super.onPostResume();
+
+        if (activityRequestCode == REQUEST_CODE_NEW_HOUSEHOLD && returningFromNewHousehold==false){
+
+            if (household == null){
+                //Show Create Household dialog - when this activity closes send the new created household back to parent activity
+                addNewHousehold(region);
+
+            } else {
+                //Reopen Last Created Household
+
+                //open ODK Form
+                openAddNewHouseholdForm(household);
+            }
+
+        }
     }
 
     private boolean isVisibleForm(Form form){
@@ -184,6 +215,9 @@ public class HouseholdDetailsActivity extends Activity implements OdkFormResultL
     }
 
     private void setHouseholdData(){
+
+        if (household == null) return;
+
         Region region = getRegion(household.getRegion());
         String hierarchyName = getHierarchyName(region);
 
@@ -197,6 +231,242 @@ public class HouseholdDetailsActivity extends Activity implements OdkFormResultL
         showHouseholdMembers();
         showCollectedData();
     }
+
+    /*Household Census*/
+
+    private void addNewHousehold(Region region){
+        String code = generateHouseholdCode(region, loggedUser);
+
+        TextView txtRegionCode = null;
+        TextView txtRegionName = null;
+        TextView txtHouseCode = null;
+        EditText txtHouseName = null;
+
+        if (dialogNewHousehold == null){
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            LayoutInflater inflater = this.getLayoutInflater();
+            View view = inflater.inflate(R.layout.new_household, null);
+
+            builder.setTitle(getString(R.string.new_household_main_dialog_lbl));
+            builder.setView(view);
+            builder.setCancelable(false);
+            builder.setPositiveButton(R.string.new_household_bt_collect_lbl, null);
+            builder.setNegativeButton(R.string.new_household_bt_cancel_lbl, null);
+
+            txtRegionCode = (TextView) view.findViewById(R.id.txtRegionCode);
+            txtRegionName = (TextView) view.findViewById(R.id.txtRegionName);
+            txtHouseCode = (TextView) view.findViewById(R.id.txtHouseCode);
+            txtHouseName = (EditText) view.findViewById(R.id.txtHouseName);
+
+            dialogNewHousehold = builder.create();
+
+            dialogNewHousehold.setOnShowListener(new DialogInterface.OnShowListener() {
+                @Override
+                public void onShow(DialogInterface dialog) {
+                    Button a = dialogNewHousehold.getButton(AlertDialog.BUTTON_NEGATIVE);
+                    Button b = dialogNewHousehold.getButton(AlertDialog.BUTTON_POSITIVE);
+
+                    a.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            onCancelAddNewHousehold();
+                        }
+                    });
+
+                    b.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            onAddNewHouseholdCollect();
+                        }
+                    });
+                }
+            });
+        } else {
+            txtRegionCode = (TextView) dialogNewHousehold.findViewById(R.id.txtRegionCode);
+            txtRegionName = (TextView) dialogNewHousehold.findViewById(R.id.txtRegionName);
+            txtHouseCode = (TextView) dialogNewHousehold.findViewById(R.id.txtHouseCode);
+            txtHouseName = (EditText) dialogNewHousehold.findViewById(R.id.txtHouseName);
+        }
+
+        if (txtHouseCode != null){
+            txtRegionCode.setText(region.getCode());
+            txtRegionName.setText(region.getName());
+            txtHouseCode.setText(code);
+            txtHouseName.setText(code);
+        }
+
+
+        //dialogNewHousehold.setCancelable(false);
+        dialogNewHousehold.show();
+    }
+
+    private void onCancelAddNewHousehold(){
+
+        if (activityRequestCode == REQUEST_CODE_NEW_HOUSEHOLD) {
+
+            //Intent intent = new Intent(this, HouseholdDetailsActivity.class);
+            //intent.putExtra("user", loggedUser);
+
+            if (dialogNewHousehold != null && dialogNewHousehold.isShowing()) {
+                dialogNewHousehold.dismiss();
+            }
+
+            setResult(RESULT_CANCELED); //CANCELED
+            finish();
+        }
+    }
+
+    private void onFinishAddNewHousehold(Household household){
+        Intent data = new Intent();
+        data.putExtra("household", household);
+
+        setResult(RESULT_OK, data);
+        finish();
+    }
+
+    private void onAddNewHouseholdCollect() {
+        if (dialogNewHousehold == null) return;
+
+        TextView txtRegionCode = (TextView) dialogNewHousehold.findViewById(R.id.txtRegionCode);
+        TextView txtRegionName = (TextView) dialogNewHousehold.findViewById(R.id.txtRegionName);
+        TextView txtHouseCode = (TextView) dialogNewHousehold.findViewById(R.id.txtHouseCode);
+        EditText txtHouseName = (EditText) dialogNewHousehold.findViewById(R.id.txtHouseName);
+
+        Household household = Household.getEmptyHousehold();
+        household.setCode(txtHouseCode.getText().toString());
+        household.setName(txtHouseName.getText().toString());
+        household.setRegion(region.getCode());
+
+        household.setRecentlyCreated(true);
+
+        //checks
+
+        if (!household.getCode().matches("[A-Z0-9]{6}[0-9]{3}")){
+            buildOkDialog(getString(R.string.new_household_code_err_lbl));
+            dialogNewHousehold.show();
+            return;
+        }
+
+        if (household.getName().isEmpty()){
+            buildOkDialog(getString(R.string.new_household_code_empty_lbl));
+            dialogNewHousehold.show();
+            return;
+        }
+
+        if (!household.getCode().startsWith(household.getRegion())){
+            buildOkDialog(getString(R.string.new_household_code_region_err_lbl));
+            dialogNewHousehold.show();
+            return;
+        }
+
+        //check if houseNumber exists
+        if (checkIfHouseCodeExists(household.getCode())){
+            buildOkDialog(getString(R.string.new_household_code_exists_lbl));
+            dialogNewHousehold.show();
+            return;
+        }
+
+
+        //buildOkDialog("data: "+ GeneralUtil.getDate(dtpNmDob));
+
+        dialogNewHousehold.dismiss();
+
+        //open ODK Form
+        openAddNewHouseholdForm(household, region);
+    }
+
+    private void openAddNewHouseholdForm(Household household, Region region){
+
+        this.household = household;
+
+        Form form = new Form();
+        form.setFormId("census_household");
+        form.setFormName("Household Census Form");
+        FormDataLoader loader = new FormDataLoader(form);
+        loader.putData("field_worker_id", loggedUser.getUsername());
+        loader.putData("region_id", region.getCode());
+        loader.putData("region_name", region.getName());
+        loader.putData("household_id", household.getCode());
+        loader.putData("household_name", household.getName());
+
+        openOdkForm(loader);
+    }
+
+    private void openAddNewHouseholdForm(Household household){
+
+        this.household = household;
+
+        Form form = new Form();
+        form.setFormId("census_household");
+        form.setFormName("Household Census Form");
+        FormDataLoader loader = new FormDataLoader(form);
+
+        if (household.getHeadCode()!=null && !household.getHeadCode().isEmpty()){
+            Member member = getMemberBy(household.getHeadCode());
+
+            Log.d("member head", member.getCode());
+            /*
+            loader.putData("head_id", member.getExtId());
+            loader.putData("head_perm_id", member.getPermId());
+            loader.putData("head_name", member.getName());
+            */
+
+        }
+
+        openOdkForm(loader);
+    }
+
+    private Member getMemberBy(String code){
+        Database database = new Database(this);
+        database.open();
+        Member member = Queries.getMemberBy(database, DatabaseHelper.Member.COLUMN_CODE+"=?", new String[] { code });
+        database.close();
+
+        return member;
+    }
+
+    private String generateHouseholdCode(Region region, User fieldWorker){
+        Database database = new Database(this);
+        database.open();
+        String baseId = region.getCode() + fieldWorker.getUsername().substring(2,5);
+        String[] columns = new String[] {DatabaseHelper.Household.COLUMN_CODE};
+        String where = DatabaseHelper.Household.COLUMN_CODE + " LIKE ?";
+        String[] whereArgs = new String[] { baseId + "%" };
+        String orderBy = DatabaseHelper.Household.COLUMN_CODE + " DESC";
+        String generatedId = null;
+
+        Cursor cursor = database.query(Household.class, columns, where, whereArgs, null, null, orderBy);
+
+        if (cursor.moveToFirst()) {
+            String lastGeneratedId = cursor.getString(0);
+
+            try {
+                int increment = Integer.parseInt(lastGeneratedId.substring(6, 9));
+                generatedId = baseId + String.format("%03d", increment+1);
+            } catch (NumberFormatException e) {
+                return baseId + "ERROR_01";
+            }
+
+        } else { //no extId based on "baseId"
+            generatedId = baseId + "001"; //set the first id of individual household
+        }
+
+        cursor.close();
+        database.close();
+
+        return generatedId;
+    }
+
+    private boolean checkIfHouseCodeExists(String houseCode){
+        Database database = new Database(this);
+        database.open();
+        Household household = Queries.getHouseholdBy(database, DatabaseHelper.Household.COLUMN_CODE+"=?", new String[] { houseCode });
+        database.close();
+
+        return household != null;
+    }
+
+    /*Ends*/
 
     private void onCollectedDataItemClicked(int position) {
         CollectedDataArrayAdapter adapter = (CollectedDataArrayAdapter) this.lvCollectedForms.getAdapter();
@@ -353,6 +623,9 @@ public class HouseholdDetailsActivity extends Activity implements OdkFormResultL
 
     private List<Member> getMemberOnListAdapter(){
         MemberArrayAdapter adapter = (MemberArrayAdapter) this.lvHouseholdMembers.getAdapter();
+
+        if (adapter == null) return new ArrayList<Member>();
+
         return adapter.getMembers();
     }
 
@@ -420,7 +693,7 @@ public class HouseholdDetailsActivity extends Activity implements OdkFormResultL
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
+        this.returningFromNewHousehold = true;
         formUtilities.onActivityResult(requestCode, resultCode, data, this);
     }
 
@@ -486,7 +759,11 @@ public class HouseholdDetailsActivity extends Activity implements OdkFormResultL
 
         db.close();
 
-        showCollectedData();
+        if (activityRequestCode == REQUEST_CODE_NEW_HOUSEHOLD){
+            onFinishAddNewHousehold(household);
+        } else {
+            showCollectedData();
+        }
     }
 
     @Override
@@ -549,7 +826,11 @@ public class HouseholdDetailsActivity extends Activity implements OdkFormResultL
 
         db.close();
 
-        showCollectedData();
+        if (activityRequestCode == REQUEST_CODE_NEW_HOUSEHOLD){
+            onFinishAddNewHousehold(household);
+        } else {
+            showCollectedData();
+        }
     }
 
     @Override
@@ -557,9 +838,23 @@ public class HouseholdDetailsActivity extends Activity implements OdkFormResultL
         Database db = new Database(this);
         db.open();
         db.delete(CollectedData.class, DatabaseHelper.CollectedData.COLUMN_FORM_URI+"=?", new String[]{ contentUri.toString() } );
-        db.close();
 
-        showCollectedData();
+        if (activityRequestCode == REQUEST_CODE_NEW_HOUSEHOLD){
+            if (household != null && household.getId()>0){
+                //delete household
+                db.delete(Household.class, DatabaseHelper.Household._ID+"=?", new String[] { household.getId()+"" });
+            }
+
+            db.close();
+
+            onCancelAddNewHousehold();
+
+        } else {
+
+            db.close();
+            showCollectedData();
+
+        }
     }
 
     AlertDialog dialogNewhousehold;
@@ -587,6 +882,10 @@ public class HouseholdDetailsActivity extends Activity implements OdkFormResultL
                     public void onClick(View v) {
                         onDeleteForm(contenUri);
                         dialogNewhousehold.dismiss();
+
+                        if (activityRequestCode == REQUEST_CODE_NEW_HOUSEHOLD){
+                            onCancelAddNewHousehold();
+                        }
                     }
                 });
             }
@@ -716,6 +1015,21 @@ public class HouseholdDetailsActivity extends Activity implements OdkFormResultL
         db.close();
 
         return list;
+    }
+
+    private void buildOkDialog(String message){
+        buildOkDialog(null, message);
+    }
+
+    private void buildOkDialog(String title, String message){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        title = (title==null || title.isEmpty()) ? getString(R.string.info_lbl) : title;
+
+        builder.setTitle(title);
+        builder.setMessage(message);
+        builder.setCancelable(false);
+        builder.setPositiveButton("OK", null);
+        builder.show();
     }
 
     private void showLoadingDialog(String msg, boolean show){

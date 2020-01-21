@@ -206,9 +206,25 @@
     <string name="household_filter_gps_not_available_title_lbl">Cannot view GPS Map</string>
     <string name="household_filter_gps_not_available_lbl">GPS locations for the households are not available</string>
     <string name="household_filter_no_houses_lbl">The households list is empty</string>
+    <string name="household_filter_add_house_lbl">Add New Household</string>
+    <string name="household_filter_edit_house_lbl">Edit Household</string>
     <string name="household_filter_clear_lbl">Clear</string>
     <string name="household_filter_household_not_found_lbl">Households with code like (%1$s) were not found</string>
     <string name="household_filter_head_label">Head:</string>
+
+    <!-- New Household -->
+    <string name="new_household_main_dialog_lbl">Add New Household</string>
+    <string name="new_household_region_code_lbl">Region Code</string>
+    <string name="new_household_region_name_lbl">Region Name</string>
+    <string name="new_household_code_lbl">Household Code</string>
+    <string name="new_household_name_lbl">Household Name</string>
+    <string name="new_household_name_hint">eg: 0101-0001</string>
+    <string name="new_household_bt_collect_lbl">Collect Data (ODK)</string>
+    <string name="new_household_bt_cancel_lbl">Cancel</string>
+    <string name="new_household_code_err_lbl">The format of the Household Code is incorrect</string>
+    <string name="new_household_code_empty_lbl">The Household Code cannot be empty</string>
+    <string name="new_household_code_region_err_lbl">The Household Number doesnt belong to the selected neighborhood</string>
+    <string name="new_household_code_exists_lbl">The Household Number already exists</string>
 
     <string name="survey_households_btn_lbl">Search By Household</string>
     <string name="survey_members_btn_lbl">Search By Members</string>

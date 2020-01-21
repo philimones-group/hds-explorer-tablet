@@ -43,6 +43,7 @@ public class SurveyHouseholdsActivity extends Activity implements HouseholdFilte
     private MemberListFragment memberListFragment;
 
     private User loggedUser;
+    private boolean censusMode = true;
 
     private LoadingDialog loadingDialog;
 
@@ -58,6 +59,7 @@ public class SurveyHouseholdsActivity extends Activity implements HouseholdFilte
         setContentView(R.layout.survey_households);
 
         this.loggedUser = (User) getIntent().getExtras().get("user");
+        //this.censusMode = getIntent().getExtras().getBoolean("censusMode");
 
         this.householdFilterFragment = (HouseholdFilterFragment) (getFragmentManager().findFragmentById(R.id.householdFilterFragment));
         this.memberListFragment = (MemberListFragment) getFragmentManager().findFragmentById(R.id.memberListFragment);
@@ -69,7 +71,47 @@ public class SurveyHouseholdsActivity extends Activity implements HouseholdFilte
         this.memberListFragment.setButtonVisibilityGone(MemberListFragment.Buttons.CLOSEST_MEMBERS);
         this.memberListFragment.setButtonEnabled(hasMemberBoundForms(), MemberListFragment.Buttons.NEW_MEMBER_COLLECT);
 
+        //this.memberListFragment.setHouseholdHeaderVisibility(true);
+        //this.memberListFragment.setCensusMode(censusMode);
+        this.householdFilterFragment.setCensusMode(censusMode);
+
+        if (censusMode){
+            //this.memberListFragment.setButtonVisibilityGone(MEMBERS_MAP, CLOSEST_MEMBERS, NEW_MEMBER_COLLECT);
+            //this.memberListFragment.setButtonEnabled(false, ADD_NEW_MEMBER, EDIT_MEMBER, CLOSEST_HOUSES);
+
+        } else{
+            //this.memberListFragment.setButtonVisibilityGone(ADD_NEW_MEMBER, EDIT_MEMBER, MEMBERS_MAP, CLOSEST_MEMBERS);
+        }
+
+        this.householdFilterFragment.setLoggedUser(loggedUser);
+
         this.loadingDialog = new LoadingDialog(this);
+    }
+
+    @Override
+    public void onAddNewHousehold(Region region) {
+        FormDataLoader[] dataLoaders = getFormLoaders();
+
+        Intent intent = new Intent(this, HouseholdDetailsActivity.class);
+        intent.putExtra("user", loggedUser);
+        intent.putExtra("region", region);
+        intent.putExtra("dataloaders", dataLoaders);
+        intent.putExtra("request_code", HouseholdDetailsActivity.REQUEST_CODE_NEW_HOUSEHOLD);
+
+        startActivityForResult(intent, HouseholdDetailsActivity.REQUEST_CODE_NEW_HOUSEHOLD);
+    }
+
+    @Override
+    public void onEditHousehold(Household household) {
+        FormDataLoader[] dataLoaders = getFormLoaders();
+
+        Intent intent = new Intent(this, HouseholdDetailsActivity.class);
+        intent.putExtra("user", loggedUser);
+        intent.putExtra("dataloaders", dataLoaders);
+        intent.putExtra("household", household);
+        intent.putExtra("request_code", HouseholdDetailsActivity.REQUEST_CODE_NEW_HOUSEHOLD);
+
+        startActivityForResult(intent, HouseholdDetailsActivity.REQUEST_CODE_NEW_HOUSEHOLD);
     }
 
     @Override
@@ -304,7 +346,17 @@ public class SurveyHouseholdsActivity extends Activity implements HouseholdFilte
                 //Log.d("request code data2", ""+data.getExtras().getBoolean("is_new_member"));
             }
 
+        }
 
+        if (requestCode == HouseholdDetailsActivity.REQUEST_CODE_NEW_HOUSEHOLD && resultCode==RESULT_OK){ //If result is CANCELED just do nothing
+            //Household added
+
+            Household household = (Household) data.getExtras().get("household");
+
+            if (household != null){
+                householdFilterFragment.searchHouses(household.getCode());
+                onHouseholdClick(household);
+            }
         }
     }
 

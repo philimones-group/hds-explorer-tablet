@@ -349,9 +349,9 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="5dp"
             android:layout_marginLeft="@dimen/hf_margin_left"
             android:layout_marginRight="@dimen/hf_margin_right"
+            android:layout_marginBottom="5dp"
             android:gravity="center|bottom"
             android:orientation="vertical">
 
@@ -359,36 +359,57 @@
                 android:id="@+id/btHouseFilterClear"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="@dimen/household_filter_button_textsize"
+                android:background="@drawable/button_normal"
                 android:text="@string/household_filter_clear_lbl"
-                android:visibility="gone"
-                android:background="@drawable/button_normal"/>
+                android:textSize="@dimen/household_filter_button_textsize"
+                android:visibility="gone" />
 
             <Button
                 android:id="@+id/btHouseFilterCollectData"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/household_filter_buttons"
-                android:textSize="@dimen/household_filter_button_textsize"
-                android:text="Collect Data"
+                android:background="@drawable/button_normal"
                 android:enabled="false"
-                android:background="@drawable/button_normal"/>
+                android:text="Collect Data"
+                android:textSize="@dimen/household_filter_button_textsize" />
 
             <Button
                 android:id="@+id/btHouseFilterSearch"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/household_filter_buttons"
-                android:textSize="@dimen/household_filter_button_textsize"
-                android:text="@string/household_filter_search_lbl"
+                android:background="@drawable/button_normal"
                 android:enabled="false"
+                android:text="@string/household_filter_search_lbl"
+                android:textSize="@dimen/household_filter_button_textsize" />
+
+            <Button
+                android:id="@+id/btHouseFilterEditHousehold"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/household_filter_buttons"
+                android:layout_gravity="right"
+                android:textSize="@dimen/household_filter_button_textsize"
+                android:text="@string/household_filter_edit_house_lbl"
+                android:visibility="gone"
+                android:enabled="false"
+                android:background="@drawable/button_normal"/>
+
+            <Button
+                android:id="@+id/btHouseFilterAddHousehold"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/household_filter_buttons"
+                android:layout_gravity="right"
+                android:textSize="@dimen/household_filter_button_textsize"
+                android:text="@string/household_filter_add_house_lbl"
+                android:visibility="gone"
                 android:background="@drawable/button_normal"/>
 
             <Button
                 android:id="@+id/btHouseFilterGpsMap"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/household_filter_buttons"
-                android:textSize="@dimen/household_filter_button_textsize"
+                android:background="@drawable/button_normal"
                 android:text="@string/household_filter_gpsmap_lbl"
-                android:background="@drawable/button_normal"/>
+                android:textSize="@dimen/household_filter_button_textsize" />
 
         </LinearLayout>
 

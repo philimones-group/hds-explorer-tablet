@@ -75,7 +75,7 @@ public class FormDataLoader implements Serializable {
         this.values.putAll(values);
     }
 
-    public void putExtra(String key, String value){
+    public void putData(String key, String value){
         this.values.put(key, value);
     }
 

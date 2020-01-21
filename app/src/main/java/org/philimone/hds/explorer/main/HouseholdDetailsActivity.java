@@ -617,9 +617,9 @@ public class HouseholdDetailsActivity extends Activity implements OdkFormResultL
         loadFormValues(dataLoaders, household, member, region);
 
         Intent intent = new Intent(this, MemberDetailsActivity.class);
-        intent.putExtra("user", loggedUser);
-        intent.putExtra("member", member);
-        intent.putExtra("dataloaders", dataLoaders);
+        intent.putData("user", loggedUser);
+        intent.putData("member", member);
+        intent.putData("dataloaders", dataLoaders);
 
         startActivity(intent);
         */

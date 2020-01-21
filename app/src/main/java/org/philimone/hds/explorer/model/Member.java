@@ -62,7 +62,7 @@ public class Member implements Serializable, Table {
     private Double cosLongitude;
     private Double sinLongitude;
 
-
+    private Boolean recentlyCreated = false;
 
     public int getId() {
         return id;
@@ -340,6 +340,14 @@ public class Member implements Serializable, Table {
         this.gpsNull = gpsNull;
     }
 
+    public Boolean isRecentlyCreated() {
+        return recentlyCreated;
+    }
+
+    public void setRecentlyCreated(Boolean recentlyCreated) {
+        this.recentlyCreated = recentlyCreated;
+    }
+
     public String getValueByName(String variableName){
         return ReflectionUtils.getValueByName(this, variableName);
     }
@@ -429,6 +437,7 @@ public class Member implements Serializable, Table {
         cv.put(DatabaseHelper.Member.COLUMN_SIN_LATITUDE, sinLatitude);
         cv.put(DatabaseHelper.Member.COLUMN_COS_LONGITUDE, cosLongitude);
         cv.put(DatabaseHelper.Member.COLUMN_SIN_LONGITUDE, sinLongitude);
+        cv.put(DatabaseHelper.Member.COLUMN_RECENTLY_CREATED, recentlyCreated ? 1 : 0);
         return cv;
     }
 

@@ -177,11 +177,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         public static final String COLUMN_SIN_LATITUDE = "sinLatitude";
         public static final String COLUMN_COS_LONGITUDE = "cosLongitude";
         public static final String COLUMN_SIN_LONGITUDE = "sinLongitude";
+        public static final String COLUMN_RECENTLY_CREATED = "recentlyCreated";
 
 		public static final String[] ALL_COLUMNS = {_ID, COLUMN_CODE, COLUMN_NAME, COLUMN_HEAD_CODE, COLUMN_HEAD_NAME, COLUMN_SECHEAD_CODE, COLUMN_REGION, COLUMN_HIERARCHY_1,
                 COLUMN_HIERARCHY_2, COLUMN_HIERARCHY_3, COLUMN_HIERARCHY_4, COLUMN_HIERARCHY_5, COLUMN_HIERARCHY_6, COLUMN_HIERARCHY_7, COLUMN_HIERARCHY_8,
                 COLUMN_GPS_NULL, COLUMN_GPS_ACCURACY, COLUMN_GPS_ALTITUDE, COLUMN_GPS_LATITUDE, COLUMN_GPS_LONGITUDE,
-                COLUMN_COS_LATITUDE, COLUMN_SIN_LATITUDE, COLUMN_COS_LONGITUDE, COLUMN_SIN_LONGITUDE};
+                COLUMN_COS_LATITUDE, COLUMN_SIN_LATITUDE, COLUMN_COS_LONGITUDE, COLUMN_SIN_LONGITUDE, COLUMN_RECENTLY_CREATED};
 	}
 
 	public static final class Member implements BaseColumns  {
@@ -220,6 +221,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         public static final String COLUMN_SIN_LATITUDE = "sinLatitude";
         public static final String COLUMN_COS_LONGITUDE = "cosLongitude";
         public static final String COLUMN_SIN_LONGITUDE = "sinLongitude";
+        public static final String COLUMN_RECENTLY_CREATED = "recentlyCreated";
 
 
         public static final String[] ALL_COLUMNS = {_ID, COLUMN_CODE, COLUMN_NAME, COLUMN_GENDER, COLUMN_DOB, COLUMN_AGE, COLUMN_AGE_AT_DEATH, COLUMN_SPOUSE_CODE,
@@ -228,7 +230,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 COLUMN_START_TYPE, COLUMN_START_DATE, COLUMN_END_TYPE, COLUMN_END_DATE, COLUMN_ENTRY_HOUSEHOLD, COLUMN_ENTRY_TYPE, COLUMN_ENTRY_DATE,
                 COLUMN_IS_HOUSEHOLD_HEAD, COLUMN_IS_SEC_HOUSEHOLD_HEAD,
                 COLUMN_GPS_NULL, COLUMN_GPS_ACCURACY, COLUMN_GPS_ALTITUDE, COLUMN_GPS_LATITUDE, COLUMN_GPS_LONGITUDE,
-                COLUMN_COS_LATITUDE, COLUMN_SIN_LATITUDE, COLUMN_COS_LONGITUDE, COLUMN_SIN_LONGITUDE};
+                COLUMN_COS_LATITUDE, COLUMN_SIN_LATITUDE, COLUMN_COS_LONGITUDE, COLUMN_SIN_LONGITUDE, COLUMN_RECENTLY_CREATED};
 	}
 
     public static final class CollectedData implements BaseColumns {
@@ -415,7 +417,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + Household.COLUMN_COS_LATITUDE + " REAL,"
             + Household.COLUMN_SIN_LATITUDE + " REAL,"
             + Household.COLUMN_COS_LONGITUDE + " REAL,"
-            + Household.COLUMN_SIN_LONGITUDE + " REAL);"
+            + Household.COLUMN_SIN_LONGITUDE + " REAL,"
+            + Household.COLUMN_RECENTLY_CREATED + " INTEGER);"
 
             + " CREATE UNIQUE INDEX IDX_HOUSEHOLD_CODE ON " + Household.TABLE_NAME
             + "(" +  Household.COLUMN_CODE + ");"
@@ -459,7 +462,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + Member.COLUMN_COS_LATITUDE + " REAL,"
             + Member.COLUMN_SIN_LATITUDE + " REAL,"
             + Member.COLUMN_COS_LONGITUDE + " REAL,"
-            + Member.COLUMN_SIN_LONGITUDE + " REAL);"
+            + Member.COLUMN_SIN_LONGITUDE + " REAL,"
+            + Member.COLUMN_RECENTLY_CREATED + " INTEGER);"
 
             + " CREATE UNIQUE INDEX IDX_MEMBER_CODE ON " + Member.TABLE_NAME
             + "(" +  Member.COLUMN_CODE + ");"

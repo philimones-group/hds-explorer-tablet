@@ -43,6 +43,8 @@ public class Household implements Serializable, Table {
     private Double cosLongitude;
     private Double sinLongitude;
 
+    private Boolean recentlyCreated = false;
+
     public int getId() {
         return id;
     }
@@ -235,6 +237,14 @@ public class Household implements Serializable, Table {
         this.gpsNull = gpsNull;
     }
 
+    public Boolean isRecentlyCreated() {
+        return recentlyCreated;
+    }
+
+    public void setRecentlyCreated(Boolean recentlyCreated) {
+        this.recentlyCreated = recentlyCreated;
+    }
+
     public String getValueByName(String variableName){
         return ReflectionUtils.getValueByName(this, variableName);
     }
@@ -270,6 +280,7 @@ public class Household implements Serializable, Table {
         cv.put(DatabaseHelper.Household.COLUMN_SIN_LATITUDE, sinLatitude);
         cv.put(DatabaseHelper.Household.COLUMN_COS_LONGITUDE, cosLongitude);
         cv.put(DatabaseHelper.Household.COLUMN_SIN_LONGITUDE, sinLongitude);
+        cv.put(DatabaseHelper.Household.COLUMN_RECENTLY_CREATED, recentlyCreated ? 1 : 0);
 
         return cv;
     }

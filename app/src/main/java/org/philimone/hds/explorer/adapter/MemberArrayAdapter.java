@@ -32,7 +32,7 @@ public class MemberArrayAdapter  extends ArrayAdapter<Member> {
     private boolean showHouseholdAndCode = false;
     private MemberIcon memberIcon;
 
-    public enum MemberIcon {  NORMAL_BLUE_ICON, NORMAL_GREEN_ICON, NORMAL_GREEN_2_ICON  }
+    public enum MemberIcon {  NORMAL_BLUE_ICON, NORMAL_GREEN_ICON, NORMAL_GREEN_2_ICON, NORMAL_BLUE_NEW_ICON, NORMAL_GREEN_NEW_ICON  }
 
     /**
      * Adapter of a List View Item for members (name and perm-id are displayed)
@@ -194,11 +194,21 @@ public class MemberArrayAdapter  extends ArrayAdapter<Member> {
             }
         }
 
+        if (mb.isRecentlyCreated()){
+            iconView.setImageResource(R.mipmap.member_new);
+
+            if (mb.isHouseholdHead() || mb.isSecHouseholdHead()){
+                iconView.setImageResource(R.mipmap.member_green_new);
+            }
+        }
+
         if (memberIcon != null){
             switch (memberIcon){
                 case NORMAL_BLUE_ICON:iconView.setImageResource(R.mipmap.member); break;
                 case NORMAL_GREEN_ICON:iconView.setImageResource(R.mipmap.member_green); break;
                 case NORMAL_GREEN_2_ICON:iconView.setImageResource(R.mipmap.member_green_2); break;
+                case NORMAL_BLUE_NEW_ICON:iconView.setImageResource(R.mipmap.member_new); break;
+                case NORMAL_GREEN_NEW_ICON:iconView.setImageResource(R.mipmap.member_green_new); break;
             }
         }
 

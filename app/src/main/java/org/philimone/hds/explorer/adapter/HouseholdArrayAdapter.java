@@ -148,6 +148,10 @@ public class HouseholdArrayAdapter extends ArrayAdapter<Household> {
             }
         }
 
+        if (hh.isRecentlyCreated()){
+            iconView.setImageResource(R.mipmap.household_new);
+        }
+
         if (this.extras != null && position < this.extras.size()){
             txtExtra.setText(extras.get(position));
         }

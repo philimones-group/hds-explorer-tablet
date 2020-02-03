@@ -20,4 +20,8 @@ public interface MemberActionListener extends Serializable {
     void onClosestMembersResult(Member member, MWMPoint[] points, MWMPoint[] originalPoints, ArrayList<Member> members);
 
     void onClosestHouseholdsResult(Household household, MWMPoint[] points, ArrayList<Household> households);
+
+    void onAddNewMember(Household household);
+
+    void onEditMember(Household household, Member member);
 }

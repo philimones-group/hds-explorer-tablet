@@ -43,18 +43,15 @@
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="@string/member_list_newmem_housename_lbl"/>
 
-        <android.support.design.widget.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <TextView
+            <EditText
                 android:id="@+id/txtNewMemHouseName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
                 android:hint="@string/member_list_newmem_housename_hint"
+                android:inputType="text"
                 android:maxLines="1"
                 android:singleLine="true" />
-        </android.support.design.widget.TextInputLayout>
+
     </LinearLayout>
 
     <LinearLayout
@@ -73,12 +70,12 @@
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-            <TextView
+            <EditText
                 android:id="@+id/txtNewMemCode"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
                 android:hint="@string/member_list_newmem_code_hint"
+                android:inputType="text"
                 android:maxLines="1"
                 android:singleLine="true" />
         </android.support.design.widget.TextInputLayout>

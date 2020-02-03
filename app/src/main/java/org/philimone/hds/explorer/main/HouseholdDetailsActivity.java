@@ -75,10 +75,11 @@ public class HouseholdDetailsActivity extends Activity implements OdkFormResultL
     private FormUtilities formUtilities;
     private Database database;
 
-    private int activityRequestCode;
-    private boolean returningFromNewHousehold = false;
+    private int requestCode;
+    private boolean returnFromOdk = false;
 
     public static final int REQUEST_CODE_NEW_HOUSEHOLD = 1; /* Household Requests will be from 1 to 9 */
+    public static final int REQUEST_CODE_EDIT_HOUSEHOLD = 2;
 
     public enum FormFilter {
         REGION, HOUSEHOLD, HOUSEHOLD_HEAD, MEMBER, FOLLOW_UP
@@ -92,11 +93,9 @@ public class HouseholdDetailsActivity extends Activity implements OdkFormResultL
         this.loggedUser = (User) getIntent().getExtras().get("user");
         this.household = (Household) getIntent().getExtras().get("household");
         this.region = (Region) getIntent().getExtras().get("region");
-        this.activityRequestCode = getIntent().getExtras().getInt("request_code");
+        this.requestCode = getIntent().getExtras().getInt("request_code");
 
         readFormDataLoader();
-
-        returningFromNewHousehold = false;
 
         formUtilities = new FormUtilities(this);
 
@@ -107,24 +106,23 @@ public class HouseholdDetailsActivity extends Activity implements OdkFormResultL
     protected void onPostResume() {
         super.onPostResume();
 
-        if (activityRequestCode == REQUEST_CODE_NEW_HOUSEHOLD && returningFromNewHousehold==false){
-
+        if (requestCode == REQUEST_CODE_NEW_HOUSEHOLD && returnFromOdk == false){
             if (household == null){
                 //Show Create Household dialog - when this activity closes send the new created household back to parent activity
                 addNewHousehold(region);
-
             } else {
                 //Reopen Last Created Household
-
-                //open ODK Form
                 openAddNewHouseholdForm(household);
             }
+        }
 
+        if (requestCode == REQUEST_CODE_EDIT_HOUSEHOLD && returnFromOdk == false){
+            openAddNewHouseholdForm(household);
         }
     }
 
     private boolean isVisibleForm(Form form){
-        if (activityRequestCode != TrackingListDetailsActivity.RC_HOUSEHOLD_DETAILS_TRACKINGLIST){ //HouseholdDetails was not opened via Tracking/FollowUp lists
+        if (requestCode != TrackingListDetailsActivity.RC_HOUSEHOLD_DETAILS_TRACKINGLIST){ //HouseholdDetails was not opened via Tracking/FollowUp lists
             if (form.isFollowUpOnly()){ //forms flagged with followUpOnly can only be opened using FollowUp Lists, to be able to open via normal surveys remove the flag on the server
                 return false;
             }
@@ -302,7 +300,7 @@ public class HouseholdDetailsActivity extends Activity implements OdkFormResultL
 
     private void onCancelAddNewHousehold(){
 
-        if (activityRequestCode == REQUEST_CODE_NEW_HOUSEHOLD) {
+        if (requestCode == REQUEST_CODE_NEW_HOUSEHOLD) {
 
             //Intent intent = new Intent(this, HouseholdDetailsActivity.class);
             //intent.putExtra("user", loggedUser);
@@ -410,7 +408,6 @@ public class HouseholdDetailsActivity extends Activity implements OdkFormResultL
             loader.putData("head_perm_id", member.getPermId());
             loader.putData("head_name", member.getName());
             */
-
         }
 
         openOdkForm(loader);
@@ -693,7 +690,7 @@ public class HouseholdDetailsActivity extends Activity implements OdkFormResultL
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        this.returningFromNewHousehold = true;
+        this.returnFromOdk = (requestCode==FormUtilities.SELECTED_ODK_FORM || requestCode == FormUtilities.SELECTED_ODK_REOPEN);
         formUtilities.onActivityResult(requestCode, resultCode, data, this);
     }
 
@@ -759,7 +756,7 @@ public class HouseholdDetailsActivity extends Activity implements OdkFormResultL
 
         db.close();
 
-        if (activityRequestCode == REQUEST_CODE_NEW_HOUSEHOLD){
+        if (requestCode == REQUEST_CODE_NEW_HOUSEHOLD || requestCode == REQUEST_CODE_EDIT_HOUSEHOLD){
             onFinishAddNewHousehold(household);
         } else {
             showCollectedData();
@@ -826,7 +823,7 @@ public class HouseholdDetailsActivity extends Activity implements OdkFormResultL
 
         db.close();
 
-        if (activityRequestCode == REQUEST_CODE_NEW_HOUSEHOLD){
+        if (requestCode == REQUEST_CODE_NEW_HOUSEHOLD || requestCode == REQUEST_CODE_EDIT_HOUSEHOLD){
             onFinishAddNewHousehold(household);
         } else {
             showCollectedData();
@@ -839,7 +836,7 @@ public class HouseholdDetailsActivity extends Activity implements OdkFormResultL
         db.open();
         db.delete(CollectedData.class, DatabaseHelper.CollectedData.COLUMN_FORM_URI+"=?", new String[]{ contentUri.toString() } );
 
-        if (activityRequestCode == REQUEST_CODE_NEW_HOUSEHOLD){
+        if (requestCode == REQUEST_CODE_NEW_HOUSEHOLD || requestCode == REQUEST_CODE_EDIT_HOUSEHOLD){
             if (household != null && household.getId()>0){
                 //delete household
                 db.delete(Household.class, DatabaseHelper.Household._ID+"=?", new String[] { household.getId()+"" });
@@ -883,7 +880,7 @@ public class HouseholdDetailsActivity extends Activity implements OdkFormResultL
                         onDeleteForm(contenUri);
                         dialogNewhousehold.dismiss();
 
-                        if (activityRequestCode == REQUEST_CODE_NEW_HOUSEHOLD){
+                        if (requestCode == REQUEST_CODE_NEW_HOUSEHOLD || requestCode == REQUEST_CODE_EDIT_HOUSEHOLD){
                             onCancelAddNewHousehold();
                         }
                     }

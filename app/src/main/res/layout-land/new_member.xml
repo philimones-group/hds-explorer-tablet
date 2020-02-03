@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -20,10 +19,43 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="@string/new_household_code_lbl"/>
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:id="@+id/txtNewMemHouseCode"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:maxLines="1"
+                    android:singleLine="true" />
+            </android.support.design.widget.TextInputLayout>
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:textAppearance="?android:attr/textAppearanceMedium"
                 android:text="@string/member_list_newmem_housename_lbl"/>
 
-            <EditText
-                    android:id="@+id/txtNmHouseNumber"
+            <TextView
+                    android:id="@+id/txtNewMemHouseName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/member_list_newmem_housename_hint"
@@ -48,12 +80,12 @@
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
-                <EditText
-                    android:id="@+id/txtNmCode"
+                <TextView
+                    android:id="@+id/txtNewMemCode"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
                     android:hint="@string/member_list_newmem_code_hint"
-                    android:inputType="text"
                     android:maxLines="1"
                     android:singleLine="true" />
             </android.support.design.widget.TextInputLayout>
@@ -76,7 +108,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
                 <EditText
-                    android:id="@+id/txtNmName"
+                    android:id="@+id/txtNewMemName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/member_list_newmem_name_hint"
@@ -114,7 +146,7 @@
                     android:orientation="horizontal">
 
                     <RadioButton
-                        android:id="@+id/chkNmGFemale"
+                        android:id="@+id/chkNewMemGFemale"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
@@ -123,7 +155,7 @@
                         android:checked="true"/>
 
                     <RadioButton
-                        android:id="@+id/chkNmGMale"
+                        android:id="@+id/chkNewMemGMale"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
@@ -153,7 +185,7 @@
             <DatePicker
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/dtpNmDob"
+                android:id="@+id/dtpNewMemDob"
                 android:calendarViewShown="false"
                 android:datePickerMode="spinner" />
 

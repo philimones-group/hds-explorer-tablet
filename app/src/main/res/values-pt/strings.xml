@@ -120,7 +120,9 @@
     <string name="member_list_bt_show_houses_lbl">Mostrar Mapa GPS das casas</string>
     <string name="member_list_bt_show_closest_houses_lbl">Mapa de Casas prox.</string>
     <string name="member_list_bt_show_closest_members_lbl">Mapa de Membros prox.</string>
-    <string name="member_list_bt_new_member_collect_lbl">Colher Novo Membro</string>
+    <string name="member_list_bt_new_member_collect_lbl">Colher Membro Temp.</string>
+    <string name="member_list_bt_add_new_member_lbl">Adicionar Novo Membro</string>
+    <string name="member_list_bt_edit_new_member_lbl">Alterar Membro</string>
     <string name="member_list_bt_show_collected_data_lbl">Mostrar Dados Colhidos</string>
     <string name="member_list_item_extra_collected_lbl"># Formulario(s) Colhido(s)</string>
     <string name="member_list_select_distance_radius_lbl">Selecione a distância maxima apartir da casa (raio)</string>
@@ -222,6 +224,34 @@
     <string name="new_household_code_region_err_lbl">O código da casa introduzido não pertence a região selecionada!</string>
     <string name="new_household_code_exists_lbl">O código da casa introduzido ja existe!</string>
 
+    <!-- New Member -->
+    <string name="new_member_dialog_title_lbl">Censo: Adicionar novo Membro</string>
+    <string name="new_member_dialog_collect_lbl">Guardar e Colher Dados</string>
+    <string name="new_member_dialog_change_title_lbl">Atualização de dados</string>
+    <string name="new_member_dialog_mother_select_lbl">Selecione a Mãe do membro?</string>
+    <string name="new_member_dialog_mother_exists_lbl">A mãe é conhecida e esta registada no sistema?</string>
+    <string name="new_member_dialog_mother_change_lbl">Deseja atualizar/alterar a Mãe deste Membro?</string>
+    <string name="new_member_dialog_father_select_lbl">Selecione o Pai do membro?</string>
+    <string name="new_member_dialog_father_exists_lbl">O Pai é conhecido e esta registado no sistema?</string>
+    <string name="new_member_dialog_father_change_lbl">Deseja atualizar/alterar o Pai deste Membro?</string>
+    <string name="new_member_dialog_spouse_select_lbl">Selecione o conjugue deste Membro?</string>
+    <string name="new_member_dialog_spouse_exists_lbl">O Membro se encontra numa relação conjugal e seu conjugue esta registado no sistema?</string>
+    <string name="new_member_dialog_spouse_change_lbl">Deseja atualizar/alterar o conjugue deste Membro?</string>
+    <string name="new_member_dialog_spouse_type_change_lbl">Deseja atualizar/alterar o Estado Civil deste Membro?</string>
+    <string name="new_member_dialog_household_head_warning_lbl">Este é o primeiro Membro a ser registado neste Agregado.\nEle sera declarado automaticamente como chefe deste Agregado!</string>
+    <string name="new_member_dialog_household_head_updated_lbl">Informações acerca do Agregado foram atualizadas!</string>
+
+    <string name="relationship_type_title_lbl">Estado Civil do Membro</string>
+    <string name="relationship_type_question_lbl">Escolha o Estado Civil?</string>
+    <string name="relationship_type_select_btn_lbl">Selecionar</string>
+
+    <string-array name="relationship_types_array">
+        <item>Solteiro</item>
+        <item>Casado</item>
+        <item>Divorciado/a</item>
+        <item>Viúvo/a</item>
+        <item>Vivendo Maritalmente</item>
+    </string-array>
 
     <string name="survey_households_btn_lbl">Procurar por Agregado</string>
     <string name="survey_members_btn_lbl">Procurar por membros</string>

@@ -181,7 +181,7 @@
                             android:text="@string/member_filter_age_min_lbl"
                             android:textAppearance="?android:attr/textAppearanceLarge" />
 
-                        <net.manhica.dss.explorer.widget.NumberPicker
+                        <org.philimone.hds.explorer.widget.NumberPicker
                             android:id="@+id/nbpMemFilterMinAge"
                             default_value="0"
                             max_value="140"
@@ -196,7 +196,7 @@
                             android:text="@string/member_filter_age_max_lbl"
                             android:textAppearance="?android:attr/textAppearanceLarge" />
 
-                        <net.manhica.dss.explorer.widget.NumberPicker
+                        <org.philimone.hds.explorer.widget.NumberPicker
                             android:id="@+id/nbpMemFilterMaxAge"
                             default_value="120"
                             max_value="140"

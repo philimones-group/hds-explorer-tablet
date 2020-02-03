@@ -19,6 +19,45 @@
             android:layout_marginTop="@dimen/fagm_margin_top"
             android:orientation="vertical">
 
+            <LinearLayout
+                android:id="@+id/memberListHouseHeader"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/h_details_list_header"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/iconView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:layout_gravity="left|top"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="0dp"
+                    android:layout_marginBottom="5dp"
+                    android:src="@mipmap/household" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/mbHouseDetailsNumber"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="5dp"
+                        android:gravity="center"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:textStyle="bold"
+                        android:textColor="#57544A"
+                        android:text="CHEPF1001" />
+
+
+                </LinearLayout>
+
+            </LinearLayout>
+
             <RelativeLayout
                 android:id="@+id/viewListProgressBar"
                 android:layout_width="match_parent"
@@ -57,37 +96,30 @@
             android:layout_marginRight="@dimen/fagm_margin_right"
             android:orientation="vertical">
 
-            <Button
-                android:id="@+id/btMemListShowHousehold"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="60dp"
-                android:textSize="@dimen/member_list_buttons"
-                android:text="@string/member_list_bt_show_household_lbl"
-                android:background="@drawable/button_normal"/>
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
 
-            <Button
-                android:id="@+id/btMemListShowMmbMap"
-                android:layout_width="match_parent"
-                android:layout_height="60dp"
-                android:textSize="@dimen/member_list_buttons"
-                android:text="@string/member_list_bt_show_gps_housemembers_lbl"
-                android:background="@drawable/button_normal"/>
+                <Button
+                    android:id="@+id/btMemListShowHousehold"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:layout_weight="1"
+                    android:textSize="@dimen/member_list_buttons"
+                    android:text="@string/member_list_bt_show_household_lbl"
+                    android:background="@drawable/button_normal"/>
 
-            <Button
-                android:id="@+id/btMemListShowClosestHouses"
-                android:layout_width="match_parent"
-                android:layout_height="60dp"
-                android:textSize="@dimen/member_list_buttons"
-                android:text="@string/member_list_bt_show_closest_houses_lbl"
-                android:background="@drawable/button_normal"/>
+                <Button
+                    android:id="@+id/btMemListShowMmbMap"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:layout_weight="1"
+                    android:textSize="@dimen/member_list_buttons"
+                    android:text="@string/member_list_bt_show_gps_housemembers_lbl"
+                    android:background="@drawable/button_normal"/>
 
-            <Button
-                android:id="@+id/btMemListShowClosestMembers"
-                android:layout_width="match_parent"
-                android:layout_height="60dp"
-                android:textSize="@dimen/member_list_buttons"
-                android:text="@string/member_list_bt_show_closest_members_lbl"
-                android:background="@drawable/button_normal"/>
+            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -95,8 +127,42 @@
                 android:orientation="horizontal">
 
                 <Button
-                    android:id="@+id/btMemListNewMemberCollect"
-                    android:layout_width="wrap_content"
+                    android:id="@+id/btMemListShowClosestHouses"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:layout_weight="1"
+                    android:textSize="@dimen/member_list_buttons"
+                    android:text="@string/member_list_bt_show_closest_houses_lbl"
+                    android:background="@drawable/button_normal"/>
+
+                <Button
+                    android:id="@+id/btMemListShowClosestMembers"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:layout_weight="1"
+                    android:textSize="@dimen/member_list_buttons"
+                    android:text="@string/member_list_bt_show_closest_members_lbl"
+                    android:background="@drawable/button_normal"/>
+
+                <Button
+                    android:id="@+id/btMemListShowCollectedData"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:layout_weight="1"
+                    android:textSize="@dimen/member_list_buttons"
+                    android:text="@string/member_list_bt_show_collected_data_lbl"
+                    android:background="@drawable/button_normal"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/btMemListNewTempMember"
+                    android:layout_width="match_parent"
                     android:layout_height="60dp"
                     android:layout_weight="1"
                     android:textSize="@dimen/member_list_buttons"
@@ -104,14 +170,22 @@
                     android:background="@drawable/button_normal"/>
 
                 <Button
-                    android:id="@+id/btMemListShowCollectedData"
-                    android:layout_width="wrap_content"
+                    android:id="@+id/btMemListEditNewMember"
+                    android:layout_width="match_parent"
                     android:layout_height="60dp"
                     android:layout_weight="1"
-                    android:textSize="@dimen/member_list_buttons"
-                    android:text="@string/member_list_bt_show_collected_data_lbl"
-                    android:background="@drawable/button_normal"/>
+                    android:background="@drawable/button_normal"
+                    android:text="@string/member_list_bt_edit_new_member_lbl"
+                    android:textSize="@dimen/member_list_buttons" />
 
+                <Button
+                    android:id="@+id/btMemListAddNewMember"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/button_normal"
+                    android:text="@string/member_list_bt_add_new_member_lbl"
+                    android:textSize="@dimen/member_list_buttons" />
 
             </LinearLayout>
 

@@ -31,6 +31,11 @@ import java.util.List;
 
 import mz.betainteractive.utilities.StringUtil;
 
+import static org.philimone.hds.explorer.fragment.MemberListFragment.Buttons.ADD_NEW_MEMBER;
+import static org.philimone.hds.explorer.fragment.MemberListFragment.Buttons.CLOSEST_MEMBERS;
+import static org.philimone.hds.explorer.fragment.MemberListFragment.Buttons.EDIT_MEMBER;
+import static org.philimone.hds.explorer.fragment.MemberListFragment.Buttons.MEMBERS_MAP;
+
 public class SurveyMembersActivity extends Activity implements MemberFilterFragment.Listener, MemberActionListener {
 
     private MemberFilterFragment memberFilterFragment;
@@ -58,7 +63,7 @@ public class SurveyMembersActivity extends Activity implements MemberFilterFragm
     }
 
     private void initialize() {
-        this.memberListFragment.setButtonVisibilityGone(MemberListFragment.Buttons.CLOSEST_HOUSES);
+        this.memberListFragment.setButtonVisibilityGone(MemberListFragment.Buttons.CLOSEST_HOUSES, ADD_NEW_MEMBER, EDIT_MEMBER);
         this.memberListFragment.setButtonEnabled(hasMemberBoundForms(), MemberListFragment.Buttons.NEW_MEMBER_COLLECT);
 
         this.loadingDialog = new LoadingDialog(this);
@@ -108,6 +113,16 @@ public class SurveyMembersActivity extends Activity implements MemberFilterFragm
 
     @Override
     public void onClosestHouseholdsResult(Household household, MWMPoint[] points, ArrayList<Household> households) {
+
+    }
+
+    @Override
+    public void onAddNewMember(Household household) {
+
+    }
+
+    @Override
+    public void onEditMember(Household household, Member member) {
 
     }
 

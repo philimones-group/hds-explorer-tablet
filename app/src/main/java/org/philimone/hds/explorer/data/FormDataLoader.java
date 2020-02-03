@@ -46,7 +46,7 @@ public class FormDataLoader implements Serializable {
     private static Map<String, CSVReader.CSVRow> generalCSVRows;
 
     public FormDataLoader(){
-        this.values = new HashMap<>();
+        this.values = new LinkedHashMap<>();
 
         if (generalCSVRows == null){
             Log.d("initiating gnv-rows", "init status");

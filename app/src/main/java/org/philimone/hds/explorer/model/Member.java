@@ -396,6 +396,15 @@ public class Member implements Serializable, Table {
         return member;
     }
 
+    public static Member getUnknownIndividual(){
+        Member m = Member.getEmptyMember();
+
+        m.code = "UNK";
+        m.name = "Unknown Individual";
+
+        return m;
+    }
+
     @Override
     public String getTableName() {
         return DatabaseHelper.Member.TABLE_NAME;

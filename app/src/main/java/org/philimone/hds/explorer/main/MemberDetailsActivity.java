@@ -2,17 +2,24 @@ package org.philimone.hds.explorer.main;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.FragmentManager;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RadioButton;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import org.philimone.hds.explorer.R;
@@ -23,18 +30,23 @@ import org.philimone.hds.explorer.data.FormDataLoader;
 import org.philimone.hds.explorer.database.Database;
 import org.philimone.hds.explorer.database.DatabaseHelper;
 import org.philimone.hds.explorer.database.Queries;
+import org.philimone.hds.explorer.fragment.MemberFilterDialog;
 import org.philimone.hds.explorer.model.CollectedData;
 import org.philimone.hds.explorer.model.Form;
+import org.philimone.hds.explorer.model.Household;
 import org.philimone.hds.explorer.model.Member;
 import org.philimone.hds.explorer.model.User;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import mz.betainteractive.odk.FormUtilities;
 import mz.betainteractive.odk.listener.OdkFormResultListener;
 import mz.betainteractive.odk.model.FilledForm;
+import mz.betainteractive.utilities.GeneralUtil;
+import mz.betainteractive.utilities.StringUtil;
 
 public class MemberDetailsActivity extends Activity implements OdkFormResultListener {
 
@@ -54,23 +66,40 @@ public class MemberDetailsActivity extends Activity implements OdkFormResultList
     private Button btMemDetailsBack;
     private ImageView iconView;
 
+    private AlertDialog formNotFoundDialog; /* Used to build DeleteSavedForm Dialog*/
+
     private LinearLayout mbDetailsLayoutSc;
     private TextView mbDetailsStudyCodeLabel;
     private TextView mbDetailsStudyCodeValue;
     private String studyCodeValue;
-            
+
+    private Household household;
     private Member member;
-    private boolean isNewMember;
+    private boolean isNewTempMember;
     private List<FormDataLoader> formDataLoaders = new ArrayList<>();
     private FormDataLoader lastLoadedForm;
 
     private List<Member> allHouseholdMembers = new ArrayList<>();
 
+    /* Add New Member Variables */
+    private Member selectedFather = null;
+    private Member selectedMother = null;
+    private Member selectedSpouse = null;
+    private boolean isHeadOfHousehold = false;
+    private Integer maritalStatus = null;
+    private boolean spouseChanged = false;
+    /* Ends - Add New Member Variables */
+
     private User loggedUser;
 
     private FormUtilities formUtilities;
 
-    private int activityRequestCode;
+    private int requestCode;
+    private boolean returnFromOdk;
+    private boolean editingMember;
+
+    public static final int REQUEST_CODE_ADD_NEW_MEMBER = 10; /* Member Requests will be from 10 to 19 */
+    public static final int REQUEST_CODE_EDIT_NEW_MEMBER = 11;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,15 +107,42 @@ public class MemberDetailsActivity extends Activity implements OdkFormResultList
         setContentView(R.layout.member_details);
 
         this.loggedUser = (User) getIntent().getExtras().get("user");
+        this.household = (Household) getIntent().getExtras().get("household");
         this.member = (Member) getIntent().getExtras().get("member");
         this.studyCodeValue = getIntent().getExtras().getString("member_studycode");
-        this.activityRequestCode = getIntent().getExtras().getInt("request_code");
+        this.requestCode = getIntent().getExtras().getInt("request_code");
 
-        readFormDataLoader();
+        if (requestCode != REQUEST_CODE_ADD_NEW_MEMBER && requestCode != REQUEST_CODE_EDIT_NEW_MEMBER){
+            readFormDataLoader();
+        }
+
+        this.returnFromOdk = false;
 
         formUtilities = new FormUtilities(this);
 
         initialize();
+    }
+
+    @Override
+    protected void onPostResume() {
+        super.onPostResume();
+
+        if (requestCode == REQUEST_CODE_ADD_NEW_MEMBER && returnFromOdk == false){
+
+            if (member == null){
+                //Show Create Household dialog - when this activity closes send the new created household back to parent activity
+                startAddNewMember();
+            } else {
+                //Reopen Last Created Household
+                this.editingMember = true;
+                buildChangeMotherDialog();
+            }
+        }
+
+        if (requestCode == REQUEST_CODE_EDIT_NEW_MEMBER && returnFromOdk == false){
+            this.editingMember = true;
+            buildChangeMotherDialog();
+        }
     }
 
     private void readFormDataLoader(){
@@ -103,7 +159,7 @@ public class MemberDetailsActivity extends Activity implements OdkFormResultList
     }
 
     private boolean isMemberVisualizableForm(Form form) {
-        if (activityRequestCode != TrackingListDetailsActivity.RC_MEMBER_DETAILS_TRACKINGLIST){ //MemberDetails was not opened via Tracking/FollowUp lists
+        if (requestCode != TrackingListDetailsActivity.RC_MEMBER_DETAILS_TRACKINGLIST){ //MemberDetails was not opened via Tracking/FollowUp lists
             if (form.isFollowUpOnly()){ //forms flagged with followUpOnly can only be opened using FollowUp Lists, to be able to open via normal surveys remove the flag on the server
                 return false;
             }
@@ -167,12 +223,17 @@ public class MemberDetailsActivity extends Activity implements OdkFormResultList
             }
         });
 
-        isNewMember = member.getId()==0;
+        isNewTempMember = member!=null && member.getId()==0;
 
-        setMemberData();
+        clearMemberData();
 
-        enableButtonsByFormLoaders();
-        enableButtonsByIntentData();
+        if (requestCode != REQUEST_CODE_ADD_NEW_MEMBER){
+            setMemberData();
+
+            enableButtonsByFormLoaders();
+            enableButtonsByIntentData();
+        }
+
     }
 
     @Override
@@ -185,7 +246,7 @@ public class MemberDetailsActivity extends Activity implements OdkFormResultList
         Intent resultIntent = new Intent();
 
         resultIntent.putExtra("household_code", member.getHouseholdCode());
-        resultIntent.putExtra("is_new_member", isNewMember);
+        resultIntent.putExtra("is_new_temp_member", isNewTempMember);
         setResult(Activity.RESULT_OK, resultIntent);
         finish();
     }
@@ -202,6 +263,30 @@ public class MemberDetailsActivity extends Activity implements OdkFormResultList
 
         if (enaColData != null){
             this.btMemDetailsCollectData.setEnabled(enaColData.booleanValue());
+        }
+    }
+
+    private void clearMemberData(){
+        mbDetailsName.setText("");
+        mbDetailsCode.setText("");
+        mbDetailsGender.setText("");
+        mbDetailsAge.setText("");
+        mbDetailsDob.setText("");
+        mbDetailsHouseNo.setText("");
+        mbDetailsEndType.setText("");
+        mbDetailsEndDate.setText("");
+        mbDetailsFather.setText("");
+        mbDetailsMother.setText("");
+        mbDetailsSpouse.setText("");
+
+        if (studyCodeValue != null){
+            mbDetailsLayoutSc.setVisibility(View.VISIBLE);
+
+            String studyCodeLabel = getString(R.string.member_details_studycode_lbl); //.replace("#", loggedUser.getModules());
+            mbDetailsStudyCodeLabel.setText(studyCodeLabel);
+            mbDetailsStudyCodeValue.setText(studyCodeValue);
+        }else{
+            mbDetailsLayoutSc.setVisibility(View.GONE);
         }
     }
 
@@ -445,7 +530,7 @@ public class MemberDetailsActivity extends Activity implements OdkFormResultList
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
+        this.returnFromOdk = (requestCode==FormUtilities.SELECTED_ODK_FORM || requestCode == FormUtilities.SELECTED_ODK_REOPEN);
         formUtilities.onActivityResult(requestCode, resultCode, data, this);
     }
 
@@ -511,7 +596,11 @@ public class MemberDetailsActivity extends Activity implements OdkFormResultList
 
         db.close();
 
-        showCollectedData();
+        if (requestCode == REQUEST_CODE_ADD_NEW_MEMBER || requestCode == REQUEST_CODE_EDIT_NEW_MEMBER){
+            onFinishAddNewMember(this.member);
+        } else {
+            showCollectedData();
+        }
     }
 
     @Override
@@ -574,7 +663,11 @@ public class MemberDetailsActivity extends Activity implements OdkFormResultList
 
         db.close();
 
-        showCollectedData();
+        if (requestCode == REQUEST_CODE_ADD_NEW_MEMBER || requestCode == REQUEST_CODE_EDIT_NEW_MEMBER){
+            onFinishAddNewMember(this.member);
+        } else {
+            showCollectedData();
+        }
     }
 
     @Override
@@ -584,10 +677,12 @@ public class MemberDetailsActivity extends Activity implements OdkFormResultList
         db.delete(CollectedData.class, DatabaseHelper.CollectedData.COLUMN_FORM_URI+"=?", new String[]{ contentUri.toString() } );
         db.close();
 
-        showCollectedData();
+        if (requestCode == REQUEST_CODE_ADD_NEW_MEMBER || requestCode == REQUEST_CODE_EDIT_NEW_MEMBER){
+            onCancelAddNewMember();
+        } else {
+            showCollectedData();
+        }
     }
-
-    AlertDialog dialogNewMember;
 
     @Override
     public void onFormNotFound(final Uri contenUri) {
@@ -601,22 +696,744 @@ public class MemberDetailsActivity extends Activity implements OdkFormResultList
         builder.setCancelable(false);
         builder.setPositiveButton(R.string.bt_yes_lbl, null);
         builder.setNegativeButton(R.string.bt_no_lbl, null);
-        dialogNewMember = builder.create();
+        formNotFoundDialog = builder.create();
 
-        dialogNewMember.setOnShowListener(new DialogInterface.OnShowListener() {
+        formNotFoundDialog.setOnShowListener(new DialogInterface.OnShowListener() {
             @Override
             public void onShow(DialogInterface dialog) {
-                final Button b = dialogNewMember.getButton(AlertDialog.BUTTON_POSITIVE);
+                final Button b = formNotFoundDialog.getButton(AlertDialog.BUTTON_POSITIVE);
                 b.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         onDeleteForm(contenUri);
-                        dialogNewMember.dismiss();
+                        formNotFoundDialog.dismiss();
                     }
                 });
             }
         });
 
+        formNotFoundDialog.show();
+    }
+
+    /* ADD NEW MEMBER METHODS */
+    private void startAddNewMember(){
+        //is census mode
+        //get current household
+        //check if is an empty household and prompt the head of household registration
+        //select mother and father
+
+        //
+
+        Log.d("head", ""+household.getHeadCode());
+
+        if (household.getHeadCode() == null || household.getHeadCode().trim().isEmpty()){
+
+            DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    buildNewMemberDialog();
+                }
+            };
+
+            buildOkDialog(getString(R.string.new_member_dialog_household_head_warning_lbl), listener);
+            isHeadOfHousehold = true;
+        } else {
+            buildNewMemberDialog();
+        }
+
+
+    }
+
+    private void buildNewMemberDialog(){
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        LayoutInflater inflater = this.getLayoutInflater();
+        View view = inflater.inflate(R.layout.new_member, null);
+
+        builder.setTitle(getString(R.string.new_member_dialog_title_lbl));
+        builder.setView(view);
+        builder.setCancelable(false);
+
+        builder.setPositiveButton(R.string.new_member_dialog_collect_lbl, null);
+
+        builder.setNegativeButton(R.string.bt_cancel_lbl, null);
+
+        final AlertDialog dialogNewMember = builder.create();
+
+        dialogNewMember.setOnShowListener(new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(DialogInterface dialog) {
+                Button b = dialogNewMember.getButton(AlertDialog.BUTTON_POSITIVE);
+                Button c = dialogNewMember.getButton(AlertDialog.BUTTON_NEGATIVE);
+                b.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        onAddNewMemberCollectClicked(dialogNewMember);
+                    }
+                });
+                c.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dialogNewMember.dismiss();
+                        onCancelAddNewMember();
+                    }
+                });
+            }
+        });
+
+        TextView txtNewMemHouseCode = (TextView) view.findViewById(R.id.txtNewMemHouseCode);
+        TextView txtNewMemHouseName = (TextView) view.findViewById(R.id.txtNewMemHouseName);
+        TextView txtNewMemCode = (TextView) view.findViewById(R.id.txtNewMemCode);
+        EditText txtNewMemName = (EditText) view.findViewById(R.id.txtNewMemName);
+        RadioButton chkNewMemGMale = (RadioButton) view.findViewById(R.id.chkNewMemGMale);
+        RadioButton chkNewMemGFemale = (RadioButton) view.findViewById(R.id.chkNewMemGFemale);
+        DatePicker dtpNewMemDob = (DatePicker) view.findViewById(R.id.dtpNewMemDob);
+
+        String code = generateMemberCode(household);
+
+        txtNewMemHouseCode.setText(household.getCode());
+        txtNewMemHouseName.setText(household.getName());
+        txtNewMemCode.setText(code);
+
+        //dialogNewMember.setCancelable(false);
         dialogNewMember.show();
     }
+
+    private void onCancelAddNewMember(){
+
+        if (requestCode == REQUEST_CODE_ADD_NEW_MEMBER) {
+
+            Intent intent = new Intent();
+            intent.putExtra("household", this.household);
+
+            setResult(RESULT_CANCELED, intent); //CANCELED
+            finish();
+        }
+    }
+
+    private void onFinishAddNewMember(Member member){
+        Intent data = new Intent();
+        data.putExtra("household", this.household);
+        data.putExtra("member", member);
+
+        setResult(RESULT_OK, data);
+        finish();
+    }
+
+    private void onAddNewMemberCollectClicked(AlertDialog dialogNewMember){
+        if (dialogNewMember == null) return;
+
+        TextView txtNewMemHouseCode = (TextView) dialogNewMember.findViewById(R.id.txtNewMemHouseCode);
+        TextView txtNewMemHouseName = (TextView) dialogNewMember.findViewById(R.id.txtNewMemHouseName);
+        TextView txtNewMemCode = (TextView) dialogNewMember.findViewById(R.id.txtNewMemCode);
+        EditText txtNewMemName = (EditText) dialogNewMember.findViewById(R.id.txtNewMemName);
+        RadioButton chkNewMemGMale = (RadioButton) dialogNewMember.findViewById(R.id.chkNewMemGMale);
+        RadioButton chkNewMemGFemale = (RadioButton) dialogNewMember.findViewById(R.id.chkNewMemGFemale);
+        DatePicker dtpNewMemDob = (DatePicker) dialogNewMember.findViewById(R.id.dtpNewMemDob);
+
+        Member member = Member.getEmptyMember();
+        member.setRecentlyCreated(true);
+        member.setHouseholdCode(txtNewMemHouseCode.getText().toString());
+        member.setHouseholdName(txtNewMemHouseName.getText().toString());
+        member.setCode(txtNewMemCode.getText().toString());
+        member.setName(txtNewMemName.getText().toString());
+        member.setGender(chkNewMemGMale.isChecked() ? "M" : "F");
+        member.setDob(StringUtil.format(GeneralUtil.getDate(dtpNewMemDob), "yyyy-MM-dd" ));
+        member.setAge(GeneralUtil.getAge(GeneralUtil.getDate(dtpNewMemDob)));
+
+        member.setStartType("ENU");
+
+
+        if (!member.getCode().matches("[A-Z0-9]{6}[0-9]{6}")){
+            buildOkDialog(getString(R.string.member_list_newmem_code_err_lbl));
+            txtNewMemCode.requestFocus();
+            dialogNewMember.show();
+            return;
+        }
+        if (member.getName().trim().isEmpty()){
+            buildOkDialog(getString(R.string.member_list_newmem_name_err_lbl));
+            txtNewMemName.requestFocus();
+            dialogNewMember.show();
+            return;
+        }
+        if (member.getDobDate().after(new Date())){
+            buildOkDialog(getString(R.string.member_list_newmem_dob_err_lbl));
+            dialogNewMember.show();
+            return;
+        }
+
+        if (chkNewMemGFemale.isChecked() && chkNewMemGMale.isChecked()){
+            buildOkDialog(getString(R.string.member_list_newmem_gender_err1_lbl));
+            dialogNewMember.show();
+            return;
+        }
+
+        if (!chkNewMemGFemale.isChecked() && !chkNewMemGMale.isChecked()){
+            buildOkDialog(getString(R.string.member_list_newmem_gender_err2_lbl));
+            dialogNewMember.show();
+            return;
+        }
+
+        //check if permid exists
+        if (checkIfCodeExists(member.getCode())){
+            buildOkDialog(getString(R.string.member_list_newmem_code_exists_lbl));
+            txtNewMemCode.requestFocus();
+            dialogNewMember.show();
+            return;
+        }
+
+        //buildOkDialog("data: "+ GeneralUtil.getDate(dtpNmDob));
+
+        dialogNewMember.dismiss();
+
+        this.member = member;
+
+        buildSelectMotherDialog();
+    }
+
+    private void openOdkForNewMember(){
+        //after filter mother, father and spouse
+
+        boolean hasSpouse = selectedSpouse != null && (maritalStatus != null && maritalStatus>1 );
+        boolean isHead = isHeadOfHousehold;
+
+        this.member.setFatherCode(selectedFather.getCode());        
+        this.member.setFatherName(selectedFather.getName());
+
+        this.member.setMotherCode(selectedMother.getCode());        
+        this.member.setMotherName(selectedMother.getName());
+
+
+        if (hasSpouse){
+            this.member.setSpouseCode(selectedSpouse.getCode());            
+            this.member.setSpouseName(selectedSpouse.getName());
+        } else {
+            this.maritalStatus = 1;
+        }
+
+
+        Form form = new Form();
+        form.setFormId("census_member");
+        form.setFormName("Member Census Form");
+
+        FormDataLoader loader = new FormDataLoader(form);
+        loader.putData("field_worker_id", loggedUser.getUsername());
+        loader.putData("household_id", member.getHouseholdCode());
+        loader.putData("household_no", member.getHouseholdName());
+        loader.putData("code", member.getCode());
+        loader.putData("name", member.getName());
+        loader.putData("gender", member.getGender());
+        loader.putData("dob", member.getDob());
+        loader.putData("father_id", member.getFatherCode());
+        loader.putData("father_name", member.getFatherName());
+        loader.putData("mother_id", member.getMotherCode());
+        loader.putData("mother_name", member.getMotherName());
+        loader.putData("spouse_type", maritalStatus+"");
+        loader.putData("spouse_id", member.getSpouseCode());
+        loader.putData("spouse_name", member.getSpouseName());
+
+        loader.putData("is_household_head", isHead ? "1" : "2");
+        loader.putData("relationship_with_head", member.getCode());
+
+        Log.d("editing-spouse", "selected-"+member.getSpouseCode()+", ms="+maritalStatus+", HEAD="+loader.getValues().get("is_household_head"));
+
+        openOdkForm(loader);
+    }
+
+    private void openOdkForNewMember(Household household, Member member){
+
+        this.household = household;
+        this.member = member;
+
+        Form form = new Form();
+        form.setFormId("census_member");
+        form.setFormName("Member Census Form");
+        FormDataLoader loader = new FormDataLoader(form);
+
+        if (editingMember){
+
+            boolean fatherChanged = (selectedFather != null);
+            boolean motherChanged = (selectedMother != null);
+
+            //spouse changed when: maritalStatus not null = he
+
+            if (fatherChanged) {
+                this.member.setFatherCode(selectedFather.getCode());
+                this.member.setFatherName(selectedFather.getName());
+            }
+
+            if (motherChanged) {
+                this.member.setMotherCode(selectedMother.getCode());
+                this.member.setMotherName(selectedMother.getName());
+            }
+
+            if (spouseChanged){
+                this.maritalStatus = selectedSpouse==null || maritalStatus==null ? 1 : maritalStatus;
+                this.member.setSpouseCode(selectedSpouse != null ? selectedSpouse.getCode() : "");
+                this.member.setSpouseName(selectedSpouse != null ? selectedSpouse.getName() : "");
+            }
+
+            loader.putData("father_id", member.getFatherCode());
+            loader.putData("father_name", member.getFatherName());
+            loader.putData("mother_id", member.getMotherCode());
+            loader.putData("mother_name", member.getMotherName());
+
+            if (spouseChanged) {
+                loader.putData("spouse_type", maritalStatus + "");
+                loader.putData("spouse_id", member.getSpouseCode());
+                loader.putData("spouse_name", member.getSpouseName());
+                Log.d("editing-spouse", "selected-"+member.getSpouseCode()+", ms="+maritalStatus);
+            }
+            //save Member by updating changed fields
+
+            Database database = new Database(this);
+            database.open();
+            database.update(Member.class, this.member.getContentValues(), DatabaseHelper.Member._ID+"=?", new String[]{ this.member.getId()+"" });
+            database.close();
+
+        }
+
+        openOdkForm(loader);
+    }
+
+    private void filterMother(){
+        FragmentManager fm = getFragmentManager();
+
+        MemberFilterDialog.Listener listener = new MemberFilterDialog.Listener() {
+            @Override
+            public void onSelectedMember(Member member) {
+                Log.d("selected-mother", ""+member.getCode());
+                selectedMother = member;
+
+                if (editingMember){
+                    buildChangeFatherDialog();
+                } else {
+                    buildSelectFatherDialog();
+                }
+            }
+        };
+
+        MemberFilterDialog dialog = MemberFilterDialog.newInstance(listener, getString(R.string.new_member_dialog_mother_select_lbl), false);
+        dialog.setGenderFemaleOnly();
+        dialog.setFilterMinAge(12, true);
+        dialog.setFilterHouseCode(household.getCode());
+
+        dialog.show(fm, "fragment_edit_name");
+    }
+
+    private void filterFather(){
+        FragmentManager fm = getFragmentManager();
+
+        MemberFilterDialog.Listener listener = new MemberFilterDialog.Listener() {
+            @Override
+            public void onSelectedMember(Member member) {
+                Log.d("selected-father", ""+member.getCode());
+                selectedFather = member;
+
+                if (editingMember) {
+                    buildChangeMaritalStatusDialog();
+                } else {
+                    buildSelectMaritalStatusDialog();
+                }
+            }
+        };
+
+        MemberFilterDialog dialog = MemberFilterDialog.newInstance(listener, getString(R.string.new_member_dialog_father_select_lbl), false);
+        dialog.setGenderMaleOnly();
+        dialog.setFilterMinAge(12, true);
+        dialog.setFilterHouseCode(household.getCode());
+
+        dialog.show(fm, "fragment_edit_name");
+    }
+
+    private void filterSpouse(Member otherSpouse){
+        FragmentManager fm = getFragmentManager();
+
+        MemberFilterDialog.Listener listener = new MemberFilterDialog.Listener() {
+            @Override
+            public void onSelectedMember(Member filteredSpouse) {
+                Log.d("selected-spouse", ""+filteredSpouse.getCode());
+                selectedSpouse = filteredSpouse;
+
+                if (editingMember) {
+                    openOdkForNewMember(household, member);
+                } else {
+                    openOdkForNewMember();
+                }
+            }
+        };
+
+        MemberFilterDialog dialog = MemberFilterDialog.newInstance(listener, getString(R.string.new_member_dialog_spouse_select_lbl), false);
+
+        if (otherSpouse.getGender().startsWith("M")){
+            dialog.setGenderFemaleOnly();
+        }else {
+            dialog.setGenderMaleOnly();
+        }
+
+        dialog.setFilterMinAge(12, true);
+        dialog.setFilterHouseCode(household.getCode());
+
+        dialog.show(fm, "fragment_edit_name");
+    }
+
+    private void buildSelectMotherDialog(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(getString(R.string.new_member_dialog_mother_select_lbl));
+        builder.setMessage(getString(R.string.new_member_dialog_mother_exists_lbl));
+        builder.setCancelable(false);
+        builder.setPositiveButton(R.string.bt_yes_lbl, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                //open mother filter dialog
+                filterMother();
+            }
+        });
+
+        builder.setNegativeButton(R.string.bt_no_lbl, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                //set unknown and jump to father dialog
+                selectedMother = Member.getUnknownIndividual();
+
+                if (editingMember){
+                    buildChangeFatherDialog();
+                } else {
+                    buildSelectFatherDialog();
+                }
+            }
+        });
+
+        AlertDialog dialog = builder.create();
+
+        dialog.show();
+    }
+
+    private void buildSelectFatherDialog(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(getString(R.string.new_member_dialog_father_select_lbl));
+        builder.setMessage(getString(R.string.new_member_dialog_father_exists_lbl));
+        builder.setCancelable(false);
+        builder.setPositiveButton(R.string.bt_yes_lbl, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                //open mother filter dialog
+                filterFather();
+            }
+        });
+
+        builder.setNegativeButton(R.string.bt_no_lbl, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                //set unknown and jump to father dialog
+                selectedFather = Member.getUnknownIndividual();
+
+                if (editingMember){
+                    buildChangeMaritalStatusDialog();
+                } else {
+                    buildSelectMaritalStatusDialog();
+                }
+            }
+        });
+
+        AlertDialog dialog = builder.create();
+
+        dialog.show();
+    }
+
+    private void buildSelectMaritalStatusDialog(){
+
+        if (member.getAge()<15) { //MINIMAL AGE TO GET MARRIED, THIS SHOULD BE A VARIABLE
+            selectedSpouse = null;
+            spouseChanged = false;
+            maritalStatus = 1;
+
+            if (editingMember) {
+                openOdkForNewMember(household, member);
+            } else {
+                openOdkForNewMember();
+            }
+
+            return; //jump if age lower than 15 - he cannot have a spouse
+        }
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        LayoutInflater inflater = this.getLayoutInflater();
+        final View view = inflater.inflate(R.layout.relationship_type, null);
+
+        builder.setTitle(getString(R.string.relationship_type_title_lbl));
+        builder.setView(view);
+        builder.setCancelable(false);
+
+        builder.setPositiveButton(R.string.relationship_type_select_btn_lbl, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+
+                Spinner spnRelationshipType = (Spinner) view.findViewById(R.id.spnRelationshipType);
+                Log.d("relation type", spnRelationshipType+"");
+
+                if (spnRelationshipType != null){
+                    int selected = spnRelationshipType.getSelectedItemPosition();
+                    Log.d("relation type item", selected+"");
+                    onSelectedRelationshipType(selected);
+
+                }
+            }
+        });
+
+        final AlertDialog dialog = builder.create();
+
+        dialog.show();
+    }
+
+    private void onSelectedRelationshipType(int selectedMaritalStatus){
+        maritalStatus = selectedMaritalStatus+1;
+
+        if (maritalStatus == 1) { //Solteiro
+            selectedSpouse = null;
+            spouseChanged = !member.getSpouseCode().isEmpty(); //if has previous spouse
+
+            if (editingMember) {
+                openOdkForNewMember(household, member);
+            } else {
+                openOdkForNewMember();
+            }
+        } else { //Selecionar conjugue
+            buildSelectSpouseDialog();
+        }
+    }
+
+    private void buildSelectSpouseDialog(){
+
+        if (member.getAge()<15) return; //jump if age lower than 15 - he cannot have a spouse
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(getString(R.string.new_member_dialog_spouse_select_lbl));
+        builder.setMessage(getString(R.string.new_member_dialog_spouse_exists_lbl));
+        builder.setCancelable(false);
+        builder.setPositiveButton(R.string.bt_yes_lbl, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                //open spouse filter dialog
+                spouseChanged = true;
+                filterSpouse(member);
+            }
+        });
+
+        builder.setNegativeButton(R.string.bt_no_lbl, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                //set null - dont have a spouse
+                selectedSpouse = null;
+                spouseChanged = !member.getSpouseCode().isEmpty(); //If he/she had a spouse before now they havent
+
+                if (editingMember) {
+                    openOdkForNewMember(household, member);
+                } else {
+                    openOdkForNewMember();
+                }
+            }
+        });
+
+        AlertDialog dialog = builder.create();
+
+        dialog.show();
+    }
+
+    private void buildChangeMotherDialog(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(getString(R.string.new_member_dialog_change_title_lbl));
+        builder.setMessage(getString(R.string.new_member_dialog_mother_change_lbl));
+        builder.setCancelable(false);
+        builder.setPositiveButton(R.string.bt_yes_lbl, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+
+                buildSelectMotherDialog();
+            }
+        });
+
+        builder.setNegativeButton(R.string.bt_no_lbl, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+
+                buildChangeFatherDialog();
+            }
+        });
+
+        AlertDialog dialog = builder.create();
+
+        dialog.show();
+    }
+
+    private void buildChangeFatherDialog(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(getString(R.string.new_member_dialog_change_title_lbl));
+        builder.setMessage(getString(R.string.new_member_dialog_father_change_lbl));
+        builder.setCancelable(false);
+        builder.setPositiveButton(R.string.bt_yes_lbl, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+
+                buildSelectFatherDialog();
+            }
+        });
+
+        builder.setNegativeButton(R.string.bt_no_lbl, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+
+                buildChangeMaritalStatusDialog();
+            }
+        });
+
+        AlertDialog dialog = builder.create();
+
+        dialog.show();
+    }
+
+    private void buildChangeSpouseDialog(){
+
+        if (member.getAge()<15) return; //jump if age lower than 15 - he cannot have a spouse
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(getString(R.string.new_member_dialog_change_title_lbl));
+        builder.setMessage(getString(R.string.new_member_dialog_spouse_change_lbl));
+        builder.setCancelable(false);
+        builder.setPositiveButton(R.string.bt_yes_lbl, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+
+                buildSelectSpouseDialog();
+            }
+        });
+
+        builder.setNegativeButton(R.string.bt_no_lbl, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+
+                openOdkForNewMember(household, member);
+            }
+        });
+
+        AlertDialog dialog = builder.create();
+
+        dialog.show();
+    }
+
+    private void buildChangeMaritalStatusDialog(){
+
+        if (member.getAge()<15) {
+            spouseChanged = false;
+
+            openOdkForNewMember(household, member);
+
+            return; //jump if age lower than 15 - he cannot have a spouse
+        }
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(getString(R.string.new_member_dialog_change_title_lbl));
+        builder.setMessage(getString(R.string.new_member_dialog_spouse_type_change_lbl));
+        builder.setCancelable(false);
+        builder.setPositiveButton(R.string.bt_yes_lbl, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+
+                buildSelectMaritalStatusDialog();
+            }
+        });
+
+        builder.setNegativeButton(R.string.bt_no_lbl, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                spouseChanged = false;
+
+                openOdkForNewMember(household, member);
+            }
+        });
+
+        AlertDialog dialog = builder.create();
+
+        dialog.show();
+    }
+
+    private boolean checkIfCodeExists(String code){
+        Database database = new Database(this);
+        database.open();
+        Member member = Queries.getMemberBy(database, DatabaseHelper.Member.COLUMN_CODE+"=?", new String[] { code });
+        database.close();
+
+        return member != null;
+    }
+
+    private String generateMemberCode(Household household){
+        Database database = new Database(this);
+        database.open();
+        String baseId = household.getCode();
+        String[] columns = new String[] {DatabaseHelper.Member.COLUMN_CODE};
+        String where = DatabaseHelper.Member.COLUMN_CODE + " LIKE ?";
+        String[] whereArgs = new String[] { baseId + "%" };
+        String orderBy = DatabaseHelper.Member.COLUMN_CODE + " DESC";
+        String generatedId = null;
+
+        Cursor cursor = database.query(Member.class, columns, where, whereArgs, null, null, orderBy);
+
+        if (cursor.moveToFirst()) {
+            String lastGeneratedId = cursor.getString(0);
+
+            try { //ACA 000001 001
+                int increment = Integer.parseInt(lastGeneratedId.substring(9));
+                generatedId = baseId + String.format("%03d", increment+1);
+            } catch (NumberFormatException e) {
+                return baseId + "ERROR_01";
+            }
+
+        } else { //no Code based on "baseId"
+            generatedId = baseId + "001"; //set the first id of individual household
+        }
+
+        cursor.close();
+        database.close();
+
+        return generatedId;
+    }
+
+    private void buildOkDialog(String message){
+        buildOkDialog(null, message);
+    }
+
+    private void buildOkDialog(String message, DialogInterface.OnClickListener listener){
+        buildOkDialog(null, message, listener);
+    }
+
+    private void buildOkDialog(String title, String message){
+        buildOkDialog(title, message, null);
+    }
+
+    private void buildOkDialog(String title, String message, DialogInterface.OnClickListener listener){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        title = (title==null || title.isEmpty()) ? getString(R.string.info_lbl) : title;
+
+        builder.setTitle(title);
+        builder.setMessage(message);
+        builder.setCancelable(false);
+        builder.setPositiveButton("OK", listener);
+        builder.show();
+    }
+
 }

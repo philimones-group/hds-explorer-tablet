@@ -205,6 +205,10 @@ public class OdkGeneratedFormLoadTask extends AsyncTask<Void, Void, Boolean> {
         return xmlFilePath;
     }
 
+    public String getXmlFilePath(){
+        return getXmlFilePath(this.odkUri);
+    }
+
     private Cursor getCursorForFormsProvider(String name) {
         return resolver.query(FormsProviderAPI.FormsColumns.CONTENT_URI, new String[] {
                 FormsProviderAPI.FormsColumns.JR_FORM_ID, FormsProviderAPI.FormsColumns.FORM_FILE_PATH, FormsProviderAPI.FormsColumns.JR_VERSION },

@@ -180,6 +180,7 @@
     <string name="member_details_endtype_ext_lbl">Emigrou</string>
     <string name="member_details_endtype_dth_lbl">Faleceu</string>
     <string name="member_details_name_unknown_lbl">Nome Desconhecido</string>
+    <string name="member_details_member_enddate_lbl">Data do evento:</string>
 
     <string name="member_details_dialog_del_saved_form_title_lbl">Apagar informação salva</string>
     <string name="member_details_dialog_del_saved_form_msg_lbl">O formulario ODK salvo não foi encontrado, a informação salva será apagada para permitir colheita de novos formularios\nDeseja prosseguir com a execução deste processo?</string>
@@ -197,8 +198,8 @@
     <string name="facility_supervise_mark_all_done_lbl">Todos formularios foram marcados como supervisionados!</string>
 
     <!-- Household Filter -->
-    <string name="household_filter_code_lbl">Nome/Número da casa</string>
-    <string name="household_filter_code_hint_lbl">Household Code, eg. CHA00001ex: 0101-001</string>
+    <string name="household_filter_code_lbl">Código da casa</string>
+    <string name="household_filter_code_hint_lbl">Código da casa, eg. CHA00001ex: 0101-001</string>
     <string name="household_filter_search_lbl">Procurar casa</string>
     <string name="household_filter_gpsmap_lbl">Mapa GPS</string>
     <string name="household_filter_gps_not_available_title_lbl">Não será possivel visualizar o mapa</string>
@@ -299,8 +300,14 @@
     <string name="settings_redcap_group_lbl">REDCap</string>
     <string name="settings_redcap_group_url_lbl">URL do Servidor</string>
 
+    <!-- barcode scanner -->
+    <string name="barcode_dialog_ask_scan_title">Scanner de Código de barras</string>
+    <string name="barcode_dialog_txt_scan_barcode_lbl">Pretende scanear código de barras para (#)?</string>
+    <string name="barcode_dialog_bt_scan_lbl">Scanear</string>
+    <string name="barcode_dialog_bt_scan_barcode_lbl">Scanear o código de barras</string>
+    <string name="barcode_dialog_bt_cancel_lbl">Cancel</string>
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="member_details_member_enddate_lbl">Data do evento:</string>
 
 </resources>

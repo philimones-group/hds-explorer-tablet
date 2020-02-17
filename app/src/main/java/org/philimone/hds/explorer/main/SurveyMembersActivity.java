@@ -27,7 +27,9 @@ import org.philimone.hds.explorer.widget.LoadingDialog;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import mz.betainteractive.utilities.StringUtil;
 
@@ -36,7 +38,7 @@ import static org.philimone.hds.explorer.fragment.MemberListFragment.Buttons.CLO
 import static org.philimone.hds.explorer.fragment.MemberListFragment.Buttons.EDIT_MEMBER;
 import static org.philimone.hds.explorer.fragment.MemberListFragment.Buttons.MEMBERS_MAP;
 
-public class SurveyMembersActivity extends Activity implements MemberFilterFragment.Listener, MemberActionListener {
+public class SurveyMembersActivity extends Activity implements MemberFilterFragment.Listener, MemberActionListener, BarcodeScannerActivity.InvokerClickListener {
 
     private MemberFilterFragment memberFilterFragment;
     private MemberListFragment memberListFragment;
@@ -44,6 +46,8 @@ public class SurveyMembersActivity extends Activity implements MemberFilterFragm
     private User loggedUser;
 
     private LoadingDialog loadingDialog;
+
+    private Map<String, BarcodeScannerActivity.ResultListener> barcodeResultListeners = new HashMap<>();
 
     public enum FormFilter {
         REGION, HOUSEHOLD, HOUSEHOLD_HEAD, MEMBER, FOLLOW_UP
@@ -65,6 +69,8 @@ public class SurveyMembersActivity extends Activity implements MemberFilterFragm
     private void initialize() {
         this.memberListFragment.setButtonVisibilityGone(MemberListFragment.Buttons.CLOSEST_HOUSES, ADD_NEW_MEMBER, EDIT_MEMBER);
         this.memberListFragment.setButtonEnabled(hasMemberBoundForms(), MemberListFragment.Buttons.NEW_MEMBER_COLLECT);
+
+        this.memberFilterFragment.setBarcodeScannerListener(this);
 
         this.loadingDialog = new LoadingDialog(this);
     }
@@ -124,6 +130,47 @@ public class SurveyMembersActivity extends Activity implements MemberFilterFragm
     @Override
     public void onEditMember(Household household, Member member) {
 
+    }
+
+    @Override
+    public void onBarcodeScannerClicked(int txtResId, String labelText, BarcodeScannerActivity.ResultListener resultListener) {
+        Intent intent = new Intent(this, BarcodeScannerActivity.class);
+
+        String resultHashCode = resultListener.hashCode()+"";
+        intent.putExtra("text_box_res_id", txtResId);
+        intent.putExtra("text_box_label", labelText);
+        intent.putExtra("result_listener_code", resultHashCode);
+
+        Log.d("res listener", ""+resultListener);
+
+        barcodeResultListeners.put(resultHashCode, resultListener);
+
+        Log.d("res listener size", ""+barcodeResultListeners.size());
+
+        startActivityForResult(intent, BarcodeScannerActivity.SCAN_BARCODE_REQUEST_CODE);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == BarcodeScannerActivity.SCAN_BARCODE_REQUEST_CODE && resultCode == RESULT_OK){
+            //send result back to the invoker listener
+
+            int txtResId = data.getExtras().getInt("text_box_res_id");
+            String txtLabel = data.getExtras().getString("text_box_label");
+            String barcode = data.getExtras().getString("scanned_barcode");
+            String resultListenerCode = data.getExtras().getString("result_listener_code");
+
+            Log.d("returning with barcode", ""+barcode+", listener="+resultListenerCode);
+            Log.d("contains listener", ""+barcodeResultListeners.containsKey(resultListenerCode));
+            Log.d("listeners", ""+barcodeResultListeners);
+
+            if (barcodeResultListeners.containsKey(resultListenerCode)){
+                barcodeResultListeners.get(resultListenerCode).onBarcodeScanned(txtResId, txtLabel, barcode);
+            }
+
+        }
     }
 
     private Household getHousehold(Member member){

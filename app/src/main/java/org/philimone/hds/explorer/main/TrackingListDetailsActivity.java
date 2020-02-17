@@ -38,7 +38,7 @@ import java.util.List;
 
 import mz.betainteractive.utilities.StringUtil;
 
-public class TrackingListDetailsActivity extends Activity {
+public class TrackingListDetailsActivity extends Activity implements BarcodeScannerActivity.ResultListener, BarcodeScannerActivity.InvokerClickListener {
 
     public static final int RC_REGION_DETAILS_TRACKINGLIST = 20;
     public static final int RC_HOUSEHOLD_DETAILS_TRACKINGLIST = 21;
@@ -117,6 +117,14 @@ public class TrackingListDetailsActivity extends Activity {
             @Override
             public void afterTextChanged(Editable s) {
                 filterSubjectsByCode(s.toString());
+            }
+        });
+
+        this.txtTrackListFilter.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                onTrackListFilterCodeClicked();
+                return true;
             }
         });
 
@@ -492,6 +500,68 @@ public class TrackingListDetailsActivity extends Activity {
             adapter.filterSubjects(code);
             adapter.notifyDataSetChanged();
             this.elvTrackingLists.invalidateViews();
+        }
+    }
+
+    private void onTrackListFilterCodeClicked() {
+        //1-Load scan dialog (scan id or cancel)
+        //2-on scan load scanner and read barcode
+        //3-return with readed barcode and put on houseFilterCode EditText
+
+        this.onBarcodeScannerClicked(R.id.txtTrackListFilter, getString(R.string.trackinglist_filter_code_hint_lbl), this);
+    }
+
+    @Override
+    public void onBarcodeScanned(int txtResId, String labelText, String resultContent) {
+        //if (textBox != null)
+        //    textBox.requestFocus();
+
+        Log.d("we got the barcode", ""+resultContent);
+
+        this.txtTrackListFilter.setText(resultContent);
+        this.txtTrackListFilter.requestFocus();
+
+    }
+
+    @Override
+    public void onBarcodeScannerClicked(int txtResId, String labelText, BarcodeScannerActivity.ResultListener resultListener) {
+        Intent intent = new Intent(this, BarcodeScannerActivity.class);
+
+
+        String resultHashCode = resultListener.hashCode()+"";
+        intent.putExtra("text_box_res_id", txtResId);
+        intent.putExtra("text_box_label", labelText);
+        intent.putExtra("result_listener_code", resultHashCode);
+
+        Log.d("res listener", ""+resultListener);
+
+        //barcodeResultListeners.put(resultHashCode, resultListener);
+
+        //Log.d("res listener size", ""+barcodeResultListeners.size());
+
+
+        startActivityForResult(intent, BarcodeScannerActivity.SCAN_BARCODE_REQUEST_CODE);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == BarcodeScannerActivity.SCAN_BARCODE_REQUEST_CODE && resultCode == RESULT_OK){
+            //send result back to the invoker listener
+
+            int txtResId = data.getExtras().getInt("text_box_res_id");
+            String txtLabel = data.getExtras().getString("text_box_label");
+            String barcode = data.getExtras().getString("scanned_barcode");
+            String resultListenerCode = data.getExtras().getString("result_listener_code");
+
+            Log.d("returning with barcode", ""+barcode+", listener="+resultListenerCode);
+            //Log.d("contains listener", ""+barcodeResultListeners.containsKey(resultListenerCode));
+            //Log.d("listeners", ""+barcodeResultListeners);
+
+
+            this.onBarcodeScanned(txtResId, txtLabel, barcode);
+
         }
     }
 

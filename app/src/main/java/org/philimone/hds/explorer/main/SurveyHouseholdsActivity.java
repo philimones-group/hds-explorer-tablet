@@ -34,6 +34,7 @@ import org.philimone.hds.explorer.widget.LoadingDialog;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -50,10 +51,12 @@ import static org.philimone.hds.explorer.fragment.MemberListFragment.Buttons.EDI
 import static org.philimone.hds.explorer.fragment.MemberListFragment.Buttons.MEMBERS_MAP;
 import static org.philimone.hds.explorer.fragment.MemberListFragment.Buttons.NEW_MEMBER_COLLECT;
 
-public class SurveyHouseholdsActivity extends Activity implements HouseholdFilterFragment.Listener, MemberActionListener {
+public class SurveyHouseholdsActivity extends Activity implements HouseholdFilterFragment.Listener, MemberActionListener, BarcodeScannerActivity.InvokerClickListener {
 
     private HouseholdFilterFragment householdFilterFragment;
     private MemberListFragment memberListFragment;
+
+    private Map<String, BarcodeScannerActivity.ResultListener> barcodeResultListeners = new HashMap<>();
 
     private User loggedUser;
     private boolean censusMode = true;
@@ -97,6 +100,9 @@ public class SurveyHouseholdsActivity extends Activity implements HouseholdFilte
         }
 
         this.householdFilterFragment.setLoggedUser(loggedUser);
+
+        this.householdFilterFragment.setBarcodeScannerListener(this);
+
 
         this.loadingDialog = new LoadingDialog(this);
     }
@@ -209,6 +215,25 @@ public class SurveyHouseholdsActivity extends Activity implements HouseholdFilte
         intent.putExtra("dataloaders", dataLoaders);
 
         startActivity(intent);
+    }
+
+    @Override
+    public void onBarcodeScannerClicked(int txtResId, String labelText, BarcodeScannerActivity.ResultListener resultListener) {
+        Intent intent = new Intent(this, BarcodeScannerActivity.class);
+
+        String resultHashCode = resultListener.hashCode()+"";
+
+        intent.putExtra("text_box_res_id", txtResId);
+        intent.putExtra("text_box_label", labelText);
+        intent.putExtra("result_listener_code", resultHashCode);
+
+        Log.d("res listener", ""+resultListener);
+
+        barcodeResultListeners.put(resultHashCode, resultListener);
+
+        Log.d("res listener size", ""+barcodeResultListeners.size());
+
+        startActivityForResult(intent, BarcodeScannerActivity.SCAN_BARCODE_REQUEST_CODE);
     }
 
     public FormDataLoader[] getFormLoaders(FormFilter... filters){
@@ -433,6 +458,24 @@ public class SurveyHouseholdsActivity extends Activity implements HouseholdFilte
 
             householdFilterFragment.searchHouses(household.getCode());
             onHouseholdClick(household);
+        }
+
+        if (requestCode == BarcodeScannerActivity.SCAN_BARCODE_REQUEST_CODE && resultCode == RESULT_OK){
+            //send result back to the invoker listener
+
+            int txtResId = data.getExtras().getInt("text_box_res_id");
+            String txtLabel = data.getExtras().getString("text_box_label");
+            String barcode = data.getExtras().getString("scanned_barcode");
+            String resultListenerCode = data.getExtras().getString("result_listener_code");
+
+            Log.d("returning with barcode", ""+barcode+", listener="+resultListenerCode);
+            Log.d("contains listener", ""+barcodeResultListeners.containsKey(resultListenerCode));
+            Log.d("listeners", ""+barcodeResultListeners);
+
+            if (barcodeResultListeners.containsKey(resultListenerCode)){
+                barcodeResultListeners.get(resultListenerCode).onBarcodeScanned(txtResId, txtLabel, barcode);
+            }
+
         }
     }
 

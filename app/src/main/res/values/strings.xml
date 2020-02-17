@@ -201,7 +201,7 @@
     <string name="facility_supervise_mark_all_done_lbl">Forms supervised sucessfully!</string>
 
     <!-- Household Filter -->
-    <string name="household_filter_code_lbl">Household Name/Number</string>
+    <string name="household_filter_code_lbl">Household Code</string>
     <string name="household_filter_code_hint_lbl">Household Code, eg. CHA00001</string>
     <string name="household_filter_search_lbl">Search House</string>
     <string name="household_filter_gpsmap_lbl">View GPS Map</string>
@@ -303,6 +303,12 @@
     <string name="settings_redcap_group_lbl">REDCap</string>
     <string name="settings_redcap_group_url_lbl">Server URL</string>
 
+    <!-- barcode scanner -->
+    <string name="barcode_dialog_ask_scan_title">Barcode Id Scanner</string>
+    <string name="barcode_dialog_txt_scan_barcode_lbl">Do you want to scan the barcode Id for (#)?</string>
+    <string name="barcode_dialog_bt_scan_lbl">Scan</string>
+    <string name="barcode_dialog_bt_scan_barcode_lbl">Scan the Barcode</string>
+    <string name="barcode_dialog_bt_cancel_lbl">Cancel</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

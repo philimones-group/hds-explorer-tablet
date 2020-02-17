@@ -3,6 +3,7 @@ package org.philimone.hds.explorer.fragment;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -36,6 +37,7 @@ import org.philimone.hds.explorer.database.Converter;
 import org.philimone.hds.explorer.database.Database;
 import org.philimone.hds.explorer.database.DatabaseHelper;
 import org.philimone.hds.explorer.database.Queries;
+import org.philimone.hds.explorer.main.BarcodeScannerActivity;
 import org.philimone.hds.explorer.model.ApplicationParam;
 import org.philimone.hds.explorer.model.Form;
 import org.philimone.hds.explorer.model.Household;
@@ -46,13 +48,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+
 /**
  * A simple {@link Fragment} subclass.
  */
-public class HouseholdFilterFragment extends Fragment implements RegionExpandableListAdapter.Listener {
+public class HouseholdFilterFragment extends Fragment implements RegionExpandableListAdapter.Listener, BarcodeScannerActivity.ResultListener {
 
     private Context mContext;
-    private EditText txtHouseFilterNr;
+    private EditText txtHouseFilterCode;
     private ListView hfHousesList;
     private Button btHouseFilterClear;
     private Button btHouseFilterCollectData;
@@ -92,6 +95,7 @@ public class HouseholdFilterFragment extends Fragment implements RegionExpandabl
     private TextView txtHierarchy8_value;
 
     private Listener listener;
+    private BarcodeScannerActivity.InvokerClickListener barcodeScannerListener;
 
     private Database database;
 
@@ -134,7 +138,7 @@ public class HouseholdFilterFragment extends Fragment implements RegionExpandabl
             this.listener = (Listener) getActivity();
         }
 
-        this.txtHouseFilterNr = (EditText) view.findViewById(R.id.txtHouseFilterNm);
+        this.txtHouseFilterCode = (EditText) view.findViewById(R.id.txtHouseFilterCode);
         this.hfHousesList = (ListView) view.findViewById(R.id.hfHousesList);
         this.btHouseFilterClear = (Button) view.findViewById(R.id.btHouseFilterClear);
         this.btHouseFilterSearch = (Button) view.findViewById(R.id.btHouseFilterSearch);
@@ -174,7 +178,7 @@ public class HouseholdFilterFragment extends Fragment implements RegionExpandabl
         txtHierarchy7_value = (TextView) view.findViewById(R.id.txtHierarchy7_value);
         txtHierarchy8_value = (TextView) view.findViewById(R.id.txtHierarchy8_value);
 
-        this.txtHouseFilterNr.addTextChangedListener(new TextWatcher() {
+        this.txtHouseFilterCode.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 
@@ -186,6 +190,14 @@ public class HouseholdFilterFragment extends Fragment implements RegionExpandabl
                 if (s.length()>2){
                     searchHouses(s.toString());
                 }
+            }
+        });
+
+        this.txtHouseFilterCode.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                onHouseFilterCodeClicked();
+                return true;
             }
         });
 
@@ -204,7 +216,9 @@ public class HouseholdFilterFragment extends Fragment implements RegionExpandabl
                 @Override
                 public void onClick(View v) {
                     String regionCode = currentRegion.getCode();  //get the last selected region
-                    searchHouses(regionCode); //search households on that region
+                    String code = txtHouseFilterCode.getText().toString();
+                    String search = (code==null || code.isEmpty()) ? regionCode : code;
+                    searchHouses(search); //search households on that region
 
                 }
             });
@@ -270,6 +284,31 @@ public class HouseholdFilterFragment extends Fragment implements RegionExpandabl
         }
     }
 
+    public void setBarcodeScannerListener(BarcodeScannerActivity.InvokerClickListener listener){
+        this.barcodeScannerListener = listener;
+    }
+
+    private void onHouseFilterCodeClicked() {
+        //1-Load scan dialog (scan id or cancel)
+        //2-on scan load scanner and read barcode
+        //3-return with readed barcode and put on houseFilterCode EditText
+
+        if (this.barcodeScannerListener != null){
+            this.barcodeScannerListener.onBarcodeScannerClicked(R.id.txtHouseFilterCode, getString(R.string.household_filter_code_lbl), this);
+        }
+    }
+
+    @Override
+    public void onBarcodeScanned(int txtResId, String labelText, String resultContent) {
+//if (textBox != null)
+        //            textBox.requestFocus();
+
+        Log.d("we got the barcode", ""+resultContent);
+
+        txtHouseFilterCode.setText(resultContent);
+        txtHouseFilterCode.requestFocus();
+    }
+
     public User getLoggedUser() {
         return loggedUser;
     }
@@ -296,7 +335,6 @@ public class HouseholdFilterFragment extends Fragment implements RegionExpandabl
     }
 
     private void onAddHouseholdClicked() {
-
 
         //1-Generate ExtId
         //2-Show a dialog (with extId and name), and buttons cancel or collect new household

@@ -302,7 +302,7 @@
                     android:visibility="gone"/>
 
                 <EditText
-                    android:id="@+id/txtHouseFilterNm"
+                    android:id="@+id/txtHouseFilterCode"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/member_filter_textbox_size"
                     android:background="@drawable/textinputborder"

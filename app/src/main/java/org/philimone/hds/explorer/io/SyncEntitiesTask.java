@@ -888,6 +888,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 			parser.nextTag();
 			parser.next();
 
+			Log.d("form ", ""+table.getFormId());
 
 			database.insert(table);
 			publishProgress(count);

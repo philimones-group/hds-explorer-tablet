@@ -21,6 +21,8 @@ import java.util.List;
  */
 public class CollectedDataArrayAdapter extends ArrayAdapter {
     private List<CollectedDataItem> collectedDataList;
+    private boolean[] selectedList;
+    private boolean multiSelectable;
     private Context mContext;
 
     public CollectedDataArrayAdapter(Context context, List<CollectedDataItem> objects){
@@ -28,6 +30,7 @@ public class CollectedDataArrayAdapter extends ArrayAdapter {
 
         this.collectedDataList = new ArrayList<>();
         this.collectedDataList.addAll(objects);
+        this.selectedList = new boolean[objects.size()];
         this.mContext = context;
     }
 
@@ -36,7 +39,19 @@ public class CollectedDataArrayAdapter extends ArrayAdapter {
 
         this.collectedDataList = new ArrayList<>();
         for (CollectedDataItem cd : objects) this.collectedDataList.add(cd);
+        this.selectedList = new boolean[objects.length];
         this.mContext = context;
+    }
+
+    /*
+     * Will allow the adapter items to be selectable or not,
+     * Enable or Disables selectability of the List
+     */
+    public void setMultiSelection(boolean value){
+        this.multiSelectable = value;
+        //update views by enabling first Checkbox
+
+
     }
 
     public List<CollectedDataItem> getCollectedDataList(){

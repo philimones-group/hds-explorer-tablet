@@ -8,9 +8,9 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Scanner;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
@@ -22,7 +22,6 @@ import mz.betainteractive.odk.FormsProviderAPI;
 import mz.betainteractive.odk.InstanceProviderAPI;
 import mz.betainteractive.odk.listener.OdkFormLoadListener;
 import mz.betainteractive.odk.model.FilledForm;
-import mz.betainteractive.utilities.StringUtil;
 
 import org.jdom2.JDOMException;
 import org.jdom2.input.SAXBuilder;
@@ -94,77 +93,74 @@ public class OdkGeneratedFormLoadTask extends AsyncTask<Void, Void, Boolean> {
     @Override
     protected Boolean doInBackground(Void... params) {
 
+        /* finding odk form on odk database */
+        String jrFormId = null;
+        String formFilePath = null;
+        String formVersion = null;
+        String savedFormFilePath = openingSavedUri ? getXmlFilePath(odkUri) : null;
+        Cursor cursor = null;
+
         try {
-
-            if (openingSavedUri) {
-                if (filledForm != null) {
-                    Log.d("saving file", "" + odkUri);
-                    //fill up the variables automatically
-                    String jrFormId = filledForm.getFormName();
-                    String formFilePath = getXmlFilePath(odkUri);
-
-                    Log.d("file", formFilePath);
-
-
-                    if (new File(formFilePath).exists()) {
-                        processXmlDirectly(jrFormId, formFilePath);
-                        //File targetFile = saveOpenedFile(xml,jrFormId);
-                    } else {
-                        //file doesnt exists
-                        return false;
-                    }
-
-
-                }
-
-                return odkUri != null;
+            cursor = getCursorForFormsProvider(filledForm.getFormName());
+            if (cursor.moveToNext()){
+                jrFormId = cursor.getString(0);
+                formFilePath = cursor.getString(1);
+                formVersion = cursor.getString(2);
             }
-
-            Cursor cursor = getCursorForFormsProvider(filledForm.getFormName());
-
-            //creating a new xml auto filled file and saving it
-            if (cursor.moveToFirst()) {
-                String jrFormId = cursor.getString(0);
-                String formFilePath = cursor.getString(1);
-                String formVersion = cursor.getString(2);
-
-                Log.d("file", formFilePath);
-                Log.d("loading forms", "" + cursor.toString() + ", " + cursor.getColumnName(0) + ", formVersion=" + formVersion);
-
-                /*
-                try {
-                    Scanner scanner = new Scanner(new File(formFilePath));
-                    int n=0;
-                    while (scanner.hasNextLine()){
-                        Log.d("file"+(++n), scanner.nextLine());
-                    }
-                    scanner.close();
-                }catch (Exception ex){
-                    ex.printStackTrace();
-                }
-                */
-
-                String xml = processXml(jrFormId, formFilePath);
-                File targetFile = saveFile(xml, jrFormId);
-                boolean writeFile = false;
-                //Log.d("xml", xml);
-                if (targetFile != null) {
-                    writeFile = writeContent(targetFile, filledForm.getFormName(), jrFormId, formVersion);
-                }
-
-                //Log.d("finished", "creating file");
-
-                cursor.close();
-                return writeFile;
-            }
-
             cursor.close();
+        }catch (Exception ex){
 
-        } catch (Exception ex){
             ex.printStackTrace();
+
+            if (cursor != null && !cursor.isClosed()){
+                cursor.close();
+            }
+            //file not found
+            return false;
+        }
+        /* ends here - finding odk form on odk database */
+
+        Log.d("loading forms", "form_id="+jrFormId+",ver="+formVersion+", path="+formFilePath);
+
+
+        if (openingSavedUri) {
+
+            //**** ReOpen a saved ODK Form ****//
+
+            Log.d("loading uri", "" + odkUri);
+            Log.d("loading path", "" + savedFormFilePath);
+
+            if (new File(savedFormFilePath).exists()) {
+
+                //WE WILL JUST REOPEN THE SAVED ODK XML
+
+                //processExistingXml(jrFormId, formVersion, formFilePath, savedFormFilePath);
+                //File targetFile = saveOpenedFile(xml,jrFormId);
+            } else {
+                //file doesnt exists
+                return false;
+            }
+
+
+            return odkUri != null;
+
+        } else {
+
+            //**** Open a New ODK Form ****//
+
+            String xml = processNewXml(jrFormId, formVersion, formFilePath);
+            File targetFile = saveFile(xml, jrFormId);
+            boolean writeFile = false;
+            //Log.d("xml", xml);
+            if (targetFile != null) {
+                writeFile = writeContent(targetFile, filledForm.getFormName(), jrFormId, formVersion);
+            }
+
+            //Log.d("finished", "creating file");
+
+            return writeFile;
         }
 
-        return false;
     }
 
     private File saveOpenedFile(String xml, String xmlFilePath){
@@ -215,7 +211,7 @@ public class OdkGeneratedFormLoadTask extends AsyncTask<Void, Void, Boolean> {
                 FormsProviderAPI.FormsColumns.JR_FORM_ID + " like ?", new String[] { name + "%" }, null);
     }
 
-    private String processXml(String jrFormId, String formFilePath) {
+    private String processNewXml(String jrFormId, String formVersion, String formFilePath) {
 
         StringBuilder sbuilder = new StringBuilder();
 
@@ -225,16 +221,17 @@ public class OdkGeneratedFormLoadTask extends AsyncTask<Void, Void, Boolean> {
             Document doc = builder.parse(new FileInputStream(formFilePath));
 
             Node node = doc.getElementsByTagName("data").item(0);
+            formVersion = formVersion==null ? "" : " version=\""+ formVersion +"\"";
             
             if (node==null){
             	node = doc.getElementsByTagName(jrFormId).item(0);
                 //Log.d("node", ""+node.getNodeName());
-                sbuilder.append("<"+jrFormId+" id=\"" + jrFormId + "\">" + "\r\n"); // version="161103141"
+                sbuilder.append("<"+jrFormId+" id=\"" + jrFormId + "\""+ formVersion +">" + "\r\n"); // version="161103141"
             } else {
-            	sbuilder.append("<data id=\"" + jrFormId + "\">" + "\r\n");
+            	sbuilder.append("<data id=\"" + jrFormId + "\""+ formVersion +">" + "\r\n");
             }
 
-            processNodeChildren(node, sbuilder);
+            processNewNodeChildren(node, sbuilder);
             Log.d("processXml","finished!");
 
         } catch (IOException e) {
@@ -248,7 +245,7 @@ public class OdkGeneratedFormLoadTask extends AsyncTask<Void, Void, Boolean> {
         return sbuilder.toString();
     }
 
-    private void processNodeChildren(Node node, StringBuilder sbuilder) {
+    private void processNewNodeChildren(Node node, StringBuilder sbuilder) {
         NodeList childElements = node.getChildNodes();
 
         List<String> params = filledForm.getVariables();
@@ -267,13 +264,17 @@ public class OdkGeneratedFormLoadTask extends AsyncTask<Void, Void, Boolean> {
 
                     if (filledForm.isMemberRepeatGroup(name)){ //is a repeat group with auto-filled members
                         nodeRepeatChilds = n.getChildNodes();
-                        int count = filledForm.getMembersCount(name);
 
+                        /*
+                        int count = filledForm.getMembersCount(name);
+                        //Log.d("sdd", "count="+count);
                         if (count > 0){
                             //Map the default variable "repeatGroupName[Count]"
-                            sbuilder.append("<"+name+"Count>" + count + "</"+name+"Count>" + "\r\n");
+                            sbuilder.append("<"+name+"_count>" + count + "</"+name+"_count>" + "\r\n");
                         }
+                         */
                     }
+
 
                     //checking special repeat groups
                     if (filledForm.isAllMembersRepeatGroup(name)){
@@ -286,6 +287,7 @@ public class OdkGeneratedFormLoadTask extends AsyncTask<Void, Void, Boolean> {
                     } else if (filledForm.isOutMigMembersRepeatGroup(name)){
                         createMembers(sbuilder, name, nodeRepeatChilds, filledForm.getRepeatGroupMapping(name), filledForm.getOutmigMembers());
                     } else {
+                        //its a normal variable (not a repeat group)
                         Object value = filledForm.get(name);
                         sbuilder.append(value==null ? "<"+name+" />" + "\r\n" : "<"+name+">" + value + "</"+name+">" + "\r\n");
                     }
@@ -296,13 +298,20 @@ public class OdkGeneratedFormLoadTask extends AsyncTask<Void, Void, Boolean> {
                     sbuilder.append("<"+name+">" + getDeviceId() + "</"+name+">" + "\r\n");
                 } else if (isRepeatCountVar(name)) {
                     Log.d("repeat_count", name);
+
+                    //The repeat count variable is auto filled by ODK in the end of the form, leave with the default value - 1.
+                    //The Form is opening normally
+                    /*
+                    int count = getRepeatCountValue(name);
+                    sbuilder.append(count==0 ? "<"+name+" />" + "\r\n" : "<"+name+">" + count + "</"+name+">" + "\r\n");
+                    */
                 } else {
                     if (!n.hasChildNodes())
                         sbuilder.append("<" + name + " />" + "\r\n");
                     else {
                         if (!isRepeatGroup(n)) { //dont group repeat groups without mapping
                             sbuilder.append("<" + name + ">" + "\r\n");
-                            processNodeChildren(n, sbuilder);
+                            processNewNodeChildren(n, sbuilder);
                         }
                     }
                 }
@@ -405,30 +414,44 @@ public class OdkGeneratedFormLoadTask extends AsyncTask<Void, Void, Boolean> {
     }
 
     private boolean isRepeatCountVar(String node){
-        if (node != null && node.endsWith("Count")){
-            return filledForm.isMemberRepeatGroup(node.replace("Count", ""));
+        if (node != null && node.endsWith("_count")){
+            return filledForm.isMemberRepeatGroup(node.replace("_count", ""));
         }
 
         return false;
     }
 
+    private int getRepeatCountValue(String nodeRepeatCountVar){
+        if (nodeRepeatCountVar != null && nodeRepeatCountVar.endsWith("_count")){
+            String repeat = nodeRepeatCountVar.replace("_count", "");
+
+            if (filledForm.isMemberRepeatGroup(repeat)){
+                return filledForm.getMembersCount(repeat);
+            }
+        }
+
+        return 0;
+    }
+
     /*
-     * Updates a pre-existent XML File, only updates some mapped variables
+     * Updates a pre-existent XML File, only updates some mapped variables - OLD
      */
-    private void processXmlDirectly(String jrFormId, String formFilePath) {
+
+    /*
+    private void processPreExXml(String formId, String formVersion, String odkFormFilePath, String savedOdkFormXml) {
 
         //Log.d("filledForm",""+filledForm.getValues());
         try {
 
             SAXBuilder builder = new SAXBuilder();
-            File xmlFile = new File(formFilePath);
+            File xmlFile = new File(odkFormFilePath);
 
             org.jdom2.Document doc = (org.jdom2.Document) builder.build(xmlFile);
             org.jdom2.Element element = (org.jdom2.Element) doc.getRootElement();
 
             //Log.d("element", element.getName() +", "+element);
 
-            processNodeChildrenDirectly(element);
+            processPreExNodeChildren(element);
 
             //saving xml file
             org.jdom2.output.XMLOutputter xmlOutput = new org.jdom2.output.XMLOutputter();
@@ -442,7 +465,7 @@ public class OdkGeneratedFormLoadTask extends AsyncTask<Void, Void, Boolean> {
         }
     }
 
-    private void processNodeChildrenDirectly(org.jdom2.Element node) {
+    private void processPreExNodeChildren(org.jdom2.Element node) {
         List<org.jdom2.Element> childElements = node.getChildren();
 
         List<String> params = filledForm.getVariables();
@@ -463,10 +486,154 @@ public class OdkGeneratedFormLoadTask extends AsyncTask<Void, Void, Boolean> {
                 }
 
             }else if (n.getChildren().size()>0){
-                processNodeChildrenDirectly(n);
+                processPreExNodeChildren(n);
             }
         }
     }
+    */
+
+    /*
+     * Updates a pre-existent XML File, only updates some mapped variables - NEW with RepeatGroup Support
+     */
+    private void processExistingXml(String formId, String formVersion, String odkFormFilePath, String savedOdkFormXml){
+
+        //1. read the content of a previous filled odk xml file
+        //2. read the odk blank form - to create a new xml file
+        //3. iterate the new xml file and update with values
+        //4. overwrite the previous filled odk xml file with the new xml content
+
+        //1. read the content of a previous filled odk xml file
+        //-----------------------------------------------------
+        Map<String, String> savedXmlValues = readExistingXml(savedOdkFormXml);
+
+        //2. read the odk blank form - to create a new xml file
+        //-----------------------------------------------------
+        StringBuilder sbuilder = new StringBuilder();
+
+        try {
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder builder = factory.newDocumentBuilder();
+            Document doc = builder.parse(new FileInputStream(odkFormFilePath));
+
+            Node node = doc.getElementsByTagName("data").item(0);
+            formVersion = formVersion==null ? "" : " version=\""+ formVersion +"\"";
+
+            if (node==null){
+                node = doc.getElementsByTagName(formId).item(0);
+                //Log.d("node", ""+node.getNodeName());
+                sbuilder.append("<"+formId+" id=\"" + formId + "\""+ formVersion +">" + "\r\n"); // version="161103141"
+            } else {
+                sbuilder.append("<data id=\"" + formId + "\""+ formVersion +">" + "\r\n");
+            }
+
+            //3. iterate the new xml file and update with values
+            //--------------------------------------------------
+            processExistingXmlNodeChildren(node, savedXmlValues, sbuilder);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ParserConfigurationException e) {
+            e.printStackTrace();
+        } catch (SAXException e) {
+            e.printStackTrace();
+        }
+
+        String newXml = sbuilder.toString();
+
+        //4. overwrite the previous filled odk xml file with the new xml content
+        //----------------------------------------------------------------------
+        try {
+            FileWriter writer = new FileWriter(savedOdkFormXml);
+            writer.write(newXml);
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        Log.d("processExistingXml","finished!");
+    }
+
+    private void processExistingXmlNodeChildren(Node node, Map<String, String> savedXmlValues, StringBuilder sbuilder) {
+        NodeList childElements = node.getChildNodes();
+
+        List<String> params = filledForm.getVariables(); //content to fill the form
+        //Log.d("executing-pnc",""+params);
+        for (int i = 0; i < childElements.getLength(); i++) {
+            Node n = childElements.item(i);
+
+            if (n.getNodeType() == Node.ELEMENT_NODE) {
+
+                String name = n.getNodeName();
+                String oldValue = savedXmlValues.get(name);
+                Object newValue = filledForm.get(name);
+
+                if (newValue != null) {
+
+                    sbuilder.append(newValue.toString().isEmpty() ? "<"+name+" />" + "\r\n" : "<"+name+">" + newValue + "</"+name+">" + "\r\n");
+
+                } else if (oldValue != null) {
+
+                    sbuilder.append(oldValue.isEmpty() ? "<"+name+" />" + "\r\n" : "<"+name+">" + oldValue + "</"+name+">" + "\r\n");
+
+                } else {
+                    if (!n.hasChildNodes())
+                        sbuilder.append("<" + name + " />" + "\r\n");
+                    else {
+                        sbuilder.append("<" + name + ">" + "\r\n");
+                        processExistingXmlNodeChildren(n, savedXmlValues, sbuilder);
+                    }
+                }
+            }
+        }
+        //Log.d("finished", sbuilder.toString());
+
+        sbuilder.append("</" + node.getNodeName() + ">" + "\r\n");
+    }
+
+    private Map<String, String> readExistingXml(String savedOdkFormXml){
+        LinkedHashMap<String, String> map = new LinkedHashMap<>();
+
+        SAXBuilder builder = new SAXBuilder();
+        File xmlFile = new File(savedOdkFormXml);
+
+        org.jdom2.Document doc = null;
+        try {
+            doc = builder.build(xmlFile);
+        } catch (JDOMException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        org.jdom2.Element rootNode = doc.getRootElement();
+
+        readExistingXmlChildNodes(map, rootNode);
+
+        return map;
+    }
+
+    private void readExistingXmlChildNodes(Map<String, String> map, org.jdom2.Element node){
+        List<org.jdom2.Element> childElements = node.getChildren();
+
+        for (int i = 0; i < childElements.size(); i++) {
+            org.jdom2.Element n = childElements.get(i);
+
+            if (n.getChildren().size()==0) {
+
+                String name = n.getName();
+                String value = n.getValue();
+                //n.setText(value.toString());
+
+                map.put(name, value); //save the xml node content to the map
+
+                //Log.d("node", "name:" + name + ", value:" + value +", isRoot=" + (n.getChildren().size()>0));
+
+            }else if (n.getChildren().size()>0){
+                readExistingXmlChildNodes(map, n);
+            }
+        }
+    }
+    /**/
+    
 
     private String getStartTimestamp(){
         TimeZone tz = TimeZone.getDefault();

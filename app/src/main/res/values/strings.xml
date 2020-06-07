@@ -75,7 +75,7 @@
     <string name="login_password_lbl">Password</string>
     <string name="login_button_lbl">Login</string>
     <string name="login_password_short_lbl">Log in</string>
-    <string name="login_synchronize_lbl">Synchronize Database</string>
+    <string name="login_synchronize_lbl">Synchronize</string>
     <string name="login_settings_lbl">Change Settings</string>
     <string name="error_no_modules_permission">This user doesnt have any permission on this system</string>
     <string name="error_invalid_email">This email address is invalid</string>
@@ -211,6 +211,7 @@
     <string name="household_filter_add_house_lbl">Add New Household</string>
     <string name="household_filter_edit_house_lbl">Edit Household</string>
     <string name="household_filter_clear_lbl">Clear</string>
+    <string name="household_filter_show_region_btn_lbl">Show Region Details</string>
     <string name="household_filter_household_not_found_lbl">Households with code like (%1$s) were not found</string>
     <string name="household_filter_head_label">Head:</string>
 

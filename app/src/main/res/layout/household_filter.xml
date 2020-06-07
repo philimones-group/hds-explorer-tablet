@@ -365,12 +365,12 @@
                 android:visibility="gone" />
 
             <Button
-                android:id="@+id/btHouseFilterCollectData"
+                android:id="@+id/btHouseFilterShowRegion"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/household_filter_buttons"
                 android:background="@drawable/button_normal"
                 android:enabled="false"
-                android:text="Collect Data"
+                android:text="@string/household_filter_show_region_btn_lbl"
                 android:textSize="@dimen/household_filter_button_textsize" />
 
             <Button

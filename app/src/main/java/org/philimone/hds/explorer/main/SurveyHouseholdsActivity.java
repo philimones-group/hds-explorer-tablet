@@ -173,7 +173,7 @@ public class SurveyHouseholdsActivity extends Activity implements HouseholdFilte
     }
 
     @Override
-    public void onRegionCollectDataClicked(Region region) {
+    public void onShowRegionDetailsClicked(Region region) {
         ShowRegionTask task = new ShowRegionTask(region);
         task.execute();
 

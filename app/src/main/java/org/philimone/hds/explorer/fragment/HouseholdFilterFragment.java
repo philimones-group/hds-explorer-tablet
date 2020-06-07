@@ -3,7 +3,6 @@ package org.philimone.hds.explorer.fragment;
 
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -58,7 +57,7 @@ public class HouseholdFilterFragment extends Fragment implements RegionExpandabl
     private EditText txtHouseFilterCode;
     private ListView hfHousesList;
     private Button btHouseFilterClear;
-    private Button btHouseFilterCollectData;
+    private Button btHouseFilterShowRegion;
     private Button btHouseFilterSearch;
     private Button btHouseFilterGpsMap;
     private Button btHouseFilterEditHousehold;
@@ -147,7 +146,7 @@ public class HouseholdFilterFragment extends Fragment implements RegionExpandabl
         this.btHouseFilterAddHousehold = (Button) view.findViewById(R.id.btHouseFilterAddHousehold);
         this.hfViewProgressBar = (RelativeLayout) view.findViewById(R.id.hfViewProgressBar);
 
-        btHouseFilterCollectData = (Button) view.findViewById(R.id.btHouseFilterCollectData);
+        btHouseFilterShowRegion = (Button) view.findViewById(R.id.btHouseFilterShowRegion);
         expListRegions = (ExpandableListView) view.findViewById(R.id.expListRegions);
 
         /* region items */
@@ -256,11 +255,11 @@ public class HouseholdFilterFragment extends Fragment implements RegionExpandabl
             }
         });
 
-        if (btHouseFilterCollectData != null){
-            btHouseFilterCollectData.setOnClickListener(new View.OnClickListener() {
+        if (btHouseFilterShowRegion != null){
+            btHouseFilterShowRegion.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    onCollectDataClicked();
+                    onShowRegionClicked();
                 }
             });
         }
@@ -345,15 +344,15 @@ public class HouseholdFilterFragment extends Fragment implements RegionExpandabl
 
     }
 
-    private void onCollectDataClicked() {
-        listener.onRegionCollectDataClicked(currentRegion);
+    private void onShowRegionClicked() {
+        listener.onShowRegionDetailsClicked(currentRegion);
     }
 
     public void setButtonEnabled(boolean enabled, Buttons... buttons){
 
         for (Buttons button : buttons){
             if (button==Buttons.COLLECT_DATA){
-                btHouseFilterCollectData.setEnabled(enabled);
+                btHouseFilterShowRegion.setEnabled(enabled);
             }
             if (button==Buttons.SEARCH_HOUSEHOLDS){
                 btHouseFilterSearch.setEnabled(enabled);
@@ -637,7 +636,7 @@ public class HouseholdFilterFragment extends Fragment implements RegionExpandabl
     }
 
     public void checkSupportForRegionForms(FormDataLoader[] formDataLoaders) {
-        this.btHouseFilterCollectData.setEnabled(hasAssociatedRegionForms(formDataLoaders));
+        this.btHouseFilterShowRegion.setEnabled(hasAssociatedRegionForms(formDataLoaders));
     }
 
     private boolean hasAssociatedRegionForms(FormDataLoader[] formDataLoaders){
@@ -737,7 +736,7 @@ public class HouseholdFilterFragment extends Fragment implements RegionExpandabl
 
         void onSelectedRegion(Region region);
 
-        void onRegionCollectDataClicked(Region region);
+        void onShowRegionDetailsClicked(Region region);
 
         void onAddNewHousehold(Region region);
 

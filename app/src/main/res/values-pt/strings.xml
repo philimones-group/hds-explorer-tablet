@@ -208,6 +208,7 @@
     <string name="household_filter_add_house_lbl">Adicionar Nova Casa</string>
     <string name="household_filter_edit_house_lbl">Alterar Nova Casa</string>
     <string name="household_filter_clear_lbl">Limpar</string>
+    <string name="household_filter_show_region_btn_lbl">Ver Detalhes da Região</string>
     <string name="household_filter_household_not_found_lbl">Casas com código (%1$s) não foram encontradas</string>
     <string name="household_filter_head_label">Chefe:</string>
 

@@ -1,7 +1,6 @@
 package org.philimone.hds.explorer.main;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -10,8 +9,10 @@ import android.widget.TextView;
 import org.philimone.hds.explorer.R;
 import org.philimone.hds.explorer.database.Database;
 import org.philimone.hds.explorer.database.Queries;
-import org.philimone.hds.explorer.io.SyncDatabaseListener;
+import org.philimone.hds.explorer.io.SyncEntitiesListener;
 import org.philimone.hds.explorer.io.SyncEntitiesTask;
+import org.philimone.hds.explorer.io.SyncEntity;
+import org.philimone.hds.explorer.io.SyncEntityReport;
 import org.philimone.hds.explorer.model.SyncReport;
 import org.philimone.hds.explorer.widget.SyncProgressDialog;
 
@@ -19,7 +20,7 @@ import java.util.List;
 
 import mz.betainteractive.utilities.StringUtil;
 
-public class ServerSyncActivity extends Activity implements SyncDatabaseListener {
+public class ServerSyncActivity extends Activity implements SyncEntitiesListener {
 
     private Button btSyncModules;
     private Button btSyncForms;
@@ -49,11 +50,6 @@ public class ServerSyncActivity extends Activity implements SyncDatabaseListener
         setContentView(R.layout.server_sync);
 
         initialize();
-        showStatus();
-    }
-
-    @Override
-    public void collectionComplete(String result) {
         showStatus();
     }
 
@@ -108,14 +104,14 @@ public class ServerSyncActivity extends Activity implements SyncDatabaseListener
         this.btSyncModules.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                syncModules();
+                syncSettings();
             }
         });
 
         this.btSyncForms.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                syncForms();
+                syncDatasets();
             }
         });
 
@@ -163,33 +159,73 @@ public class ServerSyncActivity extends Activity implements SyncDatabaseListener
 
     }
 
-    private void syncModules() {
-        SyncEntitiesTask syncEntitiesTask = new SyncEntitiesTask(this, progressDialog, this, serverUrl, username, password, SyncEntitiesTask.Entity.MODULES, SyncEntitiesTask.Entity.PARAMETERS, SyncEntitiesTask.Entity.FORMS);
+    private void syncSettings() {
+        SyncEntitiesTask syncEntitiesTask = new SyncEntitiesTask(this, this, serverUrl, username, password, SyncEntity.MODULES, SyncEntity.PARAMETERS, SyncEntity.FORMS);
         syncEntitiesTask.execute();
     }
 
-    private void syncForms() {
-        SyncEntitiesTask syncEntitiesTask = new SyncEntitiesTask(this, progressDialog, this, serverUrl, username, password, SyncEntitiesTask.Entity.DATASETS, SyncEntitiesTask.Entity.DATASETS_CSV_FILES);
+    private void syncDatasets() {
+        SyncEntitiesTask syncEntitiesTask = new SyncEntitiesTask(this, this, serverUrl, username, password, SyncEntity.DATASETS, SyncEntity.DATASETS_CSV_FILES);
         syncEntitiesTask.execute();
     }
 
     private void syncTrackingLists() {
-        SyncEntitiesTask syncEntitiesTask = new SyncEntitiesTask(this, progressDialog, this, serverUrl, username, password, SyncEntitiesTask.Entity.TRACKING_LISTS);
+        SyncEntitiesTask syncEntitiesTask = new SyncEntitiesTask(this, this, serverUrl, username, password, SyncEntity.TRACKING_LISTS);
         syncEntitiesTask.execute();
     }
 
     private void syncUsers() {
-        SyncEntitiesTask syncEntitiesTask = new SyncEntitiesTask(this, progressDialog, this, serverUrl, username, password, SyncEntitiesTask.Entity.USERS);
+        SyncEntitiesTask syncEntitiesTask = new SyncEntitiesTask(this, this, serverUrl, username, password, SyncEntity.USERS);
         syncEntitiesTask.execute();
     }
 
     private void syncHouseholds() {
-        SyncEntitiesTask syncEntitiesTask = new SyncEntitiesTask(this, progressDialog, this, serverUrl, username, password, SyncEntitiesTask.Entity.REGIONS, SyncEntitiesTask.Entity.HOUSEHOLDS);
+        SyncEntitiesTask syncEntitiesTask = new SyncEntitiesTask(this, this, serverUrl, username, password, SyncEntity.REGIONS, SyncEntity.HOUSEHOLDS);
         syncEntitiesTask.execute();
     }
 
     private void syncMembers() {
-        SyncEntitiesTask syncEntitiesTask = new SyncEntitiesTask(this, progressDialog, this, serverUrl, username, password, SyncEntitiesTask.Entity.MEMBERS);
+        SyncEntitiesTask syncEntitiesTask = new SyncEntitiesTask(this, this, serverUrl, username, password, SyncEntity.MEMBERS);
         syncEntitiesTask.execute();
+    }
+
+    /* Dialog Progress Updates*/
+
+    private void initDialog(){
+        progressDialog.syncInitialize();;
+        progressDialog.setTitle(this.getString(R.string.sync_title_lbl));
+        progressDialog.setMessage(this.getString(R.string.sync_prepare_download_lbl));
+        progressDialog.setButtonEnabled(false);
+        progressDialog.show();
+    }
+
+    @Override
+    public void onSyncStart() {
+        initDialog();
+    }
+
+    @Override
+    public void onSyncProgressUpdate(Integer progress, String progressText) {
+        progressDialog.setMessage(progressText);
+    }
+
+    @Override
+    public void onSyncFinished(String result, List<SyncEntityReport> downloadReports, List<SyncEntityReport> persistedReports) {
+
+        for (SyncEntityReport report : downloadReports){
+            progressDialog.addSynchronizedMessage(report.getMessage(), report.isSuccessStatus());
+        }
+
+        for (SyncEntityReport report : persistedReports){
+            progressDialog.addSynchronizedMessage(report.getMessage(), report.isSuccessStatus());
+        }
+
+
+        progressDialog.setMessage(result);
+        progressDialog.setButtonEnabled(true);
+        progressDialog.syncFinalize();
+
+
+        showStatus();
     }
 }

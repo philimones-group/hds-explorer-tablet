@@ -20,7 +20,6 @@ import org.philimone.hds.explorer.database.Queries;
 import org.philimone.hds.explorer.model.ApplicationParam;
 import org.philimone.hds.explorer.model.DataSet;
 import org.philimone.hds.explorer.model.Region;
-import org.philimone.hds.explorer.widget.SyncProgressDialog;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
@@ -49,13 +48,10 @@ import org.philimone.hds.explorer.model.followup.TrackingList;
 import mz.betainteractive.utilities.StringUtil;
 
 /**
- * AsyncTask responsible for downloading the OpenHDS "database", that is a
- * subset of the OpenHDS database records. It does the downloading
+ * AsyncTask responsible for downloading the HDS Explorer "database", that is a
+ * subset of the HDS Explorer database records. It does the downloading
  * incrementally, by downloading parts of the data one at a time. For example,
- * it gets all locations and then retrieves all individuals. Ordering is
- * somewhat important here, because the database has a few foreign key
- * references that must be satisfied (e.g. member references a location
- * location)
+ * it gets all Households and then retrieves all Members.
  */
 public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 
@@ -63,23 +59,22 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 	private static final String ZIP_MIME_TYPE = "application/zip;charset=utf-8";
 	private static final String XML_MIME_TYPE = "text/xml;charset=utf-8";
 
-	private SyncDatabaseListener listener;
+	private SyncEntitiesListener listener;
 
-	private SyncProgressDialog dialog;
 	private HttpURLConnection connection;
 
 	private String baseurl;
 	private String username;
 	private String password;
-	private List<Entity> entities;
+	private List<SyncEntity> entities;
 
 	private final List<Table> values = new ArrayList<Table>();
 
-	private Map<Entity, Integer> downloadedValues = new LinkedHashMap<>();
-	private Map<Entity, Integer> savedValues = new LinkedHashMap<>();
+	private Map<SyncEntity, Integer> downloadedValues = new LinkedHashMap<>();
+	private Map<SyncEntity, Integer> savedValues = new LinkedHashMap<>();
 
 	private State state;
-	private Entity entity;
+	private SyncEntity entity;
 
 	private Context mContext;
 
@@ -87,60 +82,45 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 		DOWNLOADING, SAVING
 	}
 
-	public enum Entity {
-		SETTINGS, PARAMETERS, MODULES, FORMS, DATASETS, DATASETS_CSV_FILES, TRACKING_LISTS, USERS, REGIONS, HOUSEHOLDS, MEMBERS
-	}
-
-	public SyncEntitiesTask(Context context, SyncProgressDialog dialog, SyncDatabaseListener listener, String url, String username, String password, Entity... entityToDownload) {
+	public SyncEntitiesTask(Context context, SyncEntitiesListener listener, String url, String username, String password, SyncEntity... entityToDownload) {
 		this.baseurl = url;
 		this.username = username;
 		this.password = password;
-		this.dialog = dialog;
 		this.listener = listener;
 		this.mContext = context;
 		this.entities = new ArrayList<>();
 		this.entities.addAll(Arrays.asList(entityToDownload));
-		initDialog();
+		listener.onSyncStart();
 	}
 
-	public SyncEntitiesTask(Context context, SyncProgressDialog dialog, String url, String username, String password, Entity... entityToDownload) {
+	public SyncEntitiesTask(Context context, String url, String username, String password, SyncEntity... entityToDownload) {
 		this.baseurl = url;
 		this.username = username;
 		this.password = password;
-		this.dialog = dialog;
 		this.mContext = context;
 		this.entities = new ArrayList<>();
 		this.entities.addAll(Arrays.asList(entityToDownload));
-		initDialog();
+		listener.onSyncStart();
 	}
 
-	public SyncEntitiesTask(Context context, SyncProgressDialog dialog, String url, String username, String password) {
+	public SyncEntitiesTask(Context context, String url, String username, String password) {
 		this.baseurl = url;
 		this.username = username;
 		this.password = password;
-		this.dialog = dialog;
 		this.mContext = context;
 		this.entities = new ArrayList<>();
-		initDialog();
-	}
-
-	private void initDialog(){
-		dialog.syncInitialize();;
-		dialog.setTitle(mContext.getString(R.string.sync_title_lbl));
-		dialog.setMessage(mContext.getString(R.string.sync_prepare_download_lbl));
-		dialog.setButtonEnabled(false);
-		dialog.show();
+		listener.onSyncStart();
 	}
 
 	private Database getDatabase(){
 		return new Database(mContext);
 	}
 
-	public void setSyncDatabaseListener(SyncDatabaseListener listener){
+	public void setSyncDatabaseListener(SyncEntitiesListener listener){
 		this.listener = listener;
 	}
 
-	public void setEntitiesToDownload(Entity... entityToDownload){
+	public void setEntitiesToDownload(SyncEntity... entityToDownload){
 		this.entities.clear();
 		this.entities.addAll(Arrays.asList(entityToDownload));
 	}
@@ -210,7 +190,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 			builder.append(msg);
 		}
 
-		dialog.setMessage(builder.toString());
+		listener.onSyncProgressUpdate(values.length > 0 ? values[0] : 0, builder.toString());
 	}
 
 	protected String doInBackground(Void... params) {
@@ -221,7 +201,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 
 		try {
 
-			for (Entity ent : entities){
+			for (SyncEntity ent : entities){
 				entity = ent;
 				switch (entity) {
 					case PARAMETERS:
@@ -570,7 +550,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 		}
 
 		state = State.SAVING;
-		entity = Entity.PARAMETERS;
+		entity = SyncEntity.PARAMETERS;
 
 		Database database = getDatabase();
 		database.open();
@@ -647,7 +627,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 		}
 
 		state = State.SAVING;
-		entity = Entity.MODULES;
+		entity = SyncEntity.MODULES;
 
 		Database database = getDatabase();
 		database.open();
@@ -896,7 +876,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 		}
 
 		state = State.SAVING;
-		entity = Entity.FORMS;
+		entity = SyncEntity.FORMS;
 
 		database.setTransactionSuccessful();
 		database.endTransaction();
@@ -1047,7 +1027,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 		}
 
 		state = State.SAVING;
-		entity = Entity.DATASETS;
+		entity = SyncEntity.DATASETS;
 
 		database.setTransactionSuccessful();
 		database.endTransaction();
@@ -1387,7 +1367,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 		}
 
 		state = State.SAVING;
-		entity = Entity.REGIONS;
+		entity = SyncEntity.REGIONS;
 
 		Database database = getDatabase();
 		database.open();
@@ -2028,20 +2008,19 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 	}
 
 	protected void onPostExecute(String result) {
-		listener.collectionComplete(result);
-		addSavedSynchronizedMessages(dialog);
-		addDownloadSynchronizedMessages(dialog);
-		dialog.setMessage(result);
-		dialog.setButtonEnabled(true);
-		dialog.syncFinalize();
-		Toast.makeText(mContext, result, Toast.LENGTH_LONG).show();
+
+		listener.onSyncFinished(result, getDownloadReports(), getPersistedReports() );
+
+		Toast.makeText(mContext, result, Toast.LENGTH_LONG).show(); //Maintain This
 	}
 
-	private void addSavedSynchronizedMessages(SyncProgressDialog pDialog){
+	private List<SyncEntityReport> getPersistedReports(){
+
+		List<SyncEntityReport> reports = new ArrayList<>();
 
 		String downloadedEntity = "";
 
-		for (Entity entity : savedValues.keySet()){
+		for (SyncEntity entity : savedValues.keySet()){
 			switch (entity) {
 				case PARAMETERS: 	 downloadedEntity = mContext.getString(R.string.sync_params_lbl); break;
 				case MODULES: 		 downloadedEntity = mContext.getString(R.string.sync_modules_lbl);   break;
@@ -2059,16 +2038,19 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 			msg = msg.replace("#2", savedValues.get(entity).toString());
 			msg = msg.replace("#1", downloadedEntity);
 
-			pDialog.addSynchronizedMessage(msg, true);
+			reports.add(new SyncEntityReport(msg, true));
 		}
 
+		return reports;
 	}
 
-	private void addDownloadSynchronizedMessages(SyncProgressDialog pDialog){
+	private List<SyncEntityReport> getDownloadReports(){
+
+		List<SyncEntityReport> reports = new ArrayList<>();
 
 		String downloadedEntity = "";
 
-		for (Entity entity : downloadedValues.keySet()){
+		for (SyncEntity entity : downloadedValues.keySet()){
 			switch (entity) {
 				case PARAMETERS: 	 downloadedEntity = mContext.getString(R.string.sync_params_lbl); break;
 				case MODULES: 		 downloadedEntity = mContext.getString(R.string.sync_modules_lbl);   break;
@@ -2085,8 +2067,10 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 			msg = msg.replace("#1", downloadedValues.get(entity).toString());
 			msg = msg.replace("#2", downloadedEntity);
 
-			pDialog.addSynchronizedMessage(msg, true);
+			reports.add(new SyncEntityReport(msg, true));
 		}
+
+		return reports;
 
 	}
 

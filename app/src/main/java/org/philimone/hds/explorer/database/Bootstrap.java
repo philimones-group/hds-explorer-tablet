@@ -9,6 +9,11 @@ import org.philimone.hds.explorer.model.ApplicationParam;
 import org.philimone.hds.explorer.model.SyncReport;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static org.philimone.hds.explorer.model.SyncReport.*;
 
 /**
  * Created by paul on 5/26/16.
@@ -25,28 +30,7 @@ public class Bootstrap {
     public void init(){
         database.open();
 
-        Cursor cursor = database.query(SyncReport.class, null, null, null, null, null);
-
-        //Initialize SyncReport
-        if (cursor.getCount()==0) {
-            SyncReport sr1 = new SyncReport(SyncReport.REPORT_MODULES, null, SyncReport.STATUS_NOT_SYNCED, "Sync. Modules");
-            SyncReport sr2 = new SyncReport(SyncReport.REPORT_FORMS, null, SyncReport.STATUS_NOT_SYNCED, "Sync. Forms");
-            SyncReport sr3 = new SyncReport(SyncReport.REPORT_USERS, null, SyncReport.STATUS_NOT_SYNCED, "Sync. Users");
-            SyncReport sr4 = new SyncReport(SyncReport.REPORT_HOUSEHOLDS, null, SyncReport.STATUS_NOT_SYNCED, "Sync. Households");
-            SyncReport sr5 = new SyncReport(SyncReport.REPORT_MEMBERS, null, SyncReport.STATUS_NOT_SYNCED, "Sync. Members");
-            SyncReport sr6 = new SyncReport(SyncReport.REPORT_TRACKING_LISTS, null, SyncReport.STATUS_NOT_SYNCED, "Sync. Tracking Lists");
-            SyncReport sr7 = new SyncReport(SyncReport.REPORT_PARAMETERS, null, SyncReport.STATUS_NOT_SYNCED, "Sync. App Parameters");
-            SyncReport sr8 = new SyncReport(SyncReport.REPORT_REGIONS, null, SyncReport.STATUS_NOT_SYNCED, "Sync. Regions");
-
-            database.insert(sr1);
-            database.insert(sr2);
-            database.insert(sr3);
-            database.insert(sr4);
-            database.insert(sr5);
-            database.insert(sr6);
-            database.insert(sr7);
-            database.insert(sr8);
-        }
+        insertSyncReports();
 
         Cursor cursorParams = database.query(ApplicationParam.class, null, null, null, null, null);
 
@@ -63,6 +47,31 @@ public class Bootstrap {
         database.close();
 
         initializePaths();
+    }
+
+    private void insertSyncReports(){
+        List<SyncReport> reports = Queries.getAllSyncReportBy(database, null, null);
+        List<SyncReport> newReports = new ArrayList<>();
+        //Initialize SyncReport
+
+        newReports.add(new SyncReport(REPORT_MODULES, null, STATUS_NOT_SYNCED, "Sync. Modules"));
+        newReports.add(new SyncReport(REPORT_FORMS, null, STATUS_NOT_SYNCED, "Sync. Forms"));
+        newReports.add(new SyncReport(REPORT_USERS, null, STATUS_NOT_SYNCED, "Sync. Users"));
+        newReports.add(new SyncReport(REPORT_HOUSEHOLDS, null, STATUS_NOT_SYNCED, "Sync. Households"));
+        newReports.add(new SyncReport(REPORT_MEMBERS, null, STATUS_NOT_SYNCED, "Sync. Members"));
+        newReports.add(new SyncReport(REPORT_DATASETS, null, STATUS_NOT_SYNCED, "Sync. Datasets"));
+        newReports.add(new SyncReport(REPORT_TRACKING_LISTS, null, STATUS_NOT_SYNCED, "Sync. Tracking Lists"));
+        newReports.add(new SyncReport(REPORT_PARAMETERS, null, STATUS_NOT_SYNCED, "Sync. App Parameters"));
+        newReports.add(new SyncReport(REPORT_REGIONS, null, STATUS_NOT_SYNCED, "Sync. Regions"));
+
+        List<Integer> reportIds = reports.stream().map(SyncReport::getReportId).collect(Collectors.toList());
+
+        newReports.forEach( report -> {
+            if (!reportIds.contains(report.getReportId())){
+                database.insert(report);
+            }
+        });
+
     }
 
     public void initializePaths(){

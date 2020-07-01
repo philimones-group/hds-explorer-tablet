@@ -66,6 +66,10 @@ public class SyncProgressDialog extends Dialog {
     }
 
     public void syncFinalize(){
+        hideProgressBar();
+    }
+
+    public void hideProgressBar(){
         if (this.progressBar != null){
             this.progressBar.setVisibility(View.GONE);
         }

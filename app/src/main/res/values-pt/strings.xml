@@ -54,14 +54,20 @@
     <string name="sync_successfully_lbl">Os dados foram sincronizados com sucesso.</string>
     <string name="sync_failure_file_not_found_lbl">O ficheiro não foi encontrado no servidor para ser baixado.</string>
     <string name="sync_failure_unknow_lbl">Não foi possivel baixar o ficheiro do servidor</string>
-    <string name="sync_synchronized_msg_lbl">Total #1 dados baixados: #2</string>
-    <string name="sync_downloaded_msg_lbl">Tamanho total de #1 baixados: #2 KB</string>
+    <string name="sync_synchronized_msg_lbl">Total #1 dados baixados:</string>
+    <string name="sync_downloaded_msg_lbl">Total de #1 dados guardados:</string>
+
+    <string name="sync_result_dialog_title">Detalhes da sincronização</string>
 
     <!-- Sync Activity -->
+    <string name="server_sync_title_lbl">Painel de Sincronização</string>
     <string name="server_sync_status_lbl">Estado:</string>
     <string name="server_sync_status_notsynced_lbl">Não foi sincronizado</string>
     <string name="server_sync_status_synced_lbl">Data da ultima sincronização</string>
     <string name="server_sync_status_sync_error_lbl">Data da ultima sincr. com erro</string>
+    <string name="server_sync_bt_sync_all_lbl">Sincronizar Todos</string>
+    <string name="server_sync_bt_sync_lbl">Sincronizar</string>
+    <string name="server_sync_bt_stop_lbl">Parar</string>
     <string name="server_sync_bt_settings_lbl">Baixar Definições</string>
     <string name="server_sync_bt_forms_lbl">Baixar Formulários</string>
     <string name="server_sync_bt_datasets_lbl">Baixar Datasets externos</string>
@@ -193,9 +199,8 @@
     <string name="household_details_dialog_del_saved_form_msg_lbl">O formulario ODK salvo não foi encontrado, a informação salva será apagada para permitir colheita de novos formularios\nDeseja prosseguir com a execução deste processo?</string>
     <string name="household_details_forms_selector_lbl">Selecionar um Formulário</string>
 
-    <string name="facility_supervise_collected_form_lbl">Marcar Formulário como supervisionado?</string>
-    <string name="facility_supervise_title_lbl">Supervisão de dados</string>
-    <string name="facility_supervise_mark_all_done_lbl">Todos formularios foram marcados como supervisionados!</string>
+    <string name="region_details_code_lbl">Código:</string>
+    <string name="region_details_parent_lbl">Região:</string>
 
     <!-- Household Filter -->
     <string name="household_filter_code_lbl">Código da casa</string>
@@ -307,8 +312,5 @@
     <string name="barcode_dialog_bt_scan_lbl">Scanear</string>
     <string name="barcode_dialog_bt_scan_barcode_lbl">Scanear o código de barras</string>
     <string name="barcode_dialog_bt_cancel_lbl">Cancel</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

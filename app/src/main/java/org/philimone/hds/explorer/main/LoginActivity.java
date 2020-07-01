@@ -34,26 +34,22 @@ import org.philimone.hds.explorer.database.Converter;
 import org.philimone.hds.explorer.database.Database;
 import org.philimone.hds.explorer.database.DatabaseHelper;
 import org.philimone.hds.explorer.database.Queries;
-import org.philimone.hds.explorer.io.SyncDatabaseListener;
+import org.philimone.hds.explorer.io.SyncEntitiesListener;
+import org.philimone.hds.explorer.main.sync.SyncPanelActivity;
 import org.philimone.hds.explorer.model.ApplicationParam;
 import org.philimone.hds.explorer.model.Module;
-import org.philimone.hds.explorer.model.Region;
 import org.philimone.hds.explorer.model.User;
 
 import org.mindrot.jbcrypt.BCrypt;
 
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.Date;
 import java.util.Scanner;
-import java.util.concurrent.TimeUnit;
-
-import mz.betainteractive.utilities.StringUtil;
 
 /**
  * A login screen that offers login via email/password.
  */
-public class LoginActivity extends Activity implements SyncDatabaseListener{
+public class LoginActivity extends Activity {
 
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
@@ -144,9 +140,7 @@ public class LoginActivity extends Activity implements SyncDatabaseListener{
             }
         });
 
-        txtUsername.setText("FWPF1"); //txtUsername.setText("supervisor");
-        txtPassword.setText("test"); //txtPassword.setText("dssmanhica");
-
+        
         updateView();
 
         initdb();
@@ -195,11 +189,6 @@ public class LoginActivity extends Activity implements SyncDatabaseListener{
         Bootstrap bootstrap = new Bootstrap(this);
         //bootstrap.dropTables();
         bootstrap.init();
-    }
-
-    @Override
-    public void collectionComplete(String result) {
-
     }
 
     private void openSettings(){
@@ -507,7 +496,7 @@ public class LoginActivity extends Activity implements SyncDatabaseListener{
     }
 
     private void launchServerSync() {
-        Intent intent = new Intent(this, ServerSyncActivity.class);
+        Intent intent = new Intent(this, SyncPanelActivity.class);
         intent.putExtra("username", adminUser);
         intent.putExtra("password", adminPassword);
         intent.putExtra("server-url", serverUrl);

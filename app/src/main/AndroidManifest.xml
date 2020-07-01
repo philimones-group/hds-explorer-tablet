@@ -20,12 +20,12 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <activity android:name=".main.barcode.AnyOrientationCaptureActivity"
-                  android:screenOrientation="fullSensor"
-                  android:stateNotNeeded="true"
-                  android:theme="@style/zxing_CaptureTheme"
-                  android:windowSoftInputMode="stateAlwaysHidden"></activity>
-
+        <activity
+            android:name=".main.barcode.AnyOrientationCaptureActivity"
+            android:screenOrientation="fullSensor"
+            android:stateNotNeeded="true"
+            android:theme="@style/zxing_CaptureTheme"
+            android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
             android:name=".main.BarcodeScannerActivity"
             android:theme="@style/Theme.AppCompat.Transparent.NoActionBar" />
@@ -38,8 +38,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".main.ServerSyncActivity" />
-        <activity android:name=".main.ModuleSelectorActivity" />
+        <activity android:name=".main.sync.SyncPanelActivity" />
+        <activity
+            android:name=".main.ModuleSelectorActivity"
+            android:theme="@style/Theme.AppCompat.Transparent.NoActionBar"/>
         <activity android:name=".main.SurveyActivity" />
         <activity android:name=".main.SurveyHouseholdsActivity" />
         <activity android:name=".main.SurveyMembersActivity" />

@@ -13,6 +13,7 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Scanner;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -73,14 +74,13 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 	private Map<SyncEntity, Integer> downloadedValues = new LinkedHashMap<>();
 	private Map<SyncEntity, Integer> savedValues = new LinkedHashMap<>();
 
-	private State state;
+	private SyncState state;
 	private SyncEntity entity;
+	private int entityRecords;
 
 	private Context mContext;
 
-	private enum State {
-		DOWNLOADING, SAVING
-	}
+	private boolean canceled;
 
 	public SyncEntitiesTask(Context context, SyncEntitiesListener listener, String url, String username, String password, SyncEntity... entityToDownload) {
 		this.baseurl = url;
@@ -90,7 +90,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 		this.mContext = context;
 		this.entities = new ArrayList<>();
 		this.entities.addAll(Arrays.asList(entityToDownload));
-		listener.onSyncStart();
+		listener.onSyncCreated();
 	}
 
 	public SyncEntitiesTask(Context context, String url, String username, String password, SyncEntity... entityToDownload) {
@@ -100,7 +100,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 		this.mContext = context;
 		this.entities = new ArrayList<>();
 		this.entities.addAll(Arrays.asList(entityToDownload));
-		listener.onSyncStart();
+		listener.onSyncCreated();
 	}
 
 	public SyncEntitiesTask(Context context, String url, String username, String password) {
@@ -109,7 +109,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 		this.password = password;
 		this.mContext = context;
 		this.entities = new ArrayList<>();
-		listener.onSyncStart();
+		listener.onSyncCreated();
 	}
 
 	private Database getDatabase(){
@@ -183,7 +183,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 
 		if (values.length > 0) {
 			String msg = ". " + mContext.getString(R.string.sync_saved_lbl) + " "  + values[0] + " " + mContext.getString(R.string.sync_records_lbl);
-			if (state==State.DOWNLOADING){
+			if (state== SyncState.DOWNLOADING){
 				msg = ". " + mContext.getString(R.string.sync_saved_lbl) + " "  + values[0] + "KB";
 			}
 
@@ -201,8 +201,13 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 
 		try {
 
-			for (SyncEntity ent : entities){
-				entity = ent;
+			for (SyncEntity entity : entities){
+
+				//get record count from the server and trigger onSyncStarted
+				executeOnSyncStarted(entity, state);
+
+				this.entity = entity;
+
 				switch (entity) {
 					case PARAMETERS:
 						//deleteAll(ApplicationParam.class);
@@ -311,6 +316,23 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 		database.close();
 	}
 
+	private void executeOnSyncStarted(SyncEntity entity, SyncState state){
+		int size = getSyncRecordToDownload(entity);
+
+		this.entityRecords = size;
+
+		this.listener.onSyncStarted(entity, state, size);
+	}
+
+	private int getSyncRecordToDownload(SyncEntity entity){
+
+		String result = processUrl(baseurl + API_PATH + "/sync-report/" + entity.getCode());
+
+		Log.d("tag-report", "result="+result);
+
+		return Integer.parseInt(result);
+	}
+
 	private void downloadExternalDatasetFiles() throws Exception {
 
 		Database database = getDatabase();
@@ -342,8 +364,45 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 		processUrl(strUrl, exportedFileName, true);
 	}
 
+	private String processUrl(String strUrl) {
+		//http request
+		try {
+			HttpURLConnection urlConnection = null;
+			String basicAuth = "Basic " + new String(Base64.encode((this.username+":"+this.password).getBytes(),Base64.NO_WRAP ));
+
+			URL url = new URL(strUrl);
+
+			urlConnection = (HttpURLConnection) url.openConnection();
+			urlConnection.setRequestMethod("GET");
+			urlConnection.setReadTimeout(10000);
+			urlConnection.setConnectTimeout(15000);
+			urlConnection.setDoInput(true);
+			urlConnection.setRequestProperty("Authorization", basicAuth);
+
+			Log.d("login", ""+url);
+
+			urlConnection.connect();
+
+			if (urlConnection.getResponseCode()==200){
+
+				Scanner scan = new Scanner(urlConnection.getInputStream());
+				String result = scan.next();
+				scan.close();
+
+				Log.d("result-2", ""+result);
+
+				return result;
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+
 	private DownloadResponse processUrl(String strUrl, String exportedFileName, boolean processDataContent) throws Exception {
-		state = State.DOWNLOADING;
+		state = SyncState.DOWNLOADING;
 		publishProgress();
 
 		String basicAuth = "Basic " + new String(Base64.encode((this.username+":"+this.password).getBytes(),Base64.NO_WRAP ));
@@ -368,11 +427,21 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 
 		Log.d("is", ""+response.getInputStream()+", xml-"+response.isXmlFile()+", zip-"+response.isZipFile());
 
+		//Inform about the download
+		this.listener.onSyncStarted(this.entity, this.state, (response.fileSize/1024));
 		//save file
 		InputStream fileInputStream = saveFileToStorage(response);
 
+
+		Log.d("tag-d", "processData="+processData+", fis="+fileInputStream);
+
 		if (processData){ //is it necessary to process ZIP/XML Files
+
+			//Inform about the saving process
+			this.listener.onSyncStarted(this.entity, SyncState.SAVING, this.entityRecords);
+
 			if (fileInputStream != null){
+
 				if (response.isXmlFile()){
 					processXMLDocument(fileInputStream);
 				}
@@ -395,7 +464,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 	}
 
 	private void processXMLDocument(InputStream content) throws Exception {
-		state = State.SAVING;
+		state = SyncState.SAVING;
 
 		XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
 		//factory.setNamespaceAware(true);
@@ -453,6 +522,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 			total += len;
 			int perc =  (int) ((total/(1024)));
 			publishProgress(perc);
+			//Thread.sleep(200); //REMOVE THIS - IT WAS TOO FAST TO CONTEMPLATE THE PROGRESS
 		}
 
 		fout.close();
@@ -549,7 +619,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 
 		}
 
-		state = State.SAVING;
+		state = SyncState.SAVING;
 		entity = SyncEntity.PARAMETERS;
 
 		Database database = getDatabase();
@@ -626,7 +696,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 
 		}
 
-		state = State.SAVING;
+		state = SyncState.SAVING;
 		entity = SyncEntity.MODULES;
 
 		Database database = getDatabase();
@@ -875,7 +945,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 
 		}
 
-		state = State.SAVING;
+		state = SyncState.SAVING;
 		entity = SyncEntity.FORMS;
 
 		database.setTransactionSuccessful();
@@ -1026,7 +1096,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 
 		}
 
-		state = State.SAVING;
+		state = SyncState.SAVING;
 		entity = SyncEntity.DATASETS;
 
 		database.setTransactionSuccessful();
@@ -1041,7 +1111,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 		//clear sync_report
 		updateSyncReport(SyncReport.REPORT_TRACKING_LISTS, null, SyncReport.STATUS_NOT_SYNCED);
 
-		int count = 0;
+		int tlistCount = 0;
 		values.clear();
 
 		parser.nextTag();
@@ -1051,7 +1121,6 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 		database.beginTransaction();
 
 		while (notEndOfXmlDoc("trackinglists", parser)) {
-			count++;
 
 			if (isEndTag("tracking_list", parser) || isEmptyTag("tracking_list", parser)){
 				parser.nextTag();
@@ -1067,11 +1136,13 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 			String trlModule = null;
 
 			if (isTag("tracking_list", parser)) {
+				tlistCount++;
+
 				//read tracking-list
-				Log.d("trl-attr-id", "" + parser.getAttributeValue("", "id"));
-				Log.d("trl-attr-name", "" + parser.getAttributeValue("", "name"));
-				Log.d("trl-attr-title", "" + parser.getAttributeValue("", "title"));
-				Log.d("trl-attr-module", "" + parser.getAttributeValue("", "module"));
+				//Log.d("trl-attr-id", "" + parser.getAttributeValue("", "id"));
+				//Log.d("trl-attr-name", "" + parser.getAttributeValue("", "name"));
+				//Log.d("trl-attr-title", "" + parser.getAttributeValue("", "title"));
+				//Log.d("trl-attr-module", "" + parser.getAttributeValue("", "module"));
 
 				trlId = parser.getAttributeValue("", "id");
 				trlCode = parser.getAttributeValue("", "code");
@@ -1105,9 +1176,9 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 					continue;
 				}
 				if (isTag("list", parser)){
-					Log.d("list-attr-id", "" + parser.getAttributeValue("", "id"));
-					Log.d("list-attr-label", "" + parser.getAttributeValue("", "title"));
-					Log.d("list-attr-forms", "" + parser.getAttributeValue("", "forms"));
+					//Log.d("list-attr-id", "" + parser.getAttributeValue("", "id"));
+					//Log.d("list-attr-label", "" + parser.getAttributeValue("", "title"));
+					//Log.d("list-attr-forms", "" + parser.getAttributeValue("", "forms"));
 
 					listId = parser.getAttributeValue("", "id");
 					listTitle = parser.getAttributeValue("", "title");
@@ -1119,11 +1190,11 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 				parser.nextTag(); //jump to <member end tag> if exists
 				while (!isEndTag("list", parser)){
 					if (isTag("subject", parser)){
-						Log.d("mem-attr-code", "" + parser.getAttributeValue("", "code"));
-						Log.d("mem-attr-type", "" + parser.getAttributeValue("", "type"));
-						Log.d("mem-attr-forms", "" + parser.getAttributeValue("", "forms"));
-						Log.d("mem-attr-visit", "" + parser.getAttributeValue("", "visit"));
-						Log.d("end","end");
+						//Log.d("mem-attr-code", "" + parser.getAttributeValue("", "code"));
+						//Log.d("mem-attr-type", "" + parser.getAttributeValue("", "type"));
+						//Log.d("mem-attr-forms", "" + parser.getAttributeValue("", "forms"));
+						//Log.d("mem-attr-visit", "" + parser.getAttributeValue("", "visit"));
+						//Log.d("end","end");
 
 						String mCode = parser.getAttributeValue("", "code");
 						String mType = parser.getAttributeValue("", "type");
@@ -1161,7 +1232,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 			database.insert(table);
 			*/
 
-			publishProgress(count);
+			publishProgress(tlistCount);
 
 		}
 
@@ -1366,7 +1437,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 
 		}
 
-		state = State.SAVING;
+		state = SyncState.SAVING;
 		entity = SyncEntity.REGIONS;
 
 		Database database = getDatabase();
@@ -2011,7 +2082,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 
 		listener.onSyncFinished(result, getDownloadReports(), getPersistedReports() );
 
-		Toast.makeText(mContext, result, Toast.LENGTH_LONG).show(); //Maintain This
+		Toast.makeText(mContext, result, Toast.LENGTH_SHORT).show(); //Maintain This
 	}
 
 	private List<SyncEntityReport> getPersistedReports(){
@@ -2035,10 +2106,11 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 			}
 
 			String msg = mContext.getString(R.string.sync_synchronized_msg_lbl);
-			msg = msg.replace("#2", savedValues.get(entity).toString());
+			String size = (savedValues.get(entity) == null ? "" : savedValues.get(entity).toString()) + " KB";
+			//msg = msg.replace("#2", savedValues.get(entity).toString());
 			msg = msg.replace("#1", downloadedEntity);
 
-			reports.add(new SyncEntityReport(msg, true));
+			reports.add(new SyncEntityReport(entity, msg, size, true));
 		}
 
 		return reports;
@@ -2064,10 +2136,11 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 			}
 
 			String msg = mContext.getString(R.string.sync_downloaded_msg_lbl);
-			msg = msg.replace("#1", downloadedValues.get(entity).toString());
-			msg = msg.replace("#2", downloadedEntity);
+			String size = savedValues.get(entity) == null ? "" : savedValues.get(entity).toString();
+			msg = msg.replace("#1", downloadedEntity);
+			//msg = msg.replace("#2", downloadedValues.get(entity).toString());
 
-			reports.add(new SyncEntityReport(msg, true));
+			reports.add(new SyncEntityReport(entity, msg, size, true));
 		}
 
 		return reports;
@@ -2104,11 +2177,13 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 		}
 
 		public boolean isXmlFile(){
-			return fileMimeType.equalsIgnoreCase(XML_MIME_TYPE);
+			//return fileMimeType.equalsIgnoreCase(XML_MIME_TYPE);
+			return XML_MIME_TYPE.startsWith(fileMimeType);
 		}
 
 		public boolean isZipFile(){
-			return fileMimeType.equalsIgnoreCase(ZIP_MIME_TYPE);
+			//return fileMimeType.equalsIgnoreCase(ZIP_MIME_TYPE);
+			return ZIP_MIME_TYPE.startsWith(fileMimeType);
 		}
 	}
 

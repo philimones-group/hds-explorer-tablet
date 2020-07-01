@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:context=".main.sync.SyncPanelItemFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="10dp"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
+        android:paddingBottom="15dp"
+        android:orientation="vertical"
+        android:background="@drawable/button_normal">
+
+        <!-- Top -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="3dp"
+            android:paddingBottom="3dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/syncTitleText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center|left"
+                android:layout_marginStart="3dp"
+                android:layout_marginEnd="3dp"
+                android:layout_weight="1"
+                android:gravity="left|center_horizontal"
+                android:text="Download External Datasets"
+                android:singleLine="true"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="#444" />
+
+            <Button
+                android:id="@+id/syncButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_weight="2"
+                android:background="@drawable/button_ngreen"
+                android:text="@string/server_sync_bt_sync_lbl"
+                android:textSize="16sp"
+                android:textStyle="bold"/>
+
+            <Button
+                android:id="@+id/syncStopButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_weight="2"
+                android:background="@drawable/button_ngreen"
+                android:text="@string/server_sync_bt_stop_lbl"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:visibility="gone"/>
+
+        </LinearLayout>
+
+        <!-- Middle -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:background="@drawable/list_corner_border">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <ProgressBar
+                    android:id="@+id/syncProgressBar"
+                    style="@android:style/Widget.ProgressBar.Horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:max="100"
+                    android:min="0"
+                    android:progress="43" />
+            </RelativeLayout>
+
+        </LinearLayout>
+
+        <!-- Bottom -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="3dp"
+            android:padding="5dp"
+            android:background="@drawable/corner_border_thin">
+
+            <TextView
+                android:id="@+id/syncProgressText"
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="3dp"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:textAlignment="center"
+                android:text="100%" />
+
+            <ImageView
+                android:id="@+id/syncErrorIcon"
+                android:layout_width="25dp"
+                android:layout_height="24dp"
+                android:layout_gravity="center"
+                android:src="@mipmap/error_icon"
+                android:visibility="gone"/>
+
+            <TextView
+                android:id="@+id/syncSyncedDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="3dp"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:textAlignment="textEnd"
+                android:text="Not Synced yet"/>
+
+            <TextView
+                android:id="@+id/syncProgressMessage"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="3dp"
+                android:layout_marginEnd="3dp"
+                android:layout_weight="2"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:textAlignment="textEnd"
+                android:text="Saved 4000 records"/>
+
+            <!-- Put a show more buttons -->
+            <Button
+                android:id="@+id/syncDetails"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:background="@drawable/button_info_blue" />
+
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+</FrameLayout>

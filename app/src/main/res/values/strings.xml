@@ -54,14 +54,20 @@
     <string name="sync_successfully_lbl">Data was successfully synchronized.</string>
     <string name="sync_failure_file_not_found_lbl">Couldnt find file on the Server to Download</string>
     <string name="sync_failure_unknow_lbl">Couldnt download file from the Server</string>
-    <string name="sync_synchronized_msg_lbl">Total #1 records downloaded: #2</string>
-    <string name="sync_downloaded_msg_lbl">Total size of #1 data downloaded: #2 KB</string>
+    <string name="sync_synchronized_msg_lbl">Total of #1 records synced:</string>
+    <string name="sync_downloaded_msg_lbl">Total of #1 data downloaded:</string>
+
+    <string name="sync_result_dialog_title">Synchronization Details</string>
 
     <!-- Sync Activity -->
+    <string name="server_sync_title_lbl">Synchronization Panel</string>
     <string name="server_sync_status_lbl">Status:</string>
     <string name="server_sync_status_notsynced_lbl">Not Synced</string>
     <string name="server_sync_status_synced_lbl">Last Sync on</string>
     <string name="server_sync_status_sync_error_lbl">Error during last Sync on</string>
+    <string name="server_sync_bt_sync_all_lbl">Synchronize All</string>
+    <string name="server_sync_bt_sync_lbl">Sync</string>
+    <string name="server_sync_bt_stop_lbl">Stop</string>
     <string name="server_sync_bt_settings_lbl">Download Settings</string>
     <string name="server_sync_bt_forms_lbl">Download Forms</string>
     <string name="server_sync_bt_datasets_lbl">Download External Datasets</string>
@@ -196,10 +202,6 @@
     <string name="region_details_code_lbl">Code:</string>
     <string name="region_details_parent_lbl">Parent Region:</string>
 
-    <string name="facility_supervise_collected_form_lbl">Mark Form as Supervised?</string>
-    <string name="facility_supervise_title_lbl">Form Supervision</string>
-    <string name="facility_supervise_mark_all_done_lbl">Forms supervised sucessfully!</string>
-
     <!-- Household Filter -->
     <string name="household_filter_code_lbl">Household Code</string>
     <string name="household_filter_code_hint_lbl">Household Code, eg. CHA00001</string>
@@ -310,8 +312,5 @@
     <string name="barcode_dialog_bt_scan_lbl">Scan</string>
     <string name="barcode_dialog_bt_scan_barcode_lbl">Scan the Barcode</string>
     <string name="barcode_dialog_bt_cancel_lbl">Cancel</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

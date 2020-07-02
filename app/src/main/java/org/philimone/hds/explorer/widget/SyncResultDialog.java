@@ -115,9 +115,11 @@ public class SyncResultDialog extends Dialog {
                     TextView syncTxtSize = childItemView.findViewById(R.id.syncTxtSize);
 
                     //set child values
+                    String errorMessage = syncEntityReport.isSuccessStatus() ? "" : "\n"+syncEntityReport.getErrorMessage();
+
                     iconOnView.setVisibility(syncEntityReport.isSuccessStatus() ? View.VISIBLE : View.GONE);
                     iconOffView.setVisibility(syncEntityReport.isSuccessStatus() ? View.GONE : View.VISIBLE);
-                    syncTxtMessage.setText(syncEntityReport.getMessage());
+                    syncTxtMessage.setText(syncEntityReport.getMessage()+errorMessage);
                     syncTxtSize.setText(syncEntityReport.getSize());
 
                     //add to item main layout

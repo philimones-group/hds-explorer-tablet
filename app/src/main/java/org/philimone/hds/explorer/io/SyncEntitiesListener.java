@@ -21,6 +21,6 @@ public interface SyncEntitiesListener {
 
 	//#4. call listener to finalize the sync, sending the results [result, Report1(Persisted Data Report - message, successStatus), Report1(DownloadData Report - message, successStatus)]
 
-	void onSyncFinished(String result, List<SyncEntityReport> downloadReports, List<SyncEntityReport> persistedReports);
+	void onSyncFinished(String result, List<SyncEntityReport> downloadReports, List<SyncEntityReport> persistedReports, Boolean hasError, String errorMessage);
 }
 

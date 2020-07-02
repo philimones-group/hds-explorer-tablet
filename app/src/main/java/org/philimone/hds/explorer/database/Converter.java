@@ -2,6 +2,8 @@ package org.philimone.hds.explorer.database;
 
 import android.database.Cursor;
 
+import org.philimone.hds.explorer.io.SyncEntity;
+import org.philimone.hds.explorer.io.SyncStatus;
 import org.philimone.hds.explorer.model.ApplicationParam;
 import org.philimone.hds.explorer.model.CollectedData;
 import org.philimone.hds.explorer.model.DataSet;
@@ -31,10 +33,10 @@ public class Converter {
 	public static SyncReport cursorToSyncReport(Cursor cursor){
 		SyncReport syncReport = new SyncReport();
 
-		syncReport.setReportId(Integer.parseInt(cursor.getString(cursor.getColumnIndex(DatabaseHelper.SyncReport.COLUMN_REPORT_ID))));
+		syncReport.setReportId(SyncEntity.valueOf(cursor.getInt(cursor.getColumnIndex(DatabaseHelper.SyncReport.COLUMN_REPORT_ID))));
 		syncReport.setDescription(cursor.getString(cursor.getColumnIndex(DatabaseHelper.SyncReport.COLUMN_DESCRIPTION)));
 		syncReport.setDate(cursor.getString(cursor.getColumnIndex(DatabaseHelper.SyncReport.COLUMN_DATE)));
-		syncReport.setStatus(cursor.getInt(cursor.getColumnIndex(DatabaseHelper.SyncReport.COLUMN_STATUS)));
+		syncReport.setStatus(SyncStatus.valueOf(cursor.getInt(cursor.getColumnIndex(DatabaseHelper.SyncReport.COLUMN_STATUS))));
 
 		return syncReport;
 	}

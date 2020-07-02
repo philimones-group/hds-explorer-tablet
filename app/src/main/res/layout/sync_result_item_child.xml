@@ -42,7 +42,6 @@
             android:gravity="left|center_horizontal"
             android:text="Large Text"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:singleLine="true"
             android:textSize="18sp"
             android:textColor="#444" />
 

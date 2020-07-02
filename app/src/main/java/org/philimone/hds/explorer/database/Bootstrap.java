@@ -5,6 +5,8 @@ import android.database.Cursor;
 import android.os.Environment;
 import android.util.Log;
 
+import org.philimone.hds.explorer.io.SyncEntity;
+import org.philimone.hds.explorer.io.SyncStatus;
 import org.philimone.hds.explorer.model.ApplicationParam;
 import org.philimone.hds.explorer.model.SyncReport;
 
@@ -54,17 +56,18 @@ public class Bootstrap {
         List<SyncReport> newReports = new ArrayList<>();
         //Initialize SyncReport
 
-        newReports.add(new SyncReport(REPORT_MODULES, null, STATUS_NOT_SYNCED, "Sync. Modules"));
-        newReports.add(new SyncReport(REPORT_FORMS, null, STATUS_NOT_SYNCED, "Sync. Forms"));
-        newReports.add(new SyncReport(REPORT_USERS, null, STATUS_NOT_SYNCED, "Sync. Users"));
-        newReports.add(new SyncReport(REPORT_HOUSEHOLDS, null, STATUS_NOT_SYNCED, "Sync. Households"));
-        newReports.add(new SyncReport(REPORT_MEMBERS, null, STATUS_NOT_SYNCED, "Sync. Members"));
-        newReports.add(new SyncReport(REPORT_DATASETS, null, STATUS_NOT_SYNCED, "Sync. Datasets"));
-        newReports.add(new SyncReport(REPORT_TRACKING_LISTS, null, STATUS_NOT_SYNCED, "Sync. Tracking Lists"));
-        newReports.add(new SyncReport(REPORT_PARAMETERS, null, STATUS_NOT_SYNCED, "Sync. App Parameters"));
-        newReports.add(new SyncReport(REPORT_REGIONS, null, STATUS_NOT_SYNCED, "Sync. Regions"));
+        newReports.add(new SyncReport(SyncEntity.PARAMETERS, null, SyncStatus.STATUS_NOT_SYNCED, "Sync. App Parameters"));
+        newReports.add(new SyncReport(SyncEntity.MODULES, null, SyncStatus.STATUS_NOT_SYNCED, "Sync. Modules"));
+        newReports.add(new SyncReport(SyncEntity.FORMS, null, SyncStatus.STATUS_NOT_SYNCED, "Sync. Forms"));
+        newReports.add(new SyncReport(SyncEntity.DATASETS, null, SyncStatus.STATUS_NOT_SYNCED, "Sync. Datasets"));
+        newReports.add(new SyncReport(SyncEntity.DATASETS_CSV_FILES, null, SyncStatus.STATUS_NOT_SYNCED, "Sync. Datasets"));
+        newReports.add(new SyncReport(SyncEntity.USERS, null, SyncStatus.STATUS_NOT_SYNCED, "Sync. Users"));
+        newReports.add(new SyncReport(SyncEntity.TRACKING_LISTS, null, SyncStatus.STATUS_NOT_SYNCED, "Sync. Tracking Lists"));
+        newReports.add(new SyncReport(SyncEntity.REGIONS, null, SyncStatus.STATUS_NOT_SYNCED, "Sync. Regions"));
+        newReports.add(new SyncReport(SyncEntity.HOUSEHOLDS, null, SyncStatus.STATUS_NOT_SYNCED, "Sync. Households"));
+        newReports.add(new SyncReport(SyncEntity.MEMBERS, null, SyncStatus.STATUS_NOT_SYNCED, "Sync. Members"));
 
-        List<Integer> reportIds = reports.stream().map(SyncReport::getReportId).collect(Collectors.toList());
+        List<SyncEntity> reportIds = reports.stream().map(SyncReport::getReportId).collect(Collectors.toList());
 
         newReports.forEach( report -> {
             if (!reportIds.contains(report.getReportId())){

@@ -4,6 +4,8 @@ import android.content.ContentValues;
 
 import org.philimone.hds.explorer.database.DatabaseHelper;
 import org.philimone.hds.explorer.database.Table;
+import org.philimone.hds.explorer.io.SyncEntity;
+import org.philimone.hds.explorer.io.SyncStatus;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -14,33 +16,18 @@ import mz.betainteractive.utilities.StringUtil;
  * Created by paul on 5/21/16.
  */
 public class SyncReport implements Serializable, Table {
-    public final static int REPORT_MODULES = 1;
-    public final static int REPORT_FORMS = 2;
-    public final static int REPORT_USERS = 3;
-    public final static int REPORT_HOUSEHOLDS = 4;
-    public final static int REPORT_MEMBERS = 5;
-    public final static int REPORT_TRACKING_LISTS = 6;
-    public final static int REPORT_PARAMETERS = 7;
-    public final static int REPORT_REGIONS = 8;
-    public final static int REPORT_DATASETS = 9;
-    public final static int REPORT_DATASET_FILES = 10;
-
-
-    public final static int STATUS_NOT_SYNCED = 0;
-    public final static int STATUS_SYNCED = 1;
-    public final static int STATUS_SYNC_ERROR = 2;
 
     private int id;
-    private int reportId;
+    private SyncEntity reportId;
     private Date date;
-    private int status;
+    private SyncStatus status;
     private String description;
 
     public SyncReport(){
 
     }
 
-    public SyncReport(int reportId, Date date, int status, String description) {
+    public SyncReport(SyncEntity reportId, Date date, SyncStatus status, String description) {
         this.reportId = reportId;
         this.date = date;
         this.status = status;
@@ -56,11 +43,11 @@ public class SyncReport implements Serializable, Table {
         this.id = id;
     }
 
-    public int getReportId() {
+    public SyncEntity getReportId() {
         return reportId;
     }
 
-    public void setReportId(int reportId) {
+    public void setReportId(SyncEntity reportId) {
         this.reportId = reportId;
     }
 
@@ -89,11 +76,11 @@ public class SyncReport implements Serializable, Table {
         this.date = null;
     }
 
-    public int getStatus() {
+    public SyncStatus getStatus() {
         return status;
     }
 
-    public void setStatus(int status) {
+    public void setStatus(SyncStatus status) {
         this.status = status;
     }
 
@@ -105,9 +92,9 @@ public class SyncReport implements Serializable, Table {
     @Override
     public ContentValues getContentValues() {
         ContentValues cv = new ContentValues();
-        cv.put(DatabaseHelper.SyncReport.COLUMN_REPORT_ID, reportId);
+        cv.put(DatabaseHelper.SyncReport.COLUMN_REPORT_ID, reportId.getCode());
         cv.put(DatabaseHelper.SyncReport.COLUMN_DATE, date==null ? "" : StringUtil.format(date, "yyyy-MM-dd HH:mm:ss"));
-        cv.put(DatabaseHelper.SyncReport.COLUMN_STATUS, status);
+        cv.put(DatabaseHelper.SyncReport.COLUMN_STATUS, status.getCode());
         cv.put(DatabaseHelper.SyncReport.COLUMN_DESCRIPTION, description);
         return cv;
     }

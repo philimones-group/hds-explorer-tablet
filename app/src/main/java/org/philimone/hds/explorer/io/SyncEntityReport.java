@@ -5,6 +5,7 @@ public class SyncEntityReport {
     private String message;
     private String size;
     private boolean successStatus;
+    private String errorMessage;
 
     public SyncEntityReport() {
     }
@@ -14,10 +15,11 @@ public class SyncEntityReport {
         this.successStatus = status;
     }
 
-    public SyncEntityReport(SyncEntity entity, String message, String size, boolean successStatus) {
+    public SyncEntityReport(SyncEntity entity, String message, String size, String errorMessage, boolean successStatus) {
         this.entity = entity;
         this.message = message;
         this.size = size;
+        this.errorMessage = errorMessage;
         this.successStatus = successStatus;
     }
 
@@ -40,6 +42,14 @@ public class SyncEntityReport {
 
     public String getSize() {
         return size;
+    }
+
+    public String getErrorMessage() {
+        return errorMessage;
+    }
+
+    public void setErrorMessage(String errorMessage) {
+        this.errorMessage = errorMessage;
     }
 
     public void setSize(String size) {

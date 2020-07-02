@@ -10,6 +10,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -54,7 +55,7 @@ import mz.betainteractive.utilities.StringUtil;
  * incrementally, by downloading parts of the data one at a time. For example,
  * it gets all Households and then retrieves all Members.
  */
-public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
+public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.ExecutionReport> {
 
 	private static final String API_PATH = "/api/export";
 	private static final String ZIP_MIME_TYPE = "application/zip;charset=utf-8";
@@ -73,6 +74,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 
 	private Map<SyncEntity, Integer> downloadedValues = new LinkedHashMap<>();
 	private Map<SyncEntity, Integer> savedValues = new LinkedHashMap<>();
+	private Map<SyncEntity, String> errorMessageValues = new LinkedHashMap<>();
 
 	private SyncState state;
 	private SyncEntity entity;
@@ -193,7 +195,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 		listener.onSyncProgressUpdate(values.length > 0 ? values[0] : 0, builder.toString());
 	}
 
-	protected String doInBackground(Void... params) {
+	protected ExecutionReport doInBackground(Void... params) {
 
 		// at this point, we don't care to be smart about which data to
 		// download, we simply download it all
@@ -256,16 +258,22 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
-			//Toast.makeText(mContext, mContext.getString(R.string.sync_failure_file_not_found_lbl), Toast.LENGTH_LONG).show();
-			return mContext.getString(R.string.sync_failure_file_not_found_lbl);//"Failure";//HttpTask.EndResult.FAILURE;
+
+			updateSyncReport(entity, new Date(), SyncStatus.STATUS_SYNC_ERROR);
+			errorMessageValues.put(entity, e.getMessage());
+
+			return new ExecutionReport(e, mContext.getString(R.string.sync_failure_file_not_found_lbl));
+
 		} catch (Exception e) {
 			e.printStackTrace();
-			//Toast.makeText(mContext, mContext.getString(R.string.sync_failure_file_not_found_lbl), Toast.LENGTH_LONG).show();
-			return mContext.getString(R.string.sync_failure_file_not_found_lbl);//"Failure";//HttpTask.EndResult.FAILURE;
+
+			updateSyncReport(entity, new Date(), SyncStatus.STATUS_SYNC_ERROR);
+			errorMessageValues.put(entity, e.getMessage());
+
+			return new ExecutionReport(e, mContext.getString(R.string.sync_failure_unknown_lbl));
 		}
 
-
-		return this.mContext.getString(R.string.sync_successfully_lbl);
+		return new ExecutionReport(this.mContext.getString(R.string.sync_successfully_lbl));
 	}
 
 	private void deleteAllTables() {
@@ -428,7 +436,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 		Log.d("is", ""+response.getInputStream()+", xml-"+response.isXmlFile()+", zip-"+response.isZipFile());
 
 		//Inform about the download
-		this.listener.onSyncStarted(this.entity, this.state, (response.fileSize/1024));
+		this.listener.onSyncStarted(this.entity, this.state, response.fileSize); //remove KB calc
 		//save file
 		InputStream fileInputStream = saveFileToStorage(response);
 
@@ -520,7 +528,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 		while ((len = content.read(buffer)) != -1){
 			fout.write(buffer, 0, len);
 			total += len;
-			int perc =  (int) ((total/(1024)));
+			int perc =  (int) (total); //remove KB Calc /1024
 			publishProgress(perc);
 			//Thread.sleep(200); //REMOVE THIS - IT WAS TOO FAST TO CONTEMPLATE THE PROGRESS
 		}
@@ -565,10 +573,10 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 		return (tagName.equals(parser.getName()));
 	}
 
-	private void processApplicationParams(XmlPullParser parser) throws XmlPullParserException, IOException {
+	private void processApplicationParams(XmlPullParser parser) throws Exception {
 
 		//clear sync_report
-		updateSyncReport(SyncReport.REPORT_PARAMETERS, null, SyncReport.STATUS_NOT_SYNCED);
+		updateSyncReport(SyncEntity.PARAMETERS, null, SyncStatus.STATUS_NOT_SYNCED);
 
 		int count = 0;
 		values.clear();
@@ -639,13 +647,13 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 		}
 		database.close();
 
-		updateSyncReport(SyncReport.REPORT_PARAMETERS, new Date(), SyncReport.STATUS_SYNCED);
+		updateSyncReport(SyncEntity.PARAMETERS, new Date(), SyncStatus.STATUS_SYNCED);
 	}
 
-	private void processModulesParams(XmlPullParser parser) throws XmlPullParserException, IOException {
+	private void processModulesParams(XmlPullParser parser) throws Exception {
 
 		//clear sync_report
-		updateSyncReport(SyncReport.REPORT_MODULES, null, SyncReport.STATUS_NOT_SYNCED);
+		updateSyncReport(SyncEntity.MODULES, null, SyncStatus.STATUS_NOT_SYNCED);
 
 		int count = 0;
 		values.clear();
@@ -693,7 +701,6 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 			values.add(table);
 			publishProgress(count);
 
-
 		}
 
 		state = SyncState.SAVING;
@@ -712,13 +719,13 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 		database.close();
 
 
-		updateSyncReport(SyncReport.REPORT_MODULES, new Date(), SyncReport.STATUS_SYNCED);
+		updateSyncReport(SyncEntity.MODULES, new Date(), SyncStatus.STATUS_SYNCED);
 	}
 
-	private void processFormsParams(XmlPullParser parser) throws XmlPullParserException, IOException {
+	private void processFormsParams(XmlPullParser parser) throws Exception {
 
 		//clear sync_report
-		updateSyncReport(SyncReport.REPORT_FORMS, null, SyncReport.STATUS_NOT_SYNCED);
+		updateSyncReport(SyncEntity.FORMS, null, SyncStatus.STATUS_NOT_SYNCED);
 
 		int count = 0;
 		values.clear();
@@ -938,7 +945,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 			parser.nextTag();
 			parser.next();
 
-			Log.d("form ", ""+table.getFormId());
+			//Log.d("form ", ""+table.getFormId());
 
 			database.insert(table);
 			publishProgress(count);
@@ -952,13 +959,13 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 		database.endTransaction();
 		database.close();
 
-		updateSyncReport(SyncReport.REPORT_FORMS, new Date(), SyncReport.STATUS_SYNCED);
+		updateSyncReport(SyncEntity.FORMS, new Date(), SyncStatus.STATUS_SYNCED);
 	}
 
-	private void processDatasetsParams(XmlPullParser parser) throws XmlPullParserException, IOException {
+	private void processDatasetsParams(XmlPullParser parser) throws Exception {
 
 		//clear sync_report
-		updateSyncReport(SyncReport.REPORT_DATASETS, null, SyncReport.STATUS_NOT_SYNCED);
+		updateSyncReport(SyncEntity.DATASETS, null, SyncStatus.STATUS_NOT_SYNCED);
 
 		int count = 0;
 		values.clear();
@@ -1103,13 +1110,13 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 		database.endTransaction();
 		database.close();
 
-		updateSyncReport(SyncReport.REPORT_DATASETS, new Date(), SyncReport.STATUS_SYNCED);
+		updateSyncReport(SyncEntity.DATASETS, new Date(), SyncStatus.STATUS_SYNCED);
 	}
 
-	private void processTrackingListsParams(XmlPullParser parser) throws XmlPullParserException, IOException {
+	private void processTrackingListsParams(XmlPullParser parser) throws Exception {
 
 		//clear sync_report
-		updateSyncReport(SyncReport.REPORT_TRACKING_LISTS, null, SyncReport.STATUS_NOT_SYNCED);
+		updateSyncReport(SyncEntity.TRACKING_LISTS, null, SyncStatus.STATUS_NOT_SYNCED);
 
 		int tlistCount = 0;
 		values.clear();
@@ -1240,13 +1247,13 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 		database.endTransaction();
 		database.close();
 
-		updateSyncReport(SyncReport.REPORT_TRACKING_LISTS, new Date(), SyncReport.STATUS_SYNCED);
+		updateSyncReport(SyncEntity.TRACKING_LISTS, new Date(), SyncStatus.STATUS_SYNCED);
 	}
 
-	private void processUsersParams(XmlPullParser parser) throws XmlPullParserException, IOException {
+	private void processUsersParams(XmlPullParser parser) throws Exception {
 
 		//clear sync_report
-		updateSyncReport(SyncReport.REPORT_USERS, null, SyncReport.STATUS_NOT_SYNCED);
+		updateSyncReport(SyncEntity.USERS, null, SyncStatus.STATUS_NOT_SYNCED);
 
 		int count = 0;
 		values.clear();
@@ -1370,13 +1377,13 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 		database.endTransaction();
 		database.close();
 
-		updateSyncReport(SyncReport.REPORT_USERS, new Date(), SyncReport.STATUS_SYNCED);
+		updateSyncReport(SyncEntity.USERS, new Date(), SyncStatus.STATUS_SYNCED);
 	}
 
-	private void processRegions(XmlPullParser parser) throws XmlPullParserException, IOException {
+	private void processRegions(XmlPullParser parser) throws Exception {
 
 		//clear sync_report
-		updateSyncReport(SyncReport.REPORT_REGIONS, null, SyncReport.STATUS_NOT_SYNCED);
+		updateSyncReport(SyncEntity.REGIONS, null, SyncStatus.STATUS_NOT_SYNCED);
 
 		int count = 0;
 		values.clear();
@@ -1453,13 +1460,13 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 		database.close();
 
 
-		updateSyncReport(SyncReport.REPORT_REGIONS, new Date(), SyncReport.STATUS_SYNCED);
+		updateSyncReport(SyncEntity.REGIONS, new Date(), SyncStatus.STATUS_SYNCED);
 	}
 
-	private void processHouseholds(XmlPullParser parser) throws XmlPullParserException, IOException {
+	private void processHouseholds(XmlPullParser parser) throws Exception {
 
 		//clear sync_report
-		updateSyncReport(SyncReport.REPORT_HOUSEHOLDS, null, SyncReport.STATUS_NOT_SYNCED);
+		updateSyncReport(SyncEntity.HOUSEHOLDS, null, SyncStatus.STATUS_NOT_SYNCED);
 
 		int count = 0;
 		values.clear();
@@ -1688,13 +1695,13 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 		database.endTransaction();
 		database.close();
 
-		updateSyncReport(SyncReport.REPORT_HOUSEHOLDS, new Date(), SyncReport.STATUS_SYNCED);
+		updateSyncReport(SyncEntity.HOUSEHOLDS, new Date(), SyncStatus.STATUS_SYNCED);
 	}
 
-	private void processMembers(XmlPullParser parser) throws XmlPullParserException, IOException {
+	private void processMembers(XmlPullParser parser) throws Exception {
 
 		//clear sync_report
-		updateSyncReport(SyncReport.REPORT_MEMBERS, null, SyncReport.STATUS_NOT_SYNCED);
+		updateSyncReport(SyncEntity.MEMBERS, null, SyncStatus.STATUS_NOT_SYNCED);
 
 		int count = 0;
 		values.clear();
@@ -2048,20 +2055,35 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 		database.endTransaction();
 		database.close();
 
-		updateSyncReport(SyncReport.REPORT_MEMBERS, new Date(), SyncReport.STATUS_SYNCED);
+		updateSyncReport(SyncEntity.MEMBERS, new Date(), SyncStatus.STATUS_SYNCED);
 	}
 
 	//database.query(SyncReport.class, DatabaseHelper.SyncReport.COLUMN_REPORT_ID+"=?", new String[]{}, null, null, null);
-	private void updateSyncReport(int reportId, Date date, int status){
+	private void updateSyncReport(SyncEntity reportId, Date date, SyncStatus status){
 		Database database = getDatabase();
 		database.open();
 
 		ContentValues cv = new ContentValues();
 		cv.put(DatabaseHelper.SyncReport.COLUMN_DATE, date==null ? "" : StringUtil.format(date, "yyyy-MM-dd HH:mm:ss"));
-		cv.put(DatabaseHelper.SyncReport.COLUMN_STATUS, status);
-		database.update(SyncReport.class, cv, DatabaseHelper.SyncReport.COLUMN_REPORT_ID+" = ?", new String[]{reportId+""} );
+		cv.put(DatabaseHelper.SyncReport.COLUMN_STATUS, status.getCode());
+		database.update(SyncReport.class, cv, DatabaseHelper.SyncReport.COLUMN_REPORT_ID+" = ?", new String[]{reportId.getCode()+""} );
 
 		database.close();
+	}
+
+	private Map<SyncEntity, SyncStatus> getAllSyncReportStatus(){
+		Map<SyncEntity, SyncStatus> statuses = new HashMap<>();
+
+		Database database = getDatabase();
+		database.open();
+
+		Queries.getAllSyncReportBy(database, null, null).forEach( syncReport -> {
+			statuses.put(syncReport.getReportId(), syncReport.getStatus());
+		});
+
+		database.close();
+
+		return statuses;
 	}
 
 	private void updateDataset(DataSet dataSet, DownloadResponse response){
@@ -2078,14 +2100,18 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 		database.close();
 	}
 
-	protected void onPostExecute(String result) {
+	protected void onPostExecute(ExecutionReport executionReport) {
 
-		listener.onSyncFinished(result, getDownloadReports(), getPersistedReports() );
+		Map<SyncEntity, SyncStatus> mapStatuses = getAllSyncReportStatus();
+
+		String result = executionReport.getMessageResult();
+
+		listener.onSyncFinished(result, getDownloadReports(mapStatuses), getPersistedReports(mapStatuses), executionReport.hasErrors(), executionReport.getErrorMessage());
 
 		Toast.makeText(mContext, result, Toast.LENGTH_SHORT).show(); //Maintain This
 	}
 
-	private List<SyncEntityReport> getPersistedReports(){
+	private List<SyncEntityReport> getPersistedReports(Map<SyncEntity, SyncStatus> mapStatuses){
 
 		List<SyncEntityReport> reports = new ArrayList<>();
 
@@ -2105,18 +2131,23 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 				case MEMBERS: 		 downloadedEntity = mContext.getString(R.string.sync_members_lbl); 	  break;
 			}
 
+			boolean error = mapStatuses.get(entity)==SyncStatus.STATUS_SYNC_ERROR;
+			String errorMsg = error ? errorMessageValues.get(entity) : "";
+
+			//Log.d("get-error-msg", errorMessageValues+", "+errorMessageValues.get(entity)+", status="+mapStatuses.get(entity));
+
 			String msg = mContext.getString(R.string.sync_synchronized_msg_lbl);
-			String size = (savedValues.get(entity) == null ? "" : savedValues.get(entity).toString()) + " KB";
+			String size = (savedValues.get(entity) == null ? "" : savedValues.get(entity).toString());
 			//msg = msg.replace("#2", savedValues.get(entity).toString());
 			msg = msg.replace("#1", downloadedEntity);
 
-			reports.add(new SyncEntityReport(entity, msg, size, true));
+			reports.add(new SyncEntityReport(entity, msg, size, errorMsg, !error));
 		}
 
 		return reports;
 	}
 
-	private List<SyncEntityReport> getDownloadReports(){
+	private List<SyncEntityReport> getDownloadReports(Map<SyncEntity, SyncStatus> mapStatuses){
 
 		List<SyncEntityReport> reports = new ArrayList<>();
 
@@ -2135,15 +2166,28 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 				case MEMBERS: 		 downloadedEntity = mContext.getString(R.string.sync_members_lbl); 	  break;
 			}
 
+			boolean error = mapStatuses.get(entity)==SyncStatus.STATUS_SYNC_ERROR;
+			String errorMsg = error ? errorMessageValues.get(entity) : "";
+
+			Integer value = downloadedValues.get(entity);
 			String msg = mContext.getString(R.string.sync_downloaded_msg_lbl);
-			String size = savedValues.get(entity) == null ? "" : savedValues.get(entity).toString();
+			String size = value == null ? "" : getInKB(value) + " KB";
 			msg = msg.replace("#1", downloadedEntity);
 			//msg = msg.replace("#2", downloadedValues.get(entity).toString());
 
-			reports.add(new SyncEntityReport(entity, msg, size, true));
+			reports.add(new SyncEntityReport(entity, msg, size, errorMsg, true));
 		}
 
 		return reports;
+
+	}
+
+	private String getInKB(Integer value){
+		if (value < 1024){
+			return String.format("%.2f", (value/1024D));
+		} else {
+			return (value/1024)+"";
+		}
 
 	}
 
@@ -2184,6 +2228,46 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, String> {
 		public boolean isZipFile(){
 			//return fileMimeType.equalsIgnoreCase(ZIP_MIME_TYPE);
 			return ZIP_MIME_TYPE.startsWith(fileMimeType);
+		}
+	}
+
+	class ExecutionReport {
+		private boolean errors;
+		private Exception exception;
+		private String messageResult;
+
+		public ExecutionReport(String messageResult) {
+			this.messageResult = messageResult;
+		}
+
+		public ExecutionReport(Exception exception, String messageResult) {
+			this.errors = exception != null;
+			this.exception = exception;
+			this.messageResult = messageResult;
+		}
+
+		public boolean hasErrors() {
+			return errors;
+		}
+
+		public Exception getException() {
+			return exception;
+		}
+
+		public void setException(Exception exception) {
+			this.exception = exception;
+		}
+
+		public String getErrorMessage(){
+			return (exception!=null) ? exception.getMessage() : null;
+		}
+
+		public String getMessageResult() {
+			return messageResult;
+		}
+
+		public void setMessageResult(String messageResult) {
+			this.messageResult = messageResult;
 		}
 	}
 

@@ -7,15 +7,19 @@ import java.util.Map;
 
 public class SyncEntityResult {
     public String result;
+    public boolean hasErrors;
+    public String errorMessage;
     public List<SyncEntityReport> downloadReports;
     public List<SyncEntityReport> persistedReports;
     public Map<SyncEntity, List<SyncEntityReport>> reportsMap;
 
 
-    public SyncEntityResult(String result, List<SyncEntityReport> downloadReports, List<SyncEntityReport> persistedReports) {
+    public SyncEntityResult(String result, List<SyncEntityReport> downloadReports, List<SyncEntityReport> persistedReports, boolean hasErrors, String errorMessage) {
         this.result = result;
         this.downloadReports = downloadReports;
         this.persistedReports = persistedReports;
+        this.hasErrors = hasErrors;
+        this.errorMessage = errorMessage;
 
         buildMap();
     }

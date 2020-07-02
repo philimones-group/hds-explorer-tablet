@@ -53,7 +53,7 @@
     <string name="sync_records_lbl">registros</string>
     <string name="sync_successfully_lbl">Os dados foram sincronizados com sucesso.</string>
     <string name="sync_failure_file_not_found_lbl">O ficheiro não foi encontrado no servidor para ser baixado.</string>
-    <string name="sync_failure_unknow_lbl">Não foi possivel baixar o ficheiro do servidor</string>
+    <string name="sync_failure_unknown_lbl">Ocorreu um erro ao tentar sincronizar os dados do servidor</string>
     <string name="sync_synchronized_msg_lbl">Total #1 dados baixados:</string>
     <string name="sync_downloaded_msg_lbl">Total de #1 dados guardados:</string>
 

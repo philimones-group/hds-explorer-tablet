@@ -2,6 +2,9 @@ package org.philimone.hds.explorer.io;
 
 import org.philimone.hds.explorer.R;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public enum SyncEntity {
     //SETTINGS           (0, R.string.sync_se),
     PARAMETERS         (1, R.string.sync_params_lbl),
@@ -29,5 +32,18 @@ public enum SyncEntity {
 
     public int getNameId() {
         return nameId;
+    }
+
+    /* Finding entity by code */
+    private static final Map<Integer, SyncEntity> ENTITIES = new HashMap<>();
+
+    static {
+        for (SyncEntity e: values()) {
+            ENTITIES.put(e.code, e);
+        }
+    }
+
+    public static SyncEntity valueOf(int code) {
+        return ENTITIES.get(code);
     }
 }

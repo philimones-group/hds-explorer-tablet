@@ -17,6 +17,7 @@ import org.philimone.hds.explorer.io.SyncEntity;
 import org.philimone.hds.explorer.io.SyncEntityReport;
 import org.philimone.hds.explorer.io.SyncEntityResult;
 import org.philimone.hds.explorer.io.SyncState;
+import org.philimone.hds.explorer.io.SyncStatus;
 import org.philimone.hds.explorer.widget.SyncResultDialog;
 
 import java.util.List;
@@ -116,9 +117,9 @@ public class SyncPanelItemFragment extends Fragment implements View.OnClickListe
         this.syncSyncedDate.setText("");
         this.syncProgressMessage.setText("");
         this.syncProgressBar.setProgress(0);
+
+        this.syncProgressText.setVisibility(View.VISIBLE);
         this.syncErrorIcon.setVisibility(View.GONE);
-
-
         this.syncStopButton.setVisibility(View.GONE);
         this.syncButton.setVisibility(View.VISIBLE);
 
@@ -133,9 +134,18 @@ public class SyncPanelItemFragment extends Fragment implements View.OnClickListe
         }
     }
 
-    public void setSyncedDate(String status) {
+    public void setSyncedDate(String statusMessage, SyncStatus status) {
         if (this.syncSyncedDate != null){
-            this.syncSyncedDate.setText(status);
+            this.syncSyncedDate.setText(statusMessage);
+
+            if (status == SyncStatus.STATUS_SYNC_ERROR){
+                this.syncErrorIcon.setVisibility(View.VISIBLE);
+                this.syncProgressText.setVisibility(View.GONE);
+                this.syncProgressMessage.setText("");
+            } else {
+                this.syncErrorIcon.setVisibility(View.GONE);
+                this.syncProgressText.setVisibility(View.VISIBLE);
+            }
         }
     }
 
@@ -201,16 +211,18 @@ public class SyncPanelItemFragment extends Fragment implements View.OnClickListe
     }
 
     @Override
-    public void onSyncFinished(String result, List<SyncEntityReport> downloadReports, List<SyncEntityReport> persistedReports) {
+    public void onSyncFinished(String result, List<SyncEntityReport> downloadReports, List<SyncEntityReport> persistedReports, Boolean hasError, String errorMessage) {
 
-        this.syncResult = new SyncEntityResult(result, downloadReports, persistedReports);
+        Log.d("errors", "has="+hasError+", err_msg="+errorMessage);
+
+        this.syncResult = new SyncEntityResult(result, downloadReports, persistedReports, hasError, errorMessage);
 
         this.syncProgressMessage.setText(result);
         //Find a way to show the reports
 
         //Make sync button visible
         //gone to sync and visible stop
-        this.syncStopButton.setVisibility(View.GONE);
+        //this.syncStopButton.setVisibility(View.GONE);
         this.syncButton.setVisibility(View.VISIBLE);
 
         this.listener.onSyncFinished(this);

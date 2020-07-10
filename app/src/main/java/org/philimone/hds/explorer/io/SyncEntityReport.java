@@ -1,6 +1,8 @@
 package org.philimone.hds.explorer.io;
 
-public class SyncEntityReport {
+import java.io.Serializable;
+
+public class SyncEntityReport implements Serializable {
     private SyncEntity entity;
     private String message;
     private String size;

@@ -153,6 +153,14 @@ public class SyncPanelItemFragment extends Fragment implements View.OnClickListe
         this.listener = listener;
     }
 
+    public SyncEntityResult getSyncResult() {
+        return syncResult;
+    }
+
+    public void setSyncResult(SyncEntityResult syncResult) {
+        this.syncResult = syncResult;
+    }
+
     private void onSyncButtonClicked() {
         //gone to sync and visible stop
         this.syncButton.setVisibility(View.GONE);
@@ -225,7 +233,7 @@ public class SyncPanelItemFragment extends Fragment implements View.OnClickListe
         //this.syncStopButton.setVisibility(View.GONE);
         this.syncButton.setVisibility(View.VISIBLE);
 
-        this.listener.onSyncFinished(this);
+        this.listener.onSyncFinished(this, this.syncResult);
     }
 
     interface SyncPanelItemListener {
@@ -234,7 +242,7 @@ public class SyncPanelItemFragment extends Fragment implements View.OnClickListe
 
         void onSyncStopButtonClicked(SyncPanelItemFragment syncPanelItem);
 
-        void onSyncFinished(SyncPanelItemFragment syncPanelItem);
+        void onSyncFinished(SyncPanelItemFragment syncPanelItem, SyncEntityResult syncEntityResult);
 
     }
 

@@ -1,10 +1,14 @@
 package org.philimone.hds.explorer.main.sync;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import org.philimone.hds.explorer.R;
 import org.philimone.hds.explorer.database.Database;
@@ -12,6 +16,7 @@ import org.philimone.hds.explorer.database.DatabaseHelper;
 import org.philimone.hds.explorer.database.Queries;
 import org.philimone.hds.explorer.io.SyncEntitiesTask;
 import org.philimone.hds.explorer.io.SyncEntity;
+import org.philimone.hds.explorer.io.SyncEntityResult;
 import org.philimone.hds.explorer.io.SyncStatus;
 import org.philimone.hds.explorer.model.SyncReport;
 import org.philimone.hds.explorer.widget.SyncProgressDialog;
@@ -76,6 +81,8 @@ public class SyncPanelActivity extends AppCompatActivity implements SyncPanelIte
         super.onResume();
 
         showStatus();
+        readPreferences();
+        //set syncentityresult saved on preferences
     }
 
     private void initialize() {
@@ -228,6 +235,63 @@ public class SyncPanelActivity extends AppCompatActivity implements SyncPanelIte
         syncEntitiesTask.execute();
     }
 
+    private void savePreferences(SyncEntityResult syncEntityResult) {
+        SyncEntity entity = syncEntityResult.getMainEntity();
+        String jsonEntityResult = new Gson().toJson(syncEntityResult);
+
+        SharedPreferences prefs = getPreferences(MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+
+        //save json to preferences
+        editor.putString(entity.name(), jsonEntityResult);
+        editor.commit();
+    }
+
+    private void readPreferences(){
+
+        SharedPreferences prefs = getPreferences(MODE_PRIVATE);
+
+        SyncEntityResult settingsResult = getEntityResult(prefs, SETTINGS);
+        SyncEntityResult datasetsResult = getEntityResult(prefs, DATASETS);
+        SyncEntityResult trackListResult = getEntityResult(prefs, TRACKING_LISTS);
+        SyncEntityResult usersResult = getEntityResult(prefs, USERS);
+        SyncEntityResult householdsResult = getEntityResult(prefs, HOUSEHOLDS);
+        SyncEntityResult membersResult = getEntityResult(prefs, MEMBERS);
+
+        if (settingsResult != null) {
+            settingsSyncFragment.setSyncResult(settingsResult);
+        }
+        if (datasetsResult != null) {
+            datasetsSyncFragment.setSyncResult(datasetsResult);
+        }
+        if (trackListResult != null) {
+            trackingListsSyncFragment.setSyncResult(trackListResult);
+        }
+        if (usersResult != null) {
+            usersSyncFragment.setSyncResult(usersResult);
+        }
+        if (householdsResult != null) {
+            householdsSyncFragment.setSyncResult(householdsResult);
+        }
+        if (membersResult != null) {
+            membersSyncFragment.setSyncResult(membersResult);
+        }
+    }
+
+    private SyncEntityResult getEntityResult(SharedPreferences prefs, SyncEntity entity){
+        SyncEntityResult result = null;
+
+        try {
+            String json = prefs.getString(entity.name(), "");
+            result = new Gson().fromJson(json, SyncEntityResult.class);
+        } catch (Exception  ex){
+            ex.printStackTrace();
+        }
+
+
+        return result;
+    }
+
     @Override
     public void onSyncStartButtonClicked(SyncPanelItemFragment syncPanelItem) {
         Log.d("sync", "sync start");
@@ -267,7 +331,7 @@ public class SyncPanelActivity extends AppCompatActivity implements SyncPanelIte
     }
 
     @Override
-    public void onSyncFinished(SyncPanelItemFragment syncPanelItem) {
+    public void onSyncFinished(SyncPanelItemFragment syncPanelItem, SyncEntityResult syncEntityResult) {
 
         //Sync All - Continue
         if (synchronizerAllList.size() > 0){ //As Long as our list as a next synchronizer we execute next
@@ -279,6 +343,7 @@ public class SyncPanelActivity extends AppCompatActivity implements SyncPanelIte
         }
 
         showStatus();
+        savePreferences(syncEntityResult);
     }
 
     interface Synchronizer {

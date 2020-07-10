@@ -2,11 +2,12 @@ package org.philimone.hds.explorer.io;
 
 import org.philimone.hds.explorer.R;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-public enum SyncEntity {
-    //SETTINGS           (0, R.string.sync_se),
+public enum SyncEntity implements Serializable {
+    SETTINGS           (0, R.string.server_sync_bt_settings_lbl),
     PARAMETERS         (1, R.string.sync_params_lbl),
     MODULES            (2, R.string.sync_modules_lbl),
     FORMS              (3, R.string.sync_forms_lbl),

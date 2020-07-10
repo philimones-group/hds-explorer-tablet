@@ -135,17 +135,22 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 		case DOWNLOADING:
 			builder.append(mContext.getString(R.string.sync_downloading_lbl));
 
+			/*// This was reporting bad the data - was slow
 			if (values.length > 0){
 				downloadedValues.put(entity, values[0]);
+				Log.d("save", ""+entity+", last-value2="+values[0]);
 			}
+			*/
 
 			break;
 		case SAVING:
 			builder.append(mContext.getString(R.string.sync_saving_lbl));
 
+			/* //This was reporting bad the data - was slow
 			if (values.length > 0){
 				savedValues.put(entity, values[0]);
 			}
+			*/
 
 			break;
 		}
@@ -186,7 +191,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 		if (values.length > 0) {
 			String msg = ". " + mContext.getString(R.string.sync_saved_lbl) + " "  + values[0] + " " + mContext.getString(R.string.sync_records_lbl);
 			if (state== SyncState.DOWNLOADING){
-				msg = ". " + mContext.getString(R.string.sync_saved_lbl) + " "  + values[0] + "KB";
+				msg = ". " + mContext.getString(R.string.sync_saved_lbl) + " "  + getInKB(values[0]) + "KB";
 			}
 
 			builder.append(msg);
@@ -200,6 +205,8 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 		// at this point, we don't care to be smart about which data to
 		// download, we simply download it all
 		//deleteAllTables();
+
+		this.state = SyncState.DOWNLOADING;
 
 		try {
 
@@ -336,7 +343,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 
 		String result = processUrl(baseurl + API_PATH + "/sync-report/" + entity.getCode());
 
-		Log.d("tag-report", "result="+result);
+		//Log.d("tag-report", "result="+result);
 
 		return Integer.parseInt(result);
 	}
@@ -373,6 +380,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 	}
 
 	private String processUrl(String strUrl) {
+		state = SyncState.DOWNLOADING;
 		//http request
 		try {
 			HttpURLConnection urlConnection = null;
@@ -397,7 +405,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 				String result = scan.next();
 				scan.close();
 
-				Log.d("result-2", ""+result);
+				//Log.d("result-2", ""+result);
 
 				return result;
 			}
@@ -411,7 +419,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 
 	private DownloadResponse processUrl(String strUrl, String exportedFileName, boolean processDataContent) throws Exception {
 		state = SyncState.DOWNLOADING;
-		publishProgress();
+		publishProgress(0);
 
 		String basicAuth = "Basic " + new String(Base64.encode((this.username+":"+this.password).getBytes(),Base64.NO_WRAP ));
 
@@ -515,6 +523,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 	}
 
 	private InputStream saveFileToStorage(DownloadResponse response) throws Exception {
+		state = SyncState.DOWNLOADING;
 
 		InputStream content = response.getInputStream();
 
@@ -523,12 +532,15 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 		int len = 0;
 		long total = 0;
 
-		publishProgress();
+		publishProgress(0);
 
 		while ((len = content.read(buffer)) != -1){
 			fout.write(buffer, 0, len);
 			total += len;
 			int perc =  (int) (total); //remove KB Calc /1024
+
+			downloadedValues.put(entity, perc); //publishProgress is a bit slow, ensure this is set here - this code also runs on onProgressUpdate
+			//Log.d("save", ""+entity+", last-value="+perc);
 			publishProgress(perc);
 			//Thread.sleep(200); //REMOVE THIS - IT WAS TOO FAST TO CONTEMPLATE THE PROGRESS
 		}
@@ -543,8 +555,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 
 	private void processZIPDocument(InputStream inputStream) throws Exception {
 
-		Log.d("zip", "processing zip file");
-
+		//Log.d("zip", "processing zip file");
 
 		ZipInputStream zin = new ZipInputStream(inputStream);
 		ZipEntry entry = zin.getNextEntry();
@@ -642,6 +653,8 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 				database.delete(ApplicationParam.class, DatabaseHelper.ApplicationParam.COLUMN_NAME+"=?", new String[]{ p.getName() });
 
 				database.insert(t);
+
+				savedValues.put(entity, count); //publish progress is a bit slow - its not reporting well the numbers
 				publishProgress(count);
 			}
 		}
@@ -713,6 +726,8 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 			for (Table t : values){
 				count++;
 				database.insert(t);
+
+				savedValues.put(entity, count); //publish progress is a bit slow - its not reporting well the numbers
 				publishProgress(count);
 			}
 		}
@@ -948,6 +963,8 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 			//Log.d("form ", ""+table.getFormId());
 
 			database.insert(table);
+
+			savedValues.put(entity, count); //publish progress is a bit slow - its not reporting well the numbers
 			publishProgress(count);
 
 		}
@@ -1099,6 +1116,8 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 
 
 			database.insert(table);
+
+			savedValues.put(entity, count); //publish progress is a bit slow - its not reporting well the numbers
 			publishProgress(count);
 
 		}
@@ -1239,6 +1258,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 			database.insert(table);
 			*/
 
+			savedValues.put(entity, tlistCount); //publish progress is a bit slow - its not reporting well the numbers
 			publishProgress(tlistCount);
 
 		}
@@ -1353,6 +1373,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 			//values.add(table);
 			database.insert(table);
 
+			savedValues.put(entity, count); //publish progress is a bit slow - its not reporting well the numbers
 			publishProgress(count);
 			
 		}
@@ -1454,6 +1475,8 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 			for (Table t : values){
 				count++;
 				database.insert(t);
+
+				savedValues.put(entity, count); //publish progress is a bit slow - its not reporting well the numbers
 				publishProgress(count);
 			}
 		}
@@ -1683,6 +1706,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 			database.insert(table);
 
 			if (count % 100 == 0){
+				savedValues.put(entity, count); //publish progress is a bit slow - its not reporting well the numbers
 				publishProgress(count);
 			}
 
@@ -2044,6 +2068,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 			database.insert(table);
 
 			if (count % 200 == 0){
+				savedValues.put(entity, count); //publish progress is a bit slow - its not reporting well the numbers
 				publishProgress(count);
 			}
 
@@ -2141,6 +2166,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 			//msg = msg.replace("#2", savedValues.get(entity).toString());
 			msg = msg.replace("#1", downloadedEntity);
 
+			//Log.d("persisted", ""+entity+", size="+size);
 			reports.add(new SyncEntityReport(entity, msg, size, errorMsg, !error));
 		}
 
@@ -2174,7 +2200,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 			String size = value == null ? "" : getInKB(value) + " KB";
 			msg = msg.replace("#1", downloadedEntity);
 			//msg = msg.replace("#2", downloadedValues.get(entity).toString());
-
+			//Log.d("downloaded", ""+entity+", size="+size);
 			reports.add(new SyncEntityReport(entity, msg, size, errorMsg, true));
 		}
 
@@ -2188,7 +2214,14 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 		} else {
 			return (value/1024)+"";
 		}
+	}
 
+	private String getInMB(Integer value){
+		if (value < 1024*1024){
+			return String.format("%.2f", (value/1024*1024D));
+		} else {
+			return (value/1024*1024)+"";
+		}
 	}
 
 	private class DownloadResponse {

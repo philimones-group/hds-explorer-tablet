@@ -131,6 +131,7 @@
                 android:textSize="12sp"
                 android:textStyle="bold"
                 android:textAlignment="textEnd"
+                android:singleLine="true"
                 android:text="Saved 4000 records"/>
 
             <!-- Put a show more buttons -->

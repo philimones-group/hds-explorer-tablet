@@ -44,6 +44,6 @@
         android:left="15dp"
         android:top="5dp"
         android:bottom="5dp">
-        <bitmap android:src="@drawable/settings_icon_large" android:gravity="left" android:alpha="0.5"/>
+        <bitmap android:src="@mipmap/settings_icon_large" android:gravity="left" android:alpha="0.5"/>
     </item>
 </layer-list>

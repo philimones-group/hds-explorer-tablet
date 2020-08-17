@@ -4,26 +4,26 @@
 
     <!-- checkable+checked+pressed -->
     <item android:state_checkable="true" android:state_checked="true" android:state_pressed="true"
-        android:drawable="@drawable/kb1_pressed"
+        android:drawable="@mipmap/kb1_pressed"
         />
 
     <!-- checkable+pressed -->
     <item android:state_checkable="true" android:state_pressed="true"
-        android:drawable="@drawable/kb1_pressed"
+        android:drawable="@mipmap/kb1_pressed"
         />
 
     <!-- checkable+checked -->
     <item android:state_checkable="true" android:state_checked="true"
-        android:drawable="@drawable/kb1_pressed"
+        android:drawable="@mipmap/kb1_pressed"
         />
 
     <!-- checkable -->
-    <item android:state_checkable="true" android:drawable="@drawable/kb1_normal"/>
+    <item android:state_checkable="true" android:drawable="@mipmap/kb1_normal"/>
 
     <!-- pressed -->
-    <item android:state_pressed="true" android:drawable="@drawable/kb1_pressed" />
+    <item android:state_pressed="true" android:drawable="@mipmap/kb1_pressed" />
 
     <!-- default -->
-    <item android:drawable="@drawable/kb1_normal"/>
+    <item android:drawable="@mipmap/kb1_normal"/>
 
 </selector>

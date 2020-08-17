@@ -4,26 +4,26 @@
 
     <!-- checkable+checked+pressed -->
     <item android:state_checkable="true" android:state_checked="true" android:state_pressed="true"
-        android:drawable="@drawable/expand_bt3_30x30"
+        android:drawable="@mipmap/expand_bt3_30x30"
         />
 
     <!-- checkable+pressed -->
     <item android:state_checkable="true" android:state_pressed="true"
-        android:drawable="@drawable/expand_bt4_30x30"
+        android:drawable="@mipmap/expand_bt4_30x30"
         />
 
     <!-- checkable+checked -->
     <item android:state_checkable="true" android:state_checked="true"
-        android:drawable="@drawable/expand_bt4_30x30"
+        android:drawable="@mipmap/expand_bt4_30x30"
         />
 
     <!-- checkable -->
-    <item android:state_checkable="true" android:drawable="@drawable/expand_bt3_30x30"/>
+    <item android:state_checkable="true" android:drawable="@mipmap/expand_bt3_30x30"/>
 
     <!-- pressed -->
-    <item android:state_pressed="true" android:drawable="@drawable/expand_bt4_30x30"  />
+    <item android:state_pressed="true" android:drawable="@mipmap/expand_bt4_30x30"  />
 
     <!-- default -->
-    <item android:drawable="@drawable/expand_bt3_30x30"/>
+    <item android:drawable="@mipmap/expand_bt3_30x30"/>
 
 </selector>

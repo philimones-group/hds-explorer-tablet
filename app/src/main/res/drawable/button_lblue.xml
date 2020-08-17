@@ -18,12 +18,12 @@
         />
 
     <!-- checkable -->
-    <item android:state_checkable="true" android:drawable="@drawable/btn"/>
+    <item android:state_checkable="true" android:drawable="@mipmap/btn"/>
 
     <!-- pressed -->
     <item android:state_pressed="true" android:drawable="@drawable/drawed_gray" />
 
     <!-- default -->
-    <item android:drawable="@drawable/btn"/>
+    <item android:drawable="@mipmap/btn"/>
 
 </selector>

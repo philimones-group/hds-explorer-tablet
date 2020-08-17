@@ -6,26 +6,20 @@
     <dimen name="circleProgressRadius">20dp</dimen>
     <dimen name="circleProgressThickness">5dp</dimen>
 
-    <dimen name="fab_margin">16dp</dimen>
     <dimen name="fagm_margin_left">2dp</dimen>
     <dimen name="fagm_margin_top">10dp</dimen>
     <dimen name="fagm_margin_bottom">10dp</dimen>
     <dimen name="fagm_margin_right">5dp</dimen>
-    <dimen name="fagm_margin">15dp</dimen>
 
     <dimen name="hf_margin_left">5dp</dimen>
-    <dimen name="hf_margin_top">10dp</dimen>
-    <dimen name="hf_margin_bottom">10dp</dimen>
     <dimen name="hf_margin_right">10dp</dimen>
 
     <dimen name="mf_margin_left">10dp</dimen>
     <dimen name="mf_margin_top">10dp</dimen>
-    <dimen name="mf_margin_bottom">15dp</dimen>
     <dimen name="mf_margin_right">10dp</dimen>
 
     <dimen name="mf_land_margin_left">10dp</dimen>
     <dimen name="mf_land_margin_top">10dp</dimen>
-    <dimen name="mf_land_margin_bottom">10dp</dimen>
     <dimen name="mf_land_margin_right">10dp</dimen>
 
     <dimen name="member_filter_textsize">18sp</dimen>
@@ -33,24 +27,17 @@
     <dimen name="member_filter_textbox_size">50dp</dimen>
     <dimen name="member_filter_checkbox_textsize">22dp</dimen>
 
-    <dimen name="member_filter_xdata_margin">20dp</dimen>
     <dimen name="member_filter_xdata_margin_left">40dp</dimen>
     <dimen name="member_filter_land_xdata_margin">10dp</dimen>
 
     <dimen name="member_filter_buttons">25dp</dimen>
-    <dimen name="member_filter_buttons_pad_left">20dp</dimen>
 
-    <dimen name="member_list_titlesize">24dp</dimen>
     <dimen name="member_list_buttons">16dp</dimen>
-    <dimen name="member_list_buttons_pad_left">20dp</dimen>
 
     <dimen name="member_details_txtview_width">180dp</dimen>
-    <dimen name="member_details_txtview_width_p2">90dp</dimen>
-    <dimen name="member_details_chkbox_margin_left">210dp</dimen>
     <dimen name="member_details_bt_height">70dp</dimen>
     <dimen name="member_details_buttons_size">22dp</dimen>
     <dimen name="member_details_other_info_txtsize">20dp</dimen>
-    <dimen name="member_details_other_info_txtsize_land">20dp</dimen>
     <dimen name="member_details_land_dtlayout_margin_left">20dp</dimen>
     <dimen name="member_details_land_dtlayout_margin_top">12dp</dimen>
     <dimen name="member_details_info_name_layout_txtsize">23dp</dimen>
@@ -63,14 +50,9 @@
     <dimen name="household_filter_region_layout_top_margin">2dp</dimen>"
     <dimen name="household_filter_region_layout_bottom_margin">2dp</dimen>"
     <dimen name="household_filter_region_text_margin_left">20dp</dimen>"
-    <dimen name="household_filter_region_text_margin_right">20dp</dimen>"
-    <dimen name="household_filter_textsize">22dp</dimen>
-    <dimen name="household_filter_textbox_size">50dp</dimen>
-    <dimen name="household_filter_buttons_pad_left">20dp</dimen>
+    "
 
     <dimen name="household_item_text_1_size">20sp</dimen>
-    <dimen name="household_item_text_2_size">16sp</dimen>
-    <dimen name="household_item_text_3_size">13sp</dimen>
 
     <dimen name="region_group_item_text_1_size">18sp</dimen>
     <dimen name="region_group_item_text_2_size">16sp</dimen>

@@ -29,7 +29,7 @@
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:alpha="0.75"
-            android:background="@drawable/settings_icon_large" />
+            android:background="@mipmap/settings_icon_large" />
 
         <TextView
             android:layout_width="wrap_content"

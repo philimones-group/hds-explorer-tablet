@@ -4,23 +4,49 @@
     android:layout_height="match_parent"
     android:gravity="center_horizontal"
     android:orientation="vertical"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    android:background="@mipmap/form_back2_port_a075"
+    android:background="@color/white"
     tools:context="org.philimone.hds.explorer.main.LoginActivity">
 
-    <!-- Login progress -->
-    <ImageView
-        android:layout_marginTop="70dp"
-        android:layout_marginBottom="20dp"
-        android:layout_width="132dp"
-        android:layout_height="132dp"
-        android:id="@+id/imageView"
-        android:layout_gravity="center_horizontal"
-        android:alpha="0.75"
-        android:background="@mipmap/hds_explorer_bevel" />
+    <!-- logo layout -->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_gravity="right"
+        android:layout_marginStart="50dp"
+        android:layout_marginTop="158dp">
+
+        <!-- logo -->
+        <ImageView
+            android:layout_width="483dp"
+            android:layout_height="77dp"
+            android:layout_gravity="right"
+            android:src="@mipmap/nio_logo_clean_compact" />
+
+        <!-- welcome message -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/login_welcome_lbl"
+                android:textColor="@color/nio_color_text_darkgray"
+                android:textSize="30sp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/login_signin_msg_lbl"
+                android:textColor="@color/nio_color_text_green"
+                android:textSize="20sp"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
 
     <ProgressBar
         android:id="@+id/login_progress"
@@ -31,97 +57,131 @@
         android:visibility="gone" />
 
     <LinearLayout
-        android:id="@+id/login_form"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="@dimen/activity_vertical_margin"
-        android:orientation="vertical">
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/activity_vertical_margin"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_vertical_margin">
 
+        <!-- login form -->
         <LinearLayout
-            android:id="@+id/login_layout"
+            android:id="@+id/login_form"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="70dp"
             android:orientation="vertical">
 
-
-            <android.support.design.widget.TextInputLayout
+            <!-- Text -->
+            <LinearLayout
+                android:id="@+id/login_layout"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginStart="30dp"
+                android:layout_marginEnd="30dp"
+                android:orientation="vertical">
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                    android:text="@string/login_username_lbl"
+                    android:textColor="@color/nio_color_text_green"/>
 
                 <AutoCompleteTextView
                     android:id="@+id/login_username_txt"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/login_username_lbl"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="8dp"
+                    android:paddingStart="20dp"
+                    android:paddingEnd="20dp"
+                    android:background="@drawable/nio_txtbox_rone_wbevel"
                     android:inputType="text"
                     android:maxLines="1"
                     android:singleLine="true" />
 
-            </android.support.design.widget.TextInputLayout>
-
-            <android.support.design.widget.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginLeft="20dp"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                    android:text="@string/login_password_lbl"
+                    android:textColor="@color/nio_color_text_green"/>
 
                 <EditText
                     android:id="@+id/login_password_txt"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/login_password_lbl"
-                    android:imeActionId="@+id/login"
-                    android:imeActionLabel="@string/login_password_short_lbl"
-                    android:imeOptions="actionUnspecified"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="8dp"
+                    android:paddingStart="20dp"
+                    android:paddingEnd="20dp"
+                    android:background="@drawable/nio_txtbox_rone_wbevel"
                     android:inputType="textPassword"
                     android:maxLines="1"
                     android:singleLine="true" />
 
-            </android.support.design.widget.TextInputLayout>
+            </LinearLayout>
 
-            <Button
-                android:id="@+id/login_button"
-                style="?android:textAppearanceSmall"
+            <!-- Buttons -->
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="@string/login_button_lbl"
-                android:textStyle="bold"
-                android:textColor="@android:color/background_light"
-                android:background="@drawable/button_lblue"
-                android:shadowColor="@android:color/transparent"
-                />
+                android:orientation="vertical"
+                android:layout_marginTop="40dp">
 
-            <Button
-                android:id="@+id/synchronize_button"
-                style="?android:textAppearanceSmall"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="@string/login_synchronize_lbl"
-                android:textStyle="bold"
-                android:background="@drawable/button_green"
-                />
+                <Button
+                    android:id="@+id/login_button"
+                    android:layout_width="300dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:layout_gravity="center"
+                    android:text="@string/login_button_lbl"
+                    android:textColor="@android:color/background_light"
+                    android:textSize="18sp"
+                    android:background="@drawable/nio_btnd_rone_dgbevel"
+                    android:translationZ="10dp"
+                    android:elevation="10sp"
+                    />
 
-            <Button
-                android:id="@+id/settings_button"
-                style="?android:textAppearanceSmall"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="@string/login_settings_lbl"
-                android:textStyle="bold"
-                android:textColor="#6c6c6c"
-                android:background="@drawable/button_ngreen_stg"
-                android:shadowColor="@android:color/transparent"
-                />
+                <Button
+                    android:id="@+id/synchronize_button"
+                    android:layout_width="300dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:layout_gravity="center"
+                    android:text="@string/login_synchronize_lbl"
+                    android:textSize="18sp"
+                    android:textColor="@android:color/background_light"
+                    android:background="@drawable/nio_btnd_rone_black"
+                    />
+
+                <Button
+                    android:id="@+id/settings_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="80dp"
+                    android:text="@string/login_settings_lbl"
+                    android:textColor="@color/nio_color_text_darkgray"
+                    android:background="@android:color/transparent"
+                    android:drawableLeft="@drawable/nio_btnd_stg"
+                    />
+
+            </LinearLayout>
 
         </LinearLayout>
 
-
+        <!-- copyright-->
         <LinearLayout
             android:id="@+id/copyright_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="100dp"
+            android:layout_marginTop="20dp"
+            android:layout_gravity="bottom"
             android:gravity="center"
             android:orientation="vertical">
 
@@ -131,25 +191,25 @@
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearance"
                 android:text="@string/copyright_app_name_lbl"
-                android:layout_alignParentBottom="true"
-                android:layout_centerHorizontal="true" />
+                />
             <TextView
                 android:id="@+id/txtCopyrightCompany"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearance"
                 android:text="@string/copyright_app_company_lbl"
-                android:layout_alignParentBottom="true"
-                android:layout_centerHorizontal="true" />
+                />
             <TextView
                 android:id="@+id/txtCopyrightDevs"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearance"
                 android:text="@string/copyright_app_developers_lbl"
-                android:layout_alignParentBottom="true"
-                android:layout_centerHorizontal="true" />
+                android:visibility="gone"/>
         </LinearLayout>
+
     </LinearLayout>
+
+
 
 </LinearLayout>

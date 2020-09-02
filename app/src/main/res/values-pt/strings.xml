@@ -3,7 +3,7 @@
 
     <!-- Copyright    -->
     <string name="copyright_app_name_lbl">HDS Explorer v1.0</string>
-    <string name="copyright_app_company_lbl">© 2019 Philimone\'s Group</string>
+    <string name="copyright_app_company_lbl">© 2020 Philimone\'s Group</string>
     <string name="copyright_app_developers_lbl">Desenvolvido por Paulo Filimone</string>
 
     <!-- General buttons and Strings-->
@@ -77,6 +77,8 @@
     <string name="server_sync_bt_members_lbl">Baixar Membros</string>
 
     <!-- Strings related to login -->
+    <string name="login_welcome_lbl">BEM-VINDO</string>
+    <string name="login_signin_msg_lbl">Faça login para continuar</string>
     <string name="login_username_lbl">Usuário</string>
     <string name="login_password_lbl">Senha</string>
     <string name="login_button_lbl">Entrar</string>

@@ -18,4 +18,14 @@
 
     <color name="hh_filter_region_hierarchy_name_color">#000F0F</color>
     <color name="hh_filter_region_hierarchy_value_color">#0e0354</color>
+
+    <color name="nio_color_text_green">#11923C</color>
+    <color name="nio_color_text_darkgray">#3E3E3E</color>
+    <color name="nio_color_border_lightgray">#DFDFDF</color>
+
+    <color name="nio_color_dg_start">#05A73B</color>
+    <color name="nio_color_dg_start_m">#05A73E</color>
+    <color name="nio_color_dg_end">#03541E</color>
+    <color name="nio_color_blackgreen_end">#04812E</color>
+
 </resources>

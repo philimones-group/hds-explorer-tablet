@@ -88,17 +88,6 @@ public class LoginActivity extends Activity {
         txtCopyrightCompany = (TextView) findViewById(R.id.txtCopyrightAppName);
         txtCopyrightDevs = (TextView) findViewById(R.id.txtCopyrightDevs);
 
-        txtPassword.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
-                if (id == R.id.login || id == EditorInfo.IME_NULL) {
-                    userLogin();
-                    return true;
-                }
-                return false;
-            }
-        });
-
         Button btLogin = (Button) findViewById(R.id.login_button);
         btLogin.setOnClickListener(new OnClickListener() {
             @Override
@@ -130,7 +119,7 @@ public class LoginActivity extends Activity {
         this.progressDialog = new ProgressDialog(this);
 
         //Extra Settings
-        this.loginIconView.setOnLongClickListener(new View.OnLongClickListener() {
+        this.txtCopyrightAppName.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
                 Toast.makeText(LoginActivity.this, "Xtra settings mode activated! Shira Tensei Jutsu!!!", Toast.LENGTH_LONG);

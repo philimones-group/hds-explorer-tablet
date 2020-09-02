@@ -21,7 +21,7 @@
             android:layout_width="483dp"
             android:layout_height="77dp"
             android:layout_gravity="right"
-            android:src="@mipmap/nio_logo_clean_compact" />
+            android:src="@mipmap/nio_logo_clean" />
 
         <!-- welcome message -->
         <LinearLayout

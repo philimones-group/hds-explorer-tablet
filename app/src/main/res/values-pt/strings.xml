@@ -76,6 +76,10 @@
     <string name="server_sync_bt_households_lbl">Baixar Agregados</string>
     <string name="server_sync_bt_members_lbl">Baixar Membros</string>
 
+    <!-- SplashScreen -->
+    <string name="splashscreen_hds_explorer_name_1">Health and Demographics</string>
+    <string name="splashscreen_hds_explorer_name_2">Surveyllance Data Explorer</string>
+
     <!-- Strings related to login -->
     <string name="login_welcome_lbl">BEM-VINDO</string>
     <string name="login_signin_msg_lbl">Faça login para continuar</string>

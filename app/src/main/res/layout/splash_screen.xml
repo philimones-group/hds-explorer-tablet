@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@mipmap/nio_splashscreen_normal"
+    android:background="@mipmap/nui_splashscreen_normal"
     tools:context=".main.SplashScreenActivity">
 
     <LinearLayout
@@ -17,7 +17,7 @@
             android:layout_width="483dp"
             android:layout_height="77dp"
             android:layout_gravity="center"
-            android:src="@mipmap/nio_hds_logo_white" />
+            android:src="@mipmap/nui_hds_logo_white" />
 
         <TextView
             android:layout_width="wrap_content"

@@ -5,6 +5,6 @@
         android:left="5dp"
         android:right="5dp"
         android:top="5dp">
-        <bitmap android:src="@mipmap/nio_new_settings" android:gravity="center" android:alpha="0.5"/>
+        <bitmap android:src="@mipmap/nui_new_settings" android:gravity="center" android:alpha="0.5"/>
     </item>
 </layer-list>

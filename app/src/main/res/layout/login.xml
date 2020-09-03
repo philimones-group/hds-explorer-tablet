@@ -21,7 +21,7 @@
             android:layout_width="483dp"
             android:layout_height="77dp"
             android:layout_gravity="right"
-            android:src="@mipmap/nio_logo_clean" />
+            android:src="@mipmap/nui_logo_clean" />
 
         <!-- welcome message -->
         <LinearLayout
@@ -90,7 +90,7 @@
                     android:layout_marginTop="8dp"
                     android:paddingStart="20dp"
                     android:paddingEnd="20dp"
-                    android:background="@drawable/nio_txtbox_rone_wbevel"
+                    android:background="@drawable/nui_txtbox_rone_wbevel"
                     android:inputType="text"
                     android:maxLines="1"
                     android:singleLine="true" />
@@ -111,7 +111,7 @@
                     android:layout_marginTop="8dp"
                     android:paddingStart="20dp"
                     android:paddingEnd="20dp"
-                    android:background="@drawable/nio_txtbox_rone_wbevel"
+                    android:background="@drawable/nui_txtbox_rone_wbevel"
                     android:inputType="textPassword"
                     android:maxLines="1"
                     android:singleLine="true" />
@@ -134,7 +134,7 @@
                     android:text="@string/login_button_lbl"
                     android:textColor="@android:color/background_light"
                     android:textSize="18sp"
-                    android:background="@drawable/nio_btnd_rone_dgbevel"
+                    android:background="@drawable/nui_btnd_rone_dgbevel"
                     android:translationZ="10dp"
                     android:elevation="10sp"
                     />
@@ -148,7 +148,7 @@
                     android:text="@string/login_synchronize_lbl"
                     android:textSize="18sp"
                     android:textColor="@android:color/background_light"
-                    android:background="@drawable/nio_btnd_rone_black"
+                    android:background="@drawable/nui_btnd_rone_black"
                     />
 
                 <!-- progress -->
@@ -170,7 +170,7 @@
                     android:text="@string/login_settings_lbl"
                     android:textColor="@color/nio_color_text_darkgray"
                     android:background="@android:color/transparent"
-                    android:drawableLeft="@drawable/nio_btnd_stg"
+                    android:drawableLeft="@drawable/nui_btnd_stg"
                     />
 
             </LinearLayout>

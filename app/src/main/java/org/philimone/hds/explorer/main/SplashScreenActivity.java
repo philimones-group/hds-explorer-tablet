@@ -26,4 +26,41 @@ public class SplashScreenActivity extends Activity {
         }, 3000);
 
     }
+
+    void tests(){
+        /*
+
+        Database db = new Database(this);
+        db.open();
+
+        /*
+        List<CollectedData> list = Queries.getAllCollectedDataBy(db, null, null);
+
+        for (CollectedData cd : list){
+            //16
+            Log.d("colldata", cd.getId()+ ", fid:"+cd.getFormId()+", fur:"+cd.getFormUri()+", fxl:"+cd.getFormXmlPath()+", rid:"+cd.getRecordId()+", tbn:"+cd.getTableName()+", supervised: "+cd.isSupervised());
+            //ContentValues cv = new ContentValues();
+            //cv.put(DatabaseHelper.CollectedData.COLUMN_SUPERVISED, 0);
+            //db.update(CollectedData.class, cv, DatabaseHelper.CollectedData._ID+"=?", new String[]{ cd.getId()+"" });
+        }*/
+
+
+        //loggedUser = user;
+/*
+        java.util.List<ApplicationParam> list = Queries.getAllApplicationParamBy(db, null, null);
+        for (ApplicationParam f : list){
+            Log.d("data", ""+f.getName()+", bind->"+f.getValue());
+        }*/
+/*
+        //Region obj = Queries.getRegionBy(db, DatabaseHelper.Region.COLUMN_CODE+"=?", new String[]{"CHE"});
+        //Log.d("reg", ""+obj);
+        //java.util.List<Region> list2 = Queries.getAllRegionBy(db, null, null);
+        //for (Region f : list2){
+        //    Log.d("data", ""+f.getCode()+", bind->"+f.getName()+", "+f.getLevel());
+        //}
+
+        db.close();
+        */
+        //getStartTimestamp();
+    }
 }

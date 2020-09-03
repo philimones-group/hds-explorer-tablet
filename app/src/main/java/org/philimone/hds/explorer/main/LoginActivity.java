@@ -63,7 +63,6 @@ public class LoginActivity extends Activity {
     private TextView txtCopyrightAppName;
     private TextView txtCopyrightCompany;
     private TextView txtCopyrightDevs;
-    private View loginIconView;
     private View mProgressView;
     private View mLoginFormView;
     private ProgressDialog progressDialog;
@@ -81,7 +80,6 @@ public class LoginActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login);
         // Set up the login form.
-        loginIconView = (View) findViewById(R.id.imageView);
         txtUsername = (AutoCompleteTextView) findViewById(R.id.login_username_txt);
         txtPassword = (EditText) findViewById(R.id.login_password_txt);
         txtCopyrightAppName = (TextView) findViewById(R.id.txtCopyrightAppName);
@@ -133,40 +131,6 @@ public class LoginActivity extends Activity {
         updateView();
 
         initdb();
-/*
-
-        Database db = new Database(this);
-        db.open();
-
-        /*
-        List<CollectedData> list = Queries.getAllCollectedDataBy(db, null, null);
-
-        for (CollectedData cd : list){
-            //16
-            Log.d("colldata", cd.getId()+ ", fid:"+cd.getFormId()+", fur:"+cd.getFormUri()+", fxl:"+cd.getFormXmlPath()+", rid:"+cd.getRecordId()+", tbn:"+cd.getTableName()+", supervised: "+cd.isSupervised());
-            //ContentValues cv = new ContentValues();
-            //cv.put(DatabaseHelper.CollectedData.COLUMN_SUPERVISED, 0);
-            //db.update(CollectedData.class, cv, DatabaseHelper.CollectedData._ID+"=?", new String[]{ cd.getId()+"" });
-        }*/
-
-
-        //loggedUser = user;
-/*
-        java.util.List<ApplicationParam> list = Queries.getAllApplicationParamBy(db, null, null);
-        for (ApplicationParam f : list){
-            Log.d("data", ""+f.getName()+", bind->"+f.getValue());
-        }*/
-/*
-        //Region obj = Queries.getRegionBy(db, DatabaseHelper.Region.COLUMN_CODE+"=?", new String[]{"CHE"});
-        //Log.d("reg", ""+obj);
-        //java.util.List<Region> list2 = Queries.getAllRegionBy(db, null, null);
-        //for (Region f : list2){
-        //    Log.d("data", ""+f.getCode()+", bind->"+f.getName()+", "+f.getLevel());
-        //}
-
-        db.close();
-        */
-        //getStartTimestamp();
 
     }
 
@@ -213,7 +177,8 @@ public class LoginActivity extends Activity {
             focusView = txtPassword;
             cancel = true;
         }
-*/
+        */
+
         // Check for a valid email address.
         if (TextUtils.isEmpty(username)) {
             txtUsername.setError(getString(R.string.error_field_required));
@@ -292,28 +257,16 @@ public class LoginActivity extends Activity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
             int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
 
-            mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-            mLoginFormView.animate().setDuration(shortAnimTime).alpha(
-                    show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
-                @Override
+            mProgressView.setVisibility(show ? View.VISIBLE : View.INVISIBLE);
+            mProgressView.animate().setDuration(shortAnimTime).alpha(show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
                 public void onAnimationEnd(Animator animation) {
-                    mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-                }
-            });
-
-            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-            mProgressView.animate().setDuration(shortAnimTime).alpha(
-                    show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+                    mProgressView.setVisibility(show ? View.VISIBLE : View.INVISIBLE);
                 }
             });
         } else {
-            // The ViewPropertyAnimator APIs are not available, so simply show
-            // and hide the relevant UI components.
-            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-            mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
+
+            mProgressView.setVisibility(show ? View.VISIBLE : View.INVISIBLE);
+
         }
     }
 

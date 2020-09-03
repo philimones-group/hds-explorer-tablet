@@ -14,7 +14,7 @@
         android:orientation="vertical"
         android:layout_gravity="right"
         android:layout_marginStart="50dp"
-        android:layout_marginTop="158dp">
+        android:layout_marginTop="150dp">
 
         <!-- logo -->
         <ImageView
@@ -48,14 +48,6 @@
 
     </LinearLayout>
 
-    <ProgressBar
-        android:id="@+id/login_progress"
-        style="?android:attr/progressBarStyleLarge"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:visibility="gone" />
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -70,7 +62,7 @@
             android:id="@+id/login_form"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="70dp"
+            android:layout_marginTop="50dp"
             android:orientation="vertical">
 
             <!-- Text -->
@@ -159,12 +151,22 @@
                     android:background="@drawable/nio_btnd_rone_black"
                     />
 
+                <!-- progress -->
+                <ProgressBar
+                    android:id="@+id/login_progress"
+                    style="?android:attr/progressBarStyleLarge"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginBottom="15dp"
+                    android:visibility="invisible" />
+
                 <Button
                     android:id="@+id/settings_button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:layout_marginTop="80dp"
                     android:text="@string/login_settings_lbl"
                     android:textColor="@color/nio_color_text_darkgray"
                     android:background="@android:color/transparent"

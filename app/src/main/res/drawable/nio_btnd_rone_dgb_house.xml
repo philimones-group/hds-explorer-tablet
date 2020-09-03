@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android" >
+    <item>
+        <shape android:shape="rectangle" >
+            <corners android:radius="45dp" />
+            <gradient
+                android:angle="270"
+                android:gradientRadius="45"
+                android:centerX="35%"
+                android:centerY="50%"
+                android:startColor="@color/nio_color_dg_start"
+                android:endColor="@color/nio_color_dg_end"
+                android:type="linear"
+                />
+
+            <stroke android:width="0dp" android:color="#56C161" />
+        </shape>
+    </item>
+
+    <item
+        android:left="25dp"
+        android:top="5dp"
+        android:bottom="5dp">
+        <bitmap android:src="@mipmap/nio_house_icon" android:gravity="left" />
+    </item>
+
+</layer-list>

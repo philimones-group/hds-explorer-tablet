@@ -23,7 +23,7 @@
             android:layout_width="483dp"
             android:layout_height="77dp"
             android:layout_gravity="right"
-            android:src="@mipmap/nio_logo_clean" />
+            android:src="@mipmap/nui_logo_clean" />
 
         <!-- welcome message -->
         <!--
@@ -63,7 +63,7 @@
         android:text="@string/survey_households_btn_lbl"
         android:textSize="20dp"
         android:textColor="@android:color/background_light"
-        android:background="@drawable/nio_btnd_rone_dgb_lists"
+        android:background="@drawable/nui_btnd_rone_dgb_lists"
         />
 
     <Button
@@ -77,7 +77,7 @@
         android:text="@string/survey_members_btn_lbl"
         android:textSize="20dp"
         android:textColor="@android:color/background_light"
-        android:background="@drawable/nio_btnd_rone_dgb_member"
+        android:background="@drawable/nui_btnd_rone_dgb_member"
         />
 
     <Button
@@ -91,6 +91,6 @@
         android:text="@string/survey_tracking_lists_btn_lbl"
         android:textSize="20dp"
         android:textColor="@android:color/background_light"
-        android:background="@drawable/nio_btnd_rone_dgb_lists"
+        android:background="@drawable/nui_btnd_rone_dgb_lists"
         />
 </LinearLayout>

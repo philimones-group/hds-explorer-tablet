@@ -8,9 +8,9 @@
                 android:useLevel="true">
                 
                 <gradient
-                    android:startColor="@color/circleProgressCompleteStartGradient"
-                    android:endColor="@color/circleProgressCompleteEndGradient"
-                    android:type="sweep" />   
+                    android:startColor="@color/nui_color_circle_color_one"
+                    android:endColor="@color/nui_color_circle_color_two"
+                    android:type="linear" />
             </shape>
     </item>
 </layer-list>

@@ -12,14 +12,14 @@
         android:layout_gravity="left|center"
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
-        android:src="@mipmap/followup_list_item" />
+        android:src="@mipmap/nui_lists_normal_red_icon" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginTop="5dp"
-        android:layout_marginBottom="5dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
         android:layout_marginRight="0dp"
         android:layout_weight="1"
         android:orientation="vertical" >
@@ -33,9 +33,9 @@
             android:text="Large Text"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:singleLine="true"
-            android:textSize="22dp"
-            android:textStyle="bold"
-            android:textColor="#444" />
+            android:textSize="18sp"
+            android:textStyle=""
+            android:textColor="@color/black" />
 
         <TextView
             android:id="@+id/txtTrackListItemModule"
@@ -43,7 +43,8 @@
             android:layout_height="wrap_content"
             android:text="Medium Text"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textSize="18dp"
+            android:textSize="14sp"
+            android:singleLine="true"
             android:textColor="#444" />
 
         <TextView
@@ -52,22 +53,27 @@
             android:layout_height="wrap_content"
             android:text="Medium Text"
             android:textAppearance="?android:attr/textAppearanceSmall"
-            android:textSize="17dp"
+            android:textSize="13sp"
             android:textStyle="bold"
-            android:textColor="#444" />
+            android:singleLine="true"
+            android:textColor="@color/nui_color_text_red" />
         
     </LinearLayout>
 
     <org.philimone.hds.explorer.widget.CirclePercentageBar
         xmlns:androidx="http://schemas.android.com/apk/res/org.philimone.hds.explorer"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
         android:layout_marginLeft="3dp"
         android:layout_marginRight="5dp"
         android:layout_gravity="center"
         android:layout_weight="0"
         android:focusable="false"
         androidx:displayTextType="percentage"
+        androidx:displayTextSize="12"
+        androidx:displayTextColor="@color/nui_color_circle_color_one"
+        androidx:displayCircleColor="@color/nui_color_circle_color_two"
+        androidx:displayPercentageValue="50"
         android:id="@+id/pbarTrackListItem"/>
 
 </LinearLayout>

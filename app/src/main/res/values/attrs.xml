@@ -2,5 +2,9 @@
 <resources>
     <declare-styleable name="CirclePercentageBar">
         <attr name="displayTextType" format="string"/>
+        <attr name="displayTextSize" format="integer"/>
+        <attr name="displayTextColor" format="color"/>
+        <attr name="displayCircleColor" format="color"/>
+        <attr name="displayPercentageValue" format="integer"/>
     </declare-styleable>
 </resources>

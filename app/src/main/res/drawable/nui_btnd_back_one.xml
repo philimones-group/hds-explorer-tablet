@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android" >
+    <item>
+        <shape
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:shape="oval">
+            <size
+                android:width="96dp"
+                android:height="96dp" />
+
+            <gradient
+                android:endColor="#1c9844"
+                android:gradientRadius="45"
+                android:startColor="#1c9844"
+                android:type="linear" />
+
+            <stroke
+                android:width="0dp"
+                android:color="#56C161" />
+
+        </shape>
+    </item>
+
+    <item android:gravity="center">
+        <bitmap android:src="@mipmap/nui_back_arrow" android:gravity="left" />
+    </item>
+
+</layer-list>

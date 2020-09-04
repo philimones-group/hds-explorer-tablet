@@ -5,8 +5,8 @@
             <corners android:radius="30dp" />
             <gradient
                 android:angle="45"
-                android:startColor="@color/nio_color_dg_start"
-                android:endColor="@color/nio_color_dg_start_m"
+                android:startColor="@color/nui_color_dg_start"
+                android:endColor="@color/nui_color_dg_start_m"
                 android:type="linear"
                 />
 

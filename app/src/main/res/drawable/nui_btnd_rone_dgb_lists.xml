@@ -8,8 +8,8 @@
                 android:gradientRadius="45"
                 android:centerX="35%"
                 android:centerY="50%"
-                android:startColor="@color/nio_color_dg_start"
-                android:endColor="@color/nio_color_dg_end"
+                android:startColor="@color/nui_color_dg_start"
+                android:endColor="@color/nui_color_dg_end"
                 android:type="linear"
                 />
 
@@ -21,7 +21,7 @@
         android:left="25dp"
         android:top="5dp"
         android:bottom="5dp">
-        <bitmap android:src="@mipmap/nui_lists_icon" android:gravity="left" />
+        <bitmap android:src="@mipmap/nui_lists_white_icon" android:gravity="left" />
     </item>
 
 </layer-list>

@@ -34,14 +34,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/login_welcome_lbl"
-                android:textColor="@color/nio_color_text_darkgray"
+                android:textColor="@color/nui_color_text_darkgray"
                 android:textSize="30sp"/>
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/login_signin_msg_lbl"
-                android:textColor="@color/nio_color_text_green"
+                android:textColor="@color/nui_color_text_green"
                 android:textSize="20sp"/>
 
         </LinearLayout>
@@ -81,7 +81,7 @@
                     android:layout_marginLeft="20dp"
                     android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                     android:text="@string/login_username_lbl"
-                    android:textColor="@color/nio_color_text_green"/>
+                    android:textColor="@color/nui_color_text_green"/>
 
                 <AutoCompleteTextView
                     android:id="@+id/login_username_txt"
@@ -93,7 +93,7 @@
                     android:background="@drawable/nui_txtbox_rone_wbevel"
                     android:inputType="text"
                     android:maxLines="1"
-                    android:singleLine="true" />
+                    android:singleLine="true"/>
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -102,7 +102,7 @@
                     android:layout_marginLeft="20dp"
                     android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                     android:text="@string/login_password_lbl"
-                    android:textColor="@color/nio_color_text_green"/>
+                    android:textColor="@color/nui_color_text_green"/>
 
                 <EditText
                     android:id="@+id/login_password_txt"
@@ -114,7 +114,7 @@
                     android:background="@drawable/nui_txtbox_rone_wbevel"
                     android:inputType="textPassword"
                     android:maxLines="1"
-                    android:singleLine="true" />
+                    android:singleLine="true"/>
 
             </LinearLayout>
 
@@ -168,7 +168,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:text="@string/login_settings_lbl"
-                    android:textColor="@color/nio_color_text_darkgray"
+                    android:textColor="@color/nui_color_text_darkgray"
                     android:background="@android:color/transparent"
                     android:drawableLeft="@drawable/nui_btnd_stg"
                     />

@@ -1,5 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layer-list xmlns:android="http://schemas.android.com/apk/res/android" >
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- pressed -->
+    <item android:state_pressed="true" >
+        <shape android:shape="rectangle" >
+            <corners android:radius="30dp" />
+            <solid android:color="#4C4C4C" />
+        </shape>
+    </item>
+
+    <!-- normal -->
     <item>
         <shape android:shape="rectangle" >
             <corners android:radius="30dp" />
@@ -16,5 +25,4 @@
             <stroke android:width="0dp" android:color="#56C161" />
         </shape>
     </item>
-
-</layer-list>
+</selector>

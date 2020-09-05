@@ -1,5 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layer-list xmlns:android="http://schemas.android.com/apk/res/android" >
+<selector xmlns:android="http://schemas.android.com/apk/res/android" >
+    <!-- pressed -->
+    <item android:state_pressed="true" >
+        <shape android:shape="rectangle" >
+            <corners android:radius="30dp" />
+            <solid android:color="#4C4C4C" />
+        </shape>
+    </item>
+
+    <!-- normal -->
     <item android:top="2dp">
         <shape android:shape="rectangle" >
             <corners android:radius="30dp" />
@@ -9,11 +18,8 @@
                 android:endColor="@color/nui_color_dg_start_m"
                 android:type="linear"
                 />
-
-            <!-- <size android:width="270dp" android:height="60dp" /> -->
-
         </shape>
     </item>
 
-</layer-list>
+</selector>
 

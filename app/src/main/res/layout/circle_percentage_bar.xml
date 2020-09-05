@@ -41,7 +41,7 @@
             android:textSize="14sp"
             android:text="50%"
             android:textStyle="bold"
-            android:textColor="@color/black" />
+            android:textColor="@color/nui_color_text_darkgray" />
 
     </LinearLayout>
 

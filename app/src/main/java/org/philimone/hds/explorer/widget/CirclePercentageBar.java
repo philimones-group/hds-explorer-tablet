@@ -56,8 +56,8 @@ public class CirclePercentageBar extends LinearLayout {
         try {
             displayTextType = ta.getString(R.styleable.CirclePercentageBar_displayTextType);
             displayTextSize = ta.getInt(R.styleable.CirclePercentageBar_displayTextSize, 10);
-            displayTextColor = ta.getColor(R.styleable.CirclePercentageBar_displayTextColor, getResources().getColor(R.color.nui_color_circle_color_one, null));
-            displayCircleColor = ta.getColor(R.styleable.CirclePercentageBar_displayCircleColor, getResources().getColor(R.color.nui_color_circle_color_two, null));
+            //displayTextColor = ta.getColor(R.styleable.CirclePercentageBar_displayTextColor, getResources().getColor(R.color.nui_color_circle_color_one, null));
+            //displayCircleColor = ta.getColor(R.styleable.CirclePercentageBar_displayCircleColor, getResources().getColor(R.color.nui_color_circle_color_two, null));
             displayPercentageValue = ta.getInt(R.styleable.CirclePercentageBar_displayPercentageValue, 0);
 
             if (displayTextType!=null && displayTextType.equals("fraction")){

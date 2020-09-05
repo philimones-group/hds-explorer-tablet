@@ -4,88 +4,109 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="@color/white"
     tools:context="org.philimone.hds.explorer.main.TrackingListDetailsActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/m_details_header"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:background="@color/white"
+        android:translationZ="5dp"
+        android:elevation="2dp"   >
 
-        <ImageView
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:layout_gravity="left|top"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"
-            android:layout_marginTop="5dp"
-            android:src="@mipmap/followup_list_item" />
-
+        <!-- header -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:background="@color/white"
+            android:orientation="horizontal">
 
-            <TextView
-                android:id="@+id/txtTrackListTitle"
+            <!-- icon -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_gravity="left|top"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
+                    android:src="@mipmap/nui_lists_normal_red_icon" />
+
+            </LinearLayout>
+
+            <!-- header title -->
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="DSS-SURVEY"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:textColor="#ffccff"
-                android:textSize="25dp"
-                android:textStyle="bold" />
+                android:layout_marginStart="5dp"
+                android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/txtTrackListDetails"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="-4dp"
-                android:text="LIST DETAILS"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:textColor="#ffffff"
-                android:textSize="22dp"
-                android:textStyle="bold" />
+                <TextView
+                    android:id="@+id/txtTrackListTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="DSS-SURVEY"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textColor="@color/nui_color_text_red"
+                    android:textSize="22dp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/txtTrackListDetails"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="-4dp"
+                    android:text="LIST DETAILS"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textColor="@color/nui_color_text_red"
+                    android:textSize="20dp" />
+
+            </LinearLayout>
 
         </LinearLayout>
 
-
     </LinearLayout>
 
+    <!-- search -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginTop="10dp"
-        android:orientation="vertical">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/household_filter_code_lbl"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:visibility="gone"/>
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp"
+        android:orientation="vertical"
+        android:background="@drawable/nui_lgray_background">
 
         <EditText
             android:id="@+id/txtTrackListFilter"
             android:layout_width="match_parent"
             android:layout_height="@dimen/member_filter_textbox_size"
-            android:background="@drawable/textinputborder_blue"
+            android:layout_margin="10dp"
+            android:paddingStart="60dp"
+            android:paddingEnd="20dp"
+            android:background="@drawable/nui_txtbox_rone_wb_search"
             android:gravity="center_vertical"
             android:hint="@string/trackinglist_filter_code_hint_lbl"
             android:paddingLeft="10dp"
             android:textSize="@dimen/member_filter_textsize" />
     </LinearLayout>
 
-    <LinearLayout
+    <!-- lists -->
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginBottom="10dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginTop="5dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="20dp"
         android:layout_weight="1"
         android:orientation="vertical">
 
@@ -93,7 +114,7 @@
             android:id="@+id/viewListProgressBar"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@drawable/list_corner_border"
+            android:background="@drawable/nui_lists_rone_border"
             android:visibility="gone">
 
             <ProgressBar
@@ -105,12 +126,31 @@
 
         </RelativeLayout>
 
+
         <ExpandableListView
             android:id="@+id/elvTrackingLists"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@drawable/list_corner_border" />
+            android:layout_marginBottom="40dp"
+            />
 
-    </LinearLayout>
+        <!-- border of listview -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="40dp"
+            android:background="@drawable/nui_lists_rtwo_border">
+        </View>
+
+        <Button
+            android:id="@+id/btTrackListBack"
+            android:layout_width="96dp"
+            android:layout_height="96dp"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"
+            android:text=""
+            android:background="@drawable/nui_btnd_back_one"/>
+
+    </RelativeLayout>
 
 </LinearLayout>

@@ -3,23 +3,24 @@
     android:id="@+id/MainLinearLayout"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="2dp"
-    android:background="@drawable/sublist_header"
+    android:paddingTop="1dp"
+    android:paddingBottom="3dp"
+    android:background="#00C853"
     android:orientation="horizontal" >
 
     <ImageView
         android:layout_width="50dp"
         android:layout_height="60dp"
         android:layout_gravity="left|center"
-        android:layout_marginLeft="5dp"
+        android:layout_marginLeft="25dp"
         android:layout_marginRight="5dp"
-        android:src="@mipmap/list_members" />
+        android:src="@mipmap/nui_lists_members_white_icon" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginTop="5dp"
+        android:layout_marginTop="10dp"
         android:layout_marginBottom="5dp"
         android:layout_marginRight="0dp"
         android:layout_weight="1"
@@ -32,34 +33,35 @@
             android:layout_gravity="center|left"
             android:gravity="left|center_horizontal"
             android:text="Large Text"
-            android:textAppearance="?android:attr/textAppearanceLarge"
             android:singleLine="true"
-            android:textSize="24dp"
-            android:textStyle="bold"
-            android:textColor="#444" />
+            android:textSize="22dp"
+            android:textColor="@color/white" />
 
         <TextView
             android:id="@+id/txtTrackSubListExtras"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Medium Text"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textSize="18dp"
-            android:textColor="#444" />
+            android:textSize="16dp"
+            android:textColor="@color/white" />
 
         
     </LinearLayout>
 
     <org.philimone.hds.explorer.widget.CirclePercentageBar
         xmlns:androidx="http://schemas.android.com/apk/res/org.philimone.hds.explorer"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
         android:layout_marginLeft="3dp"
         android:layout_marginRight="5dp"
         android:layout_gravity="center"
         android:layout_weight="0"
         android:focusable="false"
         androidx:displayTextType="percentage"
+        androidx:displayTextSize="12"
+        androidx:displayTextColor="@color/nui_color_circle_color_one"
+        androidx:displayCircleColor="@color/nui_color_circle_color_two"
+        androidx:displayPercentageValue="50"
         android:id="@+id/pbarTrackListItem"/>
 
 </LinearLayout>

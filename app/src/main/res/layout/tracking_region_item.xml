@@ -13,7 +13,7 @@
         android:layout_gravity="left|center"
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
-        android:src="@mipmap/sub_region_1" />
+        android:src="@mipmap/nui_region_red_icon" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -21,6 +21,8 @@
         android:layout_weight="1"
         android:layout_gravity="center"
         android:layout_marginRight="0dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
         android:orientation="vertical" >
 
         <TextView
@@ -32,16 +34,16 @@
             android:text="Large Text"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:singleLine="true"
-            android:textSize="20dp"
-            android:textStyle="bold"
-            android:textColor="#444" />
+            android:textSize="18dp"
+            android:textStyle=""
+            android:textColor="@color/black" />
         
         <TextView
             android:id="@+id/txtMemberItemCode"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Medium Text"
-            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textSize="14sp"
             android:textColor="#444" />
 
         <TextView
@@ -49,9 +51,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Medium Text"
-            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textSize="13sp"
             android:textStyle="bold"
-            android:textColor="#444" />
+            android:textColor="@color/nui_color_text_red" />
         
     </LinearLayout>
 

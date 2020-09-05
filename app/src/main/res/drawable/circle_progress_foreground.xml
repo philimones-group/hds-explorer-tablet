@@ -4,7 +4,7 @@
             <shape
                 android:innerRadius="@dimen/circleProgressRadius"
                 android:shape="ring"
-                android:thickness="@dimen/circleProgressThickness"
+                android:thickness="3dp"
                 android:useLevel="true">
                 
                 <gradient

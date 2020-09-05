@@ -8,6 +8,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
 import android.widget.TextView;
@@ -49,6 +50,7 @@ public class TrackingListDetailsActivity extends Activity implements BarcodeScan
     private TextView txtTrackListDetails;
     private EditText txtTrackListFilter;
     private ExpandableListView elvTrackingLists;
+    private Button btTrackListBack;
 
     private TrackingExpandableListAdapter adapter;
     private TrackingList trackingList;
@@ -97,6 +99,7 @@ public class TrackingListDetailsActivity extends Activity implements BarcodeScan
         this.txtTrackListDetails = (TextView) findViewById(R.id.txtTrackListDetails);
         this.txtTrackListFilter = (EditText) findViewById(R.id.txtTrackListFilter);
         this.elvTrackingLists = (ExpandableListView) findViewById(R.id.elvTrackingLists);
+        this.btTrackListBack = (Button) findViewById(R.id.btTrackListBack);
         this.viewLoadingList = findViewById(R.id.viewListProgressBar);
 
         this.elvTrackingLists.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
@@ -125,6 +128,13 @@ public class TrackingListDetailsActivity extends Activity implements BarcodeScan
             public boolean onLongClick(View v) {
                 onTrackListFilterCodeClicked();
                 return true;
+            }
+        });
+
+        this.btTrackListBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                TrackingListDetailsActivity.this.onBackPressed();
             }
         });
 

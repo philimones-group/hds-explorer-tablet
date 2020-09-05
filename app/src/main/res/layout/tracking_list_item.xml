@@ -31,7 +31,6 @@
             android:layout_gravity="center|left"
             android:gravity="left|center_horizontal"
             android:text="Large Text"
-            android:textAppearance="?android:attr/textAppearanceLarge"
             android:singleLine="true"
             android:textSize="18sp"
             android:textStyle=""
@@ -42,7 +41,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Medium Text"
-            android:textAppearance="?android:attr/textAppearanceMedium"
             android:textSize="14sp"
             android:singleLine="true"
             android:textColor="#444" />
@@ -52,7 +50,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Medium Text"
-            android:textAppearance="?android:attr/textAppearanceSmall"
             android:textSize="13sp"
             android:textStyle="bold"
             android:singleLine="true"
@@ -71,7 +68,7 @@
         android:focusable="false"
         androidx:displayTextType="percentage"
         androidx:displayTextSize="12"
-        androidx:displayTextColor="@color/nui_color_circle_color_one"
+        androidx:displayTextColor="#81D39C"
         androidx:displayCircleColor="@color/nui_color_circle_color_two"
         androidx:displayPercentageValue="50"
         android:id="@+id/pbarTrackListItem"/>

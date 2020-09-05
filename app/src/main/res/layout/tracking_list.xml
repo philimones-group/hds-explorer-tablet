@@ -16,10 +16,12 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="15dp"
-            android:paddingBottom="15dp"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:orientation="horizontal"
             android:background="@color/white"
-            android:orientation="horizontal">
+            android:translationZ="5dp"
+            android:elevation="2dp">
 
             <!-- icon -->
             <LinearLayout
@@ -47,9 +49,9 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:layout_marginTop="8dp"
                     android:text="@string/trackinglist_title_lbl"
-                    android:textColor="#1c9844"
+                    android:textColor="@color/nui_color_text_red"
                     android:textSize="22dp"
                     android:textStyle="bold"/>
 
@@ -87,6 +89,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
             android:orientation="vertical"
             android:background="@drawable/nui_lgray_background">
 

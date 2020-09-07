@@ -23,10 +23,12 @@
     <dimen name="mf_land_margin_top">10dp</dimen>
     <dimen name="mf_land_margin_right">10dp</dimen>
 
-    <dimen name="member_filter_textsize">16sp</dimen>
+    <dimen name="member_filter_textsize">14sp</dimen>
+    <dimen name="member_filter_button_textsize">14sp</dimen>
+    <dimen name="member_filter_textlabel_margin_left">20dp</dimen>
     <dimen name="member_filter_titlesize">24dp</dimen>
     <dimen name="member_filter_textbox_size">50dp</dimen>
-    <dimen name="member_filter_checkbox_textsize">22dp</dimen>
+    <dimen name="member_filter_checkbox_textsize">14sp</dimen>
 
     <dimen name="member_filter_xdata_margin_left">40dp</dimen>
     <dimen name="member_filter_land_xdata_margin">10dp</dimen>

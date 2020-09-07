@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="horizontal"
-    android:background="@mipmap/form_back2_port_a075"
+    android:background="@color/white"
     tools:context="org.philimone.hds.explorer.main.SurveyActivity">
 
     <fragment android:name="org.philimone.hds.explorer.fragment.MemberFilterFragment"

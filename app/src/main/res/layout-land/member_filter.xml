@@ -5,54 +5,56 @@
     tools:context="org.philimone.hds.explorer.fragment.MemberFilterFragment">
 
     <LinearLayout
-        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="1">
+        android:layout_weight="1"
+        android:orientation="vertical">
 
         <!-- main layout -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:layout_marginLeft="@dimen/mf_land_margin_left"
-            android:layout_marginRight="@dimen/mf_land_margin_right"
-            android:layout_marginTop="@dimen/mf_land_margin_top"
+            android:layout_marginLeft="@dimen/mf_margin_left"
+            android:layout_marginRight="@dimen/mf_margin_right"
+            android:layout_marginTop="@dimen/mf_margin_top"
             android:gravity="top"
-            android:orientation="vertical">
+            android:orientation="vertical" >
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="20dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginBottom="40dp"
                 android:text="@string/member_filter_search_lbl"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:textSize="20dp"
+                android:textSize="@dimen/member_filter_titlesize"
                 android:textStyle="bold"
+                android:textColor="@color/nui_color_text_red"
                 android:visibility="gone"/>
 
             <!-- Name -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginBottom="5dp"
+                android:layout_marginBottom="20dp"
                 android:orientation="vertical">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/member_filter_textlabel_margin_left"
                     android:text="@string/member_filter_name_lbl"
-                    android:textAppearance="?android:attr/textAppearanceLarge" />
+                    android:textSize="@dimen/member_filter_textsize"
+                    android:textColor="@color/nui_color_text_red"
+                    android:textStyle="bold"/>
 
                 <EditText
                     android:id="@+id/txtMemFilterName"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/member_filter_textbox_size"
-                    android:background="@drawable/textinputborder"
                     android:gravity="center_vertical"
+                    android:paddingLeft="20dp"
+                    android:background="@drawable/nui_txtbox_rone_wbevel"
                     android:hint="@string/member_filter_name_hint"
-                    android:paddingLeft="10dp"
                     android:textSize="@dimen/member_filter_textsize" />
             </LinearLayout>
 
@@ -60,27 +62,104 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginBottom="5dp"
+                android:layout_marginBottom="20dp"
                 android:orientation="vertical">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/member_filter_textlabel_margin_left"
                     android:text="@string/member_filter_code_lbl"
-                    android:textAppearance="?android:attr/textAppearanceLarge" />
+                    android:textSize="@dimen/member_filter_textsize"
+                    android:textColor="@color/nui_color_text_red"
+                    android:textStyle="bold" />
 
                 <EditText
                     android:id="@+id/txtMemFilterCode"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/member_filter_textbox_size"
-                    android:background="@drawable/textinputborder"
+                    android:paddingLeft="20dp"
                     android:gravity="center_vertical"
+                    android:background="@drawable/nui_txtbox_rone_wbevel"
                     android:hint="@string/member_filter_code_hint"
-                    android:paddingLeft="10dp"
                     android:textSize="@dimen/member_filter_textsize" />
             </LinearLayout>
 
             <!-- Current House/Neigh -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="20dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/member_filter_textlabel_margin_left"
+                    android:text="@string/member_filter_curr_housename_lbl"
+                    android:textSize="@dimen/member_filter_textsize"
+                    android:textColor="@color/nui_color_text_red"
+                    android:textStyle="bold" />
+
+                <EditText
+                    android:id="@+id/txtMemFilterCurrHousecode"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/member_filter_textbox_size"
+                    android:paddingLeft="20dp"
+                    android:gravity="center_vertical"
+                    android:background="@drawable/nui_txtbox_rone_wbevel"
+                    android:hint="@string/member_filter_curr_housename_hint"
+                    android:textSize="@dimen/member_filter_textsize" />
+            </LinearLayout>
+
+            <!-- Gender Info -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:layout_marginBottom="0dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/member_filter_textlabel_margin_left"
+                    android:text="@string/member_filter_gender_lbl"
+                    android:textSize="@dimen/member_filter_textsize"
+                    android:textColor="@color/nui_color_text_red"
+                    android:textStyle="bold" />
+
+                <LinearLayout
+                    android:id="@+id/layout_mf_gender"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <CheckBox
+                        android:id="@+id/chkMemFilterGFemale"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:text="@string/member_filter_gender_female_lbl"
+                        android:textSize="@dimen/member_filter_checkbox_textsize"
+                        android:textColor="@color/nui_color_text_darkgray"/>
+
+                    <CheckBox
+                        android:id="@+id/chkMemFilterGMale"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:text="@string/member_filter_gender_male_lbl"
+                        android:layout_marginLeft="20dp"
+                        android:textSize="@dimen/member_filter_checkbox_textsize"
+                        android:textColor="@color/nui_color_text_darkgray"/>
+
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <!-- Age Info -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -90,74 +169,11 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/member_filter_curr_housename_lbl"
-                    android:textAppearance="?android:attr/textAppearanceLarge" />
-
-                <EditText
-                    android:id="@+id/txtMemFilterCurrHousecode"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/member_filter_textbox_size"
-                    android:background="@drawable/textinputborder"
-                    android:gravity="center_vertical"
-                    android:hint="@string/member_filter_curr_housename_hint"
-                    android:paddingLeft="10dp"
-                    android:textSize="@dimen/member_filter_textsize" />
-            </LinearLayout>
-
-            <!-- Gender Info -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/member_filter_gender_lbl"
-                    android:textAppearance="?android:attr/textAppearanceLarge" />
-
-                <LinearLayout
-                    android:id="@+id/layout_mf_gender"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:orientation="horizontal">
-
-                    <CheckBox
-                        android:id="@+id/chkMemFilterGFemale"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginRight="50dp"
-                        android:text="@string/member_filter_gender_female_lbl"
-                        android:textSize="@dimen/member_filter_checkbox_textsize"/>
-
-                    <CheckBox
-                        android:id="@+id/chkMemFilterGMale"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginLeft="50dp"
-                        android:text="@string/member_filter_gender_male_lbl"
-                        android:textSize="@dimen/member_filter_checkbox_textsize" />
-
-                </LinearLayout>
-
-            </LinearLayout>
-
-            <!-- Age details -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginBottom="20dp"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/member_filter_textlabel_margin_left"
                     android:text="@string/member_filter_age_details_lbl"
-                    android:textAppearance="?android:attr/textAppearanceLarge" />
+                    android:textSize="@dimen/member_filter_textsize"
+                    android:textColor="@color/nui_color_text_red"
+                    android:textStyle="bold" />
 
 
                 <LinearLayout
@@ -165,7 +181,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:gravity="center"
-                    android:background="@drawable/corner_border"
+                    android:background="@drawable/nui_lists_rone_border"
                     android:orientation="horizontal">
 
                     <TextView
@@ -173,11 +189,12 @@
                         android:layout_height="match_parent"
                         android:gravity="center"
                         android:text="@string/member_filter_age_min_lbl"
-                        android:textAppearance="?android:attr/textAppearanceLarge" />
+                        android:textSize="@dimen/member_filter_textsize"
+                        android:textColor="@color/nui_color_text_darkgray"/>
 
                     <org.philimone.hds.explorer.widget.NumberPicker
                         android:layout_width="wrap_content"
-                        android:layout_height="110dp"
+                        android:layout_height="130dp"
                         min_value="0"
                         max_value="140"
                         default_value="0"
@@ -186,14 +203,14 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:layout_marginLeft="60dp"
                         android:gravity="center"
                         android:text="@string/member_filter_age_max_lbl"
-                        android:textAppearance="?android:attr/textAppearanceLarge" />
+                        android:textSize="@dimen/member_filter_textsize"
+                        android:textColor="@color/nui_color_text_darkgray" />
 
                     <org.philimone.hds.explorer.widget.NumberPicker
                         android:layout_width="wrap_content"
-                        android:layout_height="110dp"
+                        android:layout_height="130dp"
                         min_value="0"
                         max_value="140"
                         default_value="120"
@@ -203,94 +220,103 @@
 
             </LinearLayout>
 
-            <!-- Extra data details -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
+        </LinearLayout>
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/member_filter_current_status_lbl"
-                    android:textAppearance="?android:attr/textAppearanceLarge" />
+        <!-- Current Status Details -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="10dp"
+            android:orientation="vertical">
 
-                <LinearLayout
-                    android:id="@+id/layout_mf_xdata"
-                    android:layout_width="match_parent"
-                    android:layout_height="100dp"
-                    android:gravity="center"
-                    android:background="@drawable/corner_border"
-                    android:orientation="horizontal">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/member_filter_textlabel_margin_left"
+                android:text="@string/member_filter_current_status_lbl"
+                android:textSize="@dimen/member_filter_textsize"
+                android:textColor="@color/nui_color_text_red"
+                android:textStyle="bold" />
 
-                    <CheckBox
-                        android:id="@+id/chkMemFilter1"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/member_filter_land_xdata_margin"
-                        android:text="@string/member_filter_death_status_lbl"
-                        android:textSize="@dimen/member_filter_checkbox_textsize" />
+        </LinearLayout>
 
-                    <CheckBox
-                        android:id="@+id/chkMemFilter2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/member_filter_land_xdata_margin"
-                        android:layout_marginLeft="40dp"
-                        android:text="@string/member_filter_ext_status_lbl"
-                        android:textSize="@dimen/member_filter_checkbox_textsize" />
+        <!-- current status-->
+        <LinearLayout
+            android:id="@+id/layout_mf_xdata"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:background="@drawable/nui_lists_rone_border"
+            android:orientation="horizontal"
+            android:gravity="center">
 
-                    <CheckBox
-                        android:id="@+id/chkMemFilter3"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/member_filter_land_xdata_margin"
-                        android:layout_marginLeft="40dp"
-                        android:text="@string/member_filter_na_status_lbl"
-                        android:textSize="@dimen/member_filter_checkbox_textsize" />
+            <CheckBox
+                android:id="@+id/chkMemFilter1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:layout_marginBottom="30dp"
+                android:text="@string/member_filter_death_status_lbl"
+                android:textSize="@dimen/member_filter_checkbox_textsize"
+                android:textColor="@color/nui_color_text_darkgray"/>
 
-                </LinearLayout>
+            <CheckBox
+                android:id="@+id/chkMemFilter2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:layout_marginBottom="30dp"
+                android:layout_marginLeft="40dp"
+                android:layout_marginRight="40dp"
+                android:text="@string/member_filter_ext_status_lbl"
+                android:textSize="@dimen/member_filter_checkbox_textsize"
+                android:textColor="@color/nui_color_text_darkgray"/>
 
-            </LinearLayout>
+            <CheckBox
+                android:id="@+id/chkMemFilter3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:layout_marginBottom="30dp"
+                android:text="@string/member_filter_na_status_lbl"
+                android:textSize="@dimen/member_filter_checkbox_textsize"
+                android:textColor="@color/nui_color_text_darkgray"/>
 
         </LinearLayout>
 
         <!-- Buttons -->
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="60dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/fagm_margin_top"
             android:layout_marginBottom="@dimen/fagm_margin_bottom"
-            android:layout_marginLeft="@dimen/fagm_margin_left"
-            android:layout_marginRight="@dimen/fagm_margin_right"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
             android:orientation="horizontal">
 
             <Button
                 android:id="@+id/btMemFilterClear"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="50dp"
                 android:layout_weight="1"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="15dp"
-                android:textSize="@dimen/member_filter_buttons"
+                android:textSize="@dimen/member_filter_button_textsize"
                 android:text="@string/member_filter_clear_lbl"
                 android:layout_gravity="left"
-                android:background="@drawable/button_normal"/>
+                android:background="@drawable/nui_btnd_rone_gflat"/>
 
             <Button
                 android:id="@+id/btMemFilterSearch"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="50dp"
                 android:layout_weight="1"
-                android:layout_marginLeft="15dp"
-                android:layout_marginRight="10dp"
+                android:layout_marginLeft="10dp"
                 android:layout_gravity="right"
-                android:textSize="@dimen/member_filter_buttons"
+                android:textSize="@dimen/member_filter_button_textsize"
                 android:text="@string/member_filter_search_btn_lbl"
-                android:background="@drawable/button_normal"/>
+                android:background="@drawable/nui_btnd_rone_gflat"/>
         </LinearLayout>
 
     </LinearLayout>
-
-
 
 </ScrollView>

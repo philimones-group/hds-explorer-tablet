@@ -169,7 +169,7 @@ public class MemberArrayAdapter  extends ArrayAdapter<Member> {
 
         if (supervisedMembers != null && position < supervisedMembers.size()){
             if (supervisedMembers.get(position)==true){
-                txtName.setTypeface(null, Typeface.BOLD);
+                //txtName.setTypeface(null, Typeface.BOLD);
                 iconView.setImageResource(R.mipmap.nui_member_red_filled_chk_icon);
             }
         }
@@ -184,12 +184,12 @@ public class MemberArrayAdapter  extends ArrayAdapter<Member> {
 
         if (!ignoreHeadOfHousehold){
             if (mb.isHouseholdHead()){
-                txtName.setTypeface(null, Typeface.BOLD);
+                //txtName.setTypeface(null, Typeface.BOLD);
                 iconView.setImageResource(R.mipmap.nui_member_red_filled_icon);
             }
 
             if (mb.isSecHouseholdHead()){
-                txtName.setTypeface(null, Typeface.BOLD);
+                //txtName.setTypeface(null, Typeface.BOLD);
                 iconView.setImageResource(R.mipmap.nui_member_red_filled_two_icon);
             }
         }

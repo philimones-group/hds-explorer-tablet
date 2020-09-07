@@ -41,9 +41,6 @@
 
         </activity>
         <activity android:name=".main.sync.SyncPanelActivity" />
-        <activity
-            android:name=".main.ModuleSelectorActivity"
-            android:theme="@style/Theme.AppCompat.Transparent.NoActionBar" />
         <activity android:name=".main.SurveyActivity" />
         <activity android:name=".main.SurveyHouseholdsActivity" />
         <activity android:name=".main.SurveyMembersActivity" />

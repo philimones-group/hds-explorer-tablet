@@ -835,7 +835,7 @@ public class MemberListFragment extends Fragment {
         MemberArrayAdapter adapter = new MemberArrayAdapter(this.getActivity(), members, extras);
         adapter.setShowHouseholdAndCode(true);
         adapter.setIgnoreHeadOfHousehold(true);
-        adapter.setMemberIcon(MemberArrayAdapter.MemberIcon.NORMAL_GREEN_ICON);
+        adapter.setMemberIcon(MemberArrayAdapter.MemberIcon.NORMAL_HEAD_ICON);
         this.lvMembersList.setAdapter(adapter);
 
 

@@ -16,8 +16,8 @@
     <color name="circleProgressIncompleteStartGradient">@color/light_gray</color>
     <color name="circleProgressIncompleteEndGradient">@color/light_gray</color>
 
-    <color name="hh_filter_region_hierarchy_name_color">#000F0F</color>
-    <color name="hh_filter_region_hierarchy_value_color">#0e0354</color>
+    <color name="hh_filter_region_hierarchy_name_color">#FFFFFF</color>
+    <color name="hh_filter_region_hierarchy_value_color">#DBFF99</color>
 
     <color name="nui_color_text_green">#11923C</color>
     <color name="nui_color_text_red">#1c9844</color>
@@ -32,5 +32,12 @@
 
     <color name="nui_color_circle_color_one">#8EC4A0</color>
     <color name="nui_color_circle_color_two">#78AB8A</color>
+
+    <color name="nui_lists_selected_item_color_1">#BFDC92</color>
+    <color name="nui_lists_selected_item_color_2">#636363</color> <!-- #818181/#5A5843 -->
+    <color name="nui_lists_selected_item_textcolor">#FFF</color>
+
+    <color name="nui_household_item_textcolor">#444</color>
+    <color name="nui_member_item_textcolor">#444</color>
 
 </resources>

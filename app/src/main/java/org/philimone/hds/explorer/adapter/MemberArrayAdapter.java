@@ -32,7 +32,7 @@ public class MemberArrayAdapter  extends ArrayAdapter<Member> {
     private boolean showHouseholdAndCode = false;
     private MemberIcon memberIcon;
 
-    public enum MemberIcon {  NORMAL_BLUE_ICON, NORMAL_GREEN_ICON, NORMAL_GREEN_2_ICON, NORMAL_BLUE_NEW_ICON, NORMAL_GREEN_NEW_ICON  }
+    public enum MemberIcon {NORMAL_MEMBER_ICON, NORMAL_HEAD_ICON, NORMAL_SECHEAD_ICON, NORMAL_MEMBER_NEW_ICON, NORMAL_HEAD_NEW_ICON}
 
     /**
      * Adapter of a List View Item for members (name and perm-id are displayed)
@@ -170,7 +170,7 @@ public class MemberArrayAdapter  extends ArrayAdapter<Member> {
         if (supervisedMembers != null && position < supervisedMembers.size()){
             if (supervisedMembers.get(position)==true){
                 txtName.setTypeface(null, Typeface.BOLD);
-                iconView.setImageResource(R.mipmap.member_green_chk);
+                iconView.setImageResource(R.mipmap.nui_member_red_filled_chk_icon);
             }
         }
 
@@ -185,40 +185,41 @@ public class MemberArrayAdapter  extends ArrayAdapter<Member> {
         if (!ignoreHeadOfHousehold){
             if (mb.isHouseholdHead()){
                 txtName.setTypeface(null, Typeface.BOLD);
-                iconView.setImageResource(R.mipmap.member_green);
+                iconView.setImageResource(R.mipmap.nui_member_red_filled_icon);
             }
 
             if (mb.isSecHouseholdHead()){
                 txtName.setTypeface(null, Typeface.BOLD);
-                iconView.setImageResource(R.mipmap.member_green_2);
+                iconView.setImageResource(R.mipmap.nui_member_red_filled_two_icon);
             }
         }
 
         if (mb.isRecentlyCreated()){
-            iconView.setImageResource(R.mipmap.member_new);
+            iconView.setImageResource(R.mipmap.nui_member_red_new_icon);
 
             if (mb.isHouseholdHead() || mb.isSecHouseholdHead()){
-                iconView.setImageResource(R.mipmap.member_green_new);
+                iconView.setImageResource(R.mipmap.nui_member_red_filled_new_icon);
             }
         }
 
         if (memberIcon != null){
             switch (memberIcon){
-                case NORMAL_BLUE_ICON:iconView.setImageResource(R.mipmap.member); break;
-                case NORMAL_GREEN_ICON:iconView.setImageResource(R.mipmap.member_green); break;
-                case NORMAL_GREEN_2_ICON:iconView.setImageResource(R.mipmap.member_green_2); break;
-                case NORMAL_BLUE_NEW_ICON:iconView.setImageResource(R.mipmap.member_new); break;
-                case NORMAL_GREEN_NEW_ICON:iconView.setImageResource(R.mipmap.member_green_new); break;
+                case NORMAL_MEMBER_ICON:iconView.setImageResource(R.mipmap.nui_member_red_icon); break;
+                case NORMAL_HEAD_ICON:iconView.setImageResource(R.mipmap.nui_member_red_filled_icon); break;
+                case NORMAL_SECHEAD_ICON:iconView.setImageResource(R.mipmap.nui_member_red_filled_two_icon); break;
+                case NORMAL_MEMBER_NEW_ICON:iconView.setImageResource(R.mipmap.nui_member_red_new_icon); break;
+                case NORMAL_HEAD_NEW_ICON:iconView.setImageResource(R.mipmap.nui_member_red_filled_new_icon); break;
             }
         }
 
         if (selectedIndex == position){
-            int colorB = Color.parseColor("#0073C6");
+            int colorA = mContext.getColor(R.color.nui_lists_selected_item_textcolor);
+            int colorB = mContext.getColor(R.color.nui_lists_selected_item_color_2);
 
             rowView.setBackgroundColor(colorB);
-            txtName.setTextColor(Color.WHITE);
-            txtCode.setTextColor(Color.WHITE);
-            if (txtExtra!=null) txtExtra.setTextColor(Color.WHITE);
+            txtName.setTextColor(colorA);
+            txtCode.setTextColor(colorA);
+            if (txtExtra!=null) txtExtra.setTextColor(colorA);
         }
 
         return rowView;

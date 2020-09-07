@@ -1,21 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/MainLinearLayout"
-    android:layout_width="fill_parent"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal" >
 
     <ImageView
         android:id="@+id/iconView"
-        android:layout_width="wrap_content"
-        android:layout_height="fill_parent"
+        android:layout_width="@dimen/household_item_icon_width"
+        android:layout_height="@dimen/household_item_icon_height"
         android:layout_marginLeft="3dp"
         android:layout_marginRight="8dp"
-        android:src="@mipmap/household" />
+        android:layout_gravity="center"
+        android:src="@mipmap/nui_household_red_icon" />
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical" >
     
         <TextView
@@ -25,8 +26,7 @@
             android:layout_gravity="center|left"
             android:gravity="left"
             android:text="Large Text"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textColor="#444"
+            android:textColor="@color/nui_household_item_textcolor"
             android:textSize="@dimen/household_item_text_1_size" />
         
         <TextView
@@ -34,8 +34,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Medium Text"
-            android:textColor="#444"
-            android:textAppearance="?android:attr/textAppearanceSmall" />
+            android:textColor="@color/nui_household_item_textcolor"
+            android:textSize="@dimen/household_item_text_2_size" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -43,12 +43,13 @@
             android:orientation="horizontal">
 
             <TextView
+                android:id="@+id/txtHeadLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/household_filter_head_label"
-                android:textColor="#444"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                android:textStyle="italic|bold"/>
+                android:textColor="@color/nui_household_item_textcolor"
+                android:textSize="@dimen/household_item_text_3_size"
+                android:textStyle="bold"/>
 
             <TextView
                 android:id="@+id/txtHead"
@@ -56,9 +57,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
                 android:text="Medium Text"
-                android:textColor="#444"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                android:textStyle="italic|bold"/>
+                android:textColor="@color/nui_household_item_textcolor"
+                android:textSize="@dimen/household_item_text_3_size"
+                android:textStyle="bold"/>
 
         </LinearLayout>
 

@@ -24,7 +24,7 @@
             android:id="@+id/lvGpsSearchedList"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@drawable/list_corner_border"
+            android:background="@drawable/nui_lists_rone_border"
             />
 
     </LinearLayout>
@@ -43,26 +43,32 @@
         <Button
             android:id="@+id/btGpsListShowMap"
             android:layout_width="match_parent"
-            android:layout_height="70dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
             android:textSize="25dp"
             android:text="@string/member_list_bt_show_gps_housemembers_lbl"
-            android:background="@drawable/button_normal"/>
+            android:background="@drawable/nui_btnd_rone_gflat"
+            android:textColor="@color/white"/>
 
         <Button
             android:id="@+id/btGpsOrigListShowMap"
             android:layout_width="match_parent"
-            android:layout_height="70dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
             android:textSize="25dp"
             android:text="@string/member_list_bt_show_houses_lbl"
-            android:background="@drawable/button_normal"/>
+            android:background="@drawable/nui_btnd_rone_gflat"
+            android:textColor="@color/white"/>
 
         <Button
             android:id="@+id/btGpsListBack"
             android:layout_width="match_parent"
-            android:layout_height="70dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
             android:textSize="25dp"
             android:text="@string/gps_searched_list_back_lbl"
-            android:background="@drawable/button_normal"/>
+            android:background="@drawable/nui_btnd_rone_gflat"
+            android:textColor="@color/white"/>
     </LinearLayout>
 
 </LinearLayout>

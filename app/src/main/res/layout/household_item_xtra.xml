@@ -8,12 +8,12 @@
 
     <ImageView
         android:id="@+id/iconView"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:layout_gravity="left|center"
+        android:layout_width="@dimen/household_item_icon_width"
+        android:layout_height="@dimen/household_item_icon_height"
+        android:layout_gravity="center"
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
-        android:src="@mipmap/household" />
+        android:src="@mipmap/nui_household_red_icon" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -27,8 +27,7 @@
             android:layout_gravity="center|left"
             android:gravity="left"
             android:text="Large Text"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textColor="#444"
+            android:textColor="@color/nui_household_item_textcolor"
             android:textStyle="bold"
             android:textSize="@dimen/household_item_text_1_size" />
         
@@ -37,16 +36,16 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Medium Text"
-            android:textColor="#444"
-            android:textAppearance="?android:attr/textAppearanceSmall" />
+            android:textColor="@color/nui_household_item_textcolor"
+            android:textSize="@dimen/household_item_text_2_size" />
 
         <TextView
             android:id="@+id/txtExtras"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Medium Text"
-            android:textColor="#444"
-            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textColor="@color/nui_household_item_textcolor"
+            android:textSize="@dimen/household_item_text_3_size"
             android:textStyle="bold"/>
         
     </LinearLayout>

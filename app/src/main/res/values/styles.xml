@@ -5,9 +5,12 @@
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item><item name="android:dialogTheme">@style/CustomDialog</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:dialogTheme">@style/CustomDialog</item>
         <item name="android:fontFamily">@font/gordita_regular</item>
         <item name="android:textAllCaps">false</item>
+        <item name="android:textColor">@color/nui_button_textcolor</item>
+
     </style>
 
     <style name="CustomDialog" parent="@style/Theme.AppCompat.Light.Dialog">

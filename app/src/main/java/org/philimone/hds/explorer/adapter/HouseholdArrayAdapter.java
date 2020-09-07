@@ -84,7 +84,7 @@ public class HouseholdArrayAdapter extends ArrayAdapter<Household> {
      * Adapter of a List View Item for households (name, code, extra text view and a large sized icon are displayed)
      * @param context
      * @param objects
-     * @param checks
+     * @param extras
      */
     public HouseholdArrayAdapter(Context context, List<Household> objects, ArrayList<String> extras){
         super(context, R.layout.household_item_xtra, objects);
@@ -123,6 +123,7 @@ public class HouseholdArrayAdapter extends ArrayAdapter<Household> {
 
         ImageView iconView = (ImageView) rowView.findViewById(R.id.iconView);
         TextView txtName = (TextView) rowView.findViewById(R.id.txtHousename);
+        TextView txtHeadLabel = (TextView) rowView.findViewById(R.id.txtHeadLabel);
         TextView txtCode = (TextView) rowView.findViewById(R.id.txtHouseCode);
         TextView txtHead = (TextView) rowView.findViewById(R.id.txtHead);
         TextView txtExtra = (TextView) rowView.findViewById(R.id.txtExtras);
@@ -157,11 +158,15 @@ public class HouseholdArrayAdapter extends ArrayAdapter<Household> {
         }
 
         if (selectedIndex == position){
-            int colorB = Color.parseColor("#0073C6");
+            int colorA = mContext.getColor(R.color.nui_lists_selected_item_textcolor);
+            int colorB = mContext.getColor(R.color.nui_lists_selected_item_color_2);
 
             rowView.setBackgroundColor(colorB);
-            txtName.setTextColor(Color.WHITE);
-            txtCode.setTextColor(Color.WHITE);
+            txtName.setTextColor(colorA);
+            txtCode.setTextColor(colorA);
+            if (txtHeadLabel!=null) txtHeadLabel.setTextColor(colorA);
+            if (txtHead!=null) txtHead.setTextColor(colorA);
+            if (txtExtra!=null) txtExtra.setTextColor(colorA);
         }
 
         return rowView;

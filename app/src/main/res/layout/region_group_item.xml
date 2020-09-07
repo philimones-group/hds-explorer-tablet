@@ -4,7 +4,6 @@
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="2dp"
-    android:background="@drawable/sublist_header"
     android:layoutDirection="ltr"
     android:orientation="horizontal" >
 
@@ -12,9 +11,9 @@
         android:layout_width="40dp"
         android:layout_height="50dp"
         android:layout_gravity="left|center"
-        android:layout_marginLeft="5dp"
+        android:layout_marginLeft="10dp"
         android:layout_marginRight="5dp"
-        android:src="@mipmap/region_2"
+        android:src="@mipmap/nui_region_parent_red_icon"
         />
 
     <LinearLayout

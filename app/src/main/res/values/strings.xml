@@ -210,7 +210,7 @@
 
     <!-- Household Filter -->
     <string name="household_filter_code_lbl">Household Code</string>
-    <string name="household_filter_code_hint_lbl">Household Code, eg. CHA00001</string>
+    <string name="household_filter_code_hint_lbl">Household Code</string>
     <string name="household_filter_search_lbl">Search House</string>
     <string name="household_filter_gpsmap_lbl">View GPS Map</string>
     <string name="household_filter_gps_not_available_title_lbl">Cannot view GPS Map</string>

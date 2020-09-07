@@ -210,7 +210,7 @@
 
     <!-- Household Filter -->
     <string name="household_filter_code_lbl">Código da casa</string>
-    <string name="household_filter_code_hint_lbl">Código da casa, eg. CHA00001ex: 0101-001</string>
+    <string name="household_filter_code_hint_lbl">Código da casa</string>
     <string name="household_filter_search_lbl">Procurar casa</string>
     <string name="household_filter_gpsmap_lbl">Mapa GPS</string>
     <string name="household_filter_gps_not_available_title_lbl">Não será possivel visualizar o mapa</string>

@@ -8,12 +8,12 @@
 
     <ImageView
         android:id="@+id/iconView"
-        android:layout_width="50dp"
-        android:layout_height="60dp"
-        android:layout_gravity="left|center"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_gravity="center"
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
-        android:src="@mipmap/member" />
+        android:src="@mipmap/nui_member_red_icon" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -29,28 +29,27 @@
             android:layout_gravity="center|left"
             android:gravity="left|center_horizontal"
             android:text="Large Text"
-            android:textAppearance="?android:attr/textAppearanceLarge"
             android:singleLine="true"
-            android:textSize="18dp"
+            android:textSize="@dimen/member_item_text_1_size"
             android:textStyle="bold"
-            android:textColor="#444" />
+            android:textColor="@color/nui_member_item_textcolor" />
         
         <TextView
             android:id="@+id/txtMemberItemCode"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Medium Text"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:textColor="#444" />
+            android:textSize="@dimen/member_item_text_2_size"
+            android:textColor="@color/nui_member_item_textcolor" />
 
         <TextView
             android:id="@+id/txtMemberItemExtras"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Medium Text"
-            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textSize="@dimen/member_item_text_3_size"
             android:textStyle="bold"
-            android:textColor="#444" />
+            android:textColor="@color/nui_member_item_textcolor" />
         
     </LinearLayout>
 

@@ -8,8 +8,21 @@
         </shape>
     </item>
 
+    <!-- disabled
+    <item android:state_enabled="false" android:alpha="0.5">
+        <shape android:shape="rectangle" >
+            <corners android:radius="30dp" />
+            <gradient
+                android:angle="45"
+                android:startColor="@color/nui_color_dg_start"
+                android:endColor="@color/nui_color_dg_start_m"
+                android:type="linear"
+                />
+        </shape>
+    </item>-->
+
     <!-- normal -->
-    <item android:top="2dp">
+    <item>
         <shape android:shape="rectangle" >
             <corners android:radius="30dp" />
             <gradient
@@ -20,6 +33,7 @@
                 />
         </shape>
     </item>
+
 
 </selector>
 

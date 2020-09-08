@@ -5,12 +5,12 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context="org.philimone.hds.explorer.main.MemberDetailsActivity"
-    android:background="#acdde9">
+    android:background="@color/white">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/m_details_header"
+        android:background="@drawable/nui_subject_details_panel"
         android:orientation="horizontal">
 
         <ImageView
@@ -19,14 +19,15 @@
             android:layout_height="100dp"
             android:layout_marginTop="20dp"
             android:layout_gravity="left|top"
-            android:layout_marginLeft="5dp"
+            android:layout_marginLeft="10dp"
             android:layout_marginRight="5dp"
             android:layout_marginBottom="20dp"
-            android:src="@mipmap/home_m_2" />
+            android:src="@mipmap/nui_household_filled_icon" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginLeft="5dp"
             android:orientation="vertical">
 
             <TextView
@@ -34,7 +35,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:textAppearance="?android:attr/textAppearanceLarge"
                 android:text="MARGARIDA MOLUSCO MBUTI"
                 android:textColor="#ffffff"
                 android:textSize="@dimen/member_details_info_name_layout_txtsize"
@@ -44,7 +44,6 @@
                 android:id="@+id/hhDetailsCode"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceLarge"
                 android:text="ACA0000101"
                 android:textColor="#92edb3"
                 android:textSize="@dimen/member_details_info_name_layout_txtsize"
@@ -61,7 +60,6 @@
                     android:layout_marginTop="0dp"
                     android:layout_marginRight="1dp"
                     android:text="@string/household_details_head_name_lbl"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
                     android:textColor="#c4daca"
                     android:textSize="16dp"
                     android:textStyle="bold" />
@@ -73,7 +71,6 @@
                     android:layout_marginTop="0dp"
                     android:layout_marginLeft="4dp"
                     android:text="BOB ESPONJA"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
                     android:textColor="#83d34a"
                     android:textSize="16dp"
                     android:textStyle="bold"
@@ -86,7 +83,6 @@
                     android:layout_marginRight="1dp"
                     android:layout_marginLeft="20dp"
                     android:text="@string/household_details_head_code_lbl"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
                     android:textColor="#c4daca"
                     android:textSize="16dp"
                     android:textStyle="bold" />
@@ -98,7 +94,6 @@
                     android:layout_marginTop="0dp"
                     android:layout_marginLeft="4dp"
                     android:text="ACA0100123"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
                     android:textColor="#83d34a"
                     android:textSize="16dp"
                     android:textStyle="bold"
@@ -117,7 +112,6 @@
                     android:layout_marginTop="0dp"
                     android:layout_marginRight="1dp"
                     android:text="@string/household_details_region_lbl"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
                     android:textSize="16dp"
                     android:textColor="#c4daca"
                     android:textStyle="bold" />
@@ -129,7 +123,6 @@
                     android:layout_marginTop="0dp"
                     android:layout_marginLeft="4dp"
                     android:text="34th Street, Maputo"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
                     android:textSize="16dp"
                     android:textColor="#83d34a"
                     android:textStyle="bold"
@@ -155,22 +148,26 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
             android:text="@string/household_details_members_list_lbl"
             android:textSize="@dimen/member_details_other_info_txtsize"
-            android:textAppearance="?android:attr/textAppearanceLarge" />
+            android:textColor="@color/nui_color_text_red" />
 
 
         <LinearLayout
             android:id="@+id/layout_hh_xdata"
             android:layout_width="match_parent"
             android:layout_height="260dp"
-            android:background="@drawable/corner_border"
+            android:background="@drawable/nui_txtbox_rone_wbevel"
             android:orientation="vertical">
 
             <ListView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@drawable/list_bevel_corner_2"
+                android:paddingStart="18dp"
+                android:paddingEnd="18dp"
+                android:paddingTop="15dp"
+                android:paddingBottom="15dp"
                 android:id="@+id/lvHouseholdMembers"
                 />
 
@@ -192,14 +189,19 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
             android:text="@string/member_details_col_data_info_lbl"
             android:textSize="@dimen/member_details_other_info_txtsize"
-            android:textAppearance="?android:attr/textAppearanceLarge" />
+            android:textColor="@color/nui_color_text_red" />
 
         <ListView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@drawable/list_bevel_corner"
+            android:paddingStart="18dp"
+            android:paddingEnd="18dp"
+            android:paddingTop="15dp"
+            android:paddingBottom="15dp"
+            android:background="@drawable/nui_lists_rone_border"
             android:id="@+id/lvCollectedForms"
             />
 
@@ -212,25 +214,30 @@
         android:layout_weight="0"
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
+        android:gravity="center"
         android:orientation="vertical">
 
         <Button
             android:id="@+id/btHouseDetailsCollectData"
-            android:layout_width="match_parent"
+            android:layout_width="350dp"
             android:layout_height="@dimen/member_details_bt_height"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="5dp"
             android:textSize="@dimen/member_details_buttons_size"
             android:textStyle="bold"
             android:text="@string/member_details_bt_openform_lbl"
-            android:background="@drawable/button_normal"/>
+            android:background="@drawable/nui_btnd_rone_dgbevel"/>
 
         <Button
             android:id="@+id/btHouseDetailsBack"
-            android:layout_width="match_parent"
+            android:layout_width="350dp"
             android:layout_height="@dimen/member_details_bt_height"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="10dp"
             android:textSize="@dimen/member_details_buttons_size"
             android:textStyle="bold"
             android:text="@string/member_details_bt_back_lbl"
-            android:background="@drawable/button_normal"/>
+            android:background="@drawable/nui_btnd_rone_gflat"/>
     </LinearLayout>
 
 </LinearLayout>

@@ -5,12 +5,12 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context="org.philimone.hds.explorer.main.MemberDetailsActivity"
-    android:background="#acdde9">
+    android:background="@color/white">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="120dp"
-        android:background="@drawable/m_details_header"
+        android:layout_height="125dp"
+        android:background="@drawable/nui_subject_details_panel"
         android:orientation="horizontal">
 
         <ImageView
@@ -19,9 +19,9 @@
             android:layout_height="80dp"
             android:layout_marginTop="14dp"
             android:layout_gravity="left|top"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"
-            android:src="@mipmap/member_big_icon" />
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:src="@mipmap/nui_member_filled_icon" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -187,168 +187,168 @@
         <LinearLayout
             android:layout_width="550dp"
             android:layout_height="match_parent"
-            android:layout_marginRight="3dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginLeft="5dp"
             android:orientation="vertical">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/member_details_other_info_lbl"
+                android:layout_marginLeft="25dp"
                 android:textSize="@dimen/member_details_other_info_txtsize"
-                android:textAppearance="?android:attr/textAppearanceLarge" />
+                android:textColor="@color/nui_color_text_red" />
 
             <LinearLayout
                 android:id="@+id/layout_md_xdata"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@drawable/corner_border"
+                android:paddingTop="10dp"
+                android:background="@drawable/nui_txtbox_rone_wbevel"
                 android:orientation="vertical">
 
                 <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_width="wrap_content"
+                    android:layout_height="26dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginLeft="@dimen/member_filter_xdata_margin_left"
                     android:orientation="horizontal">
 
-                    <!-- Layout Info 1 -->
-                    <LinearLayout
+                    <TextView
+                        android:layout_width="@dimen/member_details_txtview_width"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/member_details_info_gender_layout_txtsize"
+                        android:text="@string/member_details_housename_lbl"
+                        android:textColor="@color/nui_color_text_darkgray"/>
+
+                    <TextView
                         android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical">
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/member_details_info_gender_layout_txtsize"
+                        android:textStyle="bold"
+                        android:textColor="@color/nui_color_text_darkgray"
+                        android:text="05-1233-123"
+                        android:id="@+id/mbDetailsHouseName" />
+                </LinearLayout>
 
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="16dp"
-                            android:layout_marginLeft="@dimen/member_details_land_dtlayout_margin_left"
-                            android:orientation="horizontal">
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginLeft="@dimen/member_filter_xdata_margin_left"
+                    android:orientation="horizontal">
 
-                            <TextView
-                                android:layout_width="@dimen/member_details_txtview_width"
-                                android:layout_height="wrap_content"
-                                android:textAppearance="?android:attr/textAppearanceLarge"
-                                android:text="@string/member_details_housename_lbl"/>
+                    <TextView
+                        android:layout_width="@dimen/member_details_txtview_width"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/member_details_info_gender_layout_txtsize"
+                        android:textColor="@color/nui_color_text_darkgray"
+                        android:text="@string/member_details_member_endtype_lbl"/>
 
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:textAppearance="?android:attr/textAppearanceLarge"
-                                android:textStyle="bold"
-                                android:text="05-1233-123"
-                                android:id="@+id/mbDetailsHouseName" />
-                        </LinearLayout>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/member_details_info_gender_layout_txtsize"
+                        android:textColor="@color/nui_color_text_darkgray"
+                        android:textStyle="bold"
+                        android:text="Esta a residir nesta casa"
+                        android:id="@+id/mbDetailsEndType" />
+                </LinearLayout>
 
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/member_details_land_dtlayout_margin_top"
-                            android:layout_marginLeft="@dimen/member_details_land_dtlayout_margin_left"
-                            android:orientation="horizontal">
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginLeft="@dimen/member_filter_xdata_margin_left"
+                    android:orientation="horizontal">
 
-                            <TextView
-                                android:layout_width="@dimen/member_details_txtview_width"
-                                android:layout_height="wrap_content"
-                                android:textAppearance="?android:attr/textAppearanceLarge"
-                                android:text="@string/member_details_member_endtype_lbl"/>
+                    <TextView
+                        android:layout_width="@dimen/member_details_txtview_width"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/member_details_info_gender_layout_txtsize"
+                        android:textColor="@color/nui_color_text_darkgray"
+                        android:text="@string/member_details_member_enddate_lbl"/>
 
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:textAppearance="?android:attr/textAppearanceLarge"
-                                android:textStyle="bold"
-                                android:text="Esta a residir nesta casa"
-                                android:id="@+id/mbDetailsEndType" />
-                        </LinearLayout>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/member_details_info_gender_layout_txtsize"
+                        android:textColor="@color/nui_color_text_darkgray"
+                        android:textStyle="bold"
+                        android:text="2015-01-01"
+                        android:id="@+id/mbDetailsEndDate" />
+                </LinearLayout>
 
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/member_details_land_dtlayout_margin_top"
-                            android:layout_marginLeft="@dimen/member_details_land_dtlayout_margin_left"
-                            android:orientation="horizontal">
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginLeft="@dimen/member_filter_xdata_margin_left"
+                    android:orientation="horizontal">
 
-                            <TextView
-                                android:layout_width="@dimen/member_details_txtview_width"
-                                android:layout_height="wrap_content"
-                                android:textAppearance="?android:attr/textAppearanceLarge"
-                                android:text="@string/member_details_member_enddate_lbl"/>
+                    <TextView
+                        android:layout_width="@dimen/member_details_txtview_width"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/member_details_info_gender_layout_txtsize"
+                        android:textColor="@color/nui_color_text_darkgray"
+                        android:text="@string/member_details_forms_spouse_lbl"/>
 
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:textAppearance="?android:attr/textAppearanceLarge"
-                                android:textStyle="bold"
-                                android:text="2015-01-01"
-                                android:id="@+id/mbDetailsEndDate" />
-                        </LinearLayout>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/member_details_info_gender_layout_txtsize"
+                        android:textColor="@color/nui_color_text_darkgray"
+                        android:textStyle="bold"
+                        android:text="AIAI MARIA AI XIHORA MATI"
+                        android:id="@+id/mbDetailsSpouse" />
+                </LinearLayout>
 
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/member_details_land_dtlayout_margin_top"
-                            android:layout_marginLeft="@dimen/member_details_land_dtlayout_margin_left"
-                            android:orientation="horizontal">
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginLeft="@dimen/member_filter_xdata_margin_left"
+                    android:orientation="horizontal">
 
-                            <TextView
-                                android:layout_width="@dimen/member_details_txtview_width"
-                                android:layout_height="wrap_content"
-                                android:textAppearance="?android:attr/textAppearanceLarge"
-                                android:text="@string/member_details_forms_spouse_lbl"/>
+                    <TextView
+                        android:layout_width="@dimen/member_details_txtview_width"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/member_details_info_gender_layout_txtsize"
+                        android:textColor="@color/nui_color_text_darkgray"
+                        android:text="@string/member_details_father_lbl"/>
 
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:textAppearance="?android:attr/textAppearanceLarge"
-                                android:textStyle="bold"
-                                android:text="AIAI MARIA AI XIHORA MATI"
-                                android:id="@+id/mbDetailsSpouse" />
-                        </LinearLayout>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/member_details_info_gender_layout_txtsize"
+                        android:textColor="@color/nui_color_text_darkgray"
+                        android:textStyle="bold"
+                        android:text="JOAO MACACO SIMANGO"
+                        android:id="@+id/mbDetailsFather" />
+                </LinearLayout>
 
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/member_details_land_dtlayout_margin_top"
-                            android:layout_marginLeft="@dimen/member_details_land_dtlayout_margin_left"
-                            android:orientation="horizontal">
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginLeft="@dimen/member_filter_xdata_margin_left"
+                    android:orientation="horizontal">
 
-                            <TextView
-                                android:layout_width="@dimen/member_details_txtview_width"
-                                android:layout_height="wrap_content"
-                                android:textAppearance="?android:attr/textAppearanceLarge"
-                                android:text="@string/member_details_father_lbl"/>
+                    <TextView
+                        android:layout_width="@dimen/member_details_txtview_width"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/member_details_info_gender_layout_txtsize"
+                        android:textColor="@color/nui_color_text_darkgray"
+                        android:text="@string/member_details_mother_lbl"/>
 
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:textAppearance="?android:attr/textAppearanceLarge"
-                                android:textStyle="bold"
-                                android:text="JOAO MACACO SIMANGO"
-                                android:id="@+id/mbDetailsFather" />
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/member_details_land_dtlayout_margin_top"
-                            android:layout_marginLeft="@dimen/member_details_land_dtlayout_margin_left"
-                            android:orientation="horizontal">
-
-                            <TextView
-                                android:layout_width="@dimen/member_details_txtview_width"
-                                android:layout_height="wrap_content"
-                                android:textAppearance="?android:attr/textAppearanceLarge"
-                                android:text="@string/member_details_mother_lbl"/>
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:textAppearance="?android:attr/textAppearanceLarge"
-                                android:textStyle="bold"
-                                android:text="Desconhecida"
-                                android:id="@+id/mbDetailsMother" />
-                        </LinearLayout>
-
-                    </LinearLayout>
-
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/member_details_info_gender_layout_txtsize"
+                        android:textColor="@color/nui_color_text_darkgray"
+                        android:textStyle="bold"
+                        android:text="Desconhecida"
+                        android:id="@+id/mbDetailsMother" />
                 </LinearLayout>
 
             </LinearLayout>
@@ -364,14 +364,15 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="25dp"
                 android:text="@string/member_details_col_data_info_lbl"
                 android:textSize="@dimen/member_details_other_info_txtsize"
-                android:textAppearance="?android:attr/textAppearanceLarge" />
+                android:textColor="@color/nui_color_text_red" />
 
             <ListView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@drawable/list_bevel_corner"
+                android:background="@drawable/nui_lists_rone_border"
                 android:id="@+id/lvCollectedForms"
                 />
 
@@ -392,23 +393,23 @@
 
         <Button
             android:id="@+id/btMemDetailsBack"
-            android:layout_weight="1"
-            android:layout_width="0dp"
+            android:layout_width="350dp"
             android:layout_height="@dimen/member_details_bt_height"
+            android:layout_marginRight="10dp"
             android:textSize="@dimen/member_details_buttons_size"
             android:textStyle="bold"
             android:text="@string/member_details_bt_back_lbl"
-            android:background="@drawable/button_normal"/>
+            android:background="@drawable/nui_btnd_rone_gflat"/>
 
         <Button
             android:id="@+id/btMemDetailsCollectData"
-            android:layout_weight="1"
-            android:layout_width="0dp"
+            android:layout_width="350dp"
             android:layout_height="@dimen/member_details_bt_height"
+            android:layout_marginLeft="10dp"
             android:textSize="@dimen/member_details_buttons_size"
             android:textStyle="bold"
             android:text="@string/member_details_bt_openform_lbl"
-            android:background="@drawable/button_normal"/>
+            android:background="@drawable/nui_btnd_rone_dgbevel"/>
 
 
     </LinearLayout>

@@ -30,6 +30,7 @@
             android:layout_marginBottom="40dp"
             android:text="Loading Datasets ...."
             android:textSize="18dp"
+            android:textColor="@color/nui_color_text_red"
             android:textAlignment="center" />
 
     </LinearLayout>

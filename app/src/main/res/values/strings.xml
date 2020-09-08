@@ -176,7 +176,7 @@
     <string name="member_details_dob_lbl">D.O.B:</string>
     <string name="member_details_other_info_lbl">Member Details</string>
     <string name="member_details_col_data_info_lbl">Collected Forms</string>
-    <string name="member_details_housename_lbl">House Name/Number:</string>
+    <string name="member_details_housename_lbl">Household Name:</string>
     <string name="member_details_member_endtype_lbl">Current Status:</string>
     <string name="member_details_father_lbl">Father:</string>
     <string name="member_details_mother_lbl">Mother:</string>

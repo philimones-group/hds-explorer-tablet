@@ -5,12 +5,12 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context="org.philimone.hds.explorer.main.MemberDetailsActivity"
-    android:background="#acdde9">
+    android:background="@color/white">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="120dp"
-        android:background="@drawable/m_details_header"
+        android:background="@drawable/nui_subject_details_panel"
         android:orientation="horizontal">
 
         <ImageView
@@ -19,13 +19,15 @@
             android:layout_height="80dp"
             android:layout_marginTop="14dp"
             android:layout_gravity="left|top"
-            android:layout_marginLeft="5dp"
+            android:layout_marginLeft="15dp"
             android:layout_marginRight="10dp"
-            android:src="@mipmap/home_m_2" />
+            android:src="@mipmap/nui_household_filled_icon" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginLeft="10dp"
+            android:paddingTop="10dp"
             android:orientation="vertical">
 
             <TextView
@@ -33,10 +35,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:textAppearance="?android:attr/textAppearanceLarge"
                 android:text="MARGARIDA MOLUSCO MBUTI"
                 android:textColor="#ffffff"
-                android:textSize="25dp"
+                android:textSize="@dimen/household_details_info_textsize"
                 android:textStyle="bold"/>
 
             <LinearLayout
@@ -49,10 +50,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="0dp"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
                     android:text="ACA0000101"
                     android:textColor="#92edb3"
-                    android:textSize="25dp"
+                    android:textSize="@dimen/household_details_info_textsize"
                     android:textStyle="bold" />
 
                 <LinearLayout
@@ -66,9 +66,8 @@
                         android:layout_height="wrap_content"
                         android:layout_marginRight="1dp"
                         android:text="@string/household_details_head_name_lbl"
-                        android:textAppearance="?android:attr/textAppearanceLarge"
                         android:textColor="#c4daca"
-                        android:textSize="@dimen/member_filter_titlesize"
+                        android:textSize="@dimen/household_details_info_textsize"
                         android:textStyle="bold" />
 
                     <TextView
@@ -77,9 +76,8 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="4dp"
                         android:text="BOB ESPONJA"
-                        android:textAppearance="?android:attr/textAppearanceLarge"
                         android:textColor="#83d34a"
-                        android:textSize="@dimen/member_filter_titlesize"
+                        android:textSize="@dimen/household_details_info_textsize"
                         android:textStyle="bold"
                         />
 
@@ -89,9 +87,8 @@
                         android:layout_marginRight="1dp"
                         android:layout_marginLeft="27dp"
                         android:text="@string/household_details_head_code_lbl"
-                        android:textAppearance="?android:attr/textAppearanceLarge"
                         android:textColor="#c4daca"
-                        android:textSize="@dimen/member_filter_titlesize"
+                        android:textSize="@dimen/household_details_info_textsize"
                         android:textStyle="bold" />
 
                     <TextView
@@ -100,9 +97,8 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="4dp"
                         android:text="ACA0100123"
-                        android:textAppearance="?android:attr/textAppearanceLarge"
                         android:textColor="#83d34a"
-                        android:textSize="@dimen/member_filter_titlesize"
+                        android:textSize="@dimen/household_details_info_textsize"
                         android:textStyle="bold"
                         />
 
@@ -121,7 +117,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginRight="1dp"
                     android:text="@string/household_details_region_lbl"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textSize="@dimen/household_details_info_textsize"
                     android:textColor="#c4daca"
                     android:textStyle="bold" />
 
@@ -131,7 +127,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="4dp"
                     android:text="34th Street, Maputo"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textSize="@dimen/household_details_info_textsize"
                     android:textColor="#83d34a"
                     android:textStyle="bold"
                     />
@@ -157,21 +153,22 @@
         <LinearLayout
             android:layout_width="550dp"
             android:layout_height="match_parent"
-            android:layout_marginRight="3dp"
+            android:layout_marginRight="10dp"
             android:orientation="vertical">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
                 android:text="@string/household_details_members_list_lbl"
                 android:textSize="@dimen/member_details_other_info_txtsize"
-                android:textAppearance="?android:attr/textAppearanceLarge" />
+                android:textColor="@color/nui_color_text_red" />
 
             <LinearLayout
                 android:id="@+id/layout_hh_xdata"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@drawable/corner_border"
+                android:background="@drawable/nui_txtbox_rone_wbevel"
                 android:orientation="vertical">
 
                 <LinearLayout
@@ -187,7 +184,10 @@
                         <ListView
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:background="@drawable/list_bevel_corner_2"
+                            android:paddingStart="18dp"
+                            android:paddingEnd="18dp"
+                            android:paddingTop="15dp"
+                            android:paddingBottom="15dp"
                             android:id="@+id/lvHouseholdMembers"
                             />
 
@@ -208,14 +208,19 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
                 android:text="@string/member_details_col_data_info_lbl"
                 android:textSize="@dimen/member_details_other_info_txtsize"
-                android:textAppearance="?android:attr/textAppearanceLarge" />
+                android:textColor="@color/nui_color_text_red" />
 
             <ListView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@drawable/list_bevel_corner"
+                android:paddingStart="18dp"
+                android:paddingEnd="18dp"
+                android:paddingTop="15dp"
+                android:paddingBottom="15dp"
+                android:background="@drawable/nui_lists_rone_border"
                 android:id="@+id/lvCollectedForms"
                 />
 
@@ -229,6 +234,7 @@
         android:layout_height="wrap_content"
         android:layout_weight="0"
         android:gravity="center|bottom"
+        android:layout_marginTop="5dp"
         android:layout_marginBottom="@dimen/fagm_margin_bottom"
         android:layout_marginLeft="@dimen/fagm_margin_right"
         android:layout_marginRight="@dimen/fagm_margin_right"
@@ -236,23 +242,23 @@
 
         <Button
             android:id="@+id/btHouseDetailsBack"
-            android:layout_weight="1"
-            android:layout_width="0dp"
+            android:layout_width="350dp"
             android:layout_height="@dimen/member_details_bt_height"
+            android:layout_marginRight="10dp"
             android:textSize="@dimen/member_details_buttons_size"
             android:textStyle="bold"
             android:text="@string/member_details_bt_back_lbl"
-            android:background="@drawable/button_normal"/>
+            android:background="@drawable/nui_btnd_rone_gflat"/>
 
         <Button
             android:id="@+id/btHouseDetailsCollectData"
-            android:layout_weight="1"
-            android:layout_width="0dp"
+            android:layout_width="350dp"
             android:layout_height="@dimen/member_details_bt_height"
+            android:layout_marginLeft="10dp"
             android:textSize="@dimen/member_details_buttons_size"
             android:textStyle="bold"
             android:text="@string/member_details_bt_openform_lbl"
-            android:background="@drawable/button_normal"/>
+            android:background="@drawable/nui_btnd_rone_dgbevel"/>
 
 
     </LinearLayout>

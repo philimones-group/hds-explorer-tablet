@@ -36,4 +36,13 @@
         <item name="android:backgroundDimEnabled">false</item>
     </style>
 
+    <style name="SettingsScreen" parent="Theme.AppCompat.Light">
+        <item name="android:textColor">@color/nui_color_text_red</item>
+        <item name="android:textColorPrimary">#444</item>
+        <item name="colorPrimary">#C85E5E</item>
+        <item name="colorPrimaryDark">#C85E5E</item>
+        <item name="colorAccent">#836060</item>
+        <item name="android:background">@color/zxing_transparent</item>
+    </style>
+
 </resources>

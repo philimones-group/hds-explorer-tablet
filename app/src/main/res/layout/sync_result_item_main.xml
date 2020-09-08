@@ -36,7 +36,7 @@
                 android:text="Large Text"
                 android:textStyle="bold"
                 android:singleLine="true"
-                android:textSize="18sp"
+                android:textSize="16sp"
                 android:textColor="#444" />
 
         </LinearLayout>

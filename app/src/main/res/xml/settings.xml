@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
     <PreferenceCategory
-
         android:title="@string/settings_server_group_lbl"
         android:key="server">
+
         <EditTextPreference
             android:key="app-url"
             android:title="@string/settings_server_group_url_lbl"
-            android:persistent="false"
             android:summary="https://icemr2-aws.medcol.mw:8443/hds-explorer-server"
-            android:defaultValue="https://icemr2-aws.medcol.mw:8443/hds-explorer-server"/>
+            android:defaultValue="https://icemr2-aws.medcol.mw:8443/hds-explorer-server"
+            android:enabled="true" />
 
     </PreferenceCategory>
 
@@ -20,10 +20,9 @@
         <EditTextPreference
             android:key="odk-url"
             android:title="@string/settings_odk_group_url_lbl"
-            android:persistent="false"
             android:summary="https://www.example.com/odk-aggregate"
             android:defaultValue="https://www.example.com/odk-aggregate"
-            android:enabled="false"/>
+            android:enabled="true"/>
 
     </PreferenceCategory>
 
@@ -34,9 +33,9 @@
         <EditTextPreference
             android:key="redcap-url"
             android:title="@string/settings_redcap_group_url_lbl"
-            android:persistent="false"
             android:summary="https://www.example.com/redcap"
-            android:defaultValue="https://www.example.com/redcap"/>
+            android:defaultValue="https://www.example.com/redcap"
+            android:enabled="true"/>
 
     </PreferenceCategory>
 

@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:gravity="center_horizontal"
     android:orientation="vertical"
-    android:background="@mipmap/form_background_2"
+    android:background="@color/white"
     tools:context=".main.LoginActivity">
 
     <!-- Header -->
@@ -12,7 +12,9 @@
         android:layout_width="match_parent"
         android:layout_height="70dp"
         android:orientation="horizontal"
-        android:background="@drawable/bottom_border">
+        android:background="@color/white"
+        android:translationZ="5dp"
+        android:elevation="2dp">
 
         <ImageView
             android:layout_marginTop="5dp"
@@ -35,21 +37,44 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:text="@string/settings_lbl"
-            android:textStyle="bold"
-            android:textColor="@android:color/tertiary_text_dark"
-            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="@color/nui_color_text_red"
+            android:textSize="22dp"
             android:layout_marginLeft="10dp"
             android:gravity="center_vertical"/>
 
     </LinearLayout>
 
-
-    <fragment android:name="org.philimone.hds.explorer.fragment.SettingsFragment"
-        android:id="@+id/settingsFragment"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="15dp"
-        tools:layout="@xml/settings" />
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:background="@drawable/nui_txtbox_rone_wbevel">
 
+
+        <fragment android:name="org.philimone.hds.explorer.fragment.SettingsFragment"
+            android:id="@+id/settingsFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="30dp"
+            tools:layout="@xml/settings" />
+
+        <Button
+            android:id="@+id/btTrackListBack"
+            android:layout_width="96dp"
+            android:layout_height="96dp"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="10dp"
+            android:layout_marginRight="10dp"
+            android:text=""
+            android:background="@drawable/nui_btnd_back_one"/>
+
+    </RelativeLayout>
 
 </LinearLayout>

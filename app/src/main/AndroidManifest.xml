@@ -49,7 +49,7 @@
         <activity android:name=".main.GpsSearchedListActivity" />
         <activity android:name=".main.TrackingListActivity" />
         <activity android:name=".main.TrackingListDetailsActivity" />
-        <activity android:name=".main.SettingsActivity" />
+        <activity android:name=".main.SettingsActivity" android:theme="@style/SettingsScreen" />
         <activity android:name=".main.RegionDetailsActivity" />
     </application>
 

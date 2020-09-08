@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android" >
+    <!-- pressed -->
+    <item android:state_pressed="true" >
+        <shape android:shape="rectangle" >
+            <corners android:radius="30dp" />
+            <solid android:color="#4C4C4C" />
+        </shape>
+    </item>
+
+    <!-- normal -->
+    <item>
+
+        <layer-list xmlns:android="http://schemas.android.com/apk/res/android" >
+            <!-- Bottom Shadow Darker Line-->
+
+            <item>
+                <shape android:shape="rectangle" >
+                    <corners android:radius="30dp" />
+
+                    <solid android:color="@android:color/holo_red_light" />
+                </shape>
+            </item>
+
+            <!-- Upper Shadow Dark Line -->
+            <item android:top="2dip" android:bottom="2dip" android:left="2dip" android:right="2dip">
+                <shape android:shape="rectangle" >
+                    <gradient
+                        android:centerX="0.98"
+                        android:centerY="0"
+                        android:startColor="#06A63C"
+                        android:endColor="#434343"
+                        android:type="linear"
+                        android:angle="90"/>
+                    <corners android:radius="30dp" />
+                </shape>
+            </item>
+        </layer-list>
+
+    </item>
+
+
+</selector>
+

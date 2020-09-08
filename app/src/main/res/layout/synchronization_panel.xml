@@ -52,7 +52,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_weight="0.04"
-            android:background="@drawable/button_ngreen"
+            android:background="@drawable/nui_btnd_rtwo_black"
             android:textSize="20dp"
             android:textStyle="bold"
             android:text="@string/server_sync_bt_sync_all_lbl" />
@@ -72,36 +72,42 @@
                 android:id="@+id/settingsSyncFragment"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/sync_fragment_margin_bottom"
                 tools:layout="@layout/synchronization_panel_item" />
 
             <fragment android:name="org.philimone.hds.explorer.main.sync.SyncPanelItemFragment"
                 android:id="@+id/datasetsSyncFragment"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/sync_fragment_margin_bottom"
                 tools:layout="@layout/synchronization_panel_item" />
 
             <fragment android:name="org.philimone.hds.explorer.main.sync.SyncPanelItemFragment"
                 android:id="@+id/trackingListsSyncFragment"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/sync_fragment_margin_bottom"
                 tools:layout="@layout/synchronization_panel_item" />
 
             <fragment android:name="org.philimone.hds.explorer.main.sync.SyncPanelItemFragment"
                 android:id="@+id/usersSyncFragment"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/sync_fragment_margin_bottom"
                 tools:layout="@layout/synchronization_panel_item" />
 
             <fragment android:name="org.philimone.hds.explorer.main.sync.SyncPanelItemFragment"
                 android:id="@+id/householdsSyncFragment"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/sync_fragment_margin_bottom"
                 tools:layout="@layout/synchronization_panel_item" />
 
             <fragment android:name="org.philimone.hds.explorer.main.sync.SyncPanelItemFragment"
                 android:id="@+id/membersSyncFragment"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/sync_fragment_margin_bottom"
                 tools:layout="@layout/synchronization_panel_item" />
 
         </LinearLayout>

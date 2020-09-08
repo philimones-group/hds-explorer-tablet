@@ -8,12 +8,12 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="10dp"
+        android:paddingTop="5dp"
         android:paddingLeft="15dp"
         android:paddingRight="15dp"
         android:paddingBottom="15dp"
         android:orientation="vertical"
-        android:background="@drawable/button_normal">
+        android:background="@drawable/nui_sync_panel_item_back">
 
         <!-- Top -->
         <LinearLayout
@@ -42,24 +42,26 @@
                 android:id="@+id/syncButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
                 android:layout_weight="2"
-                android:background="@drawable/button_ngreen"
+                android:layout_marginBottom="3dp"
+                android:background="@drawable/nui_btnd_sync_rone"
                 android:text="@string/server_sync_bt_sync_lbl"
                 android:textSize="16sp"
-                android:textStyle="bold"/>
+                android:textStyle="bold"
+                android:elevation="5dp"/>
 
             <Button
                 android:id="@+id/syncStopButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
                 android:layout_weight="2"
+                android:layout_marginBottom="3dp"
                 android:background="@drawable/button_ngreen"
                 android:text="@string/server_sync_bt_stop_lbl"
                 android:textSize="16sp"
                 android:textStyle="bold"
-                android:visibility="gone"/>
+                android:visibility="gone"
+                android:elevation="5dp"/>
 
         </LinearLayout>
 
@@ -75,12 +77,14 @@
 
                 <ProgressBar
                     android:id="@+id/syncProgressBar"
-                    style="@android:style/Widget.ProgressBar.Horizontal"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:max="100"
                     android:min="0"
-                    android:progress="43" />
+                    android:indeterminateOnly="false"
+                    android:mirrorForRtl="true"
+                    android:progress="43"
+                    android:progressDrawable="@drawable/nui_sync_progress_tint"/>
             </RelativeLayout>
 
         </LinearLayout>
@@ -89,9 +93,9 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="3dp"
+            android:layout_marginTop="-2dp"
             android:padding="5dp"
-            android:background="@drawable/corner_border_thin">
+            android:background="@drawable/nui_sync_panel_item_bottom_back">
 
             <TextView
                 android:id="@+id/syncProgressText"
@@ -100,6 +104,7 @@
                 android:layout_marginStart="3dp"
                 android:textSize="12sp"
                 android:textStyle="bold"
+                android:textColor="@color/nui_settings_textcolor"
                 android:textAlignment="center"
                 android:text="100%" />
 
@@ -117,6 +122,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="5dp"
                 android:textSize="12sp"
+                android:textColor="@color/nui_settings_textcolor"
                 android:textStyle="bold"
                 android:textAlignment="textEnd"
                 android:text="Not Synced yet"/>
@@ -129,6 +135,7 @@
                 android:layout_marginEnd="3dp"
                 android:layout_weight="2"
                 android:textSize="12sp"
+                android:textColor="@color/nui_settings_textcolor"
                 android:textStyle="bold"
                 android:textAlignment="textEnd"
                 android:singleLine="true"
@@ -139,7 +146,7 @@
                 android:id="@+id/syncDetails"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
-                android:background="@drawable/button_info_blue" />
+                android:background="@drawable/nui_btnd_sync_info_one" />
 
 
         </LinearLayout>

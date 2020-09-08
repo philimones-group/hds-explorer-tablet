@@ -40,4 +40,6 @@
     <color name="nui_household_item_textcolor">#444</color>
     <color name="nui_member_item_textcolor">#444</color>
 
+    <color name="nui_settings_textcolor">#444</color>
+
 </resources>

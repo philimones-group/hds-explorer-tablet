@@ -9,7 +9,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:background="@drawable/corner_border_thin_light"
+        android:background="@drawable/nui_sync_dialog_border_thin"
         android:orientation="horizontal">
 
         <ImageView
@@ -19,7 +19,7 @@
             android:layout_marginTop="5dp"
             android:layout_marginBottom="5dp"
             android:alpha="0.75"
-            android:background="@mipmap/expand_bt3_100x100"
+            android:background="@mipmap/nui_sync_details_icon"
             android:contentDescription="TODO" />
 
         <TextView
@@ -29,7 +29,7 @@
             android:gravity="center_vertical"
             android:text="@string/sync_result_dialog_title"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:textColor="@android:color/tertiary_text_dark"
+            android:textColor="@color/nui_color_text_red"
             android:textStyle="bold" />
 
     </LinearLayout>
@@ -85,7 +85,8 @@
                 android:textSize="18sp"
                 android:textStyle="bold"
                 android:text="@string/bt_ok_lbl"
-                android:background="@drawable/button_normal"/>
+                android:background="@drawable/nui_btnd_rone_dgbevel"
+                android:elevation="5dp"/>
 
         </RelativeLayout>
 

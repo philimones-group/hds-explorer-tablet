@@ -2,7 +2,7 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:state_enabled="false"
-        android:color="#8F3E3E3E"
+        android:color="@color/nui_color_text_darkgray"
         />
     <item
         android:state_enabled="true"

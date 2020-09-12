@@ -9,11 +9,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import org.philimone.hds.explorer.R;
 import org.philimone.hds.explorer.adapter.MemberArrayAdapter;
@@ -31,6 +33,7 @@ import java.util.List;
  */
 public class MemberFilterDialog extends DialogFragment {
 
+    private TextView txtDialogTitle;
     private EditText txtMemFilterName;
     private EditText txtMemFilterCode;
     private EditText txtMemFilterHouseCode;
@@ -110,6 +113,7 @@ public class MemberFilterDialog extends DialogFragment {
     private void initialize(View view) {
         this.database = new Database(getActivity());
 
+        this.txtDialogTitle = (TextView) view.findViewById(R.id.txtDialogTitle);
         this.txtMemFilterName = (EditText) view.findViewById(R.id.txtMemFilterName);
         this.txtMemFilterCode = (EditText) view.findViewById(R.id.txtMemFilterCode);
         this.txtMemFilterHouseCode = (EditText) view.findViewById(R.id.txtMemFilterCurrHousecode);
@@ -180,6 +184,18 @@ public class MemberFilterDialog extends DialogFragment {
         if (filterStatus != null){
             spnMemFilterStatus.setSelection(filterStatus);
         }
+
+        if (title != null){
+            this.txtDialogTitle.setText(title);
+        }
+
+        initializeSpinners();
+    }
+
+    private void initializeSpinners(){
+        String[] statuses = getContext().getResources().getStringArray(R.array.member_current_status);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this.getContext(), R.layout.spinner_list_item, statuses);
+        spnMemFilterStatus.setAdapter(adapter);
     }
 
     private void onSearch() {

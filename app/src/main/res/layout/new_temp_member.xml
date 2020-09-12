@@ -14,7 +14,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textSize="@dimen/dialog_factory_textsize"
+            android:textColor="@color/nui_color_text_darkgray"
             android:text="@string/new_household_code_lbl"/>
 
         <android.support.design.widget.TextInputLayout

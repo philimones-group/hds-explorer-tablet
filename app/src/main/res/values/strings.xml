@@ -185,7 +185,7 @@
     <string name="member_details_has_delivered_lbl">Has Delivered      </string>
     <string name="member_details_bt_openform_lbl">Collect Data</string>
     <string name="member_details_bt_back_lbl">Back</string>
-    <string name="member_details_forms_selector_lbl">Select an Form</string>
+    <string name="member_details_forms_selector_lbl">Select a Form</string>
 
     <string name="member_details_unknown_lbl">Unknown Individual</string>
     <string name="member_details_endtype_na_lbl">Currently Living Here</string>

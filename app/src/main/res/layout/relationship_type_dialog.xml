@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@color/white">
+
+    <!-- Dialog Header -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:background="@drawable/nui_dialog_border_thin"
+        android:orientation="horizontal"
+        android:elevation="5dp">
+
+        <ImageView
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:layout_gravity="center"
+            android:alpha="0.75"
+            android:background="@mipmap/nui_member_red_filled_icon"
+            android:contentDescription="TODO" />
+
+        <TextView
+            android:id="@+id/txtDialogTitle"
+            android:layout_width="400dp"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="10dp"
+            android:gravity="center_vertical"
+            android:text="@string/relationship_type_title_lbl"
+            android:textSize="18sp"
+            android:textColor="@color/nui_color_text_red"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+    <!-- Current Status Details -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="20dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/relationship_type_question_lbl"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="@color/nui_color_text_darkgray"
+            android:textAlignment="center"/>
+
+
+        <LinearLayout
+            android:id="@+id/layout_mf_xdata"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:background="@drawable/nui_txtbox_rone_wbevel"
+            android:orientation="vertical">
+
+
+            <Spinner
+                android:id="@+id/spnRelationshipType"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:paddingStart="15dp"
+                android:entries="@array/relationship_types_array"
+                android:prompt="@string/member_filter_choose_current_status_lbl"
+                />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <!-- Buttons -->
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:gravity="center">
+
+        <Button
+            android:id="@+id/btDialogCancel"
+            android:layout_width="@dimen/dialog_factory_button_size"
+            android:layout_height="@dimen/sync_progress_button_height"
+            android:layout_marginLeft="3dp"
+            android:layout_marginRight="3dp"
+            android:layout_centerInParent="true"
+            android:textSize="@dimen/member_form_dialog_button_textsize"
+            android:textStyle="bold"
+            android:text="@string/bt_cancel_lbl"
+            android:background="@drawable/nui_btnd_rone_gflat"
+            android:enabled="false"
+            android:elevation="5dp"/>
+
+        <Button
+            android:id="@+id/btDialogSelect"
+            android:layout_width="@dimen/dialog_factory_button_size"
+            android:layout_height="@dimen/sync_progress_button_height"
+            android:layout_marginLeft="3dp"
+            android:layout_marginRight="3dp"
+            android:layout_centerInParent="true"
+            android:textSize="@dimen/member_form_dialog_button_textsize"
+            android:textStyle="bold"
+            android:text="@string/relationship_type_select_btn_lbl"
+            android:background="@drawable/nui_btnd_rone_dgbevel"
+            android:elevation="5dp"/>
+
+    </LinearLayout>
+
+</LinearLayout>

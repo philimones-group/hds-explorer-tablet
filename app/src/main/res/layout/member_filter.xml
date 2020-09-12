@@ -241,6 +241,7 @@
                 android:textStyle="bold" />
 
         </LinearLayout>
+
         <!-- current status-->
         <LinearLayout
             android:id="@+id/layout_mf_xdata"

@@ -22,6 +22,7 @@
     <color name="nui_color_text_green">#11923C</color>
     <color name="nui_color_text_red">#1c9844</color>
     <color name="nui_color_text_darkgray">#3E3E3E</color>
+    <color name="nui_color_text_adgray">#7E7E7E</color>
     <color name="nui_color_border_lightgray">#DFDFDF</color>
     <color name="nui_color_back_lightgreen">#6FED9B</color>
 

@@ -8,7 +8,6 @@ import android.view.View;
 import android.widget.Button;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 import org.philimone.hds.explorer.R;
 import org.philimone.hds.explorer.database.Database;
@@ -19,7 +18,6 @@ import org.philimone.hds.explorer.io.SyncEntity;
 import org.philimone.hds.explorer.io.SyncEntityResult;
 import org.philimone.hds.explorer.io.SyncStatus;
 import org.philimone.hds.explorer.model.SyncReport;
-import org.philimone.hds.explorer.widget.SyncProgressDialog;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,8 +27,6 @@ import mz.betainteractive.utilities.StringUtil;
 import static org.philimone.hds.explorer.io.SyncEntity.*;
 
 public class SyncPanelActivity extends AppCompatActivity implements SyncPanelItemFragment.SyncPanelItemListener {
-
-    private SyncProgressDialog progressDialog;
 
     private String username;
     private String password;

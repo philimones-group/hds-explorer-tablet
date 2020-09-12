@@ -1,31 +1,22 @@
 package org.philimone.hds.explorer.main;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.FragmentManager;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.DatePicker;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.RadioButton;
-import android.widget.Spinner;
 import android.widget.TextView;
 
 import org.philimone.hds.explorer.R;
 import org.philimone.hds.explorer.adapter.CollectedDataArrayAdapter;
 import org.philimone.hds.explorer.adapter.model.CollectedDataItem;
-import org.philimone.hds.explorer.adapter.FormLoaderAdapter;
 import org.philimone.hds.explorer.data.FormDataLoader;
 import org.philimone.hds.explorer.database.Database;
 import org.philimone.hds.explorer.database.DatabaseHelper;
@@ -36,17 +27,18 @@ import org.philimone.hds.explorer.model.Form;
 import org.philimone.hds.explorer.model.Household;
 import org.philimone.hds.explorer.model.Member;
 import org.philimone.hds.explorer.model.User;
+import org.philimone.hds.explorer.widget.DialogFactory;
+import org.philimone.hds.explorer.widget.FormSelectorDialog;
+import org.philimone.hds.explorer.widget.member_details.MemberFormDialog;
+import org.philimone.hds.explorer.widget.member_details.RelationshipTypeDialog;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import mz.betainteractive.odk.FormUtilities;
 import mz.betainteractive.odk.listener.OdkFormResultListener;
 import mz.betainteractive.odk.model.FilledForm;
-import mz.betainteractive.utilities.GeneralUtil;
-import mz.betainteractive.utilities.StringUtil;
 
 public class MemberDetailsActivity extends Activity implements OdkFormResultListener {
 
@@ -65,8 +57,6 @@ public class MemberDetailsActivity extends Activity implements OdkFormResultList
     private Button btMemDetailsCollectData;
     private Button btMemDetailsBack;
     private ImageView iconView;
-
-    private AlertDialog formNotFoundDialog; /* Used to build DeleteSavedForm Dialog*/
 
     private LinearLayout mbDetailsLayoutSc;
     private TextView mbDetailsStudyCodeLabel;
@@ -511,20 +501,18 @@ public class MemberDetailsActivity extends Activity implements OdkFormResultList
 
     private void buildFormSelectorDialog(List<FormDataLoader> loaders) {
 
-        final FormLoaderAdapter adapter = new FormLoaderAdapter(this, loaders);
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(getString(R.string.member_details_forms_selector_lbl));
-        builder.setCancelable(true);
-        builder.setAdapter(adapter, new DialogInterface.OnClickListener() {
+        FormSelectorDialog.createDialog(getFragmentManager(), loaders, new FormSelectorDialog.OnFormSelectedListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
-                FormDataLoader formDataLoader = adapter.getItem(which);
+            public void onFormSelected(FormDataLoader formDataLoader) {
                 openOdkForm(formDataLoader);
             }
-        });
 
-        builder.show();
+            @Override
+            public void onCancelClicked() {
+
+            }
+        }).show();
+
     }
 
     @Override
@@ -690,29 +678,19 @@ public class MemberDetailsActivity extends Activity implements OdkFormResultList
     }
 
     private void buildDeleteSavedFormDialog(final Uri contenUri){
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(getString(R.string.member_details_dialog_del_saved_form_title_lbl));
-        builder.setMessage(getString(R.string.member_details_dialog_del_saved_form_msg_lbl));
-        builder.setCancelable(false);
-        builder.setPositiveButton(R.string.bt_yes_lbl, null);
-        builder.setNegativeButton(R.string.bt_no_lbl, null);
-        formNotFoundDialog = builder.create();
 
-        formNotFoundDialog.setOnShowListener(new DialogInterface.OnShowListener() {
+        DialogFactory.createMessageYN(this, R.string.member_details_dialog_del_saved_form_title_lbl, R.string.member_details_dialog_del_saved_form_msg_lbl, new DialogFactory.OnYesNoClickListener() {
             @Override
-            public void onShow(DialogInterface dialog) {
-                final Button b = formNotFoundDialog.getButton(AlertDialog.BUTTON_POSITIVE);
-                b.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        onDeleteForm(contenUri);
-                        formNotFoundDialog.dismiss();
-                    }
-                });
+            public void onYesClicked() {
+                onDeleteForm(contenUri);
             }
-        });
 
-        formNotFoundDialog.show();
+            @Override
+            public void onNoClicked() {
+
+            }
+        }).show();
+
     }
 
     /* ADD NEW MEMBER METHODS */
@@ -722,20 +700,18 @@ public class MemberDetailsActivity extends Activity implements OdkFormResultList
         //check if is an empty household and prompt the head of household registration
         //select mother and father
 
-        //
 
         Log.d("head", ""+household.getHeadCode());
 
         if (household.getHeadCode() == null || household.getHeadCode().trim().isEmpty()){
 
-            DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener() {
+            DialogFactory.createMessageInfo(this, getString(R.string.info_lbl), getString(R.string.new_member_dialog_household_head_warning_lbl), new DialogFactory.OnClickListener(){
                 @Override
-                public void onClick(DialogInterface dialog, int which) {
+                public void onClicked(DialogFactory.Buttons clickedButton) {
                     buildNewMemberDialog();
                 }
-            };
+            }).show();
 
-            buildOkDialog(getString(R.string.new_member_dialog_household_head_warning_lbl), listener);
             isHeadOfHousehold = true;
         } else {
             buildNewMemberDialog();
@@ -746,57 +722,20 @@ public class MemberDetailsActivity extends Activity implements OdkFormResultList
 
     private void buildNewMemberDialog(){
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        LayoutInflater inflater = this.getLayoutInflater();
-        View view = inflater.inflate(R.layout.new_member, null);
-
-        builder.setTitle(getString(R.string.new_member_dialog_title_lbl));
-        builder.setView(view);
-        builder.setCancelable(false);
-
-        builder.setPositiveButton(R.string.new_member_dialog_collect_lbl, null);
-
-        builder.setNegativeButton(R.string.bt_cancel_lbl, null);
-
-        final AlertDialog dialogNewMember = builder.create();
-
-        dialogNewMember.setOnShowListener(new DialogInterface.OnShowListener() {
+        FragmentManager fm = getFragmentManager();
+        MemberFormDialog dialog = MemberFormDialog.newInstance(this.household, new MemberFormDialog.Listener() {
             @Override
-            public void onShow(DialogInterface dialog) {
-                Button b = dialogNewMember.getButton(AlertDialog.BUTTON_POSITIVE);
-                Button c = dialogNewMember.getButton(AlertDialog.BUTTON_NEGATIVE);
-                b.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        onAddNewMemberCollectClicked(dialogNewMember);
-                    }
-                });
-                c.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        dialogNewMember.dismiss();
-                        onCancelAddNewMember();
-                    }
-                });
+            public void onNewMemberCreated(Member member) {
+                afterNewMemberCreated(member);
+            }
+
+            @Override
+            public void onCancelClicked() {
+                onCancelAddNewMember();
             }
         });
+        dialog.show(fm, "fragment_edit_name");
 
-        TextView txtNewMemHouseCode = (TextView) view.findViewById(R.id.txtNewMemHouseCode);
-        TextView txtNewMemHouseName = (TextView) view.findViewById(R.id.txtNewMemHouseName);
-        TextView txtNewMemCode = (TextView) view.findViewById(R.id.txtNewMemCode);
-        EditText txtNewMemName = (EditText) view.findViewById(R.id.txtNewMemName);
-        RadioButton chkNewMemGMale = (RadioButton) view.findViewById(R.id.chkNewMemGMale);
-        RadioButton chkNewMemGFemale = (RadioButton) view.findViewById(R.id.chkNewMemGFemale);
-        DatePicker dtpNewMemDob = (DatePicker) view.findViewById(R.id.dtpNewMemDob);
-
-        String code = generateMemberCode(household);
-
-        txtNewMemHouseCode.setText(household.getCode());
-        txtNewMemHouseName.setText(household.getName());
-        txtNewMemCode.setText(code);
-
-        //dialogNewMember.setCancelable(false);
-        dialogNewMember.show();
     }
 
     private void onCancelAddNewMember(){
@@ -820,72 +759,7 @@ public class MemberDetailsActivity extends Activity implements OdkFormResultList
         finish();
     }
 
-    private void onAddNewMemberCollectClicked(AlertDialog dialogNewMember){
-        if (dialogNewMember == null) return;
-
-        TextView txtNewMemHouseCode = (TextView) dialogNewMember.findViewById(R.id.txtNewMemHouseCode);
-        TextView txtNewMemHouseName = (TextView) dialogNewMember.findViewById(R.id.txtNewMemHouseName);
-        TextView txtNewMemCode = (TextView) dialogNewMember.findViewById(R.id.txtNewMemCode);
-        EditText txtNewMemName = (EditText) dialogNewMember.findViewById(R.id.txtNewMemName);
-        RadioButton chkNewMemGMale = (RadioButton) dialogNewMember.findViewById(R.id.chkNewMemGMale);
-        RadioButton chkNewMemGFemale = (RadioButton) dialogNewMember.findViewById(R.id.chkNewMemGFemale);
-        DatePicker dtpNewMemDob = (DatePicker) dialogNewMember.findViewById(R.id.dtpNewMemDob);
-
-        Member member = Member.getEmptyMember();
-        member.setRecentlyCreated(true);
-        member.setHouseholdCode(txtNewMemHouseCode.getText().toString());
-        member.setHouseholdName(txtNewMemHouseName.getText().toString());
-        member.setCode(txtNewMemCode.getText().toString());
-        member.setName(txtNewMemName.getText().toString());
-        member.setGender(chkNewMemGMale.isChecked() ? "M" : "F");
-        member.setDob(StringUtil.format(GeneralUtil.getDate(dtpNewMemDob), "yyyy-MM-dd" ));
-        member.setAge(GeneralUtil.getAge(GeneralUtil.getDate(dtpNewMemDob)));
-
-        member.setStartType("ENU");
-
-
-        if (!member.getCode().matches("[A-Z0-9]{6}[0-9]{6}")){
-            buildOkDialog(getString(R.string.member_list_newmem_code_err_lbl));
-            txtNewMemCode.requestFocus();
-            dialogNewMember.show();
-            return;
-        }
-        if (member.getName().trim().isEmpty()){
-            buildOkDialog(getString(R.string.member_list_newmem_name_err_lbl));
-            txtNewMemName.requestFocus();
-            dialogNewMember.show();
-            return;
-        }
-        if (member.getDobDate().after(new Date())){
-            buildOkDialog(getString(R.string.member_list_newmem_dob_err_lbl));
-            dialogNewMember.show();
-            return;
-        }
-
-        if (chkNewMemGFemale.isChecked() && chkNewMemGMale.isChecked()){
-            buildOkDialog(getString(R.string.member_list_newmem_gender_err1_lbl));
-            dialogNewMember.show();
-            return;
-        }
-
-        if (!chkNewMemGFemale.isChecked() && !chkNewMemGMale.isChecked()){
-            buildOkDialog(getString(R.string.member_list_newmem_gender_err2_lbl));
-            dialogNewMember.show();
-            return;
-        }
-
-        //check if permid exists
-        if (checkIfCodeExists(member.getCode())){
-            buildOkDialog(getString(R.string.member_list_newmem_code_exists_lbl));
-            txtNewMemCode.requestFocus();
-            dialogNewMember.show();
-            return;
-        }
-
-        //buildOkDialog("data: "+ GeneralUtil.getDate(dtpNmDob));
-
-        dialogNewMember.dismiss();
-
+    private void afterNewMemberCreated(Member member){
         this.member = member;
 
         buildSelectMotherDialog();
@@ -1078,23 +952,16 @@ public class MemberDetailsActivity extends Activity implements OdkFormResultList
     }
 
     private void buildSelectMotherDialog(){
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(getString(R.string.new_member_dialog_mother_select_lbl));
-        builder.setMessage(getString(R.string.new_member_dialog_mother_exists_lbl));
-        builder.setCancelable(false);
-        builder.setPositiveButton(R.string.bt_yes_lbl, new DialogInterface.OnClickListener() {
+
+        DialogFactory.createMessageYN(this, R.string.new_member_dialog_mother_select_lbl, R.string.new_member_dialog_mother_exists_lbl, new DialogFactory.OnYesNoClickListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
+            public void onYesClicked() {
                 //open mother filter dialog
                 filterMother();
             }
-        });
 
-        builder.setNegativeButton(R.string.bt_no_lbl, new DialogInterface.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
+            public void onNoClicked() {
                 //set unknown and jump to father dialog
                 selectedMother = Member.getUnknownIndividual();
 
@@ -1104,31 +971,21 @@ public class MemberDetailsActivity extends Activity implements OdkFormResultList
                     buildSelectFatherDialog();
                 }
             }
-        });
+        }).show();
 
-        AlertDialog dialog = builder.create();
-
-        dialog.show();
     }
 
     private void buildSelectFatherDialog(){
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(getString(R.string.new_member_dialog_father_select_lbl));
-        builder.setMessage(getString(R.string.new_member_dialog_father_exists_lbl));
-        builder.setCancelable(false);
-        builder.setPositiveButton(R.string.bt_yes_lbl, new DialogInterface.OnClickListener() {
+
+        DialogFactory.createMessageYN(this, R.string.new_member_dialog_father_select_lbl, R.string.new_member_dialog_father_exists_lbl, new DialogFactory.OnYesNoClickListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
+            public void onYesClicked() {
                 //open mother filter dialog
                 filterFather();
             }
-        });
 
-        builder.setNegativeButton(R.string.bt_no_lbl, new DialogInterface.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
+            public void onNoClicked() {
                 //set unknown and jump to father dialog
                 selectedFather = Member.getUnknownIndividual();
 
@@ -1138,11 +995,8 @@ public class MemberDetailsActivity extends Activity implements OdkFormResultList
                     buildSelectMaritalStatusDialog();
                 }
             }
-        });
+        }).show();
 
-        AlertDialog dialog = builder.create();
-
-        dialog.show();
     }
 
     private void buildSelectMaritalStatusDialog(){
@@ -1161,34 +1015,18 @@ public class MemberDetailsActivity extends Activity implements OdkFormResultList
             return; //jump if age lower than 15 - he cannot have a spouse
         }
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        LayoutInflater inflater = this.getLayoutInflater();
-        final View view = inflater.inflate(R.layout.relationship_type, null);
-
-        builder.setTitle(getString(R.string.relationship_type_title_lbl));
-        builder.setView(view);
-        builder.setCancelable(false);
-
-        builder.setPositiveButton(R.string.relationship_type_select_btn_lbl, new DialogInterface.OnClickListener() {
+        Log.d("Running", "nui spinner 2");
+        RelationshipTypeDialog.createDialog(getFragmentManager(), new RelationshipTypeDialog.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-
-                Spinner spnRelationshipType = (Spinner) view.findViewById(R.id.spnRelationshipType);
-                Log.d("relation type", spnRelationshipType+"");
-
-                if (spnRelationshipType != null){
-                    int selected = spnRelationshipType.getSelectedItemPosition();
-                    Log.d("relation type item", selected+"");
-                    onSelectedRelationshipType(selected);
-
-                }
+            public void onTypeSelected(int type) {
+                onSelectedRelationshipType(type);
             }
-        });
 
-        final AlertDialog dialog = builder.create();
-
-        dialog.show();
+            @Override
+            public void onCancelClicked() {
+                //THIS BUTTON IS DISABLED
+            }
+        }).show();
     }
 
     private void onSelectedRelationshipType(int selectedMaritalStatus){
@@ -1212,24 +1050,16 @@ public class MemberDetailsActivity extends Activity implements OdkFormResultList
 
         if (member.getAge()<15) return; //jump if age lower than 15 - he cannot have a spouse
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(getString(R.string.new_member_dialog_spouse_select_lbl));
-        builder.setMessage(getString(R.string.new_member_dialog_spouse_exists_lbl));
-        builder.setCancelable(false);
-        builder.setPositiveButton(R.string.bt_yes_lbl, new DialogInterface.OnClickListener() {
+        DialogFactory.createMessageYN(this, R.string.new_member_dialog_spouse_select_lbl, R.string.new_member_dialog_spouse_exists_lbl, new DialogFactory.OnYesNoClickListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
+            public void onYesClicked() {
                 //open spouse filter dialog
                 spouseChanged = true;
                 filterSpouse(member);
             }
-        });
 
-        builder.setNegativeButton(R.string.bt_no_lbl, new DialogInterface.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
+            public void onNoClicked() {
                 //set null - dont have a spouse
                 selectedSpouse = null;
                 spouseChanged = !member.getSpouseCode().isEmpty(); //If he/she had a spouse before now they havent
@@ -1240,98 +1070,58 @@ public class MemberDetailsActivity extends Activity implements OdkFormResultList
                     openOdkForNewMember();
                 }
             }
-        });
+        }).show();
 
-        AlertDialog dialog = builder.create();
-
-        dialog.show();
     }
 
     private void buildChangeMotherDialog(){
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(getString(R.string.new_member_dialog_change_title_lbl));
-        builder.setMessage(getString(R.string.new_member_dialog_mother_change_lbl));
-        builder.setCancelable(false);
-        builder.setPositiveButton(R.string.bt_yes_lbl, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
 
+        DialogFactory.createMessageYN(this, R.string.new_member_dialog_change_title_lbl, R.string.new_member_dialog_mother_change_lbl, new DialogFactory.OnYesNoClickListener() {
+            @Override
+            public void onYesClicked() {
                 buildSelectMotherDialog();
             }
-        });
 
-        builder.setNegativeButton(R.string.bt_no_lbl, new DialogInterface.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-
+            public void onNoClicked() {
                 buildChangeFatherDialog();
             }
-        });
+        }).show();
 
-        AlertDialog dialog = builder.create();
-
-        dialog.show();
     }
 
     private void buildChangeFatherDialog(){
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(getString(R.string.new_member_dialog_change_title_lbl));
-        builder.setMessage(getString(R.string.new_member_dialog_father_change_lbl));
-        builder.setCancelable(false);
-        builder.setPositiveButton(R.string.bt_yes_lbl, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
 
+        DialogFactory.createMessageYN(this, R.string.new_member_dialog_change_title_lbl, R.string.new_member_dialog_father_change_lbl, new DialogFactory.OnYesNoClickListener() {
+            @Override
+            public void onYesClicked() {
                 buildSelectFatherDialog();
             }
-        });
 
-        builder.setNegativeButton(R.string.bt_no_lbl, new DialogInterface.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-
+            public void onNoClicked() {
                 buildChangeMaritalStatusDialog();
             }
-        });
+        }).show();
 
-        AlertDialog dialog = builder.create();
-
-        dialog.show();
     }
 
     private void buildChangeSpouseDialog(){
 
         if (member.getAge()<15) return; //jump if age lower than 15 - he cannot have a spouse
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(getString(R.string.new_member_dialog_change_title_lbl));
-        builder.setMessage(getString(R.string.new_member_dialog_spouse_change_lbl));
-        builder.setCancelable(false);
-        builder.setPositiveButton(R.string.bt_yes_lbl, new DialogInterface.OnClickListener() {
+        DialogFactory.createMessageYN(this, R.string.new_member_dialog_change_title_lbl, R.string.new_member_dialog_spouse_change_lbl, new DialogFactory.OnYesNoClickListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-
+            public void onYesClicked() {
                 buildSelectSpouseDialog();
             }
-        });
 
-        builder.setNegativeButton(R.string.bt_no_lbl, new DialogInterface.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-
+            public void onNoClicked() {
                 openOdkForNewMember(household, member);
             }
-        });
+        }).show();
 
-        AlertDialog dialog = builder.create();
-
-        dialog.show();
     }
 
     private void buildChangeMaritalStatusDialog(){
@@ -1344,96 +1134,20 @@ public class MemberDetailsActivity extends Activity implements OdkFormResultList
             return; //jump if age lower than 15 - he cannot have a spouse
         }
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(getString(R.string.new_member_dialog_change_title_lbl));
-        builder.setMessage(getString(R.string.new_member_dialog_spouse_type_change_lbl));
-        builder.setCancelable(false);
-        builder.setPositiveButton(R.string.bt_yes_lbl, new DialogInterface.OnClickListener() {
+        DialogFactory.createMessageYN(this, R.string.new_member_dialog_change_title_lbl, R.string.new_member_dialog_spouse_type_change_lbl, new DialogFactory.OnYesNoClickListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-
+            public void onYesClicked() {
                 buildSelectMaritalStatusDialog();
             }
-        });
 
-        builder.setNegativeButton(R.string.bt_no_lbl, new DialogInterface.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
+            public void onNoClicked() {
                 spouseChanged = false;
 
                 openOdkForNewMember(household, member);
             }
-        });
+        }).show();
 
-        AlertDialog dialog = builder.create();
-
-        dialog.show();
-    }
-
-    private boolean checkIfCodeExists(String code){
-        Database database = new Database(this);
-        database.open();
-        Member member = Queries.getMemberBy(database, DatabaseHelper.Member.COLUMN_CODE+"=?", new String[] { code });
-        database.close();
-
-        return member != null;
-    }
-
-    private String generateMemberCode(Household household){
-        Database database = new Database(this);
-        database.open();
-        String baseId = household.getCode();
-        String[] columns = new String[] {DatabaseHelper.Member.COLUMN_CODE};
-        String where = DatabaseHelper.Member.COLUMN_CODE + " LIKE ?";
-        String[] whereArgs = new String[] { baseId + "%" };
-        String orderBy = DatabaseHelper.Member.COLUMN_CODE + " DESC";
-        String generatedId = null;
-
-        Cursor cursor = database.query(Member.class, columns, where, whereArgs, null, null, orderBy);
-
-        if (cursor.moveToFirst()) {
-            String lastGeneratedId = cursor.getString(0);
-
-            try { //ACA 000001 001
-                int increment = Integer.parseInt(lastGeneratedId.substring(9));
-                generatedId = baseId + String.format("%03d", increment+1);
-            } catch (NumberFormatException e) {
-                return baseId + "ERROR_01";
-            }
-
-        } else { //no Code based on "baseId"
-            generatedId = baseId + "001"; //set the first id of individual household
-        }
-
-        cursor.close();
-        database.close();
-
-        return generatedId;
-    }
-
-    private void buildOkDialog(String message){
-        buildOkDialog(null, message);
-    }
-
-    private void buildOkDialog(String message, DialogInterface.OnClickListener listener){
-        buildOkDialog(null, message, listener);
-    }
-
-    private void buildOkDialog(String title, String message){
-        buildOkDialog(title, message, null);
-    }
-
-    private void buildOkDialog(String title, String message, DialogInterface.OnClickListener listener){
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        title = (title==null || title.isEmpty()) ? getString(R.string.info_lbl) : title;
-
-        builder.setTitle(title);
-        builder.setMessage(message);
-        builder.setCancelable(false);
-        builder.setPositiveButton("OK", listener);
-        builder.show();
     }
 
 }

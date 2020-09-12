@@ -9,12 +9,12 @@
 
     <ImageView
         android:id="@+id/iconView"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
         android:layout_gravity="center"
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
-        android:src="@mipmap/form1" />
+        android:src="@mipmap/nui_form_red_icon" />
 
     <LinearLayout
         android:layout_width="match_parent"

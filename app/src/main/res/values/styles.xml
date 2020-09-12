@@ -6,16 +6,21 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
-        <item name="android:dialogTheme">@style/CustomDialog</item>
+        <item name="android:alertDialogTheme">@style/CustomDialog</item>
+        <!--<item name="android:alertDialogTheme">@style/AlertDialogTheme</item>-->
         <item name="android:fontFamily">@font/gordita_regular</item>
         <item name="android:textAllCaps">false</item>
         <item name="android:textColor">@color/nui_button_textcolor</item>
+        <item name="spinnerDropDownItemStyle">@style/SpinnerStyle</item>
 
     </style>
 
     <style name="CustomDialog" parent="@style/Theme.AppCompat.Light.Dialog">
         <item name="android:windowNoTitle">false</item>
-        <item name="android:windowBackground">@android:color/holo_blue_light</item>
+        <item name="android:windowBackground">@android:color/white</item>
+        <item name="android:colorAccent">@color/nui_color_text_red</item>
+        <item name="android:textColor">#444</item>
+
     </style>
 
     <style name="AppTheme.NoActionBar">
@@ -44,5 +49,26 @@
         <item name="colorAccent">#836060</item>
         <item name="android:background">@color/zxing_transparent</item>
     </style>
+
+    <style name="SpinnerStyle" parent="@style/Widget.AppCompat.Light.DropDownItem.Spinner">
+        <item name="android:textColor">#444</item>
+        <item name="android:colorAccent">@color/nui_color_text_red</item>
+        <item name="android:color">#444</item>
+    </style>
+
+    <!-- Dialog Theme -->
+    <style name="AlertDialogTheme" parent="ThemeOverlay.AppCompat.Dialog.Alert">
+        <item name="android:buttonBarNegativeButtonStyle">@style/NegativeButtonStyle</item>
+        <item name="android:buttonBarPositiveButtonStyle">@style/PositiveButtonStyle</item>
+    </style>
+
+    <style name="NegativeButtonStyle" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">
+        <item name="android:textColor">#f00</item>
+    </style>
+
+    <style name="PositiveButtonStyle" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">
+        <item name="android:textColor">#00f</item>
+    </style>
+
 
 </resources>

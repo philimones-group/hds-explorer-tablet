@@ -33,6 +33,10 @@ public class DialogFactory extends Dialog {
 
     private String dialogTitle;
     private String dialogMessage;
+    private String dialogYesText;
+    private String dialogNoText;
+    private String dialogCancelText;
+    private String dialogOkText;
 
     public enum Buttons { OK, YES, NO, CANCEL };
 
@@ -203,6 +207,18 @@ public class DialogFactory extends Dialog {
             this.txtDialogTitle.setText(this.dialogTitle);
             this.txtDialogMessage.setText(this.dialogMessage);
         }
+
+        if (this.btDialogYes != null && this.dialogYesText != null)
+            this.btDialogYes.setText(dialogYesText);
+
+        if (this.btDialogNo != null && this.dialogNoText != null)
+            this.btDialogNo.setText(dialogNoText);
+
+        if (this.btDialogCancel != null && this.dialogCancelText != null)
+            this.btDialogCancel.setText(dialogCancelText);
+
+        if (this.btDialogOk != null && this.dialogOkText != null)
+            this.btDialogOk.setText(dialogOkText);
     }
 
     public void setDialogTitle(String title){
@@ -213,6 +229,38 @@ public class DialogFactory extends Dialog {
     public void setDialogMessage(String message){
         this.dialogMessage = message;
         setTexts();
+    }
+
+    public void setYesText(String text){
+        this.dialogYesText = text;
+    }
+
+    public void setYesText(@StringRes int textResId){
+        this.dialogYesText = getContext().getString(textResId);
+    }
+
+    public void setNoText(String text){
+        this.dialogNoText = text;
+    }
+
+    public void setNoText(@StringRes int textResId){
+        this.dialogNoText = getContext().getString(textResId);
+    }
+
+    public void setCancelText(String text){
+        this.dialogCancelText = text;
+    }
+
+    public void setCancelText(@StringRes int textResId){
+        this.dialogCancelText = getContext().getString(textResId);
+    }
+
+    public void setOkText(String text){
+        this.dialogOkText = text;
+    }
+
+    public void setOkText(@StringRes int textResId){
+        this.dialogOkText = getContext().getString(textResId);
     }
 
     public void doLayout() {

@@ -13,6 +13,7 @@ import com.google.zxing.integration.android.IntentResult;
 
 import org.philimone.hds.explorer.R;
 import org.philimone.hds.explorer.main.barcode.AnyOrientationCaptureActivity;
+import org.philimone.hds.explorer.widget.DialogFactory;
 
 public class BarcodeScannerActivity extends AppCompatActivity {
 
@@ -50,7 +51,6 @@ public class BarcodeScannerActivity extends AppCompatActivity {
     }
 
     private void askForBarcodeScanDialog(){
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
         String message = getString(R.string.barcode_dialog_txt_scan_barcode_lbl);
 
@@ -60,25 +60,21 @@ public class BarcodeScannerActivity extends AppCompatActivity {
             ex.printStackTrace();
         }
 
-
-        builder.setTitle(getString(R.string.barcode_dialog_ask_scan_title));
-        builder.setMessage(message);
-        builder.setCancelable(false);
-        builder.setNegativeButton(getString(R.string.barcode_dialog_bt_cancel_lbl), new DialogInterface.OnClickListener() {
+        DialogFactory dialog = DialogFactory.createMessageYN(this, getString(R.string.barcode_dialog_ask_scan_title), message, new DialogFactory.OnYesNoClickListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
-
-        builder.setPositiveButton(getString(R.string.barcode_dialog_bt_scan_lbl), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
+            public void onYesClicked() {
                 onBarcodeScanClicked();
-                dialog.dismiss();
+            }
+
+            @Override
+            public void onNoClicked() {
+
             }
         });
-        builder.show();
+        dialog.setYesText(R.string.barcode_dialog_bt_scan_lbl);
+        dialog.setNoText(R.string.barcode_dialog_bt_cancel_lbl);
+        dialog.show();
+
     }
 
     private void onBarcodeScanClicked() {

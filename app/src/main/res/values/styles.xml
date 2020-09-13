@@ -39,6 +39,9 @@
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowIsFloating">true</item>
         <item name="android:backgroundDimEnabled">false</item>
+        <item name="android:fontFamily">@font/gordita_regular</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textColor">@color/nui_button_textcolor</item>
     </style>
 
     <style name="SettingsScreen" parent="Theme.AppCompat.Light">

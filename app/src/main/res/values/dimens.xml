@@ -76,6 +76,7 @@
 
     <dimen name="dialog_factory_textsize">16sp</dimen>
     <dimen name="dialog_factory_button_size">150dp</dimen>
+    <dimen name="dialog_factory_button_height">50dp</dimen>
 
     <dimen name="member_form_dialog_button_size">200dp</dimen>
     <dimen name="member_form_dialog_button_textsize">16sp</dimen>

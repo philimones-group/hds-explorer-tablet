@@ -145,12 +145,12 @@ public class HouseholdArrayAdapter extends ArrayAdapter<Household> {
         if (supervisedHouseholds != null && position < supervisedHouseholds.size()){
             if (supervisedHouseholds.get(position)==true){
                 txtName.setTypeface(null, Typeface.BOLD);
-                iconView.setImageResource(R.mipmap.household_chk);
+                iconView.setImageResource(R.mipmap.nui_household_red_chk_icon);
             }
         }
 
         if (hh.isRecentlyCreated()){
-            iconView.setImageResource(R.mipmap.household_new);
+            iconView.setImageResource(R.mipmap.nui_household_red_new_icon);
         }
 
         if (this.extras != null && position < this.extras.size()){

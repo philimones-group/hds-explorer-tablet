@@ -722,8 +722,7 @@ public class MemberDetailsActivity extends Activity implements OdkFormResultList
 
     private void buildNewMemberDialog(){
 
-        FragmentManager fm = getFragmentManager();
-        MemberFormDialog dialog = MemberFormDialog.newInstance(this.household, new MemberFormDialog.Listener() {
+        MemberFormDialog dialog = MemberFormDialog.newInstance(getFragmentManager(), this.household, new MemberFormDialog.Listener() {
             @Override
             public void onNewMemberCreated(Member member) {
                 afterNewMemberCreated(member);
@@ -734,7 +733,7 @@ public class MemberDetailsActivity extends Activity implements OdkFormResultList
                 onCancelAddNewMember();
             }
         });
-        dialog.show(fm, "fragment_edit_name");
+        dialog.show();
 
     }
 

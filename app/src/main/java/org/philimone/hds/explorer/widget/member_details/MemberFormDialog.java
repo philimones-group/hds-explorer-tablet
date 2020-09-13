@@ -1,6 +1,7 @@
 package org.philimone.hds.explorer.widget.member_details;
 
 import android.app.DialogFragment;
+import android.app.FragmentManager;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -32,6 +33,8 @@ import mz.betainteractive.utilities.StringUtil;
  */
 public class MemberFormDialog extends DialogFragment {
 
+    private FragmentManager fragmentManager;
+
     private TextView txtNewMemHouseCode;
     private TextView txtNewMemHouseName;
     private TextView txtNewMemCode;
@@ -53,9 +56,10 @@ public class MemberFormDialog extends DialogFragment {
     }
 
 
-    public static MemberFormDialog newInstance(Household household, Listener listener){
+    public static MemberFormDialog newInstance(FragmentManager fm, Household household, Listener listener){
         MemberFormDialog dialog = new MemberFormDialog();
 
+        dialog.fragmentManager = fm;
         dialog.household = household;
         dialog.listener = listener;
         dialog.setCancelable(false);
@@ -233,6 +237,10 @@ public class MemberFormDialog extends DialogFragment {
         database.close();
 
         return member != null;
+    }
+
+    public void show(){
+        this.show(fragmentManager, "memform");
     }
 
     public interface Listener {

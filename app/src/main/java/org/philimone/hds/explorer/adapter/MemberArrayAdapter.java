@@ -170,7 +170,7 @@ public class MemberArrayAdapter  extends ArrayAdapter<Member> {
         if (supervisedMembers != null && position < supervisedMembers.size()){
             if (supervisedMembers.get(position)==true){
                 //txtName.setTypeface(null, Typeface.BOLD);
-                iconView.setImageResource(R.mipmap.nui_member_red_filled_chk_icon);
+                iconView.setImageResource(R.mipmap.nui_member_red_chk_icon);
             }
         }
 

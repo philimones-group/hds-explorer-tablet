@@ -2,111 +2,205 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_margin="5dp"
     android:orientation="vertical">
 
+    <!-- Dialog Header -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/nui_dialog_border_thin"
+        android:orientation="horizontal"
+        android:elevation="5dp">
+
+        <ImageView
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:alpha="0.75"
+            android:background="@mipmap/nui_household_red_filled_icon"
+            android:contentDescription="TODO" />
+
+        <TextView
+            android:id="@+id/dialogTitle"
+            android:layout_width="500dp"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="10dp"
+            android:gravity="center_vertical"
+            android:text="@string/new_household_main_dialog_lbl"
+            android:textSize="18sp"
+            android:textColor="@color/nui_color_text_red"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+    <!-- main form  -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:background="@drawable/nui_txtbox_rone_wbevel"
         android:orientation="vertical">
-        <TextView
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="@string/new_household_region_code_lbl"/>
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:orientation="vertical">
 
-        <android.support.design.widget.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_marginLeft="15dp"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@color/nui_color_text_darkgray"
+                android:text="@string/new_household_region_code_lbl"/>
+
             <TextView
                 android:id="@+id/txtRegionCode"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:layout_height="@dimen/member_form_dialog_textbox_height"
+                android:paddingStart="15dp"
+                android:gravity="center_vertical"
+                android:background="@drawable/nui_txtbox_rone_wbevel"
+                android:textSize="@dimen/dialog_factory_textsize"
+                android:textColor="@color/nui_color_text_adgray"
                 android:maxLines="1"
                 android:singleLine="true" />
-        </android.support.design.widget.TextInputLayout>
-    </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:orientation="vertical">
-        <TextView
+        </LinearLayout>
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="@string/new_household_region_name_lbl"/>
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:orientation="vertical">
 
-        <android.support.design.widget.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_marginLeft="15dp"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@color/nui_color_text_darkgray"
+                android:text="@string/new_household_region_name_lbl"/>
+
             <TextView
                 android:id="@+id/txtRegionName"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:layout_height="@dimen/member_form_dialog_textbox_height"
+                android:paddingStart="15dp"
+                android:gravity="center_vertical"
+                android:background="@drawable/nui_txtbox_rone_wbevel"
+                android:textSize="@dimen/dialog_factory_textsize"
+                android:textColor="@color/nui_color_text_adgray"
                 android:maxLines="1"
                 android:singleLine="true" />
-        </android.support.design.widget.TextInputLayout>
-    </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:orientation="vertical">
-        <TextView
+        </LinearLayout>
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="@string/new_household_code_lbl"/>
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:orientation="vertical">
 
-        <android.support.design.widget.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_marginLeft="15dp"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@color/nui_color_text_darkgray"
+                android:text="@string/new_household_code_lbl"/>
+
             <TextView
                 android:id="@+id/txtHouseCode"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:layout_height="@dimen/member_form_dialog_textbox_height"
+                android:paddingStart="15dp"
+                android:gravity="center_vertical"
+                android:background="@drawable/nui_txtbox_rone_wbevel"
+                android:textSize="@dimen/dialog_factory_textsize"
+                android:textColor="@color/nui_color_text_adgray"
                 android:maxLines="1"
                 android:singleLine="true" />
-        </android.support.design.widget.TextInputLayout>
-    </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:orientation="vertical">
-        <TextView
+        </LinearLayout>
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="@string/new_household_name_lbl"/>
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="35dp"
+            android:orientation="vertical">
 
-        <android.support.design.widget.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_marginLeft="15dp"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@color/nui_color_text_darkgray"
+                android:text="@string/new_household_name_lbl"/>
+
             <EditText
                 android:id="@+id/txtHouseName"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="@dimen/member_form_dialog_textbox_height"
+                android:paddingStart="15dp"
+                android:gravity="center_vertical"
+                android:background="@drawable/nui_txtbox_rone_wbevel"
+                android:textSize="@dimen/dialog_factory_textsize"
+                android:textColor="@color/nui_color_text_adgray"
                 android:hint="@string/new_household_name_hint"
                 android:inputType="text"
                 android:maxLines="1"
                 android:singleLine="true" />
-        </android.support.design.widget.TextInputLayout>
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <!-- buttons -->
+    <LinearLayout
+        android:id="@+id/hhLayoutButtons"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center|bottom"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="20dp"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btNewHhCancel"
+            android:layout_width="@dimen/member_form_dialog_button_size"
+            android:layout_height="@dimen/member_details_bt_height"
+            android:layout_marginRight="10dp"
+            android:textSize="@dimen/member_form_dialog_button_textsize"
+            android:textStyle="bold"
+            android:text="@string/bt_cancel_lbl"
+            android:background="@drawable/nui_btnd_rone_gflat"/>
+
+        <Button
+            android:id="@+id/btNewHhCollect"
+            android:layout_width="@dimen/member_form_dialog_button_size"
+            android:layout_height="@dimen/member_details_bt_height"
+            android:layout_marginLeft="10dp"
+            android:textSize="@dimen/member_form_dialog_button_textsize"
+            android:textStyle="bold"
+            android:text="@string/new_member_dialog_collect_lbl"
+            android:background="@drawable/nui_btnd_rone_dgbevel"/>
+
+
     </LinearLayout>
 
 </LinearLayout>

@@ -1,26 +1,21 @@
 package org.philimone.hds.explorer.main;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import org.philimone.hds.explorer.R;
 import org.philimone.hds.explorer.adapter.CollectedDataArrayAdapter;
-import org.philimone.hds.explorer.adapter.FormLoaderAdapter;
 import org.philimone.hds.explorer.adapter.MemberArrayAdapter;
 import org.philimone.hds.explorer.adapter.model.CollectedDataItem;
 import org.philimone.hds.explorer.data.FormDataLoader;
@@ -32,10 +27,13 @@ import org.philimone.hds.explorer.model.CollectedData;
 import org.philimone.hds.explorer.model.DataSet;
 import org.philimone.hds.explorer.model.Form;
 import org.philimone.hds.explorer.model.Household;
-import org.philimone.hds.explorer.model.Region;
 import org.philimone.hds.explorer.model.Member;
+import org.philimone.hds.explorer.model.Region;
 import org.philimone.hds.explorer.model.User;
+import org.philimone.hds.explorer.widget.DialogFactory;
+import org.philimone.hds.explorer.widget.FormSelectorDialog;
 import org.philimone.hds.explorer.widget.LoadingDialog;
+import org.philimone.hds.explorer.widget.household_details.HouseholdFormDialog;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -69,8 +67,6 @@ public class HouseholdDetailsActivity extends Activity implements OdkFormResultL
     private User loggedUser;
 
     private LoadingDialog loadingDialog;
-    private AlertDialog dialogNewHousehold;
-    private AlertDialog dialogNewMember;
 
     private FormUtilities formUtilities;
     private Database database;
@@ -233,69 +229,19 @@ public class HouseholdDetailsActivity extends Activity implements OdkFormResultL
     /*Household Census*/
 
     private void addNewHousehold(Region region){
-        String code = generateHouseholdCode(region, loggedUser);
 
-        TextView txtRegionCode = null;
-        TextView txtRegionName = null;
-        TextView txtHouseCode = null;
-        EditText txtHouseName = null;
+        new HouseholdFormDialog().newInstance(getFragmentManager(), this.region, this.loggedUser, new HouseholdFormDialog.Listener() {
+            @Override
+            public void onNewHouseholdCreated(Household household) {
+                afterNewHouseholdCreated(household);
+            }
 
-        if (dialogNewHousehold == null){
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            LayoutInflater inflater = this.getLayoutInflater();
-            View view = inflater.inflate(R.layout.new_household, null);
+            @Override
+            public void onCancelClicked() {
+                onCancelAddNewHousehold();
+            }
+        }).show();
 
-            builder.setTitle(getString(R.string.new_household_main_dialog_lbl));
-            builder.setView(view);
-            builder.setCancelable(false);
-            builder.setPositiveButton(R.string.new_household_bt_collect_lbl, null);
-            builder.setNegativeButton(R.string.new_household_bt_cancel_lbl, null);
-
-            txtRegionCode = (TextView) view.findViewById(R.id.txtRegionCode);
-            txtRegionName = (TextView) view.findViewById(R.id.txtRegionName);
-            txtHouseCode = (TextView) view.findViewById(R.id.txtHouseCode);
-            txtHouseName = (EditText) view.findViewById(R.id.txtHouseName);
-
-            dialogNewHousehold = builder.create();
-
-            dialogNewHousehold.setOnShowListener(new DialogInterface.OnShowListener() {
-                @Override
-                public void onShow(DialogInterface dialog) {
-                    Button a = dialogNewHousehold.getButton(AlertDialog.BUTTON_NEGATIVE);
-                    Button b = dialogNewHousehold.getButton(AlertDialog.BUTTON_POSITIVE);
-
-                    a.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            onCancelAddNewHousehold();
-                        }
-                    });
-
-                    b.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            onAddNewHouseholdCollect();
-                        }
-                    });
-                }
-            });
-        } else {
-            txtRegionCode = (TextView) dialogNewHousehold.findViewById(R.id.txtRegionCode);
-            txtRegionName = (TextView) dialogNewHousehold.findViewById(R.id.txtRegionName);
-            txtHouseCode = (TextView) dialogNewHousehold.findViewById(R.id.txtHouseCode);
-            txtHouseName = (EditText) dialogNewHousehold.findViewById(R.id.txtHouseName);
-        }
-
-        if (txtHouseCode != null){
-            txtRegionCode.setText(region.getCode());
-            txtRegionName.setText(region.getName());
-            txtHouseCode.setText(code);
-            txtHouseName.setText(code);
-        }
-
-
-        //dialogNewHousehold.setCancelable(false);
-        dialogNewHousehold.show();
     }
 
     private void onCancelAddNewHousehold(){
@@ -304,10 +250,6 @@ public class HouseholdDetailsActivity extends Activity implements OdkFormResultL
 
             //Intent intent = new Intent(this, HouseholdDetailsActivity.class);
             //intent.putExtra("user", loggedUser);
-
-            if (dialogNewHousehold != null && dialogNewHousehold.isShowing()) {
-                dialogNewHousehold.dismiss();
-            }
 
             setResult(RESULT_CANCELED); //CANCELED
             finish();
@@ -322,53 +264,7 @@ public class HouseholdDetailsActivity extends Activity implements OdkFormResultL
         finish();
     }
 
-    private void onAddNewHouseholdCollect() {
-        if (dialogNewHousehold == null) return;
-
-        TextView txtRegionCode = (TextView) dialogNewHousehold.findViewById(R.id.txtRegionCode);
-        TextView txtRegionName = (TextView) dialogNewHousehold.findViewById(R.id.txtRegionName);
-        TextView txtHouseCode = (TextView) dialogNewHousehold.findViewById(R.id.txtHouseCode);
-        EditText txtHouseName = (EditText) dialogNewHousehold.findViewById(R.id.txtHouseName);
-
-        Household household = Household.getEmptyHousehold();
-        household.setCode(txtHouseCode.getText().toString());
-        household.setName(txtHouseName.getText().toString());
-        household.setRegion(region.getCode());
-
-        household.setRecentlyCreated(true);
-
-        //checks
-
-        if (!household.getCode().matches("[A-Z0-9]{6}[0-9]{3}")){
-            buildOkDialog(getString(R.string.new_household_code_err_lbl));
-            dialogNewHousehold.show();
-            return;
-        }
-
-        if (household.getName().isEmpty()){
-            buildOkDialog(getString(R.string.new_household_code_empty_lbl));
-            dialogNewHousehold.show();
-            return;
-        }
-
-        if (!household.getCode().startsWith(household.getRegion())){
-            buildOkDialog(getString(R.string.new_household_code_region_err_lbl));
-            dialogNewHousehold.show();
-            return;
-        }
-
-        //check if houseNumber exists
-        if (checkIfHouseCodeExists(household.getCode())){
-            buildOkDialog(getString(R.string.new_household_code_exists_lbl));
-            dialogNewHousehold.show();
-            return;
-        }
-
-
-        //buildOkDialog("data: "+ GeneralUtil.getDate(dtpNmDob));
-
-        dialogNewHousehold.dismiss();
-
+    private void afterNewHouseholdCreated(Household household) {
         //open ODK Form
         openAddNewHouseholdForm(household, region);
     }
@@ -671,20 +567,17 @@ public class HouseholdDetailsActivity extends Activity implements OdkFormResultL
 
     private void buildFormSelectorDialog(List<FormDataLoader> loaders) {
 
-        final FormLoaderAdapter adapter = new FormLoaderAdapter(this, loaders);
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(getString(R.string.household_details_forms_selector_lbl));
-        builder.setCancelable(true);
-        builder.setAdapter(adapter, new DialogInterface.OnClickListener() {
+        FormSelectorDialog.createDialog(getFragmentManager(), loaders, new FormSelectorDialog.OnFormSelectedListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
-                FormDataLoader formDataLoader = adapter.getItem(which);
+            public void onFormSelected(FormDataLoader formDataLoader) {
                 openOdkForm(formDataLoader);
             }
-        });
 
-        builder.show();
+            @Override
+            public void onCancelClicked() {
+
+            }
+        }).show();
     }
 
     @Override
@@ -854,41 +747,28 @@ public class HouseholdDetailsActivity extends Activity implements OdkFormResultL
         }
     }
 
-    AlertDialog dialogNewhousehold;
-
     @Override
     public void onFormNotFound(final Uri contenUri) {
         buildDeleteSavedFormDialog(contenUri);
     }
 
     private void buildDeleteSavedFormDialog(final Uri contenUri){
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(getString(R.string.household_details_dialog_del_saved_form_title_lbl));
-        builder.setMessage(getString(R.string.household_details_dialog_del_saved_form_msg_lbl));
-        builder.setCancelable(false);
-        builder.setPositiveButton(R.string.bt_yes_lbl, null);
-        builder.setNegativeButton(R.string.bt_no_lbl, null);
-        dialogNewhousehold = builder.create();
 
-        dialogNewhousehold.setOnShowListener(new DialogInterface.OnShowListener() {
+        DialogFactory.createMessageYN(this, R.string.household_details_dialog_del_saved_form_title_lbl, R.string.household_details_dialog_del_saved_form_msg_lbl, new DialogFactory.OnYesNoClickListener() {
             @Override
-            public void onShow(DialogInterface dialog) {
-                final Button b = dialogNewhousehold.getButton(AlertDialog.BUTTON_POSITIVE);
-                b.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        onDeleteForm(contenUri);
-                        dialogNewhousehold.dismiss();
+            public void onYesClicked() {
+                onDeleteForm(contenUri);
 
-                        if (requestCode == REQUEST_CODE_NEW_HOUSEHOLD || requestCode == REQUEST_CODE_EDIT_HOUSEHOLD){
-                            onCancelAddNewHousehold();
-                        }
-                    }
-                });
+                if (requestCode == REQUEST_CODE_NEW_HOUSEHOLD || requestCode == REQUEST_CODE_EDIT_HOUSEHOLD){
+                    onCancelAddNewHousehold();
+                }
             }
-        });
 
-        dialogNewhousehold.show();
+            @Override
+            public void onNoClicked() {
+
+            }
+        }).show();
     }
 
     /* LOAD FORM VALUES */
@@ -901,24 +781,6 @@ public class HouseholdDetailsActivity extends Activity implements OdkFormResultL
         task.execute();
 
         showLoadingDialog(getString(R.string.loading_dialog_member_details_lbl), true);
-
-        /*
-        Household household = getHousehold(member);
-        Region region = getRegion(household);
-
-
-        adapter.setSelectedIndex(-1);
-
-        FormDataLoader[] dataLoaders = getFormLoaders(FormFilter.HOUSEHOLD_HEAD, FormFilter.MEMBER); //I only need MemberForm and HouseholdHead
-        loadFormValues(dataLoaders, household, member, region);
-
-        Intent intent = new Intent(this, MemberDetailsActivity.class);
-        intent.putData("user", loggedUser);
-        intent.putData("member", member);
-        intent.putData("dataloaders", dataLoaders);
-
-        startActivity(intent);
-        */
     }
 
     public FormDataLoader[] getFormLoaders(FormFilter... filters){
@@ -1012,21 +874,6 @@ public class HouseholdDetailsActivity extends Activity implements OdkFormResultL
         db.close();
 
         return list;
-    }
-
-    private void buildOkDialog(String message){
-        buildOkDialog(null, message);
-    }
-
-    private void buildOkDialog(String title, String message){
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        title = (title==null || title.isEmpty()) ? getString(R.string.info_lbl) : title;
-
-        builder.setTitle(title);
-        builder.setMessage(message);
-        builder.setCancelable(false);
-        builder.setPositiveButton("OK", null);
-        builder.show();
     }
 
     private void showLoadingDialog(String msg, boolean show){

@@ -1,120 +1,299 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:layout_margin="5dp"
+    android:orientation="vertical">
 
+    <!-- Dialog Header -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="60dp"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/nui_dialog_border_thin"
+        android:orientation="horizontal"
+        android:elevation="5dp">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+        <ImageView
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:alpha="0.75"
+            android:background="@mipmap/nui_household_red_filled_icon"
+            android:contentDescription="TODO" />
+
+        <TextView
+            android:id="@+id/dialogTitle"
+            android:layout_width="500dp"
+            android:layout_height="match_parent"
             android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:orientation="vertical">
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="@string/new_household_region_code_lbl"/>
-
-            <android.support.design.widget.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-                <TextView
-                    android:id="@+id/txtRegionCode"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:maxLines="1"
-                    android:singleLine="true" />
-            </android.support.design.widget.TextInputLayout>
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:orientation="vertical">
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="@string/new_household_region_name_lbl"/>
-
-            <android.support.design.widget.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-                <TextView
-                    android:id="@+id/txtRegionName"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:maxLines="1"
-                    android:singleLine="true" />
-            </android.support.design.widget.TextInputLayout>
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:orientation="vertical">
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="@string/new_household_code_lbl"/>
-
-            <android.support.design.widget.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-                <TextView
-                    android:id="@+id/txtHouseCode"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:maxLines="1"
-                    android:singleLine="true" />
-            </android.support.design.widget.TextInputLayout>
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:orientation="vertical">
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="@string/new_household_name_lbl"/>
-
-            <android.support.design.widget.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-                <EditText
-                    android:id="@+id/txtHouseName"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/new_household_name_hint"
-                    android:inputType="textFilter|number"
-                    android:digits="0123456789-"
-                    android:maxLines="1"
-                    android:singleLine="true" />
-            </android.support.design.widget.TextInputLayout>
-        </LinearLayout>
+            android:gravity="center_vertical"
+            android:text="@string/new_household_main_dialog_lbl"
+            android:textSize="18sp"
+            android:textColor="@color/nui_color_text_red"
+            android:textStyle="bold" />
 
     </LinearLayout>
 
-</ScrollView>
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <!-- main form  -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:background="@drawable/nui_txtbox_rone_wbevel"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp"
+                        android:layout_marginLeft="15dp"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:textColor="@color/nui_color_text_darkgray"
+                        android:text="@string/new_household_code_lbl"/>
+
+
+                    <TextView
+                        android:id="@+id/txtNewMemHouseCode"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/member_form_dialog_textbox_height"
+                        android:gravity="center_vertical"
+                        android:paddingStart="15dp"
+                        android:background="@drawable/nui_txtbox_rone_wbevel"
+                        android:textSize="@dimen/dialog_factory_textsize"
+                        android:textColor="@color/nui_color_text_adgray"
+                        android:maxLines="1"
+                        android:singleLine="true" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:orientation="vertical">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp"
+                        android:layout_marginLeft="15dp"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:textColor="@color/nui_color_text_darkgray"
+                        android:text="@string/member_list_newmem_housename_lbl"/>
+
+                    <TextView
+                        android:id="@+id/txtNewMemHouseName"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/member_form_dialog_textbox_height"
+                        android:gravity="center_vertical"
+                        android:paddingStart="15dp"
+                        android:background="@drawable/nui_txtbox_rone_wbevel"
+                        android:textColor="@color/nui_color_text_adgray"
+                        android:textSize="@dimen/dialog_factory_textsize"
+                        android:hint="@string/member_list_newmem_housename_hint"
+                        android:maxLines="1"
+                        android:singleLine="true" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp"
+                        android:layout_marginLeft="15dp"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:textColor="@color/nui_color_text_darkgray"
+                        android:text="@string/member_list_newmem_code_lbl"/>
+
+                    <TextView
+                        android:id="@+id/txtNewMemCode"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/member_form_dialog_textbox_height"
+                        android:gravity="center_vertical"
+                        android:paddingStart="15dp"
+                        android:background="@drawable/nui_txtbox_rone_wbevel"
+                        android:textColor="@color/nui_color_text_adgray"
+                        android:textSize="@dimen/dialog_factory_textsize"
+                        android:hint="@string/member_list_newmem_code_hint"
+                        android:maxLines="1"
+                        android:singleLine="true" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp"
+                        android:layout_marginLeft="15dp"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:textColor="@color/nui_color_text_darkgray"
+                        android:text="@string/member_list_newmem_name_lbl"/>
+
+                    <EditText
+                        android:id="@+id/txtNewMemName"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/member_form_dialog_textbox_height"
+                        android:paddingStart="15dp"
+                        android:background="@drawable/nui_txtbox_rone_wbevel"
+                        android:textSize="@dimen/dialog_factory_textsize"
+                        android:hint="@string/member_list_newmem_name_hint"
+                        android:inputType="text"
+                        android:maxLines="1"
+                        android:singleLine="true" />
+
+                </LinearLayout>
+
+                <!-- Gender Info -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="15dp"
+                        android:layout_marginTop="20dp"
+                        android:text="@string/member_filter_gender_lbl"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:textColor="@color/nui_color_text_darkgray" />
+
+                    <LinearLayout
+                        android:id="@+id/layout_nm_gender"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:orientation="horizontal">
+
+                        <RadioGroup
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:orientation="horizontal">
+
+                            <RadioButton
+                                android:id="@+id/chkNewMemGFemale"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_vertical"
+                                android:text="@string/member_filter_gender_female_lbl"
+                                android:textAppearance="?android:attr/textAppearanceMedium"
+                                android:checked="true"/>
+
+                            <RadioButton
+                                android:id="@+id/chkNewMemGMale"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_vertical"
+                                android:text="@string/member_filter_gender_male_lbl"
+                                android:textAppearance="?android:attr/textAppearanceMedium"
+                                android:layout_marginLeft="60dp"/>
+
+                        </RadioGroup>
+
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="15dp"
+                        android:layout_marginTop="20dp"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:textColor="@color/nui_color_text_darkgray"
+                        android:text="@string/member_list_newmem_dob_lbl"/>
+
+                    <DatePicker
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/dtpNewMemDob"
+                        android:calendarViewShown="false"
+                        android:datePickerMode="spinner" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <!-- buttons -->
+            <LinearLayout
+                android:id="@+id/hhLayoutButtons"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center|bottom"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="20dp"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/btNewMemCancel"
+                    android:layout_width="@dimen/member_form_dialog_button_size"
+                    android:layout_height="@dimen/member_details_bt_height"
+                    android:layout_marginRight="10dp"
+                    android:textSize="@dimen/member_form_dialog_button_textsize"
+                    android:textStyle="bold"
+                    android:text="@string/bt_cancel_lbl"
+                    android:background="@drawable/nui_btnd_rone_gflat"/>
+
+                <Button
+                    android:id="@+id/btNewMemCollect"
+                    android:layout_width="@dimen/member_form_dialog_button_size"
+                    android:layout_height="@dimen/member_details_bt_height"
+                    android:layout_marginLeft="10dp"
+                    android:textSize="@dimen/member_form_dialog_button_textsize"
+                    android:textStyle="bold"
+                    android:text="@string/new_member_dialog_collect_lbl"
+                    android:background="@drawable/nui_btnd_rone_dgbevel"/>
+
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</LinearLayout>

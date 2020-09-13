@@ -1,26 +1,20 @@
 package org.philimone.hds.explorer.main;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import org.philimone.hds.explorer.R;
 import org.philimone.hds.explorer.adapter.CollectedDataArrayAdapter;
-import org.philimone.hds.explorer.adapter.FormLoaderAdapter;
 import org.philimone.hds.explorer.adapter.model.CollectedDataItem;
 import org.philimone.hds.explorer.data.FormDataLoader;
-import org.philimone.hds.explorer.database.Converter;
 import org.philimone.hds.explorer.database.Database;
 import org.philimone.hds.explorer.database.DatabaseHelper;
 import org.philimone.hds.explorer.database.Queries;
@@ -29,6 +23,8 @@ import org.philimone.hds.explorer.model.CollectedData;
 import org.philimone.hds.explorer.model.Form;
 import org.philimone.hds.explorer.model.Region;
 import org.philimone.hds.explorer.model.User;
+import org.philimone.hds.explorer.widget.DialogFactory;
+import org.philimone.hds.explorer.widget.FormSelectorDialog;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -331,20 +327,17 @@ public class RegionDetailsActivity extends Activity implements OdkFormResultList
 
     private void buildFormSelectorDialog(List<FormDataLoader> loaders) {
 
-        final FormLoaderAdapter adapter = new FormLoaderAdapter(this, loaders);
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(getString(R.string.household_details_forms_selector_lbl));
-        builder.setCancelable(true);
-        builder.setAdapter(adapter, new DialogInterface.OnClickListener() {
+        FormSelectorDialog.createDialog(getFragmentManager(), loaders, new FormSelectorDialog.OnFormSelectedListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
-                FormDataLoader formDataLoader = adapter.getItem(which);
+            public void onFormSelected(FormDataLoader formDataLoader) {
                 openOdkForm(formDataLoader);
             }
-        });
 
-        builder.show();
+            @Override
+            public void onCancelClicked() {
+
+            }
+        }).show();
     }
 
     @Override
@@ -492,37 +485,24 @@ public class RegionDetailsActivity extends Activity implements OdkFormResultList
         showCollectedData();
     }
 
-    AlertDialog dialogNewhousehold;
-
     @Override
     public void onFormNotFound(final Uri contenUri) {
         buildDeleteSavedFormDialog(contenUri);
     }
 
     private void buildDeleteSavedFormDialog(final Uri contenUri){
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(getString(R.string.household_details_dialog_del_saved_form_title_lbl));
-        builder.setMessage(getString(R.string.household_details_dialog_del_saved_form_msg_lbl));
-        builder.setCancelable(false);
-        builder.setPositiveButton(R.string.bt_yes_lbl, null);
-        builder.setNegativeButton(R.string.bt_no_lbl, null);
-        dialogNewhousehold = builder.create();
 
-        dialogNewhousehold.setOnShowListener(new DialogInterface.OnShowListener() {
+        DialogFactory.createMessageYN(this, R.string.household_details_dialog_del_saved_form_title_lbl, R.string.household_details_dialog_del_saved_form_msg_lbl, new DialogFactory.OnYesNoClickListener() {
             @Override
-            public void onShow(DialogInterface dialog) {
-                final Button b = dialogNewhousehold.getButton(AlertDialog.BUTTON_POSITIVE);
-                b.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        onDeleteForm(contenUri);
-                        dialogNewhousehold.dismiss();
-                    }
-                });
+            public void onYesClicked() {
+                onDeleteForm(contenUri);
             }
-        });
 
-        dialogNewhousehold.show();
+            @Override
+            public void onNoClicked() {
+
+            }
+        }).show();
     }
 
 

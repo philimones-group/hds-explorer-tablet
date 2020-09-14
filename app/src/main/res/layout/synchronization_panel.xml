@@ -15,16 +15,8 @@
         android:layout_width="match_parent"
         android:layout_height="70dp"
         android:orientation="horizontal"
-        android:background="@drawable/bottom_border"
+        android:elevation="5dp"
         android:visibility="gone">
-
-        <ImageView
-            android:layout_marginTop="5dp"
-            android:layout_marginBottom="5dp"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:alpha="0.75"
-            android:background="@mipmap/sync"/>
 
         <TextView
             android:layout_width="wrap_content"

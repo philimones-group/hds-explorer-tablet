@@ -10,28 +10,19 @@
     <!-- Header -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="70dp"
+        android:layout_height="60dp"
         android:orientation="horizontal"
         android:background="@color/white"
         android:translationZ="5dp"
         android:elevation="2dp">
 
         <ImageView
-            android:layout_marginTop="5dp"
-            android:layout_marginBottom="5dp"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
+            android:layout_marginLeft="10dp"
+            android:layout_gravity="center"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:alpha="0.75"
-            android:background="@mipmap/hds_explorer_bevel"
-            android:visibility="gone"/>
-
-        <ImageView
-            android:layout_marginTop="5dp"
-            android:layout_marginLeft="5dp"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:alpha="0.75"
-            android:background="@mipmap/settings_icon_large" />
+            android:background="@mipmap/nui_new_settings" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -39,7 +30,7 @@
             android:text="@string/settings_lbl"
             android:textColor="@color/nui_color_text_red"
             android:textSize="22dp"
-            android:layout_marginLeft="10dp"
+            android:layout_marginLeft="15dp"
             android:gravity="center_vertical"/>
 
     </LinearLayout>

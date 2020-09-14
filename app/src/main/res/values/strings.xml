@@ -35,8 +35,6 @@
 
 
     <!-- Sync Tasks -->
-    <string name="sync_title_lbl">Database Synchronization</string>
-    <string name="sync_prepare_download_lbl">Preparing Syncronization</string>
     <string name="sync_downloading_lbl">Downloading</string>
     <string name="sync_saving_lbl">Saving data</string>
     <string name="sync_params_lbl">App. Parameters</string>
@@ -61,7 +59,6 @@
 
     <!-- Sync Activity -->
     <string name="server_sync_title_lbl">Synchronization Panel</string>
-    <string name="server_sync_status_lbl">Status:</string>
     <string name="server_sync_status_notsynced_lbl">Not Synced</string>
     <string name="server_sync_status_synced_lbl">Last Sync on</string>
     <string name="server_sync_status_sync_error_lbl">Error during last Sync on</string>
@@ -69,7 +66,6 @@
     <string name="server_sync_bt_sync_lbl">Sync</string>
     <string name="server_sync_bt_stop_lbl">Stop</string>
     <string name="server_sync_bt_settings_lbl">Download Settings</string>
-    <string name="server_sync_bt_forms_lbl">Download Forms</string>
     <string name="server_sync_bt_datasets_lbl">Download External Datasets</string>
     <string name="server_sync_bt_tracking_lists_lbl">Download Follow Up Lists</string>
     <string name="server_sync_bt_users_lbl">Download Users</string>
@@ -94,9 +90,7 @@
     <string name="error_invalid_password">This password is too short</string>
     <string name="error_incorrect_password">This password is incorrect</string>
     <string name="error_field_required">This field is required</string>
-    <string name="permission_rationale">"Contacts permissions are needed for providing email completions.</string>
     <string name="warning_lbl">Warning</string>
-    <string name="title_activity_synchronization">SynchronizationActivity</string>
 
     <!-- Strings related to Member Filter -->
     <string name="member_filter_search_lbl"><u>Search Member by Filter</u></string>
@@ -139,12 +133,9 @@
     <string name="member_list_item_extra_collected_lbl"># Collected Form(s)</string>
     <string name="member_list_select_distance_title_lbl">Search Near By Households</string>
     <string name="member_list_select_distance_radius_lbl">Select the search radius</string>
-    <string name="member_list_bt_facility_form_lbl">Open Facility Form</string>
     <string name="member_list_no_members_lbl">The members list is empty</string>
     <string name="member_list_member_not_found_lbl">Members with the selected filters were not found</string>
 
-    <string name="member_list_bt_add_patient_lbl">Add New Patient</string>
-    <string name="member_list_bt_show_patients_lbl">Show Collected Patients</string>
     <string name="member_list_bt_mark_as_supervised_lbl">Mark all as Supervised</string>
 
     <string name="member_list_new_temp_mem_title_lbl">Add New Member to Collect Data</string>
@@ -158,7 +149,6 @@
     <string name="member_list_newmem_dob_lbl">Date of Birth</string>
     <string name="member_list_newmem_dob_hint">eg. 2017-12-25</string>
 
-    <string name="member_list_newmem_houseno_err_lbl">The format of the Household Number is incorrect</string>
     <string name="member_list_newmem_code_err_lbl">The format of the Code is incorrect</string>
     <string name="member_list_newmem_code_exists_lbl">The Code of this Individual already exists</string>
     <string name="member_list_newmem_name_err_lbl">The name must not be empty</string>
@@ -182,8 +172,6 @@
     <string name="member_details_father_lbl">Father:</string>
     <string name="member_details_mother_lbl">Mother:</string>
     <string name="member_details_forms_spouse_lbl">Spouse:</string>
-    <string name="member_details_ispregnant_lbl">Is Currently Pregnant </string>
-    <string name="member_details_has_delivered_lbl">Has Delivered      </string>
     <string name="member_details_bt_openform_lbl">Collect Data</string>
     <string name="member_details_bt_back_lbl">Back</string>
     <string name="member_details_forms_selector_lbl">Select a Form</string>

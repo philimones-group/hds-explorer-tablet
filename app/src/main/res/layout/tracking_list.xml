@@ -176,7 +176,7 @@
                 android:layout_height="70dp"
                 android:textSize="25dp"
                 android:text="@string/trackinglist_bt_update_lbl"
-                android:background="@drawable/button_normal"/>
+                android:background="@drawable/nui_btnd_rone_gflat"/>
 
 
         </LinearLayout>

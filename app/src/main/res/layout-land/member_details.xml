@@ -138,7 +138,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:background="@drawable/rect_corner_border">
+                android:background="@drawable/nui_list_rborder_panel">
 
                 <TextView
                     android:id="@+id/mbDetailsStudyCodeLabel"

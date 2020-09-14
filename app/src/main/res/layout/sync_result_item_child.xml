@@ -14,7 +14,7 @@
         android:layout_gravity="left|center"
         android:layout_marginLeft="15dp"
         android:layout_marginRight="5dp"
-        android:src="@mipmap/bullet_on" />
+        android:src="@mipmap/nui_bullet_on" />
 
     <ImageView
         android:id="@+id/iconOff"
@@ -23,7 +23,7 @@
         android:layout_gravity="left|center"
         android:layout_marginLeft="15dp"
         android:layout_marginRight="5dp"
-        android:src="@mipmap/bullet_off" />
+        android:src="@mipmap/nui_bullet_off" />
 
 
     <LinearLayout

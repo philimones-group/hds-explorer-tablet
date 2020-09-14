@@ -340,7 +340,6 @@
                     android:id="@+id/hfViewProgressBar"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="@drawable/list_corner_border"
                     android:visibility="gone">
 
                     <ProgressBar

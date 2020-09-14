@@ -56,7 +56,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="2"
                 android:layout_marginBottom="3dp"
-                android:background="@drawable/button_ngreen"
+                android:background="@drawable/nui_btnd_sync_rone"
                 android:text="@string/server_sync_bt_stop_lbl"
                 android:textSize="16sp"
                 android:textStyle="bold"
@@ -68,8 +68,7 @@
         <!-- Middle -->
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="20dp"
-            android:background="@drawable/list_corner_border">
+            android:layout_height="20dp">
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -113,7 +112,7 @@
                 android:layout_width="25dp"
                 android:layout_height="24dp"
                 android:layout_gravity="center"
-                android:src="@mipmap/error_icon"
+                android:src="@mipmap/nui_error_icon"
                 android:visibility="gone"/>
 
             <TextView

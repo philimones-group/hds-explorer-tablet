@@ -11,15 +11,6 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="25dp"
-            android:layout_gravity="left|center"
-            android:layout_marginLeft="15dp"
-            android:layout_marginRight="5dp"
-            android:visibility="gone"
-            android:src="@mipmap/blue_styled_circle_50x50" />
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

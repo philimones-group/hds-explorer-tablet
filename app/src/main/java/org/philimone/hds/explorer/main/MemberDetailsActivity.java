@@ -294,11 +294,11 @@ public class MemberDetailsActivity extends Activity implements OdkFormResultList
         mbDetailsSpouse.setText(getSpouseName(member.getSpouseName()));
 
         if (member.isHouseholdHead()){
-            iconView.setImageResource(R.mipmap.member_big_head_icon);
+            iconView.setImageResource(R.mipmap.nui_member_red_filled_icon);
         }
 
         if (member.isSecHouseholdHead()){
-            iconView.setImageResource(R.mipmap.member_big_subs_icon);
+            iconView.setImageResource(R.mipmap.nui_member_red_filled_two_icon);
         }
 
         if (studyCodeValue != null){

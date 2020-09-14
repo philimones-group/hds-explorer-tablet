@@ -35,8 +35,6 @@
 
 
     <!-- Sync Tasks -->
-    <string name="sync_title_lbl">Sincronização</string>
-    <string name="sync_prepare_download_lbl">Iniciando Sincronização...</string>
     <string name="sync_downloading_lbl">Baixando</string>
     <string name="sync_saving_lbl">Guardando dados</string>
     <string name="sync_params_lbl">Pârametros</string>
@@ -61,7 +59,6 @@
 
     <!-- Sync Activity -->
     <string name="server_sync_title_lbl">Painel de Sincronização</string>
-    <string name="server_sync_status_lbl">Estado:</string>
     <string name="server_sync_status_notsynced_lbl">Não foi sincronizado</string>
     <string name="server_sync_status_synced_lbl">Data da ultima sincronização</string>
     <string name="server_sync_status_sync_error_lbl">Data da ultima sincr. com erro</string>
@@ -69,7 +66,6 @@
     <string name="server_sync_bt_sync_lbl">Sincronizar</string>
     <string name="server_sync_bt_stop_lbl">Parar</string>
     <string name="server_sync_bt_settings_lbl">Baixar Definições</string>
-    <string name="server_sync_bt_forms_lbl">Baixar Formulários</string>
     <string name="server_sync_bt_datasets_lbl">Baixar Datasets externos</string>
     <string name="server_sync_bt_tracking_lists_lbl">Baixar Listas de Seguimento</string>
     <string name="server_sync_bt_users_lbl">Baixar Usuários</string>
@@ -96,7 +92,6 @@
     <string name="error_field_required">Este campo é obrigatório</string>
     <string name="permission_rationale">Contacts permissions are needed for providing email completions.</string>
     <string name="warning_lbl">Aviso!</string>
-    <string name="title_activity_synchronization">SynchronizationActivity</string>
 
     <!-- Strings related to Member Filter -->
     <string name="member_filter_search_lbl"><u>Pesquisa de Membros</u></string>
@@ -139,12 +134,9 @@
     <string name="member_list_item_extra_collected_lbl"># Formulario(s) Colhido(s)</string>
     <string name="member_list_select_distance_title_lbl">Procura de casas por perto</string>
     <string name="member_list_select_distance_radius_lbl">Selecione o raio de pesquisa</string>
-    <string name="member_list_bt_facility_form_lbl">Abrir Form. de Facility</string>
     <string name="member_list_no_members_lbl">A lista de membros/individuos esta vazia</string>
     <string name="member_list_member_not_found_lbl">Membros com filtros escolhidos não foram encontrados</string>
 
-    <string name="member_list_bt_add_patient_lbl">Adicionar nova Paciente</string>
-    <string name="member_list_bt_show_patients_lbl">Mostrar pacientes colhidos</string>
     <string name="member_list_bt_mark_as_supervised_lbl">Marcar todos como supervisionados</string>
 
     <string name="member_list_new_temp_mem_title_lbl">Adicionar Novo Membro</string>
@@ -182,8 +174,6 @@
     <string name="member_details_father_lbl">Pai:</string>
     <string name="member_details_mother_lbl">Mãe:</string>
     <string name="member_details_forms_spouse_lbl">Cônjugue:</string>
-    <string name="member_details_ispregnant_lbl">Está gravida </string>
-    <string name="member_details_has_delivered_lbl">Já deu parto      </string>
     <string name="member_details_bt_openform_lbl">Colher Dados</string>
     <string name="member_details_bt_back_lbl">Voltar</string>
     <string name="member_details_forms_selector_lbl">Selecionar um Formulário</string>

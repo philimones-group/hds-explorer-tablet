@@ -5,6 +5,7 @@ import android.app.FragmentManager;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,9 +36,10 @@ public class MemberFormDialog extends DialogFragment {
 
     private FragmentManager fragmentManager;
 
+    private TextView dialogTitle;
     private TextView txtNewMemHouseCode;
     private TextView txtNewMemHouseName;
-    private TextView txtNewMemCode;
+    private EditText txtNewMemCode;
     private EditText txtNewMemName;
     private RadioButton chkNewMemGMale;
     private RadioButton chkNewMemGFemale;
@@ -50,19 +52,32 @@ public class MemberFormDialog extends DialogFragment {
     private Listener listener;
 
     private Household household;
+    private boolean isTempMember = false;
 
     public MemberFormDialog(){
         super();
     }
 
 
-    public static MemberFormDialog newInstance(FragmentManager fm, Household household, Listener listener){
+    public static MemberFormDialog createMemberDialog(FragmentManager fm, Household household, Listener listener){
         MemberFormDialog dialog = new MemberFormDialog();
 
         dialog.fragmentManager = fm;
         dialog.household = household;
         dialog.listener = listener;
         dialog.setCancelable(false);
+
+        return dialog;
+    }
+
+    public static MemberFormDialog createTemporaryMemberDialog(FragmentManager fm, Household household, Listener listener){
+        MemberFormDialog dialog = new MemberFormDialog();
+
+        dialog.fragmentManager = fm;
+        dialog.household = household;
+        dialog.listener = listener;
+        dialog.setCancelable(false);
+        dialog.isTempMember = true;
 
         return dialog;
     }
@@ -87,9 +102,10 @@ public class MemberFormDialog extends DialogFragment {
     private void initialize(View view) {
         this.database = new Database(getActivity());
 
+        this.dialogTitle = (TextView) view.findViewById(R.id.dialogTitle);
         this.txtNewMemHouseCode = (TextView) view.findViewById(R.id.txtNewMemHouseCode);
         this.txtNewMemHouseName = (TextView) view.findViewById(R.id.txtNewMemHouseName);
-        this.txtNewMemCode = (TextView) view.findViewById(R.id.txtNewMemCode);
+        this.txtNewMemCode = (EditText) view.findViewById(R.id.txtNewMemCode);
         this.txtNewMemName = (EditText) view.findViewById(R.id.txtNewMemName);
         this.chkNewMemGMale = (RadioButton) view.findViewById(R.id.chkNewMemGMale);
         this.chkNewMemGFemale = (RadioButton) view.findViewById(R.id.chkNewMemGFemale);
@@ -117,6 +133,29 @@ public class MemberFormDialog extends DialogFragment {
         txtNewMemHouseCode.setText(household.getCode());
         txtNewMemHouseName.setText(household.getName());
         txtNewMemCode.setText(code);
+
+        setTempMemberStuff();
+    }
+
+    private void setTempMemberStuff() {
+
+        setEditable(txtNewMemCode, isTempMember);
+
+        if (isTempMember) {
+            this.dialogTitle.setText(R.string.member_list_new_temp_mem_title_lbl);
+            this.txtNewMemCode.setTextColor(this.getContext().getColor(R.color.nui_color_text_darkgray));
+        } else {
+            this.txtNewMemCode.setTextColor(this.getContext().getColor(R.color.nui_color_text_adgray));
+        }
+
+    }
+
+    private void setEditable(EditText editText, boolean editable){
+
+        editText.setInputType(editable ? InputType.TYPE_CLASS_TEXT : InputType.TYPE_NULL);
+        editText.setCursorVisible(editable);
+        editText.setClickable(editable);
+        editText.setFocusable(editable);
     }
 
     private void onCancelClicked(){
@@ -161,7 +200,7 @@ public class MemberFormDialog extends DialogFragment {
         member.setStartType("ENU");
 
 
-        if (!member.getCode().matches("[A-Z0-9]{6}[0-9]{6}")){
+        if (!isTempMember && !member.getCode().matches("[A-Z0-9]{6}[0-9]{6}")){
             DialogFactory.createMessageInfo(getActivity(), R.string.info_lbl, R.string.member_list_newmem_code_err_lbl).show();
             txtNewMemCode.requestFocus();            
             return null;
@@ -199,6 +238,11 @@ public class MemberFormDialog extends DialogFragment {
 
     /* Database Usefull Methods */
     private String generateMemberCode(Household household){
+
+        if (isTempMember){
+            return household.getCode()+"XXX"; //CREATE A TEMPORARY CODE, THE EDITEXT IS EDITABLE
+        }
+
         Database database = new Database(this.getActivity());
         database.open();
         String baseId = household.getCode();

@@ -132,7 +132,7 @@
                         android:textColor="@color/nui_color_text_darkgray"
                         android:text="@string/member_list_newmem_code_lbl"/>
 
-                    <TextView
+                    <EditText
                         android:id="@+id/txtNewMemCode"
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/member_form_dialog_textbox_height"
@@ -143,7 +143,7 @@
                         android:textSize="@dimen/dialog_factory_textsize"
                         android:hint="@string/member_list_newmem_code_hint"
                         android:maxLines="1"
-                        android:singleLine="true" />
+                        android:singleLine="true"/>
 
                 </LinearLayout>
 

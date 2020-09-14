@@ -722,7 +722,7 @@ public class MemberDetailsActivity extends Activity implements OdkFormResultList
 
     private void buildNewMemberDialog(){
 
-        MemberFormDialog dialog = MemberFormDialog.newInstance(getFragmentManager(), this.household, new MemberFormDialog.Listener() {
+        MemberFormDialog dialog = MemberFormDialog.createMemberDialog(getFragmentManager(), this.household, new MemberFormDialog.Listener() {
             @Override
             public void onNewMemberCreated(Member member) {
                 afterNewMemberCreated(member);

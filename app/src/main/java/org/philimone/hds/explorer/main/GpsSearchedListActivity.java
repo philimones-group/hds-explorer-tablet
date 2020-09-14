@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.mapswithme.maps.api.MWMPoint;
 import com.mapswithme.maps.api.MapsWithMeApi;
@@ -20,6 +21,7 @@ import org.philimone.hds.explorer.database.DatabaseHelper;
 import org.philimone.hds.explorer.database.Queries;
 import org.philimone.hds.explorer.model.Household;
 import org.philimone.hds.explorer.model.Member;
+import org.philimone.hds.explorer.widget.member_details.Distance;
 
 import mz.betainteractive.utilities.math.GpsDistanceCalculator;
 
@@ -33,6 +35,9 @@ public class GpsSearchedListActivity extends Activity {
     private Button btGpsOrigListShowMap;
     private Button btGpsListBack;
     private ListView lvGpsSearchedList;
+    private TextView txtHouseholdName;
+    private TextView txtDistanceName;
+    private TextView txtResults;
 
     private MWMPoint[] points;
     private MWMPoint[] points_bak;
@@ -40,6 +45,7 @@ public class GpsSearchedListActivity extends Activity {
     private ArrayList<Household> households;
     private Member mainMember;
     private Household mainHousehold;
+    private Distance distance;
     private boolean isMemberMap;
     private boolean showOriginalMap;
 
@@ -65,13 +71,15 @@ public class GpsSearchedListActivity extends Activity {
         Object obj_households = getIntent().getExtras().get("households");
         Object obj_main_member = getIntent().getExtras().get("main_member");
         Object obj_main_household = getIntent().getExtras().get("main_household");
+        Object obj_distance = getIntent().getExtras().get("distance");
+
 
         this.isMemberMap = obj_main_member != null;
 
         this.points = convertToMWMPoint(obj_points);
         this.points_bak = convertToMWMPoint(obj_points_bak);
 
-
+        this.distance = (Distance) obj_distance;
         if (isMemberMap){
             this.members = (ArrayList<Member>) obj_members;
             this.mainMember = (Member) obj_main_member;
@@ -81,6 +89,9 @@ public class GpsSearchedListActivity extends Activity {
         }
 
         //load components
+        this.txtHouseholdName = (TextView) findViewById(R.id.txtHouseholdName);
+        this.txtDistanceName = (TextView) findViewById(R.id.txtDistanceName);
+        this.txtResults = (TextView) findViewById(R.id.txtResults);
         this.btGpsListShowMap = (Button) findViewById(R.id.btGpsListShowMap);
         this.btGpsOrigListShowMap = (Button) findViewById(R.id.btGpsOrigListShowMap);
         this.btGpsListBack = (Button) findViewById(R.id.btGpsListBack);
@@ -152,6 +163,10 @@ public class GpsSearchedListActivity extends Activity {
         return household;
     }
 
+    private Integer getNumberOfResults(){
+        return isMemberMap ? this.members.size() : this.households.size();
+    }
+
     private void loadData() {
         if (isMemberMap){
             loadMembers();
@@ -163,6 +178,10 @@ public class GpsSearchedListActivity extends Activity {
 
             this.btGpsListShowMap.setEnabled(true);
         }
+
+        this.txtHouseholdName.setText(mainHousehold.getCode()+" - "+mainHousehold.getName());
+        this.txtDistanceName.setText(distance.getLabel());
+        txtResults.setText(getString(R.string.gps_searched_list_results_value, getNumberOfResults()));
     }
 
     private MWMPoint[] convertToMWMPoint(Object[] o_points){

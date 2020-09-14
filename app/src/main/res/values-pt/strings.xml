@@ -137,7 +137,8 @@
     <string name="member_list_bt_edit_new_member_lbl">Alterar Membro</string>
     <string name="member_list_bt_show_collected_data_lbl">Mostrar Dados Colhidos</string>
     <string name="member_list_item_extra_collected_lbl"># Formulario(s) Colhido(s)</string>
-    <string name="member_list_select_distance_radius_lbl">Selecione a distância maxima apartir da casa (raio)</string>
+    <string name="member_list_select_distance_title_lbl">Procura de casas por perto</string>
+    <string name="member_list_select_distance_radius_lbl">Selecione o raio de pesquisa</string>
     <string name="member_list_bt_facility_form_lbl">Abrir Form. de Facility</string>
     <string name="member_list_no_members_lbl">A lista de membros/individuos esta vazia</string>
     <string name="member_list_member_not_found_lbl">Membros com filtros escolhidos não foram encontrados</string>
@@ -146,7 +147,7 @@
     <string name="member_list_bt_show_patients_lbl">Mostrar pacientes colhidos</string>
     <string name="member_list_bt_mark_as_supervised_lbl">Marcar todos como supervisionados</string>
 
-    <string name="member_list_newmem_title_lbl">Adicionar Novo Membro</string>
+    <string name="member_list_new_temp_mem_title_lbl">Adicionar Novo Membro</string>
     <string name="member_list_newmem_collect_lbl">Adicionar e Colher Dados</string>
     <string name="member_list_newmem_housename_lbl">Código/Número da casa</string>
     <string name="member_list_newmem_housename_hint">Ex: ACA00001 ou Familia Langa ou Código da casa</string>
@@ -279,13 +280,17 @@
     <string name="map_closest_members">Individuos por perto</string>
     <string name="map_closest_houses_from_lbl">Casas perto de </string>
     <string name="map_closest_members_from_lbl">Membros perto de </string>
-    <string name="map_no_closest_houses_found_lbl">Não foram encontradas casas vizinhas num raio de ### da casa selecionada.</string>
-    <string name="map_no_closest_members_found_lbl">Não foram encontrados membros vizinhos num raio de ### da casa do membro selecionado</string>
+    <string name="map_no_closest_houses_found_lbl">Não foram encontradas casas vizinhas num raio de %1$s da casa selecionada.</string>
+    <string name="map_no_closest_members_found_lbl">Não foram encontrados membros vizinhos num raio de %1$s da casa do membro selecionado</string>
     <string name="map_members_coordinates">Localização dos individuos/pessoas</string>
     <string name="map_households">Localização das casas</string>
 
     <!-- GPS Searched Result List -->
     <string name="gps_searched_list_back_lbl">Voltar</string>
+    <string name="gps_searched_list_household_lbl">Casas por perto de:</string>
+    <string name="gps_searched_list_distance_lbl">Raio de distância:</string>
+    <string name="gps_searched_list_results_lbl">Resultados da pesquisa:</string>
+    <string name="gps_searched_list_results_value">%1$d Casas encontradas</string>
 
     <!-- Member Filter Dialog -->
     <string-array name="member_current_status">

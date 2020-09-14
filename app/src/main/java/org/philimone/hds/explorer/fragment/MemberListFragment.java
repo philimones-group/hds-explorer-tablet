@@ -1,25 +1,18 @@
 package org.philimone.hds.explorer.fragment;
 
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
+import android.app.Fragment;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.app.Fragment;
-//import android.support.v4.content.ContextCompat; - is not being used this import
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.DatePicker;
-import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -39,15 +32,16 @@ import org.philimone.hds.explorer.model.Form;
 import org.philimone.hds.explorer.model.Household;
 import org.philimone.hds.explorer.model.Member;
 import org.philimone.hds.explorer.model.Region;
+import org.philimone.hds.explorer.widget.DialogFactory;
+import org.philimone.hds.explorer.widget.member_details.Distance;
+import org.philimone.hds.explorer.widget.member_details.GpsNearBySelectorDialog;
+import org.philimone.hds.explorer.widget.member_details.MemberFormDialog;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import mz.betainteractive.utilities.GeneralUtil;
-import mz.betainteractive.utilities.StringUtil;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -77,8 +71,6 @@ public class MemberListFragment extends Fragment {
     private Household currentHousehold;
 
     private boolean censusMode;
-
-    private AlertDialog dialogNewTempMember;
 
     public enum Buttons {
         SHOW_HOUSEHOLD, MEMBERS_MAP, CLOSEST_MEMBERS, CLOSEST_HOUSES, EDIT_MEMBER, ADD_NEW_MEMBER, NEW_MEMBER_COLLECT, COLLECTED_DATA
@@ -344,12 +336,15 @@ public class MemberListFragment extends Fragment {
         this.currentHousehold = household;
     }
 
-    private void showClosestHouses(Household household, double distance, String distanceDescription) {
+    private void showClosestHouses(Household household, Distance gdistance) {
 
         if (currentHousehold == null || currentHousehold.isGpsNull()){
-            buildOkDialog(getString(R.string.map_gps_not_available_title_lbl), getString(R.string.member_list_gps_not_available_lbl));
+            DialogFactory.createMessageInfo(this.getActivity(), R.string.map_gps_not_available_title_lbl, R.string.member_list_gps_not_available_lbl).show();
             return;
         }
+
+        double distance = gdistance.getValue();
+        String distanceDescription = gdistance.getLabel();
 
         double cur_cos_lat = household.getCosLatitude();
         double cur_sin_lat = household.getSinLatitude();
@@ -374,7 +369,7 @@ public class MemberListFragment extends Fragment {
         database.close();
 
         if (households.size() == 0){
-            buildOkDialog(getString(R.string.map_no_closest_houses_found_lbl).replace("###", distanceDescription));
+            DialogFactory.createMessageInfo(this.getActivity(), getString(R.string.info_lbl), getString(R.string.map_no_closest_houses_found_lbl, distanceDescription)).show();
             return;
         }
 
@@ -390,20 +385,23 @@ public class MemberListFragment extends Fragment {
         }
 
         if (!hasAnyCoords){
-            buildOkDialog(getString(R.string.map_gps_not_available_title_lbl), getString(R.string.household_filter_gps_not_available_lbl));
+            DialogFactory.createMessageInfo(this.getActivity(), R.string.map_gps_not_available_title_lbl, R.string.household_filter_gps_not_available_lbl).show();
             return;
         }
 
         //call the main activity to open GPSList Activity
-        this.memberActionListener.onClosestHouseholdsResult(household, points, households);
+        this.memberActionListener.onClosestHouseholdsResult(household, gdistance, points, households);
     }
 
-    private void showClosestMembers(Member member, double distance, String distanceDescription) {
+    private void showClosestMembers(Member member, Distance gdistance) {
 
         if (member == null || member.isGpsNull()){
-            buildOkDialog(getString(R.string.map_gps_not_available_title_lbl), getString(R.string.member_list_member_gps_not_available_lbl));
+            DialogFactory.createMessageInfo(this.getActivity(), R.string.map_gps_not_available_title_lbl, R.string.member_list_member_gps_not_available_lbl).show();
             return;
         }
+
+        double distance = gdistance.getValue();
+        String distanceDescription = gdistance.getLabel();
 
         Household household = getHousehold(member);
 
@@ -431,7 +429,7 @@ public class MemberListFragment extends Fragment {
         database.close();
 
         if (members.size() == 0){
-            buildOkDialog(getString(R.string.map_no_closest_members_found_lbl).replace("###", distanceDescription));
+            DialogFactory.createMessageInfo(this.getActivity(), getString(R.string.info_lbl), getString(R.string.map_no_closest_members_found_lbl, distanceDescription)).show();
             return;
         }
 
@@ -466,7 +464,7 @@ public class MemberListFragment extends Fragment {
         }
 
         if (!hasAnyCoords){
-            buildOkDialog(getString(R.string.map_gps_not_available_title_lbl), getString(R.string.household_filter_gps_not_available_lbl));
+            DialogFactory.createMessageInfo(this.getActivity(), R.string.map_gps_not_available_title_lbl, R.string.household_filter_gps_not_available_lbl).show();
             return;
         }
 
@@ -474,211 +472,69 @@ public class MemberListFragment extends Fragment {
         organizeHouseMembersCoordinates(gpsMapHouseMembers);
 
         //call the main activity to open GPSList Activity
-        this.memberActionListener.onClosestMembersResult(member, points, points_bak, members);
+        this.memberActionListener.onClosestMembersResult(member, gdistance, points, points_bak, members);
 
     }
 
     private void buildHouseDistanceSelectorDialog() {
 
         if (currentHousehold == null && currentHousehold.isGpsNull()){
-            buildOkDialog(getString(R.string.map_gps_not_available_title_lbl), getString(R.string.member_list_gps_not_available_lbl));
+            DialogFactory.createMessageInfo(this.getActivity(), R.string.map_gps_not_available_title_lbl, R.string.member_list_gps_not_available_lbl).show();
             return;
         }
 
-        final String[] items = new String[]{ "50m", "100m", "200m", "500m", "1 Km", "2 Km", "5 Km" };
-        final double[] values = new double[]{ 0.05,  0.1,    0.2,    0.5,    1.0,    2.0,    5.0 };
-        final ArrayAdapter adapter = new ArrayAdapter<String>(this.getActivity(), android.R.layout.simple_list_item_1, items);
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(this.getActivity());
-        builder.setTitle(getString(R.string.member_list_select_distance_radius_lbl));
-        builder.setCancelable(true);
-        builder.setAdapter(adapter, new DialogInterface.OnClickListener() {
+        GpsNearBySelectorDialog.createDialog(getFragmentManager(), new GpsNearBySelectorDialog.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
-                showClosestHouses(currentHousehold, values[which], items[which]);
+            public void onSelectedDistance(Distance distance) {
+                showClosestHouses(currentHousehold, distance);
             }
-        });
 
-        builder.show();
+            @Override
+            public void onCancelClicked() {
+
+            }
+        }).show();
     }
 
     private void buildMemberDistanceSelectorDialog() {
         final Member member = getMemberAdapter().getSelectedMember();
 
         if (member == null && member.isGpsNull()){
-            buildOkDialog(getString(R.string.member_list_gps_not_available_lbl));
+            DialogFactory.createMessageInfo(this.getActivity(), R.string.info_lbl, R.string.member_list_gps_not_available_lbl).show();
             return;
         }
 
-        final String[] items = new String[]{ "50m", "100m", "200m", "500m", "1 Km", "2 Km", "5 Km" };
-        final double[] values = new double[]{ 0.05,  0.1,    0.2,    0.5,    1.0,    2.0,    5.0 };
-        final ArrayAdapter adapter = new ArrayAdapter<String>(this.getActivity(), android.R.layout.simple_list_item_1, items);
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(this.getActivity());
-        builder.setTitle(getString(R.string.member_list_select_distance_radius_lbl));
-        builder.setCancelable(true);
-        builder.setAdapter(adapter, new DialogInterface.OnClickListener() {
+        GpsNearBySelectorDialog.createDialog(getFragmentManager(), new GpsNearBySelectorDialog.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
-                showClosestMembers(member, values[which], items[which]);
+            public void onSelectedDistance(Distance distance) {
+                showClosestMembers(member, distance);
             }
-        });
 
-        builder.show();
+            @Override
+            public void onCancelClicked() {
+
+            }
+        }).show();
     }
 
     private void buildNewTempMemberDialog(){
 
-        if (dialogNewTempMember == null){
-            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-            LayoutInflater inflater = getActivity().getLayoutInflater();
-            View view = inflater.inflate(R.layout.new_temp_member, null);
-
-            builder.setTitle(getString(R.string.member_list_newmem_title_lbl));
-            builder.setView(view);
-            builder.setCancelable(false);
-            builder.setPositiveButton(R.string.member_list_newmem_collect_lbl, null);
-            builder.setNegativeButton(R.string.bt_cancel_lbl, null);
-
-            EditText txtNmHouseNumber = (EditText) view.findViewById(R.id.txtNewMemHouseName);
-            EditText txtNmCode = (EditText) view.findViewById(R.id.txtNewMemCode);
-
-            if (txtNmHouseNumber != null && currentHousehold != null){
-                txtNmHouseNumber.setText(currentHousehold.getCode());
+        MemberFormDialog.createTemporaryMemberDialog(getFragmentManager(), this.currentHousehold, new MemberFormDialog.Listener() {
+            @Override
+            public void onNewMemberCreated(Member member) {
+                afterTemporaryMemberCreated(member);
             }
 
-            if (txtNmCode != null && currentHousehold != null){
-                txtNmCode.setText(currentHousehold.getCode()+"XXX");
+            @Override
+            public void onCancelClicked() {
+
             }
-
-            dialogNewTempMember = builder.create();
-
-
-            dialogNewTempMember.setOnShowListener(new DialogInterface.OnShowListener() {
-                @Override
-                public void onShow(DialogInterface dialog) {
-                    Button b = dialogNewTempMember.getButton(AlertDialog.BUTTON_POSITIVE);
-                    b.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            onAddNewMemberCollect();
-                        }
-                    });
-                }
-            });
-
-
-        } else {
-            EditText txtNmHouseNumber = (EditText) dialogNewTempMember.findViewById(R.id.txtNewMemHouseName);
-            EditText txtNmCode = (EditText) dialogNewTempMember.findViewById(R.id.txtNewMemCode);
-
-            if (txtNmHouseNumber != null && currentHousehold != null){
-                txtNmHouseNumber.setText(currentHousehold.getCode());
-            }
-
-            if (txtNmCode != null && currentHousehold != null){
-                txtNmCode.setText(currentHousehold.getCode()+"XXX");
-            }
-        }
-
-        //dialogNewTempMember.setCancelable(false);
-        dialogNewTempMember.show();
+        }).show();
     }
 
-    private void onAddNewMemberCollect() {
-        if (dialogNewTempMember == null) return;
-
-        EditText txtNmHouseNumber = (EditText) dialogNewTempMember.findViewById(R.id.txtNewMemHouseName);
-        EditText txtNmCode = (EditText) dialogNewTempMember.findViewById(R.id.txtNewMemCode);
-        EditText txtNmName = (EditText) dialogNewTempMember.findViewById(R.id.txtNewMemName);
-        RadioButton chkNmGMale = (RadioButton) dialogNewTempMember.findViewById(R.id.chkNewMemGMale);
-        RadioButton chkNmGFemale = (RadioButton) dialogNewTempMember.findViewById(R.id.chkNewMemGFemale);
-        DatePicker dtpNmDob = (DatePicker) dialogNewTempMember.findViewById(R.id.dtpNewMemDob);
-
-        Member member = Member.getEmptyMember();
-        member.setHouseholdCode(txtNmHouseNumber.getText().toString());
-        member.setHouseholdName(txtNmHouseNumber.getText().toString());
-        member.setCode(txtNmCode.getText().toString());
-        member.setName(txtNmName.getText().toString());
-        member.setDob(StringUtil.format(GeneralUtil.getDate(dtpNmDob), "yyyy-MM-dd" ));
-        member.setAge(GeneralUtil.getAge(GeneralUtil.getDate(dtpNmDob)));
-
-        //REVISE REGULAR EXPRESSIONS FOR VARIABLES BELOW
-        /*
-        if (!member.getHouseholdName().matches("[0-9]{4}-[0-9]{3}")){
-            buildOkDialog(getString(R.string.member_list_newmem_houseno_err_lbl));
-            dialogNewTempMember.show();
-            return;
-        }*/
-
-        /*
-        if (!member.getCode().matches("[0-9]{4}-[0-9]{3}-[0-9]{2}")){
-            buildOkDialog(getString(R.string.member_list_newmem_code_err_lbl));
-            dialogNewTempMember.show();
-            return;
-        }
-        */
-        if (member.getName().trim().isEmpty()){
-            buildOkDialog(getString(R.string.member_list_newmem_name_err_lbl));
-            dialogNewTempMember.show();
-            return;
-        }
-        if (member.getDobDate().after(new Date())){
-            buildOkDialog(getString(R.string.member_list_newmem_dob_err_lbl));
-            dialogNewTempMember.show();
-            return;
-        }
-
-        if (chkNmGFemale.isChecked() && chkNmGMale.isChecked()){
-            buildOkDialog(getString(R.string.member_list_newmem_gender_err1_lbl));
-            dialogNewTempMember.show();
-            return;
-        }
-
-        if (!chkNmGFemale.isChecked() && !chkNmGMale.isChecked()){
-            buildOkDialog(getString(R.string.member_list_newmem_gender_err2_lbl));
-            dialogNewTempMember.show();
-            return;
-        }
-
-        //check if code exists
-        if (checkIfCodeExists(member.getCode())){
-            buildOkDialog(getString(R.string.member_list_newmem_code_exists_lbl));
-            dialogNewTempMember.show();
-            return;
-        }
-
-        member.setGender( chkNmGFemale.isChecked() ? "F" : "M" );
-
-        //buildOkDialog("data: "+ GeneralUtil.getDate(dtpNmDob));
-
-        dialogNewTempMember.dismiss();
+    private void afterTemporaryMemberCreated(Member member) {
 
         memberActionListener.onMemberSelected(null, member, null);
-    }
-
-    private boolean checkIfCodeExists(String code){
-        Database database = new Database(this.getActivity());
-        database.open();
-        Member member = Queries.getMemberBy(database, DatabaseHelper.Member.COLUMN_CODE+"=?", new String[] { code });
-        database.close();
-
-        return member != null;
-    }
-
-    private void buildOkDialog(String message){
-        buildOkDialog(null, message);
-    }
-
-    private void buildOkDialog(String title, String message){
-        AlertDialog.Builder builder = new AlertDialog.Builder(this.getActivity());
-        title = (title==null || title.isEmpty()) ? getString(R.string.info_lbl) : title;
-
-        builder.setTitle(title);
-        builder.setMessage(message);
-        builder.setCancelable(false);
-        builder.setPositiveButton("OK", null);
-        builder.show();
     }
 
     public void showMemberNotFoundMessage(){
@@ -703,7 +559,7 @@ public class MemberListFragment extends Fragment {
 
             MapsWithMeApi.showPointsOnMap(this.getActivity(), getString(R.string.map_households), points);
         }else{
-            buildOkDialog(getString(R.string.map_gps_not_available_title_lbl), getString(R.string.member_list_gps_not_available_lbl));
+            DialogFactory.createMessageInfo(this.getActivity(), R.string.map_gps_not_available_title_lbl, R.string.member_list_gps_not_available_lbl).show();
         }
     }
 
@@ -711,7 +567,7 @@ public class MemberListFragment extends Fragment {
         MemberArrayAdapter adapter = (MemberArrayAdapter) this.lvMembersList.getAdapter();
 
         if (adapter==null || adapter.isEmpty()){
-            buildOkDialog(getString(R.string.map_gps_not_available_title_lbl), getString(R.string.member_list_no_members_lbl));
+            DialogFactory.createMessageInfo(this.getActivity(), R.string.map_gps_not_available_title_lbl, R.string.member_list_no_members_lbl).show();
             return;
         }
 
@@ -743,7 +599,7 @@ public class MemberListFragment extends Fragment {
         }
 
         if (!hasAnyCoords){
-            buildOkDialog(getString(R.string.map_gps_not_available_title_lbl), getString(R.string.household_filter_gps_not_available_lbl));
+            DialogFactory.createMessageInfo(this.getActivity(), R.string.map_gps_not_available_title_lbl, R.string.household_filter_gps_not_available_lbl).show();
             return;
         }
 
@@ -879,7 +735,7 @@ public class MemberListFragment extends Fragment {
         }
 
         if (household == null){
-            buildOkDialog(getString(R.string.member_list_household_not_found_lbl));
+            DialogFactory.createMessageInfo(this.getActivity(), R.string.info_lbl, R.string.member_list_household_not_found_lbl).show();
             return;
         }
 

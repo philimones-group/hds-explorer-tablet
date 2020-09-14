@@ -3,74 +3,219 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context="org.philimone.hds.explorer.main.GpsSearchedListActivity">
 
-<LinearLayout
-    android:orientation="vertical"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
+    <!-- Dialog Header -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:layout_marginBottom="10dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginTop="10dp"
-        android:orientation="vertical">
+        android:layout_height="60dp"
+        android:background="@drawable/nui_dialog_border_thin"
+        android:orientation="horizontal"
+        android:elevation="5dp">
 
-        <ListView
-            android:id="@+id/lvGpsSearchedList"
-            android:layout_width="match_parent"
+        <ImageView
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:layout_gravity="center"
+            android:alpha="0.75"
+            android:background="@mipmap/nui_household_red_filled_icon"
+            android:contentDescription="TODO" />
+
+        <TextView
+            android:id="@+id/txtDialogTitle"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:background="@drawable/nui_lists_rone_border"
-            />
+            android:layout_marginLeft="10dp"
+            android:gravity="center_vertical"
+            android:text="@string/member_list_select_distance_title_lbl"
+            android:textSize="18sp"
+            android:textColor="@color/nui_color_text_red"
+            android:textStyle="bold" />
 
     </LinearLayout>
 
+    <!-- result details, Households Near By: ASS1101 -->
     <LinearLayout
-        android:id="@+id/viewListButtons"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="0"
-        android:gravity="center|bottom"
-        android:layout_marginBottom="10dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:orientation="vertical">
+        android:layout_marginBottom="0dp"
+        android:layout_marginLeft="@dimen/hf_margin_left"
+        android:layout_marginRight="@dimen/hf_margin_right"
+        android:layout_marginTop="10dp"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:orientation="vertical"
+        android:background="@drawable/nui_selected_household_panel" >
 
-        <Button
-            android:id="@+id/btGpsListShowMap"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:textSize="25dp"
-            android:text="@string/member_list_bt_show_gps_housemembers_lbl"
-            android:background="@drawable/nui_btnd_rone_gflat"
-            android:textColor="@color/white"/>
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:orientation="horizontal">
 
-        <Button
-            android:id="@+id/btGpsOrigListShowMap"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:textSize="25dp"
-            android:text="@string/member_list_bt_show_houses_lbl"
-            android:background="@drawable/nui_btnd_rone_gflat"
-            android:textColor="@color/white"/>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginTop="@dimen/household_filter_region_layout_top_margin"
+                android:layout_marginBottom="@dimen/household_filter_region_layout_bottom_margin">
 
-        <Button
-            android:id="@+id/btGpsListBack"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:textSize="25dp"
-            android:text="@string/gps_searched_list_back_lbl"
-            android:background="@drawable/nui_btnd_rone_gflat"
-            android:textColor="@color/white"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/household_filter_region_text_margin_left"
+                    android:textColor="@color/hh_filter_region_hierarchy_name_color"
+                    android:textStyle="bold"
+                    android:textSize="@dimen/gps_searched_list_rpanel_textsize"
+                    android:text="@string/gps_searched_list_household_lbl" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginLeft="@dimen/household_filter_region_text_margin_left"
+                    android:textColor="@color/hh_filter_region_hierarchy_name_color"
+                    android:textStyle="bold"
+                    android:textSize="@dimen/gps_searched_list_rpanel_textsize"
+                    android:text="@string/gps_searched_list_distance_lbl" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginLeft="@dimen/household_filter_region_text_margin_left"
+                    android:textColor="@color/hh_filter_region_hierarchy_name_color"
+                    android:textStyle="bold"
+                    android:textSize="@dimen/gps_searched_list_rpanel_textsize"
+                    android:text="@string/gps_searched_list_results_lbl" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginLeft="5dp"
+                android:layout_marginTop="@dimen/household_filter_region_layout_top_margin"
+                android:layout_marginBottom="@dimen/household_filter_region_layout_bottom_margin">
+
+                <TextView
+                    android:id="@+id/txtHouseholdName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="20dp"
+                    android:textColor="@color/hh_filter_region_hierarchy_value_color"
+                    android:textStyle="bold"
+                    android:textSize="@dimen/gps_searched_list_rpanel_textsize"
+                    android:text="LANGA FAMILY" />
+
+                <TextView
+                    android:id="@+id/txtDistanceName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="20dp"
+                    android:textColor="@color/hh_filter_region_hierarchy_value_color"
+                    android:textStyle="bold"
+                    android:textSize="@dimen/gps_searched_list_rpanel_textsize"
+                    android:text="33 m" />
+
+                <TextView
+                    android:id="@+id/txtResults"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="20dp"
+                    android:textColor="@color/hh_filter_region_hierarchy_value_color"
+                    android:textStyle="bold"
+                    android:textSize="@dimen/gps_searched_list_rpanel_textsize"
+                    android:text="5 households" />
+            </LinearLayout>
+
+        </LinearLayout>
+
     </LinearLayout>
 
-</LinearLayout>
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <!-- lists -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:orientation="vertical">
+
+            <ListView
+                android:id="@+id/lvGpsSearchedList"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="15dp"
+                android:background="@drawable/nui_members_list_panel"
+                />
+
+        </LinearLayout>
+
+        <!-- buttons -->
+        <LinearLayout
+            android:id="@+id/viewListButtons"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="0"
+            android:gravity="center|bottom"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:orientation="vertical">
+
+            <Button
+                android:id="@+id/btGpsListShowMap"
+                android:layout_width="450dp"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:textSize="18sp"
+                android:text="@string/member_list_bt_show_gps_housemembers_lbl"
+                android:background="@drawable/nui_btnd_rone_gflat"
+                android:textColor="@color/white"
+                android:elevation="5dp"/>
+
+            <Button
+                android:id="@+id/btGpsOrigListShowMap"
+                android:layout_width="450dp"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:textSize="18sp"
+                android:text="@string/member_list_bt_show_houses_lbl"
+                android:background="@drawable/nui_btnd_rone_gflat"
+                android:textColor="@color/white"
+                android:elevation="5dp"/>
+
+            <Button
+                android:id="@+id/btGpsListBack"
+                android:layout_width="450dp"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:textSize="18sp"
+                android:text="@string/gps_searched_list_back_lbl"
+                android:background="@drawable/nui_btnd_rone_gflat"
+                android:textColor="@color/white"
+                android:elevation="5dp"/>
+        </LinearLayout>
+
+    </LinearLayout>
 
 </LinearLayout>

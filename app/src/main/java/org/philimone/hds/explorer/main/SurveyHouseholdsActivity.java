@@ -1,9 +1,7 @@
 package org.philimone.hds.explorer.main;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.ContentValues;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -30,7 +28,9 @@ import org.philimone.hds.explorer.model.Household;
 import org.philimone.hds.explorer.model.Member;
 import org.philimone.hds.explorer.model.Region;
 import org.philimone.hds.explorer.model.User;
+import org.philimone.hds.explorer.widget.DialogFactory;
 import org.philimone.hds.explorer.widget.LoadingDialog;
+import org.philimone.hds.explorer.widget.member_details.Distance;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -197,18 +197,19 @@ public class SurveyHouseholdsActivity extends Activity implements HouseholdFilte
     }
 
     @Override
-    public void onClosestMembersResult(Member member, MWMPoint[] points, MWMPoint[] originalPoints, ArrayList<Member> members) {
+    public void onClosestMembersResult(Member member, Distance distance, MWMPoint[] points, MWMPoint[] originalPoints, ArrayList<Member> members) {
 
     }
 
     @Override
-    public void onClosestHouseholdsResult(Household household, MWMPoint[] points, ArrayList<Household> households) {
+    public void onClosestHouseholdsResult(Household household, Distance distance, MWMPoint[] points, ArrayList<Household> households) {
         FormDataLoader[] dataLoaders = getFormLoaders(FormFilter.HOUSEHOLD);
         loadFormValues(dataLoaders, household, null, null);
 
         Intent intent = new Intent(this, GpsSearchedListActivity.class);
 
         intent.putExtra("main_household", household);
+        intent.putExtra("distance", distance);
         intent.putExtra("households", households);
         intent.putExtra("points", points);
 
@@ -599,7 +600,7 @@ public class SurveyHouseholdsActivity extends Activity implements HouseholdFilte
             FormUpdater formUpdater = new FormUpdater(xmlFilePath, cv);
             formUpdater.update();
 
-            buildOkDialog(getString(R.string.new_member_dialog_household_head_updated_lbl));
+            DialogFactory.createMessageInfo(this, R.string.info_lbl, R.string.new_member_dialog_household_head_updated_lbl).show();
         }
 
 
@@ -623,29 +624,6 @@ public class SurveyHouseholdsActivity extends Activity implements HouseholdFilte
         } else {
             this.loadingDialog.hide();
         }
-    }
-
-    private void buildOkDialog(String message){
-        buildOkDialog(null, message);
-    }
-
-    private void buildOkDialog(String message, DialogInterface.OnClickListener listener){
-        buildOkDialog(null, message, listener);
-    }
-
-    private void buildOkDialog(String title, String message){
-        buildOkDialog(title, message, null);
-    }
-
-    private void buildOkDialog(String title, String message, DialogInterface.OnClickListener listener){
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        title = (title==null || title.isEmpty()) ? getString(R.string.info_lbl) : title;
-
-        builder.setTitle(title);
-        builder.setMessage(message);
-        builder.setCancelable(false);
-        builder.setPositiveButton("OK", listener);
-        builder.show();
     }
 
     class MemberSearchTask extends AsyncTask<Void, Void, MemberArrayAdapter> {

@@ -2,31 +2,26 @@ package org.philimone.hds.explorer.main;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
-
 import android.annotation.TargetApi;
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-
 import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.inputmethod.EditorInfo;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.mindrot.jbcrypt.BCrypt;
 import org.philimone.hds.explorer.BuildConfig;
 import org.philimone.hds.explorer.R;
 import org.philimone.hds.explorer.database.Bootstrap;
@@ -34,13 +29,11 @@ import org.philimone.hds.explorer.database.Converter;
 import org.philimone.hds.explorer.database.Database;
 import org.philimone.hds.explorer.database.DatabaseHelper;
 import org.philimone.hds.explorer.database.Queries;
-import org.philimone.hds.explorer.io.SyncEntitiesListener;
 import org.philimone.hds.explorer.main.sync.SyncPanelActivity;
 import org.philimone.hds.explorer.model.ApplicationParam;
 import org.philimone.hds.explorer.model.Module;
 import org.philimone.hds.explorer.model.User;
-
-import org.mindrot.jbcrypt.BCrypt;
+import org.philimone.hds.explorer.widget.DialogFactory;
 
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -66,7 +59,6 @@ public class LoginActivity extends Activity {
     private View mProgressView;
     private View mLoginFormView;
     private ProgressDialog progressDialog;
-    private AlertDialog alertDialog;
 
     private User loggedUser;
     private String adminUser;
@@ -460,7 +452,7 @@ public class LoginActivity extends Activity {
         modules = filterSupervisor(modules);
 
         if (loggedUser.getModules()==null && loggedUser.getModules().isEmpty()){
-            createAlertDialog(getString(R.string.error_lbl), getString(R.string.error_no_modules_permission));
+            DialogFactory.createMessageInfo(this, R.string.error_lbl, R.string.error_no_modules_permission).show();
             return;
         }
 
@@ -474,7 +466,7 @@ public class LoginActivity extends Activity {
         }
 
         if (modules.length==1 && modules[0].equals(Module.DSS_OTHERS)){
-            createAlertDialog("Exception", "Not yet Implemented");
+            showMessage("Exception", "Not yet Implemented");
             return;
         }*/
 
@@ -508,26 +500,6 @@ public class LoginActivity extends Activity {
         }
 
         return false;
-    }
-
-    private void createAlertDialog(String title, String message) {
-
-        alertDialog = null;
-
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
-        alertDialogBuilder.setTitle(title);
-        alertDialogBuilder.setMessage(message);
-        alertDialogBuilder.setCancelable(true);
-
-        alertDialogBuilder.setNeutralButton(getString(R.string.bt_ok_lbl), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-
-            }
-        });
-
-        alertDialog = alertDialogBuilder.create();
-        alertDialog.show();
     }
 }
 

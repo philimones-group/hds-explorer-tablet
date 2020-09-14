@@ -24,6 +24,7 @@ import org.philimone.hds.explorer.model.Member;
 import org.philimone.hds.explorer.model.Region;
 import org.philimone.hds.explorer.model.User;
 import org.philimone.hds.explorer.widget.LoadingDialog;
+import org.philimone.hds.explorer.widget.member_details.Distance;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -34,9 +35,7 @@ import java.util.Map;
 import mz.betainteractive.utilities.StringUtil;
 
 import static org.philimone.hds.explorer.fragment.MemberListFragment.Buttons.ADD_NEW_MEMBER;
-import static org.philimone.hds.explorer.fragment.MemberListFragment.Buttons.CLOSEST_MEMBERS;
 import static org.philimone.hds.explorer.fragment.MemberListFragment.Buttons.EDIT_MEMBER;
-import static org.philimone.hds.explorer.fragment.MemberListFragment.Buttons.MEMBERS_MAP;
 
 public class SurveyMembersActivity extends Activity implements MemberFilterFragment.Listener, MemberActionListener, BarcodeScannerActivity.InvokerClickListener {
 
@@ -100,7 +99,7 @@ public class SurveyMembersActivity extends Activity implements MemberFilterFragm
     }
 
     @Override
-    public void onClosestMembersResult(Member member, MWMPoint[] points, MWMPoint[] originalPoints, ArrayList<Member> members) {
+    public void onClosestMembersResult(Member member, Distance distance, MWMPoint[] points, MWMPoint[] originalPoints, ArrayList<Member> members) {
         FormDataLoader[] dataLoaders = getFormLoaders(FormFilter.HOUSEHOLD_HEAD, FormFilter.MEMBER); //only members
         Household household = getHousehold(member);
         loadFormValues(dataLoaders, household, member, null);
@@ -108,6 +107,7 @@ public class SurveyMembersActivity extends Activity implements MemberFilterFragm
         Intent intent = new Intent(this, GpsSearchedListActivity.class);
         intent.putExtra("main_member", member);
         intent.putExtra("main_household", household);
+        intent.putExtra("distance", distance);
         intent.putExtra("members", members);
         intent.putExtra("points", points);
         intent.putExtra("points_original", originalPoints);
@@ -118,7 +118,7 @@ public class SurveyMembersActivity extends Activity implements MemberFilterFragm
     }
 
     @Override
-    public void onClosestHouseholdsResult(Household household, MWMPoint[] points, ArrayList<Household> households) {
+    public void onClosestHouseholdsResult(Household household, Distance distance, MWMPoint[] points, ArrayList<Household> households) {
 
     }
 

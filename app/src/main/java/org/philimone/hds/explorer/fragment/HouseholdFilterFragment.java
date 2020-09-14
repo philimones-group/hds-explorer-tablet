@@ -1,7 +1,6 @@
 package org.philimone.hds.explorer.fragment;
 
 
-import android.app.AlertDialog;
 import android.content.Context;
 import android.database.Cursor;
 import android.os.AsyncTask;
@@ -42,6 +41,7 @@ import org.philimone.hds.explorer.model.Form;
 import org.philimone.hds.explorer.model.Household;
 import org.philimone.hds.explorer.model.Region;
 import org.philimone.hds.explorer.model.User;
+import org.philimone.hds.explorer.widget.DialogFactory;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -576,7 +576,7 @@ public class HouseholdFilterFragment extends Fragment implements RegionExpandabl
         HouseholdArrayAdapter adapter = (HouseholdArrayAdapter) this.hfHousesList.getAdapter();
 
         if (adapter==null || adapter.isEmpty()){
-            buildOkDialog(getString(R.string.household_filter_gps_not_available_title_lbl), getString(R.string.household_filter_no_houses_lbl));
+            DialogFactory.createMessageInfo(this.getActivity(), R.string.household_filter_gps_not_available_title_lbl, R.string.household_filter_no_houses_lbl).show();
             return;
         }
 
@@ -597,7 +597,7 @@ public class HouseholdFilterFragment extends Fragment implements RegionExpandabl
         }
 
         if (!hasAnyCoords){
-            buildOkDialog(getString(R.string.map_gps_not_available_title_lbl), getString(R.string.household_filter_gps_not_available_lbl));
+            DialogFactory.createMessageInfo(this.getActivity(), R.string.map_gps_not_available_title_lbl, R.string.household_filter_gps_not_available_lbl).show();
             return;
         }
 
@@ -683,21 +683,6 @@ public class HouseholdFilterFragment extends Fragment implements RegionExpandabl
         Toast toast = Toast.makeText(getActivity(), getString(R.string.household_filter_household_not_found_lbl, code), Toast.LENGTH_LONG);
         toast.setGravity(Gravity.CENTER,0,0);
         toast.show();
-    }
-
-    private void buildOkDialog(String message){
-        buildOkDialog(null, message);
-    }
-
-    private void buildOkDialog(String title, String message){
-        AlertDialog.Builder builder = new AlertDialog.Builder(this.getActivity());
-        title = (title==null || title.isEmpty()) ? getString(R.string.info_lbl) : title;
-
-        builder.setTitle(title);
-        builder.setMessage(message);
-        builder.setCancelable(false);
-        builder.setPositiveButton("OK", null);
-        builder.show();
     }
 
     public void showProgress(final boolean show) {

@@ -23,7 +23,7 @@ public class SplashScreenActivity extends Activity {
                 overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
                 finish();
             }
-        }, 3000);
+        }, 2000);
 
     }
 

@@ -2,9 +2,7 @@ package mz.betainteractive.odk;
 
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.ContentResolver;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -13,9 +11,9 @@ import android.util.Log;
 import android.widget.Toast;
 
 import org.philimone.hds.explorer.R;
+import org.philimone.hds.explorer.widget.DialogFactory;
 
 import java.io.File;
-import java.sql.Date;
 
 import mz.betainteractive.odk.listener.OdkFormLoadListener;
 import mz.betainteractive.odk.listener.OdkFormResultListener;
@@ -30,7 +28,6 @@ public class FormUtilities {
     private Activity mContext;
 	private String jrFormId;
 	private Uri contentUri;
-    private AlertDialog xformUnfinishedDialog;
     private boolean formUnFinished;
     private String xmlFilePath;
     private OdkFormResultListener formResultListener;
@@ -125,30 +122,26 @@ public class FormUtilities {
 
     private void createXFormNotFoundDialog() {
         //xFormNotFound = true;
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(mContext);
-          alertDialogBuilder.setTitle(mContext.getString(R.string.warning_lbl));
-          alertDialogBuilder.setMessage(mContext.getString(R.string.odk_couldnt_open_xform_lbl));
-          alertDialogBuilder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
+
+        DialogFactory.createMessageInfo(this.mContext, R.string.warning_lbl, R.string.odk_couldnt_open_xform_lbl, new DialogFactory.OnClickListener() {
+            @Override
+            public void onClicked(DialogFactory.Buttons clickedButton) {
                 //xFormNotFound = false;
             }
-        });
-        AlertDialog alertDialog = alertDialogBuilder.create();
-        alertDialog.show();
+        }).show();
+
     }
 
     private void createSavedXFormNotFoundDialog() {
         //xFormNotFound = true;
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(mContext);
-        alertDialogBuilder.setTitle(mContext.getString(R.string.warning_lbl));
-        alertDialogBuilder.setMessage(mContext.getString(R.string.odk_couldnt_reopen_xform_lbl));
-        alertDialogBuilder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
+
+        DialogFactory.createMessageInfo(this.mContext, R.string.warning_lbl, R.string.odk_couldnt_reopen_xform_lbl, new DialogFactory.OnClickListener() {
+            @Override
+            public void onClicked(DialogFactory.Buttons clickedButton) {
                 //xFormNotFound = false;
             }
-        });
-        AlertDialog alertDialog = alertDialogBuilder.create();
-        alertDialog.show();
+        }).show();
+
     }
 
 	private Cursor getCursorForFormsProvider(String name) {
@@ -274,45 +267,34 @@ public class FormUtilities {
 
     private void createUnfinishedFormDialog() {
         formUnFinished = true;
-        xformUnfinishedDialog = null;
 
-        if (xformUnfinishedDialog == null) {
-            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(mContext);
-            alertDialogBuilder.setTitle(mContext.getString(R.string.warning_lbl));
-            alertDialogBuilder.setMessage(mContext.getString(R.string.odk_unfinished_dialog_msg));
-            alertDialogBuilder.setCancelable(true);
+        DialogFactory dialog = DialogFactory.createMessageYNC(this.mContext, R.string.warning_lbl, R.string.odk_unfinished_dialog_msg, new DialogFactory.OnYesNoCancelClickListener() {
+            @Override
+            public void onYesClicked() { //delete
+                formUnFinished = false;
+                mContext.getContentResolver().delete(contentUri, InstanceProviderAPI.InstanceColumns.STATUS + "=?", new String[] { InstanceProviderAPI.STATUS_INCOMPLETE });
+                formResultListener.onDeleteForm(contentUri);
+            }
 
-            alertDialogBuilder.setPositiveButton(mContext.getString(R.string.odk_unfinished_button_delete), new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int which) {
-                    formUnFinished = false;
-                    xformUnfinishedDialog.hide();
-                    mContext.getContentResolver().delete(contentUri, InstanceProviderAPI.InstanceColumns.STATUS + "=?", new String[] { InstanceProviderAPI.STATUS_INCOMPLETE });
-                    formResultListener.onDeleteForm(contentUri);
-                }
-            });
+            @Override
+            public void onNoClicked() { //change
+                formUnFinished = false;
+                mContext.startActivityForResult(new Intent(Intent.ACTION_EDIT, contentUri), SELECTED_ODK_REOPEN);
+            }
 
-            alertDialogBuilder.setNeutralButton(mContext.getString(R.string.odk_unfinished_button_save), new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int which) {
-                    Toast.makeText(mContext, mContext.getString(R.string.odk_unfinished_form_saved), Toast.LENGTH_LONG);
-                    //save form contentUri
-                    saveUnfinalizedFile();
+            @Override
+            public void onCancelClicked() { //save
+                Toast.makeText(mContext, mContext.getString(R.string.odk_unfinished_form_saved), Toast.LENGTH_LONG);
+                //save form contentUri
+                saveUnfinalizedFile();
 
-                    formResultListener.onFormUnFinalized(contentUri, new File(xmlFilePath), metaInstanceName, lastUpdatedDate);
-                }
-            });
+                formResultListener.onFormUnFinalized(contentUri, new File(xmlFilePath), metaInstanceName, lastUpdatedDate);
+            }
+        });
+        dialog.setYesText(R.string.odk_unfinished_button_delete);
+        dialog.setNoText(R.string.odk_unfinished_button_change);
+        dialog.setCancelText(R.string.odk_unfinished_button_save);
+        dialog.show();
 
-            alertDialogBuilder.setNegativeButton(mContext.getString(R.string.odk_unfinished_button_change), new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int which) {
-                    formUnFinished = false;
-                    xformUnfinishedDialog.hide();
-                    mContext.startActivityForResult(new Intent(Intent.ACTION_EDIT, contentUri), SELECTED_ODK_REOPEN);
-                }
-            });
-
-
-            xformUnfinishedDialog = alertDialogBuilder.create();
-        }
-
-        xformUnfinishedDialog.show();
     }
 }

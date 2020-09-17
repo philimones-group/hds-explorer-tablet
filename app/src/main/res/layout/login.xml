@@ -192,6 +192,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearance"
+                android:textColor="@color/nui_color_text_adgray"
                 android:text="@string/copyright_app_name_lbl"
                 />
             <TextView
@@ -199,6 +200,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearance"
+                android:textColor="@color/nui_color_text_adgray"
                 android:text="@string/copyright_app_company_lbl"
                 />
             <TextView

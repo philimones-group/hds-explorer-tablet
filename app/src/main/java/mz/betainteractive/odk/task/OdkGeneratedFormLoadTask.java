@@ -32,9 +32,11 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import android.Manifest;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.net.wifi.WifiInfo;
@@ -42,13 +44,14 @@ import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.os.Environment;
 import android.provider.Settings;
+import android.support.v4.app.ActivityCompat;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
 
 public class OdkGeneratedFormLoadTask extends AsyncTask<Void, Void, Boolean> {
 
-	private static String FORMS_PATH = "org.philimone.hds.explorer";
+    private static String FORMS_PATH = "org.philimone.hds.explorer";
 
     private final String householdPrefix = "Household.";
     private final String memberPrefix = "Member.";
@@ -64,8 +67,8 @@ public class OdkGeneratedFormLoadTask extends AsyncTask<Void, Void, Boolean> {
     private FilledForm filledForm;
     private boolean openingSavedUri;
     private Context mContext;
-    
-    
+
+
     public OdkGeneratedFormLoadTask(Context context, FilledForm filledForm, OdkFormLoadListener listener) {
         this.listener = listener;
         this.resolver = context.getContentResolver();
@@ -102,25 +105,33 @@ public class OdkGeneratedFormLoadTask extends AsyncTask<Void, Void, Boolean> {
 
         try {
             cursor = getCursorForFormsProvider(filledForm.getFormName());
-            if (cursor.moveToNext()){
+
+            if (cursor.moveToNext()) {
                 jrFormId = cursor.getString(0);
                 formFilePath = cursor.getString(1);
                 formVersion = cursor.getString(2);
             }
+
             cursor.close();
-        }catch (Exception ex){
+
+        } catch (Exception ex) {
 
             ex.printStackTrace();
 
-            if (cursor != null && !cursor.isClosed()){
+            if (cursor != null && !cursor.isClosed()) {
                 cursor.close();
             }
             //file not found
             return false;
         }
+
+        if (jrFormId == null || formFilePath == null) {
+            return false; //file not found
+        }
+
         /* ends here - finding odk form on odk database */
 
-        Log.d("loading forms", "form_id="+jrFormId+",ver="+formVersion+", path="+formFilePath);
+        Log.d("loading forms", "form_id=" + jrFormId + ",ver=" + formVersion + ", path=" + formFilePath);
 
 
         if (openingSavedUri) {
@@ -163,7 +174,7 @@ public class OdkGeneratedFormLoadTask extends AsyncTask<Void, Void, Boolean> {
 
     }
 
-    private File saveOpenedFile(String xml, String xmlFilePath){
+    private File saveOpenedFile(String xml, String xmlFilePath) {
         File targetFile = new File(xmlFilePath);
         if (targetFile.exists()) {
             try {
@@ -175,11 +186,11 @@ public class OdkGeneratedFormLoadTask extends AsyncTask<Void, Void, Boolean> {
             }
         }
 
-        return  targetFile;
+        return targetFile;
     }
 
-    private String getXmlFilePath(Uri contentUri){
-        Cursor cursor = resolver.query(contentUri, new String[] { InstanceProviderAPI.InstanceColumns.STATUS, InstanceProviderAPI.InstanceColumns.INSTANCE_FILE_PATH }, null, null, null);
+    private String getXmlFilePath(Uri contentUri) {
+        Cursor cursor = resolver.query(contentUri, new String[]{InstanceProviderAPI.InstanceColumns.STATUS, InstanceProviderAPI.InstanceColumns.INSTANCE_FILE_PATH}, null, null, null);
 
         String xmlFilePath = "";
         Log.d("Running check form", "");
@@ -191,9 +202,9 @@ public class OdkGeneratedFormLoadTask extends AsyncTask<Void, Void, Boolean> {
             Log.d("move next", "couldnt find executed form");
         }
 
-        try{
+        try {
             cursor.close();
-        }catch(Exception e){
+        } catch (Exception e) {
             System.err.println("Exception while trying to close cursor !");
             e.printStackTrace();
         }
@@ -201,14 +212,14 @@ public class OdkGeneratedFormLoadTask extends AsyncTask<Void, Void, Boolean> {
         return xmlFilePath;
     }
 
-    public String getXmlFilePath(){
+    public String getXmlFilePath() {
         return getXmlFilePath(this.odkUri);
     }
 
     private Cursor getCursorForFormsProvider(String name) {
-        return resolver.query(FormsProviderAPI.FormsColumns.CONTENT_URI, new String[] {
-                FormsProviderAPI.FormsColumns.JR_FORM_ID, FormsProviderAPI.FormsColumns.FORM_FILE_PATH, FormsProviderAPI.FormsColumns.JR_VERSION },
-                FormsProviderAPI.FormsColumns.JR_FORM_ID + " like ?", new String[] { name + "%" }, null);
+        return resolver.query(FormsProviderAPI.FormsColumns.CONTENT_URI, new String[]{
+                        FormsProviderAPI.FormsColumns.JR_FORM_ID, FormsProviderAPI.FormsColumns.FORM_FILE_PATH, FormsProviderAPI.FormsColumns.JR_VERSION},
+                FormsProviderAPI.FormsColumns.JR_FORM_ID + " like ?", new String[]{name + "%"}, null);
     }
 
     private String processNewXml(String jrFormId, String formVersion, String formFilePath) {
@@ -221,18 +232,18 @@ public class OdkGeneratedFormLoadTask extends AsyncTask<Void, Void, Boolean> {
             Document doc = builder.parse(new FileInputStream(formFilePath));
 
             Node node = doc.getElementsByTagName("data").item(0);
-            formVersion = formVersion==null ? "" : " version=\""+ formVersion +"\"";
-            
-            if (node==null){
-            	node = doc.getElementsByTagName(jrFormId).item(0);
+            formVersion = formVersion == null ? "" : " version=\"" + formVersion + "\"";
+
+            if (node == null) {
+                node = doc.getElementsByTagName(jrFormId).item(0);
                 //Log.d("node", ""+node.getNodeName());
-                sbuilder.append("<"+jrFormId+" id=\"" + jrFormId + "\""+ formVersion +">" + "\r\n"); // version="161103141"
+                sbuilder.append("<" + jrFormId + " id=\"" + jrFormId + "\"" + formVersion + ">" + "\r\n"); // version="161103141"
             } else {
-            	sbuilder.append("<data id=\"" + jrFormId + "\""+ formVersion +">" + "\r\n");
+                sbuilder.append("<data id=\"" + jrFormId + "\"" + formVersion + ">" + "\r\n");
             }
 
             processNewNodeChildren(node, sbuilder);
-            Log.d("processXml","finished!");
+            Log.d("processXml", "finished!");
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -254,7 +265,7 @@ public class OdkGeneratedFormLoadTask extends AsyncTask<Void, Void, Boolean> {
             Node n = childElements.item(i);
             //Log.d("odk-xml-param", ""+n.getNodeName()+", "+n.getNodeValue()+", repeat="+isRepeatGroup(n));
             if (n.getNodeType() == Node.ELEMENT_NODE) {
-            	
+
                 String name = n.getNodeName();
 
                 //Log.d("odk-xml-param", ""+name+", "+n.getNodeValue()+", "+n.getNodeType());
@@ -262,7 +273,7 @@ public class OdkGeneratedFormLoadTask extends AsyncTask<Void, Void, Boolean> {
                 if (params.contains(name)) {
                     NodeList nodeRepeatChilds = null;
 
-                    if (filledForm.isMemberRepeatGroup(name)){ //is a repeat group with auto-filled members
+                    if (filledForm.isMemberRepeatGroup(name)) { //is a repeat group with auto-filled members
                         nodeRepeatChilds = n.getChildNodes();
 
                         /*
@@ -277,25 +288,25 @@ public class OdkGeneratedFormLoadTask extends AsyncTask<Void, Void, Boolean> {
 
 
                     //checking special repeat groups
-                    if (filledForm.isAllMembersRepeatGroup(name)){
+                    if (filledForm.isAllMembersRepeatGroup(name)) {
                         //map all members using <name></name>
                         createMembers(sbuilder, name, nodeRepeatChilds, filledForm.getRepeatGroupMapping(name), filledForm.getHouseholdMembers());
-                    } else if (filledForm.isResidentMemberRepeatGroup(name)){
+                    } else if (filledForm.isResidentMemberRepeatGroup(name)) {
                         createMembers(sbuilder, name, nodeRepeatChilds, filledForm.getRepeatGroupMapping(name), filledForm.getResidentMembers());
-                    } else if (filledForm.isDeadMembersRepeatGroup(name)){
+                    } else if (filledForm.isDeadMembersRepeatGroup(name)) {
                         createMembers(sbuilder, name, nodeRepeatChilds, filledForm.getRepeatGroupMapping(name), filledForm.getDeadMembers());
-                    } else if (filledForm.isOutMigMembersRepeatGroup(name)){
+                    } else if (filledForm.isOutMigMembersRepeatGroup(name)) {
                         createMembers(sbuilder, name, nodeRepeatChilds, filledForm.getRepeatGroupMapping(name), filledForm.getOutmigMembers());
                     } else {
                         //its a normal variable (not a repeat group)
                         Object value = filledForm.get(name);
-                        sbuilder.append(value==null ? "<"+name+" />" + "\r\n" : "<"+name+">" + value + "</"+name+">" + "\r\n");
+                        sbuilder.append(value == null ? "<" + name + " />" + "\r\n" : "<" + name + ">" + value + "</" + name + ">" + "\r\n");
                     }
-                    
-                } else if(name.equalsIgnoreCase("start")){
-                    sbuilder.append("<"+name+">" + getStartTimestamp() + "</"+name+">" + "\r\n");
-                } else if(name.equalsIgnoreCase("deviceId")){
-                    sbuilder.append("<"+name+">" + getDeviceId() + "</"+name+">" + "\r\n");
+
+                } else if (name.equalsIgnoreCase("start")) {
+                    sbuilder.append("<" + name + ">" + getStartTimestamp() + "</" + name + ">" + "\r\n");
+                } else if (name.equalsIgnoreCase("deviceId")) {
+                    sbuilder.append("<" + name + ">" + getDeviceId() + "</" + name + ">" + "\r\n");
                 } else if (isRepeatCountVar(name)) {
                     Log.d("repeat_count", name);
 
@@ -318,7 +329,7 @@ public class OdkGeneratedFormLoadTask extends AsyncTask<Void, Void, Boolean> {
             }
         }
         //Log.d("finished", sbuilder.toString());
-        
+
         sbuilder.append("</" + node.getNodeName() + ">" + "\r\n");
     }
 
@@ -334,7 +345,7 @@ public class OdkGeneratedFormLoadTask extends AsyncTask<Void, Void, Boolean> {
 
         if (nodeRepeatChilds == null) return;
 
-        for (Member m : members){
+        for (Member m : members) {
             sbuilder.append("<" + repeatGroupName + ">" + "\r\n");
 
             //This is not including GROUPS
@@ -342,13 +353,13 @@ public class OdkGeneratedFormLoadTask extends AsyncTask<Void, Void, Boolean> {
                 Node n = nodeRepeatChilds.item(i);
                 String name = n.getNodeName();
                 //Log.d("inner-node"+i, ""+name);
-                if (n.getNodeType() == Node.ELEMENT_NODE){
+                if (n.getNodeType() == Node.ELEMENT_NODE) {
                     if (repeatGroupMapping.containsKey(name)) {
                         String value = repeatGroupMapping.get(name);
                         String var = value.replace(memberPrefix, "");
 
-                        sbuilder.append("<"+name+">" + m.getValueByName(var) + "</"+name+">" + "\r\n"); //map value for mapped variables
-                    }else {
+                        sbuilder.append("<" + name + ">" + m.getValueByName(var) + "</" + name + ">" + "\r\n"); //map value for mapped variables
+                    } else {
                         if (!n.hasChildNodes())
                             sbuilder.append("<" + name + " />" + "\r\n"); //without mapping defined
                             //n.getNodeValue(); //not doing anything, didnt want to break the  if
@@ -365,7 +376,7 @@ public class OdkGeneratedFormLoadTask extends AsyncTask<Void, Void, Boolean> {
         }
     }
 
-    private void createMemberProcessChilds(Node node, StringBuilder sbuilder, Map<String, String> repeatGroupMapping, Member member){
+    private void createMemberProcessChilds(Node node, StringBuilder sbuilder, Map<String, String> repeatGroupMapping, Member member) {
         NodeList childElements = node.getChildNodes();
 
         List<String> params = filledForm.getVariables();
@@ -374,13 +385,13 @@ public class OdkGeneratedFormLoadTask extends AsyncTask<Void, Void, Boolean> {
             Node n = childElements.item(i);
             String name = n.getNodeName();
             //Log.d("inner-node2-FW"+i, ""+name);
-            if (n.getNodeType() == Node.ELEMENT_NODE){
+            if (n.getNodeType() == Node.ELEMENT_NODE) {
                 if (repeatGroupMapping.containsKey(name)) {
                     String value = repeatGroupMapping.get(name);
                     String var = value.replace(memberPrefix, "");
 
-                    sbuilder.append("<"+name+">" + member.getValueByName(var) + "</"+name+">" + "\r\n"); //map value for mapped variables
-                }else {
+                    sbuilder.append("<" + name + ">" + member.getValueByName(var) + "</" + name + ">" + "\r\n"); //map value for mapped variables
+                } else {
                     if (!n.hasChildNodes())
                         sbuilder.append("<" + name + " />" + "\r\n"); //without mapping defined
                         //n.getNodeValue(); //not doing anything, didnt want to break the  if
@@ -394,12 +405,12 @@ public class OdkGeneratedFormLoadTask extends AsyncTask<Void, Void, Boolean> {
         }
     }
 
-    private String getAttributes(Node node){
+    private String getAttributes(Node node) {
         String attr = "";
         NamedNodeMap map = node.getAttributes();
         for (int i = 0; i < map.getLength(); i++) {
             Node n = map.item(i);
-            attr += n.getNodeName()+":"+n.getNodeValue()+":"+n.getTextContent()+",  ";
+            attr += n.getNodeName() + ":" + n.getNodeValue() + ":" + n.getTextContent() + ",  ";
         }
 
         return attr;
@@ -408,24 +419,24 @@ public class OdkGeneratedFormLoadTask extends AsyncTask<Void, Void, Boolean> {
     private boolean isRepeatGroup(Node node) {
         NamedNodeMap map = node.getAttributes();
 
-        Node n = (map!=null) ? map.getNamedItem(repeatGroupAttribute) : null;
+        Node n = (map != null) ? map.getNamedItem(repeatGroupAttribute) : null;
 
         return n != null;
     }
 
-    private boolean isRepeatCountVar(String node){
-        if (node != null && node.endsWith("_count")){
+    private boolean isRepeatCountVar(String node) {
+        if (node != null && node.endsWith("_count")) {
             return filledForm.isMemberRepeatGroup(node.replace("_count", ""));
         }
 
         return false;
     }
 
-    private int getRepeatCountValue(String nodeRepeatCountVar){
-        if (nodeRepeatCountVar != null && nodeRepeatCountVar.endsWith("_count")){
+    private int getRepeatCountValue(String nodeRepeatCountVar) {
+        if (nodeRepeatCountVar != null && nodeRepeatCountVar.endsWith("_count")) {
             String repeat = nodeRepeatCountVar.replace("_count", "");
 
-            if (filledForm.isMemberRepeatGroup(repeat)){
+            if (filledForm.isMemberRepeatGroup(repeat)) {
                 return filledForm.getMembersCount(repeat);
             }
         }
@@ -495,7 +506,7 @@ public class OdkGeneratedFormLoadTask extends AsyncTask<Void, Void, Boolean> {
     /*
      * Updates a pre-existent XML File, only updates some mapped variables - NEW with RepeatGroup Support
      */
-    private void processExistingXml(String formId, String formVersion, String odkFormFilePath, String savedOdkFormXml){
+    private void processExistingXml(String formId, String formVersion, String odkFormFilePath, String savedOdkFormXml) {
 
         //1. read the content of a previous filled odk xml file
         //2. read the odk blank form - to create a new xml file
@@ -516,14 +527,14 @@ public class OdkGeneratedFormLoadTask extends AsyncTask<Void, Void, Boolean> {
             Document doc = builder.parse(new FileInputStream(odkFormFilePath));
 
             Node node = doc.getElementsByTagName("data").item(0);
-            formVersion = formVersion==null ? "" : " version=\""+ formVersion +"\"";
+            formVersion = formVersion == null ? "" : " version=\"" + formVersion + "\"";
 
-            if (node==null){
+            if (node == null) {
                 node = doc.getElementsByTagName(formId).item(0);
                 //Log.d("node", ""+node.getNodeName());
-                sbuilder.append("<"+formId+" id=\"" + formId + "\""+ formVersion +">" + "\r\n"); // version="161103141"
+                sbuilder.append("<" + formId + " id=\"" + formId + "\"" + formVersion + ">" + "\r\n"); // version="161103141"
             } else {
-                sbuilder.append("<data id=\"" + formId + "\""+ formVersion +">" + "\r\n");
+                sbuilder.append("<data id=\"" + formId + "\"" + formVersion + ">" + "\r\n");
             }
 
             //3. iterate the new xml file and update with values
@@ -550,7 +561,7 @@ public class OdkGeneratedFormLoadTask extends AsyncTask<Void, Void, Boolean> {
             e.printStackTrace();
         }
 
-        Log.d("processExistingXml","finished!");
+        Log.d("processExistingXml", "finished!");
     }
 
     private void processExistingXmlNodeChildren(Node node, Map<String, String> savedXmlValues, StringBuilder sbuilder) {
@@ -569,11 +580,11 @@ public class OdkGeneratedFormLoadTask extends AsyncTask<Void, Void, Boolean> {
 
                 if (newValue != null) {
 
-                    sbuilder.append(newValue.toString().isEmpty() ? "<"+name+" />" + "\r\n" : "<"+name+">" + newValue + "</"+name+">" + "\r\n");
+                    sbuilder.append(newValue.toString().isEmpty() ? "<" + name + " />" + "\r\n" : "<" + name + ">" + newValue + "</" + name + ">" + "\r\n");
 
                 } else if (oldValue != null) {
 
-                    sbuilder.append(oldValue.isEmpty() ? "<"+name+" />" + "\r\n" : "<"+name+">" + oldValue + "</"+name+">" + "\r\n");
+                    sbuilder.append(oldValue.isEmpty() ? "<" + name + " />" + "\r\n" : "<" + name + ">" + oldValue + "</" + name + ">" + "\r\n");
 
                 } else {
                     if (!n.hasChildNodes())
@@ -590,7 +601,7 @@ public class OdkGeneratedFormLoadTask extends AsyncTask<Void, Void, Boolean> {
         sbuilder.append("</" + node.getNodeName() + ">" + "\r\n");
     }
 
-    private Map<String, String> readExistingXml(String savedOdkFormXml){
+    private Map<String, String> readExistingXml(String savedOdkFormXml) {
         LinkedHashMap<String, String> map = new LinkedHashMap<>();
 
         SAXBuilder builder = new SAXBuilder();
@@ -611,13 +622,13 @@ public class OdkGeneratedFormLoadTask extends AsyncTask<Void, Void, Boolean> {
         return map;
     }
 
-    private void readExistingXmlChildNodes(Map<String, String> map, org.jdom2.Element node){
+    private void readExistingXmlChildNodes(Map<String, String> map, org.jdom2.Element node) {
         List<org.jdom2.Element> childElements = node.getChildren();
 
         for (int i = 0; i < childElements.size(); i++) {
             org.jdom2.Element n = childElements.get(i);
 
-            if (n.getChildren().size()==0) {
+            if (n.getChildren().size() == 0) {
 
                 String name = n.getName();
                 String value = n.getValue();
@@ -627,15 +638,15 @@ public class OdkGeneratedFormLoadTask extends AsyncTask<Void, Void, Boolean> {
 
                 //Log.d("node", "name:" + name + ", value:" + value +", isRoot=" + (n.getChildren().size()>0));
 
-            }else if (n.getChildren().size()>0){
+            } else if (n.getChildren().size() > 0) {
                 readExistingXmlChildNodes(map, n);
             }
         }
     }
     /**/
-    
 
-    private String getStartTimestamp(){
+
+    private String getStartTimestamp() {
         TimeZone tz = TimeZone.getDefault();
         Calendar cal = Calendar.getInstance(tz);
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
@@ -649,7 +660,7 @@ public class OdkGeneratedFormLoadTask extends AsyncTask<Void, Void, Boolean> {
         //Log.d("realtime", StringUtil.format(new Date(), "yyyy-MM-dd HH:mm:ss.SSS"));
         //Log.d("original-date", ""+sdf.format(cal.getTime()));
 
-        cal.add(Calendar.HOUR_OF_DAY, (int)(-1*gmt)); //Fixing ODK Error on this variable (ODK is adding GMT Hours number to the datetime of "start" variable)
+        cal.add(Calendar.HOUR_OF_DAY, (int) (-1 * gmt)); //Fixing ODK Error on this variable (ODK is adding GMT Hours number to the datetime of "start" variable)
 
         String dateString = sdf.format(cal.getTime());
         //Log.d("fixed-datetime", ""+dateString);
@@ -658,8 +669,17 @@ public class OdkGeneratedFormLoadTask extends AsyncTask<Void, Void, Boolean> {
         return dateString;
     }
 
-    private String getDeviceId(){
+    private String getDeviceId() {
         TelephonyManager mTelephonyManager = (TelephonyManager) mContext.getSystemService(Context.TELEPHONY_SERVICE);
+
+        if (ActivityCompat.checkSelfPermission(this.mContext, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            //return TODO;
+        }
 
         String deviceId = mTelephonyManager.getDeviceId();
         String orDeviceId;

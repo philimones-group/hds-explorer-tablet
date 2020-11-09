@@ -93,6 +93,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	public static final class User implements BaseColumns {
 		public static final String TABLE_NAME = "user";
 
+        public static final String COLUMN_CODE = "code";
         public static final String COLUMN_FIRSTNAME = "firstName";
         public static final String COLUMN_LASTNAME = "lastName";
         public static final String COLUMN_FULLNAME = "fullName";
@@ -102,7 +103,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		public static final String COLUMN_MODULES = "modules";
 
 
-		public static final String[] ALL_COLUMNS = {COLUMN_FIRSTNAME, COLUMN_LASTNAME, COLUMN_FULLNAME, COLUMN_USERNAME, COLUMN_PASSWORD, COLUMN_MODULES, COLUMN_EMAIL};
+		public static final String[] ALL_COLUMNS = {COLUMN_CODE, COLUMN_FIRSTNAME, COLUMN_LASTNAME, COLUMN_FULLNAME, COLUMN_USERNAME, COLUMN_PASSWORD, COLUMN_MODULES, COLUMN_EMAIL};
 	}
 
 	public static final class Form implements BaseColumns {
@@ -194,9 +195,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         public static final String COLUMN_DOB = "dob";
         public static final String COLUMN_AGE = "age";
         public static final String COLUMN_AGE_AT_DEATH = "ageAtDeath";
+        public static final String COLUMN_MARITAL_STATUS = "maritalStatus";
         public static final String COLUMN_SPOUSE_CODE = "spouseCode";
         public static final String COLUMN_SPOUSE_NAME = "spouseName";
-        public static final String COLUMN_SPOUSE_TYPE = "spouseType";
         public static final String COLUMN_MOTHER_CODE = "motherCode";
         public static final String COLUMN_MOTHER_NAME = "motherName";
         public static final String COLUMN_FATHER_CODE = "fatherCode";
@@ -210,6 +211,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         public static final String COLUMN_ENTRY_HOUSEHOLD = "entryHousehold";
         public static final String COLUMN_ENTRY_TYPE = "entryType";
         public static final String COLUMN_ENTRY_DATE = "entryDate";
+        public static final String COLUMN_HEAD_RELATIONSHIP_TYPE = "headRelationshipType";
         public static final String COLUMN_IS_HOUSEHOLD_HEAD = "isHouseholdHead";
         public static final String COLUMN_IS_SEC_HOUSEHOLD_HEAD = "isSecHouseholdHead";
         public static final String COLUMN_GPS_NULL = "hasGps";
@@ -225,10 +227,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 
         public static final String[] ALL_COLUMNS = {_ID, COLUMN_CODE, COLUMN_NAME, COLUMN_GENDER, COLUMN_DOB, COLUMN_AGE, COLUMN_AGE_AT_DEATH, COLUMN_SPOUSE_CODE,
-                COLUMN_SPOUSE_NAME, COLUMN_SPOUSE_TYPE, COLUMN_MOTHER_CODE,
+                COLUMN_SPOUSE_NAME, COLUMN_MARITAL_STATUS, COLUMN_MOTHER_CODE,
                 COLUMN_MOTHER_NAME, COLUMN_FATHER_CODE, COLUMN_FATHER_NAME, COLUMN_HOUSE_CODE, COLUMN_HOUSE_NAME,
                 COLUMN_START_TYPE, COLUMN_START_DATE, COLUMN_END_TYPE, COLUMN_END_DATE, COLUMN_ENTRY_HOUSEHOLD, COLUMN_ENTRY_TYPE, COLUMN_ENTRY_DATE,
-                COLUMN_IS_HOUSEHOLD_HEAD, COLUMN_IS_SEC_HOUSEHOLD_HEAD,
+                COLUMN_HEAD_RELATIONSHIP_TYPE, COLUMN_IS_HOUSEHOLD_HEAD, COLUMN_IS_SEC_HOUSEHOLD_HEAD,
                 COLUMN_GPS_NULL, COLUMN_GPS_ACCURACY, COLUMN_GPS_ALTITUDE, COLUMN_GPS_LATITUDE, COLUMN_GPS_LONGITUDE,
                 COLUMN_COS_LATITUDE, COLUMN_SIN_LATITUDE, COLUMN_COS_LONGITUDE, COLUMN_SIN_LONGITUDE, COLUMN_RECENTLY_CREATED};
 	}
@@ -331,6 +333,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String CREATE_TABLE_USER = " "
             + "CREATE TABLE " + User.TABLE_NAME + "("
             + User._ID  + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+            + User.COLUMN_CODE + " TEXT,"
             + User.COLUMN_FIRSTNAME + " TEXT,"
             + User.COLUMN_LASTNAME + " TEXT,"
             + User.COLUMN_FULLNAME + " TEXT,"
@@ -438,7 +441,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + Member.COLUMN_AGE_AT_DEATH + " INTEGER,"
             + Member.COLUMN_SPOUSE_CODE + " TEXT,"
             + Member.COLUMN_SPOUSE_NAME + " TEXT,"
-            + Member.COLUMN_SPOUSE_TYPE + " TEXT,"
+            + Member.COLUMN_MARITAL_STATUS + " TEXT,"
             + Member.COLUMN_MOTHER_CODE + " TEXT,"
             + Member.COLUMN_MOTHER_NAME + " TEXT,"
             + Member.COLUMN_FATHER_CODE + " TEXT,"
@@ -452,6 +455,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + Member.COLUMN_ENTRY_HOUSEHOLD + " TEXT,"
             + Member.COLUMN_ENTRY_TYPE + " TEXT,"
             + Member.COLUMN_ENTRY_DATE + " TEXT,"
+            + Member.COLUMN_HEAD_RELATIONSHIP_TYPE + " TEXT,"
             + Member.COLUMN_IS_HOUSEHOLD_HEAD + " INTEGER,"
             + Member.COLUMN_IS_SEC_HOUSEHOLD_HEAD + " INTEGER,"
             + Member.COLUMN_GPS_NULL + " INTEGER,"

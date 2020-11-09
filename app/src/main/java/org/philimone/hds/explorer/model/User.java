@@ -15,6 +15,7 @@ import mz.betainteractive.utilities.ReflectionUtils;
 public class User implements Serializable, Table {
 
     private int id;
+    private String code;
     private String firstName;
     private String lastName;
     private String fullName;
@@ -45,6 +46,14 @@ public class User implements Serializable, Table {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
     }
 
     public String getFirstName() {
@@ -119,6 +128,7 @@ public class User implements Serializable, Table {
     @Override
     public ContentValues getContentValues() {
         ContentValues cv = new ContentValues();
+        cv.put(DatabaseHelper.User.COLUMN_CODE, code);
         cv.put(DatabaseHelper.User.COLUMN_FIRSTNAME, firstName);
         cv.put(DatabaseHelper.User.COLUMN_LASTNAME, lastName);
         cv.put(DatabaseHelper.User.COLUMN_USERNAME, username);

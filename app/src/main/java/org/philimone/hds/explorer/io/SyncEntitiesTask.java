@@ -1289,6 +1289,17 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 
 			User table = new User();
 
+			parser.nextTag(); //process <code>
+			if (!isEmptyTag("code", parser)) {
+				parser.next();
+				table.setCode(parser.getText());
+				parser.nextTag(); //process </code>
+				//Log.d(count+"-code", "value="+ table.getCode());
+			}else{
+				table.setCode("");
+				parser.nextTag();
+			}
+
 			parser.nextTag(); //process <username>
 			if (!isEmptyTag("username", parser)) {
 				parser.next();
@@ -1865,12 +1876,12 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
             }
 
 			parser.nextTag(); //process <spouseType>
-			if (!isEmptyTag(DatabaseHelper.Member.COLUMN_SPOUSE_TYPE, parser)) {
+			if (!isEmptyTag(DatabaseHelper.Member.COLUMN_MARITAL_STATUS, parser)) {
 				parser.next();
-				table.setSpouseType(parser.getText());
+				table.setMaritalStatus(parser.getText());
 				parser.nextTag(); //process </spouseType>
 			}else{
-				table.setSpouseType("");
+				table.setMaritalStatus("");
 				parser.nextTag();
 			}
 
@@ -1980,6 +1991,19 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 				//Log.d("e entryDate", table.getEntryDate());
 			}
 
+			parser.nextTag(); //process <headRelationshipType>
+			if (!isEmptyTag(DatabaseHelper.Member.COLUMN_HEAD_RELATIONSHIP_TYPE, parser)) { //endtag is temp
+				parser.next();
+				//Log.d("note headRelationshipType", parser.getText() + ", " +parser.getPositionDescription());
+				if (parser.getText()!=null){
+					table.setHeadRelationshipType(parser.getText());
+					parser.nextTag(); //process </headRelationshipType>
+				}
+			}else{
+				table.setHeadRelationshipType("");
+				parser.nextTag();
+				//Log.d("e entryType", table.getheadRelationshipType());
+			}
 
 			parser.nextTag(); //process <isHouseholdHead>
 			if (!isEmptyTag(DatabaseHelper.Member.COLUMN_IS_HOUSEHOLD_HEAD, parser)) { //endtag is temp

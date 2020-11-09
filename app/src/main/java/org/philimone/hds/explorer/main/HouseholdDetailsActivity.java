@@ -321,7 +321,7 @@ public class HouseholdDetailsActivity extends Activity implements OdkFormResultL
     private String generateHouseholdCode(Region region, User fieldWorker){
         Database database = new Database(this);
         database.open();
-        String baseId = region.getCode() + fieldWorker.getUsername().substring(2,5);
+        String baseId = region.getCode() + fieldWorker.getCode();
         String[] columns = new String[] {DatabaseHelper.Household.COLUMN_CODE};
         String where = DatabaseHelper.Household.COLUMN_CODE + " LIKE ?";
         String[] whereArgs = new String[] { baseId + "%" };

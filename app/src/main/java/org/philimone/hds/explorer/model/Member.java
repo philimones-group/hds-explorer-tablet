@@ -29,9 +29,10 @@ public class Member implements Serializable, Table {
     private String fatherCode;
     private String fatherName;
 
+    private String maritalStatus;
+
     private String spouseCode;
     private String spouseName;
-    private String spouseType;
 
     /**
      * Current HouseHold Status
@@ -46,6 +47,8 @@ public class Member implements Serializable, Table {
     private String entryHousehold;
     private String entryType;
     private String entryDate;
+
+    private String headRelationshipType;
 
     private boolean isHouseholdHead; /*not on database*/
     private boolean isSecHouseholdHead; /*not on database*/
@@ -284,12 +287,12 @@ public class Member implements Serializable, Table {
         this.spouseName = spouseName;
     }
 
-    public String getSpouseType() {
-        return spouseType;
+    public String getMaritalStatus() {
+        return maritalStatus;
     }
 
-    public void setSpouseType(String spouseType) {
-        this.spouseType = spouseType;
+    public void setMaritalStatus(String maritalStatus) {
+        this.maritalStatus = maritalStatus;
     }
 
     public String getEntryHousehold() {
@@ -314,6 +317,14 @@ public class Member implements Serializable, Table {
 
     public void setEntryDate(String entryDate) {
         this.entryDate = entryDate;
+    }
+
+    public String getHeadRelationshipType() {
+        return headRelationshipType;
+    }
+
+    public void setHeadRelationshipType(String headRelationshipType) {
+        this.headRelationshipType = headRelationshipType;
     }
 
     public boolean isHouseholdHead() {
@@ -363,7 +374,7 @@ public class Member implements Serializable, Table {
 
         member.spouseCode = "";
         member.spouseName = "";
-        member.spouseType = "";
+        member.maritalStatus = "";
 
         member.motherCode = "";
         member.motherName = "";
@@ -380,6 +391,8 @@ public class Member implements Serializable, Table {
         member.entryHousehold = "";
         member.entryType = "";
         member.entryDate = null;
+
+        member.headRelationshipType = "";
 
         member.gpsNull = true;
         member.gpsAccuracy = 0.0;
@@ -421,7 +434,7 @@ public class Member implements Serializable, Table {
         cv.put(DatabaseHelper.Member.COLUMN_AGE_AT_DEATH, ageAtDeath);
         cv.put(DatabaseHelper.Member.COLUMN_SPOUSE_CODE, spouseCode);
         cv.put(DatabaseHelper.Member.COLUMN_SPOUSE_NAME, spouseName);
-        cv.put(DatabaseHelper.Member.COLUMN_SPOUSE_TYPE, spouseType);
+        cv.put(DatabaseHelper.Member.COLUMN_MARITAL_STATUS, maritalStatus);
         cv.put(DatabaseHelper.Member.COLUMN_MOTHER_CODE, motherCode);
         cv.put(DatabaseHelper.Member.COLUMN_MOTHER_NAME, motherName);
         cv.put(DatabaseHelper.Member.COLUMN_FATHER_CODE, fatherCode);
@@ -435,6 +448,7 @@ public class Member implements Serializable, Table {
         cv.put(DatabaseHelper.Member.COLUMN_ENTRY_HOUSEHOLD, entryHousehold);
         cv.put(DatabaseHelper.Member.COLUMN_ENTRY_TYPE, entryType);
         cv.put(DatabaseHelper.Member.COLUMN_ENTRY_DATE, entryDate);
+        cv.put(DatabaseHelper.Member.COLUMN_HEAD_RELATIONSHIP_TYPE, headRelationshipType);
         cv.put(DatabaseHelper.Member.COLUMN_IS_HOUSEHOLD_HEAD, isHouseholdHead ? 1 : 0);
         cv.put(DatabaseHelper.Member.COLUMN_IS_SEC_HOUSEHOLD_HEAD, isSecHouseholdHead ? 1 : 0);
         cv.put(DatabaseHelper.Member.COLUMN_GPS_NULL, gpsNull ? 1 : 0);

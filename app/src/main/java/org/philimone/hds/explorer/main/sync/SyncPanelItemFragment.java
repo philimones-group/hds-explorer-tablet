@@ -1,7 +1,6 @@
 package org.philimone.hds.explorer.main.sync;
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,6 +20,8 @@ import org.philimone.hds.explorer.io.SyncStatus;
 import org.philimone.hds.explorer.widget.SyncResultDialog;
 
 import java.util.List;
+
+import androidx.fragment.app.Fragment;
 
 /**
  * A simple {@link Fragment} subclass.

@@ -2,7 +2,6 @@ package org.philimone.hds.explorer.main.sync;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -22,6 +21,7 @@ import org.philimone.hds.explorer.model.SyncReport;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.appcompat.app.AppCompatActivity;
 import mz.betainteractive.utilities.StringUtil;
 
 import static org.philimone.hds.explorer.io.SyncEntity.*;

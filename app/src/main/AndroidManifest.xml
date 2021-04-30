@@ -12,6 +12,8 @@
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     <application
         android:allowBackup="true"
@@ -19,7 +21,7 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".main.SplashScreenActivity">
+        <activity android:name=".main.SplashScreenActivity" android:windowSoftInputMode="stateHidden|adjustPan">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -33,24 +35,24 @@
             android:theme="@style/zxing_CaptureTheme"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
-            android:name=".main.BarcodeScannerActivity"
+            android:name=".main.BarcodeScannerActivity" android:windowSoftInputMode="stateHidden|adjustPan"
             android:theme="@style/ThemeNoActionBar" />
         <activity
-            android:name=".main.LoginActivity"
+            android:name=".main.LoginActivity" android:windowSoftInputMode="stateHidden|adjustPan"
             android:label="@string/app_name">
 
         </activity>
-        <activity android:name=".main.sync.SyncPanelActivity" />
-        <activity android:name=".main.SurveyActivity" />
-        <activity android:name=".main.SurveyHouseholdsActivity" />
-        <activity android:name=".main.SurveyMembersActivity" />
-        <activity android:name=".main.HouseholdDetailsActivity" />
-        <activity android:name=".main.MemberDetailsActivity" />
-        <activity android:name=".main.GpsSearchedListActivity" />
-        <activity android:name=".main.TrackingListActivity" />
-        <activity android:name=".main.TrackingListDetailsActivity" />
-        <activity android:name=".main.SettingsActivity" android:theme="@style/SettingsScreen" />
-        <activity android:name=".main.RegionDetailsActivity" />
+        <activity android:name=".main.sync.SyncPanelActivity" android:windowSoftInputMode="stateHidden|adjustPan" />
+        <activity android:name=".main.SurveyActivity" android:windowSoftInputMode="stateHidden|adjustPan" />
+        <activity android:name=".main.SurveyHouseholdsActivity" android:windowSoftInputMode="stateHidden|adjustPan" />
+        <activity android:name=".main.SurveyMembersActivity" android:windowSoftInputMode="stateHidden|adjustPan" />
+        <activity android:name=".main.HouseholdDetailsActivity" android:windowSoftInputMode="stateHidden|adjustPan" />
+        <activity android:name=".main.MemberDetailsActivity" android:windowSoftInputMode="stateHidden|adjustPan" />
+        <activity android:name=".main.GpsSearchedListActivity" android:windowSoftInputMode="stateHidden|adjustPan" />
+        <activity android:name=".main.TrackingListActivity" android:windowSoftInputMode="stateHidden|adjustPan" />
+        <activity android:name=".main.TrackingListDetailsActivity" android:windowSoftInputMode="stateHidden|adjustPan"/>
+        <activity android:name=".main.SettingsActivity" android:theme="@style/SettingsScreen" android:windowSoftInputMode="stateHidden|adjustPan"/>
+        <activity android:name=".main.RegionDetailsActivity" android:windowSoftInputMode="stateHidden|adjustPan" />
     </application>
 
 </manifest>

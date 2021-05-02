@@ -5,20 +5,27 @@ import android.content.ContentValues;
 import org.philimone.hds.explorer.database.DatabaseHelper;
 import org.philimone.hds.explorer.database.Table;
 
+import io.objectbox.annotation.Entity;
+import io.objectbox.annotation.Id;
+import io.objectbox.annotation.Unique;
+
 
 /**
  * Represents an application parameter or setting to be saved on the database
  */
-public class ApplicationParam implements Table {
+@Entity
+public class ApplicationParam {
 
     public static final String APP_URL = "app-url";
     public static final String ODK_URL = "odk-url";
     public static final String REDCAP_URL = "redcap-url";
 
-    private int id;
-    private String name;
-    private String type;
-    private String value;
+    @Id
+    private long id;
+    @Unique
+    public String name;
+    public String type;
+    public String value;
 
     public ApplicationParam(){
 
@@ -30,12 +37,11 @@ public class ApplicationParam implements Table {
         this.value = value;
     }
 
-    @Override
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -63,22 +69,4 @@ public class ApplicationParam implements Table {
         this.value = value;
     }
 
-    @Override
-    public String getTableName() {
-        return DatabaseHelper.ApplicationParam.TABLE_NAME;
-    }
-
-    @Override
-    public ContentValues getContentValues() {
-        ContentValues cv = new ContentValues();
-        cv.put(DatabaseHelper.ApplicationParam.COLUMN_NAME, name);
-        cv.put(DatabaseHelper.ApplicationParam.COLUMN_TYPE, type);
-        cv.put(DatabaseHelper.ApplicationParam.COLUMN_VALUE, value);
-        return cv;
-    }
-
-    @Override
-    public String[] getColumnNames() {
-        return DatabaseHelper.ApplicationParam.ALL_COLUMNS;
-    }
 }

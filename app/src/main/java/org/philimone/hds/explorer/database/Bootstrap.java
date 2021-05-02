@@ -15,6 +15,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import io.objectbox.Box;
+
 import static org.philimone.hds.explorer.model.SyncReport.*;
 
 /**
@@ -25,30 +27,34 @@ public class Bootstrap {
     private static final String APP_PATH = "org.philimone.hds.explorer";
     private Database database;
 
+    private Box<ApplicationParam> boxAppParams;
+
     public Bootstrap(Context context){
         this.database = new Database(context);
+        initBoxes();
+    }
+
+    private void initBoxes() {
+        this.boxAppParams = ObjectBoxDatabase.get().boxFor(ApplicationParam.class);
     }
 
     public void init(){
         database.open();
 
         insertSyncReports();
-
-        Cursor cursorParams = database.query(ApplicationParam.class, null, null, null, null, null);
-
-        if (cursorParams.getCount()==0){
-            ApplicationParam param1 = new ApplicationParam(ApplicationParam.APP_URL, "string", "https://icemr2-aws.medcol.mw:8443/hds-explorer-server"); // Server URL
-            ApplicationParam param2 = new ApplicationParam(ApplicationParam.ODK_URL, "string", "https://icemr2-aws.medcol.mw:8443/ODKAggregate");      // ODK Aggregate Server URL
-            ApplicationParam param3 = new ApplicationParam(ApplicationParam.REDCAP_URL, "string", "https://apps.betainteractive.net/redcap");           // REDCap Server URL
-
-            database.insert(param1);
-            database.insert(param2);
-            database.insert(param3);
-        }
+        insertParams();
 
         database.close();
 
         initializePaths();
+    }
+
+    private void insertParams(){
+        if (boxAppParams.count()==0){
+            boxAppParams.put(new ApplicationParam(ApplicationParam.APP_URL, "string", "https://icemr2-aws.medcol.mw:8443/hds-explorer-server")); // Server URL
+            boxAppParams.put(new ApplicationParam(ApplicationParam.ODK_URL, "string", "https://icemr2-aws.medcol.mw:8443/ODKAggregate"));        // ODK Aggregate Server URL
+            boxAppParams.put(new ApplicationParam(ApplicationParam.REDCAP_URL, "string", "https://apps.betainteractive.net/redcap"));            // REDCap Server URL
+        }
     }
 
     private void insertSyncReports(){

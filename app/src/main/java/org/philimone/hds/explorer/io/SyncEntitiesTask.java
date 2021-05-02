@@ -18,8 +18,10 @@ import java.util.Scanner;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+import org.philimone.hds.explorer.database.ObjectBoxDatabase;
 import org.philimone.hds.explorer.database.Queries;
 import org.philimone.hds.explorer.model.ApplicationParam;
+import org.philimone.hds.explorer.model.ApplicationParam_;
 import org.philimone.hds.explorer.model.DataSet;
 import org.philimone.hds.explorer.model.Region;
 import org.xmlpull.v1.XmlPullParser;
@@ -47,6 +49,8 @@ import org.philimone.hds.explorer.model.SyncReport;
 import org.philimone.hds.explorer.model.User;
 import org.philimone.hds.explorer.model.followup.TrackingList;
 
+import io.objectbox.Box;
+import io.objectbox.query.Query;
 import mz.betainteractive.utilities.StringUtil;
 
 /**
@@ -70,8 +74,6 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 	private String password;
 	private List<SyncEntity> entities;
 
-	private final List<Table> values = new ArrayList<Table>();
-
 	private Map<SyncEntity, Integer> downloadedValues = new LinkedHashMap<>();
 	private Map<SyncEntity, Integer> savedValues = new LinkedHashMap<>();
 	private Map<SyncEntity, String> errorMessageValues = new LinkedHashMap<>();
@@ -81,6 +83,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 	private int entityRecords;
 
 	private Context mContext;
+	private Box<ApplicationParam> boxAppParams;
 
 	private boolean canceled;
 
@@ -88,30 +91,17 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 		this.baseurl = url;
 		this.username = username;
 		this.password = password;
+		this.mContext = context;
+		this.entities = new ArrayList<>();
+		this.entities.addAll(Arrays.asList(entityToDownload));
 		this.listener = listener;
-		this.mContext = context;
-		this.entities = new ArrayList<>();
-		this.entities.addAll(Arrays.asList(entityToDownload));
-		listener.onSyncCreated();
+		this.listener.onSyncCreated();
+
+		initBoxes();
 	}
 
-	public SyncEntitiesTask(Context context, String url, String username, String password, SyncEntity... entityToDownload) {
-		this.baseurl = url;
-		this.username = username;
-		this.password = password;
-		this.mContext = context;
-		this.entities = new ArrayList<>();
-		this.entities.addAll(Arrays.asList(entityToDownload));
-		listener.onSyncCreated();
-	}
-
-	public SyncEntitiesTask(Context context, String url, String username, String password) {
-		this.baseurl = url;
-		this.username = username;
-		this.password = password;
-		this.mContext = context;
-		this.entities = new ArrayList<>();
-		listener.onSyncCreated();
+	private void initBoxes() {
+		this.boxAppParams = ObjectBoxDatabase.get().boxFor(ApplicationParam.class);
 	}
 
 	private Database getDatabase(){
@@ -586,9 +576,13 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 
 	private void processApplicationParams(XmlPullParser parser) throws Exception {
 
+
+
 		//clear sync_report
 		updateSyncReport(SyncEntity.PARAMETERS, null, SyncStatus.STATUS_NOT_SYNCED);
 
+		List<ApplicationParam> values = new ArrayList<>();
+		List<String> namesToRemove = new ArrayList<>();
 		int count = 0;
 		values.clear();
 
@@ -600,7 +594,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 			ApplicationParam table = new ApplicationParam();
 
 			parser.nextTag(); //name
-			if (!isEmptyTag(DatabaseHelper.ApplicationParam.COLUMN_NAME, parser)) {
+			if (!isEmptyTag("name", parser)) {
 				parser.next();
 				table.setName(parser.getText());
 				parser.nextTag();
@@ -610,7 +604,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 			}
 
 			parser.nextTag(); //type
-			if (!isEmptyTag(DatabaseHelper.ApplicationParam.COLUMN_TYPE, parser)) {
+			if (!isEmptyTag("type", parser)) {
 				parser.next();
 				table.setType(parser.getText());
 				parser.nextTag();
@@ -620,7 +614,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 			}
 
 			parser.nextTag(); //value
-			if (!isEmptyTag(DatabaseHelper.ApplicationParam.COLUMN_VALUE, parser)) {
+			if (!isEmptyTag("value", parser)) {
 				parser.next();
 				table.setValue(parser.getText());
 				parser.nextTag();
@@ -629,10 +623,10 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 				parser.nextTag();
 			}
 
-
 			parser.nextTag();
 			parser.next();
 
+			namesToRemove.add(table.name);
 			values.add(table);
 			publishProgress(count);
 
@@ -641,24 +635,17 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 		state = SyncState.SAVING;
 		entity = SyncEntity.PARAMETERS;
 
-		Database database = getDatabase();
-		database.open();
 		if (!values.isEmpty()) {
-			count = 0;
-			for (Table t : values){
-				count++;
+			count = values.size();
 
-				//delete if exists
-				ApplicationParam p = (ApplicationParam) t;
-				database.delete(ApplicationParam.class, DatabaseHelper.ApplicationParam.COLUMN_NAME+"=?", new String[]{ p.getName() });
+			String[] arrayNames = namesToRemove.toArray(new String[namesToRemove.size()]);
+			boxAppParams.query().in(ApplicationParam_.name, arrayNames).build().remove(); //delete all existing names
+			boxAppParams.put(values); //insert all of them
 
-				database.insert(t);
+			savedValues.put(entity, count); //publish progress is a bit slow - its not reporting well the numbers
+			publishProgress(count);
 
-				savedValues.put(entity, count); //publish progress is a bit slow - its not reporting well the numbers
-				publishProgress(count);
-			}
 		}
-		database.close();
 
 		updateSyncReport(SyncEntity.PARAMETERS, new Date(), SyncStatus.STATUS_SYNCED);
 	}
@@ -668,6 +655,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 		//clear sync_report
 		updateSyncReport(SyncEntity.MODULES, null, SyncStatus.STATUS_NOT_SYNCED);
 
+		List<Table> values = new ArrayList<>();
 		int count = 0;
 		values.clear();
 
@@ -742,6 +730,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 		//clear sync_report
 		updateSyncReport(SyncEntity.FORMS, null, SyncStatus.STATUS_NOT_SYNCED);
 
+		List<Table> values = new ArrayList<>();
 		int count = 0;
 		values.clear();
 
@@ -984,6 +973,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 		//clear sync_report
 		updateSyncReport(SyncEntity.DATASETS, null, SyncStatus.STATUS_NOT_SYNCED);
 
+		List<Table> values = new ArrayList<>();
 		int count = 0;
 		values.clear();
 
@@ -1137,6 +1127,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 		//clear sync_report
 		updateSyncReport(SyncEntity.TRACKING_LISTS, null, SyncStatus.STATUS_NOT_SYNCED);
 
+		List<Table> values = new ArrayList<>();
 		int tlistCount = 0;
 		values.clear();
 
@@ -1275,6 +1266,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 		//clear sync_report
 		updateSyncReport(SyncEntity.USERS, null, SyncStatus.STATUS_NOT_SYNCED);
 
+		List<Table> values = new ArrayList<>();
 		int count = 0;
 		values.clear();
 
@@ -1417,6 +1409,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 		//clear sync_report
 		updateSyncReport(SyncEntity.REGIONS, null, SyncStatus.STATUS_NOT_SYNCED);
 
+		List<Table> values = new ArrayList<>();
 		int count = 0;
 		values.clear();
 
@@ -1502,6 +1495,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 		//clear sync_report
 		updateSyncReport(SyncEntity.HOUSEHOLDS, null, SyncStatus.STATUS_NOT_SYNCED);
 
+		List<Table> values = new ArrayList<>();
 		int count = 0;
 		values.clear();
 
@@ -1738,6 +1732,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 		//clear sync_report
 		updateSyncReport(SyncEntity.MEMBERS, null, SyncStatus.STATUS_NOT_SYNCED);
 
+		List<Table> values = new ArrayList<>();
 		int count = 0;
 		values.clear();
 

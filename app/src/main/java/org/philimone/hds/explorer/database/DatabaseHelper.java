@@ -17,7 +17,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	@Override
 	public void onCreate(SQLiteDatabase db) {
         try {
-            db.execSQL(CREATE_TABLE_APPLICATION_PARAM);
+            //db.execSQL(CREATE_TABLE_APPLICATION_PARAM);
             db.execSQL(CREATE_TABLE_SYNC_REPORT);
 		    db.execSQL(CREATE_TABLE_USER);
 		    db.execSQL(CREATE_TABLE_FORM);
@@ -46,8 +46,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
                 //db.execSQL("ALTER TABLE " + TrackingSubjectList.TABLE_NAME + " ADD COLUMN " + TrackingSubjectList.COLUMN_SUBJECT_VISIT + " INTEGER  NOT NULL DEFAULT 0"); //add MemberVisit
 
-                db.execSQL("ALTER TABLE " + Form.TABLE_NAME + " ADD COLUMN " + Form.COLUMN_REGION_LEVEL + " TEXT "); //add regionLevel
-                db.execSQL("ALTER TABLE " + Form.TABLE_NAME + " ADD COLUMN " + Form.COLUMN_IS_REGION + " INTEGER NOT NULL DEFAULT 0"); //add isRegion
+                //db.execSQL("ALTER TABLE " + Form.TABLE_NAME + " ADD COLUMN " + Form.COLUMN_REGION_LEVEL + " TEXT "); //add regionLevel
+
+                //db.execSQL("ALTER TABLE " + Form.TABLE_NAME + " ADD COLUMN " + Form.COLUMN_IS_REGION + " INTEGER NOT NULL DEFAULT 0"); //add isRegion
 
             }catch (Exception ex){
                 Log.d("error on database alter", ""+ex.getMessage());
@@ -65,9 +66,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
 	}
 
-    public static final String[] ALL_TABLES = {ApplicationParam.TABLE_NAME, User.TABLE_NAME, Form.TABLE_NAME, Module.TABLE_NAME, Household.TABLE_NAME, Member.TABLE_NAME, SyncReport.TABLE_NAME };
+    public static final String[] ALL_TABLES = {/*ApplicationParam.TABLE_NAME, */User.TABLE_NAME, Form.TABLE_NAME, Module.TABLE_NAME, Household.TABLE_NAME, Member.TABLE_NAME, SyncReport.TABLE_NAME };
 
-    public static final class ApplicationParam implements BaseColumns {
+    /*public static final class ApplicationParam implements BaseColumns {
         public static final String TABLE_NAME = "application_param";
 
         public static final String COLUMN_NAME = "name";
@@ -77,7 +78,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         public static final String[] ALL_COLUMNS = {
                 _ID, COLUMN_NAME, COLUMN_TYPE, COLUMN_VALUE
         };
-    }
+    }*/
 
     public static final class SyncReport implements BaseColumns {
         public static final String TABLE_NAME = "sync_report";
@@ -307,7 +308,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                                                          COLUMN_CREATED_BY, COLUMN_CREATION_DATE, COLUMN_UPDATED_BY, COLUMN_UPDATED_DATE, COLUMN_LABELS};
     }
 
-    private static final String CREATE_TABLE_APPLICATION_PARAM = " "
+    /*private static final String CREATE_TABLE_APPLICATION_PARAM = " "
             + "CREATE TABLE " + ApplicationParam.TABLE_NAME + "("
             + ApplicationParam._ID  + " INTEGER PRIMARY KEY AUTOINCREMENT, "
             + ApplicationParam.COLUMN_NAME + " TEXT,"
@@ -316,7 +317,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
             + " CREATE UNIQUE INDEX IDX_APPARAM_NAME ON " + ApplicationParam.TABLE_NAME
             + "(" +  ApplicationParam.COLUMN_NAME  + ");"
-            ;
+            ;*/
 
     private static final String CREATE_TABLE_SYNC_REPORT = " "
             + "CREATE TABLE " + SyncReport.TABLE_NAME + "("

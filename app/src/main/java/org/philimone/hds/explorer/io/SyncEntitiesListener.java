@@ -1,5 +1,8 @@
 package org.philimone.hds.explorer.io;
 
+import org.philimone.hds.explorer.model.enums.SyncEntity;
+import org.philimone.hds.explorer.model.enums.SyncState;
+
 import java.util.List;
 
 public interface SyncEntitiesListener {

@@ -13,9 +13,9 @@ import org.philimone.hds.explorer.database.Database;
 import org.philimone.hds.explorer.database.DatabaseHelper;
 import org.philimone.hds.explorer.database.Queries;
 import org.philimone.hds.explorer.io.SyncEntitiesTask;
-import org.philimone.hds.explorer.io.SyncEntity;
+import org.philimone.hds.explorer.model.enums.SyncEntity;
 import org.philimone.hds.explorer.io.SyncEntityResult;
-import org.philimone.hds.explorer.io.SyncStatus;
+import org.philimone.hds.explorer.model.enums.SyncStatus;
 import org.philimone.hds.explorer.model.SyncReport;
 
 import java.util.ArrayList;
@@ -24,7 +24,7 @@ import java.util.List;
 import androidx.appcompat.app.AppCompatActivity;
 import mz.betainteractive.utilities.StringUtil;
 
-import static org.philimone.hds.explorer.io.SyncEntity.*;
+import static org.philimone.hds.explorer.model.enums.SyncEntity.*;
 
 public class SyncPanelActivity extends AppCompatActivity implements SyncPanelItemFragment.SyncPanelItemListener {
 

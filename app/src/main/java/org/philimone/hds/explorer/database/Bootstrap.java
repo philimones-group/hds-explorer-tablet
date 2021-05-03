@@ -1,12 +1,11 @@
 package org.philimone.hds.explorer.database;
 
 import android.content.Context;
-import android.database.Cursor;
 import android.os.Environment;
 import android.util.Log;
 
-import org.philimone.hds.explorer.io.SyncEntity;
-import org.philimone.hds.explorer.io.SyncStatus;
+import org.philimone.hds.explorer.model.enums.SyncEntity;
+import org.philimone.hds.explorer.model.enums.SyncStatus;
 import org.philimone.hds.explorer.model.ApplicationParam;
 import org.philimone.hds.explorer.model.SyncReport;
 
@@ -16,8 +15,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import io.objectbox.Box;
-
-import static org.philimone.hds.explorer.model.SyncReport.*;
 
 /**
  * Created by paul on 5/26/16.

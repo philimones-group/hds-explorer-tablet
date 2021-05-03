@@ -1,5 +1,7 @@
 package org.philimone.hds.explorer.io;
 
+import org.philimone.hds.explorer.model.enums.SyncEntity;
+
 import java.io.Serializable;
 
 public class SyncEntityReport implements Serializable {

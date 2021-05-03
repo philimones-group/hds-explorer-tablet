@@ -12,11 +12,11 @@ import android.widget.TextView;
 
 import org.philimone.hds.explorer.R;
 import org.philimone.hds.explorer.io.SyncEntitiesListener;
-import org.philimone.hds.explorer.io.SyncEntity;
+import org.philimone.hds.explorer.model.enums.SyncEntity;
 import org.philimone.hds.explorer.io.SyncEntityReport;
 import org.philimone.hds.explorer.io.SyncEntityResult;
-import org.philimone.hds.explorer.io.SyncState;
-import org.philimone.hds.explorer.io.SyncStatus;
+import org.philimone.hds.explorer.model.enums.SyncState;
+import org.philimone.hds.explorer.model.enums.SyncStatus;
 import org.philimone.hds.explorer.widget.SyncResultDialog;
 
 import java.util.List;

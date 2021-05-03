@@ -1,8 +1,6 @@
 package org.philimone.hds.explorer.io;
 
-import android.util.Log;
-
-import org.philimone.hds.explorer.model.SyncReport;
+import org.philimone.hds.explorer.model.enums.SyncEntity;
 
 import java.io.Serializable;
 import java.util.ArrayList;

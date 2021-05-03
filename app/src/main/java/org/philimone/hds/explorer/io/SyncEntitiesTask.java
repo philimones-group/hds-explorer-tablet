@@ -24,6 +24,9 @@ import org.philimone.hds.explorer.model.ApplicationParam;
 import org.philimone.hds.explorer.model.ApplicationParam_;
 import org.philimone.hds.explorer.model.DataSet;
 import org.philimone.hds.explorer.model.Region;
+import org.philimone.hds.explorer.model.enums.SyncEntity;
+import org.philimone.hds.explorer.model.enums.SyncState;
+import org.philimone.hds.explorer.model.enums.SyncStatus;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
@@ -50,7 +53,6 @@ import org.philimone.hds.explorer.model.User;
 import org.philimone.hds.explorer.model.followup.TrackingList;
 
 import io.objectbox.Box;
-import io.objectbox.query.Query;
 import mz.betainteractive.utilities.StringUtil;
 
 /**

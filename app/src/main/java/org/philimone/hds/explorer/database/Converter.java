@@ -2,9 +2,8 @@ package org.philimone.hds.explorer.database;
 
 import android.database.Cursor;
 
-import org.philimone.hds.explorer.io.SyncEntity;
-import org.philimone.hds.explorer.io.SyncStatus;
-import org.philimone.hds.explorer.model.ApplicationParam;
+import org.philimone.hds.explorer.model.enums.SyncEntity;
+import org.philimone.hds.explorer.model.enums.SyncStatus;
 import org.philimone.hds.explorer.model.CollectedData;
 import org.philimone.hds.explorer.model.DataSet;
 import org.philimone.hds.explorer.model.Form;

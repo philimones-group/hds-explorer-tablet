@@ -1,4 +1,4 @@
-package org.philimone.hds.explorer.io;
+package org.philimone.hds.explorer.model.enums;
 
 import org.philimone.hds.explorer.R;
 

@@ -17,6 +17,7 @@ import org.philimone.hds.explorer.adapter.model.CollectedDataItem;
 import org.philimone.hds.explorer.data.FormDataLoader;
 import org.philimone.hds.explorer.database.Database;
 import org.philimone.hds.explorer.database.DatabaseHelper;
+import org.philimone.hds.explorer.database.ObjectBoxDatabase;
 import org.philimone.hds.explorer.database.Queries;
 import org.philimone.hds.explorer.model.ApplicationParam;
 import org.philimone.hds.explorer.model.CollectedData;
@@ -30,6 +31,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.objectbox.Box;
 import mz.betainteractive.odk.FormUtilities;
 import mz.betainteractive.odk.listener.OdkFormResultListener;
 import mz.betainteractive.odk.model.FilledForm;
@@ -54,6 +56,8 @@ public class RegionDetailsActivity extends Activity implements OdkFormResultList
 
     private int activityRequestCode;
 
+    private Box<ApplicationParam> boxAppParams;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,6 +66,8 @@ public class RegionDetailsActivity extends Activity implements OdkFormResultList
         this.loggedUser = (User) getIntent().getExtras().get("user");
         this.region = (Region) getIntent().getExtras().get("region");
         this.activityRequestCode = getIntent().getExtras().getInt("request_code");
+
+        initBoxes();
 
         readFormDataLoader();
 
@@ -72,6 +78,10 @@ public class RegionDetailsActivity extends Activity implements OdkFormResultList
 
     public void setRegion(Region region){
         this.region = region;
+    }
+
+    private void initBoxes() {
+        this.boxAppParams = ObjectBoxDatabase.get().boxFor(ApplicationParam.class);
     }
 
     private void initialize() {
@@ -150,15 +160,9 @@ public class RegionDetailsActivity extends Activity implements OdkFormResultList
     }
 
     private String getHierarchyName(Region region){
-
         if (region == null) return "";
 
-        Database db = new Database(this);
-        db.open();
-
-        ApplicationParam param = Queries.getApplicationParamBy(db, DatabaseHelper.ApplicationParam.COLUMN_NAME + "=?", new String[]{ region.getLevel() } );
-
-        db.close();
+        ApplicationParam param = Queries.getApplicationParamBy(boxAppParams, region.getLevel() );
 
         if (param != null){
             return param.getValue();

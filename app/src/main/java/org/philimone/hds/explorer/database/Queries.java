@@ -4,6 +4,7 @@ import android.content.Context;
 import android.database.Cursor;
 
 import org.philimone.hds.explorer.model.ApplicationParam;
+import org.philimone.hds.explorer.model.ApplicationParam_;
 import org.philimone.hds.explorer.model.CollectedData;
 import org.philimone.hds.explorer.model.DataSet;
 import org.philimone.hds.explorer.model.Form;
@@ -17,51 +18,26 @@ import org.philimone.hds.explorer.model.followup.TrackingSubjectList;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.objectbox.Box;
+
 /**
  * Created by paul on 5/27/16.
  */
 public class Queries {
 
-    public static ApplicationParam getApplicationParamBy(Database database, String whereClause, String[] clauseArgs){
-        ApplicationParam param = null;
-
-        Cursor cursor = database.query(ApplicationParam.class, whereClause, clauseArgs, null, null, null);
-
-        if (cursor.moveToFirst()){
-            param = Converter.cursorToApplicationParam(cursor);
-        }
-
+    public static ApplicationParam getApplicationParamBy(Box<ApplicationParam> box, String name){
+        ApplicationParam param = box.query().equal(ApplicationParam_.name, name).build().findFirst();
         return param;
     }
 
-    public static List<ApplicationParam> getAllApplicationParamBy(Database database, String whereClause, String[] clauseArgs){
-        List<ApplicationParam> list = new ArrayList<>();
-
-        Cursor cursor = database.query(ApplicationParam.class, whereClause, clauseArgs, null, null, null);
-
-        while (cursor.moveToNext()){
-            ApplicationParam param = Converter.cursorToApplicationParam(cursor);
-            list.add(param);
-        }
-
-        return list;
-    }
-
-    public static String getApplicationParamValue(String name, Context context){
-        String value = null;
-
-        Database database = new Database(context);
-        database.open();
-
-        ApplicationParam param = getApplicationParamBy(database, DatabaseHelper.ApplicationParam.COLUMN_NAME+"=?", new String[]{ name });
+    public static String getApplicationParamValue(Box<ApplicationParam> box, String name){
+        ApplicationParam param = box.query().equal(ApplicationParam_.name, name).build().findFirst();
 
         if (param != null){
-            value = param.getValue();
+            return param.getValue();
         }
 
-        database.close();
-
-        return value;
+        return null;
     }
 
     public static SyncReport getSyncReportBy(Database database, String whereClause, String[] clauseArgs){

@@ -10,14 +10,20 @@ import android.preference.PreferenceFragment;
 import org.philimone.hds.explorer.R;
 import org.philimone.hds.explorer.database.Database;
 import org.philimone.hds.explorer.database.DatabaseHelper;
+import org.philimone.hds.explorer.database.ObjectBoxDatabase;
 import org.philimone.hds.explorer.database.Queries;
 import org.philimone.hds.explorer.model.ApplicationParam;
+import org.philimone.hds.explorer.model.ApplicationParam_;
+
+import io.objectbox.Box;
+import io.objectbox.query.Query;
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class SettingsFragment extends PreferenceFragment {
 
+    private Box<ApplicationParam> boxAppParams;
 
     public SettingsFragment() {
         // Required empty public constructor
@@ -33,15 +39,25 @@ public class SettingsFragment extends PreferenceFragment {
         initialize();
     }
 
+    private void initBoxes() {
+        this.boxAppParams = ObjectBoxDatabase.get().boxFor(ApplicationParam.class);
+    }
+
+    private void initQueries(){
+
+    }
+
     private void initialize() {
+
+        initBoxes();
 
         EditTextPreference prefAppUrl = (EditTextPreference) findPreference(ApplicationParam.APP_URL);
         EditTextPreference prefOdkUrl = (EditTextPreference) findPreference(ApplicationParam.ODK_URL);
         EditTextPreference prefRedcapUrl = (EditTextPreference) findPreference(ApplicationParam.REDCAP_URL);
 
-        String app_url = Queries.getApplicationParamValue(ApplicationParam.APP_URL, this.getActivity());
-        String odk_url = Queries.getApplicationParamValue(ApplicationParam.ODK_URL, this.getActivity());
-        String redcap_url = Queries.getApplicationParamValue(ApplicationParam.REDCAP_URL, this.getActivity());
+        String app_url = Queries.getApplicationParamValue(this.boxAppParams, ApplicationParam.APP_URL);
+        String odk_url = Queries.getApplicationParamValue(this.boxAppParams, ApplicationParam.ODK_URL);
+        String redcap_url = Queries.getApplicationParamValue(this.boxAppParams, ApplicationParam.REDCAP_URL);
 
         if (app_url != null){
             setValueInPreference(prefAppUrl, app_url);
@@ -95,16 +111,15 @@ public class SettingsFragment extends PreferenceFragment {
 
     private boolean updateApplicationParam(String name, String value){
 
-        ContentValues cv = new ContentValues();
-        cv.put(DatabaseHelper.ApplicationParam.COLUMN_VALUE, value);
+        ApplicationParam param = boxAppParams.query().equal(ApplicationParam_.name, name).build().findFirst();
 
-        Database db = new Database(this.getActivity());
-        db.open();
+        if (param != null) {
+            param.value = value;
+            long result = boxAppParams.put(param);
 
-        int i = db.update(ApplicationParam.class, cv, DatabaseHelper.ApplicationParam.COLUMN_NAME+"=?", new String[]{ name });
+            return result>0;
+        }
 
-        db.close();
-
-        return i>0;
+        return false;
     }
 }

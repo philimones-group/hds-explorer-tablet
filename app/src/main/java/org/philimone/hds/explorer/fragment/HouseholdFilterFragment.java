@@ -34,9 +34,11 @@ import org.philimone.hds.explorer.data.FormDataLoader;
 import org.philimone.hds.explorer.database.Converter;
 import org.philimone.hds.explorer.database.Database;
 import org.philimone.hds.explorer.database.DatabaseHelper;
+import org.philimone.hds.explorer.database.ObjectBoxDatabase;
 import org.philimone.hds.explorer.database.Queries;
 import org.philimone.hds.explorer.main.BarcodeScannerActivity;
 import org.philimone.hds.explorer.model.ApplicationParam;
+import org.philimone.hds.explorer.model.ApplicationParam_;
 import org.philimone.hds.explorer.model.Form;
 import org.philimone.hds.explorer.model.Household;
 import org.philimone.hds.explorer.model.Region;
@@ -46,6 +48,8 @@ import org.philimone.hds.explorer.widget.DialogFactory;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
+import io.objectbox.Box;
 
 
 /**
@@ -97,7 +101,7 @@ public class HouseholdFilterFragment extends Fragment implements RegionExpandabl
     private BarcodeScannerActivity.InvokerClickListener barcodeScannerListener;
 
     private Database database;
-
+    private Box<ApplicationParam> boxAppParams;
 
     private RegionExpandableListAdapter regionAdapter;
     private Region currentRegion;
@@ -113,7 +117,7 @@ public class HouseholdFilterFragment extends Fragment implements RegionExpandabl
     }
 
     public HouseholdFilterFragment() {
-
+        initBoxes();
     }
 
     @Override
@@ -126,6 +130,10 @@ public class HouseholdFilterFragment extends Fragment implements RegionExpandabl
         loadHieararchyItems();
 
         return view;
+    }
+
+    private void initBoxes() {
+        this.boxAppParams = ObjectBoxDatabase.get().boxFor(ApplicationParam.class);
     }
 
     private void initialize(View view) {
@@ -405,7 +413,7 @@ public class HouseholdFilterFragment extends Fragment implements RegionExpandabl
     private void loadRegionsList(){
         Database db = new Database(this.getActivity());
         db.open();
-        List<ApplicationParam> params = Queries.getAllApplicationParamBy(db, DatabaseHelper.ApplicationParam.COLUMN_NAME+" like 'hierarchy%'", null);
+        List<ApplicationParam> params = boxAppParams.query().startsWith(ApplicationParam_.name, "hierarchy").build().find(); //COLUMN_NAME+" like 'hierarchy%'"
         List<Region> regions = Queries.getAllRegionBy(db, null, null);
         db.close();
 
@@ -435,11 +443,8 @@ public class HouseholdFilterFragment extends Fragment implements RegionExpandabl
     }
 
     private void loadHieararchyItems(){
-        Database db = new Database(this.getActivity());
-        db.open();
-        List<ApplicationParam> params = Queries.getAllApplicationParamBy(db, DatabaseHelper.ApplicationParam.COLUMN_NAME+" like 'hierarchy%'", null);
-        db.close();
 
+        List<ApplicationParam> params = boxAppParams.query().startsWith(ApplicationParam_.name, "hierarchy").build().find(); //COLUMN_NAME+" like 'hierarchy%'"
 
         for (ApplicationParam param : params){
 

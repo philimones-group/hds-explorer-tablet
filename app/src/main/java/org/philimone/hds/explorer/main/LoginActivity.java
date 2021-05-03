@@ -28,6 +28,7 @@ import org.philimone.hds.explorer.database.Bootstrap;
 import org.philimone.hds.explorer.database.Converter;
 import org.philimone.hds.explorer.database.Database;
 import org.philimone.hds.explorer.database.DatabaseHelper;
+import org.philimone.hds.explorer.database.ObjectBoxDatabase;
 import org.philimone.hds.explorer.database.Queries;
 import org.philimone.hds.explorer.main.sync.SyncPanelActivity;
 import org.philimone.hds.explorer.model.ApplicationParam;
@@ -38,6 +39,8 @@ import org.philimone.hds.explorer.widget.DialogFactory;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Scanner;
+
+import io.objectbox.Box;
 
 /**
  * A login screen that offers login via email/password.
@@ -115,6 +118,7 @@ public class LoginActivity extends Activity {
                 Toast.makeText(LoginActivity.this, "Xtra settings mode activated! Shira Tensei Jutsu!!!", Toast.LENGTH_LONG);
                 Log.d("justu", "Xtra settings mode activated! Shira Tensei Jutsu!!! - "+!useLocalServer) ;
                 useLocalServer = !useLocalServer;
+                retrieveServerUrl();
                 return true;
             }
         });
@@ -134,6 +138,8 @@ public class LoginActivity extends Activity {
         Bootstrap bootstrap = new Bootstrap(this);
         //bootstrap.dropTables();
         bootstrap.init();
+
+        retrieveServerUrl();
     }
 
     private void openSettings(){
@@ -236,6 +242,17 @@ public class LoginActivity extends Activity {
 
     private boolean isPasswordValid(String password) {
         return password.length() > 1;
+    }
+
+    private void retrieveServerUrl(){
+        Box<ApplicationParam> boxAppParams = ObjectBoxDatabase.get().boxFor(ApplicationParam.class);
+
+        serverUrl = Queries.getApplicationParamValue(boxAppParams, ApplicationParam.APP_URL);
+
+        if (useLocalServer){ //this is working perfectly - if is a release version wont use my personal computer
+            serverUrl = "http://172.16.234.123:8080/hds-explorer-server";
+        }
+
     }
 
     /**
@@ -347,12 +364,10 @@ public class LoginActivity extends Activity {
 
         private final String mUsername;
         private final String mPassword;
-        private final String mServerUrl;
 
         SyncLoginTask(String username, String password) {
             mUsername = username;
             mPassword = password;
-            mServerUrl = Queries.getApplicationParamValue(ApplicationParam.APP_URL, LoginActivity.this);
         }
 
         @Override
@@ -363,12 +378,6 @@ public class LoginActivity extends Activity {
                 Thread.sleep(2000);
             } catch (InterruptedException e) {
                 return false;
-            }
-
-            if (useLocalServer){ //this is working perfectly - if is a release version wont use my personal computer
-                serverUrl = "http://172.16.234.123:8080/hds-explorer-server";
-            }else{
-                serverUrl = mServerUrl;
             }
 
             //http request

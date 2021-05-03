@@ -12,6 +12,8 @@ import org.philimone.hds.explorer.model.Household;
 import org.philimone.hds.explorer.model.Member;
 import org.philimone.hds.explorer.model.Region;
 import org.philimone.hds.explorer.model.SyncReport;
+import org.philimone.hds.explorer.model.SyncReport_;
+import org.philimone.hds.explorer.model.enums.SyncEntity;
 import org.philimone.hds.explorer.model.followup.TrackingList;
 import org.philimone.hds.explorer.model.followup.TrackingSubjectList;
 
@@ -40,29 +42,9 @@ public class Queries {
         return null;
     }
 
-    public static SyncReport getSyncReportBy(Database database, String whereClause, String[] clauseArgs){
-        SyncReport report = null;
-
-        Cursor cursor = database.query(SyncReport.class, whereClause, clauseArgs, null, null, null);
-
-        if (cursor.moveToFirst()){
-            report = Converter.cursorToSyncReport(cursor);
-        }
-
+    public static SyncReport getSyncReportBy(Box<SyncReport> box, SyncEntity entity){
+        SyncReport report = box.query().equal(SyncReport_.reportId, entity.getCode()).build().findFirst();
         return report;
-    }
-
-    public static List<SyncReport> getAllSyncReportBy(Database database, String whereClause, String[] clauseArgs){
-        List<SyncReport> list = new ArrayList<>();
-
-        Cursor cursor = database.query(SyncReport.class, whereClause, clauseArgs, null, null, null);
-
-        while (cursor.moveToNext()){
-            SyncReport report = Converter.cursorToSyncReport(cursor);
-            list.add(report);
-        }
-
-        return list;
     }
 
     public static Form getFormBy(Database database, String whereClause, String[] clauseArgs){

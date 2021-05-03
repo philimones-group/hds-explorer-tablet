@@ -86,6 +86,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 
 	private Context mContext;
 	private Box<ApplicationParam> boxAppParams;
+	private Box<SyncReport> boxSyncReports;
 
 	private boolean canceled;
 
@@ -104,6 +105,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 
 	private void initBoxes() {
 		this.boxAppParams = ObjectBoxDatabase.get().boxFor(ApplicationParam.class);
+		this.boxSyncReports = ObjectBoxDatabase.get().boxFor(SyncReport.class);
 	}
 
 	private Database getDatabase(){
@@ -2105,29 +2107,24 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 	}
 
 	//database.query(SyncReport.class, DatabaseHelper.SyncReport.COLUMN_REPORT_ID+"=?", new String[]{}, null, null, null);
-	private void updateSyncReport(SyncEntity reportId, Date date, SyncStatus status){
-		Database database = getDatabase();
-		database.open();
+	private void updateSyncReport(SyncEntity syncEntity, Date date, SyncStatus status){
 
-		ContentValues cv = new ContentValues();
-		cv.put(DatabaseHelper.SyncReport.COLUMN_DATE, date==null ? "" : StringUtil.format(date, "yyyy-MM-dd HH:mm:ss"));
-		cv.put(DatabaseHelper.SyncReport.COLUMN_STATUS, status.getCode());
-		database.update(SyncReport.class, cv, DatabaseHelper.SyncReport.COLUMN_REPORT_ID+" = ?", new String[]{reportId.getCode()+""} );
+		SyncReport report = Queries.getSyncReportBy(boxSyncReports, syncEntity);
 
-		database.close();
+		if (report != null) {
+			report.date	= date;
+			report.status = status;
+			this.boxSyncReports.put(report);
+
+		}
 	}
 
 	private Map<SyncEntity, SyncStatus> getAllSyncReportStatus(){
 		Map<SyncEntity, SyncStatus> statuses = new HashMap<>();
 
-		Database database = getDatabase();
-		database.open();
-
-		Queries.getAllSyncReportBy(database, null, null).forEach( syncReport -> {
+		this.boxSyncReports.getAll().forEach( syncReport -> {
 			statuses.put(syncReport.getReportId(), syncReport.getStatus());
 		});
-
-		database.close();
 
 		return statuses;
 	}

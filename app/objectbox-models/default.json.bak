@@ -48,9 +48,8 @@
         {
           "id": "2:682655019989452961",
           "name": "reportId",
-          "indexId": "2:4164162751688505500",
           "type": 5,
-          "flags": 42
+          "flags": 2
         },
         {
           "id": "3:2769361473299522230",
@@ -73,7 +72,7 @@
     }
   ],
   "lastEntityId": "2:2700060843680074032",
-  "lastIndexId": "2:4164162751688505500",
+  "lastIndexId": "1:5979535736535103363",
   "lastRelationId": "0:0",
   "lastSequenceId": "0:0",
   "modelVersion": 5,

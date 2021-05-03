@@ -25,6 +25,7 @@ public class Bootstrap {
     private Database database;
 
     private Box<ApplicationParam> boxAppParams;
+    private Box<SyncReport> boxSyncReports;
 
     public Bootstrap(Context context){
         this.database = new Database(context);
@@ -33,6 +34,7 @@ public class Bootstrap {
 
     private void initBoxes() {
         this.boxAppParams = ObjectBoxDatabase.get().boxFor(ApplicationParam.class);
+        this.boxSyncReports = ObjectBoxDatabase.get().boxFor(SyncReport.class);
     }
 
     public void init(){
@@ -55,7 +57,7 @@ public class Bootstrap {
     }
 
     private void insertSyncReports(){
-        List<SyncReport> reports = Queries.getAllSyncReportBy(database, null, null);
+        List<SyncReport> reports = boxSyncReports.getAll();
         List<SyncReport> newReports = new ArrayList<>();
         //Initialize SyncReport
 
@@ -72,9 +74,10 @@ public class Bootstrap {
 
         List<SyncEntity> reportIds = reports.stream().map(SyncReport::getReportId).collect(Collectors.toList());
 
+        //not are good pratice
         newReports.forEach( report -> {
             if (!reportIds.contains(report.getReportId())){
-                database.insert(report);
+                boxSyncReports.put(report);
             }
         });
 

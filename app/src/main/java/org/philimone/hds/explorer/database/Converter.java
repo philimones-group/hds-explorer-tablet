@@ -18,17 +18,6 @@ import org.philimone.hds.explorer.model.followup.TrackingList;
 
 public class Converter {
 
-	public static SyncReport cursorToSyncReport(Cursor cursor){
-		SyncReport syncReport = new SyncReport();
-
-		syncReport.setReportId(SyncEntity.valueOf(cursor.getInt(cursor.getColumnIndex(DatabaseHelper.SyncReport.COLUMN_REPORT_ID))));
-		syncReport.setDescription(cursor.getString(cursor.getColumnIndex(DatabaseHelper.SyncReport.COLUMN_DESCRIPTION)));
-		syncReport.setDate(cursor.getString(cursor.getColumnIndex(DatabaseHelper.SyncReport.COLUMN_DATE)));
-		syncReport.setStatus(SyncStatus.valueOf(cursor.getInt(cursor.getColumnIndex(DatabaseHelper.SyncReport.COLUMN_STATUS))));
-
-		return syncReport;
-	}
-
 	public static User cursorToUser(Cursor cursor){
 		User user = new User();
 

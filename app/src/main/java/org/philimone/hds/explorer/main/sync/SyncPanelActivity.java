@@ -11,6 +11,7 @@ import com.google.gson.Gson;
 import org.philimone.hds.explorer.R;
 import org.philimone.hds.explorer.database.Database;
 import org.philimone.hds.explorer.database.DatabaseHelper;
+import org.philimone.hds.explorer.database.ObjectBoxDatabase;
 import org.philimone.hds.explorer.database.Queries;
 import org.philimone.hds.explorer.io.SyncEntitiesTask;
 import org.philimone.hds.explorer.model.enums.SyncEntity;
@@ -22,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import androidx.appcompat.app.AppCompatActivity;
+import io.objectbox.Box;
 import mz.betainteractive.utilities.StringUtil;
 
 import static org.philimone.hds.explorer.model.enums.SyncEntity.*;
@@ -43,6 +45,8 @@ public class SyncPanelActivity extends AppCompatActivity implements SyncPanelIte
     private Button btSyncAllData;
 
     private List<Synchronizer> synchronizerAllList = new ArrayList<>();
+    
+    private Box<SyncReport> boxSyncReports;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,8 +84,14 @@ public class SyncPanelActivity extends AppCompatActivity implements SyncPanelIte
         readPreferences();
         //set syncentityresult saved on preferences
     }
+    
+    private void initBoxes(){
+        this.boxSyncReports = ObjectBoxDatabase.get().boxFor(SyncReport.class);
+    }
 
     private void initialize() {
+        initBoxes();
+
         this.username = (String) getIntent().getExtras().get("username");
         this.password = (String) getIntent().getExtras().get("password");
         this.serverUrl = (String) getIntent().getExtras().get("server-url");
@@ -129,23 +139,19 @@ public class SyncPanelActivity extends AppCompatActivity implements SyncPanelIte
     }
 
     private void showStatus() {
-        Database db = new Database(this);
-
-        db.open();
-        SyncReport modules = Queries.getSyncReportBy(db, DatabaseHelper.SyncReport.COLUMN_REPORT_ID+"=?", new String[]{ MODULES.getCode()+"" });
-        SyncReport forms = Queries.getSyncReportBy(db, DatabaseHelper.SyncReport.COLUMN_REPORT_ID+"=?", new String[]{ FORMS.getCode()+"" });
-        SyncReport params = Queries.getSyncReportBy(db, DatabaseHelper.SyncReport.COLUMN_REPORT_ID+"=?", new String[]{ PARAMETERS.getCode()+"" });
-        SyncReport datasetCsv = Queries.getSyncReportBy(db, DatabaseHelper.SyncReport.COLUMN_REPORT_ID+"=?", new String[]{ DATASETS_CSV_FILES.getCode()+"" });
-        SyncReport datasets = Queries.getSyncReportBy(db, DatabaseHelper.SyncReport.COLUMN_REPORT_ID+"=?", new String[]{ DATASETS.getCode()+"" });
-        SyncReport trackLists = Queries.getSyncReportBy(db, DatabaseHelper.SyncReport.COLUMN_REPORT_ID+"=?", new String[]{ TRACKING_LISTS.getCode()+"" });
-        SyncReport users = Queries.getSyncReportBy(db, DatabaseHelper.SyncReport.COLUMN_REPORT_ID+"=?", new String[]{ USERS.getCode()+"" });
-        SyncReport regions = Queries.getSyncReportBy(db, DatabaseHelper.SyncReport.COLUMN_REPORT_ID+"=?", new String[]{ REGIONS.getCode()+"" });
-        SyncReport households = Queries.getSyncReportBy(db, DatabaseHelper.SyncReport.COLUMN_REPORT_ID+"=?", new String[]{ HOUSEHOLDS.getCode()+"" });
-        SyncReport members = Queries.getSyncReportBy(db, DatabaseHelper.SyncReport.COLUMN_REPORT_ID+"=?", new String[]{ MEMBERS.getCode()+"" });
-        db.close();
-
+        
+        SyncReport modules = Queries.getSyncReportBy(boxSyncReports, MODULES);
+        SyncReport forms = Queries.getSyncReportBy(boxSyncReports, FORMS);
+        SyncReport params = Queries.getSyncReportBy(boxSyncReports, PARAMETERS);
+        SyncReport datasetCsv = Queries.getSyncReportBy(boxSyncReports, DATASETS_CSV_FILES);
+        SyncReport datasets = Queries.getSyncReportBy(boxSyncReports, DATASETS);
+        SyncReport trackLists = Queries.getSyncReportBy(boxSyncReports, TRACKING_LISTS);
+        SyncReport users = Queries.getSyncReportBy(boxSyncReports, USERS);
+        SyncReport regions = Queries.getSyncReportBy(boxSyncReports, REGIONS);
+        SyncReport households = Queries.getSyncReportBy(boxSyncReports, HOUSEHOLDS);
+        SyncReport members = Queries.getSyncReportBy(boxSyncReports, MEMBERS);
+        
         //setting general status - if one block is bad general is bad
-
 
         //settings
         if (modules != null || forms != null || params != null){

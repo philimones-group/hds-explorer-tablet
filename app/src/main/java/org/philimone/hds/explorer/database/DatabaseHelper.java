@@ -17,8 +17,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	@Override
 	public void onCreate(SQLiteDatabase db) {
         try {
-            //db.execSQL(CREATE_TABLE_APPLICATION_PARAM);
-            db.execSQL(CREATE_TABLE_SYNC_REPORT);
 		    db.execSQL(CREATE_TABLE_USER);
 		    db.execSQL(CREATE_TABLE_FORM);
             db.execSQL(CREATE_TABLE_MODULE);
@@ -66,30 +64,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
 	}
 
-    public static final String[] ALL_TABLES = {/*ApplicationParam.TABLE_NAME, */User.TABLE_NAME, Form.TABLE_NAME, Module.TABLE_NAME, Household.TABLE_NAME, Member.TABLE_NAME, SyncReport.TABLE_NAME };
-
-    /*public static final class ApplicationParam implements BaseColumns {
-        public static final String TABLE_NAME = "application_param";
-
-        public static final String COLUMN_NAME = "name";
-        public static final String COLUMN_TYPE = "type";
-        public static final String COLUMN_VALUE = "value";
-
-        public static final String[] ALL_COLUMNS = {
-                _ID, COLUMN_NAME, COLUMN_TYPE, COLUMN_VALUE
-        };
-    }*/
-
-    public static final class SyncReport implements BaseColumns {
-        public static final String TABLE_NAME = "sync_report";
-
-        public static final String COLUMN_REPORT_ID = "reportId";
-        public static final String COLUMN_DESCRIPTION = "description";
-        public static final String COLUMN_DATE = "date";
-        public static final String COLUMN_STATUS = "status";
-
-        public static final String[] ALL_COLUMNS = {COLUMN_REPORT_ID, COLUMN_DESCRIPTION, COLUMN_DATE, COLUMN_STATUS};
-    }
+    public static final String[] ALL_TABLES = {User.TABLE_NAME, Form.TABLE_NAME, Module.TABLE_NAME, Household.TABLE_NAME, Member.TABLE_NAME };
 
 	public static final class User implements BaseColumns {
 		public static final String TABLE_NAME = "user";
@@ -307,29 +282,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         public static final String[] ALL_COLUMNS = {_ID, COLUMN_DATASET_ID, COLUMN_NAME, COLUMN_KEYCOLUMN, COLUMN_TABLE_NAME, COLUMN_TABLE_COLUMN, COLUMN_FILENAME,
                                                          COLUMN_CREATED_BY, COLUMN_CREATION_DATE, COLUMN_UPDATED_BY, COLUMN_UPDATED_DATE, COLUMN_LABELS};
     }
-
-    /*private static final String CREATE_TABLE_APPLICATION_PARAM = " "
-            + "CREATE TABLE " + ApplicationParam.TABLE_NAME + "("
-            + ApplicationParam._ID  + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-            + ApplicationParam.COLUMN_NAME + " TEXT,"
-            + ApplicationParam.COLUMN_TYPE + " TEXT,"
-            + ApplicationParam.COLUMN_VALUE + " TEXT);"
-
-            + " CREATE UNIQUE INDEX IDX_APPARAM_NAME ON " + ApplicationParam.TABLE_NAME
-            + "(" +  ApplicationParam.COLUMN_NAME  + ");"
-            ;*/
-
-    private static final String CREATE_TABLE_SYNC_REPORT = " "
-            + "CREATE TABLE " + SyncReport.TABLE_NAME + "("
-            + SyncReport._ID  + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-            + SyncReport.COLUMN_REPORT_ID + " INTEGER,"
-            + SyncReport.COLUMN_DATE + " TEXT,"
-            + SyncReport.COLUMN_STATUS + " INTEGER,"
-            + SyncReport.COLUMN_DESCRIPTION + " TEXT);"
-
-            + " CREATE UNIQUE INDEX IDX_REPORT_ID ON " + SyncReport.TABLE_NAME
-            + "(" +  SyncReport.COLUMN_REPORT_ID  + ");"
-            ;
 
     private static final String CREATE_TABLE_USER = " "
             + "CREATE TABLE " + User.TABLE_NAME + "("

@@ -1,27 +1,38 @@
 package org.philimone.hds.explorer.model;
 
-import android.content.ContentValues;
-
-import org.philimone.hds.explorer.database.DatabaseHelper;
-import org.philimone.hds.explorer.database.Table;
-import org.philimone.hds.explorer.io.SyncEntity;
-import org.philimone.hds.explorer.io.SyncStatus;
+import org.philimone.hds.explorer.model.converters.SyncEntityConverter;
+import org.philimone.hds.explorer.model.converters.SyncStatusConverter;
+import org.philimone.hds.explorer.model.enums.SyncEntity;
+import org.philimone.hds.explorer.model.enums.SyncStatus;
 
 import java.io.Serializable;
 import java.util.Date;
 
+import io.objectbox.annotation.Convert;
+import io.objectbox.annotation.Entity;
+import io.objectbox.annotation.Id;
+import io.objectbox.annotation.Unique;
 import mz.betainteractive.utilities.StringUtil;
 
 /**
  * Created by paul on 5/21/16.
  */
-public class SyncReport implements Serializable, Table {
+@Entity
+public class SyncReport implements Serializable {
 
-    private int id;
-    private SyncEntity reportId;
-    private Date date;
-    private SyncStatus status;
-    private String description;
+    @Id
+    public long id;
+
+    @Unique
+    @Convert(converter = SyncEntityConverter.class, dbType = Integer.class)
+    public SyncEntity reportId;
+
+    public Date date;
+
+    @Convert(converter = SyncStatusConverter.class, dbType = Integer.class)
+    public SyncStatus status;
+
+    public String description;
 
     public SyncReport(){
 
@@ -34,12 +45,11 @@ public class SyncReport implements Serializable, Table {
         this.description = description;
     }
 
-    @Override
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -84,23 +94,4 @@ public class SyncReport implements Serializable, Table {
         this.status = status;
     }
 
-    @Override
-    public String getTableName() {
-        return DatabaseHelper.SyncReport.TABLE_NAME;
-    }
-
-    @Override
-    public ContentValues getContentValues() {
-        ContentValues cv = new ContentValues();
-        cv.put(DatabaseHelper.SyncReport.COLUMN_REPORT_ID, reportId.getCode());
-        cv.put(DatabaseHelper.SyncReport.COLUMN_DATE, date==null ? "" : StringUtil.format(date, "yyyy-MM-dd HH:mm:ss"));
-        cv.put(DatabaseHelper.SyncReport.COLUMN_STATUS, status.getCode());
-        cv.put(DatabaseHelper.SyncReport.COLUMN_DESCRIPTION, description);
-        return cv;
-    }
-
-    @Override
-    public String[] getColumnNames() {
-        return DatabaseHelper.SyncReport.ALL_COLUMNS;
-    }
 }

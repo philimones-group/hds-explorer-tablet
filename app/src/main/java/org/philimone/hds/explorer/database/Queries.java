@@ -72,31 +72,6 @@ public class Queries {
         return list;
     }
 
-    public static CollectedData getCollectedDataBy(Database database, String whereClause, String[] clauseArgs){
-        CollectedData cd = null;
-
-        Cursor cursor = database.query(CollectedData.class, DatabaseHelper.CollectedData.ALL_COLUMNS,  whereClause, clauseArgs, null, null, null);
-
-        if (cursor.moveToFirst()){
-            cd = Converter.cursorToCollectedData(cursor);
-        }
-
-        return cd;
-    }
-
-    public static List<CollectedData> getAllCollectedDataBy(Database database, String whereClause, String[] clauseArgs){
-        List<CollectedData> list = new ArrayList<>();
-
-        Cursor cursor = database.query(CollectedData.class, DatabaseHelper.CollectedData.ALL_COLUMNS, whereClause, clauseArgs, null, null, null);
-
-        while (cursor.moveToNext()){
-            CollectedData cd = Converter.cursorToCollectedData(cursor);
-            list.add(cd);
-        }
-
-        return list;
-    }
-
     public static Region getRegionBy(Database database, String whereClause, String[] clauseArgs){
         Region region = null;
 

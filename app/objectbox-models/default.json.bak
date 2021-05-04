@@ -48,8 +48,9 @@
         {
           "id": "2:682655019989452961",
           "name": "reportId",
+          "indexId": "2:4164162751688505500",
           "type": 5,
-          "flags": 2
+          "flags": 42
         },
         {
           "id": "3:2769361473299522230",
@@ -69,10 +70,41 @@
         }
       ],
       "relations": []
+    },
+    {
+      "id": "3:5435278602537800520",
+      "lastPropertyId": "4:8743189468983179883",
+      "name": "Module",
+      "properties": [
+        {
+          "id": "1:7270001234448096763",
+          "name": "id",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:3470626688687618421",
+          "name": "code",
+          "indexId": "3:3875251052571884146",
+          "type": 9,
+          "flags": 2080
+        },
+        {
+          "id": "3:3201927432008489433",
+          "name": "name",
+          "type": 9
+        },
+        {
+          "id": "4:8743189468983179883",
+          "name": "description",
+          "type": 9
+        }
+      ],
+      "relations": []
     }
   ],
-  "lastEntityId": "2:2700060843680074032",
-  "lastIndexId": "1:5979535736535103363",
+  "lastEntityId": "3:5435278602537800520",
+  "lastIndexId": "3:3875251052571884146",
   "lastRelationId": "0:0",
   "lastSequenceId": "0:0",
   "modelVersion": 5,

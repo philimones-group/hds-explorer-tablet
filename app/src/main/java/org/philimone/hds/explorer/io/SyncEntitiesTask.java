@@ -87,6 +87,8 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 	private Context mContext;
 	private Box<ApplicationParam> boxAppParams;
 	private Box<SyncReport> boxSyncReports;
+	private Box<Module> boxModules;
+	private Box<CollectedData> boxCollectedData;
 
 	private boolean canceled;
 
@@ -106,6 +108,8 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 	private void initBoxes() {
 		this.boxAppParams = ObjectBoxDatabase.get().boxFor(ApplicationParam.class);
 		this.boxSyncReports = ObjectBoxDatabase.get().boxFor(SyncReport.class);
+		this.boxModules = ObjectBoxDatabase.get().boxFor(Module.class);
+		this.boxCollectedData = ObjectBoxDatabase.get().boxFor(CollectedData.class);
 	}
 
 	private Database getDatabase(){
@@ -217,7 +221,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 						processUrl(baseurl + API_PATH + "/params/zip", "params.zip");
 						break;
 					case MODULES:
-						deleteAll(Module.class);
+						boxModules.removeAll();
 						processUrl(baseurl + API_PATH + "/modules/zip", "modules.zip");
 						break;
 					case FORMS:
@@ -250,7 +254,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 						break;
 					case MEMBERS:
 						deleteAll(Member.class);
-						deleteAll(CollectedData.class /*, DatabaseHelper.CollectedData.COLUMN_SUPERVISED+"=1", null*/ ); //remove supervision for now
+						boxCollectedData.removeAll();
 						processUrl(baseurl + API_PATH + "/members/zip", "members.zip");
 						break;
 				}
@@ -275,24 +279,6 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 		}
 
 		return new ExecutionReport(this.mContext.getString(R.string.sync_successfully_lbl));
-	}
-
-	private void deleteAllTables() {
-		// ordering is somewhat important during delete. a few tables have
-		// foreign keys
-		Database database = getDatabase();
-		database.open();
-
-		database.delete(User.class, null, null);
-		database.delete(Form.class, null, null);
-		database.delete(Module.class, null, null);
-		database.delete(Region.class, null, null);
-		database.delete(DataSet.class, null, null);
-		database.delete(Household.class, null, null);
-		database.delete(Member.class, null, null);
-		database.delete(CollectedData.class, DatabaseHelper.CollectedData.COLUMN_SUPERVISED+"=?", new String[]{ "1"}); //delete all collected data that was supervised
-
-		database.close();
 	}
 
 	private void deleteAll(String tableName){
@@ -659,7 +645,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 		//clear sync_report
 		updateSyncReport(SyncEntity.MODULES, null, SyncStatus.STATUS_NOT_SYNCED);
 
-		List<Table> values = new ArrayList<>();
+		List<Module> values = new ArrayList<>();
 		int count = 0;
 		values.clear();
 
@@ -671,7 +657,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 			Module table = new Module();
 
 			parser.nextTag(); //<code>
-			if (!isEmptyTag(DatabaseHelper.Module.COLUMN_CODE, parser)) {
+			if (!isEmptyTag("code", parser)) {
                 parser.next();
                 table.setCode(parser.getText());
                 parser.nextTag();
@@ -681,7 +667,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 			}
 
             parser.nextTag(); //name
-            if (!isEmptyTag(DatabaseHelper.Module.COLUMN_NAME, parser)) {
+            if (!isEmptyTag("name", parser)) {
                 parser.next();
                 table.setName(parser.getText());
                 parser.nextTag();
@@ -691,7 +677,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
             }
 
             parser.nextTag(); //description
-            if (!isEmptyTag(DatabaseHelper.Module.COLUMN_DESCRIPTION, parser)) {
+            if (!isEmptyTag("description", parser)) {
                 parser.next();
                 table.setDescription(parser.getText());
                 parser.nextTag();
@@ -711,21 +697,12 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 		state = SyncState.SAVING;
 		entity = SyncEntity.MODULES;
 
-		Database database = getDatabase();
-		database.open();
+
 		if (!values.isEmpty()) {
-			count = 0;
-			for (Table t : values){
-				count++;
-				database.insert(t);
-
-				savedValues.put(entity, count); //publish progress is a bit slow - its not reporting well the numbers
-				publishProgress(count);
-			}
+			boxModules.put(values);
+			savedValues.put(entity, count); //publish progress is a bit slow - its not reporting well the numbers
+			publishProgress(count);
 		}
-		database.close();
-
-
 		updateSyncReport(SyncEntity.MODULES, new Date(), SyncStatus.STATUS_SYNCED);
 	}
 
@@ -1658,7 +1635,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
             parser.nextTag(); //process <gpsAccuracy>
             if (!isEmptyTag(DatabaseHelper.Household.COLUMN_GPS_ACCURACY, parser)) {
                 parser.next();
-                table.setGpsAccuracy(Double.parseDouble(parser.getText()));
+                table.setGpsAccuracy(StringUtil.toDouble(parser.getText()));
                 parser.nextTag(); //process </gpsAccuracy>
                 //Log.d("note gpsacc", table.getGpsAccuracy());
             }else{
@@ -1671,7 +1648,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
             parser.nextTag(); //process <gpsAltitude>
             if (!isEmptyTag(DatabaseHelper.Household.COLUMN_GPS_ALTITUDE, parser)) {
                 parser.next();
-                table.setGpsAltitude(Double.parseDouble(parser.getText()));
+                table.setGpsAltitude(StringUtil.toDouble(parser.getText()));
                 parser.nextTag(); //process </gpsAltitude>
             }else{
                 table.setGpsAltitude(null);
@@ -1682,7 +1659,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
             parser.nextTag(); //process <gpsLatitude>
             if (!isEmptyTag(DatabaseHelper.Household.COLUMN_GPS_LATITUDE, parser)) {
                 parser.next();
-                table.setGpsLatitude(Double.parseDouble(parser.getText()));
+                table.setGpsLatitude(StringUtil.toDouble(parser.getText()));
 				table.setCosLatitude(Math.cos(table.getGpsLatitude()*Math.PI / 180.0)); // cos_lat = cos(lat * PI / 180)
 				table.setSinLatitude(Math.sin(table.getGpsLatitude()*Math.PI / 180.0)); // sin_lat = sin(lat * PI / 180)
                 parser.nextTag(); //process </gpsLatitude>
@@ -1695,7 +1672,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
             parser.nextTag(); //process <gpsLongitude>
             if (!isEmptyTag(DatabaseHelper.Household.COLUMN_GPS_LONGITUDE, parser)) {
                 parser.next();
-                table.setGpsLongitude(Double.parseDouble(parser.getText()));
+                table.setGpsLongitude(StringUtil.toDouble(parser.getText()));
 				table.setCosLongitude(Math.cos(table.getGpsLongitude()*Math.PI / 180.0)); // cos_lng = cos(lng * PI / 180)
 				table.setSinLongitude(Math.sin(table.getGpsLongitude()*Math.PI / 180.0)); // sin_lng = sin(lng * PI / 180)
 				parser.nextTag(); //process </gpsLongitude>
@@ -2036,7 +2013,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
             parser.nextTag(); //process <gpsAccuracy>
             if (!isEmptyTag(DatabaseHelper.Member.COLUMN_GPS_ACCURACY, parser)) {
                 parser.next();
-                table.setGpsAccuracy(Double.parseDouble(parser.getText()));
+                table.setGpsAccuracy(StringUtil.toDouble(parser.getText()));
                 parser.nextTag(); //process </gpsAccuracy>
                 //Log.d("note gpsacc", table.getGpsAccuracy());
             }else{
@@ -2049,7 +2026,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
             parser.nextTag(); //process <gpsAltitude>
             if (!isEmptyTag(DatabaseHelper.Member.COLUMN_GPS_ALTITUDE, parser)) {
                 parser.next();
-                table.setGpsAltitude(Double.parseDouble(parser.getText()));
+                table.setGpsAltitude(StringUtil.toDouble(parser.getText()));
                 parser.nextTag(); //process </gpsAltitude>
             }else{
                 table.setGpsAltitude(null);
@@ -2060,7 +2037,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
             parser.nextTag(); //process <gpsLatitude>
             if (!isEmptyTag(DatabaseHelper.Member.COLUMN_GPS_LATITUDE, parser)) {
                 parser.next();
-                table.setGpsLatitude(Double.parseDouble(parser.getText()));
+                table.setGpsLatitude(StringUtil.toDouble(parser.getText()));
 				table.setCosLatitude(Math.cos(table.getGpsLatitude()*Math.PI / 180.0)); // cos_lat = cos(lat * PI / 180)
 				table.setSinLatitude(Math.sin(table.getGpsLatitude()*Math.PI / 180.0)); // sin_lat = sin(lat * PI / 180)
                 parser.nextTag(); //process </gpsLatitude>
@@ -2073,7 +2050,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
             parser.nextTag(); //process <gpsLongitude>
             if (!isEmptyTag(DatabaseHelper.Member.COLUMN_GPS_LONGITUDE, parser)) {
                 parser.next();
-                table.setGpsLongitude(Double.parseDouble(parser.getText()));
+                table.setGpsLongitude(StringUtil.toDouble(parser.getText()));
 				table.setCosLongitude(Math.cos(table.getGpsLongitude()*Math.PI / 180.0)); // cos_lng = cos(lng * PI / 180)
 				table.setSinLongitude(Math.sin(table.getGpsLongitude()*Math.PI / 180.0)); // sin_lng = sin(lng * PI / 180)
                 parser.nextTag(); //process </gpsLongitude>

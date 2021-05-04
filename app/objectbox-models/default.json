@@ -70,10 +70,119 @@
         }
       ],
       "relations": []
+    },
+    {
+      "id": "3:5435278602537800520",
+      "lastPropertyId": "4:8743189468983179883",
+      "name": "Module",
+      "properties": [
+        {
+          "id": "1:7270001234448096763",
+          "name": "id",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:3470626688687618421",
+          "name": "code",
+          "indexId": "3:3875251052571884146",
+          "type": 9,
+          "flags": 2080
+        },
+        {
+          "id": "3:3201927432008489433",
+          "name": "name",
+          "type": 9
+        },
+        {
+          "id": "4:8743189468983179883",
+          "name": "description",
+          "type": 9
+        }
+      ],
+      "relations": []
+    },
+    {
+      "id": "4:136916130421403055",
+      "lastPropertyId": "13:2237943481496083857",
+      "name": "CollectedData",
+      "properties": [
+        {
+          "id": "1:4829935870829600049",
+          "name": "id",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:120127286917214924",
+          "name": "formId",
+          "type": 9
+        },
+        {
+          "id": "3:7998241370903309132",
+          "name": "formUri",
+          "indexId": "4:5303784786431095613",
+          "type": 9,
+          "flags": 2080
+        },
+        {
+          "id": "4:991690979767192953",
+          "name": "formXmlPath",
+          "type": 9
+        },
+        {
+          "id": "5:3299244334440159618",
+          "name": "formInstanceName",
+          "type": 9
+        },
+        {
+          "id": "6:3428324107627474459",
+          "name": "formLastUpdatedDate",
+          "type": 10
+        },
+        {
+          "id": "7:5090352727449866246",
+          "name": "formModule",
+          "type": 9
+        },
+        {
+          "id": "8:8035407426146603339",
+          "name": "recordId",
+          "type": 5,
+          "flags": 4
+        },
+        {
+          "id": "9:3640540046021557891",
+          "name": "tableName",
+          "type": 9
+        },
+        {
+          "id": "10:9007620515819279104",
+          "name": "collectedBy",
+          "type": 9
+        },
+        {
+          "id": "11:6494795579878178643",
+          "name": "updatedBy",
+          "type": 9
+        },
+        {
+          "id": "12:4433608492571197412",
+          "name": "supervisedBy",
+          "type": 9
+        },
+        {
+          "id": "13:2237943481496083857",
+          "name": "supervised",
+          "type": 1,
+          "flags": 4
+        }
+      ],
+      "relations": []
     }
   ],
-  "lastEntityId": "2:2700060843680074032",
-  "lastIndexId": "2:4164162751688505500",
+  "lastEntityId": "4:136916130421403055",
+  "lastIndexId": "4:5303784786431095613",
   "lastRelationId": "0:0",
   "lastSequenceId": "0:0",
   "modelVersion": 5,

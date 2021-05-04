@@ -24,14 +24,19 @@ import org.philimone.hds.explorer.adapter.MemberArrayAdapter;
 import org.philimone.hds.explorer.database.Converter;
 import org.philimone.hds.explorer.database.Database;
 import org.philimone.hds.explorer.database.DatabaseHelper;
+import org.philimone.hds.explorer.database.ObjectBoxDatabase;
 import org.philimone.hds.explorer.database.Queries;
 import org.philimone.hds.explorer.listeners.ActionListener;
 import org.philimone.hds.explorer.listeners.MemberActionListener;
+import org.philimone.hds.explorer.model.ApplicationParam;
 import org.philimone.hds.explorer.model.CollectedData;
+import org.philimone.hds.explorer.model.CollectedData_;
 import org.philimone.hds.explorer.model.Form;
 import org.philimone.hds.explorer.model.Household;
 import org.philimone.hds.explorer.model.Member;
+import org.philimone.hds.explorer.model.Module;
 import org.philimone.hds.explorer.model.Region;
+import org.philimone.hds.explorer.model.SyncReport;
 import org.philimone.hds.explorer.widget.DialogFactory;
 import org.philimone.hds.explorer.widget.member_details.Distance;
 import org.philimone.hds.explorer.widget.member_details.GpsNearBySelectorDialog;
@@ -41,6 +46,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import io.objectbox.Box;
 
 
 /**
@@ -72,6 +79,8 @@ public class MemberListFragment extends Fragment {
 
     private boolean censusMode;
 
+    private Box<CollectedData> boxCollectedData;
+
     public enum Buttons {
         SHOW_HOUSEHOLD, MEMBERS_MAP, CLOSEST_MEMBERS, CLOSEST_HOUSES, EDIT_MEMBER, ADD_NEW_MEMBER, NEW_MEMBER_COLLECT, COLLECTED_DATA
     }
@@ -86,6 +95,7 @@ public class MemberListFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.member_list, container, false);
 
+        initBoxes();
         initialize(view);
         return view;
     }
@@ -103,6 +113,10 @@ public class MemberListFragment extends Fragment {
 
         //if (savedInstanceState != null)
         //restoreLastSearch(savedInstanceState);
+    }
+
+    private void initBoxes() {
+        this.boxCollectedData = ObjectBoxDatabase.get().boxFor(CollectedData.class);
     }
 
     public void setButtonVisibilityGone(Buttons... buttons){
@@ -660,7 +674,7 @@ public class MemberListFragment extends Fragment {
         Database database = new Database(this.getActivity());
         database.open();
 
-        List<CollectedData> list = Queries.getAllCollectedDataBy(database, DatabaseHelper.CollectedData.COLUMN_TABLE_NAME + "=?", new String[]{ DatabaseHelper.Member.TABLE_NAME }); //only collected data from members
+        List<CollectedData> list = this.boxCollectedData.query().equal(CollectedData_.tableName, DatabaseHelper.Member.TABLE_NAME).build().find(); //only collected data from members
         List<Form> forms = Queries.getAllFormBy(database, null, null);
 
         for (CollectedData cd : list){

@@ -25,6 +25,7 @@ import org.philimone.hds.explorer.database.ObjectBoxDatabase;
 import org.philimone.hds.explorer.database.Queries;
 import org.philimone.hds.explorer.model.ApplicationParam;
 import org.philimone.hds.explorer.model.CollectedData;
+import org.philimone.hds.explorer.model.CollectedData_;
 import org.philimone.hds.explorer.model.DataSet;
 import org.philimone.hds.explorer.model.Form;
 import org.philimone.hds.explorer.model.Household;
@@ -37,6 +38,7 @@ import org.philimone.hds.explorer.widget.LoadingDialog;
 import org.philimone.hds.explorer.widget.household_details.HouseholdFormDialog;
 
 import java.io.File;
+import java.util.Date;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -73,6 +75,7 @@ public class HouseholdDetailsActivity extends Activity implements OdkFormResultL
     private FormUtilities formUtilities;
     private Database database;
     private Box<ApplicationParam> boxAppParams;
+    private Box<CollectedData> boxCollectedData;
 
     private int requestCode;
     private boolean returnFromOdk = false;
@@ -200,6 +203,7 @@ public class HouseholdDetailsActivity extends Activity implements OdkFormResultL
 
     private void initBoxes() {
         this.boxAppParams = ObjectBoxDatabase.get().boxFor(ApplicationParam.class);
+        this.boxCollectedData = ObjectBoxDatabase.get().boxFor(CollectedData.class);
     }
 
     private void enableButtonsByFormLoaders() {
@@ -390,7 +394,7 @@ public class HouseholdDetailsActivity extends Activity implements OdkFormResultL
         Database db = new Database(this);
         db.open();
 
-        List<CollectedData> list = Queries.getAllCollectedDataBy(db, DatabaseHelper.CollectedData.COLUMN_RECORD_ID + "=? AND "+DatabaseHelper.CollectedData.COLUMN_TABLE_NAME + "=?", new String[]{ household.getId()+"", household.getTableName() } );
+        List<CollectedData> list = this.boxCollectedData.query().equal(CollectedData_.recordId, household.getId()).and().equal(CollectedData_.tableName, household.getTableName()).build().find();
         List<Form> forms = Queries.getAllFormBy(db, null, null);
         List<CollectedDataItem> cdl = new ArrayList<>();
 
@@ -504,15 +508,10 @@ public class HouseholdDetailsActivity extends Activity implements OdkFormResultL
     }
 
     private CollectedData getCollectedData(FormDataLoader formDataLoader){
-        Database db = new Database(this);
-        db.open();
 
-        String whereClause = DatabaseHelper.CollectedData.COLUMN_FORM_ID + "=? AND " + DatabaseHelper.CollectedData.COLUMN_RECORD_ID + "=? AND "+DatabaseHelper.CollectedData.COLUMN_TABLE_NAME + "=?";
-        String[] whereArgs = new String[]{ formDataLoader.getForm().getFormId(),  ""+household.getId(), household.getTableName() };
-
-        CollectedData collectedData = Queries.getCollectedDataBy(db, whereClause, whereArgs);
-
-        db.close();
+        CollectedData collectedData = this.boxCollectedData.query().equal(CollectedData_.formId, formDataLoader.getForm().getFormId())
+                .and().equal(CollectedData_.recordId, household.getId())
+                .and().equal(CollectedData_.tableName, household.getTableName()).build().findFirst();
 
         return collectedData;
     }
@@ -591,7 +590,7 @@ public class HouseholdDetailsActivity extends Activity implements OdkFormResultL
     }
 
     @Override
-    public void onFormFinalized(Uri contentUri, File xmlFile, String metaInstanceName, String lastUpdatedDate) {
+    public void onFormFinalized(Uri contentUri, File xmlFile, String metaInstanceName, Date lastUpdatedDate) {
         Log.d("form finalized"," "+contentUri+", "+xmlFile);
 
         //save Collected data
@@ -607,11 +606,9 @@ public class HouseholdDetailsActivity extends Activity implements OdkFormResultL
 
 
         //search existing record
-        String whereClause = DatabaseHelper.CollectedData.COLUMN_RECORD_ID + "=? AND "+DatabaseHelper.CollectedData.COLUMN_FORM_URI + "=? AND "+DatabaseHelper.CollectedData.COLUMN_TABLE_NAME + "=?";
-        String[] whereArgs = new String[]{ ""+household.getId(), contentUri.toString(), household.getTableName() };
-
-        CollectedData collectedData = Queries.getCollectedDataBy(db, whereClause, whereArgs);
-
+        CollectedData collectedData = this.boxCollectedData.query().equal(CollectedData_.formUri, contentUri.toString())
+                                                                   .and().equal(CollectedData_.recordId, household.getId())
+                                                                   .and().equal(CollectedData_.tableName, household.getTableName()).build().findFirst();
 
         if (collectedData == null){ //insert
             collectedData = new CollectedData();
@@ -629,7 +626,7 @@ public class HouseholdDetailsActivity extends Activity implements OdkFormResultL
             collectedData.setRecordId(household.getId());
             collectedData.setTableName(household.getTableName());
 
-            db.insert(collectedData);
+            this.boxCollectedData.put(collectedData);
             Log.d("inserting", "new collected data");
         }else{ //update
             collectedData.setFormId(lastLoadedForm.getForm().getFormId());
@@ -646,7 +643,7 @@ public class HouseholdDetailsActivity extends Activity implements OdkFormResultL
             collectedData.setRecordId(household.getId());
             collectedData.setTableName(household.getTableName());
 
-            db.update(CollectedData.class, collectedData.getContentValues(), whereClause, whereArgs);
+            this.boxCollectedData.put(collectedData);
             Log.d("updating", "new collected data");
         }
 
@@ -660,7 +657,7 @@ public class HouseholdDetailsActivity extends Activity implements OdkFormResultL
     }
 
     @Override
-    public void onFormUnFinalized(Uri contentUri, File xmlFile, String metaInstanceName, String lastUpdatedDate) {
+    public void onFormUnFinalized(Uri contentUri, File xmlFile, String metaInstanceName, Date lastUpdatedDate) {
         Log.d("form unfinalized"," "+contentUri);
 
         //save Collected data
@@ -675,10 +672,9 @@ public class HouseholdDetailsActivity extends Activity implements OdkFormResultL
         }
 
         //search existing record
-        String whereClause = DatabaseHelper.CollectedData.COLUMN_RECORD_ID + "=? AND "+DatabaseHelper.CollectedData.COLUMN_FORM_URI + "=? AND "+DatabaseHelper.CollectedData.COLUMN_TABLE_NAME + "=?";
-        String[] whereArgs = new String[]{ ""+household.getId(), contentUri.toString(), household.getTableName() };
-
-        CollectedData collectedData = Queries.getCollectedDataBy(db, whereClause, whereArgs);
+        CollectedData collectedData = this.boxCollectedData.query().equal(CollectedData_.formUri, contentUri.toString())
+                                                           .and().equal(CollectedData_.recordId, household.getId())
+                                                           .and().equal(CollectedData_.tableName, household.getTableName()).build().findFirst();
 
         if (collectedData == null){ //insert
             collectedData = new CollectedData();
@@ -696,7 +692,7 @@ public class HouseholdDetailsActivity extends Activity implements OdkFormResultL
             collectedData.setRecordId(household.getId());
             collectedData.setTableName(household.getTableName());
 
-            db.insert(collectedData);
+            this.boxCollectedData.put(collectedData);
             Log.d("inserting", "new collected data");
         }else{ //update
             collectedData.setFormId(lastLoadedForm.getForm().getFormId());
@@ -713,7 +709,7 @@ public class HouseholdDetailsActivity extends Activity implements OdkFormResultL
             collectedData.setRecordId(household.getId());
             collectedData.setTableName(household.getTableName());
 
-            db.update(CollectedData.class, collectedData.getContentValues(), whereClause, whereArgs);
+            this.boxCollectedData.put(collectedData);
             Log.d("updating", "new collected data");
         }
 
@@ -730,7 +726,8 @@ public class HouseholdDetailsActivity extends Activity implements OdkFormResultL
     public void onDeleteForm(Uri contentUri) {
         Database db = new Database(this);
         db.open();
-        db.delete(CollectedData.class, DatabaseHelper.CollectedData.COLUMN_FORM_URI+"=?", new String[]{ contentUri.toString() } );
+
+        this.boxCollectedData.query().equal(CollectedData_.formUri, contentUri.toString()).build().remove(); //delete where formUri=contentUri
 
         if (requestCode == REQUEST_CODE_NEW_HOUSEHOLD || requestCode == REQUEST_CODE_EDIT_HOUSEHOLD){
             if (household != null && household.getId()>0){

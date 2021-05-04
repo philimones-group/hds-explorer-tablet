@@ -340,4 +340,19 @@ public class StringUtil {
 
         return str;
     }
+
+    /*numbers*/
+
+    public static Double toDouble(String doubleAsText) {
+
+        if (doubleAsText == null) return null;
+
+        try {
+            return Double.parseDouble(doubleAsText);
+        } catch (Exception ex) {
+
+        }
+
+        return null;
+    }
 }

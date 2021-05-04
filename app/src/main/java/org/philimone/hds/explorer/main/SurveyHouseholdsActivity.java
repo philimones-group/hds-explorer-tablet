@@ -16,12 +16,15 @@ import org.philimone.hds.explorer.adapter.MemberArrayAdapter;
 import org.philimone.hds.explorer.data.FormDataLoader;
 import org.philimone.hds.explorer.database.Database;
 import org.philimone.hds.explorer.database.DatabaseHelper;
+import org.philimone.hds.explorer.database.ObjectBoxDatabase;
 import org.philimone.hds.explorer.database.Queries;
 import org.philimone.hds.explorer.fragment.HouseholdFilterFragment;
 import org.philimone.hds.explorer.fragment.MemberListFragment;
 import org.philimone.hds.explorer.io.xml.FormXmlReader;
 import org.philimone.hds.explorer.listeners.MemberActionListener;
+import org.philimone.hds.explorer.model.ApplicationParam;
 import org.philimone.hds.explorer.model.CollectedData;
+import org.philimone.hds.explorer.model.CollectedData_;
 import org.philimone.hds.explorer.model.DataSet;
 import org.philimone.hds.explorer.model.Form;
 import org.philimone.hds.explorer.model.Household;
@@ -40,6 +43,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import io.objectbox.Box;
 import mz.betainteractive.odk.task.OdkGeneratedFormLoadTask;
 import mz.betainteractive.odk.xml.FormUpdater;
 import mz.betainteractive.utilities.StringUtil;
@@ -63,6 +67,8 @@ public class SurveyHouseholdsActivity extends Activity implements HouseholdFilte
 
     private LoadingDialog loadingDialog;
 
+    private Box<CollectedData> boxCollectedData;
+
     private final int MEMBER_DETAILS_REQUEST_CODE = 31;
 
     public enum FormFilter {
@@ -80,7 +86,12 @@ public class SurveyHouseholdsActivity extends Activity implements HouseholdFilte
         this.householdFilterFragment = (HouseholdFilterFragment) (getFragmentManager().findFragmentById(R.id.householdFilterFragment));
         this.memberListFragment = (MemberListFragment) getFragmentManager().findFragmentById(R.id.memberListFragment);
 
+        initBoxes();
         initialize();
+    }
+
+    private void initBoxes() {
+        this.boxCollectedData = ObjectBoxDatabase.get().boxFor(CollectedData.class);
     }
 
     private void initialize() {
@@ -481,7 +492,7 @@ public class SurveyHouseholdsActivity extends Activity implements HouseholdFilte
     }
 
     private void updateHouseholdFromXML(Household household){
-        CollectedData cdata = getCollectedData("census_household", household.getId()+"", household.getTableName());
+        CollectedData cdata = getCollectedData("census_household", household.getId(), household.getTableName());
         String xmlFilePath = cdata.getFormXmlPath();
 
         //get content values from xml
@@ -517,7 +528,7 @@ public class SurveyHouseholdsActivity extends Activity implements HouseholdFilte
 
     private void updateMemberFromXML(Household household, Member member){
 
-        CollectedData cdata = getCollectedData("census_member", member.getId()+"", member.getTableName());
+        CollectedData cdata = getCollectedData("census_member", member.getId(), member.getTableName());
         String xmlFilePath = cdata.getFormXmlPath();
 
         //get content values from xml
@@ -577,9 +588,9 @@ public class SurveyHouseholdsActivity extends Activity implements HouseholdFilte
         database.open();
 
         //get collected data
-        String whereClause = DatabaseHelper.CollectedData.COLUMN_FORM_ID + "=? AND " + DatabaseHelper.CollectedData.COLUMN_RECORD_ID + "=? AND "+DatabaseHelper.CollectedData.COLUMN_TABLE_NAME + "=?";
-        String[] whereArgs = new String[]{ "census_household",  ""+household.getId(), household.getTableName() };
-        CollectedData collectedData = Queries.getCollectedDataBy(database, whereClause, whereArgs);
+        CollectedData collectedData = this.boxCollectedData.query().equal(CollectedData_.formId, "census_household")
+                                                           .and().equal(CollectedData_.recordId, household.getId())
+                                                           .and().equal(CollectedData_.tableName, household.getTableName()).build().findFirst();
 
         //update the household domain table
         household.setHeadCode(headMember.getCode());
@@ -606,13 +617,11 @@ public class SurveyHouseholdsActivity extends Activity implements HouseholdFilte
 
     }
 
-    private CollectedData getCollectedData(String formId, String recordId, String tableName){
+    private CollectedData getCollectedData(String formId, long recordId, String tableName){
         //get collected data
-        Database db = new Database(this);
-        db.open();
-        String whereClause = DatabaseHelper.CollectedData.COLUMN_FORM_ID + "=? AND " + DatabaseHelper.CollectedData.COLUMN_RECORD_ID + "=? AND "+DatabaseHelper.CollectedData.COLUMN_TABLE_NAME + "=?";
-        String[] whereArgs = new String[]{ formId,  recordId, tableName };
-        CollectedData collectedData = Queries.getCollectedDataBy(db, whereClause, whereArgs);
+        CollectedData collectedData = this.boxCollectedData.query().equal(CollectedData_.formId, formId)
+                                                           .and().equal(CollectedData_.recordId, recordId)
+                                                           .and().equal(CollectedData_.tableName, tableName).build().findFirst();
 
         return collectedData;
     }

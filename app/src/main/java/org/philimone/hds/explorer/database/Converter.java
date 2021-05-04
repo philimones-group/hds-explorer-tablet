@@ -57,16 +57,6 @@ public class Converter {
 		return form;
 	}
 
-	public static Module cursorToModule(Cursor cursor){
-		Module module = new Module();
-
-		module.setCode(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Module.COLUMN_CODE)));
-		module.setName(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Module.COLUMN_NAME)));
-		module.setDescription(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Module.COLUMN_DESCRIPTION)));
-
-		return module;
-	}
-
 	public static Region cursorToRegion(Cursor cursor){
 		Region region = new Region();
 
@@ -158,26 +148,6 @@ public class Converter {
 		mb.setSinLongitude(cursor.getDouble(cursor.getColumnIndex(DatabaseHelper.Member.COLUMN_SIN_LONGITUDE)));
 		mb.setRecentlyCreated(cursor.getInt(cursor.getColumnIndex(DatabaseHelper.Member.COLUMN_RECENTLY_CREATED))==1);
 		return mb;
-	}
-
-	public static CollectedData cursorToCollectedData(Cursor cursor){
-		CollectedData cd = new CollectedData();
-
-		cd.setId(cursor.getInt(cursor.getColumnIndex(DatabaseHelper.CollectedData._ID)));
-		cd.setFormId(cursor.getString(cursor.getColumnIndex(DatabaseHelper.CollectedData.COLUMN_FORM_ID)));
-		cd.setFormUri(cursor.getString(cursor.getColumnIndex(DatabaseHelper.CollectedData.COLUMN_FORM_URI)));
-		cd.setFormXmlPath(cursor.getString(cursor.getColumnIndex(DatabaseHelper.CollectedData.COLUMN_FORM_XML_PATH)));
-		cd.setFormInstanceName(cursor.getString(cursor.getColumnIndex(DatabaseHelper.CollectedData.COLUMN_FORM_INSTANCE_NAME)));
-		cd.setFormLastUpdatedDate(cursor.getString(cursor.getColumnIndex(DatabaseHelper.CollectedData.COLUMN_FORM_LAST_UPDATED_DATE)));
-		cd.setFormModule(cursor.getString(cursor.getColumnIndex(DatabaseHelper.CollectedData.COLUMN_FORM_MODULE)));
-		cd.setCollectedBy(cursor.getString(cursor.getColumnIndex(DatabaseHelper.CollectedData.COLUMN_COLLECTED_BY)));
-		cd.setUpdatedBy(cursor.getString(cursor.getColumnIndex(DatabaseHelper.CollectedData.COLUMN_UPDATED_BY)));
-		cd.setSupervisedBy(cursor.getString(cursor.getColumnIndex(DatabaseHelper.CollectedData.COLUMN_SUPERVISED_BY)));
-		cd.setRecordId(cursor.getInt(cursor.getColumnIndex(DatabaseHelper.CollectedData.COLUMN_RECORD_ID)));
-		cd.setTableName(cursor.getString(cursor.getColumnIndex(DatabaseHelper.CollectedData.COLUMN_TABLE_NAME)));
-		cd.setSupervised(cursor.getInt(cursor.getColumnIndex(DatabaseHelper.CollectedData.COLUMN_SUPERVISED))==1);
-
-		return cd;
 	}
 
 	public static TrackingList cursorToTrackingList(Cursor cursor){

@@ -16,6 +16,8 @@ import org.philimone.hds.explorer.model.Member;
 import java.util.ArrayList;
 import java.util.List;
 
+import mz.betainteractive.utilities.StringUtil;
+
 /**
  * Created by paul on 8/10/16.
  */
@@ -77,11 +79,12 @@ public class CollectedDataArrayAdapter extends ArrayAdapter {
         CollectedDataItem cdi = collectedDataList.get(position);
         //Member mb = cdi.getMember();
         CollectedData cd = cdi.getCollectedData();
+        String sdate = StringUtil.format(cd.formLastUpdatedDate, "yyyy-MM-dd HH:mm:ss");
 
         String processed = "0";
 
         txtName.setText(cd.getFormInstanceName());
-        txtExtra.setText(cd.getFormLastUpdatedDate());
+        txtExtra.setText(sdate);
         chkProcessed.setChecked(cd.isFormFinalized());
 
         if (cdi.getForm()!=null){

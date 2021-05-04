@@ -20,9 +20,11 @@ import org.philimone.hds.explorer.adapter.model.CollectedDataItem;
 import org.philimone.hds.explorer.data.FormDataLoader;
 import org.philimone.hds.explorer.database.Database;
 import org.philimone.hds.explorer.database.DatabaseHelper;
+import org.philimone.hds.explorer.database.ObjectBoxDatabase;
 import org.philimone.hds.explorer.database.Queries;
 import org.philimone.hds.explorer.fragment.MemberFilterDialog;
 import org.philimone.hds.explorer.model.CollectedData;
+import org.philimone.hds.explorer.model.CollectedData_;
 import org.philimone.hds.explorer.model.Form;
 import org.philimone.hds.explorer.model.Household;
 import org.philimone.hds.explorer.model.Member;
@@ -33,9 +35,11 @@ import org.philimone.hds.explorer.widget.member_details.MemberFormDialog;
 import org.philimone.hds.explorer.widget.member_details.RelationshipTypeDialog;
 
 import java.io.File;
+import java.util.Date;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.objectbox.Box;
 import mz.betainteractive.odk.FormUtilities;
 import mz.betainteractive.odk.listener.OdkFormResultListener;
 import mz.betainteractive.odk.model.FilledForm;
@@ -88,6 +92,8 @@ public class MemberDetailsActivity extends Activity implements OdkFormResultList
     private boolean returnFromOdk;
     private boolean editingMember;
 
+    private Box<CollectedData> boxCollectedData;
+
     public static final int REQUEST_CODE_ADD_NEW_MEMBER = 10; /* Member Requests will be from 10 to 19 */
     public static final int REQUEST_CODE_EDIT_NEW_MEMBER = 11;
 
@@ -110,6 +116,7 @@ public class MemberDetailsActivity extends Activity implements OdkFormResultList
 
         formUtilities = new FormUtilities(this);
 
+        initBoxes();
         initialize();
     }
 
@@ -168,6 +175,10 @@ public class MemberDetailsActivity extends Activity implements OdkFormResultList
 
     public void setMember(Member member){
         this.member = member;
+    }
+
+    private void initBoxes() {
+        this.boxCollectedData = ObjectBoxDatabase.get().boxFor(CollectedData.class);
     }
 
     private void initialize() {
@@ -348,7 +359,7 @@ public class MemberDetailsActivity extends Activity implements OdkFormResultList
         Database db = new Database(this);
         db.open();
 
-        List<CollectedData> list = Queries.getAllCollectedDataBy(db, DatabaseHelper.CollectedData.COLUMN_RECORD_ID + "=? AND " +DatabaseHelper.CollectedData.COLUMN_TABLE_NAME + "=?"  , new String[]{ member.getId()+"", member.getTableName() } );
+        List<CollectedData> list = this.boxCollectedData.query().equal(CollectedData_.recordId, member.getId()).and().equal(CollectedData_.tableName, member.getTableName()).build().find();
         List<Form> forms = Queries.getAllFormBy(db, null, null);
         List<CollectedDataItem> cdl = new ArrayList<>();
 
@@ -442,15 +453,10 @@ public class MemberDetailsActivity extends Activity implements OdkFormResultList
     }
 
     private CollectedData getCollectedData(FormDataLoader formDataLoader){
-        Database db = new Database(this);
-        db.open();
 
-        String whereClause = DatabaseHelper.CollectedData.COLUMN_FORM_ID + "=? AND " + DatabaseHelper.CollectedData.COLUMN_RECORD_ID + "=? AND "+DatabaseHelper.CollectedData.COLUMN_TABLE_NAME + "=?";
-        String[] whereArgs = new String[]{ formDataLoader.getForm().getFormId(),  ""+member.getId(), member.getTableName() };
-
-        CollectedData collectedData = Queries.getCollectedDataBy(db, whereClause, whereArgs);
-
-        db.close();
+        CollectedData collectedData = this.boxCollectedData.query().equal(CollectedData_.formId, formDataLoader.getForm().getFormId())
+                                                           .and().equal(CollectedData_.recordId, member.getId())
+                                                           .and().equal(CollectedData_.tableName, member.getTableName()).build().findFirst();
 
         return collectedData;
     }
@@ -523,7 +529,7 @@ public class MemberDetailsActivity extends Activity implements OdkFormResultList
     }
 
     @Override
-    public void onFormFinalized(Uri contentUri, File xmlFile, String metaInstanceName, String lastUpdatedDate) {
+    public void onFormFinalized(Uri contentUri, File xmlFile, String metaInstanceName, Date lastUpdatedDate) {
         Log.d("form finalized"," "+contentUri+", "+xmlFile);
 
         //save Collected data
@@ -537,12 +543,10 @@ public class MemberDetailsActivity extends Activity implements OdkFormResultList
             member.setId(id);
         }
 
-
         //search existing record
-        String whereClause = DatabaseHelper.CollectedData.COLUMN_RECORD_ID + "=? AND "+DatabaseHelper.CollectedData.COLUMN_FORM_URI + "=? AND " +DatabaseHelper.CollectedData.COLUMN_TABLE_NAME + "=?";
-        String[] whereArgs = new String[]{ ""+member.getId(), contentUri.toString(), member.getTableName() };
-
-        CollectedData collectedData = Queries.getCollectedDataBy(db, whereClause, whereArgs);
+        CollectedData collectedData = this.boxCollectedData.query().equal(CollectedData_.formUri, contentUri.toString())
+                .and().equal(CollectedData_.recordId, member.getId())
+                .and().equal(CollectedData_.tableName, member.getTableName()).build().findFirst();
 
 
         if (collectedData == null){ //insert
@@ -561,7 +565,7 @@ public class MemberDetailsActivity extends Activity implements OdkFormResultList
             collectedData.setRecordId(member.getId());
             collectedData.setTableName(member.getTableName());
 
-            db.insert(collectedData);
+            this.boxCollectedData.put(collectedData);
             Log.d("inserting", "new collected data");
         }else{ //update
             collectedData.setFormId(lastLoadedForm.getForm().getFormId());
@@ -578,7 +582,7 @@ public class MemberDetailsActivity extends Activity implements OdkFormResultList
             collectedData.setRecordId(member.getId());
             collectedData.setTableName(member.getTableName());
 
-            db.update(CollectedData.class, collectedData.getContentValues(), whereClause, whereArgs);
+            this.boxCollectedData.put(collectedData);
             Log.d("updating", "new collected data");
         }
 
@@ -592,7 +596,7 @@ public class MemberDetailsActivity extends Activity implements OdkFormResultList
     }
 
     @Override
-    public void onFormUnFinalized(Uri contentUri, File xmlFile, String metaInstanceName, String lastUpdatedDate) {
+    public void onFormUnFinalized(Uri contentUri, File xmlFile, String metaInstanceName, Date lastUpdatedDate) {
         Log.d("form unfinalized"," "+contentUri);
 
         //save Collected data
@@ -607,10 +611,9 @@ public class MemberDetailsActivity extends Activity implements OdkFormResultList
         }
 
         //search existing record
-        String whereClause = DatabaseHelper.CollectedData.COLUMN_RECORD_ID + "=? AND "+DatabaseHelper.CollectedData.COLUMN_FORM_URI + "=? AND " +DatabaseHelper.CollectedData.COLUMN_TABLE_NAME + "=?";
-        String[] whereArgs = new String[]{ ""+member.getId(), contentUri.toString(), member.getTableName() };
-
-        CollectedData collectedData = Queries.getCollectedDataBy(db, whereClause, whereArgs);
+        CollectedData collectedData = this.boxCollectedData.query().equal(CollectedData_.formUri, contentUri.toString())
+                                                           .and().equal(CollectedData_.recordId, member.getId())
+                                                           .and().equal(CollectedData_.tableName, member.getTableName()).build().findFirst();
 
         if (collectedData == null){ //insert
             collectedData = new CollectedData();
@@ -628,7 +631,7 @@ public class MemberDetailsActivity extends Activity implements OdkFormResultList
             collectedData.setRecordId(member.getId());
             collectedData.setTableName(member.getTableName());
 
-            db.insert(collectedData);
+            this.boxCollectedData.put(collectedData);
             Log.d("inserting", "new collected data");
         }else{ //update
             collectedData.setFormId(lastLoadedForm.getForm().getFormId());
@@ -645,7 +648,7 @@ public class MemberDetailsActivity extends Activity implements OdkFormResultList
             collectedData.setRecordId(member.getId());
             collectedData.setTableName(member.getTableName());
 
-            db.update(CollectedData.class, collectedData.getContentValues(), whereClause, whereArgs);
+            this.boxCollectedData.put(collectedData);
             Log.d("updating", "new collected data");
         }
 
@@ -660,10 +663,8 @@ public class MemberDetailsActivity extends Activity implements OdkFormResultList
 
     @Override
     public void onDeleteForm(Uri contentUri) {
-        Database db = new Database(this);
-        db.open();
-        db.delete(CollectedData.class, DatabaseHelper.CollectedData.COLUMN_FORM_URI+"=?", new String[]{ contentUri.toString() } );
-        db.close();
+
+        this.boxCollectedData.query().equal(CollectedData_.formUri, contentUri.toString()).build().remove(); //delete where formUri=contentUri
 
         if (requestCode == REQUEST_CODE_ADD_NEW_MEMBER || requestCode == REQUEST_CODE_EDIT_NEW_MEMBER){
             onCancelAddNewMember();

@@ -1,40 +1,42 @@
 package org.philimone.hds.explorer.model;
 
-import android.content.ContentValues;
-
-import org.philimone.hds.explorer.database.DatabaseHelper;
-import org.philimone.hds.explorer.database.Table;
-
 import java.io.Serializable;
+import java.util.Date;
+
+import io.objectbox.annotation.Entity;
+import io.objectbox.annotation.Id;
+import io.objectbox.annotation.Unique;
 
 /**
  * Created by paul on 8/10/16.
  */
-public class CollectedData implements Serializable, Table {
 
-    private int id;
-    private String formId;
-    private String formUri;
-    private String formXmlPath;
-    private String formInstanceName;
-    private String formLastUpdatedDate;
-    private String formModule;
-    private int recordId;
-    private String tableName;
+@Entity
+public class CollectedData implements Serializable {
 
-    private String collectedBy;
-    private String updatedBy;
-    private String supervisedBy;
-    private boolean supervised;
+    @Id
+    public long id;
+    public String formId;
 
+    @Unique
+    public String formUri;
+    public String formXmlPath;
+    public String formInstanceName;
+    public Date formLastUpdatedDate;
+    public String formModule;
+    public int recordId;
+    public String tableName;
 
+    public String collectedBy;
+    public String updatedBy;
+    public String supervisedBy;
+    public boolean supervised;
 
-
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -82,11 +84,11 @@ public class CollectedData implements Serializable, Table {
         this.formInstanceName = formInstanceName;
     }
 
-    public String getFormLastUpdatedDate() {
+    public Date getFormLastUpdatedDate() {
         return formLastUpdatedDate;
     }
 
-    public void setFormLastUpdatedDate(String formLastUpdatedDate) {
+    public void setFormLastUpdatedDate(Date formLastUpdatedDate) {
         this.formLastUpdatedDate = formLastUpdatedDate;
     }
 
@@ -132,33 +134,5 @@ public class CollectedData implements Serializable, Table {
 
     public void setSupervised(boolean supervised) {
         this.supervised = supervised;
-    }
-
-    @Override
-    public String getTableName() {
-        return DatabaseHelper.CollectedData.TABLE_NAME;
-    }
-
-    @Override
-    public ContentValues getContentValues() {
-        ContentValues cv = new ContentValues();
-        cv.put(DatabaseHelper.CollectedData.COLUMN_FORM_ID, formId);
-        cv.put(DatabaseHelper.CollectedData.COLUMN_FORM_URI, formUri);
-        cv.put(DatabaseHelper.CollectedData.COLUMN_FORM_XML_PATH, formXmlPath);
-        cv.put(DatabaseHelper.CollectedData.COLUMN_FORM_INSTANCE_NAME, formInstanceName);
-        cv.put(DatabaseHelper.CollectedData.COLUMN_FORM_LAST_UPDATED_DATE, formLastUpdatedDate);
-        cv.put(DatabaseHelper.CollectedData.COLUMN_FORM_MODULE, formModule);
-        cv.put(DatabaseHelper.CollectedData.COLUMN_COLLECTED_BY, collectedBy);
-        cv.put(DatabaseHelper.CollectedData.COLUMN_UPDATED_BY, updatedBy);
-        cv.put(DatabaseHelper.CollectedData.COLUMN_SUPERVISED_BY, supervisedBy);
-        cv.put(DatabaseHelper.CollectedData.COLUMN_RECORD_ID, recordId);
-        cv.put(DatabaseHelper.CollectedData.COLUMN_TABLE_NAME, tableName);
-        cv.put(DatabaseHelper.CollectedData.COLUMN_SUPERVISED, supervised ? 1 : 0);
-        return cv;
-    }
-
-    @Override
-    public String[] getColumnNames() {
-        return DatabaseHelper.CollectedData.ALL_COLUMNS;
     }
 }

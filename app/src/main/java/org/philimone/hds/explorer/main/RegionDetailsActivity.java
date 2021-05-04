@@ -21,6 +21,7 @@ import org.philimone.hds.explorer.database.ObjectBoxDatabase;
 import org.philimone.hds.explorer.database.Queries;
 import org.philimone.hds.explorer.model.ApplicationParam;
 import org.philimone.hds.explorer.model.CollectedData;
+import org.philimone.hds.explorer.model.CollectedData_;
 import org.philimone.hds.explorer.model.Form;
 import org.philimone.hds.explorer.model.Region;
 import org.philimone.hds.explorer.model.User;
@@ -28,6 +29,7 @@ import org.philimone.hds.explorer.widget.DialogFactory;
 import org.philimone.hds.explorer.widget.FormSelectorDialog;
 
 import java.io.File;
+import java.util.Date;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -57,6 +59,7 @@ public class RegionDetailsActivity extends Activity implements OdkFormResultList
     private int activityRequestCode;
 
     private Box<ApplicationParam> boxAppParams;
+    private Box<CollectedData> boxCollectedData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,6 +85,7 @@ public class RegionDetailsActivity extends Activity implements OdkFormResultList
 
     private void initBoxes() {
         this.boxAppParams = ObjectBoxDatabase.get().boxFor(ApplicationParam.class);
+        this.boxCollectedData = ObjectBoxDatabase.get().boxFor(CollectedData.class);
     }
 
     private void initialize() {
@@ -181,7 +185,7 @@ public class RegionDetailsActivity extends Activity implements OdkFormResultList
         Database db = new Database(this);
         db.open();
 
-        List<CollectedData> list = Queries.getAllCollectedDataBy(db, DatabaseHelper.CollectedData.COLUMN_RECORD_ID + "=? AND "+DatabaseHelper.CollectedData.COLUMN_TABLE_NAME + "=?", new String[]{ region.getId()+"", region.getTableName() } );
+        List<CollectedData> list = this.boxCollectedData.query().equal(CollectedData_.recordId, region.getId()).and().equal(CollectedData_.tableName, region.getTableName()).build().find();
         List<Form> forms = Queries.getAllFormBy(db, null, null);
         List<CollectedDataItem> cdl = new ArrayList<>();
 
@@ -274,15 +278,10 @@ public class RegionDetailsActivity extends Activity implements OdkFormResultList
     }
 
     private CollectedData getCollectedData(FormDataLoader formDataLoader){
-        Database db = new Database(this);
-        db.open();
 
-        String whereClause = DatabaseHelper.CollectedData.COLUMN_FORM_ID + "=? AND " + DatabaseHelper.CollectedData.COLUMN_RECORD_ID + "=? AND "+DatabaseHelper.CollectedData.COLUMN_TABLE_NAME + "=?";
-        String[] whereArgs = new String[]{ formDataLoader.getForm().getFormId(),  ""+region.getId(), region.getTableName() };
-
-        CollectedData collectedData = Queries.getCollectedDataBy(db, whereClause, whereArgs);
-
-        db.close();
+        CollectedData collectedData = this.boxCollectedData.query().equal(CollectedData_.formId, formDataLoader.getForm().getFormId())
+                                                                   .and().equal(CollectedData_.recordId, region.getId())
+                                                                   .and().equal(CollectedData_.tableName, region.getTableName()).build().findFirst();
 
         return collectedData;
     }
@@ -352,7 +351,7 @@ public class RegionDetailsActivity extends Activity implements OdkFormResultList
     }
 
     @Override
-    public void onFormFinalized(Uri contentUri, File xmlFile, String metaInstanceName, String lastUpdatedDate) {
+    public void onFormFinalized(Uri contentUri, File xmlFile, String metaInstanceName, Date lastUpdatedDate) {
         Log.d("form finalized"," "+contentUri+", "+xmlFile);
 
         //save Collected data
@@ -366,12 +365,12 @@ public class RegionDetailsActivity extends Activity implements OdkFormResultList
             region.setId(id);
         }
 
+        db.close();
 
         //search existing record
-        String whereClause = DatabaseHelper.CollectedData.COLUMN_RECORD_ID + "=? AND "+DatabaseHelper.CollectedData.COLUMN_FORM_URI + "=? AND "+DatabaseHelper.CollectedData.COLUMN_TABLE_NAME + "=?";
-        String[] whereArgs = new String[]{ ""+region.getId(), contentUri.toString(), region.getTableName() };
-
-        CollectedData collectedData = Queries.getCollectedDataBy(db, whereClause, whereArgs);
+        CollectedData collectedData = this.boxCollectedData.query().equal(CollectedData_.formUri, contentUri.toString())
+                .and().equal(CollectedData_.recordId, region.getId())
+                .and().equal(CollectedData_.tableName, region.getTableName()).build().findFirst();
 
 
         if (collectedData == null){ //insert
@@ -390,7 +389,8 @@ public class RegionDetailsActivity extends Activity implements OdkFormResultList
             collectedData.setRecordId(region.getId());
             collectedData.setTableName(region.getTableName());
 
-            db.insert(collectedData);
+            this.boxCollectedData.put(collectedData);
+
             Log.d("inserting", "new collected data");
         }else{ //update
             collectedData.setFormId(lastLoadedForm.getForm().getFormId());
@@ -407,17 +407,15 @@ public class RegionDetailsActivity extends Activity implements OdkFormResultList
             collectedData.setRecordId(region.getId());
             collectedData.setTableName(region.getTableName());
 
-            db.update(CollectedData.class, collectedData.getContentValues(), whereClause, whereArgs);
+            this.boxCollectedData.put(collectedData);
             Log.d("updating", "new collected data");
         }
-
-        db.close();
 
         showCollectedData();
     }
 
     @Override
-    public void onFormUnFinalized(Uri contentUri, File xmlFile, String metaInstanceName, String lastUpdatedDate) {
+    public void onFormUnFinalized(Uri contentUri, File xmlFile, String metaInstanceName, Date lastUpdatedDate) {
         Log.d("form unfinalized"," "+contentUri);
 
         //save Collected data
@@ -432,10 +430,9 @@ public class RegionDetailsActivity extends Activity implements OdkFormResultList
         }
 
         //search existing record
-        String whereClause = DatabaseHelper.CollectedData.COLUMN_RECORD_ID + "=? AND "+DatabaseHelper.CollectedData.COLUMN_FORM_URI + "=? AND "+DatabaseHelper.CollectedData.COLUMN_TABLE_NAME + "=?";
-        String[] whereArgs = new String[]{ ""+region.getId(), contentUri.toString(), region.getTableName() };
-
-        CollectedData collectedData = Queries.getCollectedDataBy(db, whereClause, whereArgs);
+        CollectedData collectedData = this.boxCollectedData.query().equal(CollectedData_.formUri, contentUri.toString())
+                .and().equal(CollectedData_.recordId, region.getId())
+                .and().equal(CollectedData_.tableName, region.getTableName()).build().findFirst();
 
         if (collectedData == null){ //insert
             collectedData = new CollectedData();
@@ -453,7 +450,7 @@ public class RegionDetailsActivity extends Activity implements OdkFormResultList
             collectedData.setRecordId(region.getId());
             collectedData.setTableName(region.getTableName());
 
-            db.insert(collectedData);
+            this.boxCollectedData.put(collectedData);
             Log.d("inserting", "new collected data");
         }else{ //update
             collectedData.setFormId(lastLoadedForm.getForm().getFormId());
@@ -470,7 +467,7 @@ public class RegionDetailsActivity extends Activity implements OdkFormResultList
             collectedData.setRecordId(region.getId());
             collectedData.setTableName(region.getTableName());
 
-            db.update(CollectedData.class, collectedData.getContentValues(), whereClause, whereArgs);
+            this.boxCollectedData.put(collectedData);
             Log.d("updating", "new collected data");
         }
 
@@ -481,10 +478,7 @@ public class RegionDetailsActivity extends Activity implements OdkFormResultList
 
     @Override
     public void onDeleteForm(Uri contentUri) {
-        Database db = new Database(this);
-        db.open();
-        db.delete(CollectedData.class, DatabaseHelper.CollectedData.COLUMN_FORM_URI+"=?", new String[]{ contentUri.toString() } );
-        db.close();
+        this.boxCollectedData.query().equal(CollectedData_.formUri, contentUri.toString()).build().remove(); //delete where formUri=contentUri
 
         showCollectedData();
     }

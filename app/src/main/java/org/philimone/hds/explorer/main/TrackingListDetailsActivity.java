@@ -20,8 +20,10 @@ import org.philimone.hds.explorer.adapter.model.TrackingSubListItem;
 import org.philimone.hds.explorer.data.FormDataLoader;
 import org.philimone.hds.explorer.database.Database;
 import org.philimone.hds.explorer.database.DatabaseHelper;
+import org.philimone.hds.explorer.database.ObjectBoxDatabase;
 import org.philimone.hds.explorer.database.Queries;
 import org.philimone.hds.explorer.model.CollectedData;
+import org.philimone.hds.explorer.model.CollectedData_;
 import org.philimone.hds.explorer.model.DataSet;
 import org.philimone.hds.explorer.model.Form;
 import org.philimone.hds.explorer.model.Household;
@@ -37,6 +39,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import io.objectbox.Box;
 import mz.betainteractive.utilities.StringUtil;
 
 public class TrackingListDetailsActivity extends Activity implements BarcodeScannerActivity.ResultListener, BarcodeScannerActivity.InvokerClickListener {
@@ -59,6 +62,7 @@ public class TrackingListDetailsActivity extends Activity implements BarcodeScan
     private View viewLoadingList;
 
     private Database database;
+    private Box<CollectedData> boxCollectedData;
 
     private LoadingDialog loadingDialog;
 
@@ -70,6 +74,7 @@ public class TrackingListDetailsActivity extends Activity implements BarcodeScan
         super.onCreate(savedInstanceState);
         setContentView(R.layout.tracking_list_details);
 
+        initBoxes();
         initialize();
 
         if (savedInstanceState == null){
@@ -88,6 +93,10 @@ public class TrackingListDetailsActivity extends Activity implements BarcodeScan
         showProgress(true);
 
         new TrackingSubjectListSearchTask(trackingList).execute();
+    }
+
+    private void initBoxes() {
+        this.boxCollectedData = ObjectBoxDatabase.get().boxFor(CollectedData.class);
     }
 
     private void initialize() {
@@ -316,7 +325,7 @@ public class TrackingListDetailsActivity extends Activity implements BarcodeScan
 
         db.open();
         List<org.philimone.hds.explorer.model.followup.TrackingSubjectList> listTml = Queries.getAllTrackingSubjectListBy(db, DatabaseHelper.TrackingSubjectList.COLUMN_TRACKING_ID+"=?", new String[]{ trackingList.getId()+"" });
-        List<CollectedData> listCollectedData = Queries.getAllCollectedDataBy(db, DatabaseHelper.CollectedData.COLUMN_FORM_MODULE+"=?", new String[]{ trackingList.getModule()+"" });
+        List<CollectedData> listCollectedData = this.boxCollectedData.query().equal(CollectedData_.formModule, trackingList.getModule()).build().find();
         db.close();
 
         List<String> codesRegions = new ArrayList<>();

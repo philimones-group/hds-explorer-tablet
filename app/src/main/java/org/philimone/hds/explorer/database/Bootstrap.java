@@ -22,13 +22,11 @@ import io.objectbox.Box;
  */
 public class Bootstrap {
     private static final String APP_PATH = "org.philimone.hds.explorer";
-    private Database database;
 
     private Box<ApplicationParam> boxAppParams;
     private Box<SyncReport> boxSyncReports;
 
     public Bootstrap(Context context){
-        this.database = new Database(context);
         initBoxes();
     }
 
@@ -38,13 +36,8 @@ public class Bootstrap {
     }
 
     public void init(){
-        database.open();
-
         insertSyncReports();
         insertParams();
-
-        database.close();
-
         initializePaths();
     }
 
@@ -108,9 +101,4 @@ public class Bootstrap {
         return destinationPath;
     }
 
-    public void dropTables(){
-        database.open();
-        database.dropAllTables();
-        database.close();
-    }
 }

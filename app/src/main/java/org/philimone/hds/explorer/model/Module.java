@@ -7,22 +7,28 @@ import org.philimone.hds.explorer.database.Table;
 
 import java.io.Serializable;
 
+import io.objectbox.annotation.Entity;
+import io.objectbox.annotation.Id;
+import io.objectbox.annotation.Unique;
+
 /**
  * Created by paul on 5/20/16.
  */
-public class Module implements Serializable, Table {
+@Entity
+public class Module implements Serializable {
 
     public final static String DSS_SURVEY_MODULE = "DSS-SURVEY";
     public final static String DSS_SUPERVISOR = "DSS-SUPERVISOR";
     public final static String DSS_OTHERS = "DSS-ANY";
 
-    private int id;
-    private String code;
-    private String name;
-    private String description;
+    @Id
+    public long id;
+    @Unique
+    public String code;
+    public String name;
+    public String description;
 
-    @Override
-    public int getId() {
+    public long getId() {
         return id;
     }
 
@@ -54,22 +60,4 @@ public class Module implements Serializable, Table {
         this.description = description;
     }
 
-    @Override
-    public String getTableName() {
-        return DatabaseHelper.Module.TABLE_NAME;
-    }
-
-    @Override
-    public ContentValues getContentValues() {
-        ContentValues cv = new ContentValues();
-        cv.put(DatabaseHelper.Module.COLUMN_CODE, code);
-        cv.put(DatabaseHelper.Module.COLUMN_NAME, name);
-        cv.put(DatabaseHelper.Module.COLUMN_DESCRIPTION, description);
-        return cv;
-    }
-
-    @Override
-    public String[] getColumnNames() {
-        return DatabaseHelper.Module.ALL_COLUMNS;
-    }
 }

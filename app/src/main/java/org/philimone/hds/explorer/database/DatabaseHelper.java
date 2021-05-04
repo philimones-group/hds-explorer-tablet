@@ -19,11 +19,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         try {
 		    db.execSQL(CREATE_TABLE_USER);
 		    db.execSQL(CREATE_TABLE_FORM);
-            db.execSQL(CREATE_TABLE_MODULE);
             db.execSQL(CREATE_TABLE_REGION);
 		    db.execSQL(CREATE_TABLE_HOUSEHOLD);
 		    db.execSQL(CREATE_TABLE_MEMBER);
-            db.execSQL(CREATE_TABLE_COLLECTED_DATA);
             db.execSQL(CREATE_TABLE_TRACKING_LIST);
             db.execSQL(CREATE_TABLE_TRACKING_MEMBER_LIST);
             db.execSQL(CREATE_TABLE_DATASET);
@@ -64,7 +62,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
 	}
 
-    public static final String[] ALL_TABLES = {User.TABLE_NAME, Form.TABLE_NAME, Module.TABLE_NAME, Household.TABLE_NAME, Member.TABLE_NAME };
+    public static final String[] ALL_TABLES = {User.TABLE_NAME, Form.TABLE_NAME, Household.TABLE_NAME, Member.TABLE_NAME };
 
 	public static final class User implements BaseColumns {
 		public static final String TABLE_NAME = "user";
@@ -106,16 +104,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 		public static final String[] ALL_COLUMNS = {COLUMN_FORM_ID, COLUMN_FORM_NAME, COLUMN_FORM_DESCRIPTION, COLUMN_FORM_DEPENDENCIES, COLUMN_REGION_LEVEL, COLUMN_GENDER, COLUMN_MIN_AGE, COLUMN_MAX_AGE, COLUMN_MODULES, COLUMN_IS_REGION, COLUMN_IS_HOUSEHOLD, COLUMN_IS_HOUSEHOLD_HEAD, COLUMN_IS_MEMBER, COLUMN_IS_FOLLOW_UP_ONLY, COLUMN_MULTI_COL_PER_SESSION, COLUMN_FORM_MAP, COLUMN_REDCAP_API, COLUMN_REDCAP_MAP};
 	}
-
-    public static final class Module implements BaseColumns {
-        public static final String TABLE_NAME = "module";
-
-        public static final String COLUMN_CODE = "code";
-        public static final String COLUMN_NAME = "name";
-        public static final String COLUMN_DESCRIPTION = "description";
-
-        public static final String[] ALL_COLUMNS = {COLUMN_CODE, COLUMN_NAME, COLUMN_DESCRIPTION};
-    }
 
     public static final class Region implements BaseColumns {
         public static final String TABLE_NAME = "region";
@@ -211,28 +199,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 COLUMN_COS_LATITUDE, COLUMN_SIN_LATITUDE, COLUMN_COS_LONGITUDE, COLUMN_SIN_LONGITUDE, COLUMN_RECENTLY_CREATED};
 	}
 
-    public static final class CollectedData implements BaseColumns {
-        public static final String TABLE_NAME = "collected_data";
-
-        public static final String COLUMN_FORM_ID = "formId";
-        public static final String COLUMN_FORM_URI = "formUri";
-        public static final String COLUMN_FORM_XML_PATH = "formXmlPath";
-        public static final String COLUMN_FORM_INSTANCE_NAME = "formInstanceName";
-        public static final String COLUMN_FORM_LAST_UPDATED_DATE = "formLastUpdatedDate";
-
-        public static final String COLUMN_FORM_MODULE = "formModule";
-        public static final String COLUMN_COLLECTED_BY = "collectedBy";
-        public static final String COLUMN_UPDATED_BY = "updatedBy";
-        public static final String COLUMN_SUPERVISED_BY = "supervisedBy";
-
-        public static final String COLUMN_RECORD_ID = "recordId";
-        public static final String COLUMN_TABLE_NAME = "tableName";
-        public static final String COLUMN_SUPERVISED = "supervised";
-
-        public static final String[] ALL_COLUMNS = {_ID, COLUMN_FORM_ID, COLUMN_FORM_URI, COLUMN_FORM_XML_PATH, COLUMN_FORM_INSTANCE_NAME, COLUMN_FORM_LAST_UPDATED_DATE,
-                COLUMN_FORM_MODULE, COLUMN_COLLECTED_BY, COLUMN_UPDATED_BY, COLUMN_SUPERVISED_BY, COLUMN_RECORD_ID, COLUMN_TABLE_NAME, COLUMN_SUPERVISED};
-    }
-
     public static final class TrackingList implements BaseColumns { //Lista de Seguimento - FollowUp
         public static final String TABLE_NAME = "tracking_list";
 
@@ -325,17 +291,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + "(" +  Form.COLUMN_FORM_ID + ");"
             ;
 
-    private static final String CREATE_TABLE_MODULE = " "
-            + "CREATE TABLE " + Module.TABLE_NAME + "("
-            + Module._ID  + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-            + Module.COLUMN_CODE + " TEXT,"
-            + Module.COLUMN_NAME + " TEXT,"
-            + Module.COLUMN_DESCRIPTION + " TEXT);"
-
-            + " CREATE UNIQUE INDEX IDX_MODULE_CODE ON " + Module.TABLE_NAME
-            + "(" +  Module.COLUMN_CODE + ");"
-            ;
-
     private static final String CREATE_TABLE_REGION = " "
             + "CREATE TABLE " + Region.TABLE_NAME + "("
             + Region._ID  + " INTEGER PRIMARY KEY AUTOINCREMENT, "
@@ -424,28 +379,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
             + " CREATE UNIQUE INDEX IDX_MEMBER_CODE ON " + Member.TABLE_NAME
             + "(" +  Member.COLUMN_CODE + ");"
-            ;
-
-    private static final String CREATE_TABLE_COLLECTED_DATA = " "
-            + "CREATE TABLE " + CollectedData.TABLE_NAME + "("
-            + CollectedData._ID  + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-            + CollectedData.COLUMN_FORM_ID + " TEXT,"
-            + CollectedData.COLUMN_FORM_URI + " TEXT,"
-            + CollectedData.COLUMN_FORM_XML_PATH + " TEXT,"
-            + CollectedData.COLUMN_FORM_INSTANCE_NAME + " TEXT,"
-            + CollectedData.COLUMN_FORM_LAST_UPDATED_DATE + " TEXT,"
-
-            + CollectedData.COLUMN_FORM_MODULE + " TEXT,"
-            + CollectedData.COLUMN_COLLECTED_BY + " TEXT,"
-            + CollectedData.COLUMN_UPDATED_BY + " TEXT,"
-            + CollectedData.COLUMN_SUPERVISED_BY + " TEXT,"
-
-            + CollectedData.COLUMN_RECORD_ID + " INTEGER,"
-            + CollectedData.COLUMN_TABLE_NAME + " TEXT,"
-            + CollectedData.COLUMN_SUPERVISED + " INTEGER NOT NULL DEFAULT 0);"
-
-            + " CREATE UNIQUE INDEX IDX_FORM_URI ON " + CollectedData.TABLE_NAME
-            + "(" +  CollectedData.COLUMN_FORM_URI + ");"
             ;
 
     private static final String CREATE_TABLE_TRACKING_LIST = " "

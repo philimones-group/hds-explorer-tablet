@@ -14,6 +14,7 @@ import org.philimone.hds.explorer.R;
 import org.philimone.hds.explorer.widget.DialogFactory;
 
 import java.io.File;
+import java.util.Date;
 
 import mz.betainteractive.odk.listener.OdkFormLoadListener;
 import mz.betainteractive.odk.listener.OdkFormResultListener;
@@ -33,7 +34,7 @@ public class FormUtilities {
     private OdkFormResultListener formResultListener;
 
     private String metaInstanceName;
-    private String lastUpdatedDate;
+    private Date lastUpdatedDate;
 
 	public FormUtilities(Activity context) {
 		this.mContext = context;
@@ -73,7 +74,7 @@ public class FormUtilities {
     public void loadForm(FilledForm filledForm, String contentUriAsString, final OdkFormResultListener listener){
         this.contentUri = Uri.parse(contentUriAsString);
         this.metaInstanceName = "";
-        this.lastUpdatedDate = "";
+        this.lastUpdatedDate = null;
 
         new OdkGeneratedFormLoadTask(mContext, filledForm, contentUri, new OdkFormLoadListener() {
             public void onOdkFormLoadSuccess(Uri contentUri) {
@@ -203,7 +204,7 @@ public class FormUtilities {
                 java.util.Date ludate = new java.util.Date(Long.parseLong(sdate)) ;
 
                 metaInstanceName = cursor.getString(cursor.getColumnIndex(InstanceProviderAPI.InstanceColumns.DISPLAY_NAME));
-                lastUpdatedDate = StringUtil.format(ludate, "yyyy-MM-dd HH:mm:ss");
+                lastUpdatedDate = ludate;
 
                 //Log.d("content-x", "" + metaInstanceName );
                 //Log.d("last-date", "" + lastUpdatedDate );
@@ -258,7 +259,7 @@ public class FormUtilities {
             java.util.Date ludate = new java.util.Date(Long.parseLong(sdate)) ;
 
             metaInstanceName = cursor.getString(cursor.getColumnIndex(InstanceProviderAPI.InstanceColumns.DISPLAY_NAME));
-            lastUpdatedDate = StringUtil.format(ludate, "yyyy-MM-dd HH:mm:ss");
+            lastUpdatedDate = ludate;
 
         } else {
             Log.d("move next", "couldnt find executed form");

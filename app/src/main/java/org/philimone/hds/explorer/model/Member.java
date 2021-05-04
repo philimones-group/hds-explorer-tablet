@@ -439,8 +439,8 @@ public class Member implements Serializable, Table {
         cv.put(DatabaseHelper.Member.COLUMN_MOTHER_NAME, motherName);
         cv.put(DatabaseHelper.Member.COLUMN_FATHER_CODE, fatherCode);
         cv.put(DatabaseHelper.Member.COLUMN_FATHER_NAME, fatherName);
-        cv.put(DatabaseHelper.Member.COLUMN_HOUSE_CODE, householdCode);
-        cv.put(DatabaseHelper.Member.COLUMN_HOUSE_NAME, householdName);
+        cv.put(DatabaseHelper.Member.COLUMN_HOUSEHOLD_CODE, householdCode);
+        cv.put(DatabaseHelper.Member.COLUMN_HOUSEHOLD_NAME, householdName);
         cv.put(DatabaseHelper.Member.COLUMN_START_TYPE, startType);
         cv.put(DatabaseHelper.Member.COLUMN_START_DATE, startDate);
         cv.put(DatabaseHelper.Member.COLUMN_END_TYPE, endType);

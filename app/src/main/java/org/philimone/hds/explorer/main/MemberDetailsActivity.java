@@ -331,7 +331,7 @@ public class MemberDetailsActivity extends Activity implements OdkFormResultList
         Database db = new Database(this);
         db.open();
 
-        List<Member> members = Queries.getAllMemberBy(db, DatabaseHelper.Member.COLUMN_HOUSE_CODE+"=?", new String[]{ this.member.getHouseholdCode() } );
+        List<Member> members = Queries.getAllMemberBy(db, DatabaseHelper.Member.COLUMN_HOUSEHOLD_CODE +"=?", new String[]{ this.member.getHouseholdCode() } );
 
         db.close();
 

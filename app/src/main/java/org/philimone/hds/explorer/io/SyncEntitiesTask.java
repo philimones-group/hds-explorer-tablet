@@ -1831,6 +1831,16 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
                 parser.nextTag();
             }
 
+			parser.nextTag(); //process <maritalStatus>
+			if (!isEmptyTag(DatabaseHelper.Member.COLUMN_MARITAL_STATUS, parser)) {
+				parser.next();
+				table.setMaritalStatus(parser.getText());
+				parser.nextTag(); //process </maritalStatus>
+			}else{
+				table.setMaritalStatus("");
+				parser.nextTag();
+			}
+
             parser.nextTag(); //process <spouseCode>
             if (!isEmptyTag(DatabaseHelper.Member.COLUMN_SPOUSE_CODE, parser)) {
                 parser.next();
@@ -1851,28 +1861,18 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
                 parser.nextTag();
             }
 
-			parser.nextTag(); //process <spouseType>
-			if (!isEmptyTag(DatabaseHelper.Member.COLUMN_MARITAL_STATUS, parser)) {
-				parser.next();
-				table.setMaritalStatus(parser.getText());
-				parser.nextTag(); //process </spouseType>
-			}else{
-				table.setMaritalStatus("");
-				parser.nextTag();
-			}
-
-            parser.nextTag(); //process <houseCode>
-            if (!isEmptyTag(DatabaseHelper.Member.COLUMN_HOUSE_CODE, parser)) {
+            parser.nextTag(); //process <householdCode>
+            if (!isEmptyTag(DatabaseHelper.Member.COLUMN_HOUSEHOLD_CODE, parser)) {
                 parser.next();
                 table.setHouseholdCode(parser.getText());
-                parser.nextTag(); //process </houseCode>
+                parser.nextTag(); //process </householdCode>
             }else{
                 table.setHouseholdCode("");
                 parser.nextTag();
             }
 
             parser.nextTag(); //process <houseNumber>
-            if (!isEmptyTag(DatabaseHelper.Member.COLUMN_HOUSE_NAME, parser)) {
+            if (!isEmptyTag(DatabaseHelper.Member.COLUMN_HOUSEHOLD_NAME, parser)) {
                 parser.next();
                 table.setHouseholdName(parser.getText());
                 parser.nextTag(); //process </houseNumber>
@@ -1995,6 +1995,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 				//Log.d("e isHouseholdHead", table.isHouseholdHead());
 			}
 
+			/*
 			parser.nextTag(); //process <isSecHouseholdHead>
 			if (!isEmptyTag(DatabaseHelper.Member.COLUMN_IS_SEC_HOUSEHOLD_HEAD, parser)) { //endtag is temp
 				parser.next();
@@ -2007,7 +2008,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 				table.setSecHouseholdHead(false);
 				parser.nextTag();
 				//Log.d("e isSecHouseholdHead", table.isHouseholdHead());
-			}
+			}*/
 
             //CORRECT THE BUG AROUND HERE
             parser.nextTag(); //process <gpsAccuracy>

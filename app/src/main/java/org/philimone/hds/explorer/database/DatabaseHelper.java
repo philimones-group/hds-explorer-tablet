@@ -166,8 +166,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         public static final String COLUMN_MOTHER_NAME = "motherName";
         public static final String COLUMN_FATHER_CODE = "fatherCode";
         public static final String COLUMN_FATHER_NAME = "fatherName";
-        public static final String COLUMN_HOUSE_CODE = "houseCode";
-        public static final String COLUMN_HOUSE_NAME = "houseName";
+        public static final String COLUMN_HOUSEHOLD_CODE = "householdCode";
+        public static final String COLUMN_HOUSEHOLD_NAME = "householdName";
         public static final String COLUMN_START_TYPE = "startType";
         public static final String COLUMN_START_DATE = "startDate";
         public static final String COLUMN_END_TYPE = "endType";
@@ -192,7 +192,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         public static final String[] ALL_COLUMNS = {_ID, COLUMN_CODE, COLUMN_NAME, COLUMN_GENDER, COLUMN_DOB, COLUMN_AGE, COLUMN_AGE_AT_DEATH, COLUMN_SPOUSE_CODE,
                 COLUMN_SPOUSE_NAME, COLUMN_MARITAL_STATUS, COLUMN_MOTHER_CODE,
-                COLUMN_MOTHER_NAME, COLUMN_FATHER_CODE, COLUMN_FATHER_NAME, COLUMN_HOUSE_CODE, COLUMN_HOUSE_NAME,
+                COLUMN_MOTHER_NAME, COLUMN_FATHER_CODE, COLUMN_FATHER_NAME, COLUMN_HOUSEHOLD_CODE, COLUMN_HOUSEHOLD_NAME,
                 COLUMN_START_TYPE, COLUMN_START_DATE, COLUMN_END_TYPE, COLUMN_END_DATE, COLUMN_ENTRY_HOUSEHOLD, COLUMN_ENTRY_TYPE, COLUMN_ENTRY_DATE,
                 COLUMN_HEAD_RELATIONSHIP_TYPE, COLUMN_IS_HOUSEHOLD_HEAD, COLUMN_IS_SEC_HOUSEHOLD_HEAD,
                 COLUMN_GPS_NULL, COLUMN_GPS_ACCURACY, COLUMN_GPS_ALTITUDE, COLUMN_GPS_LATITUDE, COLUMN_GPS_LONGITUDE,
@@ -354,8 +354,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + Member.COLUMN_MOTHER_NAME + " TEXT,"
             + Member.COLUMN_FATHER_CODE + " TEXT,"
             + Member.COLUMN_FATHER_NAME + " TEXT,"
-            + Member.COLUMN_HOUSE_CODE + " TEXT,"
-            + Member.COLUMN_HOUSE_NAME + " TEXT,"
+            + Member.COLUMN_HOUSEHOLD_CODE + " TEXT,"
+            + Member.COLUMN_HOUSEHOLD_NAME + " TEXT,"
             + Member.COLUMN_START_TYPE + " TEXT,"
             + Member.COLUMN_START_DATE + " TEXT,"
             + Member.COLUMN_END_TYPE + " TEXT,"

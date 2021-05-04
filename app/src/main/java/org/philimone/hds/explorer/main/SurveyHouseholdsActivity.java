@@ -22,7 +22,6 @@ import org.philimone.hds.explorer.fragment.HouseholdFilterFragment;
 import org.philimone.hds.explorer.fragment.MemberListFragment;
 import org.philimone.hds.explorer.io.xml.FormXmlReader;
 import org.philimone.hds.explorer.listeners.MemberActionListener;
-import org.philimone.hds.explorer.model.ApplicationParam;
 import org.philimone.hds.explorer.model.CollectedData;
 import org.philimone.hds.explorer.model.CollectedData_;
 import org.philimone.hds.explorer.model.DataSet;
@@ -513,14 +512,14 @@ public class SurveyHouseholdsActivity extends Activity implements HouseholdFilte
         cv.put(DatabaseHelper.Household.COLUMN_HEAD_NAME, headName);
 
         ContentValues cvh = new ContentValues();
-        cvh.put(DatabaseHelper.Member.COLUMN_HOUSE_NAME, houseName);
+        cvh.put(DatabaseHelper.Member.COLUMN_HOUSEHOLD_NAME, houseName);
 
         //Execute db update
         Database db = new Database(this);
         db.open();
         db.update(Household.class, cv, DatabaseHelper.Household._ID+"=?", new String[]{ household.getId()+"" } );
         //Update all members of the household
-        db.update(Member.class, cvh, DatabaseHelper.Member.COLUMN_HOUSE_CODE+"=?", new String[]{ household.getCode()+"" } );
+        db.update(Member.class, cvh, DatabaseHelper.Member.COLUMN_HOUSEHOLD_CODE +"=?", new String[]{ household.getCode()+"" } );
         db.close();
 
         Toast.makeText(this, getString(R.string.new_member_dialog_household_head_updated_lbl), Toast.LENGTH_SHORT);

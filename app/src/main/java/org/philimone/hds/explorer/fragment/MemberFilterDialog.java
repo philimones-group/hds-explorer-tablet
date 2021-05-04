@@ -319,7 +319,7 @@ public class MemberFilterDialog extends DialogFragment {
         }
         if (!houseCode.isEmpty()){
             whereClause += (whereClause.isEmpty()? "" : " AND ");
-            whereClause += DatabaseHelper.Member.COLUMN_HOUSE_CODE + " like ?";
+            whereClause += DatabaseHelper.Member.COLUMN_HOUSEHOLD_CODE + " like ?";
             whereValues.add(houseCode+"%");
         }
         if (!gender.isEmpty()){

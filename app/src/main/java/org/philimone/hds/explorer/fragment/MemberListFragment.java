@@ -28,15 +28,12 @@ import org.philimone.hds.explorer.database.ObjectBoxDatabase;
 import org.philimone.hds.explorer.database.Queries;
 import org.philimone.hds.explorer.listeners.ActionListener;
 import org.philimone.hds.explorer.listeners.MemberActionListener;
-import org.philimone.hds.explorer.model.ApplicationParam;
 import org.philimone.hds.explorer.model.CollectedData;
 import org.philimone.hds.explorer.model.CollectedData_;
 import org.philimone.hds.explorer.model.Form;
 import org.philimone.hds.explorer.model.Household;
 import org.philimone.hds.explorer.model.Member;
-import org.philimone.hds.explorer.model.Module;
 import org.philimone.hds.explorer.model.Region;
-import org.philimone.hds.explorer.model.SyncReport;
 import org.philimone.hds.explorer.widget.DialogFactory;
 import org.philimone.hds.explorer.widget.member_details.Distance;
 import org.philimone.hds.explorer.widget.member_details.GpsNearBySelectorDialog;
@@ -429,7 +426,7 @@ public class MemberListFragment extends Fragment {
 
         String sql = "SELECT * FROM " + DatabaseHelper.Member.TABLE_NAME + " ";
         String where = "WHERE ((" + cur_sin_lat + " * sinLatitude) + (" + cur_cos_lat + " * cosLatitude) * (cosLongitude * " + cur_cos_lng + " + sinLongitude*" + cur_sin_lng + ")) >= " + cur_allowed_distance +
-                       " ORDER BY "+DatabaseHelper.Member.COLUMN_HOUSE_NAME;
+                       " ORDER BY "+DatabaseHelper.Member.COLUMN_HOUSEHOLD_NAME;
 
 
         ArrayList<Member> members = new ArrayList<>();
@@ -857,7 +854,7 @@ public class MemberListFragment extends Fragment {
         }
         if (!houseCode.isEmpty()){
             whereClause += (whereClause.isEmpty()? "" : " AND ");
-            whereClause += DatabaseHelper.Member.COLUMN_HOUSE_CODE + " like ?";
+            whereClause += DatabaseHelper.Member.COLUMN_HOUSEHOLD_CODE + " like ?";
             whereValues.add(houseCode+"%");
         }
         if (!gender.isEmpty()){

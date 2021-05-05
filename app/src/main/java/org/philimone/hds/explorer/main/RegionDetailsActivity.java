@@ -24,6 +24,7 @@ import org.philimone.hds.explorer.model.CollectedData;
 import org.philimone.hds.explorer.model.CollectedData_;
 import org.philimone.hds.explorer.model.Form;
 import org.philimone.hds.explorer.model.Region;
+import org.philimone.hds.explorer.model.Region_;
 import org.philimone.hds.explorer.model.User;
 import org.philimone.hds.explorer.widget.DialogFactory;
 import org.philimone.hds.explorer.widget.FormSelectorDialog;
@@ -60,6 +61,8 @@ public class RegionDetailsActivity extends Activity implements OdkFormResultList
 
     private Box<ApplicationParam> boxAppParams;
     private Box<CollectedData> boxCollectedData;
+    private Box<Form> boxForms;
+    private Box<Region> boxRegions;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,6 +89,8 @@ public class RegionDetailsActivity extends Activity implements OdkFormResultList
     private void initBoxes() {
         this.boxAppParams = ObjectBoxDatabase.get().boxFor(ApplicationParam.class);
         this.boxCollectedData = ObjectBoxDatabase.get().boxFor(CollectedData.class);
+        this.boxForms = ObjectBoxDatabase.get().boxFor(Form.class);
+        this.boxRegions = ObjectBoxDatabase.get().boxFor(Region.class);
     }
 
     private void initialize() {
@@ -153,13 +158,7 @@ public class RegionDetailsActivity extends Activity implements OdkFormResultList
     }
 
     private Region getRegion(String code){
-        Database db = new Database(this);
-        db.open();
-
-        Region region = Queries.getRegionBy(db, DatabaseHelper.Region.COLUMN_CODE + "=?", new String[]{ code } );
-
-        db.close();
-
+        Region region = this.boxRegions.query().equal(Region_.code, code).build().findFirst();
         return region;
     }
 
@@ -182,11 +181,8 @@ public class RegionDetailsActivity extends Activity implements OdkFormResultList
     private void showCollectedData() {
         //this.showProgress(true);
 
-        Database db = new Database(this);
-        db.open();
-
         List<CollectedData> list = this.boxCollectedData.query().equal(CollectedData_.recordId, region.getId()).and().equal(CollectedData_.tableName, region.getTableName()).build().find();
-        List<Form> forms = Queries.getAllFormBy(db, null, null);
+        List<Form> forms = this.boxForms.getAll();
         List<CollectedDataItem> cdl = new ArrayList<>();
 
         for (CollectedData cd : list){
@@ -195,8 +191,6 @@ public class RegionDetailsActivity extends Activity implements OdkFormResultList
                 cdl.add(new CollectedDataItem(region, form, cd));
             }
         }
-
-        db.close();
 
         CollectedDataArrayAdapter adapter = new CollectedDataArrayAdapter(this, cdl);
         this.lvCollectedForms.setAdapter(adapter);
@@ -355,18 +349,11 @@ public class RegionDetailsActivity extends Activity implements OdkFormResultList
         Log.d("form finalized"," "+contentUri+", "+xmlFile);
 
         //save Collected data
-        Database db = new Database(this);
-        db.open();
-        //update or insert
-
-        //Save household and Update the object household
+        //Save region and Update the object household
         if (region.getId()==0){
-            int id = (int) db.insert(region);
+            long id = this.boxRegions.put(region);
             region.setId(id);
         }
-
-        db.close();
-
         //search existing record
         CollectedData collectedData = this.boxCollectedData.query().equal(CollectedData_.formUri, contentUri.toString())
                 .and().equal(CollectedData_.recordId, region.getId())
@@ -418,14 +405,11 @@ public class RegionDetailsActivity extends Activity implements OdkFormResultList
     public void onFormUnFinalized(Uri contentUri, File xmlFile, String metaInstanceName, Date lastUpdatedDate) {
         Log.d("form unfinalized"," "+contentUri);
 
-        //save Collected data
-        Database db = new Database(this);
-        db.open();
-        //update or insert
+        //Save Collected data
 
-        //Save household and Update the object household
+        //Save region and Update the object household
         if (region.getId()==0){
-            int id = (int) db.insert(region);
+            long id = this.boxRegions.put(region);
             region.setId(id);
         }
 
@@ -470,8 +454,6 @@ public class RegionDetailsActivity extends Activity implements OdkFormResultList
             this.boxCollectedData.put(collectedData);
             Log.d("updating", "new collected data");
         }
-
-        db.close();
 
         showCollectedData();
     }

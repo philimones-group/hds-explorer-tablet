@@ -29,6 +29,7 @@ import org.philimone.hds.explorer.model.Form;
 import org.philimone.hds.explorer.model.Household;
 import org.philimone.hds.explorer.model.Member;
 import org.philimone.hds.explorer.model.Region;
+import org.philimone.hds.explorer.model.Region_;
 import org.philimone.hds.explorer.model.User;
 import org.philimone.hds.explorer.model.followup.TrackingList;
 import org.philimone.hds.explorer.widget.LoadingDialog;
@@ -63,6 +64,8 @@ public class TrackingListDetailsActivity extends Activity implements BarcodeScan
 
     private Database database;
     private Box<CollectedData> boxCollectedData;
+    private Box<Form> boxForms;
+    private Box<Region> boxRegions;
 
     private LoadingDialog loadingDialog;
 
@@ -97,6 +100,8 @@ public class TrackingListDetailsActivity extends Activity implements BarcodeScan
 
     private void initBoxes() {
         this.boxCollectedData = ObjectBoxDatabase.get().boxFor(CollectedData.class);
+        this.boxForms = ObjectBoxDatabase.get().boxFor(Form.class);
+        this.boxRegions = ObjectBoxDatabase.get().boxFor(Region.class);
     }
 
     private void initialize() {
@@ -233,22 +238,14 @@ public class TrackingListDetailsActivity extends Activity implements BarcodeScan
     private Region getRegion(Household household){
         if (household == null || household.getRegion()==null) return null;
 
-        Database database = new Database(this);
-        database.open();
-        Region region = Queries.getRegionBy(database, DatabaseHelper.Region.COLUMN_CODE +"=?", new String[]{ household.getRegion() });
-        database.close();
+        Region region = this.boxRegions.query().equal(Region_.code, household.getRegion()).build().findFirst();
 
         return region;
     }
 
     public FormDataLoader[] getFormLoaders(TrackingSubjectItem subjectItem){
 
-        Database db = new Database(this);
-
-        db.open();
-        List<Form> forms = Queries.getAllFormBy(db, null, null); //get all forms
-        db.close();
-
+        List<Form> forms = this.boxForms.getAll(); //get all forms
         List<FormDataLoader> list = new ArrayList<>();
 
         int i=0;
@@ -401,9 +398,10 @@ public class TrackingListDetailsActivity extends Activity implements BarcodeScan
     }
 
     private List<Region> getRegions(Database db, List<String> codes){
-        db.open();
-        List<Region> regions = Queries.getAllRegionBy(db, DatabaseHelper.Region.COLUMN_CODE +" IN ("+ StringUtil.toInClause(codes) +")", null);
-        db.close();
+        String[] arrayCodes = codes.toArray(new String[codes.size()]);
+
+        List<Region> regions = this.boxRegions.query().in(Region_.code, arrayCodes).build().find();
+        //Queries.getAllRegionBy(db, DatabaseHelper.Region.COLUMN_CODE +" IN ("+ StringUtil.toInClause(codes) +")", null);
 
         if (regions==null) return new ArrayList<>();
 
@@ -469,7 +467,7 @@ public class TrackingListDetailsActivity extends Activity implements BarcodeScan
         Log.d("household", ""+household);
         Log.d("member", ""+member);
 
-        int tableId = (region!=null) ? region.getId() : ( (household!=null) ? household.getId() : ((member!=null) ? member.getId() : 0) );
+        long tableId = (region!=null) ? region.getId() : ( (household!=null) ? household.getId() : ((member!=null) ? member.getId() : 0) );
 
         for (CollectedData cd : collectedDataList){
             if (formsList.contains(cd.getFormId()) && cd.getRecordId()==tableId){ //get the selected subject Collected Data

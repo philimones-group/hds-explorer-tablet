@@ -13,6 +13,7 @@ import org.philimone.hds.explorer.adapter.MemberArrayAdapter;
 import org.philimone.hds.explorer.data.FormDataLoader;
 import org.philimone.hds.explorer.database.Database;
 import org.philimone.hds.explorer.database.DatabaseHelper;
+import org.philimone.hds.explorer.database.ObjectBoxDatabase;
 import org.philimone.hds.explorer.database.Queries;
 import org.philimone.hds.explorer.fragment.MemberFilterFragment;
 import org.philimone.hds.explorer.fragment.MemberListFragment;
@@ -32,6 +33,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import io.objectbox.Box;
 import mz.betainteractive.utilities.StringUtil;
 
 import static org.philimone.hds.explorer.fragment.MemberListFragment.Buttons.ADD_NEW_MEMBER;
@@ -48,6 +50,8 @@ public class SurveyMembersActivity extends Activity implements MemberFilterFragm
 
     private Map<String, BarcodeScannerActivity.ResultListener> barcodeResultListeners = new HashMap<>();
 
+    private Box<Form> boxForms;
+
     public enum FormFilter {
         REGION, HOUSEHOLD, HOUSEHOLD_HEAD, MEMBER, FOLLOW_UP
     }
@@ -62,7 +66,12 @@ public class SurveyMembersActivity extends Activity implements MemberFilterFragm
         this.memberFilterFragment = (MemberFilterFragment) (getFragmentManager().findFragmentById(R.id.memberFilterFragment));
         this.memberListFragment = (MemberListFragment) getFragmentManager().findFragmentById(R.id.memberListFragment);
 
+        initBoxes();
         initialize();
+    }
+
+    private void initBoxes() {
+        this.boxForms = ObjectBoxDatabase.get().boxFor(Form.class);
     }
 
     private void initialize() {
@@ -190,12 +199,7 @@ public class SurveyMembersActivity extends Activity implements MemberFilterFragm
 
         String[] userModules = loggedUser.getModules().split(",");
 
-        Database db = new Database(this);
-
-        db.open();
-        List<Form> forms = Queries.getAllFormBy(db, null, null); //get all forms
-        db.close();
-
+        List<Form> forms = this.boxForms.getAll(); //get all forms
         List<FormDataLoader> list = new ArrayList<>();
 
         int i=0;

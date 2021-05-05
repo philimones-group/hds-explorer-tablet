@@ -6,7 +6,6 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -24,16 +23,13 @@ import android.widget.Toast;
 import org.mindrot.jbcrypt.BCrypt;
 import org.philimone.hds.explorer.BuildConfig;
 import org.philimone.hds.explorer.R;
-import org.philimone.hds.explorer.database.Bootstrap;
-import org.philimone.hds.explorer.database.Converter;
-import org.philimone.hds.explorer.database.Database;
-import org.philimone.hds.explorer.database.DatabaseHelper;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
 import org.philimone.hds.explorer.database.Queries;
 import org.philimone.hds.explorer.main.sync.SyncPanelActivity;
 import org.philimone.hds.explorer.model.ApplicationParam;
 import org.philimone.hds.explorer.model.Module;
 import org.philimone.hds.explorer.model.User;
+import org.philimone.hds.explorer.model.User_;
 import org.philimone.hds.explorer.widget.DialogFactory;
 
 import java.net.HttpURLConnection;
@@ -67,6 +63,8 @@ public class LoginActivity extends Activity {
     private String adminUser;
     private String adminPassword;
     private String serverUrl;
+
+    private Box<User> boxUsers;
 
     private boolean useLocalServer = false;
 
@@ -126,7 +124,7 @@ public class LoginActivity extends Activity {
         
         updateView();
 
-        initdb();
+        initBoxes();
 
     }
 
@@ -134,10 +132,8 @@ public class LoginActivity extends Activity {
         txtCopyrightAppName.setText(getString(R.string.app_name)+" v"+ BuildConfig.VERSION_NAME);
     }
 
-    private void initdb(){
-        Bootstrap bootstrap = new Bootstrap(this);
-        //bootstrap.dropTables();
-        bootstrap.init();
+    private void initBoxes(){
+        this.boxUsers = ObjectBoxDatabase.get().boxFor(User.class);
 
         retrieveServerUrl();
     }
@@ -298,33 +294,15 @@ public class LoginActivity extends Activity {
 
             User user = null;
 
-            Database db = new Database(LoginActivity.this);
-            db.open();
-
             try {
                 // Simulate network access.
-                Cursor cursor = db.query(User.class, DatabaseHelper.User.COLUMN_USERNAME + " = ?", new String[] { this.mUsername }, null, null, null);
-
-                if (cursor != null) {
-                    boolean found = cursor.moveToFirst();
-
-                    Log.d("user-"+this.mUsername, "found "+found);
-
-                    if (found){
-                        user = Converter.cursorToUser(cursor);
-                    }
-
-                    cursor.close();
-
-                    return user;
-                }
+                user = boxUsers.query().equal(User_.username, this.mUsername).or().equal(User_.code, this.mUsername).build().findFirst();
+                Log.d("user-"+this.mUsername, "found "+ (user != null));
 
             } catch (Exception e) {
                 e.printStackTrace();
-                return loggedUser;
-            }
 
-            db.close();
+            }
 
             return user;
         }

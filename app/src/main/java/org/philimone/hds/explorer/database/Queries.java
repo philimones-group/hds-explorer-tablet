@@ -47,53 +47,8 @@ public class Queries {
         return report;
     }
 
-    public static Form getFormBy(Database database, String whereClause, String[] clauseArgs){
-        Form form = null;
-
-        Cursor cursor = database.query(Form.class, whereClause, clauseArgs, null, null, null);
-
-        if (cursor.moveToFirst()){
-            form = Converter.cursorToForm(cursor);
-        }
-
-        return form;
-    }
-
-    public static List<Form> getAllFormBy(Database database, String whereClause, String[] clauseArgs){
-        List<Form> list = new ArrayList<>();
-
-        Cursor cursor = database.query(Form.class, whereClause, clauseArgs, null, null, null);
-
-        while (cursor.moveToNext()){
-            Form form = Converter.cursorToForm(cursor);
-            list.add(form);
-        }
-
-        return list;
-    }
-
-    public static Region getRegionBy(Database database, String whereClause, String[] clauseArgs){
-        Region region = null;
-
-        Cursor cursor = database.query(Region.class, whereClause, clauseArgs, null, null, null);
-
-        if (cursor.moveToNext()){
-            region = Converter.cursorToRegion(cursor);
-        }
-
-        return region;
-    }
-
-    public static List<Region> getAllRegionBy(Database database, String whereClause, String[] clauseArgs){
-        List<Region> list = new ArrayList<>();
-
-        Cursor cursor = database.query(Region.class, whereClause, clauseArgs, null, null, null);
-
-        while (cursor.moveToNext()){
-            Region region = Converter.cursorToRegion(cursor);
-            list.add(region);
-        }
-
+    public static List<Form> getAllFormBy(Box<Form> box){
+        List<Form> list = box.getAll();
         return list;
     }
 

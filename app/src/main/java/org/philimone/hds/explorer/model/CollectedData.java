@@ -24,7 +24,7 @@ public class CollectedData implements Serializable {
     public String formInstanceName;
     public Date formLastUpdatedDate;
     public String formModule;
-    public int recordId;
+    public long recordId;
     public String tableName;
 
     public String collectedBy;
@@ -56,11 +56,11 @@ public class CollectedData implements Serializable {
         this.formUri = formUri;
     }
 
-    public int getRecordId() {
+    public long getRecordId() {
         return recordId;
     }
 
-    public void setRecordId(int recordId) {
+    public void setRecordId(long recordId) {
         this.recordId = recordId;
     }
 

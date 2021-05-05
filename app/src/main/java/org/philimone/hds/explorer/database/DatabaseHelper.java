@@ -18,8 +18,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	public void onCreate(SQLiteDatabase db) {
         try {
 		    db.execSQL(CREATE_TABLE_USER);
-		    db.execSQL(CREATE_TABLE_FORM);
-            db.execSQL(CREATE_TABLE_REGION);
 		    db.execSQL(CREATE_TABLE_HOUSEHOLD);
 		    db.execSQL(CREATE_TABLE_MEMBER);
             db.execSQL(CREATE_TABLE_TRACKING_LIST);
@@ -62,7 +60,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
 	}
 
-    public static final String[] ALL_TABLES = {User.TABLE_NAME, Form.TABLE_NAME, Household.TABLE_NAME, Member.TABLE_NAME };
+    public static final String[] ALL_TABLES = {User.TABLE_NAME, Household.TABLE_NAME, Member.TABLE_NAME };
 
 	public static final class User implements BaseColumns {
 		public static final String TABLE_NAME = "user";
@@ -79,42 +77,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 		public static final String[] ALL_COLUMNS = {COLUMN_CODE, COLUMN_FIRSTNAME, COLUMN_LASTNAME, COLUMN_FULLNAME, COLUMN_USERNAME, COLUMN_PASSWORD, COLUMN_MODULES, COLUMN_EMAIL};
 	}
-
-	public static final class Form implements BaseColumns {
-		public static final String TABLE_NAME = "form";
-
-        public static final String COLUMN_FORM_ID = "formId";
-        public static final String COLUMN_FORM_NAME = "formName";
-        public static final String COLUMN_FORM_DESCRIPTION = "formDescription";
-        public static final String COLUMN_FORM_DEPENDENCIES = "formDependencies";
-        public static final String COLUMN_REGION_LEVEL = "regionLevel";
-        public static final String COLUMN_GENDER = "gender";
-        public static final String COLUMN_MIN_AGE = "minAge";
-        public static final String COLUMN_MAX_AGE = "maxAge";
-        public static final String COLUMN_MODULES = "modules";
-        public static final String COLUMN_IS_REGION = "isRegionForm";
-        public static final String COLUMN_IS_HOUSEHOLD = "isHouseholdForm";
-        public static final String COLUMN_IS_HOUSEHOLD_HEAD = "isHouseholdHeadForm";
-        public static final String COLUMN_IS_MEMBER = "isMemberForm";
-        public static final String COLUMN_IS_FOLLOW_UP_ONLY = "isFollowUpOnly";
-        public static final String COLUMN_MULTI_COL_PER_SESSION = "multiCollPerSession";
-        public static final String COLUMN_FORM_MAP = "formMap";
-        public static final String COLUMN_REDCAP_API = "redcapApi";
-        public static final String COLUMN_REDCAP_MAP = "redcapMap";
-
-		public static final String[] ALL_COLUMNS = {COLUMN_FORM_ID, COLUMN_FORM_NAME, COLUMN_FORM_DESCRIPTION, COLUMN_FORM_DEPENDENCIES, COLUMN_REGION_LEVEL, COLUMN_GENDER, COLUMN_MIN_AGE, COLUMN_MAX_AGE, COLUMN_MODULES, COLUMN_IS_REGION, COLUMN_IS_HOUSEHOLD, COLUMN_IS_HOUSEHOLD_HEAD, COLUMN_IS_MEMBER, COLUMN_IS_FOLLOW_UP_ONLY, COLUMN_MULTI_COL_PER_SESSION, COLUMN_FORM_MAP, COLUMN_REDCAP_API, COLUMN_REDCAP_MAP};
-	}
-
-    public static final class Region implements BaseColumns {
-        public static final String TABLE_NAME = "region";
-
-        public static final String COLUMN_CODE = "code";
-        public static final String COLUMN_NAME = "name";
-        public static final String COLUMN_LEVEL = "hierarchyLevel";
-        public static final String COLUMN_PARENT = "parent";
-
-        public static final String[] ALL_COLUMNS = {_ID, COLUMN_CODE, COLUMN_NAME, COLUMN_LEVEL, COLUMN_PARENT};
-    }
 
 	public static final class Household implements BaseColumns  {
 		public static final String TABLE_NAME = "household";
@@ -263,44 +225,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
             + " CREATE UNIQUE INDEX IDX_USER_USER ON " + User.TABLE_NAME
             + "(" +  User.COLUMN_USERNAME + ");"
-            ;
-
-    private static final String CREATE_TABLE_FORM = " "
-            + "CREATE TABLE " + Form.TABLE_NAME + "("
-            + Form._ID  + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-            + Form.COLUMN_FORM_ID + " TEXT,"
-            + Form.COLUMN_FORM_NAME + " TEXT,"
-            + Form.COLUMN_FORM_DESCRIPTION + " TEXT,"
-            + Form.COLUMN_FORM_DEPENDENCIES + " TEXT,"
-            + Form.COLUMN_REGION_LEVEL + " TEXT,"
-            + Form.COLUMN_GENDER + " TEXT,"
-            + Form.COLUMN_MIN_AGE + " INTEGER,"
-            + Form.COLUMN_MAX_AGE + " INTEGER,"
-            + Form.COLUMN_MODULES + " TEXT,"
-            + Form.COLUMN_IS_REGION + " INTEGER,"
-            + Form.COLUMN_IS_HOUSEHOLD + " INTEGER,"
-            + Form.COLUMN_IS_HOUSEHOLD_HEAD + " INTEGER,"
-            + Form.COLUMN_IS_MEMBER + " INTEGER,"
-            + Form.COLUMN_IS_FOLLOW_UP_ONLY + " INTEGER,"
-            + Form.COLUMN_MULTI_COL_PER_SESSION + " INTEGER,"
-            + Form.COLUMN_FORM_MAP + " TEXT,"
-            + Form.COLUMN_REDCAP_API + " TEXT,"
-            + Form.COLUMN_REDCAP_MAP + " TEXT);"
-
-            + " CREATE UNIQUE INDEX IDX_FORM_ID ON " + Form.TABLE_NAME
-            + "(" +  Form.COLUMN_FORM_ID + ");"
-            ;
-
-    private static final String CREATE_TABLE_REGION = " "
-            + "CREATE TABLE " + Region.TABLE_NAME + "("
-            + Region._ID  + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-            + Region.COLUMN_CODE + " TEXT,"
-            + Region.COLUMN_NAME + " TEXT,"
-            + Region.COLUMN_LEVEL + " TEXT,"
-            + Region.COLUMN_PARENT + " TEXT);"
-
-            + " CREATE UNIQUE INDEX IDX_REGION_CODE ON " + Region.TABLE_NAME
-            + "(" +  Region.COLUMN_CODE + ");"
             ;
 
     private static final String CREATE_TABLE_HOUSEHOLD = " "

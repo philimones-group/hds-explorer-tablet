@@ -7,22 +7,29 @@ import org.philimone.hds.explorer.database.Table;
 
 import java.io.Serializable;
 
+import io.objectbox.annotation.Entity;
+import io.objectbox.annotation.Id;
+import io.objectbox.annotation.Unique;
 import mz.betainteractive.utilities.ReflectionUtils;
 
 /**
  * Created by paul on 5/20/16.
  */
-public class User implements Serializable, Table {
+@Entity
+public class User implements Serializable {
 
-    private int id;
-    private String code;
-    private String firstName;
-    private String lastName;
-    private String fullName;
-    private String username;
-    private String password;
-    private String email;
-    private String modules;
+    @Id
+    public long id;
+    @Unique
+    public String code;
+    public String firstName;
+    public String lastName;
+    public String fullName;
+    @Unique
+    public String username;
+    public String password;
+    public String email;
+    public String modules;
 
 
     public User(){
@@ -39,12 +46,11 @@ public class User implements Serializable, Table {
         this.email = email;
     }
 
-    @Override
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -118,29 +124,5 @@ public class User implements Serializable, Table {
 
     public String getValueByName(String variableName){
         return ReflectionUtils.getValueByName(this, variableName);
-    }
-
-    @Override
-    public String getTableName() {
-        return DatabaseHelper.User.TABLE_NAME;
-    }
-
-    @Override
-    public ContentValues getContentValues() {
-        ContentValues cv = new ContentValues();
-        cv.put(DatabaseHelper.User.COLUMN_CODE, code);
-        cv.put(DatabaseHelper.User.COLUMN_FIRSTNAME, firstName);
-        cv.put(DatabaseHelper.User.COLUMN_LASTNAME, lastName);
-        cv.put(DatabaseHelper.User.COLUMN_USERNAME, username);
-        cv.put(DatabaseHelper.User.COLUMN_FULLNAME, fullName);
-        cv.put(DatabaseHelper.User.COLUMN_PASSWORD, password);
-        cv.put(DatabaseHelper.User.COLUMN_EMAIL, email);
-        cv.put(DatabaseHelper.User.COLUMN_MODULES, modules);
-        return cv;
-    }
-
-    @Override
-    public String[] getColumnNames() {
-        return DatabaseHelper.User.ALL_COLUMNS;
     }
 }

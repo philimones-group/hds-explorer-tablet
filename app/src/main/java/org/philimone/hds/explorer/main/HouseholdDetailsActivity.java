@@ -31,6 +31,7 @@ import org.philimone.hds.explorer.model.Form;
 import org.philimone.hds.explorer.model.Household;
 import org.philimone.hds.explorer.model.Member;
 import org.philimone.hds.explorer.model.Region;
+import org.philimone.hds.explorer.model.Region_;
 import org.philimone.hds.explorer.model.User;
 import org.philimone.hds.explorer.widget.DialogFactory;
 import org.philimone.hds.explorer.widget.FormSelectorDialog;
@@ -76,6 +77,8 @@ public class HouseholdDetailsActivity extends Activity implements OdkFormResultL
     private Database database;
     private Box<ApplicationParam> boxAppParams;
     private Box<CollectedData> boxCollectedData;
+    private Box<Form> boxForms;
+    private Box<Region> boxRegions;
 
     private int requestCode;
     private boolean returnFromOdk = false;
@@ -204,6 +207,8 @@ public class HouseholdDetailsActivity extends Activity implements OdkFormResultL
     private void initBoxes() {
         this.boxAppParams = ObjectBoxDatabase.get().boxFor(ApplicationParam.class);
         this.boxCollectedData = ObjectBoxDatabase.get().boxFor(CollectedData.class);
+        this.boxForms = ObjectBoxDatabase.get().boxFor(Form.class);
+        this.boxRegions = ObjectBoxDatabase.get().boxFor(Region.class);
     }
 
     private void enableButtonsByFormLoaders() {
@@ -391,11 +396,8 @@ public class HouseholdDetailsActivity extends Activity implements OdkFormResultL
     private void showCollectedData() {
         //this.showProgress(true);
 
-        Database db = new Database(this);
-        db.open();
-
         List<CollectedData> list = this.boxCollectedData.query().equal(CollectedData_.recordId, household.getId()).and().equal(CollectedData_.tableName, household.getTableName()).build().find();
-        List<Form> forms = Queries.getAllFormBy(db, null, null);
+        List<Form> forms = this.boxForms.getAll();
         List<CollectedDataItem> cdl = new ArrayList<>();
 
         for (CollectedData cd : list){
@@ -404,8 +406,6 @@ public class HouseholdDetailsActivity extends Activity implements OdkFormResultL
                 cdl.add(new CollectedDataItem(household, form, cd));
             }
         }
-
-        db.close();
 
         CollectedDataArrayAdapter adapter = new CollectedDataArrayAdapter(this, cdl);
         this.lvCollectedForms.setAdapter(adapter);
@@ -439,16 +439,8 @@ public class HouseholdDetailsActivity extends Activity implements OdkFormResultL
     }
 
     private Region getRegion(String code){
-        Database db = new Database(this);
-        db.open();
 
-        Region region = Queries.getRegionBy(db, DatabaseHelper.Region.COLUMN_CODE + "=?", new String[]{ code } );
-        //Cursor cursor = db.query(Region.class, null, null, null, null, null);
-        //cursor.moveToFirst();
-
-        //Region region = Converter.cursorToRegion(cursor);
-
-        db.close();
+        Region region = this.boxRegions.query().equal(Region_.code, code).build().findFirst();
 
         return region;
     }
@@ -789,12 +781,7 @@ public class HouseholdDetailsActivity extends Activity implements OdkFormResultL
 
         String[] userModules = loggedUser.getModules().split(",");
 
-        Database db = new Database(this);
-
-        db.open();
-        List<Form> forms = Queries.getAllFormBy(db, null, null); //get all forms
-        db.close();
-
+        List<Form> forms = this.boxForms.getAll(); //get all forms
         List<FormDataLoader> list = new ArrayList<>();
 
         int i=0;

@@ -93,6 +93,7 @@ public class MemberDetailsActivity extends Activity implements OdkFormResultList
     private boolean editingMember;
 
     private Box<CollectedData> boxCollectedData;
+    private Box<Form> boxForms;
 
     public static final int REQUEST_CODE_ADD_NEW_MEMBER = 10; /* Member Requests will be from 10 to 19 */
     public static final int REQUEST_CODE_EDIT_NEW_MEMBER = 11;
@@ -179,6 +180,7 @@ public class MemberDetailsActivity extends Activity implements OdkFormResultList
 
     private void initBoxes() {
         this.boxCollectedData = ObjectBoxDatabase.get().boxFor(CollectedData.class);
+        this.boxForms = ObjectBoxDatabase.get().boxFor(Form.class);
     }
 
     private void initialize() {
@@ -356,11 +358,8 @@ public class MemberDetailsActivity extends Activity implements OdkFormResultList
     private void showCollectedData() {
         //this.showProgress(true);
 
-        Database db = new Database(this);
-        db.open();
-
         List<CollectedData> list = this.boxCollectedData.query().equal(CollectedData_.recordId, member.getId()).and().equal(CollectedData_.tableName, member.getTableName()).build().find();
-        List<Form> forms = Queries.getAllFormBy(db, null, null);
+        List<Form> forms = this.boxForms.getAll();
         List<CollectedDataItem> cdl = new ArrayList<>();
 
         for (CollectedData cd : list){
@@ -369,8 +368,6 @@ public class MemberDetailsActivity extends Activity implements OdkFormResultList
                 cdl.add(new CollectedDataItem(member, form, cd));
             }
         }
-
-        db.close();
 
         CollectedDataArrayAdapter adapter = new CollectedDataArrayAdapter(this, cdl);
         this.lvCollectedForms.setAdapter(adapter);

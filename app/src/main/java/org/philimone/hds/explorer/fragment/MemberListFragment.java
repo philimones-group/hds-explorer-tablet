@@ -34,6 +34,7 @@ import org.philimone.hds.explorer.model.Form;
 import org.philimone.hds.explorer.model.Household;
 import org.philimone.hds.explorer.model.Member;
 import org.philimone.hds.explorer.model.Region;
+import org.philimone.hds.explorer.model.Region_;
 import org.philimone.hds.explorer.widget.DialogFactory;
 import org.philimone.hds.explorer.widget.member_details.Distance;
 import org.philimone.hds.explorer.widget.member_details.GpsNearBySelectorDialog;
@@ -77,6 +78,8 @@ public class MemberListFragment extends Fragment {
     private boolean censusMode;
 
     private Box<CollectedData> boxCollectedData;
+    private Box<Form> boxForms;
+    private Box<Region> boxRegions;
 
     public enum Buttons {
         SHOW_HOUSEHOLD, MEMBERS_MAP, CLOSEST_MEMBERS, CLOSEST_HOUSES, EDIT_MEMBER, ADD_NEW_MEMBER, NEW_MEMBER_COLLECT, COLLECTED_DATA
@@ -114,6 +117,8 @@ public class MemberListFragment extends Fragment {
 
     private void initBoxes() {
         this.boxCollectedData = ObjectBoxDatabase.get().boxFor(CollectedData.class);
+        this.boxForms = ObjectBoxDatabase.get().boxFor(Form.class);
+        this.boxRegions = ObjectBoxDatabase.get().boxFor(Region.class);
     }
 
     public void setButtonVisibilityGone(Buttons... buttons){
@@ -672,7 +677,7 @@ public class MemberListFragment extends Fragment {
         database.open();
 
         List<CollectedData> list = this.boxCollectedData.query().equal(CollectedData_.tableName, DatabaseHelper.Member.TABLE_NAME).build().find(); //only collected data from members
-        List<Form> forms = Queries.getAllFormBy(database, null, null);
+        List<Form> forms = boxForms.getAll();
 
         for (CollectedData cd : list){
             Member member = Queries.getMemberBy(database, DatabaseHelper.Member._ID+"=?", new String[]{ cd.getRecordId()+"" });
@@ -759,10 +764,7 @@ public class MemberListFragment extends Fragment {
     private Region getRegion(Household household){
         if (household == null || household.getRegion()==null) return null;
 
-        Database database = new Database(this.getActivity());
-        database.open();
-        Region region = Queries.getRegionBy(database, DatabaseHelper.Region.COLUMN_CODE +"=?", new String[]{ household.getRegion() });
-        database.close();
+        Region region = this.boxRegions.query().equal(Region_.code, household.getRegion()).build().findFirst();
 
         return region;
     }

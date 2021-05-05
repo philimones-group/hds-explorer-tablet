@@ -27,42 +27,6 @@ public class Converter {
 		
 		return user;
 	}
-	
-	public static Form cursorToForm(Cursor cursor){
-		Form form = new Form();
-
-        form.setFormId(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Form.COLUMN_FORM_ID)));
-        form.setFormName(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Form.COLUMN_FORM_NAME)));
-        form.setFormDescription(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Form.COLUMN_FORM_DESCRIPTION)));
-		form.setFormDependencies(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Form.COLUMN_FORM_DEPENDENCIES)));
-		form.setRegionLevel(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Form.COLUMN_REGION_LEVEL)));
-        form.setGender(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Form.COLUMN_GENDER)));
-        form.setMinAge(cursor.getInt(cursor.getColumnIndex(DatabaseHelper.Form.COLUMN_MIN_AGE)));
-        form.setMaxAge(cursor.getInt(cursor.getColumnIndex(DatabaseHelper.Form.COLUMN_MAX_AGE)));
-        form.setModules(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Form.COLUMN_MODULES)));
-		form.setRegionForm(cursor.getInt(cursor.getColumnIndex(DatabaseHelper.Form.COLUMN_IS_REGION))==1);
-        form.setHouseholdForm(cursor.getInt(cursor.getColumnIndex(DatabaseHelper.Form.COLUMN_IS_HOUSEHOLD))==1);
-		form.setHouseholdHeadForm(cursor.getInt(cursor.getColumnIndex(DatabaseHelper.Form.COLUMN_IS_HOUSEHOLD_HEAD))==1);
-		form.setMemberForm(cursor.getInt(cursor.getColumnIndex(DatabaseHelper.Form.COLUMN_IS_MEMBER))==1);
-		form.setFollowUpOnly(cursor.getInt(cursor.getColumnIndex(DatabaseHelper.Form.COLUMN_IS_FOLLOW_UP_ONLY))==1);
-		form.setMultiCollPerSession(cursor.getInt(cursor.getColumnIndex(DatabaseHelper.Form.COLUMN_MULTI_COL_PER_SESSION))==1);
-		form.setFormMap(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Form.COLUMN_FORM_MAP)));
-		form.setRedcapApi(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Form.COLUMN_REDCAP_API)));
-		form.setRedcapMap(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Form.COLUMN_REDCAP_MAP)));
-		return form;
-	}
-
-	public static Region cursorToRegion(Cursor cursor){
-		Region region = new Region();
-
-		region.setId(cursor.getInt(cursor.getColumnIndex(DatabaseHelper.Region._ID)));
-		region.setCode(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Region.COLUMN_CODE)));
-		region.setName(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Region.COLUMN_NAME)));
-		region.setLevel(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Region.COLUMN_LEVEL)));
-		region.setParent(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Region.COLUMN_PARENT)));
-
-		return region;
-	}
 
 	public static Household cursorToHousehold(Cursor cursor){
 		Household hh = new Household();

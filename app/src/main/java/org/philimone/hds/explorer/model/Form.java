@@ -4,47 +4,58 @@ import android.content.ContentValues;
 
 import org.philimone.hds.explorer.database.DatabaseHelper;
 import org.philimone.hds.explorer.database.Table;
+import org.philimone.hds.explorer.model.converters.FormMappingConverter;
 
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
+
+import io.objectbox.annotation.Convert;
+import io.objectbox.annotation.Entity;
+import io.objectbox.annotation.Id;
+import io.objectbox.annotation.Unique;
 
 /**
  * Created by paul on 5/20/16.
  */
-public class  Form implements Serializable, Table {
+@Entity
+public class Form implements Serializable {
 
-    private int id;
-    private String formId;
-    private String formName;
-    private String formDescription;
-    private String formDependencies;
-    private String regionLevel;
-    private String gender; /*M, F, ALL*/
-    private int minAge; //0
-    private int maxAge; //Default - 120
-    private String modules; //if null - is accessed by all
-    private boolean isRegionForm;
-    private boolean isHouseholdForm;
-    private boolean isHouseholdHeadForm;
-    private boolean isMemberForm;
-    private boolean isFollowUpOnly;
-    private boolean multiCollPerSession;
-    private String formMapText;
-    private Map<String, String> formMap;
-    private String redcapApi;
-    private String redcapMapText;
+    @Id
+    public long id;
+    @Unique
+    public String formId;
+    public String formName;
+    public String formDescription;
+    public String formDependencies;
+    public String regionLevel;
+    public String gender; /*M, F, ALL*/
+    public int minAge; //0
+    public int maxAge; //Default - 120
+    public String modules; //if null - is accessed by all
+    public boolean isRegionForm;
+    public boolean isHouseholdForm;
+    public boolean isHouseholdHeadForm;
+    public boolean isMemberForm;
+    public boolean isFollowUpOnly;
+    public boolean multiCollPerSession;
+
+    @Convert(converter = FormMappingConverter.class, dbType = String.class)
+    public Map<String, String> formMap;
+
+    public String redcapApi;
+    public String redcapMapText;
 
     public Form(){
-        formMap = new HashMap<>();
+        formMap = new LinkedHashMap<>();
     }
 
-    @Override
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -168,27 +179,12 @@ public class  Form implements Serializable, Table {
         this.multiCollPerSession = multiCollPerSession;
     }
 
-    public void setFormMap(String bindMapAsText){
-        this.formMapText = bindMapAsText;
-        convertFormMapTextToMap();
+    public void setFormMap(Map<String, String> bindMap){
+        this.formMap = bindMap;
     }
 
     public Map<String, String> getFormMap(){
         return this.formMap;
-    }
-
-    private void convertFormMapTextToMap() {
-        if (formMapText != null && !formMapText.isEmpty()){
-            this.formMap.clear();
-
-            String[] entries = formMapText.split(";");
-            for (String entry : entries){
-                String[] keyValue = entry.split(":");
-                if (keyValue.length == 2){
-                    this.formMap.put(keyValue[1], keyValue[0]); //mapping unique items (odk variables) as Key, the values a the domain column names (TableName.columnName)
-                }
-            }
-        }
     }
 
     public void setRedcapApi(String redcapApi){
@@ -199,37 +195,4 @@ public class  Form implements Serializable, Table {
         this.redcapMapText = redcapMapText;
     }
 
-    @Override
-    public String getTableName() {
-        return DatabaseHelper.Form.TABLE_NAME;
-    }
-
-    @Override
-    public ContentValues getContentValues() {
-        ContentValues cv = new ContentValues();
-        cv.put(DatabaseHelper.Form.COLUMN_FORM_ID, formId);
-        cv.put(DatabaseHelper.Form.COLUMN_FORM_NAME, formName);
-        cv.put(DatabaseHelper.Form.COLUMN_FORM_DESCRIPTION, formDescription);
-        cv.put(DatabaseHelper.Form.COLUMN_FORM_DEPENDENCIES, formDependencies);
-        cv.put(DatabaseHelper.Form.COLUMN_REGION_LEVEL, regionLevel);
-        cv.put(DatabaseHelper.Form.COLUMN_GENDER, gender);
-        cv.put(DatabaseHelper.Form.COLUMN_MIN_AGE, minAge);
-        cv.put(DatabaseHelper.Form.COLUMN_MAX_AGE, maxAge);
-        cv.put(DatabaseHelper.Form.COLUMN_MODULES, modules);
-        cv.put(DatabaseHelper.Form.COLUMN_IS_REGION, isRegionForm ? 1 : 0);
-        cv.put(DatabaseHelper.Form.COLUMN_IS_HOUSEHOLD, isHouseholdForm ? 1 : 0);
-        cv.put(DatabaseHelper.Form.COLUMN_IS_HOUSEHOLD_HEAD, isHouseholdHeadForm ? 1 : 0);
-        cv.put(DatabaseHelper.Form.COLUMN_IS_MEMBER, isMemberForm ? 1 : 0);
-        cv.put(DatabaseHelper.Form.COLUMN_IS_FOLLOW_UP_ONLY, isFollowUpOnly ? 1 : 0);
-        cv.put(DatabaseHelper.Form.COLUMN_MULTI_COL_PER_SESSION, multiCollPerSession ? 1 : 0);
-        cv.put(DatabaseHelper.Form.COLUMN_FORM_MAP, formMapText);
-        cv.put(DatabaseHelper.Form.COLUMN_REDCAP_API, redcapApi);
-        cv.put(DatabaseHelper.Form.COLUMN_REDCAP_MAP, redcapMapText);
-        return cv;
-    }
-
-    @Override
-    public String[] getColumnNames() {
-        return DatabaseHelper.Form.ALL_COLUMNS;
-    }
 }

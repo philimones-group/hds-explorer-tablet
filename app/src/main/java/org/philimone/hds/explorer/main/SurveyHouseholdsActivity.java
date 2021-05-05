@@ -67,6 +67,7 @@ public class SurveyHouseholdsActivity extends Activity implements HouseholdFilte
     private LoadingDialog loadingDialog;
 
     private Box<CollectedData> boxCollectedData;
+    private Box<Form> boxForms;
 
     private final int MEMBER_DETAILS_REQUEST_CODE = 31;
 
@@ -91,6 +92,7 @@ public class SurveyHouseholdsActivity extends Activity implements HouseholdFilte
 
     private void initBoxes() {
         this.boxCollectedData = ObjectBoxDatabase.get().boxFor(CollectedData.class);
+        this.boxForms = ObjectBoxDatabase.get().boxFor(Form.class);
     }
 
     private void initialize() {
@@ -253,18 +255,13 @@ public class SurveyHouseholdsActivity extends Activity implements HouseholdFilte
 
         String[] userModules = loggedUser.getModules().split(",");
 
-        Database db = new Database(this);
-
-        db.open();
-        List<Form> forms = Queries.getAllFormBy(db, null, null); //get all forms
-        db.close();
-
+        List<Form> forms = this.boxForms.getAll(); //get all forms
         List<FormDataLoader> list = new ArrayList<>();
 
         int i=0;
         for (Form form : forms){
             String[] formModules = form.getModules().split(",");
-
+            Log.d("dl", "fm="+form.getModules()+", um"+loggedUser.getModules());
             if (StringUtil.containsAny(userModules, formModules)){ //if the user has access to module specified on Form
                 FormDataLoader loader = new FormDataLoader(form);
 

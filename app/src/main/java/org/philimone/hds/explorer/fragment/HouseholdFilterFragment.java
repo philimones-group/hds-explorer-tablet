@@ -102,6 +102,7 @@ public class HouseholdFilterFragment extends Fragment implements RegionExpandabl
 
     private Database database;
     private Box<ApplicationParam> boxAppParams;
+    private Box<Region> boxRegions;
 
     private RegionExpandableListAdapter regionAdapter;
     private Region currentRegion;
@@ -134,6 +135,7 @@ public class HouseholdFilterFragment extends Fragment implements RegionExpandabl
 
     private void initBoxes() {
         this.boxAppParams = ObjectBoxDatabase.get().boxFor(ApplicationParam.class);
+        this.boxRegions = ObjectBoxDatabase.get().boxFor(Region.class);
     }
 
     private void initialize(View view) {
@@ -411,11 +413,9 @@ public class HouseholdFilterFragment extends Fragment implements RegionExpandabl
     }
 
     private void loadRegionsList(){
-        Database db = new Database(this.getActivity());
-        db.open();
+
         List<ApplicationParam> params = boxAppParams.query().startsWith(ApplicationParam_.name, "hierarchy").build().find(); //COLUMN_NAME+" like 'hierarchy%'"
-        List<Region> regions = Queries.getAllRegionBy(db, null, null);
-        db.close();
+        List<Region> regions = this.boxRegions.getAll();
 
         ArrayList<HierarchyItem> hierarchies = new ArrayList<>();
         HashMap<HierarchyItem, ArrayList<Region>> regionCollection = new HashMap<>();

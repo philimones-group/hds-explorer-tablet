@@ -24,6 +24,7 @@ import org.philimone.hds.explorer.model.ApplicationParam;
 import org.philimone.hds.explorer.model.ApplicationParam_;
 import org.philimone.hds.explorer.model.DataSet;
 import org.philimone.hds.explorer.model.Region;
+import org.philimone.hds.explorer.model.converters.FormMappingConverter;
 import org.philimone.hds.explorer.model.enums.SyncEntity;
 import org.philimone.hds.explorer.model.enums.SyncState;
 import org.philimone.hds.explorer.model.enums.SyncStatus;
@@ -89,6 +90,9 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 	private Box<SyncReport> boxSyncReports;
 	private Box<Module> boxModules;
 	private Box<CollectedData> boxCollectedData;
+	private Box<Form> boxForms;
+	private Box<User> boxUsers;
+	private Box<Region> boxRegions;
 
 	private boolean canceled;
 
@@ -110,6 +114,9 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 		this.boxSyncReports = ObjectBoxDatabase.get().boxFor(SyncReport.class);
 		this.boxModules = ObjectBoxDatabase.get().boxFor(Module.class);
 		this.boxCollectedData = ObjectBoxDatabase.get().boxFor(CollectedData.class);
+		this.boxForms = ObjectBoxDatabase.get().boxFor(Form.class);
+		this.boxUsers = ObjectBoxDatabase.get().boxFor(User.class);
+		this.boxRegions = ObjectBoxDatabase.get().boxFor(Region.class);
 	}
 
 	private Database getDatabase(){
@@ -225,7 +232,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 						processUrl(baseurl + API_PATH + "/modules/zip", "modules.zip");
 						break;
 					case FORMS:
-						deleteAll(Form.class);
+						boxForms.removeAll();
 						processUrl(baseurl + API_PATH + "/forms/zip", "forms.zip");
 						break;
 					case DATASETS:
@@ -241,11 +248,11 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 						processUrl(baseurl + API_PATH + "/trackinglists/zip", "trackinglists.zip");
 						break;
 					case USERS:
-						deleteAll(User.class);
+						this.boxUsers.removeAll();
 						processUrl(baseurl + API_PATH + "/users/zip", "users.zip");
 						break;
 					case REGIONS:
-						deleteAll(Region.class);
+						this.boxRegions.removeAll();
 						processUrl(baseurl + API_PATH + "/regions/zip", "regions.zip");
 						break;
 					case HOUSEHOLDS:
@@ -711,16 +718,11 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 		//clear sync_report
 		updateSyncReport(SyncEntity.FORMS, null, SyncStatus.STATUS_NOT_SYNCED);
 
-		List<Table> values = new ArrayList<>();
+		List<Form> values = new ArrayList<>();
 		int count = 0;
 		values.clear();
 
-		Database database = getDatabase();
-		database.open();
-		database.beginTransaction();
-
 		parser.nextTag(); //<form>
-
 		while (notEndOfXmlDoc("forms", parser)) {
 			count++;
 
@@ -771,7 +773,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 			}
 
 			parser.nextTag(); //process COLUMN_REGION_LEVEL
-			if (!isEmptyTag(DatabaseHelper.Form.COLUMN_REGION_LEVEL, parser)) {
+			if (!isEmptyTag("regionLevel", parser)) {
 				parser.next();
 				table.setRegionLevel(parser.getText());
 				parser.nextTag(); //process </COLUMN_REGION_LEVEL>
@@ -826,7 +828,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 			}
 
 			parser.nextTag(); //process COLUMN_IS_REGION
-			if (!isEmptyTag(DatabaseHelper.Form.COLUMN_IS_REGION, parser)) {
+			if (!isEmptyTag("isRegionForm", parser)) {
 				parser.next();
 				table.setRegionForm(Boolean.parseBoolean(parser.getText()));
 				parser.nextTag(); //process </COLUMN_IS_REGION>
@@ -894,11 +896,12 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 			parser.nextTag(); //process formMap
 			if (!isEmptyTag("formMap", parser)) {
 				parser.next();
-				table.setFormMap(parser.getText());
+				Map<String, String> map = new FormMappingConverter().convertToEntityProperty(parser.getText());
+				table.setFormMap(map);
 				//Log.d(count+"-formMap", "value="+ parser.getText());
 				parser.nextTag(); //process </formMap>
 			}else{
-				table.setFormMap("");
+				table.setFormMap(new LinkedHashMap<>());
 				parser.nextTag();
 
 			}
@@ -932,19 +935,15 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 
 			//Log.d("form ", ""+table.getFormId());
 
-			database.insert(table);
-
-			savedValues.put(entity, count); //publish progress is a bit slow - its not reporting well the numbers
-			publishProgress(count);
-
+			values.add(table);
 		}
+
+		boxForms.put(values);
+		savedValues.put(entity, count); //publish progress is a bit slow - its not reporting well the numbers
+		publishProgress(count);
 
 		state = SyncState.SAVING;
 		entity = SyncEntity.FORMS;
-
-		database.setTransactionSuccessful();
-		database.endTransaction();
-		database.close();
 
 		updateSyncReport(SyncEntity.FORMS, new Date(), SyncStatus.STATUS_SYNCED);
 	}
@@ -1247,15 +1246,11 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 		//clear sync_report
 		updateSyncReport(SyncEntity.USERS, null, SyncStatus.STATUS_NOT_SYNCED);
 
-		List<Table> values = new ArrayList<>();
+		List<User> values = new ArrayList<>();
 		int count = 0;
 		values.clear();
 
 		parser.nextTag();
-
-		Database database = getDatabase();
-		database.open();
-		database.beginTransaction();
 
 		while (notEndOfXmlDoc("users", parser)) {
 			count++;
@@ -1354,33 +1349,15 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 			parser.nextTag(); // <user>
 			parser.next();
 
-			//values.add(table);
-			database.insert(table);
+			values.add(table);
 
-			savedValues.put(entity, count); //publish progress is a bit slow - its not reporting well the numbers
-			publishProgress(count);
+
 			
 		}
 
-		/*
-		state = State.SAVING;
-		entity = Entity.USERS;
-
-		Database database = getDatabase();
-		database.open();
-		if (!values.isEmpty()) {
-			count = 0;
-			for (Table t : values){
-				count++;
-				database.insert(t);
-				publishProgress(count);
-			}
-		}
-		*/
-
-		database.setTransactionSuccessful();
-		database.endTransaction();
-		database.close();
+		this.boxUsers.put(values);
+		savedValues.put(entity, count); //publish progress is a bit slow - its not reporting well the numbers
+		publishProgress(count);
 
 		updateSyncReport(SyncEntity.USERS, new Date(), SyncStatus.STATUS_SYNCED);
 	}
@@ -1390,7 +1367,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 		//clear sync_report
 		updateSyncReport(SyncEntity.REGIONS, null, SyncStatus.STATUS_NOT_SYNCED);
 
-		List<Table> values = new ArrayList<>();
+		List<Region> values = new ArrayList<>();
 		int count = 0;
 		values.clear();
 
@@ -1402,7 +1379,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 			Region table = new Region();
 
 			parser.nextTag(); //<code>
-			if (!isEmptyTag(DatabaseHelper.Region.COLUMN_CODE, parser)) {
+			if (!isEmptyTag("code", parser)) {
 				parser.next();
 				table.setCode(parser.getText());
 				parser.nextTag();
@@ -1412,7 +1389,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 			}
 
 			parser.nextTag(); //name
-			if (!isEmptyTag(DatabaseHelper.Region.COLUMN_NAME, parser)) {
+			if (!isEmptyTag("name", parser)) {
 				parser.next();
 				table.setName(parser.getText());
 				parser.nextTag();
@@ -1422,7 +1399,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 			}
 
 			parser.nextTag(); //hierarchyLevel
-			if (!isEmptyTag(DatabaseHelper.Region.COLUMN_LEVEL, parser)) {
+			if (!isEmptyTag("hierarchyLevel", parser)) {
 				parser.next();
 				table.setLevel(parser.getText());
 				parser.nextTag();
@@ -1432,7 +1409,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 			}
 
 			parser.nextTag(); //parent
-			if (!isEmptyTag(DatabaseHelper.Region.COLUMN_PARENT, parser)) {
+			if (!isEmptyTag("parent", parser)) {
 				parser.next();
 				table.setParent(parser.getText());
 				parser.nextTag();
@@ -1446,27 +1423,19 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 
 			values.add(table);
 			publishProgress(count);
-
-
 		}
 
 		state = SyncState.SAVING;
 		entity = SyncEntity.REGIONS;
 
-		Database database = getDatabase();
-		database.open();
 		if (!values.isEmpty()) {
 			count = 0;
-			for (Table t : values){
-				count++;
-				database.insert(t);
 
-				savedValues.put(entity, count); //publish progress is a bit slow - its not reporting well the numbers
-				publishProgress(count);
-			}
+			this.boxRegions.put(values);
+			savedValues.put(entity, count); //publish progress is a bit slow - its not reporting well the numbers
+			publishProgress(count);
+
 		}
-		database.close();
-
 
 		updateSyncReport(SyncEntity.REGIONS, new Date(), SyncStatus.STATUS_SYNCED);
 	}

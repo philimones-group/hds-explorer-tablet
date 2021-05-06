@@ -148,7 +148,7 @@
         {
           "id": "8:8035407426146603339",
           "name": "recordId",
-          "type": 5,
+          "type": 6,
           "flags": 4
         },
         {
@@ -387,9 +387,79 @@
         }
       ],
       "relations": []
+    },
+    {
+      "id": "8:2441806447861950296",
+      "lastPropertyId": "12:3778756342098839450",
+      "name": "Dataset",
+      "properties": [
+        {
+          "id": "1:3743711866957997056",
+          "name": "id",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:8722328056347700356",
+          "name": "datasetId",
+          "type": 5,
+          "flags": 4
+        },
+        {
+          "id": "3:3907455637425155587",
+          "name": "name",
+          "type": 9
+        },
+        {
+          "id": "4:2608214525095467223",
+          "name": "keyColumn",
+          "type": 9
+        },
+        {
+          "id": "5:4945003467141317535",
+          "name": "tableNameField",
+          "type": 9
+        },
+        {
+          "id": "6:6905250347200645802",
+          "name": "tableColumn",
+          "type": 9
+        },
+        {
+          "id": "7:3033997608668623539",
+          "name": "filename",
+          "type": 9
+        },
+        {
+          "id": "8:5218806864372552876",
+          "name": "createdBy",
+          "type": 9
+        },
+        {
+          "id": "9:1828143901574231845",
+          "name": "creationDate",
+          "type": 9
+        },
+        {
+          "id": "10:2760456195264151802",
+          "name": "updatedBy",
+          "type": 9
+        },
+        {
+          "id": "11:1431356732403971999",
+          "name": "updatedDate",
+          "type": 9
+        },
+        {
+          "id": "12:3778756342098839450",
+          "name": "labels",
+          "type": 9
+        }
+      ],
+      "relations": []
     }
   ],
-  "lastEntityId": "7:4964342909160099197",
+  "lastEntityId": "8:2441806447861950296",
   "lastIndexId": "8:5435002057819935149",
   "lastRelationId": "0:0",
   "lastSequenceId": "0:0",

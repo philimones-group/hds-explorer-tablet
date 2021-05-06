@@ -1,22 +1,18 @@
 package org.philimone.hds.explorer.fragment;
 
 
-import android.content.ContentValues;
 import android.os.Bundle;
 import android.preference.EditTextPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 
 import org.philimone.hds.explorer.R;
-import org.philimone.hds.explorer.database.Database;
-import org.philimone.hds.explorer.database.DatabaseHelper;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
 import org.philimone.hds.explorer.database.Queries;
 import org.philimone.hds.explorer.model.ApplicationParam;
 import org.philimone.hds.explorer.model.ApplicationParam_;
 
 import io.objectbox.Box;
-import io.objectbox.query.Query;
 
 /**
  * A simple {@link Fragment} subclass.

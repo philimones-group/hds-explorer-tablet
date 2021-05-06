@@ -18,7 +18,7 @@ import org.philimone.hds.explorer.database.Queries;
 import org.philimone.hds.explorer.fragment.MemberFilterFragment;
 import org.philimone.hds.explorer.fragment.MemberListFragment;
 import org.philimone.hds.explorer.listeners.MemberActionListener;
-import org.philimone.hds.explorer.model.DataSet;
+import org.philimone.hds.explorer.model.Dataset;
 import org.philimone.hds.explorer.model.Form;
 import org.philimone.hds.explorer.model.Household;
 import org.philimone.hds.explorer.model.Member;
@@ -51,6 +51,7 @@ public class SurveyMembersActivity extends Activity implements MemberFilterFragm
     private Map<String, BarcodeScannerActivity.ResultListener> barcodeResultListeners = new HashMap<>();
 
     private Box<Form> boxForms;
+    private Box<Dataset> boxDatasets;
 
     public enum FormFilter {
         REGION, HOUSEHOLD, HOUSEHOLD_HEAD, MEMBER, FOLLOW_UP
@@ -72,6 +73,7 @@ public class SurveyMembersActivity extends Activity implements MemberFilterFragm
 
     private void initBoxes() {
         this.boxForms = ObjectBoxDatabase.get().boxFor(Form.class);
+        this.boxDatasets = ObjectBoxDatabase.get().boxFor(Dataset.class);
     }
 
     private void initialize() {
@@ -283,7 +285,7 @@ public class SurveyMembersActivity extends Activity implements MemberFilterFragm
         loader.loadSpecialConstantValues(household, member, loggedUser, region, null);
 
         //Load variables on datasets
-        for (DataSet dataSet : getDataSets()){
+        for (Dataset dataSet : getDataSets()){
             if (loader.hasMappedDatasetVariable(dataSet)){
                 //Log.d("hasMappedVariables", ""+dataSet.getName());
                 loader.loadDataSetValues(dataSet, household, member, loggedUser, region);
@@ -297,14 +299,8 @@ public class SurveyMembersActivity extends Activity implements MemberFilterFragm
         }
     }
 
-    private List<DataSet> getDataSets(){
-        List<DataSet> list = null;
-
-        Database db = new Database(this);
-        db.open();
-        list = Queries.getAllDataSetBy(db, null, null);
-        db.close();
-
+    private List<Dataset> getDataSets(){
+        List<Dataset> list = this.boxDatasets.getAll();
         return list;
     }
 

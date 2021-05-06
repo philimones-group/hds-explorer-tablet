@@ -3,7 +3,7 @@ package org.philimone.hds.explorer.data;
 import android.util.Log;
 
 import org.philimone.hds.explorer.adapter.model.TrackingSubjectItem;
-import org.philimone.hds.explorer.model.DataSet;
+import org.philimone.hds.explorer.model.Dataset;
 import org.philimone.hds.explorer.model.Form;
 import org.philimone.hds.explorer.model.Household;
 import org.philimone.hds.explorer.model.Member;
@@ -16,7 +16,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.zip.ZipEntry;
@@ -79,7 +78,7 @@ public class FormDataLoader implements Serializable {
         this.values.put(key, value);
     }
 
-    public boolean hasMappedDatasetVariable(DataSet dataSet){
+    public boolean hasMappedDatasetVariable(Dataset dataSet){
 
         for (String mapValue : form.getFormMap().values()){
             //Log.d("mapValue", ""+mapValue);
@@ -514,7 +513,7 @@ public class FormDataLoader implements Serializable {
     }
 
     /* Load Datasets Values */
-    public void loadDataSetValues(DataSet dataSet, Household household, Member member, User user, Region region) {
+    public void loadDataSetValues(Dataset dataSet, Household household, Member member, User user, Region region) {
         String tableName = dataSet.getTableNameField()+".";
         String tableColumnName = dataSet.getTableColumn();
         String linkValue = "";
@@ -614,7 +613,7 @@ public class FormDataLoader implements Serializable {
 
     }
 
-    private CSVReader.CSVRow getRowFromCSVFile(DataSet dataSet, String linkValue) {
+    private CSVReader.CSVRow getRowFromCSVFile(Dataset dataSet, String linkValue) {
 
         //Log.d("zip", "processing zip file, linkValue="+linkValue);
 

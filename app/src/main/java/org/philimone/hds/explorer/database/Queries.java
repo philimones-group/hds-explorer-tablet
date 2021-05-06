@@ -1,16 +1,12 @@
 package org.philimone.hds.explorer.database;
 
-import android.content.Context;
 import android.database.Cursor;
 
 import org.philimone.hds.explorer.model.ApplicationParam;
 import org.philimone.hds.explorer.model.ApplicationParam_;
-import org.philimone.hds.explorer.model.CollectedData;
-import org.philimone.hds.explorer.model.DataSet;
 import org.philimone.hds.explorer.model.Form;
 import org.philimone.hds.explorer.model.Household;
 import org.philimone.hds.explorer.model.Member;
-import org.philimone.hds.explorer.model.Region;
 import org.philimone.hds.explorer.model.SyncReport;
 import org.philimone.hds.explorer.model.SyncReport_;
 import org.philimone.hds.explorer.model.enums.SyncEntity;
@@ -151,7 +147,7 @@ public class Queries {
 
         return list;
     }
-
+/*
     public static DataSet getDataSetBy(Database database, String whereClause, String[] clauseArgs){
         DataSet dataSet = null;
 
@@ -175,5 +171,5 @@ public class Queries {
         }
 
         return list;
-    }
+    }*/
 }

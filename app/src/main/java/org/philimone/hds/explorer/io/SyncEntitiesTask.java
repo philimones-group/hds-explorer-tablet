@@ -1,5 +1,39 @@
 package org.philimone.hds.explorer.io;
 
+import android.content.Context;
+import android.os.AsyncTask;
+import android.util.Base64;
+import android.util.Log;
+import android.widget.Toast;
+
+import org.philimone.hds.explorer.R;
+import org.philimone.hds.explorer.database.Bootstrap;
+import org.philimone.hds.explorer.database.Database;
+import org.philimone.hds.explorer.database.DatabaseHelper;
+import org.philimone.hds.explorer.database.ObjectBoxDatabase;
+import org.philimone.hds.explorer.database.Queries;
+import org.philimone.hds.explorer.database.Table;
+import org.philimone.hds.explorer.model.ApplicationParam;
+import org.philimone.hds.explorer.model.ApplicationParam_;
+import org.philimone.hds.explorer.model.CollectedData;
+import org.philimone.hds.explorer.model.Dataset;
+import org.philimone.hds.explorer.model.Form;
+import org.philimone.hds.explorer.model.Household;
+import org.philimone.hds.explorer.model.Member;
+import org.philimone.hds.explorer.model.Module;
+import org.philimone.hds.explorer.model.Region;
+import org.philimone.hds.explorer.model.SyncReport;
+import org.philimone.hds.explorer.model.User;
+import org.philimone.hds.explorer.model.converters.FormMappingConverter;
+import org.philimone.hds.explorer.model.converters.LabelMappingConverter;
+import org.philimone.hds.explorer.model.enums.SyncEntity;
+import org.philimone.hds.explorer.model.enums.SyncState;
+import org.philimone.hds.explorer.model.enums.SyncStatus;
+import org.philimone.hds.explorer.model.followup.TrackingList;
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
+import org.xmlpull.v1.XmlPullParserFactory;
+
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -17,41 +51,6 @@ import java.util.Map;
 import java.util.Scanner;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
-
-import org.philimone.hds.explorer.database.ObjectBoxDatabase;
-import org.philimone.hds.explorer.database.Queries;
-import org.philimone.hds.explorer.model.ApplicationParam;
-import org.philimone.hds.explorer.model.ApplicationParam_;
-import org.philimone.hds.explorer.model.DataSet;
-import org.philimone.hds.explorer.model.Region;
-import org.philimone.hds.explorer.model.converters.FormMappingConverter;
-import org.philimone.hds.explorer.model.enums.SyncEntity;
-import org.philimone.hds.explorer.model.enums.SyncState;
-import org.philimone.hds.explorer.model.enums.SyncStatus;
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
-import org.xmlpull.v1.XmlPullParserFactory;
-
-import android.content.ContentValues;
-import android.content.Context;
-import android.os.AsyncTask;
-import android.util.Base64;
-import android.util.Log;
-import android.widget.Toast;
-
-import org.philimone.hds.explorer.R;
-import org.philimone.hds.explorer.database.Bootstrap;
-import org.philimone.hds.explorer.database.Database;
-import org.philimone.hds.explorer.database.DatabaseHelper;
-import org.philimone.hds.explorer.database.Table;
-import org.philimone.hds.explorer.model.CollectedData;
-import org.philimone.hds.explorer.model.Form;
-import org.philimone.hds.explorer.model.Household;
-import org.philimone.hds.explorer.model.Member;
-import org.philimone.hds.explorer.model.Module;
-import org.philimone.hds.explorer.model.SyncReport;
-import org.philimone.hds.explorer.model.User;
-import org.philimone.hds.explorer.model.followup.TrackingList;
 
 import io.objectbox.Box;
 import mz.betainteractive.utilities.StringUtil;
@@ -93,6 +92,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 	private Box<Form> boxForms;
 	private Box<User> boxUsers;
 	private Box<Region> boxRegions;
+	private Box<Dataset> boxDatasets;
 
 	private boolean canceled;
 
@@ -117,6 +117,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 		this.boxForms = ObjectBoxDatabase.get().boxFor(Form.class);
 		this.boxUsers = ObjectBoxDatabase.get().boxFor(User.class);
 		this.boxRegions = ObjectBoxDatabase.get().boxFor(Region.class);
+		this.boxDatasets = ObjectBoxDatabase.get().boxFor(Dataset.class);
 	}
 
 	private Database getDatabase(){
@@ -236,7 +237,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 						processUrl(baseurl + API_PATH + "/forms/zip", "forms.zip");
 						break;
 					case DATASETS:
-						deleteAll(DataSet.class);
+						this.boxDatasets.removeAll();
 						processUrl(baseurl + API_PATH + "/datasets/zip", "datasets.zip");
 						break;
 					case DATASETS_CSV_FILES:
@@ -339,10 +340,10 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 
 		Database database = getDatabase();
 		database.open();
-		List<DataSet> dataSets = Queries.getAllDataSetBy(database, null, null);
+		List<Dataset> datasets = this.boxDatasets.getAll();
 		database.close();
 
-		for (DataSet dataSet : dataSets){
+		for (Dataset dataSet : datasets){
 			String url = baseurl + API_PATH + "/dataset/zip/" + dataSet.getDatasetId();
 			String name = dataSet.getName()+".zip";
 			processUrl(url, name, dataSet);
@@ -357,7 +358,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 	 * @param dataSet
 	 * @throws Exception
 	 */
-	private void processUrl(String strUrl, String exportedFileName, DataSet dataSet) throws Exception {
+	private void processUrl(String strUrl, String exportedFileName, Dataset dataSet) throws Exception {
 		DownloadResponse response = processUrl(strUrl, exportedFileName, false);
 		updateDataset(dataSet, response);
 	}
@@ -953,34 +954,30 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 		//clear sync_report
 		updateSyncReport(SyncEntity.DATASETS, null, SyncStatus.STATUS_NOT_SYNCED);
 
-		List<Table> values = new ArrayList<>();
+		List<Dataset> values = new ArrayList<>();
 		int count = 0;
 		values.clear();
-
-		Database database = getDatabase();
-		database.open();
-		database.beginTransaction();
 
 		parser.nextTag(); //<dataSet>
 
 		while (notEndOfXmlDoc("datasets", parser)) {
 			count++;
 
-			DataSet table = new DataSet();
+			Dataset table = new Dataset();
 
 			parser.nextTag(); //process COLUMN_DATASET_ID
-			if (!isEmptyTag(DatabaseHelper.DataSet.COLUMN_DATASET_ID, parser)) {
+			if (!isEmptyTag("datasetId", parser)) {
 				parser.next();
-				table.setDatasetId(Integer.parseInt(parser.getText()));
+				table.setDatasetId(parser.getText());
 				parser.nextTag(); //process </COLUMN_DATASET_ID>
 				//Log.d(count+"-COLUMN_DATASET_ID", "value="+ parser.getText());
 			}else{
-				table.setDatasetId(0);
+				table.setDatasetId("");
 				parser.nextTag();
 			}
 
 			parser.nextTag(); //process COLUMN_NAME
-			if (!isEmptyTag(DatabaseHelper.DataSet.COLUMN_NAME, parser)) {
+			if (!isEmptyTag("name", parser)) {
 				parser.next();
 				table.setName(parser.getText());
 				parser.nextTag(); //process </COLUMN_NAME>
@@ -991,7 +988,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 			}
 
 			parser.nextTag(); //process COLUMN_KEYCOLUMN
-			if (!isEmptyTag(DatabaseHelper.DataSet.COLUMN_KEYCOLUMN, parser)) {
+			if (!isEmptyTag("keyColumn", parser)) {
 				parser.next();
 				table.setKeyColumn(parser.getText());
 				parser.nextTag(); //process </COLUMN_KEYCOLUMN>
@@ -1002,7 +999,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 			}
 
 			parser.nextTag(); //process COLUMN_TABLE_NAME
-			if (!isEmptyTag(DatabaseHelper.DataSet.COLUMN_TABLE_NAME, parser)) {
+			if (!isEmptyTag("tableName", parser)) {
 				parser.next();
 				table.setTableNameField(parser.getText());
 				parser.nextTag(); //process </COLUMN_TABLE_NAME>
@@ -1013,7 +1010,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 			}
 
 			parser.nextTag(); //process COLUMN_TABLE_COLUMN
-			if (!isEmptyTag(DatabaseHelper.DataSet.COLUMN_TABLE_COLUMN, parser)) {
+			if (!isEmptyTag("tableColumn", parser)) {
 				parser.next();
 				table.setTableColumn(parser.getText());
 				parser.nextTag(); //process </COLUMN_TABLE_COLUMN>
@@ -1024,7 +1021,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 			}
 
 			parser.nextTag(); //process COLUMN_CREATED_BY
-			if (!isEmptyTag(DatabaseHelper.DataSet.COLUMN_CREATED_BY, parser)) {
+			if (!isEmptyTag("createdBy", parser)) {
 				parser.next();
 				table.setCreatedBy(parser.getText());
 				parser.nextTag(); //process </COLUMN_CREATED_BY>
@@ -1035,7 +1032,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 			}
 
 			parser.nextTag(); //process COLUMN_CREATION_DATE
-			if (!isEmptyTag(DatabaseHelper.DataSet.COLUMN_CREATION_DATE, parser)) {
+			if (!isEmptyTag("creationDate", parser)) {
 				parser.next();
 				table.setCreationDate(parser.getText());
 				parser.nextTag(); //process </COLUMN_CREATION_DATE>
@@ -1046,7 +1043,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 			}
 
 			parser.nextTag(); //process COLUMN_UPDATED_BY
-			if (!isEmptyTag(DatabaseHelper.DataSet.COLUMN_UPDATED_BY, parser)) {
+			if (!isEmptyTag("updatedBy", parser)) {
 				parser.next();
 				table.setUpdatedBy(parser.getText());
 				parser.nextTag(); //process </COLUMN_UPDATED_BY>
@@ -1057,7 +1054,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 			}
 
 			parser.nextTag(); //process COLUMN_UPDATED_DATE
-			if (!isEmptyTag(DatabaseHelper.DataSet.COLUMN_UPDATED_DATE, parser)) {
+			if (!isEmptyTag("updatedDate", parser)) {
 				parser.next();
 				table.setUpdatedDate(parser.getText());
 				parser.nextTag(); //process </COLUMN_UPDATED_DATE>
@@ -1068,13 +1065,14 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 			}
 
 			parser.nextTag(); //process COLUMN_LABELS
-			if (!isEmptyTag(DatabaseHelper.DataSet.COLUMN_LABELS, parser)) {
+			if (!isEmptyTag("labels", parser)) {
 				parser.next();
-				table.setLabels(parser.getText());
+				Map<String, String> mapLabels = new LabelMappingConverter().convertToEntityProperty(parser.getText());
+				table.setLabels(mapLabels);
 				//Log.d(count+"-COLUMN_LABELS", "value="+ parser.getText());
 				parser.nextTag(); //process </COLUMN_LABELS>
 			}else{
-				table.setLabels("");
+				table.setLabels(new LinkedHashMap<>());
 				parser.nextTag();
 
 			}
@@ -1085,19 +1083,17 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 			parser.next();
 
 
-			database.insert(table);
 
-			savedValues.put(entity, count); //publish progress is a bit slow - its not reporting well the numbers
-			publishProgress(count);
+			values.add(table);
 
 		}
 
 		state = SyncState.SAVING;
 		entity = SyncEntity.DATASETS;
 
-		database.setTransactionSuccessful();
-		database.endTransaction();
-		database.close();
+		this.boxDatasets.put(values);
+		savedValues.put(entity, count); //publish progress is a bit slow - its not reporting well the numbers
+		publishProgress(count);
 
 		updateSyncReport(SyncEntity.DATASETS, new Date(), SyncStatus.STATUS_SYNCED);
 	}
@@ -2076,18 +2072,11 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 		return statuses;
 	}
 
-	private void updateDataset(DataSet dataSet, DownloadResponse response){
+	private void updateDataset(Dataset dataSet, DownloadResponse response){
 		String filename = Bootstrap.getAppPath() + response.getFileName();
 
-		Database database = getDatabase();
-		database.open();
-
-		ContentValues cv = new ContentValues();
-		cv.put(DatabaseHelper.DataSet.COLUMN_FILENAME, filename);
-
-		database.update(DataSet.class, cv, DatabaseHelper.DataSet._ID+"=?", new String[]{ dataSet.getId()+"" });
-
-		database.close();
+		dataSet.setFilename(filename);
+		this.boxDatasets.put(dataSet);
 	}
 
 	protected void onPostExecute(ExecutionReport executionReport) {

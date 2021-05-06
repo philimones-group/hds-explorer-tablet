@@ -24,7 +24,7 @@ import org.philimone.hds.explorer.io.xml.FormXmlReader;
 import org.philimone.hds.explorer.listeners.MemberActionListener;
 import org.philimone.hds.explorer.model.CollectedData;
 import org.philimone.hds.explorer.model.CollectedData_;
-import org.philimone.hds.explorer.model.DataSet;
+import org.philimone.hds.explorer.model.Dataset;
 import org.philimone.hds.explorer.model.Form;
 import org.philimone.hds.explorer.model.Household;
 import org.philimone.hds.explorer.model.Member;
@@ -68,6 +68,7 @@ public class SurveyHouseholdsActivity extends Activity implements HouseholdFilte
 
     private Box<CollectedData> boxCollectedData;
     private Box<Form> boxForms;
+    private Box<Dataset> boxDatasets;
 
     private final int MEMBER_DETAILS_REQUEST_CODE = 31;
 
@@ -93,6 +94,7 @@ public class SurveyHouseholdsActivity extends Activity implements HouseholdFilte
     private void initBoxes() {
         this.boxCollectedData = ObjectBoxDatabase.get().boxFor(CollectedData.class);
         this.boxForms = ObjectBoxDatabase.get().boxFor(Form.class);
+        this.boxDatasets = ObjectBoxDatabase.get().boxFor(Dataset.class);
     }
 
     private void initialize() {
@@ -346,7 +348,7 @@ public class SurveyHouseholdsActivity extends Activity implements HouseholdFilte
         loader.loadSpecialConstantValues(household, member, loggedUser, region, null);
 
         //Load variables on datasets
-        for (DataSet dataSet : getDataSets()){
+        for (Dataset dataSet : getDataSets()){
             //Log.d("has-mapped-datasets", dataSet.getName()+", "+loader.hasMappedDatasetVariable(dataSet));
             if (loader.hasMappedDatasetVariable(dataSet)){
                 //Log.d("hasMappedVariables", ""+dataSet.getName());
@@ -355,12 +357,12 @@ public class SurveyHouseholdsActivity extends Activity implements HouseholdFilte
         }
     }
 
-    private Set<DataSet> getLoadableDatasets(FormDataLoader[] loaders){
-        Set<DataSet> list = new HashSet<>();
-        List<DataSet> dataSets = getDataSets();
+    private Set<Dataset> getLoadableDatasets(FormDataLoader[] loaders){
+        Set<Dataset> list = new HashSet<>();
+        List<Dataset> datasets = getDataSets();
 
         for (FormDataLoader loader : loaders)
-        for (DataSet dataSet : dataSets){
+        for (Dataset dataSet : datasets){
             if (loader.hasMappedDatasetVariable(dataSet)){
                 list.add(dataSet);
             }
@@ -378,14 +380,8 @@ public class SurveyHouseholdsActivity extends Activity implements HouseholdFilte
         }
     }
 
-    private List<DataSet> getDataSets(){
-        List<DataSet> list = null;
-
-        Database db = new Database(this);
-        db.open();
-        list = Queries.getAllDataSetBy(db, null, null);
-        db.close();
-
+    private List<Dataset> getDataSets(){
+        List<Dataset> list = this.boxDatasets.getAll();
         return list;
     }
 

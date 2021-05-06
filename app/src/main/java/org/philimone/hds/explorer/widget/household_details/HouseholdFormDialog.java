@@ -16,8 +16,10 @@ import android.widget.TextView;
 import org.philimone.hds.explorer.R;
 import org.philimone.hds.explorer.database.Database;
 import org.philimone.hds.explorer.database.DatabaseHelper;
+import org.philimone.hds.explorer.database.ObjectBoxDatabase;
 import org.philimone.hds.explorer.database.Queries;
 import org.philimone.hds.explorer.model.Household;
+import org.philimone.hds.explorer.model.Household_;
 import org.philimone.hds.explorer.model.Member;
 import org.philimone.hds.explorer.model.Region;
 import org.philimone.hds.explorer.model.User;
@@ -25,6 +27,7 @@ import org.philimone.hds.explorer.widget.DialogFactory;
 
 import java.util.Date;
 
+import io.objectbox.Box;
 import mz.betainteractive.utilities.GeneralUtil;
 import mz.betainteractive.utilities.StringUtil;
 
@@ -48,6 +51,7 @@ public class HouseholdFormDialog extends DialogFragment {
     EditText txtHouseName = null;*/
 
     private Database database;
+    private Box<Household> boxHouseholds;
 
     private Listener listener;
 
@@ -85,7 +89,12 @@ public class HouseholdFormDialog extends DialogFragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        initBoxes();
         initialize(view);
+    }
+
+    private void initBoxes(){
+        this.boxHouseholds = ObjectBoxDatabase.get().boxFor(Household.class);
     }
 
     private void initialize(View view) {
@@ -186,19 +195,21 @@ public class HouseholdFormDialog extends DialogFragment {
 
     /* Database Usefull Methods */
     private String generateHouseholdCode(Region region, User fieldWorker){
-        Database database = new Database(this.getActivity());
-        database.open();
+
         String baseId = region.getCode() + fieldWorker.getCode();
+        /*
         String[] columns = new String[] {DatabaseHelper.Household.COLUMN_CODE};
         String where = DatabaseHelper.Household.COLUMN_CODE + " LIKE ?";
         String[] whereArgs = new String[] { baseId + "%" };
         String orderBy = DatabaseHelper.Household.COLUMN_CODE + " DESC";
+        */
+
         String generatedId = null;
 
-        Cursor cursor = database.query(Household.class, columns, where, whereArgs, null, null, orderBy);
+        Household lastHousehold = this.boxHouseholds.query().startsWith(Household_.code, baseId).orderDesc(Household_.code).build().findFirst();
 
-        if (cursor.moveToFirst()) {
-            String lastGeneratedId = cursor.getString(0);
+        if (lastHousehold != null) {
+            String lastGeneratedId = lastHousehold.code;
 
             try {
                 int increment = Integer.parseInt(lastGeneratedId.substring(6, 9));
@@ -211,18 +222,11 @@ public class HouseholdFormDialog extends DialogFragment {
             generatedId = baseId + "001"; //set the first id of individual household
         }
 
-        cursor.close();
-        database.close();
-
         return generatedId;
     }
 
     private boolean checkIfHouseCodeExists(String houseCode){
-        Database database = new Database(this.getActivity());
-        database.open();
-        Household household = Queries.getHouseholdBy(database, DatabaseHelper.Household.COLUMN_CODE+"=?", new String[] { houseCode });
-        database.close();
-
+        Household household = Queries.getHouseholdByCode(boxHouseholds, houseCode);
         return household != null;
     }
 

@@ -80,6 +80,7 @@ public class MemberListFragment extends Fragment {
     private Box<CollectedData> boxCollectedData;
     private Box<Form> boxForms;
     private Box<Region> boxRegions;
+    private Box<Household> boxHouseholds;
 
     public enum Buttons {
         SHOW_HOUSEHOLD, MEMBERS_MAP, CLOSEST_MEMBERS, CLOSEST_HOUSES, EDIT_MEMBER, ADD_NEW_MEMBER, NEW_MEMBER_COLLECT, COLLECTED_DATA
@@ -119,6 +120,7 @@ public class MemberListFragment extends Fragment {
         this.boxCollectedData = ObjectBoxDatabase.get().boxFor(CollectedData.class);
         this.boxForms = ObjectBoxDatabase.get().boxFor(Form.class);
         this.boxRegions = ObjectBoxDatabase.get().boxFor(Region.class);
+        this.boxHouseholds = ObjectBoxDatabase.get().boxFor(Household.class);
     }
 
     public void setButtonVisibilityGone(Buttons... buttons){
@@ -205,26 +207,6 @@ public class MemberListFragment extends Fragment {
         });
 
         return button;
-    }
-
-    private void restoreLastSearch(Bundle savedInstanceState) {
-        ArrayList<String> list = savedInstanceState.getStringArrayList("adapter");
-        if (list != null && list.size()>0){
-            Household household = getHousehold(list.get(0));
-            String name = list.get(1);
-            String code = list.get(2);
-            String hsnr = list.get(3);
-            String gndr = list.get(4);
-            Integer min = Integer.getInteger(list.get(5));
-            Integer max = Integer.getInteger(list.get(6));
-            Boolean filter1 = list.get(7).equals("true"); //dth
-            Boolean filter2 = list.get(8).equals("true"); //ext
-            Boolean filter3 = list.get(9).equals("true"); //na
-
-            Log.d("restoring",""+name);
-            MemberArrayAdapter ma = loadMembersByFilters(household, name, code, hsnr, gndr, min, max, filter1, filter2, filter3);
-            setMemberAdapter(ma);
-        }
     }
 
     private void initialize(View view) {
@@ -358,7 +340,7 @@ public class MemberListFragment extends Fragment {
             DialogFactory.createMessageInfo(this.getActivity(), R.string.map_gps_not_available_title_lbl, R.string.member_list_gps_not_available_lbl).show();
             return;
         }
-
+/*
         double distance = gdistance.getValue();
         String distanceDescription = gdistance.getLabel();
 
@@ -372,7 +354,6 @@ public class MemberListFragment extends Fragment {
 
         String sql = "SELECT * FROM " + DatabaseHelper.Household.TABLE_NAME + " ";
         String where = "WHERE ((" + cur_sin_lat + " * sinLatitude) + (" + cur_cos_lat + " * cosLatitude) * (cosLongitude * " + cur_cos_lng + " + sinLongitude*" + cur_sin_lng + ")) > " + cur_allowed_distance;
-
 
         ArrayList<Household> households = new ArrayList<>();
 
@@ -406,7 +387,11 @@ public class MemberListFragment extends Fragment {
         }
 
         //call the main activity to open GPSList Activity
-        this.memberActionListener.onClosestHouseholdsResult(household, gdistance, points, households);
+        this.memberActionListener.onClosestHouseholdsResult(household, gdistance, points, households);*/
+
+        Log.d("GPS", "I NEED TO FIND A WAY TO CALCULATE DISTANCE FROM GPS");
+
+        assert 1==0;
     }
 
     private void showClosestMembers(Member member, Distance gdistance) {
@@ -772,10 +757,7 @@ public class MemberListFragment extends Fragment {
     private Household getHousehold(Member member){
         if (member == null || member.getHouseholdCode()==null) return null;
 
-        Database database = new Database(this.getActivity());
-        database.open();
-        Household household = Queries.getHouseholdBy(database, DatabaseHelper.Household.COLUMN_CODE +"=?", new String[]{ member.getHouseholdCode() });
-        database.close();
+        Household household = Queries.getHouseholdByCode(boxHouseholds, member.getHouseholdCode());
 
         return household;
     }
@@ -789,21 +771,6 @@ public class MemberListFragment extends Fragment {
         database.close();
 
         return member;
-    }
-
-    private Household getHousehold(int id){
-        return getHousehold(id+"");
-    }
-
-    private Household getHousehold(String id){
-        if (Integer.getInteger(id) == null) return null;
-
-        Database database = new Database(this.getActivity());
-        database.open();
-        Household household = Queries.getHouseholdBy(database, DatabaseHelper.Household._ID+"=?", new String[]{ id });
-        database.close();
-
-        return household;
     }
 
     private Member getSelectedMember(){

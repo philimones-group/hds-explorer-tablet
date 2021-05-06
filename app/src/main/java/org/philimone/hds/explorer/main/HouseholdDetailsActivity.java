@@ -80,6 +80,7 @@ public class HouseholdDetailsActivity extends Activity implements OdkFormResultL
     private Box<Form> boxForms;
     private Box<Region> boxRegions;
     private Box<Dataset> boxDatasets;
+    private Box<Household> boxHouseholds;
 
     private int requestCode;
     private boolean returnFromOdk = false;
@@ -211,6 +212,7 @@ public class HouseholdDetailsActivity extends Activity implements OdkFormResultL
         this.boxForms = ObjectBoxDatabase.get().boxFor(Form.class);
         this.boxRegions = ObjectBoxDatabase.get().boxFor(Region.class);
         this.boxDatasets = ObjectBoxDatabase.get().boxFor(Dataset.class);
+        this.boxHouseholds = ObjectBoxDatabase.get().boxFor(Household.class);
     }
 
     private void enableButtonsByFormLoaders() {
@@ -338,47 +340,6 @@ public class HouseholdDetailsActivity extends Activity implements OdkFormResultL
         return member;
     }
 
-    private String generateHouseholdCode(Region region, User fieldWorker){
-        Database database = new Database(this);
-        database.open();
-        String baseId = region.getCode() + fieldWorker.getCode();
-        String[] columns = new String[] {DatabaseHelper.Household.COLUMN_CODE};
-        String where = DatabaseHelper.Household.COLUMN_CODE + " LIKE ?";
-        String[] whereArgs = new String[] { baseId + "%" };
-        String orderBy = DatabaseHelper.Household.COLUMN_CODE + " DESC";
-        String generatedId = null;
-
-        Cursor cursor = database.query(Household.class, columns, where, whereArgs, null, null, orderBy);
-
-        if (cursor.moveToFirst()) {
-            String lastGeneratedId = cursor.getString(0);
-
-            try {
-                int increment = Integer.parseInt(lastGeneratedId.substring(6, 9));
-                generatedId = baseId + String.format("%03d", increment+1);
-            } catch (NumberFormatException e) {
-                return baseId + "ERROR_01";
-            }
-
-        } else { //no extId based on "baseId"
-            generatedId = baseId + "001"; //set the first id of individual household
-        }
-
-        cursor.close();
-        database.close();
-
-        return generatedId;
-    }
-
-    private boolean checkIfHouseCodeExists(String houseCode){
-        Database database = new Database(this);
-        database.open();
-        Household household = Queries.getHouseholdBy(database, DatabaseHelper.Household.COLUMN_CODE+"=?", new String[] { houseCode });
-        database.close();
-
-        return household != null;
-    }
-
     /*Ends*/
 
     private void onCollectedDataItemClicked(int position) {
@@ -428,10 +389,7 @@ public class HouseholdDetailsActivity extends Activity implements OdkFormResultL
     private Household getHousehold(Member member){
         if (member == null || member.getHouseholdCode()==null) return null;
 
-        Database database = new Database(this);
-        database.open();
-        Household household = Queries.getHouseholdBy(database, DatabaseHelper.Household.COLUMN_CODE +"=?", new String[]{ member.getHouseholdCode() });
-        database.close();
+        Household household = Queries.getHouseholdByCode(this.boxHouseholds, member.getHouseholdCode());
 
         return household;
     }
@@ -588,13 +546,10 @@ public class HouseholdDetailsActivity extends Activity implements OdkFormResultL
         Log.d("form finalized"," "+contentUri+", "+xmlFile);
 
         //save Collected data
-        Database db = new Database(this);
-        db.open();
         //update or insert
-
         //Save household and Update the object household
         if (household.getId()==0){
-            int id = (int) db.insert(household);
+            long id = this.boxHouseholds.put(household);
             household.setId(id);
         }
 
@@ -641,8 +596,6 @@ public class HouseholdDetailsActivity extends Activity implements OdkFormResultL
             Log.d("updating", "new collected data");
         }
 
-        db.close();
-
         if (requestCode == REQUEST_CODE_NEW_HOUSEHOLD || requestCode == REQUEST_CODE_EDIT_HOUSEHOLD){
             onFinishAddNewHousehold(household);
         } else {
@@ -655,13 +608,10 @@ public class HouseholdDetailsActivity extends Activity implements OdkFormResultL
         Log.d("form unfinalized"," "+contentUri);
 
         //save Collected data
-        Database db = new Database(this);
-        db.open();
         //update or insert
-
         //Save household and Update the object household
         if (household.getId()==0){
-            int id = (int) db.insert(household);
+            long id = this.boxHouseholds.put(household);
             household.setId(id);
         }
 
@@ -707,8 +657,6 @@ public class HouseholdDetailsActivity extends Activity implements OdkFormResultL
             Log.d("updating", "new collected data");
         }
 
-        db.close();
-
         if (requestCode == REQUEST_CODE_NEW_HOUSEHOLD || requestCode == REQUEST_CODE_EDIT_HOUSEHOLD){
             onFinishAddNewHousehold(household);
         } else {
@@ -726,7 +674,8 @@ public class HouseholdDetailsActivity extends Activity implements OdkFormResultL
         if (requestCode == REQUEST_CODE_NEW_HOUSEHOLD || requestCode == REQUEST_CODE_EDIT_HOUSEHOLD){
             if (household != null && household.getId()>0){
                 //delete household
-                db.delete(Household.class, DatabaseHelper.Household._ID+"=?", new String[] { household.getId()+"" });
+
+                this.boxHouseholds.remove(household);
             }
 
             db.close();

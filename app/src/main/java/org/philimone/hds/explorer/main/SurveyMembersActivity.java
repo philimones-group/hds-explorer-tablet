@@ -52,6 +52,7 @@ public class SurveyMembersActivity extends Activity implements MemberFilterFragm
 
     private Box<Form> boxForms;
     private Box<Dataset> boxDatasets;
+    private Box<Household> boxHouseholds;
 
     public enum FormFilter {
         REGION, HOUSEHOLD, HOUSEHOLD_HEAD, MEMBER, FOLLOW_UP
@@ -74,6 +75,7 @@ public class SurveyMembersActivity extends Activity implements MemberFilterFragm
     private void initBoxes() {
         this.boxForms = ObjectBoxDatabase.get().boxFor(Form.class);
         this.boxDatasets = ObjectBoxDatabase.get().boxFor(Dataset.class);
+        this.boxHouseholds = ObjectBoxDatabase.get().boxFor(Household.class);
     }
 
     private void initialize() {
@@ -189,7 +191,7 @@ public class SurveyMembersActivity extends Activity implements MemberFilterFragm
 
         Database db = new Database(this);
         db.open();
-        Household household = Queries.getHouseholdBy(db, DatabaseHelper.Household.COLUMN_CODE +"=?", new String[]{ member.getHouseholdCode() });
+        Household household = Queries.getHouseholdByCode(this.boxHouseholds, member.getHouseholdCode());
         db.close();
 
         return household;

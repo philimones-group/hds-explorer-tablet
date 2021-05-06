@@ -7,49 +7,59 @@ import org.philimone.hds.explorer.database.Table;
 
 import java.io.Serializable;
 
+import io.objectbox.annotation.Entity;
+import io.objectbox.annotation.Id;
+import io.objectbox.annotation.Index;
+import io.objectbox.annotation.Unique;
 import mz.betainteractive.utilities.ReflectionUtils;
 
 /**
  * Created by paul on 5/20/16.
  */
-public class Household implements Serializable, Table {
 
-    private int id;
-    private String code;
-    private String region;
-    private String name;
-    private String headCode;
-    private String headName;
-    private String secHeadCode;
+@Entity
+public class Household implements Serializable {
 
-    private String hierarchy1;
-    private String hierarchy2;
-    private String hierarchy3;
-    private String hierarchy4;
-    private String hierarchy5;
-    private String hierarchy6;
-    private String hierarchy7;
-    private String hierarchy8;
+    @Id
+    public long id;
+    @Unique
+    public String code;
+    @Index
+    public String region;
+    public String name;
+    @Index
+    public String headCode;
+    public String headName;
+    public String secHeadCode;
+
+    public String hierarchy1;
+    public String hierarchy2;
+    public String hierarchy3;
+    public String hierarchy4;
+    public String hierarchy5;
+    public String hierarchy6;
+    public String hierarchy7;
+    public String hierarchy8;
 
 
-    private boolean gpsNull;
-    private Double gpsAccuracy;
-    private Double gpsAltitude;
-    private Double gpsLatitude;
-    private Double gpsLongitude;
+    public boolean gpsNull;
+    public Double gpsAccuracy;
+    public Double gpsAltitude;
+    public Double gpsLatitude;
+    public Double gpsLongitude;
 
-    private Double cosLatitude;
-    private Double sinLatitude;
-    private Double cosLongitude;
-    private Double sinLongitude;
+    public Double cosLatitude;
+    public Double sinLatitude;
+    public Double cosLongitude;
+    public Double sinLongitude;
 
     private Boolean recentlyCreated = false;
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -283,44 +293,8 @@ public class Household implements Serializable, Table {
         return ReflectionUtils.getValueByName(this, variableName);
     }
 
-    @Override
     public String getTableName() {
-        return DatabaseHelper.Household.TABLE_NAME;
+        return "household";
     }
 
-    @Override
-    public ContentValues getContentValues() {
-        ContentValues cv = new ContentValues();
-        cv.put(DatabaseHelper.Household.COLUMN_CODE, code);
-        cv.put(DatabaseHelper.Household.COLUMN_NAME, name);
-        cv.put(DatabaseHelper.Household.COLUMN_HEAD_CODE, headCode);
-        cv.put(DatabaseHelper.Household.COLUMN_HEAD_NAME, headName);
-        cv.put(DatabaseHelper.Household.COLUMN_SECHEAD_CODE, secHeadCode);
-        cv.put(DatabaseHelper.Household.COLUMN_REGION, region);
-        cv.put(DatabaseHelper.Household.COLUMN_HIERARCHY_1, hierarchy1);
-        cv.put(DatabaseHelper.Household.COLUMN_HIERARCHY_2, hierarchy2);
-        cv.put(DatabaseHelper.Household.COLUMN_HIERARCHY_3, hierarchy3);
-        cv.put(DatabaseHelper.Household.COLUMN_HIERARCHY_4, hierarchy4);
-        cv.put(DatabaseHelper.Household.COLUMN_HIERARCHY_5, hierarchy5);
-        cv.put(DatabaseHelper.Household.COLUMN_HIERARCHY_6, hierarchy6);
-        cv.put(DatabaseHelper.Household.COLUMN_HIERARCHY_7, hierarchy7);
-        cv.put(DatabaseHelper.Household.COLUMN_HIERARCHY_8, hierarchy8);
-        cv.put(DatabaseHelper.Household.COLUMN_GPS_NULL, gpsNull ? 1 : 0);
-        cv.put(DatabaseHelper.Household.COLUMN_GPS_ACCURACY, gpsAccuracy);
-        cv.put(DatabaseHelper.Household.COLUMN_GPS_ALTITUDE, gpsAltitude);
-        cv.put(DatabaseHelper.Household.COLUMN_GPS_LATITUDE, gpsLatitude);
-        cv.put(DatabaseHelper.Household.COLUMN_GPS_LONGITUDE, gpsLongitude);
-        cv.put(DatabaseHelper.Household.COLUMN_COS_LATITUDE, cosLatitude);
-        cv.put(DatabaseHelper.Household.COLUMN_SIN_LATITUDE, sinLatitude);
-        cv.put(DatabaseHelper.Household.COLUMN_COS_LONGITUDE, cosLongitude);
-        cv.put(DatabaseHelper.Household.COLUMN_SIN_LONGITUDE, sinLongitude);
-        cv.put(DatabaseHelper.Household.COLUMN_RECENTLY_CREATED, recentlyCreated ? 1 : 0);
-
-        return cv;
-    }
-
-    @Override
-    public String[] getColumnNames() {
-        return DatabaseHelper.Household.ALL_COLUMNS;
-    }
 }

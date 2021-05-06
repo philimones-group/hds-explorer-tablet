@@ -10,32 +10,6 @@ public class Converter {
 
 	public static Household cursorToHousehold(Cursor cursor){
 		Household hh = new Household();
-
-		hh.setId(cursor.getInt(cursor.getColumnIndex(DatabaseHelper.Household._ID)));
-		hh.setCode(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Household.COLUMN_CODE)));
-		hh.setName(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Household.COLUMN_NAME)));
-		hh.setHeadCode(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Household.COLUMN_HEAD_CODE)));
-		hh.setHeadName(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Household.COLUMN_HEAD_NAME)));
-		hh.setSecHeadCode(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Household.COLUMN_SECHEAD_CODE)));
-		hh.setRegion(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Household.COLUMN_REGION)));
-		hh.setHierarchy1(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Household.COLUMN_HIERARCHY_1)));
-		hh.setHierarchy2(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Household.COLUMN_HIERARCHY_2)));
-		hh.setHierarchy3(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Household.COLUMN_HIERARCHY_3)));
-		hh.setHierarchy4(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Household.COLUMN_HIERARCHY_4)));
-		hh.setHierarchy5(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Household.COLUMN_HIERARCHY_5)));
-		hh.setHierarchy6(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Household.COLUMN_HIERARCHY_6)));
-		hh.setHierarchy7(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Household.COLUMN_HIERARCHY_7)));
-		hh.setHierarchy8(cursor.getString(cursor.getColumnIndex(DatabaseHelper.Household.COLUMN_HIERARCHY_8)));
-		hh.setGpsNull(cursor.getInt(cursor.getColumnIndex(DatabaseHelper.Household.COLUMN_GPS_NULL))==1);
-		hh.setGpsAccuracy(cursor.getDouble(cursor.getColumnIndex(DatabaseHelper.Household.COLUMN_GPS_ACCURACY)));
-		hh.setGpsAltitude(cursor.getDouble(cursor.getColumnIndex(DatabaseHelper.Household.COLUMN_GPS_ALTITUDE)));
-		hh.setGpsLatitude(cursor.getDouble(cursor.getColumnIndex(DatabaseHelper.Household.COLUMN_GPS_LATITUDE)));
-		hh.setGpsLongitude(cursor.getDouble(cursor.getColumnIndex(DatabaseHelper.Household.COLUMN_GPS_LONGITUDE)));
-		hh.setCosLatitude(cursor.getDouble(cursor.getColumnIndex(DatabaseHelper.Household.COLUMN_COS_LATITUDE)));
-		hh.setSinLatitude(cursor.getDouble(cursor.getColumnIndex(DatabaseHelper.Household.COLUMN_SIN_LATITUDE)));
-		hh.setCosLongitude(cursor.getDouble(cursor.getColumnIndex(DatabaseHelper.Household.COLUMN_COS_LONGITUDE)));
-		hh.setSinLongitude(cursor.getDouble(cursor.getColumnIndex(DatabaseHelper.Household.COLUMN_SIN_LONGITUDE)));
-		hh.setRecentlyCreated(cursor.getInt(cursor.getColumnIndex(DatabaseHelper.Household.COLUMN_RECENTLY_CREATED))==1);
 		
 		return hh;
 	}

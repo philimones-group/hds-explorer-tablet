@@ -18,11 +18,13 @@ import org.philimone.hds.explorer.adapter.MemberArrayAdapter;
 import org.philimone.hds.explorer.data.FormDataLoader;
 import org.philimone.hds.explorer.database.Database;
 import org.philimone.hds.explorer.database.DatabaseHelper;
+import org.philimone.hds.explorer.database.ObjectBoxDatabase;
 import org.philimone.hds.explorer.database.Queries;
 import org.philimone.hds.explorer.model.Household;
 import org.philimone.hds.explorer.model.Member;
 import org.philimone.hds.explorer.widget.member_details.Distance;
 
+import io.objectbox.Box;
 import mz.betainteractive.utilities.math.GpsDistanceCalculator;
 
 import java.text.DecimalFormat;
@@ -52,13 +54,19 @@ public class GpsSearchedListActivity extends Activity {
     private FormDataLoader[] formDataLoaders;
 
     private Database database;
+    private Box<Household> boxHouseholds;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.gps_searched_list);
 
+        initBoxes();
         initialize();
+    }
+
+    private void initBoxes() {
+        this.boxHouseholds = ObjectBoxDatabase.get().boxFor(Household.class);
     }
 
     private void initialize() {
@@ -156,9 +164,7 @@ public class GpsSearchedListActivity extends Activity {
     private Household getHousehold(Member member){
         if (member == null || member.getHouseholdCode()==null) return null;
 
-        database.open();
-        Household household = Queries.getHouseholdBy(database, DatabaseHelper.Household.COLUMN_CODE +"=?", new String[]{ member.getHouseholdCode() });
-        database.close();
+        Household household = Queries.getHouseholdByCode(boxHouseholds, member.getHouseholdCode());
 
         return household;
     }

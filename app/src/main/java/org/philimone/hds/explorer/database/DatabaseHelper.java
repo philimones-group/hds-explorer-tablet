@@ -17,7 +17,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	@Override
 	public void onCreate(SQLiteDatabase db) {
         try {
-		    db.execSQL(CREATE_TABLE_HOUSEHOLD);
 		    db.execSQL(CREATE_TABLE_MEMBER);
         }catch (Exception ex){
             ex.printStackTrace();
@@ -56,41 +55,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
 	}
 
-    public static final String[] ALL_TABLES = {Household.TABLE_NAME, Member.TABLE_NAME };
-
-	public static final class Household implements BaseColumns  {
-		public static final String TABLE_NAME = "household";
-
-        public static final String COLUMN_CODE = "code";
-        public static final String COLUMN_NAME = "name";
-        public static final String COLUMN_HEAD_CODE = "headCode";
-        public static final String COLUMN_HEAD_NAME = "headName";
-        public static final String COLUMN_SECHEAD_CODE = "secHeadCode";
-        public static final String COLUMN_REGION = "region";
-        public static final String COLUMN_HIERARCHY_1 = "hierarchy1";
-        public static final String COLUMN_HIERARCHY_2 = "hierarchy2";
-        public static final String COLUMN_HIERARCHY_3 = "hierarchy3";
-        public static final String COLUMN_HIERARCHY_4 = "hierarchy4";
-        public static final String COLUMN_HIERARCHY_5 = "hierarchy5";
-        public static final String COLUMN_HIERARCHY_6 = "hierarchy6";
-        public static final String COLUMN_HIERARCHY_7 = "hierarchy7";
-        public static final String COLUMN_HIERARCHY_8 = "hierarchy8";
-        public static final String COLUMN_GPS_NULL = "hasGps";
-        public static final String COLUMN_GPS_ACCURACY = "gpsAccuracy";
-        public static final String COLUMN_GPS_ALTITUDE = "gpsAltitude";
-        public static final String COLUMN_GPS_LATITUDE = "gpsLatitude";
-        public static final String COLUMN_GPS_LONGITUDE = "gpsLongitude";
-        public static final String COLUMN_COS_LATITUDE = "cosLatitude";
-        public static final String COLUMN_SIN_LATITUDE = "sinLatitude";
-        public static final String COLUMN_COS_LONGITUDE = "cosLongitude";
-        public static final String COLUMN_SIN_LONGITUDE = "sinLongitude";
-        public static final String COLUMN_RECENTLY_CREATED = "recentlyCreated";
-
-		public static final String[] ALL_COLUMNS = {_ID, COLUMN_CODE, COLUMN_NAME, COLUMN_HEAD_CODE, COLUMN_HEAD_NAME, COLUMN_SECHEAD_CODE, COLUMN_REGION, COLUMN_HIERARCHY_1,
-                COLUMN_HIERARCHY_2, COLUMN_HIERARCHY_3, COLUMN_HIERARCHY_4, COLUMN_HIERARCHY_5, COLUMN_HIERARCHY_6, COLUMN_HIERARCHY_7, COLUMN_HIERARCHY_8,
-                COLUMN_GPS_NULL, COLUMN_GPS_ACCURACY, COLUMN_GPS_ALTITUDE, COLUMN_GPS_LATITUDE, COLUMN_GPS_LONGITUDE,
-                COLUMN_COS_LATITUDE, COLUMN_SIN_LATITUDE, COLUMN_COS_LONGITUDE, COLUMN_SIN_LONGITUDE, COLUMN_RECENTLY_CREATED};
-	}
+    public static final String[] ALL_TABLES = {Member.TABLE_NAME };
 
 	public static final class Member implements BaseColumns  {
 		public static final String TABLE_NAME = "member";
@@ -140,41 +105,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 COLUMN_GPS_NULL, COLUMN_GPS_ACCURACY, COLUMN_GPS_ALTITUDE, COLUMN_GPS_LATITUDE, COLUMN_GPS_LONGITUDE,
                 COLUMN_COS_LATITUDE, COLUMN_SIN_LATITUDE, COLUMN_COS_LONGITUDE, COLUMN_SIN_LONGITUDE, COLUMN_RECENTLY_CREATED};
 	}
-
-    private static final String CREATE_TABLE_HOUSEHOLD = " "
-            + "CREATE TABLE " + Household.TABLE_NAME + "("
-            + Household._ID  + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-            + Household.COLUMN_CODE + " TEXT,"
-            + Household.COLUMN_HEAD_CODE + " TEXT,"
-            + Household.COLUMN_HEAD_NAME + " TEXT,"
-            + Household.COLUMN_SECHEAD_CODE + " TEXT,"
-            + Household.COLUMN_NAME + " TEXT,"
-            + Household.COLUMN_REGION + " TEXT,"
-            + Household.COLUMN_HIERARCHY_1 + " TEXT,"
-            + Household.COLUMN_HIERARCHY_2 + " TEXT,"
-            + Household.COLUMN_HIERARCHY_3 + " TEXT,"
-            + Household.COLUMN_HIERARCHY_4 + " TEXT,"
-            + Household.COLUMN_HIERARCHY_5 + " TEXT,"
-            + Household.COLUMN_HIERARCHY_6 + " TEXT,"
-            + Household.COLUMN_HIERARCHY_7 + " TEXT,"
-            + Household.COLUMN_HIERARCHY_8 + " TEXT,"
-            + Household.COLUMN_GPS_NULL + " INTEGER,"
-            + Household.COLUMN_GPS_ACCURACY + " REAL,"
-            + Household.COLUMN_GPS_ALTITUDE + " REAL,"
-            + Household.COLUMN_GPS_LATITUDE + " REAL,"
-            + Household.COLUMN_GPS_LONGITUDE + " REAL,"
-            + Household.COLUMN_COS_LATITUDE + " REAL,"
-            + Household.COLUMN_SIN_LATITUDE + " REAL,"
-            + Household.COLUMN_COS_LONGITUDE + " REAL,"
-            + Household.COLUMN_SIN_LONGITUDE + " REAL,"
-            + Household.COLUMN_RECENTLY_CREATED + " INTEGER);"
-
-            + " CREATE UNIQUE INDEX IDX_HOUSEHOLD_CODE ON " + Household.TABLE_NAME
-            + "(" +  Household.COLUMN_CODE + ");"
-
-            + " CREATE UNIQUE INDEX IDX_HOUSEHOLD_NUMBER ON " + Household.TABLE_NAME
-            + "(" +  Household.COLUMN_NAME + ");"
-            ;
 
     private static final String CREATE_TABLE_MEMBER = " "
             + "CREATE TABLE " + Member.TABLE_NAME + "("

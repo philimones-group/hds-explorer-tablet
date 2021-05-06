@@ -69,6 +69,7 @@ public class SurveyHouseholdsActivity extends Activity implements HouseholdFilte
     private Box<CollectedData> boxCollectedData;
     private Box<Form> boxForms;
     private Box<Dataset> boxDatasets;
+    private Box<Household> boxHouseholds;
 
     private final int MEMBER_DETAILS_REQUEST_CODE = 31;
 
@@ -95,6 +96,7 @@ public class SurveyHouseholdsActivity extends Activity implements HouseholdFilte
         this.boxCollectedData = ObjectBoxDatabase.get().boxFor(CollectedData.class);
         this.boxForms = ObjectBoxDatabase.get().boxFor(Form.class);
         this.boxDatasets = ObjectBoxDatabase.get().boxFor(Dataset.class);
+        this.boxHouseholds = ObjectBoxDatabase.get().boxFor(Household.class);
     }
 
     private void initialize() {
@@ -388,10 +390,7 @@ public class SurveyHouseholdsActivity extends Activity implements HouseholdFilte
     private Household getHousehold(String code){
         if (code == null) return null;
 
-        Database database = new Database(this);
-        database.open();
-        Household household = Queries.getHouseholdBy(database, DatabaseHelper.Household.COLUMN_CODE+"=?", new String[]{ code });
-        database.close();
+        Household household = Queries.getHouseholdByCode(this.boxHouseholds, code);
 
         return household;
     }
@@ -499,18 +498,17 @@ public class SurveyHouseholdsActivity extends Activity implements HouseholdFilte
         //Log.d("saving-xml", "hhname:"+houseName+", hdcode:"+headCode+", hdname:"+headName);
 
         //put update content on cv
-        ContentValues cv = new ContentValues();
-        cv.put(DatabaseHelper.Household.COLUMN_NAME, houseName);
-        cv.put(DatabaseHelper.Household.COLUMN_HEAD_CODE, headCode);
-        cv.put(DatabaseHelper.Household.COLUMN_HEAD_NAME, headName);
-
-        ContentValues cvh = new ContentValues();
-        cvh.put(DatabaseHelper.Member.COLUMN_HOUSEHOLD_NAME, houseName);
+        household.setName(houseName);
+        household.setHeadCode(headCode);
+        household.setHeadName(headName);
 
         //Execute db update
+        this.boxHouseholds.put(household);
+
         Database db = new Database(this);
         db.open();
-        db.update(Household.class, cv, DatabaseHelper.Household._ID+"=?", new String[]{ household.getId()+"" } );
+        ContentValues cvh = new ContentValues();
+        cvh.put(DatabaseHelper.Member.COLUMN_HOUSEHOLD_NAME, houseName);
         //Update all members of the household
         db.update(Member.class, cvh, DatabaseHelper.Member.COLUMN_HOUSEHOLD_CODE +"=?", new String[]{ household.getCode()+"" } );
         db.close();
@@ -542,8 +540,7 @@ public class SurveyHouseholdsActivity extends Activity implements HouseholdFilte
         cv.put(DatabaseHelper.Member.COLUMN_DOB, memberDob);
 
         //update head name if the member is household head
-        ContentValues cvh = new ContentValues();
-        cvh.put(DatabaseHelper.Household.COLUMN_HEAD_NAME, memberName);
+        household.setHeadName(memberName);
 
         member.setName(memberName);
         member.setGender(memberName);
@@ -554,31 +551,17 @@ public class SurveyHouseholdsActivity extends Activity implements HouseholdFilte
         Database db = new Database(this);
         db.open();
         db.update(Member.class, cv, DatabaseHelper.Member._ID+"=?", new String[]{ member.getId()+"" } );
-
         Log.d("heading", "head-code="+household.getHeadCode()+", member.code="+member.getCode());
+        db.close();
 
         if (household.getHeadCode().equals(member.getCode())){ //is household head
             Log.d("heading-2", "head-code="+household.getHeadCode()+", member.code="+member.getCode());
-            db.update(Household.class, cvh, DatabaseHelper.Household._ID+"=?", new String[]{ household.getId()+"" } );
+            this.boxHouseholds.put(household);
         }
-
-        db.close();
     }
 
     private void updateHouseholdHead(Household household, Member headMember) {
         //get household collected data
-
-        ContentValues cv = new ContentValues();
-        cv.put("head_code", headMember.getCode());
-        cv.put("head_name", headMember.getName());
-
-        ContentValues cvDomain = new ContentValues();
-        cvDomain.put(DatabaseHelper.Household.COLUMN_HEAD_CODE, headMember.getCode());
-        cvDomain.put(DatabaseHelper.Household.COLUMN_HEAD_NAME, headMember.getName());
-
-        Database database = new Database(this);
-        database.open();
-
         //get collected data
         CollectedData collectedData = this.boxCollectedData.query().equal(CollectedData_.formId, "census_household")
                                                            .and().equal(CollectedData_.recordId, household.getId())
@@ -587,9 +570,7 @@ public class SurveyHouseholdsActivity extends Activity implements HouseholdFilte
         //update the household domain table
         household.setHeadCode(headMember.getCode());
         household.setHeadName(headMember.getName());
-        database.update(Household.class, cvDomain, DatabaseHelper.Household._ID+"=?", new String[]{ household.getId()+"" } );
-
-        database.close();
+        this.boxHouseholds.put(household);
 
         if (collectedData != null){ //update the xml form
             String uriString = collectedData.getFormUri();
@@ -599,6 +580,10 @@ public class SurveyHouseholdsActivity extends Activity implements HouseholdFilte
             String xmlFilePath = formLoadTask.getXmlFilePath();
 
             Log.d("xmlPath", ""+xmlFilePath);
+
+            ContentValues cv = new ContentValues();
+            cv.put("head_code", headMember.getCode());
+            cv.put("head_name", headMember.getName());
 
             FormUpdater formUpdater = new FormUpdater(xmlFilePath, cv);
             formUpdater.update();

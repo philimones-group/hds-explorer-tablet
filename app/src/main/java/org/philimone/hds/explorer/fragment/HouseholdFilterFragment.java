@@ -41,6 +41,7 @@ import org.philimone.hds.explorer.model.ApplicationParam;
 import org.philimone.hds.explorer.model.ApplicationParam_;
 import org.philimone.hds.explorer.model.Form;
 import org.philimone.hds.explorer.model.Household;
+import org.philimone.hds.explorer.model.Household_;
 import org.philimone.hds.explorer.model.Region;
 import org.philimone.hds.explorer.model.User;
 import org.philimone.hds.explorer.widget.DialogFactory;
@@ -103,6 +104,7 @@ public class HouseholdFilterFragment extends Fragment implements RegionExpandabl
     private Database database;
     private Box<ApplicationParam> boxAppParams;
     private Box<Region> boxRegions;
+    private Box<Household> boxHouseholds;
 
     private RegionExpandableListAdapter regionAdapter;
     private Region currentRegion;
@@ -136,6 +138,7 @@ public class HouseholdFilterFragment extends Fragment implements RegionExpandabl
     private void initBoxes() {
         this.boxAppParams = ObjectBoxDatabase.get().boxFor(ApplicationParam.class);
         this.boxRegions = ObjectBoxDatabase.get().boxFor(Region.class);
+        this.boxHouseholds = ObjectBoxDatabase.get().boxFor(Household.class);
     }
 
     private void initialize(View view) {
@@ -657,27 +660,9 @@ public class HouseholdFilterFragment extends Fragment implements RegionExpandabl
 
     public HouseholdArrayAdapter loadHouseholdsByFilters(String houseCode) {
         //open loader
-
-        //search on database
-        List<Household> households = new ArrayList<>();
-        List<String> whereValues = new ArrayList<>();
-        String[] arrayWhereValues;
-
-        String whereClause = DatabaseHelper.Household.COLUMN_CODE + " like ?";
-        whereValues.add(houseCode+"%");
-
-        arrayWhereValues = new String[whereValues.size()];
-
         //search
-        database.open();
 
-        Cursor cursor = database.query(Household.class, DatabaseHelper.Household.ALL_COLUMNS, whereClause, whereValues.toArray(arrayWhereValues), null, null, DatabaseHelper.Household.COLUMN_CODE);
-
-        while (cursor.moveToNext()){
-            households.add(Converter.cursorToHousehold(cursor));
-        }
-
-        database.close();
+        List<Household> households = this.boxHouseholds.query().startsWith(Household_.code, houseCode).orderDesc(Household_.code).build().find();
 
         HouseholdArrayAdapter currentAdapter = new HouseholdArrayAdapter(this.getActivity(), households);
 

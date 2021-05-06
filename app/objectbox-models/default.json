@@ -575,10 +575,160 @@
         }
       ],
       "relations": []
+    },
+    {
+      "id": "11:1466558823270581169",
+      "lastPropertyId": "25:2364984090495430109",
+      "name": "Household",
+      "properties": [
+        {
+          "id": "1:1638240917441647114",
+          "name": "id",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:4921649588996848032",
+          "name": "code",
+          "indexId": "15:3332887218290296762",
+          "type": 9,
+          "flags": 2080
+        },
+        {
+          "id": "3:8328298878910533511",
+          "name": "region",
+          "indexId": "16:2522395591521238536",
+          "type": 9,
+          "flags": 2048
+        },
+        {
+          "id": "4:8172390383924435452",
+          "name": "name",
+          "type": 9
+        },
+        {
+          "id": "5:2253530515774218503",
+          "name": "headCode",
+          "indexId": "17:4520537242163148738",
+          "type": 9,
+          "flags": 2048
+        },
+        {
+          "id": "6:1624772076507935490",
+          "name": "headName",
+          "type": 9
+        },
+        {
+          "id": "7:5002581038657501663",
+          "name": "secHeadCode",
+          "type": 9
+        },
+        {
+          "id": "8:3893821040178642382",
+          "name": "hierarchy1",
+          "type": 9
+        },
+        {
+          "id": "9:2970487374586438469",
+          "name": "hierarchy2",
+          "type": 9
+        },
+        {
+          "id": "10:8448487507980643695",
+          "name": "hierarchy3",
+          "type": 9
+        },
+        {
+          "id": "11:8523525445573656446",
+          "name": "hierarchy4",
+          "type": 9
+        },
+        {
+          "id": "12:4406893278783189250",
+          "name": "hierarchy5",
+          "type": 9
+        },
+        {
+          "id": "13:1543104243065200096",
+          "name": "hierarchy6",
+          "type": 9
+        },
+        {
+          "id": "14:7101425740232320414",
+          "name": "hierarchy7",
+          "type": 9
+        },
+        {
+          "id": "15:8923221075168459005",
+          "name": "hierarchy8",
+          "type": 9
+        },
+        {
+          "id": "16:7128772223710667049",
+          "name": "gpsNull",
+          "type": 1,
+          "flags": 4
+        },
+        {
+          "id": "17:7254466909449227124",
+          "name": "gpsAccuracy",
+          "type": 8,
+          "flags": 2
+        },
+        {
+          "id": "18:8398307957546037181",
+          "name": "gpsAltitude",
+          "type": 8,
+          "flags": 2
+        },
+        {
+          "id": "19:9150192127574834997",
+          "name": "gpsLatitude",
+          "type": 8,
+          "flags": 2
+        },
+        {
+          "id": "20:1200263450823692865",
+          "name": "gpsLongitude",
+          "type": 8,
+          "flags": 2
+        },
+        {
+          "id": "21:215620516736193895",
+          "name": "cosLatitude",
+          "type": 8,
+          "flags": 2
+        },
+        {
+          "id": "22:3367146530009920724",
+          "name": "sinLatitude",
+          "type": 8,
+          "flags": 2
+        },
+        {
+          "id": "23:6644892540952340540",
+          "name": "cosLongitude",
+          "type": 8,
+          "flags": 2
+        },
+        {
+          "id": "24:3894124192035512250",
+          "name": "sinLongitude",
+          "type": 8,
+          "flags": 2
+        },
+        {
+          "id": "25:2364984090495430109",
+          "name": "recentlyCreated",
+          "type": 1,
+          "flags": 2
+        }
+      ],
+      "relations": []
     }
   ],
-  "lastEntityId": "10:2873149277005959271",
-  "lastIndexId": "14:5431873462126234185",
+  "lastEntityId": "11:1466558823270581169",
+  "lastIndexId": "17:4520537242163148738",
   "lastRelationId": "0:0",
   "lastSequenceId": "0:0",
   "modelVersion": 5,

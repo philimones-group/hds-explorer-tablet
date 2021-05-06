@@ -96,6 +96,8 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 	private Box<Dataset> boxDatasets;
 	private Box<TrackingList> boxTrackingLists;
 	private Box<TrackingSubjectList> boxTrackingSubjects;
+	private Box<Household> boxHouseholds;
+	private Box<Member> boxMembers;
 
 	private boolean canceled;
 
@@ -123,6 +125,8 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 		this.boxDatasets = ObjectBoxDatabase.get().boxFor(Dataset.class);
 		this.boxTrackingLists = ObjectBoxDatabase.get().boxFor(TrackingList.class);
 		this.boxTrackingSubjects = ObjectBoxDatabase.get().boxFor(TrackingSubjectList.class);
+		this.boxHouseholds = ObjectBoxDatabase.get().boxFor(Household.class);
+		this.boxMembers = ObjectBoxDatabase.get().boxFor(Member.class);
 	}
 
 	private Database getDatabase(){
@@ -262,12 +266,12 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 						processUrl(baseurl + API_PATH + "/regions/zip", "regions.zip");
 						break;
 					case HOUSEHOLDS:
-						deleteAll(Household.class);
+						this.boxHouseholds.removeAll();
 						processUrl(baseurl + API_PATH + "/households/zip", "households.zip");
 						break;
 					case MEMBERS:
-						deleteAll(Member.class);
-						boxCollectedData.removeAll();
+						this.boxMembers.removeAll();
+						this.boxCollectedData.removeAll();
 						processUrl(baseurl + API_PATH + "/members/zip", "members.zip");
 						break;
 				}
@@ -1438,24 +1442,19 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 		//clear sync_report
 		updateSyncReport(SyncEntity.HOUSEHOLDS, null, SyncStatus.STATUS_NOT_SYNCED);
 
-		List<Table> values = new ArrayList<>();
+		List<Household> values = new ArrayList<>();
 		int count = 0;
 		values.clear();
 
 		parser.nextTag();
-
-		Database database = getDatabase();
-		database.open();
-		database.beginTransaction();
 
 		while (notEndOfXmlDoc("households", parser)) {
 			count++;
 
 			Household table = new Household();
 
-
             parser.nextTag(); //process <code>
-            if (!isEmptyTag(DatabaseHelper.Household.COLUMN_CODE, parser)) {
+            if (!isEmptyTag("code", parser)) {
                 parser.next();
                 table.setCode(parser.getText());
                 parser.nextTag(); //process </code>
@@ -1465,7 +1464,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
             }
 
 			parser.nextTag(); //process <region>
-			if (!isEmptyTag(DatabaseHelper.Household.COLUMN_REGION, parser)) {
+			if (!isEmptyTag("region", parser)) {
 				parser.next();
 				table.setRegion(parser.getText());
 				parser.nextTag(); //process </region>
@@ -1475,7 +1474,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 			}
 
             parser.nextTag(); //process <houseNumber>
-            if (!isEmptyTag(DatabaseHelper.Household.COLUMN_NAME, parser)) {
+            if (!isEmptyTag("name", parser)) {
                 parser.next();
                 table.setName(parser.getText());
                 parser.nextTag(); //process </houseNumber>
@@ -1485,7 +1484,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
             }
 
             parser.nextTag(); //process <headCode>
-            if (!isEmptyTag(DatabaseHelper.Household.COLUMN_HEAD_CODE, parser)) {
+            if (!isEmptyTag("headCode", parser)) {
                 parser.next();
                 table.setHeadCode(parser.getText());
                 parser.nextTag(); //process </headCode>
@@ -1495,7 +1494,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
             }
 
 			parser.nextTag(); //process <headName>
-			if (!isEmptyTag(DatabaseHelper.Household.COLUMN_HEAD_NAME, parser)) {
+			if (!isEmptyTag("headName", parser)) {
 				parser.next();
 				table.setHeadName(parser.getText());
 				parser.nextTag(); //process </headName>
@@ -1504,8 +1503,8 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 				parser.nextTag();
 			}
 
-            parser.nextTag(); //process <subsHeadCode>
-            if (!isEmptyTag(DatabaseHelper.Household.COLUMN_SECHEAD_CODE, parser)) {
+            parser.nextTag(); //process <secHeadCode>
+            if (!isEmptyTag("secHeadCode", parser)) {
                 parser.next();
                 table.setSecHeadCode(parser.getText());
                 parser.nextTag(); //process </subsHeadCode>
@@ -1515,7 +1514,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
             }
 
             parser.nextTag(); //process <hierarchy1>
-            if (!isEmptyTag(DatabaseHelper.Household.COLUMN_HIERARCHY_1, parser)) {
+            if (!isEmptyTag("hierarchy1", parser)) {
                 parser.next();
                 table.setHierarchy1(parser.getText());
                 parser.nextTag(); //process </hierarchy1>
@@ -1525,7 +1524,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
             }
 
             parser.nextTag(); //process <hierarchy2>
-            if (!isEmptyTag(DatabaseHelper.Household.COLUMN_HIERARCHY_2, parser)) {
+            if (!isEmptyTag("hierarchy2", parser)) {
                 parser.next();
                 table.setHierarchy2(parser.getText());
                 parser.nextTag(); //process </hierarchy2>
@@ -1535,7 +1534,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
             }
 
             parser.nextTag(); //process <hierarchy3>
-            if (!isEmptyTag(DatabaseHelper.Household.COLUMN_HIERARCHY_3, parser)) {
+            if (!isEmptyTag("hierarchy3", parser)) {
                 parser.next();
                 table.setHierarchy3(parser.getText());
                 parser.nextTag(); //process </hierarchy3>
@@ -1545,7 +1544,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
             }
 
             parser.nextTag(); //process <hierarchy4>
-            if (!isEmptyTag(DatabaseHelper.Household.COLUMN_HIERARCHY_4, parser)) {
+            if (!isEmptyTag("hierarchy4", parser)) {
                 parser.next();
                 table.setHierarchy4(parser.getText());
                 parser.nextTag(); //process </hierarchy4>
@@ -1555,7 +1554,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
             }
 
 			parser.nextTag(); //process <hierarchy5>
-			if (!isEmptyTag(DatabaseHelper.Household.COLUMN_HIERARCHY_5, parser)) {
+			if (!isEmptyTag("hierarchy5", parser)) {
 				parser.next();
 				table.setHierarchy5(parser.getText());
 				parser.nextTag(); //process </hierarchy5>
@@ -1565,7 +1564,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 			}
 
 			parser.nextTag(); //process <hierarchy6>
-			if (!isEmptyTag(DatabaseHelper.Household.COLUMN_HIERARCHY_6, parser)) {
+			if (!isEmptyTag("hierarchy6", parser)) {
 				parser.next();
 				table.setHierarchy6(parser.getText());
 				parser.nextTag(); //process </hierarchy6>
@@ -1575,7 +1574,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 			}
 
 			parser.nextTag(); //process <hierarchy7>
-			if (!isEmptyTag(DatabaseHelper.Household.COLUMN_HIERARCHY_7, parser)) {
+			if (!isEmptyTag("hierarchy7", parser)) {
 				parser.next();
 				table.setHierarchy7(parser.getText());
 				parser.nextTag(); //process </hierarchy7>
@@ -1585,7 +1584,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 			}
 
 			parser.nextTag(); //process <hierarchy8>
-			if (!isEmptyTag(DatabaseHelper.Household.COLUMN_HIERARCHY_8, parser)) {
+			if (!isEmptyTag("hierarchy8", parser)) {
 				parser.next();
 				table.setHierarchy8(parser.getText());
 				parser.nextTag(); //process </hierarchy8>
@@ -1595,7 +1594,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 			}
 
             parser.nextTag(); //process <gpsAccuracy>
-            if (!isEmptyTag(DatabaseHelper.Household.COLUMN_GPS_ACCURACY, parser)) {
+            if (!isEmptyTag("gpsAccuracy", parser)) {
                 parser.next();
                 table.setGpsAccuracy(StringUtil.toDouble(parser.getText()));
                 parser.nextTag(); //process </gpsAccuracy>
@@ -1608,7 +1607,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
             }
 
             parser.nextTag(); //process <gpsAltitude>
-            if (!isEmptyTag(DatabaseHelper.Household.COLUMN_GPS_ALTITUDE, parser)) {
+            if (!isEmptyTag("gpsAltitude", parser)) {
                 parser.next();
                 table.setGpsAltitude(StringUtil.toDouble(parser.getText()));
                 parser.nextTag(); //process </gpsAltitude>
@@ -1619,7 +1618,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
             }
 
             parser.nextTag(); //process <gpsLatitude>
-            if (!isEmptyTag(DatabaseHelper.Household.COLUMN_GPS_LATITUDE, parser)) {
+            if (!isEmptyTag("gpsLatitude", parser)) {
                 parser.next();
                 table.setGpsLatitude(StringUtil.toDouble(parser.getText()));
 				table.setCosLatitude(Math.cos(table.getGpsLatitude()*Math.PI / 180.0)); // cos_lat = cos(lat * PI / 180)
@@ -1632,7 +1631,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
             }
 
             parser.nextTag(); //process <gpsLongitude>
-            if (!isEmptyTag(DatabaseHelper.Household.COLUMN_GPS_LONGITUDE, parser)) {
+            if (!isEmptyTag("gpsLongitude", parser)) {
                 parser.next();
                 table.setGpsLongitude(StringUtil.toDouble(parser.getText()));
 				table.setCosLongitude(Math.cos(table.getGpsLongitude()*Math.PI / 180.0)); // cos_lng = cos(lng * PI / 180)
@@ -1649,11 +1648,13 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 			parser.nextTag(); //last process tag
 			parser.next();
 
-			//values.add(table);
+			values.add(table);
 
-			database.insert(table);
+			//database.insert(table);
 
-			if (count % 100 == 0){
+			if (count % 500 == 0){
+				this.boxHouseholds.put(values); //try with runTx
+				values.clear();
 				savedValues.put(entity, count); //publish progress is a bit slow - its not reporting well the numbers
 				publishProgress(count);
 			}
@@ -1661,11 +1662,11 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 
 		}
 
-		publishProgress(count);
+		if (!values.isEmpty()) {
+			this.boxHouseholds.put(values);
+		}
 
-		database.setTransactionSuccessful();
-		database.endTransaction();
-		database.close();
+		publishProgress(count);
 
 		updateSyncReport(SyncEntity.HOUSEHOLDS, new Date(), SyncStatus.STATUS_SYNCED);
 	}

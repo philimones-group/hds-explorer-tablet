@@ -27,6 +27,7 @@ import org.philimone.hds.explorer.model.CollectedData_;
 import org.philimone.hds.explorer.model.Dataset;
 import org.philimone.hds.explorer.model.Form;
 import org.philimone.hds.explorer.model.Household;
+import org.philimone.hds.explorer.model.Household_;
 import org.philimone.hds.explorer.model.Member;
 import org.philimone.hds.explorer.model.Region;
 import org.philimone.hds.explorer.model.Region_;
@@ -71,6 +72,7 @@ public class TrackingListDetailsActivity extends Activity implements BarcodeScan
     private Box<Dataset> boxDatasets;
     private Box<TrackingList> boxTrackingLists;
     private Box<TrackingSubjectList> boxTrackingSubjects;
+    private Box<Household> boxHouseholds;
 
     private LoadingDialog loadingDialog;
 
@@ -110,6 +112,7 @@ public class TrackingListDetailsActivity extends Activity implements BarcodeScan
         this.boxDatasets = ObjectBoxDatabase.get().boxFor(Dataset.class);
         this.boxTrackingLists = ObjectBoxDatabase.get().boxFor(TrackingList.class);
         this.boxTrackingSubjects = ObjectBoxDatabase.get().boxFor(TrackingSubjectList.class);
+        this.boxHouseholds = ObjectBoxDatabase.get().boxFor(Household.class);
     }
 
     private void initialize() {
@@ -235,10 +238,7 @@ public class TrackingListDetailsActivity extends Activity implements BarcodeScan
     private Household getHousehold(Member member){
         if (member == null || member.getHouseholdCode()==null) return null;
 
-
-        database.open();
-        Household household = Queries.getHouseholdBy(database, DatabaseHelper.Household.COLUMN_CODE +"=?", new String[]{ member.getHouseholdCode() });
-        database.close();
+        Household household = Queries.getHouseholdByCode(boxHouseholds, member.getHouseholdCode());
 
         return household;
     }
@@ -408,10 +408,10 @@ public class TrackingListDetailsActivity extends Activity implements BarcodeScan
     }
 
     private List<Household> getHouseholds(List<String> codes){
-        Database db = new Database(this);
-        db.open();
-        List<Household> households = Queries.getAllHouseholdBy(db, DatabaseHelper.Household.COLUMN_CODE +" IN ("+ StringUtil.toInClause(codes) +")", null);
-        db.close();
+
+        String[] codesArray = codes.toArray(new String[codes.size()]);
+
+        List<Household> households = this.boxHouseholds.query().in(Household_.code, codesArray).build().find();
 
         if (households==null) return new ArrayList<>();
 

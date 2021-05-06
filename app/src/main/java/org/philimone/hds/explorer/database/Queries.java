@@ -6,6 +6,7 @@ import org.philimone.hds.explorer.model.ApplicationParam;
 import org.philimone.hds.explorer.model.ApplicationParam_;
 import org.philimone.hds.explorer.model.Form;
 import org.philimone.hds.explorer.model.Household;
+import org.philimone.hds.explorer.model.Household_;
 import org.philimone.hds.explorer.model.Member;
 import org.philimone.hds.explorer.model.SyncReport;
 import org.philimone.hds.explorer.model.SyncReport_;
@@ -43,29 +44,10 @@ public class Queries {
         return report;
     }
 
-    public static Household getHouseholdBy(Database database, String whereClause, String[] clauseArgs){
-        Household household = null;
-
-        Cursor cursor = database.query(Household.class, whereClause, clauseArgs, null, null, null);
-
-        if (cursor.moveToFirst()){
-            household = Converter.cursorToHousehold(cursor);
-        }
+    public static Household getHouseholdByCode(Box<Household> box, String code){
+        Household household = box.query().equal(Household_.code, code).build().findFirst();
 
         return household;
-    }
-
-    public static List<Household> getAllHouseholdBy(Database database, String whereClause, String[] clauseArgs){
-        List<Household> list = new ArrayList<>();
-
-        Cursor cursor = database.query(Household.class, whereClause, clauseArgs, null, null, null);
-
-        while (cursor.moveToNext()){
-            Household household = Converter.cursorToHousehold(cursor);
-            list.add(household);
-        }
-
-        return list;
     }
 
     public static Member getMemberBy(Database database, String whereClause, String[] clauseArgs){

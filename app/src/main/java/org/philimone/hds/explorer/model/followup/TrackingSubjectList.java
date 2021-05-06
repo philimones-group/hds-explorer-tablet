@@ -1,36 +1,41 @@
 package org.philimone.hds.explorer.model.followup;
 
-import android.content.ContentValues;
-
-import org.philimone.hds.explorer.database.DatabaseHelper;
-import org.philimone.hds.explorer.database.Table;
-
 import java.io.Serializable;
 
-public class TrackingSubjectList implements Serializable, Table {
+import io.objectbox.annotation.Entity;
+import io.objectbox.annotation.Id;
+import io.objectbox.annotation.Index;
+
+@Entity
+public class TrackingSubjectList implements Serializable {
 
     public static String TYPE_REGION = "Region";
     public static String TYPE_HOUSEHOLD = "Household";
     public static String TYPE_MEMBER = "Member";
     public static String TYPE_USER = "User";
 
-    private int id;
-    private int listId;     /* Id of the MemberList */
-    private int trackingId; /* Id of the TrackingList/Follow-up List */
-    private String title;   /* Title of the List */
-    private String forms;   /* List of the Forms that all Members will have to collect */
+    @Id
+    public long id;
+    public int listId;     /* Id of the MemberList */
+    @Index
+    public long trackingId; /* Id of the TrackingList/Follow-up List */
+    public String title;   /* Title of the List */
+    @Index
+    public String forms;   /* List of the Forms that all Members will have to collect */
 
-    private String subjectCode;
-    private String subjectType;
-    private String subjectForms;
-    private int subjectVisit;
-    private Double completionRate;
+    @Index
+    public String subjectCode;
+    public String subjectType;
+    @Index
+    public String subjectForms;
+    public int subjectVisit;
+    public Double completionRate;
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -42,11 +47,11 @@ public class TrackingSubjectList implements Serializable, Table {
         this.listId = listId;
     }
 
-    public int getTrackingId() {
+    public long getTrackingId() {
         return trackingId;
     }
 
-    public void setTrackingId(int trackingId) {
+    public void setTrackingId(long trackingId) {
         this.trackingId = trackingId;
     }
 
@@ -118,33 +123,8 @@ public class TrackingSubjectList implements Serializable, Table {
         this.completionRate = completionRate;
     }
 
-    @Override
     public String getTableName() {
-        return DatabaseHelper.TrackingSubjectList.TABLE_NAME;
+        return "tracking_subject_list";
     }
 
-    @Override
-    public ContentValues getContentValues() {
-        ContentValues cv = new ContentValues();
-
-        cv.put(DatabaseHelper.TrackingSubjectList.COLUMN_LIST_ID, listId);
-        cv.put(DatabaseHelper.TrackingSubjectList.COLUMN_TRACKING_ID, trackingId);
-        cv.put(DatabaseHelper.TrackingSubjectList.COLUMN_TITLE, title);
-        cv.put(DatabaseHelper.TrackingSubjectList.COLUMN_FORMS, forms);
-
-        cv.put(DatabaseHelper.TrackingSubjectList.COLUMN_SUBJECT_CODE, subjectCode);
-        cv.put(DatabaseHelper.TrackingSubjectList.COLUMN_SUBJECT_TYPE, subjectType);
-        cv.put(DatabaseHelper.TrackingSubjectList.COLUMN_SUBJECT_VISIT, subjectVisit);
-        cv.put(DatabaseHelper.TrackingSubjectList.COLUMN_SUBJECT_FORMS, subjectForms);
-
-        cv.put(DatabaseHelper.TrackingSubjectList.COLUMN_COMPLETION_RATE, completionRate);
-
-
-        return cv;
-    }
-
-    @Override
-    public String[] getColumnNames() {
-        return DatabaseHelper.TrackingSubjectList.ALL_COLUMNS;
-    }
 }

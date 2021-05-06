@@ -30,6 +30,7 @@ import org.philimone.hds.explorer.model.enums.SyncEntity;
 import org.philimone.hds.explorer.model.enums.SyncState;
 import org.philimone.hds.explorer.model.enums.SyncStatus;
 import org.philimone.hds.explorer.model.followup.TrackingList;
+import org.philimone.hds.explorer.model.followup.TrackingSubjectList;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
@@ -93,6 +94,8 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 	private Box<User> boxUsers;
 	private Box<Region> boxRegions;
 	private Box<Dataset> boxDatasets;
+	private Box<TrackingList> boxTrackingLists;
+	private Box<TrackingSubjectList> boxTrackingSubjects;
 
 	private boolean canceled;
 
@@ -118,6 +121,8 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 		this.boxUsers = ObjectBoxDatabase.get().boxFor(User.class);
 		this.boxRegions = ObjectBoxDatabase.get().boxFor(Region.class);
 		this.boxDatasets = ObjectBoxDatabase.get().boxFor(Dataset.class);
+		this.boxTrackingLists = ObjectBoxDatabase.get().boxFor(TrackingList.class);
+		this.boxTrackingSubjects = ObjectBoxDatabase.get().boxFor(TrackingSubjectList.class);
 	}
 
 	private Database getDatabase(){
@@ -244,8 +249,8 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 						downloadExternalDatasetFiles();
 						break;
 					case TRACKING_LISTS: /*testing*/
-						deleteAll(DatabaseHelper.TrackingList.TABLE_NAME);
-						deleteAll(DatabaseHelper.TrackingSubjectList.TABLE_NAME);
+						this.boxTrackingLists.removeAll();
+						this.boxTrackingSubjects.removeAll();
 						processUrl(baseurl + API_PATH + "/trackinglists/zip", "trackinglists.zip");
 						break;
 					case USERS:
@@ -1103,15 +1108,12 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 		//clear sync_report
 		updateSyncReport(SyncEntity.TRACKING_LISTS, null, SyncStatus.STATUS_NOT_SYNCED);
 
-		List<Table> values = new ArrayList<>();
+		List<TrackingList> values = new ArrayList<>();
+		List<TrackingSubjectList> valuesTs = new ArrayList<>();
 		int tlistCount = 0;
 		values.clear();
 
 		parser.nextTag();
-
-		Database database = getDatabase();
-		database.open();
-		database.beginTransaction();
 
 		while (notEndOfXmlDoc("trackinglists", parser)) {
 
@@ -1120,7 +1122,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 				continue;
 			}
 
-			int trackingId = 0;
+			long trackingId = 0;
 			String trlId = null;
 			String trlCode = null;
 			String trlName = null;
@@ -1153,7 +1155,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 				trackingList.setModule(trlModule);
 				trackingList.setCompletionRate(0D);
 
-				trackingId = (int) database.insert(trackingList); //insert on db
+				trackingId = this.boxTrackingLists.put(trackingList); //insert on db
 			}
 
 			//read lists
@@ -1209,30 +1211,25 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 							tml.setSubjectVisit(Integer.parseInt(mVisit));
 						}
 
-						database.insert(tml);
+						//this.boxTrackingSubjects.put(tml);
+						valuesTs.add(tml);
 
 					}
 					parser.nextTag();
 					parser.nextTag(); //jump to next tag eg. <member> or </list>
 				}
 
+				if (!valuesTs.isEmpty()) {
+					this.boxTrackingSubjects.put(valuesTs);
+					valuesTs.clear();
+				}
+
 			}
-
-
-           /*
-
-			//values.add(table);
-			database.insert(table);
-			*/
 
 			savedValues.put(entity, tlistCount); //publish progress is a bit slow - its not reporting well the numbers
 			publishProgress(tlistCount);
 
 		}
-
-		database.setTransactionSuccessful();
-		database.endTransaction();
-		database.close();
 
 		updateSyncReport(SyncEntity.TRACKING_LISTS, new Date(), SyncStatus.STATUS_SYNCED);
 	}

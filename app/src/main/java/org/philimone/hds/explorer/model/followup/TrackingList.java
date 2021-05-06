@@ -1,30 +1,34 @@
 package org.philimone.hds.explorer.model.followup;
 
-import android.content.ContentValues;
-
-import org.philimone.hds.explorer.database.DatabaseHelper;
-import org.philimone.hds.explorer.database.Table;
-
 import java.io.Serializable;
+
+import io.objectbox.annotation.Entity;
+import io.objectbox.annotation.Id;
+import io.objectbox.annotation.Index;
+import io.objectbox.annotation.Unique;
 
 /*
  * Represents a FollowUp List Description, is the parent object for a List of Members that will be followed-up
  */
-public class TrackingList implements Serializable, Table {
+@Entity
+public class TrackingList implements Serializable {
 
-    private int id;
-    private String code;    /** The Follow-up List identification code **/
-    private String name;    /** The name of the Follow-up List (eg. HIV Case or Index Case) - will be displyed as the top left header label**/
-    private String title;   /** The title of the Follow-up List  **/
-    private String details; /** The details of the Follow-up List **/
-    private String module;  /** The module(s) that the Follow-up List belongs to **/
-    private Double completionRate; /** Rate of completion in % **/
+    @Id
+    public long id;
+    @Unique
+    public String code;    /** The Follow-up List identification code **/
+    public String name;    /** The name of the Follow-up List (eg. HIV Case or Index Case) - will be displyed as the top left header label**/
+    public String title;   /** The title of the Follow-up List  **/
+    public String details; /** The details of the Follow-up List **/
+    @Index
+    public String module;  /** The module(s) that the Follow-up List belongs to **/
+    public Double completionRate; /** Rate of completion in % **/
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -76,27 +80,8 @@ public class TrackingList implements Serializable, Table {
         this.completionRate = completionRate;
     }
 
-    @Override
     public String getTableName() {
-        return DatabaseHelper.TrackingList.TABLE_NAME;
+        return "tracking_list";
     }
 
-    @Override
-    public ContentValues getContentValues() {
-        ContentValues cv = new ContentValues();
-
-        cv.put(DatabaseHelper.TrackingList.COLUMN_CODE, code);
-        cv.put(DatabaseHelper.TrackingList.COLUMN_NAME, name);
-        cv.put(DatabaseHelper.TrackingList.COLUMN_DETAILS, details);
-        cv.put(DatabaseHelper.TrackingList.COLUMN_TITLE, title);
-        cv.put(DatabaseHelper.TrackingList.COLUMN_MODULE, module);
-        cv.put(DatabaseHelper.TrackingList.COLUMN_COMPLETION_RATE, completionRate);
-
-        return cv;
-    }
-
-    @Override
-    public String[] getColumnNames() {
-        return DatabaseHelper.TrackingList.ALL_COLUMNS;
-    }
 }

@@ -32,6 +32,8 @@ import org.philimone.hds.explorer.model.Region;
 import org.philimone.hds.explorer.model.Region_;
 import org.philimone.hds.explorer.model.User;
 import org.philimone.hds.explorer.model.followup.TrackingList;
+import org.philimone.hds.explorer.model.followup.TrackingSubjectList;
+import org.philimone.hds.explorer.model.followup.TrackingSubjectList_;
 import org.philimone.hds.explorer.widget.LoadingDialog;
 
 import java.util.ArrayList;
@@ -67,6 +69,8 @@ public class TrackingListDetailsActivity extends Activity implements BarcodeScan
     private Box<Form> boxForms;
     private Box<Region> boxRegions;
     private Box<Dataset> boxDatasets;
+    private Box<TrackingList> boxTrackingLists;
+    private Box<TrackingSubjectList> boxTrackingSubjects;
 
     private LoadingDialog loadingDialog;
 
@@ -104,6 +108,8 @@ public class TrackingListDetailsActivity extends Activity implements BarcodeScan
         this.boxForms = ObjectBoxDatabase.get().boxFor(Form.class);
         this.boxRegions = ObjectBoxDatabase.get().boxFor(Region.class);
         this.boxDatasets = ObjectBoxDatabase.get().boxFor(Dataset.class);
+        this.boxTrackingLists = ObjectBoxDatabase.get().boxFor(TrackingList.class);
+        this.boxTrackingSubjects = ObjectBoxDatabase.get().boxFor(TrackingSubjectList.class);
     }
 
     private void initialize() {
@@ -314,20 +320,16 @@ public class TrackingListDetailsActivity extends Activity implements BarcodeScan
 
     //reading tracking list
     private TrackingExpandableListAdapter readTrackingSubjectLists(TrackingList trackingList){
-        Database db = new Database(this);
 
-
-        db.open();
-        List<org.philimone.hds.explorer.model.followup.TrackingSubjectList> listTml = Queries.getAllTrackingSubjectListBy(db, DatabaseHelper.TrackingSubjectList.COLUMN_TRACKING_ID+"=?", new String[]{ trackingList.getId()+"" });
+        List<TrackingSubjectList> listTml = this.boxTrackingSubjects.query().equal(TrackingSubjectList_.trackingId, trackingList.getId()).build().find();
         List<CollectedData> listCollectedData = this.boxCollectedData.query().equal(CollectedData_.formModule, trackingList.getModule()).build().find();
-        db.close();
 
         List<String> codesRegions = new ArrayList<>();
         List<String> codesHouseholds = new ArrayList<>();
         List<String> codesMembers = new ArrayList<>();
 
 
-        for (org.philimone.hds.explorer.model.followup.TrackingSubjectList tm : listTml){
+        for (TrackingSubjectList tm : listTml){
 
             if (tm.isRegionSubject()){
                 codesRegions.add(tm.getSubjectCode());
@@ -344,9 +346,9 @@ public class TrackingListDetailsActivity extends Activity implements BarcodeScan
 
         }
 
-        List<Region> regions = getRegions(db, codesRegions);
-        List<Household> households = getHouseholds(db, codesHouseholds);
-        List<Member> members = getMembers(db, codesMembers);
+        List<Region> regions = getRegions(codesRegions);
+        List<Household> households = getHouseholds(codesHouseholds);
+        List<Member> members = getMembers(codesMembers);
 
         Log.d("listTml", ""+listTml.size());
         Log.d("listCollectedData", ""+listCollectedData.size());
@@ -394,7 +396,7 @@ public class TrackingListDetailsActivity extends Activity implements BarcodeScan
         return adapter;
     }
 
-    private List<Region> getRegions(Database db, List<String> codes){
+    private List<Region> getRegions(List<String> codes){
         String[] arrayCodes = codes.toArray(new String[codes.size()]);
 
         List<Region> regions = this.boxRegions.query().in(Region_.code, arrayCodes).build().find();
@@ -405,7 +407,8 @@ public class TrackingListDetailsActivity extends Activity implements BarcodeScan
         return regions;
     }
 
-    private List<Household> getHouseholds(Database db, List<String> codes){
+    private List<Household> getHouseholds(List<String> codes){
+        Database db = new Database(this);
         db.open();
         List<Household> households = Queries.getAllHouseholdBy(db, DatabaseHelper.Household.COLUMN_CODE +" IN ("+ StringUtil.toInClause(codes) +")", null);
         db.close();
@@ -415,7 +418,8 @@ public class TrackingListDetailsActivity extends Activity implements BarcodeScan
         return households;
     }
 
-    private List<Member> getMembers(Database db, List<String> codes){
+    private List<Member> getMembers(List<String> codes){
+        Database db = new Database(this);
         db.open();
         List<Member> members = Queries.getAllMemberBy(db, DatabaseHelper.Member.COLUMN_CODE +" IN ("+ StringUtil.toInClause(codes) +")", null);
         db.close();
@@ -602,11 +606,7 @@ public class TrackingListDetailsActivity extends Activity implements BarcodeScan
             int c = adapter.getCompletionOfTrackingList();
 
             trackingList.setCompletionRate(c/100D);
-
-            Database db = new Database(TrackingListDetailsActivity.this);
-            db.open();
-            db.update(TrackingList.class, trackingList.getContentValues(), DatabaseHelper.TrackingList._ID+"=?", new String[]{ trackingList.getId()+"" });
-            db.close();
+            boxTrackingLists.put(trackingList);
         }
     }
 

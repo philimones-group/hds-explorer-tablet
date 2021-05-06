@@ -17,12 +17,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	@Override
 	public void onCreate(SQLiteDatabase db) {
         try {
-		    db.execSQL(CREATE_TABLE_USER);
 		    db.execSQL(CREATE_TABLE_HOUSEHOLD);
 		    db.execSQL(CREATE_TABLE_MEMBER);
-            db.execSQL(CREATE_TABLE_TRACKING_LIST);
-            db.execSQL(CREATE_TABLE_TRACKING_MEMBER_LIST);
-            db.execSQL(CREATE_TABLE_DATASET);
         }catch (Exception ex){
             ex.printStackTrace();
         }
@@ -60,23 +56,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
 	}
 
-    public static final String[] ALL_TABLES = {User.TABLE_NAME, Household.TABLE_NAME, Member.TABLE_NAME };
-
-	public static final class User implements BaseColumns {
-		public static final String TABLE_NAME = "user";
-
-        public static final String COLUMN_CODE = "code";
-        public static final String COLUMN_FIRSTNAME = "firstName";
-        public static final String COLUMN_LASTNAME = "lastName";
-        public static final String COLUMN_FULLNAME = "fullName";
-		public static final String COLUMN_USERNAME = "username";
-		public static final String COLUMN_PASSWORD = "password";
-        public static final String COLUMN_EMAIL = "email";
-		public static final String COLUMN_MODULES = "modules";
-
-
-		public static final String[] ALL_COLUMNS = {COLUMN_CODE, COLUMN_FIRSTNAME, COLUMN_LASTNAME, COLUMN_FULLNAME, COLUMN_USERNAME, COLUMN_PASSWORD, COLUMN_MODULES, COLUMN_EMAIL};
-	}
+    public static final String[] ALL_TABLES = {Household.TABLE_NAME, Member.TABLE_NAME };
 
 	public static final class Household implements BaseColumns  {
 		public static final String TABLE_NAME = "household";
@@ -161,72 +141,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 COLUMN_COS_LATITUDE, COLUMN_SIN_LATITUDE, COLUMN_COS_LONGITUDE, COLUMN_SIN_LONGITUDE, COLUMN_RECENTLY_CREATED};
 	}
 
-    public static final class TrackingList implements BaseColumns { //Lista de Seguimento - FollowUp
-        public static final String TABLE_NAME = "tracking_list";
-
-        public static final String COLUMN_CODE = "code";
-        public static final String COLUMN_NAME = "name";
-        public static final String COLUMN_DETAILS = "details";
-        public static final String COLUMN_TITLE = "title";
-        public static final String COLUMN_MODULE = "module";
-        public static final String COLUMN_COMPLETION_RATE = "completionRate";
-
-        public static final String[] ALL_COLUMNS = { _ID, COLUMN_NAME, COLUMN_CODE, COLUMN_DETAILS, COLUMN_TITLE, COLUMN_MODULE, COLUMN_COMPLETION_RATE };
-    }
-
-    public static final class TrackingSubjectList implements BaseColumns { //List of members
-        public static final String TABLE_NAME = "tracking_subject_list";
-
-        public static final String COLUMN_LIST_ID = "list_id";
-        public static final String COLUMN_TRACKING_ID = "tracking_id";
-        public static final String COLUMN_TITLE = "title";
-        public static final String COLUMN_FORMS = "list_forms";
-
-        public static final String COLUMN_SUBJECT_CODE = "subject_ext_id";
-        public static final String COLUMN_SUBJECT_TYPE = "subject_type";
-        public static final String COLUMN_SUBJECT_VISIT = "subject_visit";
-        public static final String COLUMN_SUBJECT_FORMS = "subject_forms";
-
-        public static final String COLUMN_COMPLETION_RATE = "completionRate";
-
-        public static final String[] ALL_COLUMNS = { _ID, COLUMN_LIST_ID, COLUMN_TRACKING_ID, COLUMN_TITLE, COLUMN_FORMS, COLUMN_SUBJECT_CODE, COLUMN_SUBJECT_TYPE, COLUMN_SUBJECT_VISIT, COLUMN_SUBJECT_FORMS, COLUMN_COMPLETION_RATE };
-    }
-
-    public static final class DataSet implements BaseColumns {
-        public static final String TABLE_NAME = "dataset";
-
-        public static final String COLUMN_DATASET_ID = "datasetId";
-        public static final String COLUMN_NAME = "name";
-        public static final String COLUMN_KEYCOLUMN = "keyColumn";
-        public static final String COLUMN_TABLE_NAME = "tableName";
-        public static final String COLUMN_TABLE_COLUMN = "tableColumn";
-        public static final String COLUMN_FILENAME = "filename";
-        public static final String COLUMN_CREATED_BY = "createdBy";
-        public static final String COLUMN_CREATION_DATE = "creationDate";
-        public static final String COLUMN_UPDATED_BY = "updatedBy";
-        public static final String COLUMN_UPDATED_DATE = "updatedDate";
-        public static final String COLUMN_LABELS = "labels";
-
-        public static final String[] ALL_COLUMNS = {_ID, COLUMN_DATASET_ID, COLUMN_NAME, COLUMN_KEYCOLUMN, COLUMN_TABLE_NAME, COLUMN_TABLE_COLUMN, COLUMN_FILENAME,
-                                                         COLUMN_CREATED_BY, COLUMN_CREATION_DATE, COLUMN_UPDATED_BY, COLUMN_UPDATED_DATE, COLUMN_LABELS};
-    }
-
-    private static final String CREATE_TABLE_USER = " "
-            + "CREATE TABLE " + User.TABLE_NAME + "("
-            + User._ID  + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-            + User.COLUMN_CODE + " TEXT,"
-            + User.COLUMN_FIRSTNAME + " TEXT,"
-            + User.COLUMN_LASTNAME + " TEXT,"
-            + User.COLUMN_FULLNAME + " TEXT,"
-            + User.COLUMN_USERNAME + " TEXT,"
-            + User.COLUMN_PASSWORD + " TEXT,"
-            + User.COLUMN_EMAIL + " TEXT,"
-            + User.COLUMN_MODULES + " TEXT);"
-
-            + " CREATE UNIQUE INDEX IDX_USER_USER ON " + User.TABLE_NAME
-            + "(" +  User.COLUMN_USERNAME + ");"
-            ;
-
     private static final String CREATE_TABLE_HOUSEHOLD = " "
             + "CREATE TABLE " + Household.TABLE_NAME + "("
             + Household._ID  + " INTEGER PRIMARY KEY AUTOINCREMENT, "
@@ -303,59 +217,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
             + " CREATE UNIQUE INDEX IDX_MEMBER_CODE ON " + Member.TABLE_NAME
             + "(" +  Member.COLUMN_CODE + ");"
-            ;
-
-    private static final String CREATE_TABLE_TRACKING_LIST = " "
-            + "CREATE TABLE " + TrackingList.TABLE_NAME + "("
-            + TrackingList._ID  + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-            + TrackingList.COLUMN_NAME + " TEXT,"
-            + TrackingList.COLUMN_CODE + " TEXT,"
-            + TrackingList.COLUMN_DETAILS + " TEXT,"
-            + TrackingList.COLUMN_TITLE + " TEXT,"
-            + TrackingList.COLUMN_MODULE + " TEXT,"
-            + TrackingList.COLUMN_COMPLETION_RATE + " REAL);"
-
-            + " CREATE INDEX IDX_MODULE ON " + TrackingList.TABLE_NAME
-            + "(" +  TrackingList.COLUMN_MODULE  + ");"
-            ;
-    ;
-
-    private static final String CREATE_TABLE_TRACKING_MEMBER_LIST = " "
-            + "CREATE TABLE " + TrackingSubjectList.TABLE_NAME + "("
-            + TrackingSubjectList._ID  + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-
-            + TrackingSubjectList.COLUMN_LIST_ID + " INTEGER,"
-            + TrackingSubjectList.COLUMN_TRACKING_ID + " INTEGER,"
-            + TrackingSubjectList.COLUMN_TITLE + " TEXT,"
-            + TrackingSubjectList.COLUMN_FORMS + " TEXT,"
-
-            + TrackingSubjectList.COLUMN_SUBJECT_CODE + " TEXT,"
-            + TrackingSubjectList.COLUMN_SUBJECT_TYPE + " TEXT,"
-            + TrackingSubjectList.COLUMN_SUBJECT_VISIT + " INTEGER  NOT NULL DEFAULT 0,"
-            + TrackingSubjectList.COLUMN_SUBJECT_FORMS + " TEXT,"
-            + TrackingSubjectList.COLUMN_COMPLETION_RATE + " REAL);"
-
-            + " CREATE INDEX IDX_TRCK_ID ON " + TrackingSubjectList.TABLE_NAME
-            + "(" +  TrackingSubjectList.COLUMN_TRACKING_ID  + ");"
-            ;
-
-    private static final String CREATE_TABLE_DATASET = " "
-            + "CREATE TABLE " + DataSet.TABLE_NAME + "("
-            + DataSet._ID  + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-            + DataSet.COLUMN_DATASET_ID + " INTEGER,"
-            + DataSet.COLUMN_NAME + " TEXT,"
-            + DataSet.COLUMN_KEYCOLUMN + " TEXT,"
-            + DataSet.COLUMN_TABLE_NAME + " TEXT,"
-            + DataSet.COLUMN_TABLE_COLUMN + " TEXT,"
-            + DataSet.COLUMN_FILENAME + " TEXT,"
-            + DataSet.COLUMN_CREATED_BY + " TEXT,"
-            + DataSet.COLUMN_CREATION_DATE + " TEXT,"
-            + DataSet.COLUMN_UPDATED_BY + " TEXT,"
-            + DataSet.COLUMN_UPDATED_DATE + " TEXT,"
-            + DataSet.COLUMN_LABELS + " TEXT);"
-
-            + " CREATE UNIQUE INDEX IDX_DATASET_NAME ON " + DataSet.TABLE_NAME
-            + "(" +  DataSet.COLUMN_NAME + ");"
             ;
 
 }

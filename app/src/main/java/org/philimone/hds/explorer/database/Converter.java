@@ -4,26 +4,9 @@ import android.database.Cursor;
 
 import org.philimone.hds.explorer.model.Household;
 import org.philimone.hds.explorer.model.Member;
-import org.philimone.hds.explorer.model.User;
-import org.philimone.hds.explorer.model.followup.TrackingList;
 
 
 public class Converter {
-
-	public static User cursorToUser(Cursor cursor){
-		User user = new User();
-
-		user.setCode(cursor.getString(cursor.getColumnIndex(DatabaseHelper.User.COLUMN_CODE)));
-		user.setFirstName(cursor.getString(cursor.getColumnIndex(DatabaseHelper.User.COLUMN_FIRSTNAME)));
-		user.setLastName(cursor.getString(cursor.getColumnIndex(DatabaseHelper.User.COLUMN_LASTNAME)));
-		user.setFullName(cursor.getString(cursor.getColumnIndex(DatabaseHelper.User.COLUMN_FULLNAME)));
-		user.setUsername(cursor.getString(cursor.getColumnIndex(DatabaseHelper.User.COLUMN_USERNAME)));
-		user.setPassword(cursor.getString(cursor.getColumnIndex(DatabaseHelper.User.COLUMN_PASSWORD)));
-		user.setModules(cursor.getString(cursor.getColumnIndex(DatabaseHelper.User.COLUMN_MODULES)));
-		user.setEmail(cursor.getString(cursor.getColumnIndex(DatabaseHelper.User.COLUMN_EMAIL)));
-		
-		return user;
-	}
 
 	public static Household cursorToHousehold(Cursor cursor){
 		Household hh = new Household();
@@ -106,36 +89,4 @@ public class Converter {
 		return mb;
 	}
 
-	public static TrackingList cursorToTrackingList(Cursor cursor){
-		TrackingList tl = new TrackingList();
-
-		tl.setId(cursor.getInt(cursor.getColumnIndex(DatabaseHelper.TrackingList._ID)));
-		tl.setName(cursor.getString(cursor.getColumnIndex(DatabaseHelper.TrackingList.COLUMN_NAME)));
-		tl.setCode(cursor.getString(cursor.getColumnIndex(DatabaseHelper.TrackingList.COLUMN_CODE)));
-		tl.setDetails(cursor.getString(cursor.getColumnIndex(DatabaseHelper.TrackingList.COLUMN_DETAILS)));
-		tl.setTitle(cursor.getString(cursor.getColumnIndex(DatabaseHelper.TrackingList.COLUMN_TITLE)));
-		tl.setModule(cursor.getString(cursor.getColumnIndex(DatabaseHelper.TrackingList.COLUMN_MODULE)));
-		tl.setCompletionRate(cursor.getDouble(cursor.getColumnIndex(DatabaseHelper.TrackingList.COLUMN_COMPLETION_RATE)));
-
-		return tl;
-	}
-
-	public static org.philimone.hds.explorer.model.followup.TrackingSubjectList cursorToTrackingSubjectList(Cursor cursor){
-		org.philimone.hds.explorer.model.followup.TrackingSubjectList tml = new org.philimone.hds.explorer.model.followup.TrackingSubjectList();
-
-		tml.setId(cursor.getInt(cursor.getColumnIndex(DatabaseHelper.TrackingSubjectList._ID)));
-		tml.setListId(cursor.getInt(cursor.getColumnIndex(DatabaseHelper.TrackingSubjectList.COLUMN_LIST_ID)));
-		tml.setTrackingId(cursor.getInt(cursor.getColumnIndex(DatabaseHelper.TrackingSubjectList.COLUMN_TRACKING_ID)));
-		tml.setTitle(cursor.getString(cursor.getColumnIndex(DatabaseHelper.TrackingSubjectList.COLUMN_TITLE)));
-		tml.setForms(cursor.getString(cursor.getColumnIndex(DatabaseHelper.TrackingSubjectList.COLUMN_FORMS)));
-
-		tml.setSubjectCode(cursor.getString(cursor.getColumnIndex(DatabaseHelper.TrackingSubjectList.COLUMN_SUBJECT_CODE)));
-		tml.setSubjectType(cursor.getString(cursor.getColumnIndex(DatabaseHelper.TrackingSubjectList.COLUMN_SUBJECT_TYPE)));
-		tml.setSubjectVisit(cursor.getInt(cursor.getColumnIndex(DatabaseHelper.TrackingSubjectList.COLUMN_SUBJECT_VISIT)));
-		tml.setSubjectForms(cursor.getString(cursor.getColumnIndex(DatabaseHelper.TrackingSubjectList.COLUMN_SUBJECT_FORMS)));
-
-		tml.setCompletionRate(cursor.getDouble(cursor.getColumnIndex(DatabaseHelper.TrackingSubjectList.COLUMN_COMPLETION_RATE)));
-
-		return tml;
-	}
 }

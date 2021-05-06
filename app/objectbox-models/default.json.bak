@@ -402,8 +402,7 @@
         {
           "id": "2:8722328056347700356",
           "name": "datasetId",
-          "type": 5,
-          "flags": 4
+          "type": 9
         },
         {
           "id": "3:3907455637425155587",
@@ -457,10 +456,129 @@
         }
       ],
       "relations": []
+    },
+    {
+      "id": "9:2457694682097256271",
+      "lastPropertyId": "7:1924866507771471648",
+      "name": "TrackingList",
+      "properties": [
+        {
+          "id": "1:6981237269715784645",
+          "name": "id",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:5890923584892061786",
+          "name": "code",
+          "indexId": "9:1718020597054818277",
+          "type": 9,
+          "flags": 2080
+        },
+        {
+          "id": "3:2804659782309292156",
+          "name": "name",
+          "type": 9
+        },
+        {
+          "id": "4:5459788302557525340",
+          "name": "title",
+          "type": 9
+        },
+        {
+          "id": "5:6080905055259757686",
+          "name": "details",
+          "type": 9
+        },
+        {
+          "id": "6:7614590834282416565",
+          "name": "module",
+          "indexId": "10:5573130217942321738",
+          "type": 9,
+          "flags": 2048
+        },
+        {
+          "id": "7:1924866507771471648",
+          "name": "completionRate",
+          "type": 8,
+          "flags": 2
+        }
+      ],
+      "relations": []
+    },
+    {
+      "id": "10:2873149277005959271",
+      "lastPropertyId": "10:6293785398273052682",
+      "name": "TrackingSubjectList",
+      "properties": [
+        {
+          "id": "1:4656097177077572723",
+          "name": "id",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:5725100781648148031",
+          "name": "listId",
+          "type": 5,
+          "flags": 4
+        },
+        {
+          "id": "3:1326838877413323265",
+          "name": "trackingId",
+          "indexId": "11:6045550207819154134",
+          "type": 5,
+          "flags": 12
+        },
+        {
+          "id": "4:4295709092647014232",
+          "name": "title",
+          "type": 9
+        },
+        {
+          "id": "5:8574638977652897242",
+          "name": "forms",
+          "indexId": "12:5276450739543044974",
+          "type": 9,
+          "flags": 2048
+        },
+        {
+          "id": "6:8189547976486637562",
+          "name": "subjectCode",
+          "indexId": "13:1462258028082496224",
+          "type": 9,
+          "flags": 2048
+        },
+        {
+          "id": "7:36427613866064395",
+          "name": "subjectType",
+          "type": 9
+        },
+        {
+          "id": "8:5680855217677535069",
+          "name": "subjectForms",
+          "indexId": "14:5431873462126234185",
+          "type": 9,
+          "flags": 2048
+        },
+        {
+          "id": "9:3235012691595534058",
+          "name": "subjectVisit",
+          "type": 5,
+          "flags": 4
+        },
+        {
+          "id": "10:6293785398273052682",
+          "name": "completionRate",
+          "type": 8,
+          "flags": 2
+        }
+      ],
+      "relations": []
     }
   ],
-  "lastEntityId": "8:2441806447861950296",
-  "lastIndexId": "8:5435002057819935149",
+  "lastEntityId": "10:2873149277005959271",
+  "lastIndexId": "14:5431873462126234185",
   "lastRelationId": "0:0",
   "lastSequenceId": "0:0",
   "modelVersion": 5,

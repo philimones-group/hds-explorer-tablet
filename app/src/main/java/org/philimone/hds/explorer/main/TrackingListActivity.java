@@ -17,13 +17,20 @@ import org.philimone.hds.explorer.R;
 
 import org.philimone.hds.explorer.adapter.TrackingListArrayAdapter;
 import org.philimone.hds.explorer.database.Database;
+import org.philimone.hds.explorer.database.ObjectBoxDatabase;
 import org.philimone.hds.explorer.database.Queries;
+import org.philimone.hds.explorer.model.CollectedData;
+import org.philimone.hds.explorer.model.Dataset;
+import org.philimone.hds.explorer.model.Form;
+import org.philimone.hds.explorer.model.Region;
 import org.philimone.hds.explorer.model.User;
 import org.philimone.hds.explorer.model.followup.TrackingList;
+import org.philimone.hds.explorer.model.followup.TrackingSubjectList;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import io.objectbox.Box;
 import mz.betainteractive.utilities.StringUtil;
 
 public class TrackingListActivity extends Activity {
@@ -39,11 +46,14 @@ public class TrackingListActivity extends Activity {
 
     private View viewLoadingList;
 
+    private Box<TrackingList> boxTrackingLists;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.tracking_list);
 
+        initBoxes();
         initialize();
 
         if (savedInstanceState == null){
@@ -52,6 +62,10 @@ public class TrackingListActivity extends Activity {
 
         String track_list_filter = savedInstanceState.getString("track_list_filter");
         this.txtTrackListFilter.setText(track_list_filter);
+    }
+
+    private void initBoxes() {
+        this.boxTrackingLists = ObjectBoxDatabase.get().boxFor(TrackingList.class);
     }
 
     private void initialize() {
@@ -164,11 +178,7 @@ public class TrackingListActivity extends Activity {
 
         String[] userModules = loggedUser.getModules().split(",");
 
-        Database db = new Database(this);
-
-        db.open();
-        List<TrackingList> tlists = Queries.getAllTrackingListBy(db, null, null); //get all forms
-        db.close();
+        List<TrackingList> tlists = this.boxTrackingLists.getAll(); //get all forms
 
         ArrayList<TrackingList> list = new ArrayList<>();
 

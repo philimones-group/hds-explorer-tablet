@@ -43,11 +43,6 @@ public class Queries {
         return report;
     }
 
-    public static List<Form> getAllFormBy(Box<Form> box){
-        List<Form> list = box.getAll();
-        return list;
-    }
-
     public static Household getHouseholdBy(Database database, String whereClause, String[] clauseArgs){
         Household household = null;
 
@@ -98,78 +93,4 @@ public class Queries {
         return list;
     }
 
-    public static TrackingList getTrackingListBy(Database database, String whereClause, String[] clauseArgs){
-        TrackingList trackingList = null;
-
-        Cursor cursor = database.query(TrackingList.class, whereClause, clauseArgs, null, null, null);
-
-        if (cursor.moveToFirst()){
-            trackingList = Converter.cursorToTrackingList(cursor);
-        }
-
-        return trackingList;
-    }
-
-    public static List<TrackingList> getAllTrackingListBy(Database database, String whereClause, String[] clauseArgs){
-        List<TrackingList> list = new ArrayList<>();
-
-        Cursor cursor = database.query(TrackingList.class, whereClause, clauseArgs, null, null, null);
-
-        while (cursor.moveToNext()){
-            TrackingList trackingList = Converter.cursorToTrackingList(cursor);
-            list.add(trackingList);
-        }
-
-        return list;
-    }
-
-    public static TrackingSubjectList getTrackingSubjectListBy(Database database, String whereClause, String[] clauseArgs){
-        TrackingSubjectList trackingList = null;
-
-        Cursor cursor = database.query(TrackingSubjectList.class, whereClause, clauseArgs, null, null, null);
-
-        if (cursor.moveToFirst()){
-            trackingList = Converter.cursorToTrackingSubjectList(cursor);
-        }
-
-        return trackingList;
-    }
-
-    public static List<TrackingSubjectList> getAllTrackingSubjectListBy(Database database, String whereClause, String[] clauseArgs){
-        List<TrackingSubjectList> list = new ArrayList<>();
-
-        Cursor cursor = database.query(TrackingSubjectList.class, whereClause, clauseArgs, null, null, null);
-
-        while (cursor.moveToNext()){
-            TrackingSubjectList trackingList = Converter.cursorToTrackingSubjectList(cursor);
-            list.add(trackingList);
-        }
-
-        return list;
-    }
-/*
-    public static DataSet getDataSetBy(Database database, String whereClause, String[] clauseArgs){
-        DataSet dataSet = null;
-
-        Cursor cursor = database.query(DataSet.class, whereClause, clauseArgs, null, null, null);
-
-        if (cursor.moveToFirst()){
-            dataSet = Converter.cursorToDataSet(cursor);
-        }
-
-        return dataSet;
-    }
-
-    public static List<DataSet> getAllDataSetBy(Database database, String whereClause, String[] clauseArgs){
-        List<DataSet> list = new ArrayList<>();
-
-        Cursor cursor = database.query(DataSet.class, whereClause, clauseArgs, null, null, null);
-
-        while (cursor.moveToNext()){
-            DataSet dataSet = Converter.cursorToDataSet(cursor);
-            list.add(dataSet);
-        }
-
-        return list;
-    }*/
 }

@@ -401,7 +401,7 @@ public class MemberDetailsActivity extends Activity implements OdkFormResultList
     }
 
     private String getParentName(String name){
-        if (name.equals("Unknown")){
+        if (name.equals("Unknown") || name.equals("member.unknown.label")){
             return getString(R.string.member_details_unknown_lbl);
         }else {
             return name;
@@ -412,7 +412,7 @@ public class MemberDetailsActivity extends Activity implements OdkFormResultList
         if (name == null || name.isEmpty()){
             return "";
         }
-        if (name.equals("Unknown")){
+        if (name.equals("Unknown") || name.equals("member.unknown.label")){
             return getString(R.string.member_details_unknown_lbl);
         }else {
             return name;

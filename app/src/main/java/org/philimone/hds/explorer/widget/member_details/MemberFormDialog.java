@@ -2,9 +2,7 @@ package org.philimone.hds.explorer.widget.member_details;
 
 import android.app.DialogFragment;
 import android.app.FragmentManager;
-import android.database.Cursor;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
 import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,15 +15,17 @@ import android.widget.RadioButton;
 import android.widget.TextView;
 
 import org.philimone.hds.explorer.R;
-import org.philimone.hds.explorer.database.Database;
-import org.philimone.hds.explorer.database.DatabaseHelper;
+import org.philimone.hds.explorer.database.ObjectBoxDatabase;
 import org.philimone.hds.explorer.database.Queries;
 import org.philimone.hds.explorer.model.Household;
 import org.philimone.hds.explorer.model.Member;
+import org.philimone.hds.explorer.model.Member_;
 import org.philimone.hds.explorer.widget.DialogFactory;
 
 import java.util.Date;
 
+import androidx.annotation.Nullable;
+import io.objectbox.Box;
 import mz.betainteractive.utilities.GeneralUtil;
 import mz.betainteractive.utilities.StringUtil;
 
@@ -47,7 +47,7 @@ public class MemberFormDialog extends DialogFragment {
     private Button btNewMemCancel;
     private Button btNewMemCollect;
 
-    private Database database;
+    private Box<Member> boxMembers;
 
     private Listener listener;
 
@@ -96,11 +96,15 @@ public class MemberFormDialog extends DialogFragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        initBoxes();
         initialize(view);
     }
 
+    private void initBoxes() {
+        this.boxMembers = ObjectBoxDatabase.get().boxFor(Member.class);
+    }
+
     private void initialize(View view) {
-        this.database = new Database(getActivity());
 
         this.dialogTitle = (TextView) view.findViewById(R.id.dialogTitle);
         this.txtNewMemHouseCode = (TextView) view.findViewById(R.id.txtNewMemHouseCode);
@@ -243,19 +247,20 @@ public class MemberFormDialog extends DialogFragment {
             return household.getCode()+"XXX"; //CREATE A TEMPORARY CODE, THE EDITEXT IS EDITABLE
         }
 
-        Database database = new Database(this.getActivity());
-        database.open();
         String baseId = household.getCode();
+        String generatedId = null;
+
+        /*
         String[] columns = new String[] {DatabaseHelper.Member.COLUMN_CODE};
         String where = DatabaseHelper.Member.COLUMN_CODE + " LIKE ?";
         String[] whereArgs = new String[] { baseId + "%" };
         String orderBy = DatabaseHelper.Member.COLUMN_CODE + " DESC";
-        String generatedId = null;
+        */
 
-        Cursor cursor = database.query(Member.class, columns, where, whereArgs, null, null, orderBy);
+        Member member = this.boxMembers.query().startsWith(Member_.code, baseId).orderDesc(Member_.code).build().findFirst();
 
-        if (cursor.moveToFirst()) {
-            String lastGeneratedId = cursor.getString(0);
+        if (member != null) {
+            String lastGeneratedId = member.getCode();
 
             try { //ACA 000001 001
                 int increment = Integer.parseInt(lastGeneratedId.substring(9));
@@ -268,17 +273,11 @@ public class MemberFormDialog extends DialogFragment {
             generatedId = baseId + "001"; //set the first id of individual household
         }
 
-        cursor.close();
-        database.close();
-
         return generatedId;
     }
 
     private boolean checkIfCodeExists(String code){
-        Database database = new Database(this.getActivity());
-        database.open();
-        Member member = Queries.getMemberBy(database, DatabaseHelper.Member.COLUMN_CODE+"=?", new String[] { code });
-        database.close();
+        Member member = Queries.getMemberByCode(this.boxMembers, code);
 
         return member != null;
     }

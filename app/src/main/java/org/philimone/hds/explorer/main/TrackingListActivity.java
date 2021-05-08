@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -16,16 +15,9 @@ import android.widget.TextView;
 import org.philimone.hds.explorer.R;
 
 import org.philimone.hds.explorer.adapter.TrackingListArrayAdapter;
-import org.philimone.hds.explorer.database.Database;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
-import org.philimone.hds.explorer.database.Queries;
-import org.philimone.hds.explorer.model.CollectedData;
-import org.philimone.hds.explorer.model.Dataset;
-import org.philimone.hds.explorer.model.Form;
-import org.philimone.hds.explorer.model.Region;
 import org.philimone.hds.explorer.model.User;
 import org.philimone.hds.explorer.model.followup.TrackingList;
-import org.philimone.hds.explorer.model.followup.TrackingSubjectList;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -2,9 +2,7 @@ package org.philimone.hds.explorer.widget.household_details;
 
 import android.app.DialogFragment;
 import android.app.FragmentManager;
-import android.database.Cursor;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,22 +12,16 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import org.philimone.hds.explorer.R;
-import org.philimone.hds.explorer.database.Database;
-import org.philimone.hds.explorer.database.DatabaseHelper;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
 import org.philimone.hds.explorer.database.Queries;
 import org.philimone.hds.explorer.model.Household;
 import org.philimone.hds.explorer.model.Household_;
-import org.philimone.hds.explorer.model.Member;
 import org.philimone.hds.explorer.model.Region;
 import org.philimone.hds.explorer.model.User;
 import org.philimone.hds.explorer.widget.DialogFactory;
 
-import java.util.Date;
-
+import androidx.annotation.Nullable;
 import io.objectbox.Box;
-import mz.betainteractive.utilities.GeneralUtil;
-import mz.betainteractive.utilities.StringUtil;
 
 /**
  *
@@ -49,8 +41,6 @@ public class HouseholdFormDialog extends DialogFragment {
     TextView txtRegionName = null;
     TextView txtHouseCode = null;
     EditText txtHouseName = null;*/
-
-    private Database database;
     private Box<Household> boxHouseholds;
 
     private Listener listener;
@@ -98,8 +88,6 @@ public class HouseholdFormDialog extends DialogFragment {
     }
 
     private void initialize(View view) {
-        this.database = new Database(getActivity());
-
         this.txtRegionCode = (TextView) view.findViewById(R.id.txtRegionCode);
         this.txtRegionName = (TextView) view.findViewById(R.id.txtRegionName);
         this.txtHouseCode = (TextView) view.findViewById(R.id.txtHouseCode);

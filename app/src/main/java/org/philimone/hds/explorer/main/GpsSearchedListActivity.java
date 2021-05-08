@@ -16,19 +16,17 @@ import org.philimone.hds.explorer.R;
 import org.philimone.hds.explorer.adapter.HouseholdArrayAdapter;
 import org.philimone.hds.explorer.adapter.MemberArrayAdapter;
 import org.philimone.hds.explorer.data.FormDataLoader;
-import org.philimone.hds.explorer.database.Database;
-import org.philimone.hds.explorer.database.DatabaseHelper;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
 import org.philimone.hds.explorer.database.Queries;
 import org.philimone.hds.explorer.model.Household;
 import org.philimone.hds.explorer.model.Member;
 import org.philimone.hds.explorer.widget.member_details.Distance;
 
-import io.objectbox.Box;
-import mz.betainteractive.utilities.math.GpsDistanceCalculator;
-
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+
+import io.objectbox.Box;
+import mz.betainteractive.utilities.math.GpsDistanceCalculator;
 
 public class GpsSearchedListActivity extends Activity {
 
@@ -53,7 +51,6 @@ public class GpsSearchedListActivity extends Activity {
 
     private FormDataLoader[] formDataLoaders;
 
-    private Database database;
     private Box<Household> boxHouseholds;
 
     @Override
@@ -127,8 +124,6 @@ public class GpsSearchedListActivity extends Activity {
                 showMap();
             }
         });
-
-        this.database = new Database(this);
 
         btGpsListShowMap.setEnabled(false);
         btGpsOrigListShowMap.setEnabled(false);

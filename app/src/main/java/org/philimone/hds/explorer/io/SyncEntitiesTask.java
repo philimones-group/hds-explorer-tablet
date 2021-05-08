@@ -8,8 +8,6 @@ import android.widget.Toast;
 
 import org.philimone.hds.explorer.R;
 import org.philimone.hds.explorer.database.Bootstrap;
-import org.philimone.hds.explorer.database.Database;
-import org.philimone.hds.explorer.database.DatabaseHelper;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
 import org.philimone.hds.explorer.database.Queries;
 import org.philimone.hds.explorer.database.Table;
@@ -127,10 +125,6 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 		this.boxTrackingSubjects = ObjectBoxDatabase.get().boxFor(TrackingSubjectList.class);
 		this.boxHouseholds = ObjectBoxDatabase.get().boxFor(Household.class);
 		this.boxMembers = ObjectBoxDatabase.get().boxFor(Member.class);
-	}
-
-	private Database getDatabase(){
-		return new Database(mContext);
 	}
 
 	public void setSyncDatabaseListener(SyncEntitiesListener listener){
@@ -298,36 +292,6 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 		return new ExecutionReport(this.mContext.getString(R.string.sync_successfully_lbl));
 	}
 
-	private void deleteAll(String tableName){
-		Database database = getDatabase();
-		database.open();
-		database.delete(tableName, null, null);
-		database.close();
-	}
-
-	private void deleteAll(Class<? extends Table> table){
-		Database database = getDatabase();
-		database.open();
-		database.delete(table, null, null);
-		database.close();
-	}
-
-	private void deleteAll(Class<? extends Table>... tables){
-		Database database = getDatabase();
-		database.open();
-		for (Class<? extends Table> table : tables){
-			database.delete(table, null, null);
-		}
-		database.close();
-	}
-
-	private void deleteAll(Class<? extends Table> table, String whereClause, String[] whereClauseArgs){
-		Database database = getDatabase();
-		database.open();
-		database.delete(table, whereClause, whereClauseArgs);
-		database.close();
-	}
-
 	private void executeOnSyncStarted(SyncEntity entity, SyncState state){
 		int size = getSyncRecordToDownload(entity);
 
@@ -347,10 +311,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 
 	private void downloadExternalDatasetFiles() throws Exception {
 
-		Database database = getDatabase();
-		database.open();
 		List<Dataset> datasets = this.boxDatasets.getAll();
-		database.close();
 
 		for (Dataset dataSet : datasets){
 			String url = baseurl + API_PATH + "/dataset/zip/" + dataSet.getDatasetId();
@@ -1676,26 +1637,20 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 		//clear sync_report
 		updateSyncReport(SyncEntity.MEMBERS, null, SyncStatus.STATUS_NOT_SYNCED);
 
-		List<Table> values = new ArrayList<>();
+		List<Member> values = new ArrayList<>();
 		int count = 0;
 		values.clear();
 
 		parser.nextTag();
-
-		Database database = getDatabase();
-		database.open();
-		database.beginTransaction();
 
 		while (notEndOfXmlDoc("members", parser)) {
 			count++;
 
 			Member table = new Member();
 
-            //Log.d("TAG", parser.getPositionDescription());
-
             parser.nextTag(); //process <code>
             //Log.d("TAG2", parser.getPositionDescription());
-            if (!isEmptyTag(DatabaseHelper.Member.COLUMN_CODE, parser)) {
+            if (!isEmptyTag("code", parser)) {
                 parser.next();
                 table.setCode(parser.getText());
                 parser.nextTag(); //process </code>
@@ -1705,7 +1660,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
             }
 
             parser.nextTag(); //process <name>
-            if (!isEmptyTag(DatabaseHelper.Member.COLUMN_NAME, parser)) {
+            if (!isEmptyTag("name", parser)) {
                 parser.next();
                 table.setName(parser.getText());
                 parser.nextTag(); //process </name>
@@ -1715,7 +1670,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
             }
 
             parser.nextTag(); //process <gender>
-            if (!isEmptyTag(DatabaseHelper.Member.COLUMN_GENDER, parser)) {
+            if (!isEmptyTag("gender", parser)) {
                 parser.next();
                 table.setGender(parser.getText());
                 parser.nextTag(); //process </gender>
@@ -1725,7 +1680,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
             }
 
             parser.nextTag(); //process <dob>
-            if (!isEmptyTag(DatabaseHelper.Member.COLUMN_DOB, parser)) {
+            if (!isEmptyTag("dob", parser)) {
                 parser.next();
                 table.setDob(parser.getText());
                 parser.nextTag(); //process </dob>
@@ -1735,7 +1690,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
             }
 
             parser.nextTag(); //process <age>
-            if (!isEmptyTag(DatabaseHelper.Member.COLUMN_AGE, parser)) {
+            if (!isEmptyTag("age", parser)) {
                 parser.next();
                 table.setAge(Integer.parseInt(parser.getText()));
                 parser.nextTag(); //process </age>
@@ -1745,7 +1700,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
             }
 
 			parser.nextTag(); //process <ageAtDeath>
-			if (!isEmptyTag(DatabaseHelper.Member.COLUMN_AGE_AT_DEATH, parser)) {
+			if (!isEmptyTag("ageAtDeath", parser)) {
 				parser.next();
 				table.setAgeAtDeath(Integer.parseInt(parser.getText()));
 				parser.nextTag(); //process </ageAtDeath>
@@ -1755,7 +1710,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 			}
 
             parser.nextTag(); //process <motherCode>
-            if (!isEmptyTag(DatabaseHelper.Member.COLUMN_MOTHER_CODE, parser)) {
+            if (!isEmptyTag("motherCode", parser)) {
                 parser.next();
                 table.setMotherCode(parser.getText());
                 parser.nextTag(); //process </motherCode>
@@ -1765,7 +1720,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
             }
 
             parser.nextTag(); //process <motherName>
-            if (!isEmptyTag(DatabaseHelper.Member.COLUMN_MOTHER_NAME, parser)) {
+            if (!isEmptyTag("motherName", parser)) {
                 parser.next();
                 table.setMotherName(parser.getText());
                 parser.nextTag(); //process </motherName>
@@ -1775,7 +1730,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
             }
 
             parser.nextTag(); //process <fatherCode>
-            if (!isEmptyTag(DatabaseHelper.Member.COLUMN_FATHER_CODE, parser)) {
+            if (!isEmptyTag("fatherCode", parser)) {
                 parser.next();
                 table.setFatherCode(parser.getText());
                 parser.nextTag(); //process </fatherCode>
@@ -1785,7 +1740,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
             }
 
             parser.nextTag(); //process <fatherName>
-            if (!isEmptyTag(DatabaseHelper.Member.COLUMN_FATHER_NAME, parser)) {
+            if (!isEmptyTag("fatherName", parser)) {
                 parser.next();
                 table.setFatherName(parser.getText());
                 parser.nextTag(); //process </fatherName>
@@ -1795,7 +1750,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
             }
 
 			parser.nextTag(); //process <maritalStatus>
-			if (!isEmptyTag(DatabaseHelper.Member.COLUMN_MARITAL_STATUS, parser)) {
+			if (!isEmptyTag("maritalStatus", parser)) {
 				parser.next();
 				table.setMaritalStatus(parser.getText());
 				parser.nextTag(); //process </maritalStatus>
@@ -1805,7 +1760,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 			}
 
             parser.nextTag(); //process <spouseCode>
-            if (!isEmptyTag(DatabaseHelper.Member.COLUMN_SPOUSE_CODE, parser)) {
+            if (!isEmptyTag("spouseCode", parser)) {
                 parser.next();
                 table.setSpouseCode(parser.getText());
                 parser.nextTag(); //process </spouseCode>
@@ -1815,7 +1770,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
             }
 
             parser.nextTag(); //process <spouseName>
-            if (!isEmptyTag(DatabaseHelper.Member.COLUMN_SPOUSE_NAME, parser)) {
+            if (!isEmptyTag("spouseName", parser)) {
                 parser.next();
                 table.setSpouseName(parser.getText());
                 parser.nextTag(); //process </spouseName>
@@ -1825,7 +1780,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
             }
 
             parser.nextTag(); //process <householdCode>
-            if (!isEmptyTag(DatabaseHelper.Member.COLUMN_HOUSEHOLD_CODE, parser)) {
+            if (!isEmptyTag("householdCode", parser)) {
                 parser.next();
                 table.setHouseholdCode(parser.getText());
                 parser.nextTag(); //process </householdCode>
@@ -1834,8 +1789,8 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
                 parser.nextTag();
             }
 
-            parser.nextTag(); //process <houseNumber>
-            if (!isEmptyTag(DatabaseHelper.Member.COLUMN_HOUSEHOLD_NAME, parser)) {
+            parser.nextTag(); //process <householdName>
+            if (!isEmptyTag("householdName", parser)) {
                 parser.next();
                 table.setHouseholdName(parser.getText());
                 parser.nextTag(); //process </houseNumber>
@@ -1845,7 +1800,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
             }
 
             parser.nextTag(); //process <startType>
-            if (!isEmptyTag(DatabaseHelper.Member.COLUMN_START_TYPE, parser)) {
+            if (!isEmptyTag("startType", parser)) {
                 parser.next();
                 table.setStartType(parser.getText());
                 parser.nextTag(); //process </startType>
@@ -1855,7 +1810,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
             }
 
             parser.nextTag(); //process <startDate>
-            if (!isEmptyTag(DatabaseHelper.Member.COLUMN_START_DATE, parser)) {
+            if (!isEmptyTag("startDate", parser)) {
                 parser.next();
                 table.setStartDate(parser.getText());
                 parser.nextTag(); //process </startDate>
@@ -1865,7 +1820,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
             }
 
             parser.nextTag(); //process <endType>
-            if (!isEmptyTag(DatabaseHelper.Member.COLUMN_END_TYPE, parser)) {
+            if (!isEmptyTag("endType", parser)) {
                 parser.next();
                 table.setEndType(parser.getText());
                 parser.nextTag(); //process </endType>
@@ -1875,7 +1830,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
             }
 
             parser.nextTag(); //process <endDate>
-            if (!isEmptyTag(DatabaseHelper.Member.COLUMN_END_DATE, parser)) { //endtag is temp
+            if (!isEmptyTag("endDate", parser)) { //endtag is temp
                 parser.next();
 				//Log.d("note endDate", parser.getText() + ", " +parser.getPositionDescription());
 				if (parser.getText()!=null){
@@ -1889,7 +1844,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
             }
 
 			parser.nextTag(); //process <entryHousehold>
-			if (!isEmptyTag(DatabaseHelper.Member.COLUMN_ENTRY_HOUSEHOLD, parser)) { //endtag is temp
+			if (!isEmptyTag("entryHousehold", parser)) { //endtag is temp
 				parser.next();
 				//Log.d("note entryHousehold", parser.getText() + ", " +parser.getPositionDescription());
 				if (parser.getText()!=null){
@@ -1903,7 +1858,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 			}
 
 			parser.nextTag(); //process <entryType>
-			if (!isEmptyTag(DatabaseHelper.Member.COLUMN_ENTRY_TYPE, parser)) { //endtag is temp
+			if (!isEmptyTag("entryType", parser)) { //endtag is temp
 				parser.next();
 				//Log.d("note entryType", parser.getText() + ", " +parser.getPositionDescription());
 				if (parser.getText()!=null){
@@ -1917,7 +1872,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 			}
 
 			parser.nextTag(); //process <entryDate>
-			if (!isEmptyTag(DatabaseHelper.Member.COLUMN_ENTRY_DATE, parser)) { //endtag is temp
+			if (!isEmptyTag("entryDate", parser)) { //endtag is temp
 				parser.next();
 				//Log.d("note entryDate", parser.getText() + ", " +parser.getPositionDescription());
 				if (parser.getText()!=null){
@@ -1931,7 +1886,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 			}
 
 			parser.nextTag(); //process <headRelationshipType>
-			if (!isEmptyTag(DatabaseHelper.Member.COLUMN_HEAD_RELATIONSHIP_TYPE, parser)) { //endtag is temp
+			if (!isEmptyTag("headRelationshipType", parser)) { //endtag is temp
 				parser.next();
 				//Log.d("note headRelationshipType", parser.getText() + ", " +parser.getPositionDescription());
 				if (parser.getText()!=null){
@@ -1945,7 +1900,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 			}
 
 			parser.nextTag(); //process <isHouseholdHead>
-			if (!isEmptyTag(DatabaseHelper.Member.COLUMN_IS_HOUSEHOLD_HEAD, parser)) { //endtag is temp
+			if (!isEmptyTag("isHouseholdHead", parser)) { //endtag is temp
 				parser.next();
 				//Log.d("note isHouseholdHead", parser.getText() + ", " +parser.getPositionDescription());
 				if (parser.getText()!=null){
@@ -1975,7 +1930,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 
             //CORRECT THE BUG AROUND HERE
             parser.nextTag(); //process <gpsAccuracy>
-            if (!isEmptyTag(DatabaseHelper.Member.COLUMN_GPS_ACCURACY, parser)) {
+            if (!isEmptyTag("gpsAccuracy", parser)) {
                 parser.next();
                 table.setGpsAccuracy(StringUtil.toDouble(parser.getText()));
                 parser.nextTag(); //process </gpsAccuracy>
@@ -1988,7 +1943,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
             }
 
             parser.nextTag(); //process <gpsAltitude>
-            if (!isEmptyTag(DatabaseHelper.Member.COLUMN_GPS_ALTITUDE, parser)) {
+            if (!isEmptyTag("gpsAltitude", parser)) {
                 parser.next();
                 table.setGpsAltitude(StringUtil.toDouble(parser.getText()));
                 parser.nextTag(); //process </gpsAltitude>
@@ -1999,7 +1954,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
             }
 
             parser.nextTag(); //process <gpsLatitude>
-            if (!isEmptyTag(DatabaseHelper.Member.COLUMN_GPS_LATITUDE, parser)) {
+            if (!isEmptyTag("gpsLatitude", parser)) {
                 parser.next();
                 table.setGpsLatitude(StringUtil.toDouble(parser.getText()));
 				table.setCosLatitude(Math.cos(table.getGpsLatitude()*Math.PI / 180.0)); // cos_lat = cos(lat * PI / 180)
@@ -2012,7 +1967,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
             }
 
             parser.nextTag(); //process <gpsLongitude>
-            if (!isEmptyTag(DatabaseHelper.Member.COLUMN_GPS_LONGITUDE, parser)) {
+            if (!isEmptyTag("gpsLongitude", parser)) {
                 parser.next();
                 table.setGpsLongitude(StringUtil.toDouble(parser.getText()));
 				table.setCosLongitude(Math.cos(table.getGpsLongitude()*Math.PI / 180.0)); // cos_lng = cos(lng * PI / 180)
@@ -2028,21 +1983,22 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 			parser.nextTag(); //process last tag
 			parser.next();
 
-			//values.add(table);
-			database.insert(table);
+			values.add(table);
 
-			if (count % 200 == 0){
+			if (count % 500 == 0){
+				this.boxMembers.put(values); //try with runTx
+				values.clear();
 				savedValues.put(entity, count); //publish progress is a bit slow - its not reporting well the numbers
 				publishProgress(count);
 			}
 
+
 		}
 
+		if (!values.isEmpty()) {
+			this.boxMembers.put(values);
+		}
 		publishProgress(count);
-
-		database.setTransactionSuccessful();
-		database.endTransaction();
-		database.close();
 
 		updateSyncReport(SyncEntity.MEMBERS, new Date(), SyncStatus.STATUS_SYNCED);
 	}

@@ -15,11 +15,9 @@ import android.widget.TextView;
 
 import org.philimone.hds.explorer.R;
 import org.philimone.hds.explorer.adapter.TrackingExpandableListAdapter;
-import org.philimone.hds.explorer.adapter.model.TrackingSubjectItem;
 import org.philimone.hds.explorer.adapter.model.TrackingSubListItem;
+import org.philimone.hds.explorer.adapter.model.TrackingSubjectItem;
 import org.philimone.hds.explorer.data.FormDataLoader;
-import org.philimone.hds.explorer.database.Database;
-import org.philimone.hds.explorer.database.DatabaseHelper;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
 import org.philimone.hds.explorer.database.Queries;
 import org.philimone.hds.explorer.model.CollectedData;
@@ -29,6 +27,7 @@ import org.philimone.hds.explorer.model.Form;
 import org.philimone.hds.explorer.model.Household;
 import org.philimone.hds.explorer.model.Household_;
 import org.philimone.hds.explorer.model.Member;
+import org.philimone.hds.explorer.model.Member_;
 import org.philimone.hds.explorer.model.Region;
 import org.philimone.hds.explorer.model.Region_;
 import org.philimone.hds.explorer.model.User;
@@ -44,7 +43,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 import io.objectbox.Box;
-import mz.betainteractive.utilities.StringUtil;
 
 public class TrackingListDetailsActivity extends Activity implements BarcodeScannerActivity.ResultListener, BarcodeScannerActivity.InvokerClickListener {
 
@@ -65,7 +63,6 @@ public class TrackingListDetailsActivity extends Activity implements BarcodeScan
 
     private View viewLoadingList;
 
-    private Database database;
     private Box<CollectedData> boxCollectedData;
     private Box<Form> boxForms;
     private Box<Region> boxRegions;
@@ -73,6 +70,7 @@ public class TrackingListDetailsActivity extends Activity implements BarcodeScan
     private Box<TrackingList> boxTrackingLists;
     private Box<TrackingSubjectList> boxTrackingSubjects;
     private Box<Household> boxHouseholds;
+    private Box<Member> boxMembers;
 
     private LoadingDialog loadingDialog;
 
@@ -113,10 +111,10 @@ public class TrackingListDetailsActivity extends Activity implements BarcodeScan
         this.boxTrackingLists = ObjectBoxDatabase.get().boxFor(TrackingList.class);
         this.boxTrackingSubjects = ObjectBoxDatabase.get().boxFor(TrackingSubjectList.class);
         this.boxHouseholds = ObjectBoxDatabase.get().boxFor(Household.class);
+        this.boxMembers = ObjectBoxDatabase.get().boxFor(Member.class);
     }
 
     private void initialize() {
-        this.database = new Database(this);
         this.loggedUser = (User) getIntent().getExtras().get("user");
         this.trackingList = (TrackingList) getIntent().getExtras().get("trackinglist");
 
@@ -419,10 +417,8 @@ public class TrackingListDetailsActivity extends Activity implements BarcodeScan
     }
 
     private List<Member> getMembers(List<String> codes){
-        Database db = new Database(this);
-        db.open();
-        List<Member> members = Queries.getAllMemberBy(db, DatabaseHelper.Member.COLUMN_CODE +" IN ("+ StringUtil.toInClause(codes) +")", null);
-        db.close();
+        String[] codesArray = codes.toArray(new String[codes.size()]);
+        List<Member> members = this.boxMembers.query().in(Member_.code, codesArray).build().find();
 
         if (members==null) return new ArrayList<>();
 

@@ -15,8 +15,6 @@ import org.philimone.hds.explorer.R;
 import org.philimone.hds.explorer.adapter.CollectedDataArrayAdapter;
 import org.philimone.hds.explorer.adapter.model.CollectedDataItem;
 import org.philimone.hds.explorer.data.FormDataLoader;
-import org.philimone.hds.explorer.database.Database;
-import org.philimone.hds.explorer.database.DatabaseHelper;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
 import org.philimone.hds.explorer.database.Queries;
 import org.philimone.hds.explorer.model.ApplicationParam;

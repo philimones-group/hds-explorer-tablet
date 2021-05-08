@@ -2,7 +2,6 @@ package org.philimone.hds.explorer.main;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -19,8 +18,6 @@ import org.philimone.hds.explorer.adapter.CollectedDataArrayAdapter;
 import org.philimone.hds.explorer.adapter.MemberArrayAdapter;
 import org.philimone.hds.explorer.adapter.model.CollectedDataItem;
 import org.philimone.hds.explorer.data.FormDataLoader;
-import org.philimone.hds.explorer.database.Database;
-import org.philimone.hds.explorer.database.DatabaseHelper;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
 import org.philimone.hds.explorer.database.Queries;
 import org.philimone.hds.explorer.model.ApplicationParam;
@@ -30,6 +27,7 @@ import org.philimone.hds.explorer.model.Dataset;
 import org.philimone.hds.explorer.model.Form;
 import org.philimone.hds.explorer.model.Household;
 import org.philimone.hds.explorer.model.Member;
+import org.philimone.hds.explorer.model.Member_;
 import org.philimone.hds.explorer.model.Region;
 import org.philimone.hds.explorer.model.Region_;
 import org.philimone.hds.explorer.model.User;
@@ -39,9 +37,9 @@ import org.philimone.hds.explorer.widget.LoadingDialog;
 import org.philimone.hds.explorer.widget.household_details.HouseholdFormDialog;
 
 import java.io.File;
-import java.util.Date;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import io.objectbox.Box;
@@ -74,13 +72,14 @@ public class HouseholdDetailsActivity extends Activity implements OdkFormResultL
     private LoadingDialog loadingDialog;
 
     private FormUtilities formUtilities;
-    private Database database;
+
     private Box<ApplicationParam> boxAppParams;
     private Box<CollectedData> boxCollectedData;
     private Box<Form> boxForms;
     private Box<Region> boxRegions;
     private Box<Dataset> boxDatasets;
     private Box<Household> boxHouseholds;
+    private Box<Member> boxMembers;
 
     private int requestCode;
     private boolean returnFromOdk = false;
@@ -213,6 +212,7 @@ public class HouseholdDetailsActivity extends Activity implements OdkFormResultL
         this.boxRegions = ObjectBoxDatabase.get().boxFor(Region.class);
         this.boxDatasets = ObjectBoxDatabase.get().boxFor(Dataset.class);
         this.boxHouseholds = ObjectBoxDatabase.get().boxFor(Household.class);
+        this.boxMembers = ObjectBoxDatabase.get().boxFor(Member.class);
     }
 
     private void enableButtonsByFormLoaders() {
@@ -332,11 +332,7 @@ public class HouseholdDetailsActivity extends Activity implements OdkFormResultL
     }
 
     private Member getMemberBy(String code){
-        Database database = new Database(this);
-        database.open();
-        Member member = Queries.getMemberBy(database, DatabaseHelper.Member.COLUMN_CODE+"=?", new String[] { code });
-        database.close();
-
+        Member member = Queries.getMemberByCode(this.boxMembers, code);
         return member;
     }
 
@@ -375,12 +371,7 @@ public class HouseholdDetailsActivity extends Activity implements OdkFormResultL
     }
 
     private void showHouseholdMembers(){
-        Database db = new Database(this);
-        db.open();
-
-        List<Member> members = Queries.getAllMemberBy(db, DatabaseHelper.Member.COLUMN_HOUSEHOLD_CODE +"=?", new String[]{ household.getCode() } );
-
-        db.close();
+        List<Member> members = this.boxMembers.query().equal(Member_.householdCode, household.getCode()).build().find();
 
         MemberArrayAdapter adapter = new MemberArrayAdapter(this, members);
         this.lvHouseholdMembers.setAdapter(adapter);
@@ -666,8 +657,6 @@ public class HouseholdDetailsActivity extends Activity implements OdkFormResultL
 
     @Override
     public void onDeleteForm(Uri contentUri) {
-        Database db = new Database(this);
-        db.open();
 
         this.boxCollectedData.query().equal(CollectedData_.formUri, contentUri.toString()).build().remove(); //delete where formUri=contentUri
 
@@ -678,15 +667,10 @@ public class HouseholdDetailsActivity extends Activity implements OdkFormResultL
                 this.boxHouseholds.remove(household);
             }
 
-            db.close();
-
             onCancelAddNewHousehold();
 
         } else {
-
-            db.close();
             showCollectedData();
-
         }
     }
 

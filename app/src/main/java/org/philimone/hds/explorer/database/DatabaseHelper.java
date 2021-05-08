@@ -7,55 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.provider.BaseColumns;
 import android.util.Log;
 
-public class DatabaseHelper extends SQLiteOpenHelper {
-
-		
-	public DatabaseHelper(Context context) {
-		super(context, Database.DATABASE_NAME, null, Database.DATABASE_VERSION);
-	}
-
-	@Override
-	public void onCreate(SQLiteDatabase db) {
-        try {
-		    db.execSQL(CREATE_TABLE_MEMBER);
-        }catch (Exception ex){
-            ex.printStackTrace();
-        }
-	}
-
-	@Override
-	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        if (newVersion > oldVersion) {
-
-            Log.d("alter table", "add ageAtDeath"); //OLD VERSION
-            try {
-                //db.execSQL("ALTER TABLE " + Member.TABLE_NAME + " ADD COLUMN " + Member.COLUMN_AGE_AT_DEATH + " INTEGER NOT NULL DEFAULT 0"); //upgrage
-
-                //db.execSQL("ALTER TABLE " + TrackingSubjectList.TABLE_NAME + " ADD COLUMN " + TrackingSubjectList.COLUMN_SUBJECT_VISIT + " INTEGER  NOT NULL DEFAULT 0"); //add MemberVisit
-
-                //db.execSQL("ALTER TABLE " + TrackingSubjectList.TABLE_NAME + " ADD COLUMN " + TrackingSubjectList.COLUMN_SUBJECT_VISIT + " INTEGER  NOT NULL DEFAULT 0"); //add MemberVisit
-
-                //db.execSQL("ALTER TABLE " + Form.TABLE_NAME + " ADD COLUMN " + Form.COLUMN_REGION_LEVEL + " TEXT "); //add regionLevel
-
-                //db.execSQL("ALTER TABLE " + Form.TABLE_NAME + " ADD COLUMN " + Form.COLUMN_IS_REGION + " INTEGER NOT NULL DEFAULT 0"); //add isRegion
-
-            }catch (Exception ex){
-                Log.d("error on database alter", ""+ex.getMessage());
-                ex.printStackTrace();
-            }
-            /*
-            //NEW DB VERSION with BindMap
-            try {
-                db.execSQL("ALTER TABLE " + Form.TABLE_NAME + " ADD COLUMN " + Form.COLUMN_FORM_MAP + " TEXT"); //upgrade CollectedData
-            }catch (Exception ex){
-                Log.d("error on database alter", ""+ex.getMessage());
-                ex.printStackTrace();
-            }
-            */
-        }
-	}
-
-    public static final String[] ALL_TABLES = {Member.TABLE_NAME };
+public class DatabaseHelper {
 
 	public static final class Member implements BaseColumns  {
 		public static final String TABLE_NAME = "member";
@@ -105,48 +57,5 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 COLUMN_GPS_NULL, COLUMN_GPS_ACCURACY, COLUMN_GPS_ALTITUDE, COLUMN_GPS_LATITUDE, COLUMN_GPS_LONGITUDE,
                 COLUMN_COS_LATITUDE, COLUMN_SIN_LATITUDE, COLUMN_COS_LONGITUDE, COLUMN_SIN_LONGITUDE, COLUMN_RECENTLY_CREATED};
 	}
-
-    private static final String CREATE_TABLE_MEMBER = " "
-            + "CREATE TABLE " + Member.TABLE_NAME + "("
-            + Member._ID  + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-            + Member.COLUMN_CODE + " TEXT,"
-            + Member.COLUMN_NAME + " TEXT,"
-            + Member.COLUMN_GENDER + " TEXT,"
-            + Member.COLUMN_DOB + " TEXT,"
-            + Member.COLUMN_AGE + " INTEGER,"
-            + Member.COLUMN_AGE_AT_DEATH + " INTEGER,"
-            + Member.COLUMN_SPOUSE_CODE + " TEXT,"
-            + Member.COLUMN_SPOUSE_NAME + " TEXT,"
-            + Member.COLUMN_MARITAL_STATUS + " TEXT,"
-            + Member.COLUMN_MOTHER_CODE + " TEXT,"
-            + Member.COLUMN_MOTHER_NAME + " TEXT,"
-            + Member.COLUMN_FATHER_CODE + " TEXT,"
-            + Member.COLUMN_FATHER_NAME + " TEXT,"
-            + Member.COLUMN_HOUSEHOLD_CODE + " TEXT,"
-            + Member.COLUMN_HOUSEHOLD_NAME + " TEXT,"
-            + Member.COLUMN_START_TYPE + " TEXT,"
-            + Member.COLUMN_START_DATE + " TEXT,"
-            + Member.COLUMN_END_TYPE + " TEXT,"
-            + Member.COLUMN_END_DATE + " TEXT,"
-            + Member.COLUMN_ENTRY_HOUSEHOLD + " TEXT,"
-            + Member.COLUMN_ENTRY_TYPE + " TEXT,"
-            + Member.COLUMN_ENTRY_DATE + " TEXT,"
-            + Member.COLUMN_HEAD_RELATIONSHIP_TYPE + " TEXT,"
-            + Member.COLUMN_IS_HOUSEHOLD_HEAD + " INTEGER,"
-            + Member.COLUMN_IS_SEC_HOUSEHOLD_HEAD + " INTEGER,"
-            + Member.COLUMN_GPS_NULL + " INTEGER,"
-            + Member.COLUMN_GPS_ACCURACY + " REAL,"
-            + Member.COLUMN_GPS_ALTITUDE + " REAL,"
-            + Member.COLUMN_GPS_LATITUDE + " REAL,"
-            + Member.COLUMN_GPS_LONGITUDE + " REAL,"
-            + Member.COLUMN_COS_LATITUDE + " REAL,"
-            + Member.COLUMN_SIN_LATITUDE + " REAL,"
-            + Member.COLUMN_COS_LONGITUDE + " REAL,"
-            + Member.COLUMN_SIN_LONGITUDE + " REAL,"
-            + Member.COLUMN_RECENTLY_CREATED + " INTEGER);"
-
-            + " CREATE UNIQUE INDEX IDX_MEMBER_CODE ON " + Member.TABLE_NAME
-            + "(" +  Member.COLUMN_CODE + ");"
-            ;
 
 }

@@ -11,8 +11,6 @@ import com.mapswithme.maps.api.MWMPoint;
 import org.philimone.hds.explorer.R;
 import org.philimone.hds.explorer.adapter.MemberArrayAdapter;
 import org.philimone.hds.explorer.data.FormDataLoader;
-import org.philimone.hds.explorer.database.Database;
-import org.philimone.hds.explorer.database.DatabaseHelper;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
 import org.philimone.hds.explorer.database.Queries;
 import org.philimone.hds.explorer.fragment.MemberFilterFragment;
@@ -189,10 +187,7 @@ public class SurveyMembersActivity extends Activity implements MemberFilterFragm
     private Household getHousehold(Member member){
         if (member == null || member.getHouseholdCode()==null) return null;
 
-        Database db = new Database(this);
-        db.open();
         Household household = Queries.getHouseholdByCode(this.boxHouseholds, member.getHouseholdCode());
-        db.close();
 
         return household;
     }

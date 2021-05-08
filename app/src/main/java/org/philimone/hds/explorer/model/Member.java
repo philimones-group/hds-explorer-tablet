@@ -8,70 +8,91 @@ import org.philimone.hds.explorer.database.Table;
 import java.io.Serializable;
 import java.util.Date;
 
+import io.objectbox.annotation.Entity;
+import io.objectbox.annotation.Id;
+import io.objectbox.annotation.Index;
+import io.objectbox.annotation.Transient;
+import io.objectbox.annotation.Unique;
 import mz.betainteractive.utilities.ReflectionUtils;
 import mz.betainteractive.utilities.StringUtil;
 
 /**
  * Created by paul on 5/20/16.
  */
-public class Member implements Serializable, Table {
+@Entity
+public class Member implements Serializable {
 
-    private int id;
-    private String code;
-    private String name;
-    private String gender;
-    private String dob;
-    private int age;
-    private int ageAtDeath;
+    @Id
+    public long id;
+    @Unique
+    public String code;
+    public String name;
+    public String gender;
+    public String dob;
+    public int age;
+    public int ageAtDeath;
 
-    private String motherCode;
-    private String motherName;
-    private String fatherCode;
-    private String fatherName;
+    @Index
+    public String motherCode;
+    public String motherName;
+    @Index
+    public String fatherCode;
+    public String fatherName;
 
-    private String maritalStatus;
+    public String maritalStatus;
 
-    private String spouseCode;
-    private String spouseName;
+    @Index
+    public String spouseCode;
+    public String spouseName;
 
     /**
      * Current HouseHold Status
      */
-    private String householdCode;
-    private String householdName;
-    private String startType;
-    private String startDate;
-    private String endType;
-    private String endDate;
+    @Index
+    public String householdCode;
+    @Index
+    public String householdName;
+    public String startType;
+    public String startDate;
+    public String endType;
+    public String endDate;
 
-    private String entryHousehold;
-    private String entryType;
-    private String entryDate;
+    @Index
+    public String entryHousehold;
+    public String entryType;
+    public String entryDate;
 
-    private String headRelationshipType;
-
-    private boolean isHouseholdHead; /*not on database*/
-    private boolean isSecHouseholdHead; /*not on database*/
+    @Index
+    public String headRelationshipType;
 
     /** GPS Status */
-    private boolean gpsNull;
-    private Double gpsAccuracy;
-    private Double gpsAltitude;
-    private Double gpsLatitude;
-    private Double gpsLongitude;
+    public boolean gpsNull;
+    public Double gpsAccuracy;
+    public Double gpsAltitude;
+    public Double gpsLatitude;
+    public Double gpsLongitude;
 
-    private Double cosLatitude;
-    private Double sinLatitude;
-    private Double cosLongitude;
-    private Double sinLongitude;
+    public Double cosLatitude;
+    public Double sinLatitude;
+    public Double cosLongitude;
+    public Double sinLongitude;
 
-    private Boolean recentlyCreated = false;
+    public Boolean recentlyCreated = false;
 
-    public int getId() {
+    @Transient
+    private boolean isHouseholdHead; /*not on database*/
+    @Transient
+    private boolean isSecHouseholdHead; /*not on database*/
+
+    public Member() {
+
+    }
+
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -418,54 +439,8 @@ public class Member implements Serializable, Table {
         return m;
     }
 
-    @Override
     public String getTableName() {
-        return DatabaseHelper.Member.TABLE_NAME;
+        return "member";
     }
 
-    @Override
-    public ContentValues getContentValues() {
-        ContentValues cv = new ContentValues();
-        cv.put(DatabaseHelper.Member.COLUMN_CODE, code);
-        cv.put(DatabaseHelper.Member.COLUMN_NAME, name);
-        cv.put(DatabaseHelper.Member.COLUMN_GENDER, gender);
-        cv.put(DatabaseHelper.Member.COLUMN_DOB, dob);
-        cv.put(DatabaseHelper.Member.COLUMN_AGE, age);
-        cv.put(DatabaseHelper.Member.COLUMN_AGE_AT_DEATH, ageAtDeath);
-        cv.put(DatabaseHelper.Member.COLUMN_SPOUSE_CODE, spouseCode);
-        cv.put(DatabaseHelper.Member.COLUMN_SPOUSE_NAME, spouseName);
-        cv.put(DatabaseHelper.Member.COLUMN_MARITAL_STATUS, maritalStatus);
-        cv.put(DatabaseHelper.Member.COLUMN_MOTHER_CODE, motherCode);
-        cv.put(DatabaseHelper.Member.COLUMN_MOTHER_NAME, motherName);
-        cv.put(DatabaseHelper.Member.COLUMN_FATHER_CODE, fatherCode);
-        cv.put(DatabaseHelper.Member.COLUMN_FATHER_NAME, fatherName);
-        cv.put(DatabaseHelper.Member.COLUMN_HOUSEHOLD_CODE, householdCode);
-        cv.put(DatabaseHelper.Member.COLUMN_HOUSEHOLD_NAME, householdName);
-        cv.put(DatabaseHelper.Member.COLUMN_START_TYPE, startType);
-        cv.put(DatabaseHelper.Member.COLUMN_START_DATE, startDate);
-        cv.put(DatabaseHelper.Member.COLUMN_END_TYPE, endType);
-        cv.put(DatabaseHelper.Member.COLUMN_END_DATE, endDate);
-        cv.put(DatabaseHelper.Member.COLUMN_ENTRY_HOUSEHOLD, entryHousehold);
-        cv.put(DatabaseHelper.Member.COLUMN_ENTRY_TYPE, entryType);
-        cv.put(DatabaseHelper.Member.COLUMN_ENTRY_DATE, entryDate);
-        cv.put(DatabaseHelper.Member.COLUMN_HEAD_RELATIONSHIP_TYPE, headRelationshipType);
-        cv.put(DatabaseHelper.Member.COLUMN_IS_HOUSEHOLD_HEAD, isHouseholdHead ? 1 : 0);
-        cv.put(DatabaseHelper.Member.COLUMN_IS_SEC_HOUSEHOLD_HEAD, isSecHouseholdHead ? 1 : 0);
-        cv.put(DatabaseHelper.Member.COLUMN_GPS_NULL, gpsNull ? 1 : 0);
-        cv.put(DatabaseHelper.Member.COLUMN_GPS_ACCURACY, gpsAccuracy);
-        cv.put(DatabaseHelper.Member.COLUMN_GPS_ALTITUDE, gpsAltitude);
-        cv.put(DatabaseHelper.Member.COLUMN_GPS_LATITUDE, gpsLatitude);
-        cv.put(DatabaseHelper.Member.COLUMN_GPS_LONGITUDE, gpsLongitude);
-        cv.put(DatabaseHelper.Member.COLUMN_COS_LATITUDE, cosLatitude);
-        cv.put(DatabaseHelper.Member.COLUMN_SIN_LATITUDE, sinLatitude);
-        cv.put(DatabaseHelper.Member.COLUMN_COS_LONGITUDE, cosLongitude);
-        cv.put(DatabaseHelper.Member.COLUMN_SIN_LONGITUDE, sinLongitude);
-        cv.put(DatabaseHelper.Member.COLUMN_RECENTLY_CREATED, recentlyCreated ? 1 : 0);
-        return cv;
-    }
-
-    @Override
-    public String[] getColumnNames() {
-        return DatabaseHelper.Member.ALL_COLUMNS;
-    }
 }

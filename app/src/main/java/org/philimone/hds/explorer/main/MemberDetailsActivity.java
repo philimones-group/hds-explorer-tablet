@@ -18,16 +18,14 @@ import org.philimone.hds.explorer.R;
 import org.philimone.hds.explorer.adapter.CollectedDataArrayAdapter;
 import org.philimone.hds.explorer.adapter.model.CollectedDataItem;
 import org.philimone.hds.explorer.data.FormDataLoader;
-import org.philimone.hds.explorer.database.Database;
-import org.philimone.hds.explorer.database.DatabaseHelper;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
-import org.philimone.hds.explorer.database.Queries;
 import org.philimone.hds.explorer.fragment.MemberFilterDialog;
 import org.philimone.hds.explorer.model.CollectedData;
 import org.philimone.hds.explorer.model.CollectedData_;
 import org.philimone.hds.explorer.model.Form;
 import org.philimone.hds.explorer.model.Household;
 import org.philimone.hds.explorer.model.Member;
+import org.philimone.hds.explorer.model.Member_;
 import org.philimone.hds.explorer.model.User;
 import org.philimone.hds.explorer.widget.DialogFactory;
 import org.philimone.hds.explorer.widget.FormSelectorDialog;
@@ -94,6 +92,7 @@ public class MemberDetailsActivity extends Activity implements OdkFormResultList
 
     private Box<CollectedData> boxCollectedData;
     private Box<Form> boxForms;
+    private Box<Member> boxMembers;
 
     public static final int REQUEST_CODE_ADD_NEW_MEMBER = 10; /* Member Requests will be from 10 to 19 */
     public static final int REQUEST_CODE_EDIT_NEW_MEMBER = 11;
@@ -181,6 +180,7 @@ public class MemberDetailsActivity extends Activity implements OdkFormResultList
     private void initBoxes() {
         this.boxCollectedData = ObjectBoxDatabase.get().boxFor(CollectedData.class);
         this.boxForms = ObjectBoxDatabase.get().boxFor(Form.class);
+        this.boxMembers = ObjectBoxDatabase.get().boxFor(Member.class);
     }
 
     private void initialize() {
@@ -330,12 +330,7 @@ public class MemberDetailsActivity extends Activity implements OdkFormResultList
     }
 
     private void retrieveAllHouseholdMembers(){
-        Database db = new Database(this);
-        db.open();
-
-        List<Member> members = Queries.getAllMemberBy(db, DatabaseHelper.Member.COLUMN_HOUSEHOLD_CODE +"=?", new String[]{ this.member.getHouseholdCode() } );
-
-        db.close();
+        List<Member> members = this.boxMembers.query().equal(Member_.householdCode, this.member.getHouseholdCode()).build().find();
 
         this.allHouseholdMembers.clear();
         this.allHouseholdMembers.addAll(members);
@@ -530,13 +525,10 @@ public class MemberDetailsActivity extends Activity implements OdkFormResultList
         Log.d("form finalized"," "+contentUri+", "+xmlFile);
 
         //save Collected data
-        Database db = new Database(this);
-        db.open();
         //update or insert
-
         //Save Member and Update the object member
         if (member.getId()==0){
-            int id = (int) db.insert(member);
+            long id = this.boxMembers.put(member);
             member.setId(id);
         }
 
@@ -583,8 +575,6 @@ public class MemberDetailsActivity extends Activity implements OdkFormResultList
             Log.d("updating", "new collected data");
         }
 
-        db.close();
-
         if (requestCode == REQUEST_CODE_ADD_NEW_MEMBER || requestCode == REQUEST_CODE_EDIT_NEW_MEMBER){
             onFinishAddNewMember(this.member);
         } else {
@@ -597,13 +587,10 @@ public class MemberDetailsActivity extends Activity implements OdkFormResultList
         Log.d("form unfinalized"," "+contentUri);
 
         //save Collected data
-        Database db = new Database(this);
-        db.open();
         //update or insert
-
         //Save Member and Update the object member
         if (member.getId()==0){
-            int id = (int) db.insert(member);
+            long id = this.boxMembers.put(member);
             member.setId(id);
         }
 
@@ -648,8 +635,6 @@ public class MemberDetailsActivity extends Activity implements OdkFormResultList
             this.boxCollectedData.put(collectedData);
             Log.d("updating", "new collected data");
         }
-
-        db.close();
 
         if (requestCode == REQUEST_CODE_ADD_NEW_MEMBER || requestCode == REQUEST_CODE_EDIT_NEW_MEMBER){
             onFinishAddNewMember(this.member);
@@ -855,12 +840,9 @@ public class MemberDetailsActivity extends Activity implements OdkFormResultList
                 loader.putData("spouse_name", member.getSpouseName());
                 Log.d("editing-spouse", "selected-"+member.getSpouseCode()+", ms="+maritalStatus);
             }
-            //save Member by updating changed fields
 
-            Database database = new Database(this);
-            database.open();
-            database.update(Member.class, this.member.getContentValues(), DatabaseHelper.Member._ID+"=?", new String[]{ this.member.getId()+"" });
-            database.close();
+            //save Member by updating changed fields
+            this.boxMembers.put(this.member);
 
         }
 

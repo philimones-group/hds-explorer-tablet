@@ -9,8 +9,6 @@ import android.widget.Button;
 import com.google.gson.Gson;
 
 import org.philimone.hds.explorer.R;
-import org.philimone.hds.explorer.database.Database;
-import org.philimone.hds.explorer.database.DatabaseHelper;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
 import org.philimone.hds.explorer.database.Queries;
 import org.philimone.hds.explorer.io.SyncEntitiesTask;

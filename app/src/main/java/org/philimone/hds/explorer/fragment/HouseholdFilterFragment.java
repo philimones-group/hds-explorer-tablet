@@ -1,11 +1,10 @@
 package org.philimone.hds.explorer.fragment;
 
 
+import android.app.Fragment;
 import android.content.Context;
-import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -31,11 +30,7 @@ import org.philimone.hds.explorer.adapter.HouseholdArrayAdapter;
 import org.philimone.hds.explorer.adapter.RegionExpandableListAdapter;
 import org.philimone.hds.explorer.adapter.model.HierarchyItem;
 import org.philimone.hds.explorer.data.FormDataLoader;
-import org.philimone.hds.explorer.database.Converter;
-import org.philimone.hds.explorer.database.Database;
-import org.philimone.hds.explorer.database.DatabaseHelper;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
-import org.philimone.hds.explorer.database.Queries;
 import org.philimone.hds.explorer.main.BarcodeScannerActivity;
 import org.philimone.hds.explorer.model.ApplicationParam;
 import org.philimone.hds.explorer.model.ApplicationParam_;
@@ -101,7 +96,6 @@ public class HouseholdFilterFragment extends Fragment implements RegionExpandabl
     private Listener listener;
     private BarcodeScannerActivity.InvokerClickListener barcodeScannerListener;
 
-    private Database database;
     private Box<ApplicationParam> boxAppParams;
     private Box<Region> boxRegions;
     private Box<Household> boxHouseholds;
@@ -142,8 +136,6 @@ public class HouseholdFilterFragment extends Fragment implements RegionExpandabl
     }
 
     private void initialize(View view) {
-        this.database = new Database(getActivity());
-
         this.mContext = getActivity();
 
         if (getActivity() instanceof Listener){

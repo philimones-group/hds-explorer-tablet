@@ -22,7 +22,6 @@ import com.mapswithme.maps.api.MapsWithMeApi;
 import org.philimone.hds.explorer.R;
 import org.philimone.hds.explorer.adapter.MemberArrayAdapter;
 import org.philimone.hds.explorer.database.Converter;
-import org.philimone.hds.explorer.database.Database;
 import org.philimone.hds.explorer.database.DatabaseHelper;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
 import org.philimone.hds.explorer.database.Queries;
@@ -33,6 +32,7 @@ import org.philimone.hds.explorer.model.CollectedData_;
 import org.philimone.hds.explorer.model.Form;
 import org.philimone.hds.explorer.model.Household;
 import org.philimone.hds.explorer.model.Member;
+import org.philimone.hds.explorer.model.Member_;
 import org.philimone.hds.explorer.model.Region;
 import org.philimone.hds.explorer.model.Region_;
 import org.philimone.hds.explorer.widget.DialogFactory;
@@ -46,6 +46,8 @@ import java.util.List;
 import java.util.Map;
 
 import io.objectbox.Box;
+import io.objectbox.query.QueryBuilder;
+import mz.betainteractive.utilities.TextFilters;
 
 
 /**
@@ -81,6 +83,7 @@ public class MemberListFragment extends Fragment {
     private Box<Form> boxForms;
     private Box<Region> boxRegions;
     private Box<Household> boxHouseholds;
+    private Box<Member> boxMembers;
 
     public enum Buttons {
         SHOW_HOUSEHOLD, MEMBERS_MAP, CLOSEST_MEMBERS, CLOSEST_HOUSES, EDIT_MEMBER, ADD_NEW_MEMBER, NEW_MEMBER_COLLECT, COLLECTED_DATA
@@ -121,6 +124,7 @@ public class MemberListFragment extends Fragment {
         this.boxForms = ObjectBoxDatabase.get().boxFor(Form.class);
         this.boxRegions = ObjectBoxDatabase.get().boxFor(Region.class);
         this.boxHouseholds = ObjectBoxDatabase.get().boxFor(Household.class);
+        this.boxMembers = ObjectBoxDatabase.get().boxFor(Member.class);
     }
 
     public void setButtonVisibilityGone(Buttons... buttons){
@@ -395,7 +399,7 @@ public class MemberListFragment extends Fragment {
     }
 
     private void showClosestMembers(Member member, Distance gdistance) {
-
+/*
         if (member == null || member.isGpsNull()){
             DialogFactory.createMessageInfo(this.getActivity(), R.string.map_gps_not_available_title_lbl, R.string.member_list_member_gps_not_available_lbl).show();
             return;
@@ -474,7 +478,7 @@ public class MemberListFragment extends Fragment {
 
         //call the main activity to open GPSList Activity
         this.memberActionListener.onClosestMembersResult(member, gdistance, points, points_bak, members);
-
+*/
     }
 
     private void buildHouseDistanceSelectorDialog() {
@@ -649,23 +653,17 @@ public class MemberListFragment extends Fragment {
 
     private void onShowCollectedData(){
         showProgress(true);
-
-
         Map<Member, Integer> mapMembers = new HashMap<>();
-
 
         List<Member> members = new ArrayList<>();
         ArrayList<String> extras = new ArrayList<>();
 
         //load collected data
-        Database database = new Database(this.getActivity());
-        database.open();
-
         List<CollectedData> list = this.boxCollectedData.query().equal(CollectedData_.tableName, DatabaseHelper.Member.TABLE_NAME).build().find(); //only collected data from members
         List<Form> forms = boxForms.getAll();
 
         for (CollectedData cd : list){
-            Member member = Queries.getMemberBy(database, DatabaseHelper.Member._ID+"=?", new String[]{ cd.getRecordId()+"" });
+            Member member = Queries.getMemberById(this.boxMembers, cd.getRecordId());
             if (member != null){
                 Integer value = mapMembers.get(member);
                 if (value==null){
@@ -675,9 +673,6 @@ public class MemberListFragment extends Fragment {
                 }
             }
         }
-
-        database.close();
-
 
         String extraText = getString(R.string.member_list_item_extra_collected_lbl);
 
@@ -765,10 +760,7 @@ public class MemberListFragment extends Fragment {
     private Member getHouseholdHead(Household household){
         if (household == null || household.getHeadCode()==null) return null;
 
-        Database database = new Database(this.getActivity());
-        database.open();
-        Member member = Queries.getMemberBy(database, DatabaseHelper.Member.COLUMN_CODE +"=?", new String[]{ household.getHeadCode() });
-        database.close();
+        Member member = Queries.getMemberByCode(this.boxMembers, household.getHeadCode());
 
         return member;
     }
@@ -779,15 +771,15 @@ public class MemberListFragment extends Fragment {
         return member;
     }
 
-    public MemberArrayAdapter loadMembersByFilters(Household household, String name, String memberCode, String houseCode, String gender, Integer minAge, Integer maxAge, Boolean isDead, Boolean hasOutmigrated, Boolean liveResident) {
+    public MemberArrayAdapter loadMembersByFilters(Household household, String name, String code, String householdCode, String gender, Integer minAge, Integer maxAge, Boolean isDead, Boolean hasOutmigrated, Boolean liveResident) {
         //open loader
         this.currentHousehold = household;
 
         String endType = "";
 
         if (name == null) name = "";
-        if (memberCode == null) memberCode = "";
-        if (houseCode == null) houseCode = "";
+        if (code == null) code = "";
+        if (householdCode == null) householdCode = "";
         if (gender == null) gender = "";
         if (isDead != null && isDead) endType = "DTH";
         if (hasOutmigrated != null && hasOutmigrated) endType = "EXT";
@@ -797,8 +789,8 @@ public class MemberListFragment extends Fragment {
         this.lastSearch = new ArrayList();
         this.lastSearch.add(household!=null ? household.getId()+"" : "");
         this.lastSearch.add(name);
-        this.lastSearch.add(memberCode);
-        this.lastSearch.add(houseCode);
+        this.lastSearch.add(code);
+        this.lastSearch.add(householdCode);
         this.lastSearch.add(gender);
         this.lastSearch.add(minAge==null ? "" : minAge.toString());
         this.lastSearch.add(maxAge==null ? "" : maxAge.toString());
@@ -808,83 +800,120 @@ public class MemberListFragment extends Fragment {
 
 
         //search on database
-        List<Member> members = new ArrayList<>();
-        List<String> whereValues = new ArrayList<>();
-        String whereClause = "";
+        QueryBuilder<Member> builder = this.boxMembers.query();
 
         if (!name.isEmpty()) {
-            whereClause = DatabaseHelper.Member.COLUMN_NAME + " like ?";
-            whereValues.add(name+"%");
+
+            TextFilters filter = new TextFilters(name);
+            String text = filter.getFilterText();
+            switch (filter.getFilterType()) {
+                case STARTSWITH:
+                    builder.startsWith(Member_.name, text);
+                    break;
+                case ENDSWITH:
+                    builder.endsWith(Member_.name, text);
+                    break;
+                case CONTAINS:
+                    builder.contains(Member_.name, text);
+                    break;
+                case MULTIPLE_CONTAINS:
+                    for (String t : filter.getFilterTexts()) {
+                        builder.contains(Member_.name, t);
+                    }
+                    break;
+                case NONE:
+                    builder.equal(Member_.name, text);
+                    break;
+                case EMPTY:
+                    break;
+            }
+            //whereClause = DatabaseHelper.Member.COLUMN_NAME + " like ?";
         }
-        if (!memberCode.isEmpty()){
-            whereClause += (whereClause.isEmpty()? "" : " AND ");
-            whereClause += DatabaseHelper.Member.COLUMN_CODE + " like ?";
-            whereValues.add(memberCode+"%");
+        if (!code.isEmpty()){
+
+            TextFilters filter = new TextFilters(code);
+            String text = filter.getFilterText();
+            switch (filter.getFilterType()) {
+                case STARTSWITH:
+                    builder.startsWith(Member_.code, text);
+                    break;
+                case ENDSWITH:
+                    builder.endsWith(Member_.code, text);
+                    break;
+                case CONTAINS:
+                    builder.contains(Member_.code, text);
+                    break;
+                case MULTIPLE_CONTAINS:
+                    for (String t : filter.getFilterTexts()) {
+                        builder.contains(Member_.code, t);
+                    }
+                    break;
+                case NONE:
+                    builder.equal(Member_.code, text);
+                    break;
+                case EMPTY:
+                    break;
+            }
+            //whereClause += DatabaseHelper.Member.COLUMN_CODE + " like ?";
         }
-        if (!houseCode.isEmpty()){
-            whereClause += (whereClause.isEmpty()? "" : " AND ");
-            whereClause += DatabaseHelper.Member.COLUMN_HOUSEHOLD_CODE + " like ?";
-            whereValues.add(houseCode+"%");
+        if (!householdCode.isEmpty()){
+            TextFilters filter = new TextFilters(householdCode);
+            String text = filter.getFilterText();
+            switch (filter.getFilterType()) {
+                case STARTSWITH:
+                    builder.startsWith(Member_.householdCode, text);
+                    break;
+                case ENDSWITH:
+                    builder.endsWith(Member_.householdCode, text);
+                    break;
+                case CONTAINS:
+                    builder.contains(Member_.householdCode, text);
+                    break;
+                case MULTIPLE_CONTAINS:
+                    for (String t : filter.getFilterTexts()) {
+                        builder.contains(Member_.householdCode, t);
+                    }
+                    break;
+                case NONE:
+                    builder.equal(Member_.householdCode, text);
+                    break;
+                case EMPTY:
+                    break;
+            }
+            //whereClause += DatabaseHelper.Member.COLUMN_HOUSEHOLD_CODE + " like ?";
+
         }
         if (!gender.isEmpty()){
-            whereClause += (whereClause.isEmpty()? "" : " AND ");
-            whereClause += DatabaseHelper.Member.COLUMN_GENDER + " = ?";
-            whereValues.add(gender);
+            builder.equal(Member_.gender, gender);
+            //whereClause += DatabaseHelper.Member.COLUMN_GENDER + " = ?";
         }
 
         if (endType != null && endType=="DTH"){
             if (minAge != null){
-                whereClause += (whereClause.isEmpty()? "" : " AND ");
-                whereClause += DatabaseHelper.Member.COLUMN_AGE_AT_DEATH + " >= ?";
-                whereValues.add(minAge.toString());
+                builder.greaterOrEqual(Member_.ageAtDeath, minAge);
+                //whereClause += DatabaseHelper.Member.COLUMN_AGE_AT_DEATH + " >= ?";
             }
             if (maxAge != null){
-                whereClause += (whereClause.isEmpty()? "" : " AND ");
-                whereClause += DatabaseHelper.Member.COLUMN_AGE_AT_DEATH + " <= ?";
-                whereValues.add(maxAge.toString());
+                builder.lessOrEqual(Member_.ageAtDeath, maxAge);
+                //whereClause += DatabaseHelper.Member.COLUMN_AGE_AT_DEATH + " <= ?";
             }
         }else {
             if (minAge != null){
-                whereClause += (whereClause.isEmpty()? "" : " AND ");
-                whereClause += DatabaseHelper.Member.COLUMN_AGE + " >= ?";
-                whereValues.add(minAge.toString());
+                builder.greaterOrEqual(Member_.age, minAge);
+                //whereClause += DatabaseHelper.Member.COLUMN_AGE + " >= ?";
             }
             if (maxAge != null){
-                whereClause += (whereClause.isEmpty()? "" : " AND ");
-                whereClause += DatabaseHelper.Member.COLUMN_AGE + " <= ?";
-                whereValues.add(maxAge.toString());
+                builder.lessOrEqual(Member_.age, maxAge);
+                //whereClause += DatabaseHelper.Member.COLUMN_AGE + " <= ?";
             }
         }
 
         if (!endType.isEmpty()){
-            whereClause += (whereClause.isEmpty()? "" : " AND ");
-            whereClause += DatabaseHelper.Member.COLUMN_END_TYPE + " = ?";
-            whereValues.add(endType);
+            builder.equal(Member_.endType, endType);
+            //whereClause += DatabaseHelper.Member.COLUMN_END_TYPE + " = ?";
         }
 
-        Database database = new Database(this.getActivity());
-        database.open();
-
-        String[] ar = new String[whereValues.size()];
-        Cursor cursor = database.query(Member.class, DatabaseHelper.Member.ALL_COLUMNS, whereClause, whereValues.toArray(ar), null, null, DatabaseHelper.Member.COLUMN_CODE);
-
-        while (cursor.moveToNext()){
-            Member member = Converter.cursorToMember(cursor);
-            members.add(member);
-            //Log.d("household", ""+household);
-            //Log.d("head", ""+(household!=null ? household.getHeadCode():"null"));
-            /*
-            if (household != null && household.getHeadCode().equals(member.getCode())){
-                member.setHouseholdHead(true);
-            }
-
-            if (household != null && household.getSecHeadCode().equals(member.getCode())){
-                member.setSecHouseholdHead(true);
-            }
-            */
-        }
-
-        database.close();
+        List<Member> members = builder.build().find();
 
         MemberArrayAdapter currentAdapter = new MemberArrayAdapter(this.getActivity(), members);
 

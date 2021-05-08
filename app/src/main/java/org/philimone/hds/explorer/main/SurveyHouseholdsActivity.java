@@ -14,8 +14,6 @@ import com.mapswithme.maps.api.MWMPoint;
 import org.philimone.hds.explorer.R;
 import org.philimone.hds.explorer.adapter.MemberArrayAdapter;
 import org.philimone.hds.explorer.data.FormDataLoader;
-import org.philimone.hds.explorer.database.Database;
-import org.philimone.hds.explorer.database.DatabaseHelper;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
 import org.philimone.hds.explorer.database.Queries;
 import org.philimone.hds.explorer.fragment.HouseholdFilterFragment;
@@ -28,6 +26,7 @@ import org.philimone.hds.explorer.model.Dataset;
 import org.philimone.hds.explorer.model.Form;
 import org.philimone.hds.explorer.model.Household;
 import org.philimone.hds.explorer.model.Member;
+import org.philimone.hds.explorer.model.Member_;
 import org.philimone.hds.explorer.model.Region;
 import org.philimone.hds.explorer.model.User;
 import org.philimone.hds.explorer.widget.DialogFactory;
@@ -70,6 +69,7 @@ public class SurveyHouseholdsActivity extends Activity implements HouseholdFilte
     private Box<Form> boxForms;
     private Box<Dataset> boxDatasets;
     private Box<Household> boxHouseholds;
+    private Box<Member> boxMembers;
 
     private final int MEMBER_DETAILS_REQUEST_CODE = 31;
 
@@ -97,6 +97,7 @@ public class SurveyHouseholdsActivity extends Activity implements HouseholdFilte
         this.boxForms = ObjectBoxDatabase.get().boxFor(Form.class);
         this.boxDatasets = ObjectBoxDatabase.get().boxFor(Dataset.class);
         this.boxHouseholds = ObjectBoxDatabase.get().boxFor(Household.class);
+        this.boxMembers = ObjectBoxDatabase.get().boxFor(Member.class);
     }
 
     private void initialize() {
@@ -505,13 +506,11 @@ public class SurveyHouseholdsActivity extends Activity implements HouseholdFilte
         //Execute db update
         this.boxHouseholds.put(household);
 
-        Database db = new Database(this);
-        db.open();
-        ContentValues cvh = new ContentValues();
-        cvh.put(DatabaseHelper.Member.COLUMN_HOUSEHOLD_NAME, houseName);
-        //Update all members of the household
-        db.update(Member.class, cvh, DatabaseHelper.Member.COLUMN_HOUSEHOLD_CODE +"=?", new String[]{ household.getCode()+"" } );
-        db.close();
+        List<Member> members = this.boxMembers.query().equal(Member_.householdCode, household.getCode()).build().find();
+        members.forEach( member -> {
+            member.setHouseholdName(houseName);
+            boxMembers.put(member);
+        });
 
         Toast.makeText(this, getString(R.string.new_member_dialog_household_head_updated_lbl), Toast.LENGTH_SHORT);
     }
@@ -533,26 +532,19 @@ public class SurveyHouseholdsActivity extends Activity implements HouseholdFilte
         Log.d("member-name", memberName);
         Log.d("member-dob", memberDob);
 
-        //update name, gender and dob on Member domain
-        ContentValues cv = new ContentValues();
-        cv.put(DatabaseHelper.Member.COLUMN_NAME, memberName);
-        cv.put(DatabaseHelper.Member.COLUMN_GENDER, memberGend);
-        cv.put(DatabaseHelper.Member.COLUMN_DOB, memberDob);
+
 
         //update head name if the member is household head
         household.setHeadName(memberName);
 
+        //update name, gender and dob on Member domain
         member.setName(memberName);
         member.setGender(memberName);
         member.setDob(memberDob);
-        household.setHeadName(memberName);
+
 
         //Execute db update
-        Database db = new Database(this);
-        db.open();
-        db.update(Member.class, cv, DatabaseHelper.Member._ID+"=?", new String[]{ member.getId()+"" } );
-        Log.d("heading", "head-code="+household.getHeadCode()+", member.code="+member.getCode());
-        db.close();
+        this.boxMembers.put(member);
 
         if (household.getHeadCode().equals(member.getCode())){ //is household head
             Log.d("heading-2", "head-code="+household.getHeadCode()+", member.code="+member.getCode());

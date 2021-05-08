@@ -4,7 +4,6 @@ import android.app.DialogFragment;
 import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,13 +19,22 @@ import android.widget.TextView;
 import org.philimone.hds.explorer.R;
 import org.philimone.hds.explorer.adapter.MemberArrayAdapter;
 import org.philimone.hds.explorer.database.Converter;
-import org.philimone.hds.explorer.database.Database;
 import org.philimone.hds.explorer.database.DatabaseHelper;
+import org.philimone.hds.explorer.database.ObjectBoxDatabase;
+import org.philimone.hds.explorer.model.Household;
 import org.philimone.hds.explorer.model.Member;
+import org.philimone.hds.explorer.model.Member_;
 import org.philimone.hds.explorer.widget.NumberPicker;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+
+import androidx.annotation.Nullable;
+import io.objectbox.Box;
+import io.objectbox.query.QueryBuilder;
+import mz.betainteractive.utilities.StringUtil;
+import mz.betainteractive.utilities.TextFilters;
 
 /**
  *
@@ -63,8 +71,7 @@ public class MemberFilterDialog extends DialogFragment {
     }
 
     private View mProgressView;
-
-    private Database database;
+    private Box<Member> boxMembers;
 
     private Listener listener;
 
@@ -107,11 +114,15 @@ public class MemberFilterDialog extends DialogFragment {
 
         getDialog().setTitle(title==null ? "" : title);
 
+        initBoxes();
         initialize(view);
     }
 
+    private void initBoxes() {
+        this.boxMembers = ObjectBoxDatabase.get().boxFor(Member.class);
+    }
+
     private void initialize(View view) {
-        this.database = new Database(getActivity());
 
         this.txtDialogTitle = (TextView) view.findViewById(R.id.txtDialogTitle);
         this.txtMemFilterName = (EditText) view.findViewById(R.id.txtMemFilterName);
@@ -289,103 +300,143 @@ public class MemberFilterDialog extends DialogFragment {
             this.listener.onSelectedMember(member);
         }
     }
-
-    public MemberArrayAdapter loadMembersByFilters(String name, String code, String houseCode, String gender, Integer minAge, Integer maxAge, Boolean isDead, Boolean hasOutmigrated, Boolean liveResident) {
+                            //Household household, String name, String code, String householdCode, String gender, Integer minAge, Integer maxAge, Boolean isDead, Boolean hasOutmigrated, Boolean liveResident
+    public MemberArrayAdapter loadMembersByFilters(String name, String code, String householdCode, String gender, Integer minAge, Integer maxAge, Boolean isDead, Boolean hasOutmigrated, Boolean liveResident) {
 
         String endType = "";
 
         if (name == null) name = "";
         if (code == null) code = "";
-        if (houseCode == null) houseCode = "";
+        if (householdCode == null) householdCode = "";
         if (gender == null) gender = "";
         if (isDead != null && isDead) endType = "DTH";
         if (hasOutmigrated != null && hasOutmigrated) endType = "EXT";
         if (liveResident != null && liveResident) endType = "NA";
 
-
         //search on database
-        List<Member> members = new ArrayList<>();
-        List<String> whereValues = new ArrayList<>();
-        String whereClause = "";
+        QueryBuilder<Member> builder = this.boxMembers.query();
 
         if (!name.isEmpty()) {
-            whereClause = DatabaseHelper.Member.COLUMN_NAME + " like ?";
-            whereValues.add(name+"%");
+
+            TextFilters filter = new TextFilters(name);
+            String text = filter.getFilterText();
+            switch (filter.getFilterType()) {
+                case STARTSWITH:
+                    builder.startsWith(Member_.name, text);
+                    break;
+                case ENDSWITH:
+                    builder.endsWith(Member_.name, text);
+                    break;
+                case CONTAINS:
+                    builder.contains(Member_.name, text);
+                    break;
+                case MULTIPLE_CONTAINS:
+                    for (String t : filter.getFilterTexts()) {
+                        builder.contains(Member_.name, t);
+                    }                    
+                    break;
+                case NONE:
+                    builder.equal(Member_.name, text);
+                    break;
+                case EMPTY:
+                    break;
+            }
+            //whereClause = DatabaseHelper.Member.COLUMN_NAME + " like ?";
         }
         if (!code.isEmpty()){
-            whereClause += (whereClause.isEmpty()? "" : " AND ");
-            whereClause += DatabaseHelper.Member.COLUMN_CODE + " like ?";
-            whereValues.add(code+"%");
+
+            TextFilters filter = new TextFilters(code);
+            String text = filter.getFilterText();
+            switch (filter.getFilterType()) {
+                case STARTSWITH:
+                    builder.startsWith(Member_.code, text);
+                    break;
+                case ENDSWITH:
+                    builder.endsWith(Member_.code, text);
+                    break;
+                case CONTAINS:
+                    builder.contains(Member_.code, text);
+                    break;
+                case MULTIPLE_CONTAINS:
+                    for (String t : filter.getFilterTexts()) {
+                        builder.contains(Member_.code, t);
+                    }
+                    break;
+                case NONE:
+                    builder.equal(Member_.code, text);
+                    break;
+                case EMPTY:
+                    break;
+            }
+            //whereClause += DatabaseHelper.Member.COLUMN_CODE + " like ?";            
         }
-        if (!houseCode.isEmpty()){
-            whereClause += (whereClause.isEmpty()? "" : " AND ");
-            whereClause += DatabaseHelper.Member.COLUMN_HOUSEHOLD_CODE + " like ?";
-            whereValues.add(houseCode+"%");
+        if (!householdCode.isEmpty()){
+            TextFilters filter = new TextFilters(householdCode);
+            String text = filter.getFilterText();
+            switch (filter.getFilterType()) {
+                case STARTSWITH:
+                    builder.startsWith(Member_.householdCode, text);
+                    break;
+                case ENDSWITH:
+                    builder.endsWith(Member_.householdCode, text);
+                    break;
+                case CONTAINS:
+                    builder.contains(Member_.householdCode, text);
+                    break;
+                case MULTIPLE_CONTAINS:
+                    for (String t : filter.getFilterTexts()) {
+                        builder.contains(Member_.householdCode, t);
+                    }
+                    break;
+                case NONE:
+                    builder.equal(Member_.householdCode, text);
+                    break;
+                case EMPTY:
+                    break;
+            }
+            //whereClause += DatabaseHelper.Member.COLUMN_HOUSEHOLD_CODE + " like ?";
+            
         }
         if (!gender.isEmpty()){
-            whereClause += (whereClause.isEmpty()? "" : " AND ");
-            whereClause += DatabaseHelper.Member.COLUMN_GENDER + " = ?";
-            whereValues.add(gender);
+            builder.equal(Member_.gender, gender);
+            //whereClause += DatabaseHelper.Member.COLUMN_GENDER + " = ?";
         }
 
         if (endType != null && endType=="DTH"){
             if (minAge != null){
-                whereClause += (whereClause.isEmpty()? "" : " AND ");
-                whereClause += DatabaseHelper.Member.COLUMN_AGE_AT_DEATH + " >= ?";
-                whereValues.add(minAge.toString());
+                builder.greaterOrEqual(Member_.ageAtDeath, minAge);
+                //whereClause += DatabaseHelper.Member.COLUMN_AGE_AT_DEATH + " >= ?";
             }
             if (maxAge != null){
-                whereClause += (whereClause.isEmpty()? "" : " AND ");
-                whereClause += DatabaseHelper.Member.COLUMN_AGE_AT_DEATH + " <= ?";
-                whereValues.add(maxAge.toString());
+                builder.lessOrEqual(Member_.ageAtDeath, maxAge);
+                //whereClause += DatabaseHelper.Member.COLUMN_AGE_AT_DEATH + " <= ?";
             }
         }else {
             if (minAge != null){
-                whereClause += (whereClause.isEmpty()? "" : " AND ");
-                whereClause += DatabaseHelper.Member.COLUMN_AGE + " >= ?";
-                whereValues.add(minAge.toString());
+                builder.greaterOrEqual(Member_.age, minAge);
+                //whereClause += DatabaseHelper.Member.COLUMN_AGE + " >= ?";
             }
             if (maxAge != null){
-                whereClause += (whereClause.isEmpty()? "" : " AND ");
-                whereClause += DatabaseHelper.Member.COLUMN_AGE + " <= ?";
-                whereValues.add(maxAge.toString());
+                builder.lessOrEqual(Member_.age, maxAge);
+                //whereClause += DatabaseHelper.Member.COLUMN_AGE + " <= ?";
             }
         }
 
         if (!endType.isEmpty()){
-            whereClause += (whereClause.isEmpty()? "" : " AND ");
-            whereClause += DatabaseHelper.Member.COLUMN_END_TYPE + " = ?";
-            whereValues.add(endType);
+            builder.equal(Member_.endType, endType);
+            //whereClause += DatabaseHelper.Member.COLUMN_END_TYPE + " = ?";
         }
 
-
-        database.open();
-
-        String[] ar = new String[whereValues.size()];
-        Cursor cursor = database.query(Member.class, DatabaseHelper.Member.ALL_COLUMNS, whereClause, whereValues.toArray(ar), null, null, DatabaseHelper.Member.COLUMN_CODE);
-
-        while (cursor.moveToNext()){
-            Member member = Converter.cursorToMember(cursor);
-            members.add(member);
-            //Log.d("household", ""+household);
-            //Log.d("head", ""+(household!=null ? household.getHeadPermId():"null"));
-        }
-
-        database.close();
+        List<Member> members = builder.build().find();
 
         MemberArrayAdapter currentAdapter = new MemberArrayAdapter(this.getActivity(), members);
 
         return currentAdapter;
-
     }
 
     public void showProgress(final boolean show) {
         mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
         lvMembersList.setVisibility(show ? View.GONE : View.VISIBLE);
-    }
-
-    public void setMemberAdapter(MemberArrayAdapter memberAdapter) {
-        this.lvMembersList.setAdapter(memberAdapter);
     }
 
     class MemberSearchTask extends AsyncTask<Void, Void, MemberArrayAdapter> {

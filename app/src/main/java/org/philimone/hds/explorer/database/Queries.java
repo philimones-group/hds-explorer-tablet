@@ -1,21 +1,14 @@
 package org.philimone.hds.explorer.database;
 
-import android.database.Cursor;
-
 import org.philimone.hds.explorer.model.ApplicationParam;
 import org.philimone.hds.explorer.model.ApplicationParam_;
-import org.philimone.hds.explorer.model.Form;
 import org.philimone.hds.explorer.model.Household;
 import org.philimone.hds.explorer.model.Household_;
 import org.philimone.hds.explorer.model.Member;
+import org.philimone.hds.explorer.model.Member_;
 import org.philimone.hds.explorer.model.SyncReport;
 import org.philimone.hds.explorer.model.SyncReport_;
 import org.philimone.hds.explorer.model.enums.SyncEntity;
-import org.philimone.hds.explorer.model.followup.TrackingList;
-import org.philimone.hds.explorer.model.followup.TrackingSubjectList;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import io.objectbox.Box;
 
@@ -50,29 +43,16 @@ public class Queries {
         return household;
     }
 
-    public static Member getMemberBy(Database database, String whereClause, String[] clauseArgs){
-        Member member = null;
+    public static Member getMemberByCode(Box<Member> box, String code){
 
-        Cursor cursor = database.query(Member.class, whereClause, clauseArgs, null, null, null);
-
-        if (cursor.moveToFirst()){
-            member = Converter.cursorToMember(cursor);
-        }
-
+        Member member = box.query().equal(Member_.code, code).build().findFirst();
         return member;
     }
 
-    public static List<Member> getAllMemberBy(Database database, String whereClause, String[] clauseArgs){
-        List<Member> list = new ArrayList<>();
+    public static Member getMemberById(Box<Member> box, long id){
 
-        Cursor cursor = database.query(Member.class, whereClause, clauseArgs, null, null, DatabaseHelper.Member.COLUMN_CODE);
-
-        while (cursor.moveToNext()){
-            Member member = Converter.cursorToMember(cursor);
-            list.add(member);
-        }
-
-        return list;
+        Member member = box.query().equal(Member_.id, id).build().findFirst();
+        return member;
     }
 
 }

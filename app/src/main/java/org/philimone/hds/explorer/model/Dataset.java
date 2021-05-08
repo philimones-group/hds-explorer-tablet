@@ -1,14 +1,8 @@
 package org.philimone.hds.explorer.model;
 
-import android.content.ContentValues;
-
-import org.philimone.hds.explorer.database.DatabaseHelper;
-import org.philimone.hds.explorer.database.Table;
 import org.philimone.hds.explorer.model.converters.LabelMappingConverter;
-import org.philimone.hds.explorer.model.converters.SyncStatusConverter;
 
 import java.io.Serializable;
-import java.util.LinkedHashMap;
 import java.util.Map;
 
 import io.objectbox.annotation.Convert;

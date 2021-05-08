@@ -1,10 +1,5 @@
 package org.philimone.hds.explorer.model;
 
-import android.content.ContentValues;
-
-import org.philimone.hds.explorer.database.DatabaseHelper;
-import org.philimone.hds.explorer.database.Table;
-
 import java.io.Serializable;
 import java.util.Date;
 
@@ -439,7 +434,7 @@ public class Member implements Serializable {
         return m;
     }
 
-    public String getTableName() {
+    public static String getTableName() {
         return "member";
     }
 

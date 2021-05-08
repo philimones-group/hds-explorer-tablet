@@ -1,7 +1,6 @@
 package org.philimone.hds.explorer.fragment;
 
 import android.app.DialogFragment;
-import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -18,22 +17,16 @@ import android.widget.TextView;
 
 import org.philimone.hds.explorer.R;
 import org.philimone.hds.explorer.adapter.MemberArrayAdapter;
-import org.philimone.hds.explorer.database.Converter;
-import org.philimone.hds.explorer.database.DatabaseHelper;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
-import org.philimone.hds.explorer.model.Household;
 import org.philimone.hds.explorer.model.Member;
 import org.philimone.hds.explorer.model.Member_;
 import org.philimone.hds.explorer.widget.NumberPicker;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import androidx.annotation.Nullable;
 import io.objectbox.Box;
 import io.objectbox.query.QueryBuilder;
-import mz.betainteractive.utilities.StringUtil;
 import mz.betainteractive.utilities.TextFilters;
 
 /**

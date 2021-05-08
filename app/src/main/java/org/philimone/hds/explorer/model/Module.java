@@ -1,10 +1,5 @@
 package org.philimone.hds.explorer.model;
 
-import android.content.ContentValues;
-
-import org.philimone.hds.explorer.database.DatabaseHelper;
-import org.philimone.hds.explorer.database.Table;
-
 import java.io.Serializable;
 
 import io.objectbox.annotation.Entity;

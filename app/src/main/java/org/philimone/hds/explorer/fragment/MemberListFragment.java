@@ -2,7 +2,6 @@ package org.philimone.hds.explorer.fragment;
 
 
 import android.app.Fragment;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
@@ -21,8 +20,6 @@ import com.mapswithme.maps.api.MapsWithMeApi;
 
 import org.philimone.hds.explorer.R;
 import org.philimone.hds.explorer.adapter.MemberArrayAdapter;
-import org.philimone.hds.explorer.database.Converter;
-import org.philimone.hds.explorer.database.DatabaseHelper;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
 import org.philimone.hds.explorer.database.Queries;
 import org.philimone.hds.explorer.listeners.ActionListener;
@@ -659,7 +656,7 @@ public class MemberListFragment extends Fragment {
         ArrayList<String> extras = new ArrayList<>();
 
         //load collected data
-        List<CollectedData> list = this.boxCollectedData.query().equal(CollectedData_.tableName, DatabaseHelper.Member.TABLE_NAME).build().find(); //only collected data from members
+        List<CollectedData> list = this.boxCollectedData.query().equal(CollectedData_.tableName, Member.getTableName()).build().find(); //only collected data from members
         List<Form> forms = boxForms.getAll();
 
         for (CollectedData cd : list){

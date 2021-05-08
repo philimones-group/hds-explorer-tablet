@@ -1,7 +1,5 @@
 package org.philimone.hds.explorer.model;
 
-import org.philimone.hds.explorer.database.DatabaseHelper;
-
 import java.io.Serializable;
 
 import io.objectbox.annotation.Entity;

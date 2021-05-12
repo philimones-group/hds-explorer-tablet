@@ -22,6 +22,7 @@ import io.objectbox.Box;
  */
 public class Bootstrap {
     private static final String APP_PATH = "org.philimone.hds.explorer";
+    private static String APP_CHILD_PATH = File.separator + "Android" + File.separator + "data" + File.separator + APP_PATH + File.separator + "files"+ File.separator;;
 
     private Box<ApplicationParam> boxAppParams;
     private Box<SyncReport> boxSyncReports;
@@ -76,10 +77,9 @@ public class Bootstrap {
 
     }
 
-    public void initializePaths(){
+    private static void initializePaths(){
         File root = Environment.getExternalStorageDirectory();
-        String destinationPath = root.getAbsolutePath() + File.separator + "Android" + File.separator + "data"
-                + File.separator + APP_PATH + File.separator + "files"+ File.separator;
+        String destinationPath = root.getAbsolutePath() + APP_CHILD_PATH;
 
         File baseDir = new File(destinationPath);
 
@@ -95,8 +95,12 @@ public class Bootstrap {
 
     public static String getAppPath(){
         File root = Environment.getExternalStorageDirectory();
-        String destinationPath = root.getAbsolutePath() + File.separator + "Android" + File.separator + "data"
-                + File.separator + APP_PATH + File.separator + "files"+ File.separator;
+        String destinationPath = root.getAbsolutePath() + APP_CHILD_PATH;
+
+        if (!new File(destinationPath).exists()){
+            initializePaths(); //try to initialize path
+        }
+
 
         return destinationPath;
     }

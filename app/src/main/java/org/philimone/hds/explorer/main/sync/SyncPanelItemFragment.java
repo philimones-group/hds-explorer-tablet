@@ -222,7 +222,8 @@ public class SyncPanelItemFragment extends Fragment implements View.OnClickListe
     @Override
     public void onSyncFinished(String result, List<SyncEntityReport> downloadReports, List<SyncEntityReport> persistedReports, Boolean hasError, String errorMessage) {
 
-        Log.d("errors", "has="+hasError+", err_msg="+errorMessage);
+        Log.d("errors", "has="+hasError+", result="+result+", err_msg="+errorMessage);
+
 
         this.syncResult = new SyncEntityResult(result, downloadReports, persistedReports, hasError, errorMessage);
 

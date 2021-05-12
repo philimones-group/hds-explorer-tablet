@@ -68,6 +68,7 @@
                 android:layout_height="match_parent"
                 android:gravity="center"
                 android:textSize="@dimen/sync_progress_textsize"
+                android:textColor="@color/nui_color_text_darkgray"
                 android:text="Downloading 1000 Households" />
 
         </LinearLayout>

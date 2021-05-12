@@ -1,6 +1,8 @@
 package org.philimone.hds.explorer.main.sync;
 
+import android.Manifest;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -8,6 +10,7 @@ import android.widget.Button;
 
 import com.google.gson.Gson;
 
+import org.jetbrains.annotations.NotNull;
 import org.philimone.hds.explorer.R;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
 import org.philimone.hds.explorer.database.Queries;
@@ -16,11 +19,15 @@ import org.philimone.hds.explorer.model.enums.SyncEntity;
 import org.philimone.hds.explorer.io.SyncEntityResult;
 import org.philimone.hds.explorer.model.enums.SyncStatus;
 import org.philimone.hds.explorer.model.SyncReport;
+import org.philimone.hds.explorer.widget.DialogFactory;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import io.objectbox.Box;
 import mz.betainteractive.utilities.StringUtil;
 
@@ -39,6 +46,8 @@ public class SyncPanelActivity extends AppCompatActivity implements SyncPanelIte
     private SyncPanelItemFragment usersSyncFragment;
     private SyncPanelItemFragment householdsSyncFragment;
     private SyncPanelItemFragment membersSyncFragment;
+
+    private SyncPanelItemFragment clickedSyncFragment;
 
     private Button btSyncAllData;
 
@@ -94,14 +103,11 @@ public class SyncPanelActivity extends AppCompatActivity implements SyncPanelIte
         this.password = (String) getIntent().getExtras().get("password");
         this.serverUrl = (String) getIntent().getExtras().get("server-url");
 
-        btSyncAllData = (Button) this.findViewById(R.id.btSyncAllData);
+        btSyncAllData = this.findViewById(R.id.btSyncAllData);
 
-        btSyncAllData.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                syncAllData();
-            }
-        });
+        btSyncAllData.setOnClickListener(v -> syncAllData());
+
+        this.clickedSyncFragment = null;
 
         Log.d("init", "finishes "+this.datasetsSyncFragment);
     }
@@ -187,13 +193,14 @@ public class SyncPanelActivity extends AppCompatActivity implements SyncPanelIte
         //Synchronize One by One
 
         this.synchronizerAllList.clear();
+        this.clickedSyncFragment = null;
 
-        Synchronizer settings = new Synchronizer(){ public void executeSync() {  syncSettings();  } };
-        Synchronizer datasets = new Synchronizer(){ public void executeSync() {  syncDatasets();  } };
-        Synchronizer tracklists = new Synchronizer(){ public void executeSync() {  syncTrackingLists();  } };
-        Synchronizer users = new Synchronizer(){ public void executeSync() {  syncUsers();  } };
-        Synchronizer households = new Synchronizer(){ public void executeSync() {  syncHouseholds();  } };
-        Synchronizer members = new Synchronizer(){ public void executeSync() {  syncMembers();  } };
+        Synchronizer settings = () -> syncSettings();
+        Synchronizer datasets = () -> syncDatasets();
+        Synchronizer tracklists = () -> syncTrackingLists();
+        Synchronizer users = () -> syncUsers();
+        Synchronizer households = () -> syncHouseholds();
+        Synchronizer members = () -> syncMembers();
 
         this.synchronizerAllList.add(settings);
         this.synchronizerAllList.add(datasets);
@@ -292,11 +299,45 @@ public class SyncPanelActivity extends AppCompatActivity implements SyncPanelIte
         return result;
     }
 
+    private boolean ensurePermissionsGranted(final String... permissions) {
+
+        boolean denied = false;
+        for (String permission : permissions) {
+            denied = denied || ContextCompat.checkSelfPermission(this, permission)==PackageManager.PERMISSION_DENIED;
+        }
+
+        if (denied) { //without access
+            //request permissions
+            ActivityCompat.requestPermissions(this, permissions, 33);
+        }
+
+        return !denied;
+    }
+
     @Override
-    public void onSyncStartButtonClicked(SyncPanelItemFragment syncPanelItem) {
-        Log.d("sync", "sync start");
+    public void onRequestPermissionsResult(int requestCode, @NonNull @NotNull String[] permissions, @NonNull @NotNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
+        boolean denied = false;
 
+        for (int i=0; i < permissions.length; i++) {
+            String p = permissions[i];
+
+            Log.d("permission", "permission="+p+", results="+grantResults[i]);
+            denied = denied || (grantResults[i] == PackageManager.PERMISSION_DENIED);
+        }
+
+        if (!denied) { //All granted permissions
+            //execute startSyncButton
+            executeSyncStartButton(this.clickedSyncFragment);
+        } else {
+            //message info
+            DialogFactory.createMessageInfo(this, R.string.permissions_sync_storage_title_lbl, R.string.permissions_sync_storage_denied_lbl).show();
+        }
+        
+    }
+
+    private void executeSyncStartButton(SyncPanelItemFragment syncPanelItem){
         if (syncPanelItem.equals(this.settingsSyncFragment)){
             syncSettings();
         }
@@ -321,6 +362,18 @@ public class SyncPanelActivity extends AppCompatActivity implements SyncPanelIte
             syncMembers();
         }
 
+        this.clickedSyncFragment = null;
+    }
+
+    @Override
+    public void onSyncStartButtonClicked(SyncPanelItemFragment syncPanelItem) {
+        Log.d("sync", "sync start");
+
+        this.clickedSyncFragment = syncPanelItem;
+
+        if (ensurePermissionsGranted(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+            executeSyncStartButton(syncPanelItem);
+        }
     }
 
     @Override
@@ -347,7 +400,7 @@ public class SyncPanelActivity extends AppCompatActivity implements SyncPanelIte
     }
 
     interface Synchronizer {
-        public void executeSync();
+        void executeSync();
     }
 
 }

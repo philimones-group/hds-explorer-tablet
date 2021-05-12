@@ -90,7 +90,6 @@
     <string name="error_invalid_password">Esta senha é muito curta</string>
     <string name="error_incorrect_password">Esta senha esta incorrecta</string>
     <string name="error_field_required">Este campo é obrigatório</string>
-    <string name="permission_rationale">Contacts permissions are needed for providing email completions.</string>
     <string name="warning_lbl">Aviso!</string>
 
     <!-- Strings related to Member Filter -->
@@ -150,7 +149,6 @@
     <string name="member_list_newmem_dob_lbl">Data de Nascimento</string>
     <string name="member_list_newmem_dob_hint">ex: 2017-12-25</string>
 
-    <string name="member_list_newmem_houseno_err_lbl">O número da casa está incorrecto!</string>
     <string name="member_list_newmem_code_err_lbl">O Código está incorrecto!</string>
     <string name="member_list_newmem_code_exists_lbl">O Código introduzido já existe, introduza outro</string>
     <string name="member_list_newmem_name_err_lbl">O nome não pode estar vazio</string>
@@ -314,5 +312,9 @@
     <string name="barcode_dialog_bt_scan_lbl">Scanear</string>
     <string name="barcode_dialog_bt_scan_barcode_lbl">Scanear o código de barras</string>
     <string name="barcode_dialog_bt_cancel_lbl">Cancel</string>
+
+    <!-- Permissions-->
+    <string name="permissions_sync_storage_title_lbl">Negado acesso ao armazenamento!</string>
+    <string name="permissions_sync_storage_denied_lbl">Não é possivel sincronizar/baixar os dados do servidor. A permissão de acesso ao armazenamento de dados não foi concedida!</string>
 
 </resources>

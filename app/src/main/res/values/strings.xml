@@ -313,4 +313,8 @@
     <string name="barcode_dialog_bt_scan_barcode_lbl">Scan the Barcode</string>
     <string name="barcode_dialog_bt_cancel_lbl">Cancel</string>
 
+    <!-- Permissions-->
+    <string name="permissions_sync_storage_title_lbl">Access Permission denied!</string>
+    <string name="permissions_sync_storage_denied_lbl">It will not be possible to synchronize with the Server. There is no permission to use the Storage for read/write operations!</string>
+
 </resources>

@@ -15,14 +15,11 @@ public class SplashScreenActivity extends Activity {
         setContentView(R.layout.splash_screen);
 
         Handler handler=new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                Intent intent=new Intent(SplashScreenActivity.this, LoginActivity.class);
-                startActivity(intent);
-                overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
-                finish();
-            }
+        handler.postDelayed(() -> {
+            Intent intent=new Intent(SplashScreenActivity.this, org.philimone.hds.forms.main.FormActivity.class); //Intent intent=new Intent(SplashScreenActivity.this, LoginActivity.class);
+            startActivity(intent);
+            overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+            finish();
         }, 2000);
 
     }

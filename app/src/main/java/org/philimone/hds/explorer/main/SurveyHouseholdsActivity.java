@@ -29,6 +29,7 @@ import org.philimone.hds.explorer.model.Member;
 import org.philimone.hds.explorer.model.Member_;
 import org.philimone.hds.explorer.model.Region;
 import org.philimone.hds.explorer.model.User;
+import org.philimone.hds.explorer.model.enums.Gender;
 import org.philimone.hds.explorer.widget.DialogFactory;
 import org.philimone.hds.explorer.widget.LoadingDialog;
 import org.philimone.hds.explorer.widget.member_details.Distance;
@@ -539,7 +540,7 @@ public class SurveyHouseholdsActivity extends Activity implements HouseholdFilte
 
         //update name, gender and dob on Member domain
         member.setName(memberName);
-        member.setGender(memberName);
+        member.setGender(Gender.getFrom(memberGend));
         member.setDob(memberDob);
 
 

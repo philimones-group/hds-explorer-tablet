@@ -23,6 +23,7 @@ import org.philimone.hds.explorer.model.SyncReport;
 import org.philimone.hds.explorer.model.User;
 import org.philimone.hds.explorer.model.converters.FormMappingConverter;
 import org.philimone.hds.explorer.model.converters.LabelMappingConverter;
+import org.philimone.hds.explorer.model.enums.Gender;
 import org.philimone.hds.explorer.model.enums.SyncEntity;
 import org.philimone.hds.explorer.model.enums.SyncState;
 import org.philimone.hds.explorer.model.enums.SyncStatus;
@@ -301,7 +302,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 
 	private int getSyncRecordToDownload(SyncEntity entity){
 
-		String result = processUrl(baseurl + API_PATH + "/sync-report/" + entity.getCode());
+		String result = processUrl(baseurl + API_PATH + "/sync-report/" + entity.getId());
 
 		//Log.d("tag-report", "result="+result);
 
@@ -1671,10 +1672,10 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
             parser.nextTag(); //process <gender>
             if (!isEmptyTag("gender", parser)) {
                 parser.next();
-                table.setGender(parser.getText());
+                table.setGender(Gender.getFrom(parser.getText()));
                 parser.nextTag(); //process </gender>
             }else{
-                table.setGender("");
+                table.setGender(Gender.INVALID_ENUM);
                 parser.nextTag();
             }
 

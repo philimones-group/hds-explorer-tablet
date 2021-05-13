@@ -20,6 +20,7 @@ import org.philimone.hds.explorer.database.Queries;
 import org.philimone.hds.explorer.model.Household;
 import org.philimone.hds.explorer.model.Member;
 import org.philimone.hds.explorer.model.Member_;
+import org.philimone.hds.explorer.model.enums.Gender;
 import org.philimone.hds.explorer.widget.DialogFactory;
 
 import java.util.Date;
@@ -197,7 +198,7 @@ public class MemberFormDialog extends DialogFragment {
         member.setHouseholdName(txtNewMemHouseName.getText().toString());
         member.setCode(txtNewMemCode.getText().toString());
         member.setName(txtNewMemName.getText().toString());
-        member.setGender(chkNewMemGMale.isChecked() ? "M" : "F");
+        member.setGender(chkNewMemGMale.isChecked() ? Gender.MALE : Gender.FEMALE);
         member.setDob(StringUtil.format(GeneralUtil.getDate(dtpNewMemDob), "yyyy-MM-dd" ));
         member.setAge(GeneralUtil.getAge(GeneralUtil.getDate(dtpNewMemDob)));
 

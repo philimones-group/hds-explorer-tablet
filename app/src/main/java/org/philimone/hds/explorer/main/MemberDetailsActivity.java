@@ -27,6 +27,7 @@ import org.philimone.hds.explorer.model.Household;
 import org.philimone.hds.explorer.model.Member;
 import org.philimone.hds.explorer.model.Member_;
 import org.philimone.hds.explorer.model.User;
+import org.philimone.hds.explorer.model.enums.Gender;
 import org.philimone.hds.explorer.widget.DialogFactory;
 import org.philimone.hds.explorer.widget.FormSelectorDialog;
 import org.philimone.hds.explorer.widget.member_details.MemberFormDialog;
@@ -296,7 +297,7 @@ public class MemberDetailsActivity extends Activity implements OdkFormResultList
     private void setMemberData(){
         mbDetailsName.setText(member.getName());
         mbDetailsCode.setText(member.getCode());
-        mbDetailsGender.setText(member.getGender());
+        mbDetailsGender.setText(member.getGender().getId());
         mbDetailsAge.setText(member.getAge()+"");
         mbDetailsDob.setText(member.getDob());
         mbDetailsHouseNo.setText(member.getHouseholdName());
@@ -778,7 +779,7 @@ public class MemberDetailsActivity extends Activity implements OdkFormResultList
         loader.putData("household_no", member.getHouseholdName());
         loader.putData("code", member.getCode());
         loader.putData("name", member.getName());
-        loader.putData("gender", member.getGender());
+        loader.putData("gender", member.getGender().getId());
         loader.putData("dob", member.getDob());
         loader.putData("father_id", member.getFatherCode());
         loader.putData("father_name", member.getFatherName());
@@ -918,7 +919,7 @@ public class MemberDetailsActivity extends Activity implements OdkFormResultList
 
         MemberFilterDialog dialog = MemberFilterDialog.newInstance(listener, getString(R.string.new_member_dialog_spouse_select_lbl), false);
 
-        if (otherSpouse.getGender().startsWith("M")){
+        if (otherSpouse.getGender() == Gender.MALE){
             dialog.setGenderFemaleOnly();
         }else {
             dialog.setGenderMaleOnly();

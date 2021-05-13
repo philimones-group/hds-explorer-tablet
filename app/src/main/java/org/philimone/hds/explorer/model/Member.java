@@ -1,8 +1,12 @@
 package org.philimone.hds.explorer.model;
 
+import org.philimone.hds.explorer.model.converters.GenderConverter;
+import org.philimone.hds.explorer.model.enums.Gender;
+
 import java.io.Serializable;
 import java.util.Date;
 
+import io.objectbox.annotation.Convert;
 import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Id;
 import io.objectbox.annotation.Index;
@@ -22,7 +26,10 @@ public class Member implements Serializable {
     @Unique
     public String code;
     public String name;
-    public String gender;
+
+    @Convert(converter = GenderConverter.class, dbType = String.class)
+    public Gender gender;
+
     public String dob;
     public int age;
     public int ageAtDeath;
@@ -107,11 +114,11 @@ public class Member implements Serializable {
         this.name = name;
     }
 
-    public String getGender() {
+    public Gender getGender() {
         return gender;
     }
 
-    public void setGender(String gender) {
+    public void setGender(Gender gender) {
         this.gender = gender;
     }
 
@@ -383,7 +390,7 @@ public class Member implements Serializable {
         Member member = new Member();
         member.code = "";
         member.name = "";
-        member.gender = "";
+        member.gender = Gender.MALE;
         member.dob = "";
         member.age = 0;
         member.ageAtDeath = 0;

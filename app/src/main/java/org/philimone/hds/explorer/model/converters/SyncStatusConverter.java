@@ -12,13 +12,13 @@ public class SyncStatusConverter implements PropertyConverter<SyncStatus, Intege
                 return null;
             }
 
-            SyncStatus entity = SyncStatus.fromCode(databaseValue);
+            SyncStatus entity = SyncStatus.getFrom(databaseValue);
 
-            return entity==null ? SyncStatus.NOT_APPLICABLE : entity;
+            return entity==null ? SyncStatus.INVALID_ENUM : entity;
         }
 
     @Override
     public Integer convertToDatabaseValue(SyncStatus entityProperty) {
-        return entityProperty == null ? null : entityProperty.getCode();
+        return entityProperty == null ? null : entityProperty.getId();
     }
 }

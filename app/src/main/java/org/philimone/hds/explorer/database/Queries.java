@@ -33,7 +33,7 @@ public class Queries {
     }
 
     public static SyncReport getSyncReportBy(Box<SyncReport> box, SyncEntity entity){
-        SyncReport report = box.query().equal(SyncReport_.reportId, entity.getCode()).build().findFirst();
+        SyncReport report = box.query().equal(SyncReport_.reportId, entity.getId()).build().findFirst();
         return report;
     }
 

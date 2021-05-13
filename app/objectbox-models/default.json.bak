@@ -725,10 +725,217 @@
         }
       ],
       "relations": []
+    },
+    {
+      "id": "12:5667991198190393360",
+      "lastPropertyId": "34:3948645726340917572",
+      "name": "Member",
+      "properties": [
+        {
+          "id": "1:3351257256812676610",
+          "name": "id",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:1221095651996123425",
+          "name": "code",
+          "indexId": "18:1440578459796751393",
+          "type": 9,
+          "flags": 2080
+        },
+        {
+          "id": "3:327112486704381865",
+          "name": "name",
+          "type": 9
+        },
+        {
+          "id": "4:3216798214009996861",
+          "name": "gender",
+          "type": 9
+        },
+        {
+          "id": "5:402149882911978808",
+          "name": "dob",
+          "type": 9
+        },
+        {
+          "id": "6:569333044267633268",
+          "name": "age",
+          "type": 5,
+          "flags": 4
+        },
+        {
+          "id": "7:788745505368619038",
+          "name": "ageAtDeath",
+          "type": 5,
+          "flags": 4
+        },
+        {
+          "id": "8:7673327863841448091",
+          "name": "motherCode",
+          "indexId": "19:9065352601739089036",
+          "type": 9,
+          "flags": 2048
+        },
+        {
+          "id": "9:5810666726871257363",
+          "name": "motherName",
+          "type": 9
+        },
+        {
+          "id": "10:7407527577124208412",
+          "name": "fatherCode",
+          "indexId": "20:1885459296067113163",
+          "type": 9,
+          "flags": 2048
+        },
+        {
+          "id": "11:3408108621636300212",
+          "name": "fatherName",
+          "type": 9
+        },
+        {
+          "id": "12:1436876977517935697",
+          "name": "maritalStatus",
+          "type": 9
+        },
+        {
+          "id": "13:3349991057158877479",
+          "name": "spouseCode",
+          "indexId": "21:9134344242571619205",
+          "type": 9,
+          "flags": 2048
+        },
+        {
+          "id": "14:3648879406424335700",
+          "name": "spouseName",
+          "type": 9
+        },
+        {
+          "id": "15:4106683885017221017",
+          "name": "householdCode",
+          "indexId": "22:985028927494779795",
+          "type": 9,
+          "flags": 2048
+        },
+        {
+          "id": "16:5870211948281697211",
+          "name": "householdName",
+          "indexId": "23:9209263909294558900",
+          "type": 9,
+          "flags": 2048
+        },
+        {
+          "id": "17:6290133254729179730",
+          "name": "startType",
+          "type": 9
+        },
+        {
+          "id": "18:4869001469003863049",
+          "name": "startDate",
+          "type": 9
+        },
+        {
+          "id": "19:8087655931439650579",
+          "name": "endType",
+          "type": 9
+        },
+        {
+          "id": "20:2872273222716932441",
+          "name": "endDate",
+          "type": 9
+        },
+        {
+          "id": "21:3583470172250210506",
+          "name": "entryHousehold",
+          "indexId": "24:4727995633530166961",
+          "type": 9,
+          "flags": 2048
+        },
+        {
+          "id": "22:4099575016158635621",
+          "name": "entryType",
+          "type": 9
+        },
+        {
+          "id": "23:2244428197372122620",
+          "name": "entryDate",
+          "type": 9
+        },
+        {
+          "id": "24:537517447348101197",
+          "name": "headRelationshipType",
+          "indexId": "25:7613072360077807961",
+          "type": 9,
+          "flags": 2048
+        },
+        {
+          "id": "25:656351578957865593",
+          "name": "gpsNull",
+          "type": 1,
+          "flags": 4
+        },
+        {
+          "id": "26:3083417150791012479",
+          "name": "gpsAccuracy",
+          "type": 8,
+          "flags": 2
+        },
+        {
+          "id": "27:5203282235729321401",
+          "name": "gpsAltitude",
+          "type": 8,
+          "flags": 2
+        },
+        {
+          "id": "28:573294219257051884",
+          "name": "gpsLatitude",
+          "type": 8,
+          "flags": 2
+        },
+        {
+          "id": "29:3952845717931552260",
+          "name": "gpsLongitude",
+          "type": 8,
+          "flags": 2
+        },
+        {
+          "id": "30:4961878175760984794",
+          "name": "cosLatitude",
+          "type": 8,
+          "flags": 2
+        },
+        {
+          "id": "31:2062219987784273587",
+          "name": "sinLatitude",
+          "type": 8,
+          "flags": 2
+        },
+        {
+          "id": "32:848608619838870887",
+          "name": "cosLongitude",
+          "type": 8,
+          "flags": 2
+        },
+        {
+          "id": "33:6902174600372311113",
+          "name": "sinLongitude",
+          "type": 8,
+          "flags": 2
+        },
+        {
+          "id": "34:3948645726340917572",
+          "name": "recentlyCreated",
+          "type": 1,
+          "flags": 2
+        }
+      ],
+      "relations": []
     }
   ],
-  "lastEntityId": "11:1466558823270581169",
-  "lastIndexId": "17:4520537242163148738",
+  "lastEntityId": "12:5667991198190393360",
+  "lastIndexId": "25:7613072360077807961",
   "lastRelationId": "0:0",
   "lastSequenceId": "0:0",
   "modelVersion": 5,

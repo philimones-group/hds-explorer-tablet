@@ -8,7 +8,7 @@ public enum SyncStatus {
     STATUS_NOT_SYNCED (0),
     STATUS_SYNCED     (1),
     STATUS_SYNC_ERROR (2),
-    NOT_APPLICABLE    (-1);
+    INVALID_ENUM      (-1);
 
     private int code;
 
@@ -16,7 +16,7 @@ public enum SyncStatus {
         this.code = code;
     }
 
-    public int getCode() {
+    public int getId() {
         return code;
     }
 
@@ -29,7 +29,7 @@ public enum SyncStatus {
         }
     }
 
-    public static SyncStatus fromCode(int code) {
+    public static SyncStatus getFrom(int code) {
         return STATUSES.get(code);
     }
 

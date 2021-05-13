@@ -20,7 +20,7 @@ public enum SyncEntity {
     REGIONS            (8, R.string.sync_regions_lbl),
     HOUSEHOLDS         (9, R.string.sync_households_lbl),
     MEMBERS            (10, R.string.sync_members_lbl),
-    NOT_APPLICABLE (-1, -1);
+    INVALID_ENUM       (-1, -1);
 
     private int code;
     private @StringRes int nameId;
@@ -30,7 +30,7 @@ public enum SyncEntity {
         this.nameId = id;
     }
 
-    public int getCode() {
+    public int getId() {
         return code;
     }
 
@@ -47,7 +47,7 @@ public enum SyncEntity {
         }
     }
 
-    public static SyncEntity fromCode(int code) {
+    public static SyncEntity getFrom(int code) {
         return ENTITIES.get(code);
     }
 }

@@ -12,13 +12,13 @@ public class SyncEntityConverter implements PropertyConverter<SyncEntity, Intege
                 return null;
             }
 
-            SyncEntity entity = SyncEntity.fromCode(databaseValue);
+            SyncEntity entity = SyncEntity.getFrom(databaseValue);
 
-            return entity==null ? SyncEntity.NOT_APPLICABLE : entity;
+            return entity==null ? SyncEntity.INVALID_ENUM : entity;
         }
 
     @Override
     public Integer convertToDatabaseValue(SyncEntity entityProperty) {
-        return entityProperty == null ? null : entityProperty.getCode();
+        return entityProperty == null ? null : entityProperty.getId();
     }
 }

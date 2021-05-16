@@ -1,7 +1,15 @@
 package org.philimone.hds.explorer.model;
 
 import org.philimone.hds.explorer.model.converters.GenderConverter;
+import org.philimone.hds.explorer.model.converters.HeadRelationshipTypeConverter;
+import org.philimone.hds.explorer.model.converters.MaritalStatusConverter;
+import org.philimone.hds.explorer.model.converters.ResidencyEndTypeConverter;
+import org.philimone.hds.explorer.model.converters.ResidencyStartTypeConverter;
 import org.philimone.hds.explorer.model.enums.Gender;
+import org.philimone.hds.explorer.model.enums.HeadRelationshipType;
+import org.philimone.hds.explorer.model.enums.MaritalStatus;
+import org.philimone.hds.explorer.model.enums.temporal.ResidencyEndType;
+import org.philimone.hds.explorer.model.enums.temporal.ResidencyStartType;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -27,6 +35,7 @@ public class Member implements Serializable {
     public String code;
     public String name;
 
+    @Index
     @Convert(converter = GenderConverter.class, dbType = String.class)
     public Gender gender;
 
@@ -41,7 +50,8 @@ public class Member implements Serializable {
     public String fatherCode;
     public String fatherName;
 
-    public String maritalStatus;
+    @Convert(converter = MaritalStatusConverter.class, dbType = String.class)
+    public MaritalStatus maritalStatus;
 
     @Index
     public String spouseCode;
@@ -54,18 +64,26 @@ public class Member implements Serializable {
     public String householdCode;
     @Index
     public String householdName;
-    public String startType;
+
+    @Index
+    @Convert(converter = ResidencyStartTypeConverter.class, dbType = String.class)
+    public ResidencyStartType startType;
     public String startDate;
-    public String endType;
+
+    @Index
+    @Convert(converter = ResidencyEndTypeConverter.class, dbType = String.class)
+    public ResidencyEndType endType;
     public String endDate;
 
     @Index
     public String entryHousehold;
-    public String entryType;
+    @Convert(converter = ResidencyStartTypeConverter.class, dbType = String.class)
+    public ResidencyStartType entryType;
     public String entryDate;
 
     @Index
-    public String headRelationshipType;
+    @Convert(converter = HeadRelationshipTypeConverter.class, dbType = String.class)
+    public HeadRelationshipType headRelationshipType;
 
     /** GPS Status */
     public boolean gpsNull;
@@ -198,11 +216,11 @@ public class Member implements Serializable {
         this.householdName = householdName;
     }
 
-    public String getStartType() {
+    public ResidencyStartType getStartType() {
         return startType;
     }
 
-    public void setStartType(String startType) {
+    public void setStartType(ResidencyStartType startType) {
         this.startType = startType;
     }
 
@@ -214,11 +232,11 @@ public class Member implements Serializable {
         this.startDate = startDate;
     }
 
-    public String getEndType() {
+    public ResidencyEndType getEndType() {
         return endType;
     }
 
-    public void setEndType(String endType) {
+    public void setEndType(ResidencyEndType endType) {
         this.endType = endType;
     }
 
@@ -310,11 +328,11 @@ public class Member implements Serializable {
         this.spouseName = spouseName;
     }
 
-    public String getMaritalStatus() {
+    public MaritalStatus getMaritalStatus() {
         return maritalStatus;
     }
 
-    public void setMaritalStatus(String maritalStatus) {
+    public void setMaritalStatus(MaritalStatus maritalStatus) {
         this.maritalStatus = maritalStatus;
     }
 
@@ -326,11 +344,11 @@ public class Member implements Serializable {
         this.entryHousehold = entryHousehold;
     }
 
-    public String getEntryType() {
+    public ResidencyStartType getEntryType() {
         return entryType;
     }
 
-    public void setEntryType(String entryType) {
+    public void setEntryType(ResidencyStartType entryType) {
         this.entryType = entryType;
     }
 
@@ -342,11 +360,11 @@ public class Member implements Serializable {
         this.entryDate = entryDate;
     }
 
-    public String getHeadRelationshipType() {
+    public HeadRelationshipType getHeadRelationshipType() {
         return headRelationshipType;
     }
 
-    public void setHeadRelationshipType(String headRelationshipType) {
+    public void setHeadRelationshipType(HeadRelationshipType headRelationshipType) {
         this.headRelationshipType = headRelationshipType;
     }
 
@@ -397,7 +415,7 @@ public class Member implements Serializable {
 
         member.spouseCode = "";
         member.spouseName = "";
-        member.maritalStatus = "";
+        member.maritalStatus = MaritalStatus.SINGLE;
 
         member.motherCode = "";
         member.motherName = "";
@@ -406,16 +424,16 @@ public class Member implements Serializable {
 
         member.householdCode = "";
         member.householdName = "";
-        member.startType = "";
+        member.startType = null;
         member.startDate = "";
-        member.endType = "";
+        member.endType = null;
         member.endDate = "";
 
         member.entryHousehold = "";
-        member.entryType = "";
+        member.entryType = null;
         member.entryDate = null;
 
-        member.headRelationshipType = "";
+        member.headRelationshipType = null;
 
         member.gpsNull = true;
         member.gpsAccuracy = 0.0;

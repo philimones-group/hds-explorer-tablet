@@ -10,6 +10,7 @@ import android.content.ContentValues;
 import android.util.Log;
 
 import org.philimone.hds.explorer.model.Member;
+import org.philimone.hds.explorer.model.enums.temporal.ResidencyEndType;
 
 /**
  * A filled form represents an ODK form that has been prefilled with values from
@@ -123,11 +124,11 @@ public class FilledForm {
 		this.householdMembers.addAll(householdMembers);
 
 		for (Member m : householdMembers){
-			if (m.getEndType().equals("NA") || m.getEndType().isEmpty()){
+			if (m.getEndType() == ResidencyEndType.NOT_APPLICABLE || m.getEndType()==null){
 				residentMembers.add(m);
-			} else if (m.getEndType().equals("DTH")){
+			} else if (m.getEndType() == ResidencyEndType.DEATH){
 				deadMembers.add(m);
-			} else if (m.getEndType().equals("EXT") || m.getEndType().equals("OUT")){ //these setting must be checked and HDS-Explorer should have its types
+			} else if (m.getEndType() == ResidencyEndType.EXTERNAL_OUTMIGRATION){ //these setting must be checked and HDS-Explorer should have its types
 				outmigMembers.add(m);
 			}
 		}

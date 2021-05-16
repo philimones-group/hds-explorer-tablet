@@ -1,21 +1,25 @@
 package org.philimone.hds.explorer.model.enums.temporal;
 
+import org.philimone.hds.explorer.R;
+
 import java.util.HashMap;
 import java.util.Map;
 
+import androidx.annotation.StringRes;
+
 public enum HeadRelationshipStartType {
 
-    ENUMERATION          ("ENU", "eventType.enumeration"),
-    BIRTH                ("BIR", "eventType.birth"),
-    INTERNAL_INMIGRATION ("ENT", "eventType.internal_inmigration"),
-    EXTERNAL_INMIGRATION ("XEN", "eventType.external_inmigration"),
-    NEW_HEAD_OF_HOUSEHOLD ("NHH", "eventType.new_hoh"), //Event Related to the Head of Household
-    INVALID_ENUM          ( "-1", "-1");
+    ENUMERATION          ("ENU", R.string.eventType_enumeration),
+    BIRTH                ("BIR", R.string.eventType_birth),
+    INTERNAL_INMIGRATION ("ENT", R.string.eventType_internal_inmigration),
+    EXTERNAL_INMIGRATION ("XEN", R.string.eventType_external_inmigration),
+    NEW_HEAD_OF_HOUSEHOLD ("NHH", R.string.eventType_new_hoh), //Event Related to the Head of Household
+    INVALID_ENUM          ( "-1", R.string.invalid_enum_value);
 
-    final String code;
-    final String name;
+    public String code;
+    public @StringRes int name;
 
-    HeadRelationshipStartType(String code, String name){
+    HeadRelationshipStartType(String code, @StringRes int name){
         this.code = code;
         this.name = name;
     }

@@ -1,18 +1,22 @@
 package org.philimone.hds.explorer.model.enums;
 
+import org.philimone.hds.explorer.R;
+
 import java.util.HashMap;
 import java.util.Map;
 
+import androidx.annotation.StringRes;
+
 public enum Gender {
 
-    MALE   ("M", "default.gender.M"),
-    FEMALE ("F", "default.gender.F"),
-    INVALID_ENUM    ( "-1", "-1");
+    MALE   ("M", R.string.default_gender_male),
+    FEMALE ("F", R.string.default_gender_female),
+    INVALID_ENUM    ( "-1", R.string.invalid_enum_value);
 
-    String code;
-    String name;
+    public String code;
+    public @StringRes int name;
 
-    Gender(String code, String name){
+    Gender(String code, @StringRes int name){
         this.code = code;
         this.name = name;
     }

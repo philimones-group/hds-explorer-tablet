@@ -21,6 +21,7 @@ import org.philimone.hds.explorer.model.Household;
 import org.philimone.hds.explorer.model.Member;
 import org.philimone.hds.explorer.model.Member_;
 import org.philimone.hds.explorer.model.enums.Gender;
+import org.philimone.hds.explorer.model.enums.temporal.ResidencyStartType;
 import org.philimone.hds.explorer.widget.DialogFactory;
 
 import java.util.Date;
@@ -202,7 +203,7 @@ public class MemberFormDialog extends DialogFragment {
         member.setDob(StringUtil.format(GeneralUtil.getDate(dtpNewMemDob), "yyyy-MM-dd" ));
         member.setAge(GeneralUtil.getAge(GeneralUtil.getDate(dtpNewMemDob)));
 
-        member.setStartType("ENU");
+        member.setStartType(ResidencyStartType.ENUMERATION);
 
 
         if (!isTempMember && !member.getCode().matches("[A-Z0-9]{6}[0-9]{6}")){

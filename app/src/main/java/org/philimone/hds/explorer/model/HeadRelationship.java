@@ -34,14 +34,17 @@ public class HeadRelationship {
     @Index
     public String headCode;
 
+    @Index
     @Convert(converter = HeadRelationshipTypeConverter.class, dbType = String.class)
     public HeadRelationshipType relationshipType;
 
+    @Index
     @Convert(converter = HeadRelationshipStartTypeConverter.class, dbType = String.class)
     public HeadRelationshipStartType startType;
 
     public Date startDate;
 
+    @Index
     @Convert(converter = HeadRelationshipEndTypeConverter.class, dbType = String.class)
     public HeadRelationshipEndType endType;
 

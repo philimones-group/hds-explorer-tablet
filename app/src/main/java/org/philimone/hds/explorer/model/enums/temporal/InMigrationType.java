@@ -1,19 +1,23 @@
 package org.philimone.hds.explorer.model.enums.temporal;
 
+import org.philimone.hds.explorer.R;
+
 import java.util.HashMap;
 import java.util.Map;
 
+import androidx.annotation.StringRes;
+
 public enum InMigrationType {
 
-    INTERNAL     ("ENT", "eventType.internal_inmigration"),
-    EXTERNAL     ("XEN", "eventType.external_inmigration"),
-    INVALID_ENUM ( "-1", "-1");
-    //RETURNING ( "XEN", "eventType.returning_inmigration") /* I dont think I will need this, entry_date and start_type suits enough to know that its a return to dss */
+    INTERNAL     ("ENT", R.string.eventType_internal_inmigration),
+    EXTERNAL     ("XEN", R.string.eventType_external_inmigration),
+    INVALID_ENUM ( "-1", R.string.invalid_enum_value);
+    //RETURNING ( "XEN", R.string.eventType.returning_inmigration) /* I dont think I will need this, entry_date and start_type suits enough to know that its a return to dss */
 
-    final String code;
-    final String name;
+    public String code;
+    public @StringRes int name;
 
-    InMigrationType(String code, String name){
+    InMigrationType(String code, @StringRes int name){
         this.code = code;
         this.name = name;
     }

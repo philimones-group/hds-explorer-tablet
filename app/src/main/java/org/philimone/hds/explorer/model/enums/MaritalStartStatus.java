@@ -1,18 +1,22 @@
 package org.philimone.hds.explorer.model.enums;
 
+import org.philimone.hds.explorer.R;
+
 import java.util.HashMap;
 import java.util.Map;
 
+import androidx.annotation.StringRes;
+
 public enum MaritalStartStatus {
 
-    MARRIED         ("MAR", "maritalStatus.married"),
-    LIVING_TOGHETER ("LIV","maritalStatus.living_togheter"),
-    INVALID_ENUM    ( "-1", "-1");
+    MARRIED         ("MAR", R.string.maritalStatus_married),
+    LIVING_TOGHETER ("LIV", R.string.maritalStatus_living_togheter),
+    INVALID_ENUM    ( "-1", R.string.invalid_enum_value);
 
-    String code;
-    String name;
+    public String code;
+    public @StringRes int name;
 
-    MaritalStartStatus(String code, String name){
+    MaritalStartStatus(String code, @StringRes int name){
         this.code = code;
         this.name = name;
     }

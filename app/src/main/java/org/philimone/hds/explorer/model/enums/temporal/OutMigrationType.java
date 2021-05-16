@@ -1,18 +1,22 @@
 package org.philimone.hds.explorer.model.enums.temporal;
 
+import org.philimone.hds.explorer.R;
+
 import java.util.HashMap;
 import java.util.Map;
 
+import androidx.annotation.StringRes;
+
 public enum OutMigrationType {
 
-    INTERNAL     ("CHG", "eventType.internal_outmigration"),
-    EXTERNAL     ("EXT", "eventType.external_outmigration"),
-    INVALID_ENUM ( "-1", "-1");
+    INTERNAL     ("CHG", R.string.eventType_internal_outmigration),
+    EXTERNAL     ("EXT", R.string.eventType_external_outmigration),
+    INVALID_ENUM ( "-1", R.string.invalid_enum_value);
 
-    final String code;
-    final String name;
+    final public String code;
+    final public @StringRes int name;
 
-    OutMigrationType(String code, String name){
+    OutMigrationType(String code, @StringRes int name){
         this.code = code;
         this.name = name;
     }

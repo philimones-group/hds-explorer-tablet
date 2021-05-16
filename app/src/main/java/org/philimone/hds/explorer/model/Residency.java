@@ -32,11 +32,13 @@ public class Residency {
     @Index
     public String memberCode;
 
+    @Index
     @Convert(converter = ResidencyStartTypeConverter.class, dbType = String.class)
     public ResidencyStartType startType;
 
     public Date startDate;
 
+    @Index
     @Convert(converter = ResidencyEndTypeConverter.class, dbType = String.class)
     public ResidencyEndType endType;
 

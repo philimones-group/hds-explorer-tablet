@@ -1,20 +1,24 @@
 package org.philimone.hds.explorer.model.enums;
 
+import org.philimone.hds.explorer.R;
+
 import java.util.HashMap;
 import java.util.Map;
 
+import androidx.annotation.StringRes;
+
 public enum EstimatedDateOfDeliveryType {
 
-    ULTRASOUND             ("1", "eddtype.ultrasound"),
-    LAST_MENSTRUAL_PERIOD  ("2", "eddtype.last_menstrual_period"),
-    SYMPHISIS_FUNDAL_EIGHT ("3", "eddtype.symphisis_fundal_eight"),
-    DONT_KNOW              ("99", "eddtype.dont_know"),
-    INVALID_ENUM           ( "-1", "-1");
+    ULTRASOUND             ("1", R.string.eddtype_ultrasound),
+    LAST_MENSTRUAL_PERIOD  ("2", R.string.eddtype_last_menstrual_period),
+    SYMPHISIS_FUNDAL_EIGHT ("3", R.string.eddtype_symphisis_fundal_eight),
+    DONT_KNOW              ("99", R.string.eddtype_dont_know),
+    INVALID_ENUM           ( "-1", R.string.invalid_enum_value);
 
-    String code;
-    String name;
+    public String code;
+    public @StringRes int name;
 
-    EstimatedDateOfDeliveryType(String code, String name){
+    EstimatedDateOfDeliveryType(String code, @StringRes int name){
         this.code = code;
         this.name = name;
     }

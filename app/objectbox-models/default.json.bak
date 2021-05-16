@@ -932,10 +932,675 @@
         }
       ],
       "relations": []
+    },
+    {
+      "id": "13:6711218666484267288",
+      "lastPropertyId": "13:2838658658286222441",
+      "name": "PregnancyOutcome",
+      "properties": [
+        {
+          "id": "1:3808038865823309891",
+          "name": "id",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:6974846538281675009",
+          "name": "code",
+          "indexId": "26:7450395106692363893",
+          "type": 9,
+          "flags": 2080
+        },
+        {
+          "id": "3:4645085235297788812",
+          "name": "motherCode",
+          "indexId": "27:1065846314774413949",
+          "type": 9,
+          "flags": 2048
+        },
+        {
+          "id": "4:5718014286625722122",
+          "name": "fatherCode",
+          "indexId": "28:2251584799617793661",
+          "type": 9,
+          "flags": 2048
+        },
+        {
+          "id": "5:9103116633862824046",
+          "name": "numberOfOutcomes",
+          "type": 5,
+          "flags": 2
+        },
+        {
+          "id": "6:1301490141218821663",
+          "name": "numberOfLivebirths",
+          "type": 5,
+          "flags": 2
+        },
+        {
+          "id": "7:268454912903570115",
+          "name": "outcomeDate",
+          "type": 10
+        },
+        {
+          "id": "8:5415954257018039477",
+          "name": "birthPlace",
+          "type": 9
+        },
+        {
+          "id": "9:5478992528725029768",
+          "name": "birthPlaceOther",
+          "type": 9
+        },
+        {
+          "id": "10:3612070313632398161",
+          "name": "visitCode",
+          "indexId": "29:3733979065695396639",
+          "type": 9,
+          "flags": 2048
+        },
+        {
+          "id": "11:4907339215622276343",
+          "name": "motherId",
+          "indexId": "30:7778310959557681308",
+          "type": 11,
+          "flags": 1548,
+          "relationTarget": "Member"
+        },
+        {
+          "id": "12:7840623867802962784",
+          "name": "fatherId",
+          "indexId": "31:4542554123660622073",
+          "type": 11,
+          "flags": 1548,
+          "relationTarget": "Member"
+        },
+        {
+          "id": "13:2838658658286222441",
+          "name": "visitId",
+          "indexId": "32:6404337691905915906",
+          "type": 11,
+          "flags": 1548,
+          "relationTarget": "Visit"
+        }
+      ],
+      "relations": []
+    },
+    {
+      "id": "14:762193319076805644",
+      "lastPropertyId": "7:2328660741193187207",
+      "name": "MaritalRelationship",
+      "properties": [
+        {
+          "id": "1:2290062621927983231",
+          "name": "id",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:780432659130147099",
+          "name": "memberA_code",
+          "indexId": "33:5178140753538986993",
+          "type": 9,
+          "flags": 2048
+        },
+        {
+          "id": "3:162106893684064057",
+          "name": "memberB_code",
+          "indexId": "34:4529272862290925871",
+          "type": 9,
+          "flags": 2048
+        },
+        {
+          "id": "4:1264191054107593698",
+          "name": "startStatus",
+          "type": 9
+        },
+        {
+          "id": "5:2440170281216456280",
+          "name": "startDate",
+          "type": 10
+        },
+        {
+          "id": "6:8407526273440748142",
+          "name": "endStatus",
+          "type": 9
+        },
+        {
+          "id": "7:2328660741193187207",
+          "name": "endDate",
+          "type": 10
+        }
+      ],
+      "relations": []
+    },
+    {
+      "id": "15:4705936129891303264",
+      "lastPropertyId": "8:4339828814283676446",
+      "name": "PregnancyChild",
+      "properties": [
+        {
+          "id": "1:2684030880021687410",
+          "name": "id",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:8824592901475961064",
+          "name": "outcomeCode",
+          "indexId": "35:8122307145387315877",
+          "type": 9,
+          "flags": 2048
+        },
+        {
+          "id": "3:1175142734531603014",
+          "name": "outcomeType",
+          "type": 9
+        },
+        {
+          "id": "4:1249762245147097881",
+          "name": "childCode",
+          "indexId": "36:1721521802290423973",
+          "type": 9,
+          "flags": 2048
+        },
+        {
+          "id": "5:6110844930661124760",
+          "name": "childOrdinalPosition",
+          "type": 5,
+          "flags": 2
+        },
+        {
+          "id": "6:1321471512305634297",
+          "name": "outcomeId",
+          "indexId": "37:6521620120535022703",
+          "type": 11,
+          "flags": 1548,
+          "relationTarget": "PregnancyOutcome"
+        },
+        {
+          "id": "7:9133458198237476583",
+          "name": "childId",
+          "indexId": "38:7596246704268911865",
+          "type": 11,
+          "flags": 1548,
+          "relationTarget": "Member"
+        },
+        {
+          "id": "8:4339828814283676446",
+          "name": "childHeadRelationshipId",
+          "indexId": "39:1561595666871032662",
+          "type": 11,
+          "flags": 1548,
+          "relationTarget": "HeadRelationship"
+        }
+      ],
+      "relations": []
+    },
+    {
+      "id": "16:3819298482554722089",
+      "lastPropertyId": "9:4925887990413343720",
+      "name": "OutMigration",
+      "properties": [
+        {
+          "id": "1:8362195345808277114",
+          "name": "id",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:7453383504916054652",
+          "name": "memberCode",
+          "indexId": "40:3234554773596068924",
+          "type": 9,
+          "flags": 2048
+        },
+        {
+          "id": "3:1745492702549750888",
+          "name": "migrationType",
+          "type": 9
+        },
+        {
+          "id": "4:5053974839626091237",
+          "name": "originCode",
+          "indexId": "41:231010560994140111",
+          "type": 9,
+          "flags": 2048
+        },
+        {
+          "id": "5:4985869693124237086",
+          "name": "destinationCode",
+          "indexId": "42:6594922419840177247",
+          "type": 9,
+          "flags": 2048
+        },
+        {
+          "id": "6:3985653085534943420",
+          "name": "destinationOther",
+          "type": 9
+        },
+        {
+          "id": "7:7459600258499539749",
+          "name": "migrationDate",
+          "type": 10
+        },
+        {
+          "id": "8:3717592668762805886",
+          "name": "migrationReason",
+          "type": 9
+        },
+        {
+          "id": "9:4925887990413343720",
+          "name": "visitCode",
+          "indexId": "43:3563834430307602453",
+          "type": 9,
+          "flags": 2048
+        }
+      ],
+      "relations": []
+    },
+    {
+      "id": "17:5573157632142030796",
+      "lastPropertyId": "7:8854050135234436725",
+      "name": "Residency",
+      "properties": [
+        {
+          "id": "1:1140004769906345929",
+          "name": "id",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:5514409061629274705",
+          "name": "householdCode",
+          "indexId": "44:177095110588614214",
+          "type": 9,
+          "flags": 2048
+        },
+        {
+          "id": "3:7814747777586446505",
+          "name": "memberCode",
+          "indexId": "45:8474219858113216193",
+          "type": 9,
+          "flags": 2048
+        },
+        {
+          "id": "4:9143601138898098413",
+          "name": "startType",
+          "type": 9
+        },
+        {
+          "id": "5:4104858459748526237",
+          "name": "startDate",
+          "type": 10
+        },
+        {
+          "id": "6:5248374862052296796",
+          "name": "endType",
+          "type": 9
+        },
+        {
+          "id": "7:8854050135234436725",
+          "name": "endDate",
+          "type": 10
+        }
+      ],
+      "relations": []
+    },
+    {
+      "id": "18:2971387062509066349",
+      "lastPropertyId": "7:2080912583819852456",
+      "name": "Death",
+      "properties": [
+        {
+          "id": "1:1892822284052629621",
+          "name": "id",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:102042759407064172",
+          "name": "memberCode",
+          "indexId": "46:4536791631770828",
+          "type": 9,
+          "flags": 2080
+        },
+        {
+          "id": "3:5145161318485180009",
+          "name": "deathDate",
+          "type": 10
+        },
+        {
+          "id": "4:2498262576828802448",
+          "name": "ageAtDeath",
+          "type": 5,
+          "flags": 2
+        },
+        {
+          "id": "5:9003873518481791823",
+          "name": "deathCause",
+          "type": 9
+        },
+        {
+          "id": "6:1313939018277740412",
+          "name": "deathPlace",
+          "type": 9
+        },
+        {
+          "id": "7:2080912583819852456",
+          "name": "visitCode",
+          "indexId": "47:8773230033257953127",
+          "type": 9,
+          "flags": 2048
+        }
+      ],
+      "relations": []
+    },
+    {
+      "id": "19:1493713431233179094",
+      "lastPropertyId": "14:227076107964842635",
+      "name": "Visit",
+      "properties": [
+        {
+          "id": "1:1678687460050766890",
+          "name": "id",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:7318364005764041557",
+          "name": "code",
+          "indexId": "48:5390450725652165355",
+          "type": 9,
+          "flags": 2080
+        },
+        {
+          "id": "3:2424826035613407175",
+          "name": "householdCode",
+          "indexId": "49:4001950629493967488",
+          "type": 9,
+          "flags": 2048
+        },
+        {
+          "id": "4:8750563495750668939",
+          "name": "visitDate",
+          "type": 10
+        },
+        {
+          "id": "5:5709130827152541983",
+          "name": "visitLocation",
+          "type": 9
+        },
+        {
+          "id": "6:411442205052561267",
+          "name": "visitLocationOther",
+          "type": 9
+        },
+        {
+          "id": "7:320448392978694511",
+          "name": "roundNumber",
+          "type": 5,
+          "flags": 2
+        },
+        {
+          "id": "8:8730069946652983176",
+          "name": "respondentCode",
+          "indexId": "50:4465885675140570739",
+          "type": 9,
+          "flags": 2048
+        },
+        {
+          "id": "9:8656367356956767014",
+          "name": "hasInterpreter",
+          "type": 1,
+          "flags": 2
+        },
+        {
+          "id": "10:1137971815956565534",
+          "name": "interpreterName",
+          "type": 9
+        },
+        {
+          "id": "11:260965198189010674",
+          "name": "gpsAccuracy",
+          "type": 8,
+          "flags": 2
+        },
+        {
+          "id": "12:706431753693703619",
+          "name": "gpsAltitude",
+          "type": 8,
+          "flags": 2
+        },
+        {
+          "id": "13:3908412261189086649",
+          "name": "gpsLatitude",
+          "type": 8,
+          "flags": 2
+        },
+        {
+          "id": "14:227076107964842635",
+          "name": "gpsLongitude",
+          "type": 8,
+          "flags": 2
+        }
+      ],
+      "relations": []
+    },
+    {
+      "id": "20:2389375802542346440",
+      "lastPropertyId": "9:4108610534254225622",
+      "name": "HeadRelationship",
+      "properties": [
+        {
+          "id": "1:9027188681082079265",
+          "name": "id",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:4133164240575456623",
+          "name": "householdCode",
+          "indexId": "51:3999251231470332125",
+          "type": 9,
+          "flags": 2048
+        },
+        {
+          "id": "3:5639537847207969760",
+          "name": "memberCode",
+          "indexId": "52:7144641622925015116",
+          "type": 9,
+          "flags": 2048
+        },
+        {
+          "id": "4:4389986044420450638",
+          "name": "headCode",
+          "indexId": "53:2813701899702857438",
+          "type": 9,
+          "flags": 2048
+        },
+        {
+          "id": "5:8554554132703510591",
+          "name": "relationshipType",
+          "type": 9
+        },
+        {
+          "id": "6:4289200553454205819",
+          "name": "startType",
+          "type": 9
+        },
+        {
+          "id": "7:2526276762265522516",
+          "name": "startDate",
+          "type": 10
+        },
+        {
+          "id": "8:2122191282875786931",
+          "name": "endType",
+          "type": 9
+        },
+        {
+          "id": "9:4108610534254225622",
+          "name": "endDate",
+          "type": 10
+        }
+      ],
+      "relations": []
+    },
+    {
+      "id": "21:4385528013949997550",
+      "lastPropertyId": "14:591142650927775836",
+      "name": "PregnancyRegistration",
+      "properties": [
+        {
+          "id": "1:300889913377292022",
+          "name": "id",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:8637403930722563237",
+          "name": "code",
+          "indexId": "54:609645643592719462",
+          "type": 9,
+          "flags": 2080
+        },
+        {
+          "id": "3:4395449846946468292",
+          "name": "motherCode",
+          "indexId": "55:5724396869753634883",
+          "type": 9,
+          "flags": 2048
+        },
+        {
+          "id": "4:6417923886699327635",
+          "name": "recordedDate",
+          "type": 10
+        },
+        {
+          "id": "5:4687132305839750986",
+          "name": "pregMonths",
+          "type": 5,
+          "flags": 2
+        },
+        {
+          "id": "6:4453694995126507580",
+          "name": "eddKnown",
+          "type": 1,
+          "flags": 2
+        },
+        {
+          "id": "7:8633669672344144914",
+          "name": "hasPrenatalRecord",
+          "type": 1,
+          "flags": 2
+        },
+        {
+          "id": "8:5684994806060174092",
+          "name": "eddDate",
+          "type": 10
+        },
+        {
+          "id": "9:9218383899317170029",
+          "name": "eddType",
+          "type": 9
+        },
+        {
+          "id": "10:20928073278322770",
+          "name": "lmpKnown",
+          "type": 1,
+          "flags": 2
+        },
+        {
+          "id": "11:6381215411249329857",
+          "name": "lmpDate",
+          "type": 10
+        },
+        {
+          "id": "12:5878134385734848730",
+          "name": "expectedDeliveryDate",
+          "type": 10
+        },
+        {
+          "id": "13:56433245029171928",
+          "name": "status",
+          "type": 9
+        },
+        {
+          "id": "14:591142650927775836",
+          "name": "visitCode",
+          "indexId": "56:4791760148464300258",
+          "type": 9,
+          "flags": 2048
+        }
+      ],
+      "relations": []
+    },
+    {
+      "id": "22:8558377030680171203",
+      "lastPropertyId": "9:2140468262032824280",
+      "name": "InMigration",
+      "properties": [
+        {
+          "id": "1:1440221648797133215",
+          "name": "id",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:4556398392412246025",
+          "name": "memberCode",
+          "indexId": "57:2106063976632284907",
+          "type": 9,
+          "flags": 2048
+        },
+        {
+          "id": "3:5066621960863203210",
+          "name": "type",
+          "type": 9
+        },
+        {
+          "id": "4:4527620543586349714",
+          "name": "originCode",
+          "indexId": "58:7174484386912693312",
+          "type": 9,
+          "flags": 2048
+        },
+        {
+          "id": "5:1978300852066168044",
+          "name": "originOther",
+          "type": 9
+        },
+        {
+          "id": "6:7892710566264443277",
+          "name": "destinationCode",
+          "indexId": "59:6304305741771109315",
+          "type": 9,
+          "flags": 2048
+        },
+        {
+          "id": "7:3543114401386748617",
+          "name": "migrationDate",
+          "type": 10
+        },
+        {
+          "id": "8:9045273719347956248",
+          "name": "migrationReason",
+          "type": 9
+        },
+        {
+          "id": "9:2140468262032824280",
+          "name": "visitCode",
+          "indexId": "60:3641365062876875778",
+          "type": 9,
+          "flags": 2048
+        }
+      ],
+      "relations": []
     }
   ],
-  "lastEntityId": "12:5667991198190393360",
-  "lastIndexId": "25:7613072360077807961",
+  "lastEntityId": "22:8558377030680171203",
+  "lastIndexId": "60:3641365062876875778",
   "lastRelationId": "0:0",
   "lastSequenceId": "0:0",
   "modelVersion": 5,

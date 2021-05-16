@@ -28,6 +28,7 @@ import org.philimone.hds.explorer.model.Member;
 import org.philimone.hds.explorer.model.Member_;
 import org.philimone.hds.explorer.model.User;
 import org.philimone.hds.explorer.model.enums.Gender;
+import org.philimone.hds.explorer.model.enums.temporal.ResidencyEndType;
 import org.philimone.hds.explorer.widget.DialogFactory;
 import org.philimone.hds.explorer.widget.FormSelectorDialog;
 import org.philimone.hds.explorer.widget.member_details.MemberFormDialog;
@@ -387,16 +388,16 @@ public class MemberDetailsActivity extends Activity implements OdkFormResultList
     }
 
     private String getEndTypeMsg(Member member){
-        if (member.getEndType().equals("NA")) return getString(R.string.member_details_endtype_na_lbl);
-        if (member.getEndType().equals("EXT")) return getString(R.string.member_details_endtype_ext_lbl);
-        if (member.getEndType().equals("DTH")) return getString(R.string.member_details_endtype_dth_lbl);
+        if (member.getEndType() == ResidencyEndType.NOT_APPLICABLE) return getString(R.string.member_details_endtype_na_lbl);
+        if (member.getEndType() == ResidencyEndType.EXTERNAL_OUTMIGRATION) return getString(R.string.member_details_endtype_ext_lbl);
+        if (member.getEndType() == ResidencyEndType.DEATH) return getString(R.string.member_details_endtype_dth_lbl);
 
-        return member.getEndType();
+        return member.getEndType().getId();
     }
 
     private String getEndDateMsg(Member member){
         String date = member.getEndDate();
-        if (member.getEndType().equals("NA")) return date = member.getStartDate();
+        if (member.getEndType() == ResidencyEndType.NOT_APPLICABLE) return date = member.getStartDate();
 
         return member.getEndDate();
     }

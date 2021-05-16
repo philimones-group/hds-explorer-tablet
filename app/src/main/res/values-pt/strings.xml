@@ -317,4 +317,77 @@
     <string name="permissions_sync_storage_title_lbl">Negado acesso ao armazenamento!</string>
     <string name="permissions_sync_storage_denied_lbl">Não é possivel sincronizar/baixar os dados do servidor. A permissão de acesso ao armazenamento de dados não foi concedida!</string>
 
+    <!-- Enums -->
+    <string name="invalid_enum_value">!!!VALOR INVALIDO!!!</string>
+
+    <string name="default_gender_male">Masculino</string>
+    <string name="default_gender_female">Feminino</string>
+
+    <string name="maritalStatus_single">Solteiro</string>
+    <string name="maritalStatus_married">Casado(a)</string>
+    <string name="maritalStatus_divorced">Divorciado(a)</string>
+    <string name="maritalStatus_separated">Separado(a)</string>
+    <string name="maritalStatus_widowed">Viuvo(a)</string>
+    <string name="maritalStatus_living_togheter">União de facto</string>
+    <string name="maritalStatus_not_applicable">Não Aplicavel (Casado)</string>
+
+    <string name="pregnacyStatus_pregnant">Gravida</string>
+    <string name="pregnacyStatus_delivered">Ja deu parto</string>
+    <string name="pregnacyStatus_lost_track">Impossivel Seguir a gravidez</string>
+
+    <string name="eddtype_ultrasound">Ecografia (ultra-som)</string>
+    <string name="eddtype_last_menstrual_period">Data da última menstruação (DUM)</string>
+    <string name="eddtype_symphisis_fundal_eight">Altura do fundo uterino (AFU)</string>
+    <string name="eddtype_dont_know">Não sabe</string>
+
+    <string name="pregOutcomeType_livebirth">Nascido Vivo</string>
+    <string name="pregOutcomeType_stillbirth">Nado morto (mais de 28 semanas de gestação)</string>
+    <string name="pregOutcomeType_miscarriage">Aborto Espontâneo (menos de 28 semanas de gestação)</string>
+    <string name="pregOutcomeType_abortion">Aborto induzido/provocado (menos de 28 semanas de gestação)</string>
+
+    <string name="birthPlace_home">Em casa</string>
+    <string name="birthPlace_hospital">Unidade Sanitaria/Hospital Público</string>
+    <string name="birthPlace_traditional_midwife">Em casa da parteira tradicional</string>
+    <string name="birthPlace_health_center_clinic">Centro de Saúde/Clinica Privada</string>
+    <string name="birthPlace_other">Outro</string>
+
+    <string name="eventType_enumeration">Enumeração</string>
+    <string name="eventType_birth">Nascimento</string>
+    <string name="eventType_internal_inmigration">Imigração Interna</string>
+    <string name="eventType_external_inmigration">Imigração Externa</string>
+    <string name="eventType_returning_inmigration">Imigração Externa (Retorno a DSS)</string>
+    <string name="eventType_not_applicable">Não Aplicavel (Residindo nesta casa)</string>
+    <string name="eventType_internal_outmigration">Emigração Interna</string>
+    <string name="eventType_external_outmigration">Emigração Externa</string>
+    <string name="eventType_death">Morte</string>
+    <string name="eventType_new_hoh">Novo Chefe do Agregado</string>
+    <string name="eventType_death_of_hoh">Morte do Chefe do Agregado</string>
+    <string name="eventType_change_of_hoh">Mudança do Chefe do Agregado</string>
+
+    <string name="headRelationshipType_head_of_household">Chefe do Agregado</string>
+    <string name="headRelationshipType_spouse">Esposo/a</string>
+    <string name="headRelationshipType_son_daughter">Filho/a</string>
+    <string name="headRelationshipType_brother_sister">Irmão/Irmã</string>
+    <string name="headRelationshipType_parent">Pai/Mãe</string>
+    <string name="headRelationshipType_grandchild">Neto/a</string>
+    <string name="headRelationshipType_not_related">Sem relação</string>
+    <string name="headRelationshipType_other">Outro parente</string>
+    <string name="headRelationshipType_dont_know">Não sabe</string>
+
+    <string name="region_level1_label">Nivel 1</string>
+    <string name="region_level2_label">Nivel 2</string>
+    <string name="region_level3_label">Nivel 3</string>
+    <string name="region_level4_label">Nivel 4</string>
+    <string name="region_level5_label">Nivel 5</string>
+    <string name="region_level6_label">Nivel 6</string>
+    <string name="region_level7_label">Nivel 7</string>
+    <string name="region_level8_label">Nivel 8</string>
+    <string name="region_level9_label">Nivel 9</string>
+    <string name="region_level10_label">Nivel 10</string>
+
+    <string name="visitLocation_home">Em casa</string>
+    <string name="visitLocation_workplace">Local de trabalho do respondente</string>
+    <string name="visitLocation_healthunit">Na unidade Sanitária</string>
+    <string name="visitLocation_other">Outro lugar</string>
+
 </resources>

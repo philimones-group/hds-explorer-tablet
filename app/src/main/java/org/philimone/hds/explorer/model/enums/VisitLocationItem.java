@@ -1,23 +1,27 @@
 package org.philimone.hds.explorer.model.enums;
 
+import org.philimone.hds.explorer.R;
+
 import java.util.HashMap;
 import java.util.Map;
+
+import androidx.annotation.StringRes;
 
 public enum VisitLocationItem {
     /*
     12. Onde é que a visita esta sendo realizada?
     */
 
-    HOME         ("HOME", "visitLocation.home"),
-    WORK_PLACE   ("WORKPLACE","visitLocation.workplace"),
-    HEALTH_UNIT  ("HEALTHUNIT","visitLocation.healthunit"),
-    OTHER_PLACE  ("OTHERPLACE","visitLocation.other"),
-    INVALID_ENUM ( "-1", "-1");
+    HOME         ("HOME", R.string.visitLocation_home),
+    WORK_PLACE   ("WORKPLACE", R.string.visitLocation_workplace),
+    HEALTH_UNIT  ("HEALTHUNIT", R.string.visitLocation_healthunit),
+    OTHER_PLACE  ("OTHERPLACE", R.string.visitLocation_other),
+    INVALID_ENUM ( "-1", R.string.invalid_enum_value);
 
-    String code;
-    String name;
+    public String code;
+    public @StringRes int name;
 
-    VisitLocationItem(String code, String name){
+    VisitLocationItem(String code, @StringRes int name){
         this.code = code;
         this.name = name;
     }

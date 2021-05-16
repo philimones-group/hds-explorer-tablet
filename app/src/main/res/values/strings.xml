@@ -317,4 +317,77 @@
     <string name="permissions_sync_storage_title_lbl">Access Permission denied!</string>
     <string name="permissions_sync_storage_denied_lbl">It will not be possible to synchronize with the Server. There is no permission to use the Storage for read/write operations!</string>
 
+    <!-- Enums -->
+    <string name="invalid_enum_value">!!!INVALID VALUE!!!</string>
+
+    <string name="default_gender_male">Male</string>
+    <string name="default_gender_female">Female</string>
+
+    <string name="maritalStatus_single">Single</string>
+    <string name="maritalStatus_married">Married</string>
+    <string name="maritalStatus_divorced">Divorced</string>
+    <string name="maritalStatus_separated">Separated</string>
+    <string name="maritalStatus_widowed">Widowed</string>
+    <string name="maritalStatus_living_togheter">Living Togheter</string>
+    <string name="maritalStatus_not_applicable">Not Applicable (Currently Married)</string>
+
+    <string name="pregnacyStatus_pregnant">Still Pregnant</string>
+    <string name="pregnacyStatus_delivered">Already Delivered</string>
+    <string name="pregnacyStatus_lost_track">Lost Track of Status</string>
+
+    <string name="eddtype_ultrasound">Ultrasound</string>
+    <string name="eddtype_last_menstrual_period">Last Menstrual Period</string>
+    <string name="eddtype_symphisis_fundal_eight">Symphisis Fundal Height</string>
+    <string name="eddtype_dont_know">Dont Know</string>
+
+    <string name="pregOutcomeType_livebirth">Live birth</string>
+    <string name="pregOutcomeType_stillbirth">Still Birth</string>
+    <string name="pregOutcomeType_miscarriage">Miscarriage</string>
+    <string name="pregOutcomeType_abortion">Abortion</string>
+
+    <string name="birthPlace_home">Home</string>
+    <string name="birthPlace_hospital">Hospital</string>
+    <string name="birthPlace_traditional_midwife">Traditional Birth Attendants Home</string>
+    <string name="birthPlace_health_center_clinic">Health Center or Clinic</string>
+    <string name="birthPlace_other">Other</string>
+
+    <string name="eventType_enumeration">Enumeration</string>
+    <string name="eventType_birth">Birth</string>
+    <string name="eventType_internal_inmigration">Internal InMigration</string>
+    <string name="eventType_external_inmigration">External InMigration</string>
+    <string name="eventType_returning_inmigration">Returning InMigration</string>
+    <string name="eventType_not_applicable">Not Applicable (Currently Living Here)</string>
+    <string name="eventType_internal_outmigration">Internal OutMigration</string>
+    <string name="eventType_external_outmigration">External OutMigration</string>
+    <string name="eventType_death">Death</string>
+    <string name="eventType_new_hoh">New Head of Household</string>
+    <string name="eventType_death_of_hoh">Death of Head of Household</string>
+    <string name="eventType_change_of_hoh">Change of Head of Household</string>
+
+    <string name="headRelationshipType_head_of_household">Head of Household</string>
+    <string name="headRelationshipType_spouse">Spouse</string>
+    <string name="headRelationshipType_son_daughter">Son/Daughter</string>
+    <string name="headRelationshipType_brother_sister">Brother/Sister</string>
+    <string name="headRelationshipType_parent">Parent</string>
+    <string name="headRelationshipType_grandchild">Grandchild</string>
+    <string name="headRelationshipType_not_related">Not Related</string>
+    <string name="headRelationshipType_other">Other Relative</string>
+    <string name="headRelationshipType_dont_know">Dont Know</string>
+
+    <string name="region_level1_label">Level 1</string>
+    <string name="region_level2_label">Level 2</string>
+    <string name="region_level3_label">Level 3</string>
+    <string name="region_level4_label">Level 4</string>
+    <string name="region_level5_label">Level 5</string>
+    <string name="region_level6_label">Level 6</string>
+    <string name="region_level7_label">Level 7</string>
+    <string name="region_level8_label">Level 8</string>
+    <string name="region_level9_label">Level 9</string>
+    <string name="region_level10_label">Level 10</string>
+
+    <string name="visitLocation_home">At Home</string>
+    <string name="visitLocation_workplace">At Respondent Workplace</string>
+    <string name="visitLocation_healthunit">At Health Unit</string>
+    <string name="visitLocation_other">Other place</string>
+
 </resources>

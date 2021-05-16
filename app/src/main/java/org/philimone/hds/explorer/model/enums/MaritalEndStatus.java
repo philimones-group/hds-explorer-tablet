@@ -1,20 +1,24 @@
 package org.philimone.hds.explorer.model.enums;
 
+import org.philimone.hds.explorer.R;
+
 import java.util.HashMap;
 import java.util.Map;
 
+import androidx.annotation.StringRes;
+
 public enum MaritalEndStatus {
 
-    NOT_APPLICABLE ("NA", "maritalStatus.not_applicable"), //Currently Living Here
-    DIVORCED       ("DIV", "maritalStatus.divorced"),
-    SEPARATED      ("SEP","maritalStatus.separated"),
-    WIDOWED        ("WID","maritalStatus.widowed"),
-    INVALID_ENUM   ( "-1", "-1");
+    NOT_APPLICABLE ("NA", R.string.maritalStatus_not_applicable), //Currently Living Here
+    DIVORCED       ("DIV", R.string.maritalStatus_divorced),
+    SEPARATED      ("SEP", R.string.maritalStatus_separated),
+    WIDOWED        ("WID", R.string.maritalStatus_widowed),
+    INVALID_ENUM   ( "-1", R.string.invalid_enum_value);
 
-    String code;
-    String name;
+    public String code;
+    public @StringRes int name;
 
-    MaritalEndStatus(String code, String name){
+    MaritalEndStatus(String code, @StringRes int name){
         this.code = code;
         this.name = name;
     }

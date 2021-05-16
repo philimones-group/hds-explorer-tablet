@@ -1,20 +1,24 @@
 package org.philimone.hds.explorer.model.enums;
 
+import org.philimone.hds.explorer.R;
+
 import java.util.HashMap;
 import java.util.Map;
 
+import androidx.annotation.StringRes;
+
 public enum PregnancyOutcomeType {
 
-    LIVEBIRTH    ("LBR", "pregOutcomeType.livebirth"),
-    STILLBIRTH   ("SBR",	"pregOutcomeType.stillbirth"),
-    MISCARRIAGE  ("MIS",	"pregOutcomeType.miscarriage"),
-    ABORTION     ("ABT", "pregOutcomeType.abortion"),
-    INVALID_ENUM ( "-1", "-1");
+    LIVEBIRTH    ("LBR", R.string.pregOutcomeType_livebirth),
+    STILLBIRTH   ("SBR", R.string.pregOutcomeType_stillbirth),
+    MISCARRIAGE  ("MIS", R.string.pregOutcomeType_miscarriage),
+    ABORTION     ("ABT", R.string.pregOutcomeType_abortion),
+    INVALID_ENUM ( "-1", R.string.invalid_enum_value);
 
-    String code;
-    String name;
+    public String code;
+    public @StringRes int name;
 
-    PregnancyOutcomeType(String code, String name){
+    PregnancyOutcomeType(String code, @StringRes int name){
         this.code = code;
         this.name = name;
     }

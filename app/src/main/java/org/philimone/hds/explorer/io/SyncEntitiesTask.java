@@ -24,9 +24,13 @@ import org.philimone.hds.explorer.model.User;
 import org.philimone.hds.explorer.model.converters.FormMappingConverter;
 import org.philimone.hds.explorer.model.converters.LabelMappingConverter;
 import org.philimone.hds.explorer.model.enums.Gender;
+import org.philimone.hds.explorer.model.enums.HeadRelationshipType;
+import org.philimone.hds.explorer.model.enums.MaritalStatus;
 import org.philimone.hds.explorer.model.enums.SyncEntity;
 import org.philimone.hds.explorer.model.enums.SyncState;
 import org.philimone.hds.explorer.model.enums.SyncStatus;
+import org.philimone.hds.explorer.model.enums.temporal.ResidencyEndType;
+import org.philimone.hds.explorer.model.enums.temporal.ResidencyStartType;
 import org.philimone.hds.explorer.model.followup.TrackingList;
 import org.philimone.hds.explorer.model.followup.TrackingSubjectList;
 import org.xmlpull.v1.XmlPullParser;
@@ -1752,10 +1756,10 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 			parser.nextTag(); //process <maritalStatus>
 			if (!isEmptyTag("maritalStatus", parser)) {
 				parser.next();
-				table.setMaritalStatus(parser.getText());
+				table.setMaritalStatus(MaritalStatus.getFrom(parser.getText()));
 				parser.nextTag(); //process </maritalStatus>
 			}else{
-				table.setMaritalStatus("");
+				table.setMaritalStatus(null);
 				parser.nextTag();
 			}
 
@@ -1802,10 +1806,10 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
             parser.nextTag(); //process <startType>
             if (!isEmptyTag("startType", parser)) {
                 parser.next();
-                table.setStartType(parser.getText());
+                table.setStartType(ResidencyStartType.getFrom(parser.getText()));
                 parser.nextTag(); //process </startType>
             }else{
-                table.setStartType("");
+                table.setStartType(null);
                 parser.nextTag();
             }
 
@@ -1822,10 +1826,10 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
             parser.nextTag(); //process <endType>
             if (!isEmptyTag("endType", parser)) {
                 parser.next();
-                table.setEndType(parser.getText());
+                table.setEndType(ResidencyEndType.getFrom(parser.getText()));
                 parser.nextTag(); //process </endType>
             }else{
-                table.setEndType("");
+                table.setEndType(null);
                 parser.nextTag();
             }
 
@@ -1862,11 +1866,11 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 				parser.next();
 				//Log.d("note entryType", parser.getText() + ", " +parser.getPositionDescription());
 				if (parser.getText()!=null){
-					table.setEntryType(parser.getText());
+					table.setEntryType(ResidencyStartType.getFrom(parser.getText()));
 					parser.nextTag(); //process </entryType>
 				}
 			}else{
-				table.setEntryType("");
+				table.setEntryType(null);
 				parser.nextTag();
 				//Log.d("e entryType", table.getEntryType());
 			}
@@ -1890,11 +1894,11 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 				parser.next();
 				//Log.d("note headRelationshipType", parser.getText() + ", " +parser.getPositionDescription());
 				if (parser.getText()!=null){
-					table.setHeadRelationshipType(parser.getText());
+					table.setHeadRelationshipType(HeadRelationshipType.getFrom(parser.getText()));
 					parser.nextTag(); //process </headRelationshipType>
 				}
 			}else{
-				table.setHeadRelationshipType("");
+				table.setHeadRelationshipType(null);
 				parser.nextTag();
 				//Log.d("e entryType", table.getheadRelationshipType());
 			}

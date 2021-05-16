@@ -32,6 +32,7 @@ import org.philimone.hds.explorer.model.Member;
 import org.philimone.hds.explorer.model.Member_;
 import org.philimone.hds.explorer.model.Region;
 import org.philimone.hds.explorer.model.Region_;
+import org.philimone.hds.explorer.model.enums.temporal.ResidencyEndType;
 import org.philimone.hds.explorer.widget.DialogFactory;
 import org.philimone.hds.explorer.widget.member_details.Distance;
 import org.philimone.hds.explorer.widget.member_details.GpsNearBySelectorDialog;
@@ -772,15 +773,15 @@ public class MemberListFragment extends Fragment {
         //open loader
         this.currentHousehold = household;
 
-        String endType = "";
+        ResidencyEndType endType = null;
 
         if (name == null) name = "";
         if (code == null) code = "";
         if (householdCode == null) householdCode = "";
         if (gender == null) gender = "";
-        if (isDead != null && isDead) endType = "DTH";
-        if (hasOutmigrated != null && hasOutmigrated) endType = "EXT";
-        if (liveResident != null && liveResident) endType = "NA";
+        if (isDead != null && isDead) endType = ResidencyEndType.DEATH;
+        if (hasOutmigrated != null && hasOutmigrated) endType = ResidencyEndType.EXTERNAL_OUTMIGRATION;
+        if (liveResident != null && liveResident) endType = ResidencyEndType.NOT_APPLICABLE;
 
         //save last search
         this.lastSearch = new ArrayList();
@@ -885,7 +886,7 @@ public class MemberListFragment extends Fragment {
             //whereClause += DatabaseHelper.Member.COLUMN_GENDER + " = ?";
         }
 
-        if (endType != null && endType=="DTH"){
+        if (endType != null && endType==ResidencyEndType.DEATH){
             if (minAge != null){
                 builder.greaterOrEqual(Member_.ageAtDeath, minAge);
                 //whereClause += DatabaseHelper.Member.COLUMN_AGE_AT_DEATH + " >= ?";
@@ -905,8 +906,8 @@ public class MemberListFragment extends Fragment {
             }
         }
 
-        if (!endType.isEmpty()){
-            builder.equal(Member_.endType, endType);
+        if (endType != null){
+            builder.equal(Member_.endType, endType.getId());
             //whereClause += DatabaseHelper.Member.COLUMN_END_TYPE + " = ?";
         }
 

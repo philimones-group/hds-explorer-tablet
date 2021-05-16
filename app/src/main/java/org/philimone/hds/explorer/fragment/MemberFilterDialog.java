@@ -20,6 +20,7 @@ import org.philimone.hds.explorer.adapter.MemberArrayAdapter;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
 import org.philimone.hds.explorer.model.Member;
 import org.philimone.hds.explorer.model.Member_;
+import org.philimone.hds.explorer.model.enums.temporal.ResidencyEndType;
 import org.philimone.hds.explorer.widget.NumberPicker;
 
 import java.util.List;
@@ -296,15 +297,15 @@ public class MemberFilterDialog extends DialogFragment {
                             //Household household, String name, String code, String householdCode, String gender, Integer minAge, Integer maxAge, Boolean isDead, Boolean hasOutmigrated, Boolean liveResident
     public MemberArrayAdapter loadMembersByFilters(String name, String code, String householdCode, String gender, Integer minAge, Integer maxAge, Boolean isDead, Boolean hasOutmigrated, Boolean liveResident) {
 
-        String endType = "";
+        ResidencyEndType endType = null;
 
         if (name == null) name = "";
         if (code == null) code = "";
         if (householdCode == null) householdCode = "";
         if (gender == null) gender = "";
-        if (isDead != null && isDead) endType = "DTH";
-        if (hasOutmigrated != null && hasOutmigrated) endType = "EXT";
-        if (liveResident != null && liveResident) endType = "NA";
+        if (isDead != null && isDead) endType = ResidencyEndType.DEATH;
+        if (hasOutmigrated != null && hasOutmigrated) endType = ResidencyEndType.EXTERNAL_OUTMIGRATION;
+        if (liveResident != null && liveResident) endType = ResidencyEndType.NOT_APPLICABLE;
 
         //search on database
         QueryBuilder<Member> builder = this.boxMembers.query();
@@ -395,7 +396,7 @@ public class MemberFilterDialog extends DialogFragment {
             //whereClause += DatabaseHelper.Member.COLUMN_GENDER + " = ?";
         }
 
-        if (endType != null && endType=="DTH"){
+        if (endType != null && endType==ResidencyEndType.DEATH){
             if (minAge != null){
                 builder.greaterOrEqual(Member_.ageAtDeath, minAge);
                 //whereClause += DatabaseHelper.Member.COLUMN_AGE_AT_DEATH + " >= ?";
@@ -415,8 +416,8 @@ public class MemberFilterDialog extends DialogFragment {
             }
         }
 
-        if (!endType.isEmpty()){
-            builder.equal(Member_.endType, endType);
+        if (endType != null){
+            builder.equal(Member_.endType, endType.getId());
             //whereClause += DatabaseHelper.Member.COLUMN_END_TYPE + " = ?";
         }
 

@@ -387,7 +387,6 @@
                 android:elevation="5dp"/>
 
 
-
             <Button
                 android:id="@+id/btHouseFilterSearch"
                 android:layout_width="match_parent"
@@ -399,41 +398,6 @@
                 android:textSize="@dimen/household_filter_button_textsize"
                 android:elevation="5dp"/>
 
-            <Button
-                android:id="@+id/btHouseFilterEditHousehold"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
-                android:layout_gravity="right"
-                android:textSize="@dimen/household_filter_button_textsize"
-                android:text="@string/household_filter_edit_house_lbl"
-                android:visibility="gone"
-                android:enabled="false"
-                android:background="@drawable/nui_btnd_rone_gflat"
-                android:elevation="5dp"/>
-
-            <Button
-                android:id="@+id/btHouseFilterAddHousehold"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
-                android:layout_gravity="right"
-                android:textSize="@dimen/household_filter_button_textsize"
-                android:text="@string/household_filter_add_house_lbl"
-                android:visibility="gone"
-                android:background="@drawable/nui_btnd_rone_gflat"
-                android:elevation="5dp"/>
-
-            <Button
-                android:id="@+id/btHouseFilterGpsMap"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
-                android:background="@drawable/nui_btnd_rone_gflat"
-                android:text="@string/household_filter_gpsmap_lbl"
-                android:textSize="@dimen/household_filter_button_textsize"
-                android:visibility="gone"
-                android:elevation="5dp"/>
 
         </LinearLayout>
 

@@ -47,10 +47,6 @@ import mz.betainteractive.odk.task.OdkGeneratedFormLoadTask;
 import mz.betainteractive.odk.xml.FormUpdater;
 import mz.betainteractive.utilities.StringUtil;
 
-import static org.philimone.hds.explorer.fragment.MemberListFragment.Buttons.ADD_NEW_MEMBER;
-import static org.philimone.hds.explorer.fragment.MemberListFragment.Buttons.CLOSEST_HOUSES;
-import static org.philimone.hds.explorer.fragment.MemberListFragment.Buttons.CLOSEST_MEMBERS;
-import static org.philimone.hds.explorer.fragment.MemberListFragment.Buttons.EDIT_MEMBER;
 import static org.philimone.hds.explorer.fragment.MemberListFragment.Buttons.MEMBERS_MAP;
 import static org.philimone.hds.explorer.fragment.MemberListFragment.Buttons.NEW_MEMBER_COLLECT;
 
@@ -102,7 +98,6 @@ public class SurveyHouseholdsActivity extends Activity implements HouseholdFilte
     }
 
     private void initialize() {
-        this.memberListFragment.setButtonVisibilityGone(CLOSEST_MEMBERS);
         this.memberListFragment.setButtonEnabled(hasMemberBoundForms(), NEW_MEMBER_COLLECT);
 
         this.memberListFragment.setHouseholdHeaderVisibility(true);
@@ -110,11 +105,10 @@ public class SurveyHouseholdsActivity extends Activity implements HouseholdFilte
         this.householdFilterFragment.setCensusMode(censusMode);
 
         if (censusMode){
-            this.memberListFragment.setButtonVisibilityGone(MEMBERS_MAP, CLOSEST_MEMBERS, NEW_MEMBER_COLLECT);
-            this.memberListFragment.setButtonEnabled(false, ADD_NEW_MEMBER, EDIT_MEMBER, CLOSEST_HOUSES);
+            this.memberListFragment.setButtonVisibilityGone(MEMBERS_MAP, NEW_MEMBER_COLLECT);
 
         } else{
-            this.memberListFragment.setButtonVisibilityGone(ADD_NEW_MEMBER, EDIT_MEMBER, MEMBERS_MAP, CLOSEST_MEMBERS);
+            this.memberListFragment.setButtonVisibilityGone(MEMBERS_MAP);
         }
 
         this.householdFilterFragment.setLoggedUser(loggedUser);
@@ -123,59 +117,6 @@ public class SurveyHouseholdsActivity extends Activity implements HouseholdFilte
 
 
         this.loadingDialog = new LoadingDialog(this);
-    }
-
-    @Override
-    public void onAddNewHousehold(Region region) {
-        FormDataLoader[] dataLoaders = getFormLoaders();
-
-        Intent intent = new Intent(this, HouseholdDetailsActivity.class);
-        intent.putExtra("user", loggedUser);
-        intent.putExtra("region", region);
-        intent.putExtra("dataloaders", dataLoaders);
-        intent.putExtra("request_code", HouseholdDetailsActivity.REQUEST_CODE_NEW_HOUSEHOLD);
-
-        startActivityForResult(intent, HouseholdDetailsActivity.REQUEST_CODE_NEW_HOUSEHOLD);
-    }
-
-    @Override
-    public void onEditHousehold(Household household) {
-        FormDataLoader[] dataLoaders = getFormLoaders();
-
-        Intent intent = new Intent(this, HouseholdDetailsActivity.class);
-        intent.putExtra("user", loggedUser);
-        intent.putExtra("dataloaders", dataLoaders);
-        intent.putExtra("household", household);
-        intent.putExtra("request_code", HouseholdDetailsActivity.REQUEST_CODE_EDIT_HOUSEHOLD);
-
-        startActivityForResult(intent, HouseholdDetailsActivity.REQUEST_CODE_EDIT_HOUSEHOLD);
-    }
-
-    @Override
-    public void onAddNewMember(Household household) {
-        FormDataLoader[] dataLoaders = getFormLoaders();
-
-        Intent intent = new Intent(this, MemberDetailsActivity.class);
-        intent.putExtra("user", loggedUser);
-        intent.putExtra("household", household);
-        intent.putExtra("dataloaders", dataLoaders);
-        intent.putExtra("request_code", MemberDetailsActivity.REQUEST_CODE_ADD_NEW_MEMBER);
-
-        startActivityForResult(intent, MemberDetailsActivity.REQUEST_CODE_ADD_NEW_MEMBER);
-    }
-
-    @Override
-    public void onEditMember(Household household, Member member) {
-        FormDataLoader[] dataLoaders = getFormLoaders();
-
-        Intent intent = new Intent(this, MemberDetailsActivity.class);
-        intent.putExtra("user", loggedUser);
-        intent.putExtra("household", household);
-        intent.putExtra("member", member);
-        intent.putExtra("dataloaders", dataLoaders);
-        intent.putExtra("request_code", MemberDetailsActivity.REQUEST_CODE_EDIT_NEW_MEMBER);
-
-        startActivityForResult(intent, MemberDetailsActivity.REQUEST_CODE_EDIT_NEW_MEMBER);
     }
 
     @Override
@@ -212,28 +153,6 @@ public class SurveyHouseholdsActivity extends Activity implements HouseholdFilte
         task.execute();
 
         showLoadingDialog(getString(R.string.loading_dialog_household_details_lbl), true);
-    }
-
-    @Override
-    public void onClosestMembersResult(Member member, Distance distance, MWMPoint[] points, MWMPoint[] originalPoints, ArrayList<Member> members) {
-
-    }
-
-    @Override
-    public void onClosestHouseholdsResult(Household household, Distance distance, MWMPoint[] points, ArrayList<Household> households) {
-        FormDataLoader[] dataLoaders = getFormLoaders(FormFilter.HOUSEHOLD);
-        loadFormValues(dataLoaders, household, null, null);
-
-        Intent intent = new Intent(this, GpsSearchedListActivity.class);
-
-        intent.putExtra("main_household", household);
-        intent.putExtra("distance", distance);
-        intent.putExtra("households", households);
-        intent.putExtra("points", points);
-
-        intent.putExtra("dataloaders", dataLoaders);
-
-        startActivity(intent);
     }
 
     @Override
@@ -419,52 +338,6 @@ public class SurveyHouseholdsActivity extends Activity implements HouseholdFilte
             return;
         }
 
-        if ((requestCode == HouseholdDetailsActivity.REQUEST_CODE_NEW_HOUSEHOLD || requestCode == HouseholdDetailsActivity.REQUEST_CODE_EDIT_HOUSEHOLD) && resultCode==RESULT_OK){ //If result is CANCELED just do nothing
-            //Household added
-
-            Household household = (Household) data.getExtras().get("household");
-
-            if (household != null){
-                //update Household table and class from XML
-                updateHouseholdFromXML(household);
-
-                householdFilterFragment.searchHouses(household.getCode());
-                onHouseholdClick(household);
-            }
-        }
-
-        if (requestCode == MemberDetailsActivity.REQUEST_CODE_ADD_NEW_MEMBER && resultCode==RESULT_OK){
-            Household household = (Household) data.getExtras().get("household");
-            Member member = (Member) data.getExtras().get("member");
-
-            updateMemberFromXML(household, member);
-
-            if (household != null){
-
-                //update head of household
-                if (household.isRecentlyCreated() && (household.getHeadCode() == null || household.getHeadCode().isEmpty())){
-                    updateHouseholdHead(household, member);
-                }
-
-                Log.d("household-new-mem", ""+household);
-                householdFilterFragment.searchHouses(household.getCode());
-                onHouseholdClick(household);
-            }
-        }
-
-        if (requestCode == MemberDetailsActivity.REQUEST_CODE_EDIT_NEW_MEMBER && resultCode == RESULT_OK){
-            Household household = (Household) data.getExtras().get("household");
-            Member member = (Member) data.getExtras().get("member");
-
-            //update name, gender and dob on Member domain
-            //update head name if the member is household head
-
-            updateMemberFromXML(household, member);
-
-            householdFilterFragment.searchHouses(household.getCode());
-            onHouseholdClick(household);
-        }
-
         if (requestCode == BarcodeScannerActivity.SCAN_BARCODE_REQUEST_CODE && resultCode == RESULT_OK){
             //send result back to the invoker listener
 
@@ -482,109 +355,6 @@ public class SurveyHouseholdsActivity extends Activity implements HouseholdFilte
             }
 
         }
-    }
-
-    private void updateHouseholdFromXML(Household household){
-        CollectedData cdata = getCollectedData("census_household", household.getId(), household.getTableName());
-        String xmlFilePath = cdata.getFormXmlPath();
-
-        //get content values from xml
-        FormXmlReader xmlReader = new FormXmlReader();
-        Map<String, String> mapValues = xmlReader.getXmlContentValues(xmlFilePath);
-
-        //update Household Name and Household Head to the domains
-        String houseName = mapValues.get("household_name");
-        String headCode = mapValues.get("head_code");
-        String headName = mapValues.get("head_name");
-
-        //Log.d("saving-xml", "hhname:"+houseName+", hdcode:"+headCode+", hdname:"+headName);
-
-        //put update content on cv
-        household.setName(houseName);
-        household.setHeadCode(headCode);
-        household.setHeadName(headName);
-
-        //Execute db update
-        this.boxHouseholds.put(household);
-
-        List<Member> members = this.boxMembers.query().equal(Member_.householdCode, household.getCode()).build().find();
-        members.forEach( member -> {
-            member.setHouseholdName(houseName);
-            boxMembers.put(member);
-        });
-
-        Toast.makeText(this, getString(R.string.new_member_dialog_household_head_updated_lbl), Toast.LENGTH_SHORT);
-    }
-
-    private void updateMemberFromXML(Household household, Member member){
-
-        CollectedData cdata = getCollectedData("census_member", member.getId(), member.getTableName());
-        String xmlFilePath = cdata.getFormXmlPath();
-
-        //get content values from xml
-        FormXmlReader xmlReader = new FormXmlReader();
-        Map<String, String> mapValues = xmlReader.getXmlContentValues(xmlFilePath);
-
-        //Get xml values
-        String memberName = mapValues.get("name");
-        String memberGend = mapValues.get("gender");
-        String memberDob = mapValues.get("dob");
-
-        Log.d("member-name", memberName);
-        Log.d("member-dob", memberDob);
-
-
-
-        //update head name if the member is household head
-        household.setHeadName(memberName);
-
-        //update name, gender and dob on Member domain
-        member.setName(memberName);
-        member.setGender(Gender.getFrom(memberGend));
-        member.setDob(memberDob);
-
-
-        //Execute db update
-        this.boxMembers.put(member);
-
-        if (household.getHeadCode().equals(member.getCode())){ //is household head
-            Log.d("heading-2", "head-code="+household.getHeadCode()+", member.code="+member.getCode());
-            this.boxHouseholds.put(household);
-        }
-    }
-
-    private void updateHouseholdHead(Household household, Member headMember) {
-        //get household collected data
-        //get collected data
-        CollectedData collectedData = this.boxCollectedData.query().equal(CollectedData_.formId, "census_household")
-                                                           .and().equal(CollectedData_.recordId, household.getId())
-                                                           .and().equal(CollectedData_.tableName, household.getTableName()).build().findFirst();
-
-        //update the household domain table
-        household.setHeadCode(headMember.getCode());
-        household.setHeadName(headMember.getName());
-        this.boxHouseholds.put(household);
-
-        if (collectedData != null){ //update the xml form
-            String uriString = collectedData.getFormUri();
-            Uri contentUri = Uri.parse(uriString);
-
-            OdkGeneratedFormLoadTask formLoadTask = new OdkGeneratedFormLoadTask(this, contentUri, null);
-            String xmlFilePath = formLoadTask.getXmlFilePath();
-
-            Log.d("xmlPath", ""+xmlFilePath);
-
-            ContentValues cv = new ContentValues();
-            cv.put("head_code", headMember.getCode());
-            cv.put("head_name", headMember.getName());
-
-            FormUpdater formUpdater = new FormUpdater(xmlFilePath, cv);
-            formUpdater.update();
-
-            DialogFactory.createMessageInfo(this, R.string.info_lbl, R.string.new_member_dialog_household_head_updated_lbl).show();
-        }
-
-
     }
 
     private CollectedData getCollectedData(String formId, long recordId, String tableName){

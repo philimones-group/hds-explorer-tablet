@@ -59,9 +59,6 @@ public class HouseholdFilterFragment extends Fragment implements RegionExpandabl
     private Button btHouseFilterClear;
     private Button btHouseFilterShowRegion;
     private Button btHouseFilterSearch;
-    private Button btHouseFilterGpsMap;
-    private Button btHouseFilterEditHousehold;
-    private Button btHouseFilterAddHousehold;
     private RelativeLayout hfViewProgressBar;
 
     private ExpandableListView expListRegions;
@@ -146,9 +143,6 @@ public class HouseholdFilterFragment extends Fragment implements RegionExpandabl
         this.hfHousesList = (ListView) view.findViewById(R.id.hfHousesList);
         this.btHouseFilterClear = (Button) view.findViewById(R.id.btHouseFilterClear);
         this.btHouseFilterSearch = (Button) view.findViewById(R.id.btHouseFilterSearch);
-        this.btHouseFilterGpsMap = (Button) view.findViewById(R.id.btHouseFilterGpsMap);
-        this.btHouseFilterEditHousehold = (Button) view.findViewById(R.id.btHouseFilterEditHousehold);
-        this.btHouseFilterAddHousehold = (Button) view.findViewById(R.id.btHouseFilterAddHousehold);
         this.hfViewProgressBar = (RelativeLayout) view.findViewById(R.id.hfViewProgressBar);
 
         btHouseFilterShowRegion = (Button) view.findViewById(R.id.btHouseFilterShowRegion);
@@ -228,15 +222,6 @@ public class HouseholdFilterFragment extends Fragment implements RegionExpandabl
             });
         }
 
-        if (btHouseFilterGpsMap != null) {
-            this.btHouseFilterGpsMap.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    showHouseholdsMap();
-                }
-            });
-        }
-
         this.hfHousesList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -265,24 +250,6 @@ public class HouseholdFilterFragment extends Fragment implements RegionExpandabl
                 @Override
                 public void onClick(View view) {
                     onShowRegionClicked();
-                }
-            });
-        }
-
-        if (btHouseFilterEditHousehold != null){
-            btHouseFilterEditHousehold.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    onEditHouseholdClicked();
-                }
-            });
-        }
-
-        if (btHouseFilterAddHousehold != null){
-            btHouseFilterAddHousehold.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    onAddHouseholdClicked();
                 }
             });
         }
@@ -327,48 +294,10 @@ public class HouseholdFilterFragment extends Fragment implements RegionExpandabl
 
     public void setCensusMode(boolean censusMode) {
         this.censusMode = censusMode;
-
-        this.btHouseFilterAddHousehold.setVisibility(censusMode ? View.VISIBLE : View.GONE);
-        this.btHouseFilterEditHousehold.setVisibility(censusMode ? View.VISIBLE : View.GONE);
-        this.btHouseFilterAddHousehold.setEnabled(false);
-        this.btHouseFilterEditHousehold.setEnabled(false);
-    }
-
-    private void onEditHouseholdClicked() {
-        listener.onEditHousehold(household);
-    }
-
-    private void onAddHouseholdClicked() {
-
-        //1-Generate ExtId
-        //2-Show a dialog (with extId and name), and buttons cancel or collect new household
-
-        if (isLastRegionLevel()){
-            listener.onAddNewHousehold(currentRegion);
-        }
-
     }
 
     private void onShowRegionClicked() {
         listener.onShowRegionDetailsClicked(currentRegion);
-    }
-
-    public void setButtonEnabled(boolean enabled, Buttons... buttons){
-
-        for (Buttons button : buttons){
-            if (button==Buttons.COLLECT_DATA){
-                btHouseFilterShowRegion.setEnabled(enabled);
-            }
-            if (button==Buttons.SEARCH_HOUSEHOLDS){
-                btHouseFilterSearch.setEnabled(enabled);
-            }
-            if (button==Buttons.GPS_MAP){
-                btHouseFilterGpsMap.setEnabled(enabled);
-            }
-            if (button==Buttons.CLEAR_FILTER){
-                btHouseFilterClear.setEnabled(enabled);
-            }
-        }
     }
 
     private void onRegionClicked(int groupPosition, int childPosition) {
@@ -572,38 +501,6 @@ public class HouseholdFilterFragment extends Fragment implements RegionExpandabl
 
     }
 
-    private void showHouseholdsMap() {
-        HouseholdArrayAdapter adapter = (HouseholdArrayAdapter) this.hfHousesList.getAdapter();
-
-        if (adapter==null || adapter.isEmpty()){
-            DialogFactory.createMessageInfo(this.getActivity(), R.string.household_filter_gps_not_available_title_lbl, R.string.household_filter_no_houses_lbl).show();
-            return;
-        }
-
-        final MWMPoint[] points = new MWMPoint[adapter.getHouseholds().size()];
-        boolean hasAnyCoords = false;
-
-        for (int i=0; i < points.length; i++){
-            Household h = adapter.getHouseholds().get(i);
-            String name = h.getName();
-
-            if (!h.isGpsNull()) {
-                double lat = h.getGpsLatitude();
-                double lon = h.getGpsLongitude();
-                points[i] = new MWMPoint(lat, lon, name);
-                Log.d("corrds-test", name+" - "+h.getGpsLatitude()+", "+h.getGpsLongitude());
-                hasAnyCoords = true;
-            }
-        }
-
-        if (!hasAnyCoords){
-            DialogFactory.createMessageInfo(this.getActivity(), R.string.map_gps_not_available_title_lbl, R.string.household_filter_gps_not_available_lbl).show();
-            return;
-        }
-
-        MapsWithMeApi.showPointsOnMap(this.getActivity(), getString(R.string.map_households), points);
-    }
-
     public void searchHouses(String householdCode){
         //showProgress(true);
         HouseholdSearchTask task = new HouseholdSearchTask(householdCode, null);
@@ -614,8 +511,6 @@ public class HouseholdFilterFragment extends Fragment implements RegionExpandabl
         //paint item as selected
         this.household = household;
 
-        this.btHouseFilterEditHousehold.setEnabled(isCensusMode() && household.isRecentlyCreated());
-
         listener.onHouseholdClick(household);
     }
 
@@ -624,7 +519,6 @@ public class HouseholdFilterFragment extends Fragment implements RegionExpandabl
         boolean lastLevel = region.getLevel().equals(lastRegionLevel);
 
         btHouseFilterSearch.setEnabled(lastLevel);
-        btHouseFilterAddHousehold.setEnabled(lastLevel);
 
         listener.onSelectedRegion(region);
     }
@@ -704,9 +598,5 @@ public class HouseholdFilterFragment extends Fragment implements RegionExpandabl
         void onSelectedRegion(Region region);
 
         void onShowRegionDetailsClicked(Region region);
-
-        void onAddNewHousehold(Region region);
-
-        void onEditHousehold(Household household);
     }
 }

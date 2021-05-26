@@ -82,10 +82,9 @@ public class HouseholdDetailsActivity extends Activity implements OdkFormResultL
     private Box<Member> boxMembers;
 
     private int requestCode;
-    private boolean returnFromOdk = false;
 
-    public static final int REQUEST_CODE_NEW_HOUSEHOLD = 1; /* Household Requests will be from 1 to 9 */
-    public static final int REQUEST_CODE_EDIT_HOUSEHOLD = 2;
+    //public static final int REQUEST_CODE_NEW_HOUSEHOLD = 1; /* Household Requests will be from 1 to 9 */
+    //public static final int REQUEST_CODE_EDIT_HOUSEHOLD = 2;
 
     public enum FormFilter {
         REGION, HOUSEHOLD, HOUSEHOLD_HEAD, MEMBER, FOLLOW_UP
@@ -113,20 +112,6 @@ public class HouseholdDetailsActivity extends Activity implements OdkFormResultL
     @Override
     protected void onPostResume() {
         super.onPostResume();
-
-        if (requestCode == REQUEST_CODE_NEW_HOUSEHOLD && returnFromOdk == false){
-            if (household == null){
-                //Show Create Household dialog - when this activity closes send the new created household back to parent activity
-                addNewHousehold(region);
-            } else {
-                //Reopen Last Created Household
-                openAddNewHouseholdForm(household);
-            }
-        }
-
-        if (requestCode == REQUEST_CODE_EDIT_HOUSEHOLD && returnFromOdk == false){
-            openAddNewHouseholdForm(household);
-        }
     }
 
     private boolean isVisibleForm(Form form){
@@ -247,96 +232,6 @@ public class HouseholdDetailsActivity extends Activity implements OdkFormResultL
         showHouseholdMembers();
         showCollectedData();
     }
-
-    /*Household Census*/
-
-    private void addNewHousehold(Region region){
-
-        new HouseholdFormDialog().newInstance(getFragmentManager(), this.region, this.loggedUser, new HouseholdFormDialog.Listener() {
-            @Override
-            public void onNewHouseholdCreated(Household household) {
-                afterNewHouseholdCreated(household);
-            }
-
-            @Override
-            public void onCancelClicked() {
-                onCancelAddNewHousehold();
-            }
-        }).show();
-
-    }
-
-    private void onCancelAddNewHousehold(){
-
-        if (requestCode == REQUEST_CODE_NEW_HOUSEHOLD) {
-
-            //Intent intent = new Intent(this, HouseholdDetailsActivity.class);
-            //intent.putExtra("user", loggedUser);
-
-            setResult(RESULT_CANCELED); //CANCELED
-            finish();
-        }
-    }
-
-    private void onFinishAddNewHousehold(Household household){
-        Intent data = new Intent();
-        data.putExtra("household", household);
-
-        setResult(RESULT_OK, data);
-        finish();
-    }
-
-    private void afterNewHouseholdCreated(Household household) {
-        //open ODK Form
-        openAddNewHouseholdForm(household, region);
-    }
-
-    private void openAddNewHouseholdForm(Household household, Region region){
-
-        this.household = household;
-
-        Form form = new Form();
-        form.setFormId("census_household");
-        form.setFormName("Household Census Form");
-        FormDataLoader loader = new FormDataLoader(form);
-        loader.putData("field_worker_id", loggedUser.getUsername());
-        loader.putData("region_id", region.getCode());
-        loader.putData("region_name", region.getName());
-        loader.putData("household_id", household.getCode());
-        loader.putData("household_name", household.getName());
-
-        openOdkForm(loader);
-    }
-
-    private void openAddNewHouseholdForm(Household household){
-
-        this.household = household;
-
-        Form form = new Form();
-        form.setFormId("census_household");
-        form.setFormName("Household Census Form");
-        FormDataLoader loader = new FormDataLoader(form);
-
-        if (household.getHeadCode()!=null && !household.getHeadCode().isEmpty()){
-            Member member = getMemberBy(household.getHeadCode());
-
-            Log.d("member head", member.getCode());
-            /*
-            loader.putData("head_id", member.getExtId());
-            loader.putData("head_perm_id", member.getPermId());
-            loader.putData("head_name", member.getName());
-            */
-        }
-
-        openOdkForm(loader);
-    }
-
-    private Member getMemberBy(String code){
-        Member member = Queries.getMemberByCode(this.boxMembers, code);
-        return member;
-    }
-
-    /*Ends*/
 
     private void onCollectedDataItemClicked(int position) {
         CollectedDataArrayAdapter adapter = (CollectedDataArrayAdapter) this.lvCollectedForms.getAdapter();
@@ -528,7 +423,6 @@ public class HouseholdDetailsActivity extends Activity implements OdkFormResultL
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        this.returnFromOdk = (requestCode==FormUtilities.SELECTED_ODK_FORM || requestCode == FormUtilities.SELECTED_ODK_REOPEN);
         formUtilities.onActivityResult(requestCode, resultCode, data, this);
     }
 
@@ -587,11 +481,8 @@ public class HouseholdDetailsActivity extends Activity implements OdkFormResultL
             Log.d("updating", "new collected data");
         }
 
-        if (requestCode == REQUEST_CODE_NEW_HOUSEHOLD || requestCode == REQUEST_CODE_EDIT_HOUSEHOLD){
-            onFinishAddNewHousehold(household);
-        } else {
-            showCollectedData();
-        }
+        showCollectedData();
+
     }
 
     @Override
@@ -648,11 +539,7 @@ public class HouseholdDetailsActivity extends Activity implements OdkFormResultL
             Log.d("updating", "new collected data");
         }
 
-        if (requestCode == REQUEST_CODE_NEW_HOUSEHOLD || requestCode == REQUEST_CODE_EDIT_HOUSEHOLD){
-            onFinishAddNewHousehold(household);
-        } else {
-            showCollectedData();
-        }
+        showCollectedData();
     }
 
     @Override
@@ -660,18 +547,7 @@ public class HouseholdDetailsActivity extends Activity implements OdkFormResultL
 
         this.boxCollectedData.query().equal(CollectedData_.formUri, contentUri.toString()).build().remove(); //delete where formUri=contentUri
 
-        if (requestCode == REQUEST_CODE_NEW_HOUSEHOLD || requestCode == REQUEST_CODE_EDIT_HOUSEHOLD){
-            if (household != null && household.getId()>0){
-                //delete household
-
-                this.boxHouseholds.remove(household);
-            }
-
-            onCancelAddNewHousehold();
-
-        } else {
-            showCollectedData();
-        }
+        showCollectedData();
     }
 
     @Override
@@ -685,10 +561,6 @@ public class HouseholdDetailsActivity extends Activity implements OdkFormResultL
             @Override
             public void onYesClicked() {
                 onDeleteForm(contenUri);
-
-                if (requestCode == REQUEST_CODE_NEW_HOUSEHOLD || requestCode == REQUEST_CODE_EDIT_HOUSEHOLD){
-                    onCancelAddNewHousehold();
-                }
             }
 
             @Override

@@ -476,17 +476,6 @@
                         android:background="@drawable/nui_btnd_rone_gflat"
                         android:elevation="5dp"/>
 
-                    <Button
-                        android:id="@+id/btHouseFilterGpsMap"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:layout_gravity="right"
-                        android:textSize="@dimen/household_filter_button_textsize"
-                        android:text="@string/household_filter_gpsmap_lbl"
-                        android:background="@drawable/nui_btnd_rone_gflat"
-                        android:elevation="5dp"/>
-
                 </LinearLayout>
 
                 <LinearLayout
@@ -494,31 +483,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp">
 
-                    <Button
-                        android:id="@+id/btHouseFilterEditHousehold"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:textSize="@dimen/household_filter_button_textsize"
-                        android:text="@string/household_filter_edit_house_lbl"
-                        android:layout_gravity="left"
-                        android:enabled="false"
-                        android:visibility="gone"
-                        android:background="@drawable/nui_btnd_rone_gflat"
-                        android:elevation="5dp"/>
 
-                    <Button
-                        android:id="@+id/btHouseFilterAddHousehold"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:layout_gravity="right"
-                        android:textSize="@dimen/household_filter_button_textsize"
-                        android:text="@string/household_filter_add_house_lbl"
-                        android:visibility="gone"
-                        android:background="@drawable/nui_btnd_rone_gflat"
-                        android:elevation="5dp"
-                        />
 
                 </LinearLayout>
 

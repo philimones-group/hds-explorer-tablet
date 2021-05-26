@@ -1,7 +1,6 @@
 package org.philimone.hds.explorer.main;
 
 import android.app.Activity;
-import android.app.FragmentManager;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -19,7 +18,6 @@ import org.philimone.hds.explorer.adapter.CollectedDataArrayAdapter;
 import org.philimone.hds.explorer.adapter.model.CollectedDataItem;
 import org.philimone.hds.explorer.data.FormDataLoader;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
-import org.philimone.hds.explorer.fragment.MemberFilterDialog;
 import org.philimone.hds.explorer.model.CollectedData;
 import org.philimone.hds.explorer.model.CollectedData_;
 import org.philimone.hds.explorer.model.Form;
@@ -27,16 +25,13 @@ import org.philimone.hds.explorer.model.Household;
 import org.philimone.hds.explorer.model.Member;
 import org.philimone.hds.explorer.model.Member_;
 import org.philimone.hds.explorer.model.User;
-import org.philimone.hds.explorer.model.enums.Gender;
 import org.philimone.hds.explorer.model.enums.temporal.ResidencyEndType;
 import org.philimone.hds.explorer.widget.DialogFactory;
 import org.philimone.hds.explorer.widget.FormSelectorDialog;
-import org.philimone.hds.explorer.widget.member_details.MemberFormDialog;
-import org.philimone.hds.explorer.widget.member_details.RelationshipTypeDialog;
 
 import java.io.File;
-import java.util.Date;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import io.objectbox.Box;
@@ -75,29 +70,18 @@ public class MemberDetailsActivity extends Activity implements OdkFormResultList
 
     private List<Member> allHouseholdMembers = new ArrayList<>();
 
-    /* Add New Member Variables */
-    private Member selectedFather = null;
-    private Member selectedMother = null;
-    private Member selectedSpouse = null;
-    private boolean isHeadOfHousehold = false;
-    private Integer maritalStatus = null;
-    private boolean spouseChanged = false;
-    /* Ends - Add New Member Variables */
-
     private User loggedUser;
 
     private FormUtilities formUtilities;
 
     private int requestCode;
-    private boolean returnFromOdk;
-    private boolean editingMember;
 
     private Box<CollectedData> boxCollectedData;
     private Box<Form> boxForms;
     private Box<Member> boxMembers;
 
-    public static final int REQUEST_CODE_ADD_NEW_MEMBER = 10; /* Member Requests will be from 10 to 19 */
-    public static final int REQUEST_CODE_EDIT_NEW_MEMBER = 11;
+    //public static final int REQUEST_CODE_ADD_NEW_MEMBER = 10; /* Member Requests will be from 10 to 19 */
+    //public static final int REQUEST_CODE_EDIT_NEW_MEMBER = 11;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,11 +94,7 @@ public class MemberDetailsActivity extends Activity implements OdkFormResultList
         this.studyCodeValue = getIntent().getExtras().getString("member_studycode");
         this.requestCode = getIntent().getExtras().getInt("request_code");
 
-        if (requestCode != REQUEST_CODE_ADD_NEW_MEMBER && requestCode != REQUEST_CODE_EDIT_NEW_MEMBER){
-            readFormDataLoader();
-        }
-
-        this.returnFromOdk = false;
+        readFormDataLoader();
 
         formUtilities = new FormUtilities(this);
 
@@ -125,23 +105,6 @@ public class MemberDetailsActivity extends Activity implements OdkFormResultList
     @Override
     protected void onPostResume() {
         super.onPostResume();
-
-        if (requestCode == REQUEST_CODE_ADD_NEW_MEMBER && returnFromOdk == false){
-
-            if (member == null){
-                //Show Create Household dialog - when this activity closes send the new created household back to parent activity
-                startAddNewMember();
-            } else {
-                //Reopen Last Created Household
-                this.editingMember = true;
-                buildChangeMotherDialog();
-            }
-        }
-
-        if (requestCode == REQUEST_CODE_EDIT_NEW_MEMBER && returnFromOdk == false){
-            this.editingMember = true;
-            buildChangeMotherDialog();
-        }
     }
 
     private void readFormDataLoader(){
@@ -231,13 +194,10 @@ public class MemberDetailsActivity extends Activity implements OdkFormResultList
         isNewTempMember = member!=null && member.getId()==0;
 
         clearMemberData();
+        setMemberData();
 
-        if (requestCode != REQUEST_CODE_ADD_NEW_MEMBER){
-            setMemberData();
-
-            enableButtonsByFormLoaders();
-            enableButtonsByIntentData();
-        }
+        enableButtonsByFormLoaders();
+        enableButtonsByIntentData();
 
     }
 
@@ -518,7 +478,7 @@ public class MemberDetailsActivity extends Activity implements OdkFormResultList
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        this.returnFromOdk = (requestCode==FormUtilities.SELECTED_ODK_FORM || requestCode == FormUtilities.SELECTED_ODK_REOPEN);
+
         formUtilities.onActivityResult(requestCode, resultCode, data, this);
     }
 
@@ -577,11 +537,7 @@ public class MemberDetailsActivity extends Activity implements OdkFormResultList
             Log.d("updating", "new collected data");
         }
 
-        if (requestCode == REQUEST_CODE_ADD_NEW_MEMBER || requestCode == REQUEST_CODE_EDIT_NEW_MEMBER){
-            onFinishAddNewMember(this.member);
-        } else {
-            showCollectedData();
-        }
+        showCollectedData();
     }
 
     @Override
@@ -638,11 +594,8 @@ public class MemberDetailsActivity extends Activity implements OdkFormResultList
             Log.d("updating", "new collected data");
         }
 
-        if (requestCode == REQUEST_CODE_ADD_NEW_MEMBER || requestCode == REQUEST_CODE_EDIT_NEW_MEMBER){
-            onFinishAddNewMember(this.member);
-        } else {
-            showCollectedData();
-        }
+        showCollectedData();
+
     }
 
     @Override
@@ -650,11 +603,7 @@ public class MemberDetailsActivity extends Activity implements OdkFormResultList
 
         this.boxCollectedData.query().equal(CollectedData_.formUri, contentUri.toString()).build().remove(); //delete where formUri=contentUri
 
-        if (requestCode == REQUEST_CODE_ADD_NEW_MEMBER || requestCode == REQUEST_CODE_EDIT_NEW_MEMBER){
-            onCancelAddNewMember();
-        } else {
-            showCollectedData();
-        }
+        showCollectedData();
     }
 
     @Override
@@ -673,459 +622,6 @@ public class MemberDetailsActivity extends Activity implements OdkFormResultList
             @Override
             public void onNoClicked() {
 
-            }
-        }).show();
-
-    }
-
-    /* ADD NEW MEMBER METHODS */
-    private void startAddNewMember(){
-        //is census mode
-        //get current household
-        //check if is an empty household and prompt the head of household registration
-        //select mother and father
-
-
-        Log.d("head", ""+household.getHeadCode());
-
-        if (household.getHeadCode() == null || household.getHeadCode().trim().isEmpty()){
-
-            DialogFactory.createMessageInfo(this, getString(R.string.info_lbl), getString(R.string.new_member_dialog_household_head_warning_lbl), new DialogFactory.OnClickListener(){
-                @Override
-                public void onClicked(DialogFactory.Buttons clickedButton) {
-                    buildNewMemberDialog();
-                }
-            }).show();
-
-            isHeadOfHousehold = true;
-        } else {
-            buildNewMemberDialog();
-        }
-
-
-    }
-
-    private void buildNewMemberDialog(){
-
-        MemberFormDialog dialog = MemberFormDialog.createMemberDialog(getFragmentManager(), this.household, new MemberFormDialog.Listener() {
-            @Override
-            public void onNewMemberCreated(Member member) {
-                afterNewMemberCreated(member);
-            }
-
-            @Override
-            public void onCancelClicked() {
-                onCancelAddNewMember();
-            }
-        });
-        dialog.show();
-
-    }
-
-    private void onCancelAddNewMember(){
-
-        if (requestCode == REQUEST_CODE_ADD_NEW_MEMBER) {
-
-            Intent intent = new Intent();
-            intent.putExtra("household", this.household);
-
-            setResult(RESULT_CANCELED, intent); //CANCELED
-            finish();
-        }
-    }
-
-    private void onFinishAddNewMember(Member member){
-        Intent data = new Intent();
-        data.putExtra("household", this.household);
-        data.putExtra("member", member);
-
-        setResult(RESULT_OK, data);
-        finish();
-    }
-
-    private void afterNewMemberCreated(Member member){
-        this.member = member;
-
-        buildSelectMotherDialog();
-    }
-
-    private void openOdkForNewMember(){
-        //after filter mother, father and spouse
-
-        boolean hasSpouse = selectedSpouse != null && (maritalStatus != null && maritalStatus>1 );
-        boolean isHead = isHeadOfHousehold;
-
-        this.member.setFatherCode(selectedFather.getCode());        
-        this.member.setFatherName(selectedFather.getName());
-
-        this.member.setMotherCode(selectedMother.getCode());        
-        this.member.setMotherName(selectedMother.getName());
-
-
-        if (hasSpouse){
-            this.member.setSpouseCode(selectedSpouse.getCode());            
-            this.member.setSpouseName(selectedSpouse.getName());
-        } else {
-            this.maritalStatus = 1;
-        }
-
-
-        Form form = new Form();
-        form.setFormId("census_member");
-        form.setFormName("Member Census Form");
-
-        FormDataLoader loader = new FormDataLoader(form);
-        loader.putData("field_worker_id", loggedUser.getUsername());
-        loader.putData("household_id", member.getHouseholdCode());
-        loader.putData("household_no", member.getHouseholdName());
-        loader.putData("code", member.getCode());
-        loader.putData("name", member.getName());
-        loader.putData("gender", member.getGender().getId());
-        loader.putData("dob", member.getDob());
-        loader.putData("father_id", member.getFatherCode());
-        loader.putData("father_name", member.getFatherName());
-        loader.putData("mother_id", member.getMotherCode());
-        loader.putData("mother_name", member.getMotherName());
-        loader.putData("spouse_type", maritalStatus+"");
-        loader.putData("spouse_id", member.getSpouseCode());
-        loader.putData("spouse_name", member.getSpouseName());
-
-        loader.putData("is_household_head", isHead ? "1" : "2");
-        loader.putData("relationship_with_head", member.getCode());
-
-        Log.d("editing-spouse", "selected-"+member.getSpouseCode()+", ms="+maritalStatus+", HEAD="+loader.getValues().get("is_household_head"));
-
-        openOdkForm(loader);
-    }
-
-    private void openOdkForNewMember(Household household, Member member){
-
-        this.household = household;
-        this.member = member;
-
-        Form form = new Form();
-        form.setFormId("census_member");
-        form.setFormName("Member Census Form");
-        FormDataLoader loader = new FormDataLoader(form);
-
-        if (editingMember){
-
-            boolean fatherChanged = (selectedFather != null);
-            boolean motherChanged = (selectedMother != null);
-
-            //spouse changed when: maritalStatus not null = he
-
-            if (fatherChanged) {
-                this.member.setFatherCode(selectedFather.getCode());
-                this.member.setFatherName(selectedFather.getName());
-            }
-
-            if (motherChanged) {
-                this.member.setMotherCode(selectedMother.getCode());
-                this.member.setMotherName(selectedMother.getName());
-            }
-
-            if (spouseChanged){
-                this.maritalStatus = selectedSpouse==null || maritalStatus==null ? 1 : maritalStatus;
-                this.member.setSpouseCode(selectedSpouse != null ? selectedSpouse.getCode() : "");
-                this.member.setSpouseName(selectedSpouse != null ? selectedSpouse.getName() : "");
-            }
-
-            loader.putData("father_id", member.getFatherCode());
-            loader.putData("father_name", member.getFatherName());
-            loader.putData("mother_id", member.getMotherCode());
-            loader.putData("mother_name", member.getMotherName());
-
-            if (spouseChanged) {
-                loader.putData("spouse_type", maritalStatus + "");
-                loader.putData("spouse_id", member.getSpouseCode());
-                loader.putData("spouse_name", member.getSpouseName());
-                Log.d("editing-spouse", "selected-"+member.getSpouseCode()+", ms="+maritalStatus);
-            }
-
-            //save Member by updating changed fields
-            this.boxMembers.put(this.member);
-
-        }
-
-        openOdkForm(loader);
-    }
-
-    private void filterMother(){
-        FragmentManager fm = getFragmentManager();
-
-        MemberFilterDialog.Listener listener = new MemberFilterDialog.Listener() {
-            @Override
-            public void onSelectedMember(Member member) {
-                Log.d("selected-mother", ""+member.getCode());
-                selectedMother = member;
-
-                if (editingMember){
-                    buildChangeFatherDialog();
-                } else {
-                    buildSelectFatherDialog();
-                }
-            }
-        };
-
-        MemberFilterDialog dialog = MemberFilterDialog.newInstance(listener, getString(R.string.new_member_dialog_mother_select_lbl), false);
-        dialog.setGenderFemaleOnly();
-        dialog.setFilterMinAge(12, true);
-        dialog.setFilterHouseCode(household.getCode());
-
-        dialog.show(fm, "fragment_edit_name");
-    }
-
-    private void filterFather(){
-        FragmentManager fm = getFragmentManager();
-
-        MemberFilterDialog.Listener listener = new MemberFilterDialog.Listener() {
-            @Override
-            public void onSelectedMember(Member member) {
-                Log.d("selected-father", ""+member.getCode());
-                selectedFather = member;
-
-                if (editingMember) {
-                    buildChangeMaritalStatusDialog();
-                } else {
-                    buildSelectMaritalStatusDialog();
-                }
-            }
-        };
-
-        MemberFilterDialog dialog = MemberFilterDialog.newInstance(listener, getString(R.string.new_member_dialog_father_select_lbl), false);
-        dialog.setGenderMaleOnly();
-        dialog.setFilterMinAge(12, true);
-        dialog.setFilterHouseCode(household.getCode());
-
-        dialog.show(fm, "fragment_edit_name");
-    }
-
-    private void filterSpouse(Member otherSpouse){
-        FragmentManager fm = getFragmentManager();
-
-        MemberFilterDialog.Listener listener = new MemberFilterDialog.Listener() {
-            @Override
-            public void onSelectedMember(Member filteredSpouse) {
-                Log.d("selected-spouse", ""+filteredSpouse.getCode());
-                selectedSpouse = filteredSpouse;
-
-                if (editingMember) {
-                    openOdkForNewMember(household, member);
-                } else {
-                    openOdkForNewMember();
-                }
-            }
-        };
-
-        MemberFilterDialog dialog = MemberFilterDialog.newInstance(listener, getString(R.string.new_member_dialog_spouse_select_lbl), false);
-
-        if (otherSpouse.getGender() == Gender.MALE){
-            dialog.setGenderFemaleOnly();
-        }else {
-            dialog.setGenderMaleOnly();
-        }
-
-        dialog.setFilterMinAge(12, true);
-        dialog.setFilterHouseCode(household.getCode());
-
-        dialog.show(fm, "fragment_edit_name");
-    }
-
-    private void buildSelectMotherDialog(){
-
-        DialogFactory.createMessageYN(this, R.string.new_member_dialog_mother_select_lbl, R.string.new_member_dialog_mother_exists_lbl, new DialogFactory.OnYesNoClickListener() {
-            @Override
-            public void onYesClicked() {
-                //open mother filter dialog
-                filterMother();
-            }
-
-            @Override
-            public void onNoClicked() {
-                //set unknown and jump to father dialog
-                selectedMother = Member.getUnknownIndividual();
-
-                if (editingMember){
-                    buildChangeFatherDialog();
-                } else {
-                    buildSelectFatherDialog();
-                }
-            }
-        }).show();
-
-    }
-
-    private void buildSelectFatherDialog(){
-
-        DialogFactory.createMessageYN(this, R.string.new_member_dialog_father_select_lbl, R.string.new_member_dialog_father_exists_lbl, new DialogFactory.OnYesNoClickListener() {
-            @Override
-            public void onYesClicked() {
-                //open mother filter dialog
-                filterFather();
-            }
-
-            @Override
-            public void onNoClicked() {
-                //set unknown and jump to father dialog
-                selectedFather = Member.getUnknownIndividual();
-
-                if (editingMember){
-                    buildChangeMaritalStatusDialog();
-                } else {
-                    buildSelectMaritalStatusDialog();
-                }
-            }
-        }).show();
-
-    }
-
-    private void buildSelectMaritalStatusDialog(){
-
-        if (member.getAge()<15) { //MINIMAL AGE TO GET MARRIED, THIS SHOULD BE A VARIABLE
-            selectedSpouse = null;
-            spouseChanged = false;
-            maritalStatus = 1;
-
-            if (editingMember) {
-                openOdkForNewMember(household, member);
-            } else {
-                openOdkForNewMember();
-            }
-
-            return; //jump if age lower than 15 - he cannot have a spouse
-        }
-
-        Log.d("Running", "nui spinner 2");
-        RelationshipTypeDialog.createDialog(getFragmentManager(), new RelationshipTypeDialog.OnClickListener() {
-            @Override
-            public void onTypeSelected(int type) {
-                onSelectedRelationshipType(type);
-            }
-
-            @Override
-            public void onCancelClicked() {
-                //THIS BUTTON IS DISABLED
-            }
-        }).show();
-    }
-
-    private void onSelectedRelationshipType(int selectedMaritalStatus){
-        maritalStatus = selectedMaritalStatus+1;
-
-        if (maritalStatus == 1) { //Solteiro
-            selectedSpouse = null;
-            spouseChanged = !member.getSpouseCode().isEmpty(); //if has previous spouse
-
-            if (editingMember) {
-                openOdkForNewMember(household, member);
-            } else {
-                openOdkForNewMember();
-            }
-        } else { //Selecionar conjugue
-            buildSelectSpouseDialog();
-        }
-    }
-
-    private void buildSelectSpouseDialog(){
-
-        if (member.getAge()<15) return; //jump if age lower than 15 - he cannot have a spouse
-
-        DialogFactory.createMessageYN(this, R.string.new_member_dialog_spouse_select_lbl, R.string.new_member_dialog_spouse_exists_lbl, new DialogFactory.OnYesNoClickListener() {
-            @Override
-            public void onYesClicked() {
-                //open spouse filter dialog
-                spouseChanged = true;
-                filterSpouse(member);
-            }
-
-            @Override
-            public void onNoClicked() {
-                //set null - dont have a spouse
-                selectedSpouse = null;
-                spouseChanged = !member.getSpouseCode().isEmpty(); //If he/she had a spouse before now they havent
-
-                if (editingMember) {
-                    openOdkForNewMember(household, member);
-                } else {
-                    openOdkForNewMember();
-                }
-            }
-        }).show();
-
-    }
-
-    private void buildChangeMotherDialog(){
-
-        DialogFactory.createMessageYN(this, R.string.new_member_dialog_change_title_lbl, R.string.new_member_dialog_mother_change_lbl, new DialogFactory.OnYesNoClickListener() {
-            @Override
-            public void onYesClicked() {
-                buildSelectMotherDialog();
-            }
-
-            @Override
-            public void onNoClicked() {
-                buildChangeFatherDialog();
-            }
-        }).show();
-
-    }
-
-    private void buildChangeFatherDialog(){
-
-        DialogFactory.createMessageYN(this, R.string.new_member_dialog_change_title_lbl, R.string.new_member_dialog_father_change_lbl, new DialogFactory.OnYesNoClickListener() {
-            @Override
-            public void onYesClicked() {
-                buildSelectFatherDialog();
-            }
-
-            @Override
-            public void onNoClicked() {
-                buildChangeMaritalStatusDialog();
-            }
-        }).show();
-
-    }
-
-    private void buildChangeSpouseDialog(){
-
-        if (member.getAge()<15) return; //jump if age lower than 15 - he cannot have a spouse
-
-        DialogFactory.createMessageYN(this, R.string.new_member_dialog_change_title_lbl, R.string.new_member_dialog_spouse_change_lbl, new DialogFactory.OnYesNoClickListener() {
-            @Override
-            public void onYesClicked() {
-                buildSelectSpouseDialog();
-            }
-
-            @Override
-            public void onNoClicked() {
-                openOdkForNewMember(household, member);
-            }
-        }).show();
-
-    }
-
-    private void buildChangeMaritalStatusDialog(){
-
-        if (member.getAge()<15) {
-            spouseChanged = false;
-
-            openOdkForNewMember(household, member);
-
-            return; //jump if age lower than 15 - he cannot have a spouse
-        }
-
-        DialogFactory.createMessageYN(this, R.string.new_member_dialog_change_title_lbl, R.string.new_member_dialog_spouse_type_change_lbl, new DialogFactory.OnYesNoClickListener() {
-            @Override
-            public void onYesClicked() {
-                buildSelectMaritalStatusDialog();
-            }
-
-            @Override
-            public void onNoClicked() {
-                spouseChanged = false;
-
-                openOdkForNewMember(household, member);
             }
         }).show();
 

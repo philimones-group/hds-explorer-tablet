@@ -105,4 +105,8 @@ public class Bootstrap {
         return destinationPath;
     }
 
+    public static File getAppPath(String filename) {
+        return new File(getAppPath() + filename);
+    }
+
 }

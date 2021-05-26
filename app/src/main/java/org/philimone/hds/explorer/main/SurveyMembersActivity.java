@@ -34,9 +34,6 @@ import java.util.Map;
 import io.objectbox.Box;
 import mz.betainteractive.utilities.StringUtil;
 
-import static org.philimone.hds.explorer.fragment.MemberListFragment.Buttons.ADD_NEW_MEMBER;
-import static org.philimone.hds.explorer.fragment.MemberListFragment.Buttons.EDIT_MEMBER;
-
 public class SurveyMembersActivity extends Activity implements MemberFilterFragment.Listener, MemberActionListener, BarcodeScannerActivity.InvokerClickListener {
 
     private MemberFilterFragment memberFilterFragment;
@@ -77,7 +74,6 @@ public class SurveyMembersActivity extends Activity implements MemberFilterFragm
     }
 
     private void initialize() {
-        this.memberListFragment.setButtonVisibilityGone(MemberListFragment.Buttons.CLOSEST_HOUSES, ADD_NEW_MEMBER, EDIT_MEMBER);
         this.memberListFragment.setButtonEnabled(hasMemberBoundForms(), MemberListFragment.Buttons.NEW_MEMBER_COLLECT);
 
         this.memberFilterFragment.setBarcodeScannerListener(this);
@@ -107,40 +103,6 @@ public class SurveyMembersActivity extends Activity implements MemberFilterFragm
         task.execute();
 
         showLoadingDialog(getString(R.string.loading_dialog_household_details_lbl), true);
-    }
-
-    @Override
-    public void onClosestMembersResult(Member member, Distance distance, MWMPoint[] points, MWMPoint[] originalPoints, ArrayList<Member> members) {
-        FormDataLoader[] dataLoaders = getFormLoaders(FormFilter.HOUSEHOLD_HEAD, FormFilter.MEMBER); //only members
-        Household household = getHousehold(member);
-        loadFormValues(dataLoaders, household, member, null);
-
-        Intent intent = new Intent(this, GpsSearchedListActivity.class);
-        intent.putExtra("main_member", member);
-        intent.putExtra("main_household", household);
-        intent.putExtra("distance", distance);
-        intent.putExtra("members", members);
-        intent.putExtra("points", points);
-        intent.putExtra("points_original", originalPoints);
-
-        intent.putExtra("dataloaders", dataLoaders);
-
-        startActivity(intent);
-    }
-
-    @Override
-    public void onClosestHouseholdsResult(Household household, Distance distance, MWMPoint[] points, ArrayList<Household> households) {
-
-    }
-
-    @Override
-    public void onAddNewMember(Household household) {
-
-    }
-
-    @Override
-    public void onEditMember(Household household, Member member) {
-
     }
 
     @Override

@@ -135,24 +135,22 @@
                 android:orientation="horizontal">
 
                 <Button
-                    android:id="@+id/btMemListShowClosestHouses"
+                    android:id="@+id/btMemListNewTempMember"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:textSize="@dimen/member_list_button_textsize"
-                    android:text="@string/member_list_bt_show_closest_houses_lbl"
+                    android:text="@string/member_list_bt_new_member_collect_lbl"
                     android:background="@drawable/nui_btnd_rone_gflat"
                     android:elevation="5dp"/>
 
-                <Button
-                    android:id="@+id/btMemListShowClosestMembers"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:textSize="@dimen/member_list_button_textsize"
-                    android:text="@string/member_list_bt_show_closest_members_lbl"
-                    android:background="@drawable/nui_btnd_rone_gflat"
-                    android:elevation="5dp"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:orientation="horizontal">
 
                 <Button
                     android:id="@+id/btMemListShowCollectedData"
@@ -166,43 +164,7 @@
 
             </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:orientation="horizontal">
 
-                <Button
-                    android:id="@+id/btMemListNewTempMember"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:textSize="@dimen/member_list_button_textsize"
-                    android:text="@string/member_list_bt_new_member_collect_lbl"
-                    android:background="@drawable/nui_btnd_rone_gflat"
-                    android:elevation="5dp"/>
-
-                <Button
-                    android:id="@+id/btMemListEditNewMember"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:background="@drawable/nui_btnd_rone_gflat"
-                    android:text="@string/member_list_bt_edit_new_member_lbl"
-                    android:textSize="@dimen/member_list_button_textsize"
-                    android:elevation="5dp"/>
-
-                <Button
-                    android:id="@+id/btMemListAddNewMember"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:background="@drawable/nui_btnd_rone_gflat"
-                    android:text="@string/member_list_bt_add_new_member_lbl"
-                    android:textSize="@dimen/member_list_button_textsize"
-                    android:elevation="5dp"/>
-
-            </LinearLayout>
 
         </LinearLayout>
 

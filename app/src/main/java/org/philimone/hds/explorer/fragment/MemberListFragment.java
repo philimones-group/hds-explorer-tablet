@@ -57,16 +57,11 @@ public class MemberListFragment extends Fragment {
     private LinearLayout listButtons;
     private LinearLayout memberListHouseHeader;
     private TextView mbHouseDetailsNumber;
-    private List<Button> buttons = new ArrayList<>();
     /*Default buttons*/
     private Button btMemListShowHousehold;
     private Button btMemListShowMmbMap;
-    private Button btMemListShowClosestMembers;
-    private Button btMemListShowClosestHouses;
     private Button btMemListNewTempMember;
     private Button btMemListShowCollectedData;
-    private Button btMemListAddNewMember;
-    private Button btMemListEditNewMember;
 
     private View mProgressView;
 
@@ -84,7 +79,7 @@ public class MemberListFragment extends Fragment {
     private Box<Member> boxMembers;
 
     public enum Buttons {
-        SHOW_HOUSEHOLD, MEMBERS_MAP, CLOSEST_MEMBERS, CLOSEST_HOUSES, EDIT_MEMBER, ADD_NEW_MEMBER, NEW_MEMBER_COLLECT, COLLECTED_DATA
+        SHOW_HOUSEHOLD, MEMBERS_MAP, NEW_MEMBER_COLLECT, COLLECTED_DATA
     }
 
     public MemberListFragment() {
@@ -134,20 +129,8 @@ public class MemberListFragment extends Fragment {
             if (button==Buttons.MEMBERS_MAP){
                 btMemListShowMmbMap.setVisibility(View.GONE);
             }
-            if (button==Buttons.CLOSEST_HOUSES){
-                btMemListShowClosestHouses.setVisibility(View.GONE);
-            }
-            if (button==Buttons.CLOSEST_MEMBERS){
-                btMemListShowClosestMembers.setVisibility(View.GONE);
-            }
             if (button==Buttons.NEW_MEMBER_COLLECT){
                 btMemListNewTempMember.setVisibility(View.GONE);
-            }
-            if (button==Buttons.EDIT_MEMBER){
-                btMemListEditNewMember.setVisibility(View.GONE);
-            }
-            if (button==Buttons.ADD_NEW_MEMBER){
-                btMemListAddNewMember.setVisibility(View.GONE);
             }
             if (button==Buttons.COLLECTED_DATA){
                 btMemListShowCollectedData.setVisibility(View.GONE);
@@ -164,20 +147,8 @@ public class MemberListFragment extends Fragment {
             if (button==Buttons.MEMBERS_MAP){
                 btMemListShowMmbMap.setEnabled(enabled);
             }
-            if (button==Buttons.CLOSEST_HOUSES){
-                btMemListShowClosestHouses.setEnabled(enabled);
-            }
-            if (button==Buttons.CLOSEST_MEMBERS){
-                btMemListShowClosestMembers.setEnabled(enabled);
-            }
             if (button==Buttons.NEW_MEMBER_COLLECT){
                 btMemListNewTempMember.setEnabled(enabled);
-            }
-            if (button==Buttons.EDIT_MEMBER){
-                btMemListEditNewMember.setEnabled(enabled);
-            }
-            if (button==Buttons.ADD_NEW_MEMBER){
-                btMemListAddNewMember.setEnabled(enabled);
             }
             if (button==Buttons.COLLECTED_DATA){
                 btMemListShowCollectedData.setEnabled(enabled);
@@ -189,28 +160,6 @@ public class MemberListFragment extends Fragment {
         this.memberListHouseHeader.setVisibility(visibility ? View.VISIBLE : View.GONE);
     }
 
-    public Button addButton(String buttonName, final ActionListener action){
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        params.height = 80;
-
-        Button button = new Button(this.getActivity());
-        button.setText(buttonName);
-        button.setLayoutParams(params);
-        //button.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.button_normal)); - is not being used this method
-
-        //buttons.add(button);
-        listButtons.addView(button);
-
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                action.execute();
-            }
-        });
-
-        return button;
-    }
-
     private void initialize(View view) {
         if (getActivity() instanceof MemberActionListener){
             this.memberActionListener = (MemberActionListener) getActivity();
@@ -219,12 +168,8 @@ public class MemberListFragment extends Fragment {
         this.lvMembersList = (ListView) view.findViewById(R.id.lvMembersList);
         this.btMemListShowHousehold = (Button) view.findViewById(R.id.btMemListShowHousehold);
         this.btMemListShowMmbMap = (Button) view.findViewById(R.id.btMemListShowMmbMap);
-        this.btMemListShowClosestHouses = (Button) view.findViewById(R.id.btMemListShowClosestHouses);
-        this.btMemListShowClosestMembers = (Button) view.findViewById(R.id.btMemListShowClosestMembers);
         this.btMemListNewTempMember = (Button) view.findViewById(R.id.btMemListNewTempMember);
         this.btMemListShowCollectedData = (Button) view.findViewById(R.id.btMemListShowCollectedData);
-        this.btMemListAddNewMember = (Button) view.findViewById(R.id.btMemListAddNewMember);
-        this.btMemListEditNewMember = (Button) view.findViewById(R.id.btMemListEditNewMember);
         this.listButtons = (LinearLayout) view.findViewById(R.id.viewListButtons);
         this.memberListHouseHeader = (LinearLayout) view.findViewById(R.id.memberListHouseHeader);
         this.mbHouseDetailsNumber = (TextView)  view.findViewById(R.id.mbHouseDetailsNumber);
@@ -233,11 +178,7 @@ public class MemberListFragment extends Fragment {
         this.memberListHouseHeader.setVisibility(View.GONE);
         this.btMemListShowHousehold.setEnabled(false);
         this.btMemListShowMmbMap.setEnabled(false);
-        this.btMemListShowClosestHouses.setEnabled(false);
-        this.btMemListShowClosestMembers.setEnabled(false);
         this.btMemListNewTempMember.setEnabled(true);
-        this.btMemListAddNewMember.setEnabled(false);
-        this.btMemListEditNewMember.setEnabled(false);
         this.mbHouseDetailsNumber.setText("");
 
         this.btMemListShowHousehold.setOnClickListener(new View.OnClickListener() {
@@ -251,20 +192,6 @@ public class MemberListFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 showGpsMap();
-            }
-        });
-
-        this.btMemListShowClosestHouses.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                buildHouseDistanceSelectorDialog();
-            }
-        });
-
-        this.btMemListShowClosestMembers.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                buildMemberDistanceSelectorDialog();
             }
         });
 
@@ -282,22 +209,6 @@ public class MemberListFragment extends Fragment {
             }
         });
 
-        if (btMemListAddNewMember != null)
-            this.btMemListAddNewMember.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    onAddNewMemberClicked();
-                }
-            });
-
-        if (btMemListEditNewMember != null)
-            this.btMemListEditNewMember.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    onAddEditMemberClicked();
-                }
-            });
-        
         this.lvMembersList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -321,15 +232,6 @@ public class MemberListFragment extends Fragment {
 
     public void setCensusMode(boolean censusMode) {
         this.censusMode = censusMode;
-    }
-
-    private void onAddNewMemberClicked(){
-        this.memberActionListener.onAddNewMember(currentHousehold);
-    }
-
-    private void onAddEditMemberClicked(){
-        Member member = getSelectedMember();
-        this.memberActionListener.onEditMember(currentHousehold, member);
     }
 
     public void setCurrentHouseld(Household household) {
@@ -634,21 +536,6 @@ public class MemberListFragment extends Fragment {
         }
     }
 
-    private void putMainHouseholdOnBegining(Member mainMember, ArrayList<Member> members) {
-        List<Member> houseMembers = new ArrayList<>();
-
-        for (Member m : members)
-            if (m.getHouseholdName().equals(mainMember.getHouseholdName()))
-                houseMembers.add(m);
-
-
-        houseMembers.remove(mainMember);
-        houseMembers.add(0, mainMember);
-
-        members.removeAll(houseMembers);
-        members.addAll(0, houseMembers);
-    }
-
     private void onShowCollectedData(){
         showProgress(true);
         Map<Member, Integer> mapMembers = new HashMap<>();
@@ -697,9 +584,7 @@ public class MemberListFragment extends Fragment {
 
         adapter.setSelectedIndex(position);
         this.btMemListShowHousehold.setEnabled(true);
-        this.btMemListShowClosestMembers.setEnabled(true);
         this.btMemListNewTempMember.setEnabled(false);
-        this.btMemListEditNewMember.setEnabled(true);
     }
 
     private void onMemberClicked(int position) {
@@ -710,7 +595,6 @@ public class MemberListFragment extends Fragment {
 
         if (memberActionListener != null){
             adapter.setSelectedIndex(-1);
-            this.btMemListShowClosestMembers.setEnabled(false);
 
             memberActionListener.onMemberSelected(household, member, region);
         }
@@ -931,10 +815,7 @@ public class MemberListFragment extends Fragment {
 
         //disable buttons
         this.btMemListShowMmbMap.setEnabled(!value);
-        this.btMemListShowClosestHouses.setEnabled(!value);
-        this.btMemListShowClosestMembers.setEnabled(false);
         this.btMemListNewTempMember.setEnabled(true);
-        this.btMemListAddNewMember.setEnabled(currentHousehold!=null && isCensusMode());
 
         if (currentHousehold != null){
             this.mbHouseDetailsNumber.setText(currentHousehold.getCode());

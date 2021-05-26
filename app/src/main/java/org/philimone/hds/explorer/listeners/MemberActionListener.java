@@ -17,12 +17,4 @@ public interface MemberActionListener extends Serializable {
     void onMemberSelected(Household household, Member member, Region region);
 
     void onShowHouseholdClicked(Household household, Member member, Region region);
-
-    void onClosestMembersResult(Member member, Distance distance, MWMPoint[] points, MWMPoint[] originalPoints, ArrayList<Member> members);
-
-    void onClosestHouseholdsResult(Household household, Distance distance, MWMPoint[] points, ArrayList<Household> households);
-
-    void onAddNewMember(Household household);
-
-    void onEditMember(Household household, Member member);
 }

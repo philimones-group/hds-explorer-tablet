@@ -48,6 +48,7 @@
     <dimen name="member_details_land_dtlayout_margin_left">20dp</dimen>
     <dimen name="member_details_land_dtlayout_margin_top">12dp</dimen>
     <dimen name="member_details_info_name_layout_txtsize">20sp</dimen>
+    <dimen name="member_details_info_other_layout_txtsize">16sp</dimen>
     <dimen name="member_details_info_gender_layout_txtsize">18sp</dimen>
 
     <dimen name="household_details_info_textsize">18sp</dimen>

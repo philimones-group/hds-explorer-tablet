@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="org.philimone.hds.explorer.main.MemberDetailsActivity"
+    tools:context="org.philimone.hds.explorer.main.HouseholdDetailsActivity"
     android:background="@color/white">
 
     <LinearLayout
@@ -17,11 +17,11 @@
             android:id="@+id/iconView"
             android:layout_width="90dp"
             android:layout_height="100dp"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="10dp"
             android:layout_gravity="left|top"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="5dp"
-            android:layout_marginBottom="20dp"
+            android:layout_marginBottom="10dp"
             android:src="@mipmap/nui_household_filled_icon" />
 
         <LinearLayout
@@ -52,6 +52,7 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
                 android:orientation="horizontal">
 
                 <TextView
@@ -61,7 +62,7 @@
                     android:layout_marginRight="1dp"
                     android:text="@string/household_details_head_name_lbl"
                     android:textColor="#c4daca"
-                    android:textSize="16dp"
+                    android:textSize="@dimen/member_details_info_other_layout_txtsize"
                     android:textStyle="bold" />
 
                 <TextView
@@ -72,7 +73,7 @@
                     android:layout_marginLeft="4dp"
                     android:text="BOB ESPONJA"
                     android:textColor="#83d34a"
-                    android:textSize="16dp"
+                    android:textSize="@dimen/member_details_info_other_layout_txtsize"
                     android:textStyle="bold"
                     />
 
@@ -84,7 +85,7 @@
                     android:layout_marginLeft="20dp"
                     android:text="@string/household_details_head_code_lbl"
                     android:textColor="#c4daca"
-                    android:textSize="16dp"
+                    android:textSize="@dimen/member_details_info_other_layout_txtsize"
                     android:textStyle="bold" />
 
                 <TextView
@@ -95,7 +96,7 @@
                     android:layout_marginLeft="4dp"
                     android:text="ACA0100123"
                     android:textColor="#83d34a"
-                    android:textSize="16dp"
+                    android:textSize="@dimen/member_details_info_other_layout_txtsize"
                     android:textStyle="bold"
                      />
 
@@ -103,7 +104,8 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:layout_marginTop="5dp">
 
                 <TextView
                     android:id="@+id/hhDetailsRegionLabel"
@@ -112,7 +114,7 @@
                     android:layout_marginTop="0dp"
                     android:layout_marginRight="1dp"
                     android:text="@string/household_details_region_lbl"
-                    android:textSize="16dp"
+                    android:textSize="@dimen/member_details_info_other_layout_txtsize"
                     android:textColor="#c4daca"
                     android:textStyle="bold" />
 
@@ -123,7 +125,7 @@
                     android:layout_marginTop="0dp"
                     android:layout_marginLeft="4dp"
                     android:text="34th Street, Maputo"
-                    android:textSize="16dp"
+                    android:textSize="@dimen/member_details_info_other_layout_txtsize"
                     android:textColor="#83d34a"
                     android:textStyle="bold"
                     />

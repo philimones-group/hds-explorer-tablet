@@ -193,6 +193,8 @@
     <string name="household_details_dialog_del_saved_form_title_lbl">Apagar informação salva</string>
     <string name="household_details_dialog_del_saved_form_msg_lbl">O formulario ODK salvo não foi encontrado, a informação salva será apagada para permitir colheita de novos formularios\nDeseja prosseguir com a execução deste processo?</string>
     <string name="household_details_forms_selector_lbl">Selecionar um Formulário</string>
+    <string name="household_details_col_data_info_lbl">Formulários Colhidos</string>
+    <string name="household_details_datasets_lbl">Outros detalhes</string>
 
     <string name="region_details_code_lbl">Código:</string>
     <string name="region_details_parent_lbl">Região:</string>

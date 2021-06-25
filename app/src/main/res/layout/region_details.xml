@@ -163,7 +163,7 @@
             android:layout_height="@dimen/member_details_bt_height"
             android:layout_marginTop="10dp"
             android:layout_marginBottom="5dp"
-            android:textSize="@dimen/member_details_buttons_size"
+            android:textSize="@dimen/member_details_buttons_textsize"
             android:textStyle="bold"
             android:text="@string/member_details_bt_openform_lbl"
             android:background="@drawable/nui_btnd_rone_dgbevel"/>
@@ -174,7 +174,7 @@
             android:layout_height="@dimen/member_details_bt_height"
             android:layout_marginTop="10dp"
             android:layout_marginBottom="10dp"
-            android:textSize="@dimen/member_details_buttons_size"
+            android:textSize="@dimen/member_details_buttons_textsize"
             android:textStyle="bold"
             android:text="@string/member_details_bt_back_lbl"
             android:background="@drawable/nui_btnd_rone_gflat"/>

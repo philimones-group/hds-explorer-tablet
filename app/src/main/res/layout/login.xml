@@ -93,7 +93,8 @@
                     android:background="@drawable/nui_txtbox_rone_wbevel"
                     android:inputType="text"
                     android:maxLines="1"
-                    android:singleLine="true"/>
+                    android:singleLine="true"
+                    android:text="admin"/>
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -114,7 +115,8 @@
                     android:background="@drawable/nui_txtbox_rone_wbevel"
                     android:inputType="textPassword"
                     android:maxLines="1"
-                    android:singleLine="true"/>
+                    android:singleLine="true"
+                    android:text="admin"/>
 
             </LinearLayout>
 

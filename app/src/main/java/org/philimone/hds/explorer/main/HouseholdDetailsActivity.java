@@ -170,6 +170,9 @@ public class HouseholdDetailsActivity extends AppCompatActivity {
 
         HouseholdDetailsFragmentAdapter adapter = new HouseholdDetailsFragmentAdapter(this.getSupportFragmentManager(),  this.getLifecycle(), list);
         householdDetailsTabViewPager.setAdapter(adapter);
+
+        //this will create all fragments
+        householdDetailsTabViewPager.setOffscreenPageLimit(list.size());
     }
 
     private void initBoxes() {
@@ -239,6 +242,8 @@ public class HouseholdDetailsActivity extends AppCompatActivity {
     }
 
     private void onCollectDataClicked(){
+
+        this.householdDetailsTabViewPager.setCurrentItem(1, true);
 
         //Go to HouseholdFormsFragment and call this action
         this.householdFormsFragment.onCollectData();

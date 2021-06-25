@@ -193,6 +193,8 @@
     <string name="household_details_dialog_del_saved_form_title_lbl">Delete saved info</string>
     <string name="household_details_dialog_del_saved_form_msg_lbl">The associated ODK Form wasnt found, the system will delete the saved information in order to keep collecting data\nDo you want to execute this operation?</string>
     <string name="household_details_forms_selector_lbl">Select an Form</string>
+    <string name="household_details_col_data_info_lbl">Collected Forms</string>
+    <string name="household_details_datasets_lbl">Extra Details</string>
 
     <string name="region_details_code_lbl">Code:</string>
     <string name="region_details_parent_lbl">Parent Region:</string>

@@ -9,6 +9,8 @@
         <item name="android:fontFamily">@font/gordita_regular</item>
         <item name="android:textAllCaps">false</item>
         <item name="android:textColor">@color/nui_button_textcolor</item>
+        <item name="android:textViewStyle">@style/customTextViewStyle</item>
+        <item name="android:buttonStyle">@style/customButtonStyle</item>
         <item name="spinnerDropDownItemStyle">@style/SpinnerStyle</item>
         <item name="android:dialogTheme">@style/CustomDialog</item>
 
@@ -45,6 +47,28 @@
         <item name="android:textColor">#444</item>
         <item name="android:colorAccent">@color/nui_color_text_red</item>
         <item name="android:color">#444</item>
+    </style>
+
+    <style name="customTextViewStyle" parent="@android:style/Widget.Material.Light.TextView">
+        <item name="android:fontFamily">@font/gordita_regular</item>
+        <item name="android:textColor">@color/nui_button_textcolor</item>
+    </style>
+
+    <style name="customButtonStyle" parent="@android:style/Widget.Material.Light.Button">
+        <item name="android:fontFamily">@font/gordita_regular</item>
+        <item name="android:textColor">@color/nui_button_textcolor</item>
+    </style>
+
+    <style name="customTabLayout" parent="Widget.MaterialComponents.TabLayout">
+        <item name="tabTextAppearance">@style/customTextAppearance</item>
+    </style>
+
+    <style name="customTextAppearance" parent="TextAppearance.Design.Tab">
+        <item name="android:fontFamily">@font/gordita_regular</item>
+        <item name="android:textStyle">bold</item>
+        <item name="textAllCaps">false</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:singleLine">true</item>
     </style>
 
 </resources>

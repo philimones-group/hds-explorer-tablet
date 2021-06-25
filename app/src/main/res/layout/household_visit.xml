@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/nui_lists_rone_bottom_border"
+    tools:context=".fragment.household.details.HouseholdVisitFragment">
+
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center_horizontal"
+        android:stretchColumns="0,2">
+
+        <TableRow
+            android:id="@+id/tableRow1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/household_visit_row_margin_top">
+
+            <Button
+                android:id="@+id/btnVisitMemberEnu"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@drawable/nui_btnd_rone_dgbevel"
+                android:drawableTop="@drawable/nui_member_filled_icon"
+                android:paddingTop="@dimen/household_visit_button_padding_top"
+                android:paddingBottom="@dimen/household_visit_button_padding_bottom"
+                android:paddingStart="@dimen/household_visit_button_padding_start"
+                android:paddingEnd="@dimen/household_visit_button_padding_end"
+                android:maxLines="2"
+                android:text="Member\nEnumeration"
+                android:textSize="@dimen/household_visit_button_text_size"
+                android:textAlignment="center"
+                android:textStyle="bold" />
+
+            <Button
+                android:id="@+id/btnVisitBirthReg"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@drawable/nui_btnd_rone_dgbevel"
+                android:drawableTop="@drawable/nui_baby_icon"
+                android:paddingTop="@dimen/household_visit_button_padding_top"
+                android:paddingBottom="@dimen/household_visit_button_padding_bottom"
+                android:paddingStart="@dimen/household_visit_button_padding_start"
+                android:paddingEnd="@dimen/household_visit_button_padding_end"
+                android:maxLines="2"
+                android:text="Birth\nRegistration"
+                android:textSize="@dimen/household_visit_button_text_size"
+                android:textAlignment="center"
+                android:textStyle="bold" />
+
+            <Button
+                android:id="@+id/btnVisitPregnancyReg"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@drawable/nui_btnd_rone_dgbevel"
+                android:drawableTop="@drawable/nui_pregnancy_icon"
+                android:paddingTop="@dimen/household_visit_button_padding_top"
+                android:paddingBottom="@dimen/household_visit_button_padding_bottom"
+                android:paddingStart="@dimen/household_visit_button_padding_start"
+                android:paddingEnd="@dimen/household_visit_button_padding_end"
+                android:maxLines="2"
+                android:text="Pregnancy\nRegistration"
+                android:textSize="@dimen/household_visit_button_text_size"
+                android:textAlignment="center"
+                android:textStyle="bold" />
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/tableRow2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/household_visit_row_margin_top">
+
+            <Button
+                android:id="@+id/btnVisitExtInmigration"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@drawable/nui_btnd_rone_dgbevel"
+                android:drawableTop="@drawable/nui_ext_inmigration_icon"
+                android:paddingTop="@dimen/household_visit_button_padding_top"
+                android:paddingBottom="@dimen/household_visit_button_padding_bottom"
+                android:paddingStart="@dimen/household_visit_button_padding_start"
+                android:paddingEnd="@dimen/household_visit_button_padding_end"
+                android:maxLines="2"
+                android:text="External\nInMigration"
+                android:textSize="@dimen/household_visit_button_text_size"
+                android:textAlignment="center"
+                android:textStyle="bold" />
+
+            <Button
+                android:id="@+id/btnVisitIntInmigration"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@drawable/nui_btnd_rone_dgbevel"
+                android:drawableTop="@drawable/nui_int_inmigration_icon"
+                android:paddingTop="@dimen/household_visit_button_padding_top"
+                android:paddingBottom="@dimen/household_visit_button_padding_bottom"
+                android:paddingStart="@dimen/household_visit_button_padding_start"
+                android:paddingEnd="@dimen/household_visit_button_padding_end"
+                android:maxLines="2"
+                android:text="Internal\nInMigration"
+                android:textSize="@dimen/household_visit_button_text_size"
+                android:textAlignment="center"
+                android:textStyle="bold" />
+
+            <Button
+                android:id="@+id/btnVisitOutmigration"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@drawable/nui_btnd_rone_dgbevel"
+                android:drawableTop="@drawable/nui_outmigration_icon"
+                android:paddingTop="@dimen/household_visit_button_padding_top"
+                android:paddingBottom="@dimen/household_visit_button_padding_bottom"
+                android:paddingStart="@dimen/household_visit_button_padding_start"
+                android:paddingEnd="@dimen/household_visit_button_padding_end"
+                android:maxLines="2"
+                android:text="OutMigration\nRegistration"
+                android:textSize="@dimen/household_visit_button_text_size"
+                android:textAlignment="center"
+                android:textStyle="bold" />
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/tableRow3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/household_visit_row_margin_top">
+
+            <Button
+                android:id="@+id/btnVisitDeath"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@drawable/nui_btnd_rone_dgbevel"
+                android:drawableTop="@drawable/nui_death_icon"
+                android:paddingTop="@dimen/household_visit_button_padding_top"
+                android:paddingBottom="@dimen/household_visit_button_padding_bottom"
+                android:paddingStart="@dimen/household_visit_button_padding_start"
+                android:paddingEnd="@dimen/household_visit_button_padding_end"
+                android:maxLines="2"
+                android:text="Death\nRegistration"
+                android:textSize="@dimen/household_visit_button_text_size"
+                android:textAlignment="center"
+                android:textStyle="bold" />
+
+            <Button
+                android:id="@+id/btnVisitMaritalRelationship"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@drawable/nui_btnd_rone_dgbevel"
+                android:drawableTop="@drawable/nui_marital_relationship_icon"
+                android:paddingTop="@dimen/household_visit_button_padding_top"
+                android:paddingBottom="@dimen/household_visit_button_padding_bottom"
+                android:paddingStart="@dimen/household_visit_button_padding_start"
+                android:paddingEnd="@dimen/household_visit_button_padding_end"
+                android:maxLines="2"
+                android:text="Marital\nRelationship"
+                android:textSize="@dimen/household_visit_button_text_size"
+                android:textAlignment="center"
+                android:textStyle="bold" />
+
+        </TableRow>
+
+    </TableLayout>
+</FrameLayout>

@@ -21,24 +21,24 @@ import org.philimone.hds.explorer.R;
 import org.philimone.hds.explorer.widget.DialogFactory;
 
 import java.io.File;
+import java.nio.file.WatchEvent;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
+import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
 import mz.betainteractive.odk.listener.OdkFormLoadListener;
 import mz.betainteractive.odk.listener.OdkFormResultListener;
 import mz.betainteractive.odk.model.FilledForm;
 import mz.betainteractive.odk.task.OdkGeneratedFormLoadTask;
-import mz.betainteractive.utilities.StringUtil;
 
 public class FormUtilities {
     public static final int SELECTED_ODK_FORM = 51;
@@ -47,7 +47,6 @@ public class FormUtilities {
     private Context mContext;
     private Fragment fragment;
     private AppCompatActivity activity;
-	private String jrFormId;
 	private Uri contentUri;
     private boolean formUnFinished;
     private String xmlFilePath;
@@ -58,57 +57,68 @@ public class FormUtilities {
 
     private String deviceId;
     private ActivityResultLauncher<String> requestPermission;
+    private ActivityResultLauncher<Intent> odkResultLauncher;
     private OdkGeneratedFormLoadTask currentLoadTask;
     private OnPermissionRequestListener onPermissionRequestListener;
 
-	public FormUtilities(Fragment fragment) {
+	public FormUtilities(Fragment fragment, OdkFormResultListener listener) {
 	    this.fragment = fragment;
 		this.mContext = fragment.getContext();
-		this.initPermissions();
+        this.formResultListener = listener;
+
+		this.initResultCallbacks();
 	}
 
-    public FormUtilities(AppCompatActivity activity) {
+    public FormUtilities(AppCompatActivity activity, OdkFormResultListener listener) {
         this.activity = activity;
         this.mContext = activity;
-        this.initPermissions();
+        this.formResultListener = listener;
+
+        this.initResultCallbacks();
     }
 
     public Context getContext() {
         return mContext;
     }
 
-    private void initPermissions(){
+    private void initResultCallbacks(){
 
-        ActivityResultCallback<Boolean> permissionResultCallback = new ActivityResultCallback<Boolean>() {
-            @Override
-            public void onActivityResult(Boolean granted) {
-                if (granted) {
-                    deviceId = getDeviceId();
-                    Log.d("deviceidx", ""+deviceId);
+        ActivityResultCallback<Boolean> permissionResultCallback = granted -> {
+            if (granted) {
+                deviceId = getDeviceId();
+                Log.d("deviceidx", ""+deviceId);
 
-                    if (onPermissionRequestListener != null) {
-                        onPermissionRequestListener.requestFinished(granted);
-                    }
-
-                } else {
-                    //Log.d("deviceid", "no permission to read it");
-                    DialogFactory.createMessageInfo(mContext, org.philimone.hds.forms.R.string.device_id_title_lbl, org.philimone.hds.forms.R.string.device_id_permissions_error, new DialogFactory.OnClickListener() {
-                        @Override
-                        public void onClicked(DialogFactory.Buttons clickedButton) {
-                            if (onPermissionRequestListener != null) {
-                                onPermissionRequestListener.requestFinished(granted);
-                            }
-                        }
-                    }).show();
+                if (onPermissionRequestListener != null) {
+                    onPermissionRequestListener.requestFinished(granted);
                 }
+
+            } else {
+                //Log.d("deviceid", "no permission to read it");
+                DialogFactory.createMessageInfo(mContext, org.philimone.hds.forms.R.string.device_id_title_lbl, org.philimone.hds.forms.R.string.device_id_permissions_error, new DialogFactory.OnClickListener() {
+                    @Override
+                    public void onClicked(DialogFactory.Buttons clickedButton) {
+                        if (onPermissionRequestListener != null) {
+                            onPermissionRequestListener.requestFinished(granted);
+                        }
+                    }
+                }).show();
             }
         };
 
+        //for starting request permissions
         if (this.fragment != null) {
             this.requestPermission = this.fragment.registerForActivityResult(new ActivityResultContracts.RequestPermission(), permissionResultCallback);
-        } else if (this.activity != null) {
+        } else {
             this.requestPermission = this.activity.registerForActivityResult(new ActivityResultContracts.RequestPermission(), permissionResultCallback);
         }
+
+        //for starting odk activity
+        if (this.fragment != null) {
+            this.odkResultLauncher = this.fragment.registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> onOdkActivityResult(result.getResultCode()));
+        } else {
+            this.odkResultLauncher = this.activity.registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> onOdkActivityResult(result.getResultCode()));
+        }
+
     }
 
     private void requestPermissionsForReadingPhoneState(OnPermissionRequestListener listener){
@@ -120,33 +130,13 @@ public class FormUtilities {
 	    this.formResultListener = listener;
     }
 
-    /*
-     * call startActivityForResult using either Fragment or Activity
-     */
-    private void callStartActivityForResult(Intent intent, int requestCode) {
-	    if (fragment != null) {
-	        fragment.startActivityForResult(intent, requestCode);
-        }else if (activity != null) {
-	        activity.startActivityForResult(intent, requestCode);
-        }
-    }
-
 	public void loadForm(final FilledForm filledForm) {
 
 		this.currentLoadTask = new OdkGeneratedFormLoadTask(this, filledForm, new OdkFormLoadListener() {
             public void onOdkFormLoadSuccess(Uri contentUri) {
-            	//Log.d("contenturi", contentUri+"");
-            	
-            	Cursor cursor = getCursorForFormsProvider(filledForm.getFormName());
-                if (cursor.moveToFirst()) {
-                    jrFormId = cursor.getString(0);
-                    //Log.d("form",""+jrFormId+", v = "+cursor.getString(2));
-                }
-                cursor.close();
-                
                 FormUtilities.this.contentUri = contentUri;
 
-                callStartActivityForResult(new Intent(Intent.ACTION_EDIT, contentUri), SELECTED_ODK_FORM);
+                odkResultLauncher.launch(new Intent(Intent.ACTION_EDIT, contentUri));
             }
 
             public void onOdkFormLoadFailure() {
@@ -170,12 +160,12 @@ public class FormUtilities {
         this.currentLoadTask = new OdkGeneratedFormLoadTask(this, filledForm, contentUri, new OdkFormLoadListener() {
             public void onOdkFormLoadSuccess(Uri contentUri) {
                 FormUtilities.this.contentUri = contentUri;
-                callStartActivityForResult(new Intent(Intent.ACTION_EDIT, contentUri), SELECTED_ODK_FORM);
+
+                odkResultLauncher.launch(new Intent(Intent.ACTION_EDIT, contentUri));
             }
 
             public void onOdkFormLoadFailure() {
                 //createSavedXFormNotFoundDialog();
-
                 if (listener != null){
                     listener.onFormNotFound(contentUri);
                 }else{
@@ -214,31 +204,12 @@ public class FormUtilities {
 
     }
 
-	private Cursor getCursorForFormsProvider(String name) {
-    	ContentResolver resolver = mContext.getContentResolver();
-        return resolver.query(FormsProviderAPI.FormsColumns.CONTENT_URI, new String[] {
-                FormsProviderAPI.FormsColumns.JR_FORM_ID, FormsProviderAPI.FormsColumns.FORM_FILE_PATH, FormsProviderAPI.FormsColumns.JR_VERSION },
-                FormsProviderAPI.FormsColumns.JR_FORM_ID + " like ?", new String[] { name + "%" }, null);
-    }
-
-    public void onActivityResult(int requestCode, int resultCode, Intent data, OdkFormResultListener listener) {
-
-        Log.d("activityResult", "res-"+requestCode);
-
+    private void onOdkActivityResult(int resultCode) {
         this.currentLoadTask = null; //already loaded the task and finished
-        this.formResultListener = listener;
-
-        switch (requestCode) {
-            case SELECTED_ODK_FORM:
-                handleXformResult(requestCode, resultCode, data);
-                break;
-            case SELECTED_ODK_REOPEN:
-                handleXformResult(requestCode, resultCode, data);
-                break;
-        }
+        handleXformResult(resultCode);
     }
 
-    private void handleXformResult(int requestCode, int resultCode, Intent data) {
+    private void handleXformResult(int resultCode) {
         if (resultCode == Activity.RESULT_OK) {
             new CheckFormStatus(mContext.getContentResolver(), contentUri).execute();
         } else {
@@ -288,7 +259,7 @@ public class FormUtilities {
             @Override
             public void onNoClicked() { //change
                 formUnFinished = false;
-                callStartActivityForResult(new Intent(Intent.ACTION_EDIT, contentUri), SELECTED_ODK_REOPEN);
+                odkResultLauncher.launch(new Intent(Intent.ACTION_EDIT, contentUri));
             }
 
             @Override

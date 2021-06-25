@@ -77,7 +77,7 @@ public class HouseholdFormsFragment extends Fragment implements OdkFormResultLis
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        formUtilities = new FormUtilities(this);
+        formUtilities = new FormUtilities(this, this);
 
         initBoxes();
     }
@@ -256,12 +256,6 @@ public class HouseholdFormsFragment extends Fragment implements OdkFormResultLis
             formUtilities.loadForm(filledForm, collectedData.getFormUri(), this);
         }
 
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        formUtilities.onActivityResult(requestCode, resultCode, data, this);
     }
 
     @Override

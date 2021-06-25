@@ -96,7 +96,7 @@ public class MemberDetailsActivity extends AppCompatActivity implements OdkFormR
 
         readFormDataLoader();
 
-        formUtilities = new FormUtilities(this);
+        formUtilities = new FormUtilities(this, this);
 
         initBoxes();
         initialize();
@@ -473,13 +473,6 @@ public class MemberDetailsActivity extends AppCompatActivity implements OdkFormR
             }
         }).show();
 
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        formUtilities.onActivityResult(requestCode, resultCode, data, this);
     }
 
     @Override

@@ -5,12 +5,10 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 
 import com.google.gson.Gson;
 
-import org.jetbrains.annotations.NotNull;
 import org.philimone.hds.explorer.R;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
 import org.philimone.hds.explorer.database.Queries;
@@ -22,11 +20,12 @@ import org.philimone.hds.explorer.model.SyncReport;
 import org.philimone.hds.explorer.widget.DialogFactory;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-import androidx.annotation.NonNull;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import io.objectbox.Box;
 import mz.betainteractive.utilities.StringUtil;
@@ -55,6 +54,8 @@ public class SyncPanelActivity extends AppCompatActivity implements SyncPanelIte
     
     private Box<SyncReport> boxSyncReports;
 
+    private ActivityResultLauncher<String[]> requestPermissions;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -80,6 +81,7 @@ public class SyncPanelActivity extends AppCompatActivity implements SyncPanelIte
 
         getSupportFragmentManager().beginTransaction().replace(R.id.membersSyncFragment, this.membersSyncFragment).commit();
 
+        initPermissions();
         initialize();
     }
 
@@ -96,6 +98,23 @@ public class SyncPanelActivity extends AppCompatActivity implements SyncPanelIte
         this.boxSyncReports = ObjectBoxDatabase.get().boxFor(SyncReport.class);
     }
 
+    private void initPermissions() {
+        this.requestPermissions = registerForActivityResult(new ActivityResultContracts.RequestMultiplePermissions(), permissionResults -> {
+            boolean granted = !permissionResults.values().contains(false);
+
+            if (granted) {
+                if (this.clickedSyncFragment == null) {//sync all
+                    syncAllData();
+                } else {
+                    executeSyncStartButton(this.clickedSyncFragment);
+                }
+            } else {
+                //message info
+                DialogFactory.createMessageInfo(this, R.string.permissions_sync_storage_title_lbl, R.string.permissions_sync_storage_denied_lbl).show();
+            }
+        });
+    }
+
     private void initialize() {
         initBoxes();
 
@@ -105,7 +124,7 @@ public class SyncPanelActivity extends AppCompatActivity implements SyncPanelIte
 
         btSyncAllData = this.findViewById(R.id.btSyncAllData);
 
-        btSyncAllData.setOnClickListener(v -> syncAllData());
+        btSyncAllData.setOnClickListener(v -> onSyncAllData());
 
         this.clickedSyncFragment = null;
 
@@ -189,12 +208,18 @@ public class SyncPanelActivity extends AppCompatActivity implements SyncPanelIte
 
     }
 
-    private void syncAllData(){
+    private void onSyncAllData(){
         //Synchronize One by One
 
         this.synchronizerAllList.clear();
         this.clickedSyncFragment = null;
 
+        if (isPermissionGranted(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+            syncAllData();
+        }
+    }
+
+    private void syncAllData() {
         Synchronizer settings = () -> syncSettings();
         Synchronizer datasets = () -> syncDatasets();
         Synchronizer tracklists = () -> syncTrackingLists();
@@ -299,42 +324,16 @@ public class SyncPanelActivity extends AppCompatActivity implements SyncPanelIte
         return result;
     }
 
-    private boolean ensurePermissionsGranted(final String... permissions) {
+    private boolean isPermissionGranted(final String... permissions) {
 
-        boolean denied = false;
-        for (String permission : permissions) {
-            denied = denied || ContextCompat.checkSelfPermission(this, permission)==PackageManager.PERMISSION_DENIED;
-        }
+        boolean denied = Arrays.stream(permissions).anyMatch(permission -> ContextCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_DENIED);
 
         if (denied) { //without access
             //request permissions
-            ActivityCompat.requestPermissions(this, permissions, 33);
+            this.requestPermissions.launch(permissions);
         }
 
         return !denied;
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull @NotNull String[] permissions, @NonNull @NotNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
-        boolean denied = false;
-
-        for (int i=0; i < permissions.length; i++) {
-            String p = permissions[i];
-
-            Log.d("permission", "permission="+p+", results="+grantResults[i]);
-            denied = denied || (grantResults[i] == PackageManager.PERMISSION_DENIED);
-        }
-
-        if (!denied) { //All granted permissions
-            //execute startSyncButton
-            executeSyncStartButton(this.clickedSyncFragment);
-        } else {
-            //message info
-            DialogFactory.createMessageInfo(this, R.string.permissions_sync_storage_title_lbl, R.string.permissions_sync_storage_denied_lbl).show();
-        }
-        
     }
 
     private void executeSyncStartButton(SyncPanelItemFragment syncPanelItem){
@@ -371,7 +370,7 @@ public class SyncPanelActivity extends AppCompatActivity implements SyncPanelIte
 
         this.clickedSyncFragment = syncPanelItem;
 
-        if (ensurePermissionsGranted(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+        if (isPermissionGranted(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
             executeSyncStartButton(syncPanelItem);
         }
     }

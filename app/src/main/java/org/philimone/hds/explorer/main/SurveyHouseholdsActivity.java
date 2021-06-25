@@ -1,15 +1,9 @@
 package org.philimone.hds.explorer.main;
 
-import android.app.Activity;
-import android.content.ContentValues;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.Toast;
-
-import com.mapswithme.maps.api.MWMPoint;
 
 import org.philimone.hds.explorer.R;
 import org.philimone.hds.explorer.adapter.MemberArrayAdapter;
@@ -18,7 +12,6 @@ import org.philimone.hds.explorer.database.ObjectBoxDatabase;
 import org.philimone.hds.explorer.database.Queries;
 import org.philimone.hds.explorer.fragment.HouseholdFilterFragment;
 import org.philimone.hds.explorer.fragment.MemberListFragment;
-import org.philimone.hds.explorer.io.xml.FormXmlReader;
 import org.philimone.hds.explorer.listeners.MemberActionListener;
 import org.philimone.hds.explorer.model.CollectedData;
 import org.philimone.hds.explorer.model.CollectedData_;
@@ -26,13 +19,9 @@ import org.philimone.hds.explorer.model.Dataset;
 import org.philimone.hds.explorer.model.Form;
 import org.philimone.hds.explorer.model.Household;
 import org.philimone.hds.explorer.model.Member;
-import org.philimone.hds.explorer.model.Member_;
 import org.philimone.hds.explorer.model.Region;
 import org.philimone.hds.explorer.model.User;
-import org.philimone.hds.explorer.model.enums.Gender;
-import org.philimone.hds.explorer.widget.DialogFactory;
 import org.philimone.hds.explorer.widget.LoadingDialog;
-import org.philimone.hds.explorer.widget.member_details.Distance;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -42,15 +31,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import androidx.appcompat.app.AppCompatActivity;
 import io.objectbox.Box;
-import mz.betainteractive.odk.task.OdkGeneratedFormLoadTask;
-import mz.betainteractive.odk.xml.FormUpdater;
 import mz.betainteractive.utilities.StringUtil;
 
 import static org.philimone.hds.explorer.fragment.MemberListFragment.Buttons.MEMBERS_MAP;
 import static org.philimone.hds.explorer.fragment.MemberListFragment.Buttons.NEW_MEMBER_COLLECT;
 
-public class SurveyHouseholdsActivity extends Activity implements HouseholdFilterFragment.Listener, MemberActionListener, BarcodeScannerActivity.InvokerClickListener {
+public class SurveyHouseholdsActivity extends AppCompatActivity implements HouseholdFilterFragment.Listener, MemberActionListener, BarcodeScannerActivity.InvokerClickListener {
 
     private HouseholdFilterFragment householdFilterFragment;
     private MemberListFragment memberListFragment;

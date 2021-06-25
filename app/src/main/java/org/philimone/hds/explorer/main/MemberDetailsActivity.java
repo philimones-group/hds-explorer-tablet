@@ -1,6 +1,5 @@
 package org.philimone.hds.explorer.main;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -34,12 +33,13 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import androidx.appcompat.app.AppCompatActivity;
 import io.objectbox.Box;
 import mz.betainteractive.odk.FormUtilities;
 import mz.betainteractive.odk.listener.OdkFormResultListener;
 import mz.betainteractive.odk.model.FilledForm;
 
-public class MemberDetailsActivity extends Activity implements OdkFormResultListener {
+public class MemberDetailsActivity extends AppCompatActivity implements OdkFormResultListener {
 
     private TextView mbDetailsName;
     private TextView mbDetailsCode;
@@ -212,7 +212,7 @@ public class MemberDetailsActivity extends Activity implements OdkFormResultList
 
         resultIntent.putExtra("household_code", member.getHouseholdCode());
         resultIntent.putExtra("is_new_temp_member", isNewTempMember);
-        setResult(Activity.RESULT_OK, resultIntent);
+        setResult(AppCompatActivity.RESULT_OK, resultIntent);
         finish();
     }
 
@@ -461,7 +461,7 @@ public class MemberDetailsActivity extends Activity implements OdkFormResultList
 
     private void buildFormSelectorDialog(List<FormDataLoader> loaders) {
 
-        FormSelectorDialog.createDialog(getFragmentManager(), loaders, new FormSelectorDialog.OnFormSelectedListener() {
+        FormSelectorDialog.createDialog(getSupportFragmentManager(), loaders, new FormSelectorDialog.OnFormSelectedListener() {
             @Override
             public void onFormSelected(FormDataLoader formDataLoader) {
                 openOdkForm(formDataLoader);

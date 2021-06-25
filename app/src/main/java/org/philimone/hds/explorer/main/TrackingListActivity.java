@@ -22,10 +22,11 @@ import org.philimone.hds.explorer.model.followup.TrackingList;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.appcompat.app.AppCompatActivity;
 import io.objectbox.Box;
 import mz.betainteractive.utilities.StringUtil;
 
-public class TrackingListActivity extends Activity {
+public class TrackingListActivity extends AppCompatActivity {
 
     public static final int RC_TRACKING_LIST_DETAILS = 10;
 

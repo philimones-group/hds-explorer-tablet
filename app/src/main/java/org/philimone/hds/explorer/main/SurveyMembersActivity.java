@@ -31,10 +31,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import androidx.appcompat.app.AppCompatActivity;
 import io.objectbox.Box;
 import mz.betainteractive.utilities.StringUtil;
 
-public class SurveyMembersActivity extends Activity implements MemberFilterFragment.Listener, MemberActionListener, BarcodeScannerActivity.InvokerClickListener {
+public class SurveyMembersActivity extends AppCompatActivity implements MemberFilterFragment.Listener, MemberActionListener, BarcodeScannerActivity.InvokerClickListener {
 
     private MemberFilterFragment memberFilterFragment;
     private MemberListFragment memberListFragment;

@@ -1,54 +1,42 @@
 package org.philimone.hds.explorer.main;
 
-import android.app.Activity;
-import android.content.Intent;
-import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
 
+import com.google.android.material.tabs.TabLayout;
+
 import org.philimone.hds.explorer.R;
-import org.philimone.hds.explorer.adapter.CollectedDataArrayAdapter;
-import org.philimone.hds.explorer.adapter.MemberArrayAdapter;
-import org.philimone.hds.explorer.adapter.model.CollectedDataItem;
 import org.philimone.hds.explorer.data.FormDataLoader;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
 import org.philimone.hds.explorer.database.Queries;
+import org.philimone.hds.explorer.fragment.household.details.HouseholdDatasetsFragment;
+import org.philimone.hds.explorer.fragment.household.details.HouseholdFormsFragment;
+import org.philimone.hds.explorer.fragment.household.details.HouseholdMembersFragment;
+import org.philimone.hds.explorer.fragment.household.details.HouseholdVisitFragment;
+import org.philimone.hds.explorer.fragment.household.details.adapter.HouseholdDetailsFragmentAdapter;
 import org.philimone.hds.explorer.model.ApplicationParam;
 import org.philimone.hds.explorer.model.CollectedData;
-import org.philimone.hds.explorer.model.CollectedData_;
-import org.philimone.hds.explorer.model.Dataset;
 import org.philimone.hds.explorer.model.Form;
 import org.philimone.hds.explorer.model.Household;
-import org.philimone.hds.explorer.model.Member;
-import org.philimone.hds.explorer.model.Member_;
 import org.philimone.hds.explorer.model.Region;
 import org.philimone.hds.explorer.model.Region_;
 import org.philimone.hds.explorer.model.User;
-import org.philimone.hds.explorer.widget.DialogFactory;
-import org.philimone.hds.explorer.widget.FormSelectorDialog;
 import org.philimone.hds.explorer.widget.LoadingDialog;
-import org.philimone.hds.explorer.widget.household_details.HouseholdFormDialog;
 
-import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.viewpager2.widget.ViewPager2;
 import io.objectbox.Box;
 import mz.betainteractive.odk.FormUtilities;
 import mz.betainteractive.odk.listener.OdkFormResultListener;
-import mz.betainteractive.odk.model.FilledForm;
-import mz.betainteractive.utilities.StringUtil;
 
-public class HouseholdDetailsActivity extends Activity implements OdkFormResultListener {
+public class HouseholdDetailsActivity extends AppCompatActivity {
 
     private TextView hhDetailsName;
     private TextView hhDetailsCode;
@@ -56,39 +44,27 @@ public class HouseholdDetailsActivity extends Activity implements OdkFormResultL
     private TextView hhDetailsHeadCode;
     private TextView hhDetailsRegionLabel;
     private TextView hhDetailsRegionValue;
-    private ListView lvHouseholdMembers;
-    private ListView lvCollectedForms;
     private Button btHouseDetailsCollectData;
     private Button btHouseDetailsBack;
-    private ImageView iconView;  
-            
+    private ImageView iconView;
+
+    private TabLayout householdDetailsTabLayout;
+    private ViewPager2 householdDetailsTabViewPager;
+
+    private HouseholdMembersFragment householdMembersFragment;
+    private HouseholdVisitFragment householdVisitFragment;
+    private HouseholdFormsFragment householdFormsFragment;
+    private HouseholdDatasetsFragment householdDatasetsFragment;
+
     private Household household;
-    private Region region;
     private List<FormDataLoader> formDataLoaders = new ArrayList<>();
-    private FormDataLoader lastLoadedForm;
 
     private User loggedUser;
 
-    private LoadingDialog loadingDialog;
-
-    private FormUtilities formUtilities;
-
     private Box<ApplicationParam> boxAppParams;
-    private Box<CollectedData> boxCollectedData;
-    private Box<Form> boxForms;
     private Box<Region> boxRegions;
-    private Box<Dataset> boxDatasets;
-    private Box<Household> boxHouseholds;
-    private Box<Member> boxMembers;
 
     private int requestCode;
-
-    //public static final int REQUEST_CODE_NEW_HOUSEHOLD = 1; /* Household Requests will be from 1 to 9 */
-    //public static final int REQUEST_CODE_EDIT_HOUSEHOLD = 2;
-
-    public enum FormFilter {
-        REGION, HOUSEHOLD, HOUSEHOLD_HEAD, MEMBER, FOLLOW_UP
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,14 +73,12 @@ public class HouseholdDetailsActivity extends Activity implements OdkFormResultL
 
         this.loggedUser = (User) getIntent().getExtras().get("user");
         this.household = (Household) getIntent().getExtras().get("household");
-        this.region = (Region) getIntent().getExtras().get("region");
+        //this.region = (Region) getIntent().getExtras().get("region");
         this.requestCode = getIntent().getExtras().getInt("request_code");
 
         initBoxes();
 
         readFormDataLoader();
-
-        formUtilities = new FormUtilities(this);
 
         initialize();
     }
@@ -112,16 +86,6 @@ public class HouseholdDetailsActivity extends Activity implements OdkFormResultL
     @Override
     protected void onPostResume() {
         super.onPostResume();
-    }
-
-    private boolean isVisibleForm(Form form){
-        if (requestCode != TrackingListDetailsActivity.RC_HOUSEHOLD_DETAILS_TRACKINGLIST){ //HouseholdDetails was not opened via Tracking/FollowUp lists
-            if (form.isFollowUpOnly()){ //forms flagged with followUpOnly can only be opened using FollowUp Lists, to be able to open via normal surveys remove the flag on the server
-                return false;
-            }
-        }
-
-        return true;
     }
 
     private void readFormDataLoader(){
@@ -137,22 +101,21 @@ public class HouseholdDetailsActivity extends Activity implements OdkFormResultL
         }
     }
 
-    public void setHousehold(Household household){
-        this.household = household;
-    }
-
     private void initialize() {
+
+        this.householdVisitFragment = (HouseholdVisitFragment) (getSupportFragmentManager().findFragmentById(R.id.householdVisitFragment));
+
         hhDetailsName = (TextView) findViewById(R.id.hhDetailsName);
         hhDetailsCode = (TextView) findViewById(R.id.hhDetailsCode);
         hhDetailsHeadName = (TextView) findViewById(R.id.hhDetailsHeadName);
         hhDetailsHeadCode = (TextView) findViewById(R.id.hhDetailsHeadCode);
         hhDetailsRegionLabel = (TextView) findViewById(R.id.hhDetailsRegionLabel);
         hhDetailsRegionValue = (TextView) findViewById(R.id.hhDetailsRegionValue);
-        lvHouseholdMembers = (ListView) findViewById(R.id.lvHouseholdMembers);
-        lvCollectedForms = (ListView) findViewById(R.id.lvCollectedForms);
         btHouseDetailsCollectData = (Button) findViewById(R.id.btHouseDetailsCollectData);
         btHouseDetailsBack = (Button) findViewById(R.id.btHouseDetailsBack);
         iconView = (ImageView) findViewById(R.id.iconView);
+        householdDetailsTabLayout = findViewById(R.id.householdDetailsTabLayout);
+        householdDetailsTabViewPager = findViewById(R.id.householdDetailsTabViewPager);
 
         btHouseDetailsBack.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -168,36 +131,50 @@ public class HouseholdDetailsActivity extends Activity implements OdkFormResultL
             }
         });
 
-        lvCollectedForms.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+        //householdDetailsTabViewPager.setOnPaddLayoutChangeListener((View.OnLayoutChangeListener) new TabLayout.TabLayoutOnPageChangeListener(householdDetailsTabLayout));
+        householdDetailsTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                onCollectedDataItemClicked(position);
+            public void onTabSelected(TabLayout.Tab tab) {
+                householdDetailsTabViewPager.setCurrentItem(tab.getPosition());
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
             }
         });
 
-        lvHouseholdMembers.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                onMemberClicked(position);
-            }
-        });
+        initFragments();
 
-        this.loadingDialog = new LoadingDialog(this);
-
-        setHouseholdData();
+        showHouseholdData();
 
         enableButtonsByFormLoaders();
         enableButtonsByIntentData();
     }
 
+    private void initFragments() {
+        this.householdMembersFragment = HouseholdMembersFragment.newInstance(this.household, this.loggedUser);
+        this.householdFormsFragment = HouseholdFormsFragment.newInstance(this.household, this.loggedUser, this.formDataLoaders);
+        this.householdDatasetsFragment = HouseholdDatasetsFragment.newInstance(this.household);
+
+        List<Fragment> list = new ArrayList<>();
+        list.add(householdMembersFragment);
+        list.add(householdFormsFragment);
+        list.add(householdDatasetsFragment);
+
+        HouseholdDetailsFragmentAdapter adapter = new HouseholdDetailsFragmentAdapter(this.getSupportFragmentManager(),  this.getLifecycle(), list);
+        householdDetailsTabViewPager.setAdapter(adapter);
+    }
+
     private void initBoxes() {
         this.boxAppParams = ObjectBoxDatabase.get().boxFor(ApplicationParam.class);
-        this.boxCollectedData = ObjectBoxDatabase.get().boxFor(CollectedData.class);
-        this.boxForms = ObjectBoxDatabase.get().boxFor(Form.class);
         this.boxRegions = ObjectBoxDatabase.get().boxFor(Region.class);
-        this.boxDatasets = ObjectBoxDatabase.get().boxFor(Dataset.class);
-        this.boxHouseholds = ObjectBoxDatabase.get().boxFor(Household.class);
-        this.boxMembers = ObjectBoxDatabase.get().boxFor(Member.class);
     }
 
     private void enableButtonsByFormLoaders() {
@@ -215,11 +192,11 @@ public class HouseholdDetailsActivity extends Activity implements OdkFormResultL
         }
     }
 
-    private void setHouseholdData(){
+    private void showHouseholdData(){
 
         if (household == null) return;
 
-        Region region = getRegion(household.getRegion());
+        Region region = this.boxRegions.query().equal(Region_.code, household.region).build().findFirst();
         String hierarchyName = getHierarchyName(region);
 
         hhDetailsName.setText(household.getName());
@@ -229,66 +206,14 @@ public class HouseholdDetailsActivity extends Activity implements OdkFormResultL
         hhDetailsRegionLabel.setText(hierarchyName+":");
         hhDetailsRegionValue.setText(region==null ? "" : region.getName());
 
-        showHouseholdMembers();
-        showCollectedData();
-    }
+        //if (this.householdMembersFragment == null) {
+        //    this.householdMembersFragment.updateHouseholdMembers();
+        //}
 
-    private void onCollectedDataItemClicked(int position) {
-        CollectedDataArrayAdapter adapter = (CollectedDataArrayAdapter) this.lvCollectedForms.getAdapter();
-        CollectedDataItem dataItem = adapter.getItem(position);
+        //if (this.householdFormsFragment == null) {
+        //    this.householdFormsFragment.showCollectedData();
+        //}
 
-        CollectedData collectedData = dataItem.getCollectedData();
-        FormDataLoader formDataLoader = getFormDataLoader(collectedData);
-
-        openOdkForm(formDataLoader, collectedData);
-    }
-
-    /*
-     * Show the data collected for the selected individual - but only shows data that belongs to Forms that the user can view (FormDataLoader)
-     * With this if we selected a follow_up list household we will view only the forms of that individual
-     */
-    private void showCollectedData() {
-        //this.showProgress(true);
-
-        List<CollectedData> list = this.boxCollectedData.query().equal(CollectedData_.recordId, household.getId()).and().equal(CollectedData_.tableName, household.getTableName()).build().find();
-        List<Form> forms = this.boxForms.getAll();
-        List<CollectedDataItem> cdl = new ArrayList<>();
-
-        for (CollectedData cd : list){
-            if (hasFormDataLoadersContains(cd.getFormId())){
-                Form form = getFormById(forms, cd.getFormId());
-                cdl.add(new CollectedDataItem(household, form, cd));
-            }
-        }
-
-        CollectedDataArrayAdapter adapter = new CollectedDataArrayAdapter(this, cdl);
-        this.lvCollectedForms.setAdapter(adapter);
-    }
-
-    private void showHouseholdMembers(){
-        List<Member> members = this.boxMembers.query().equal(Member_.householdCode, household.getCode()).build().find();
-
-        MemberArrayAdapter adapter = new MemberArrayAdapter(this, members);
-        this.lvHouseholdMembers.setAdapter(adapter);
-    }
-
-    private Household getHousehold(Member member){
-        if (member == null || member.getHouseholdCode()==null) return null;
-
-        Household household = Queries.getHouseholdByCode(this.boxHouseholds, member.getHouseholdCode());
-
-        return household;
-    }
-
-    private Region getRegion(Household household){
-        return getRegion(household.getRegion());
-    }
-
-    private Region getRegion(String code){
-
-        Region region = this.boxRegions.query().equal(Region_.code, code).build().findFirst();
-
-        return region;
     }
 
     private String getHierarchyName(Region region){
@@ -303,411 +228,20 @@ public class HouseholdDetailsActivity extends Activity implements OdkFormResultL
         return "";
     }
 
-    private Form getFormById(List<Form> forms, String formId){
-        for (Form f : forms){
-            if (f.getFormId().equals(formId)) return f;
-        }
-
-        return null;
-    }
-
-    private boolean hasFormDataLoadersContains(String formId){
-        for (FormDataLoader fdl : formDataLoaders){
-            if (fdl.getForm().getFormId().equals(formId)){
-                return true;
+    private boolean isVisibleForm(Form form){
+        if (requestCode != TrackingListDetailsActivity.RC_HOUSEHOLD_DETAILS_TRACKINGLIST){ //HouseholdDetails was not opened via Tracking/FollowUp lists
+            if (form.isFollowUpOnly()){ //forms flagged with followUpOnly can only be opened using FollowUp Lists, to be able to open via normal surveys remove the flag on the server
+                return false;
             }
         }
-        return false;
+
+        return true;
     }
 
     private void onCollectDataClicked(){
 
-        if (formDataLoaders != null && formDataLoaders.size() > 0){
-
-            if (formDataLoaders.size()==1){
-                //open directly the form
-                openOdkForm(formDataLoaders.get(0));
-            }else {
-                //load list dialog and choice the form
-                buildFormSelectorDialog(formDataLoaders);
-            }
-        }
+        //Go to HouseholdFormsFragment and call this action
+        this.householdFormsFragment.onCollectData();
     }
 
-    private FormDataLoader getFormDataLoader(CollectedData collectedData){
-
-        for (FormDataLoader dl : this.formDataLoaders){
-            if (dl.getForm().getFormId().equals(collectedData.getFormId())){
-                return dl;
-            }
-        }
-
-        return null;
-    }
-
-    private CollectedData getCollectedData(FormDataLoader formDataLoader){
-
-        CollectedData collectedData = this.boxCollectedData.query().equal(CollectedData_.formId, formDataLoader.getForm().getFormId())
-                .and().equal(CollectedData_.recordId, household.getId())
-                .and().equal(CollectedData_.tableName, household.getTableName()).build().findFirst();
-
-        return collectedData;
-    }
-
-    private List<Member> getMemberOnListAdapter(){
-        MemberArrayAdapter adapter = (MemberArrayAdapter) this.lvHouseholdMembers.getAdapter();
-
-        if (adapter == null) return new ArrayList<Member>();
-
-        return adapter.getMembers();
-    }
-
-    private void openOdkForm(FormDataLoader formDataLoader) {
-
-        CollectedData collectedData = getCollectedData(formDataLoader);
-
-        this.lastLoadedForm = formDataLoader;
-
-        Form form = formDataLoader.getForm();
-
-        //reload timestamp constants
-        formDataLoader.reloadTimestampConstants();
-
-        FilledForm filledForm = new FilledForm(form.getFormId());
-        filledForm.putAll(formDataLoader.getValues());
-        filledForm.setHouseholdMembers(getMemberOnListAdapter());
-
-        if (collectedData == null || form.isMultiCollPerSession()){
-            formUtilities.loadForm(filledForm);
-        }else{
-            formUtilities.loadForm(filledForm, collectedData.getFormUri(), this);
-        }
-
-    }
-
-    private void openOdkForm(FormDataLoader formDataLoader, CollectedData collectedData) {
-
-        this.lastLoadedForm = formDataLoader;
-
-        Form form = formDataLoader.getForm();
-
-        //reload timestamp constants
-        formDataLoader.reloadTimestampConstants();
-
-        FilledForm filledForm = new FilledForm(form.getFormId());
-        filledForm.putAll(formDataLoader.getValues());
-
-        if (collectedData == null){
-            formUtilities.loadForm(filledForm);
-        }else{
-            formUtilities.loadForm(filledForm, collectedData.getFormUri(), this);
-        }
-
-    }
-
-    private void buildFormSelectorDialog(List<FormDataLoader> loaders) {
-
-        FormSelectorDialog.createDialog(getFragmentManager(), loaders, new FormSelectorDialog.OnFormSelectedListener() {
-            @Override
-            public void onFormSelected(FormDataLoader formDataLoader) {
-                openOdkForm(formDataLoader);
-            }
-
-            @Override
-            public void onCancelClicked() {
-
-            }
-        }).show();
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        formUtilities.onActivityResult(requestCode, resultCode, data, this);
-    }
-
-    @Override
-    public void onFormFinalized(Uri contentUri, File xmlFile, String metaInstanceName, Date lastUpdatedDate) {
-        Log.d("form finalized"," "+contentUri+", "+xmlFile);
-
-        //save Collected data
-        //update or insert
-        //Save household and Update the object household
-        if (household.getId()==0){
-            long id = this.boxHouseholds.put(household);
-            household.setId(id);
-        }
-
-
-        //search existing record
-        CollectedData collectedData = this.boxCollectedData.query().equal(CollectedData_.formUri, contentUri.toString())
-                                                                   .and().equal(CollectedData_.recordId, household.getId())
-                                                                   .and().equal(CollectedData_.tableName, household.getTableName()).build().findFirst();
-
-        if (collectedData == null){ //insert
-            collectedData = new CollectedData();
-            collectedData.setFormId(lastLoadedForm.getForm().getFormId());
-            collectedData.setFormUri(contentUri.toString());
-            collectedData.setFormXmlPath(xmlFile.toString());
-            collectedData.setFormInstanceName(metaInstanceName);
-            collectedData.setFormLastUpdatedDate(lastUpdatedDate);
-
-            collectedData.setFormModule(lastLoadedForm.getForm().getModules());
-            collectedData.setCollectedBy(loggedUser.getUsername());
-            collectedData.setUpdatedBy("");
-            collectedData.setSupervisedBy("");
-
-            collectedData.setRecordId(household.getId());
-            collectedData.setTableName(household.getTableName());
-
-            this.boxCollectedData.put(collectedData);
-            Log.d("inserting", "new collected data");
-        }else{ //update
-            collectedData.setFormId(lastLoadedForm.getForm().getFormId());
-            collectedData.setFormUri(contentUri.toString());
-            collectedData.setFormXmlPath(xmlFile.toString());
-            collectedData.setFormInstanceName(metaInstanceName);
-            collectedData.setFormLastUpdatedDate(lastUpdatedDate);
-
-            //collectedData.setFormModule(lastLoadedForm.getForm().getModules());
-            //collectedData.setCollectedBy(loggedUser.getUsername());
-            collectedData.setUpdatedBy(loggedUser.getUsername());
-            //collectedData.setSupervisedBy("");
-
-            collectedData.setRecordId(household.getId());
-            collectedData.setTableName(household.getTableName());
-
-            this.boxCollectedData.put(collectedData);
-            Log.d("updating", "new collected data");
-        }
-
-        showCollectedData();
-
-    }
-
-    @Override
-    public void onFormUnFinalized(Uri contentUri, File xmlFile, String metaInstanceName, Date lastUpdatedDate) {
-        Log.d("form unfinalized"," "+contentUri);
-
-        //save Collected data
-        //update or insert
-        //Save household and Update the object household
-        if (household.getId()==0){
-            long id = this.boxHouseholds.put(household);
-            household.setId(id);
-        }
-
-        //search existing record
-        CollectedData collectedData = this.boxCollectedData.query().equal(CollectedData_.formUri, contentUri.toString())
-                                                           .and().equal(CollectedData_.recordId, household.getId())
-                                                           .and().equal(CollectedData_.tableName, household.getTableName()).build().findFirst();
-
-        if (collectedData == null){ //insert
-            collectedData = new CollectedData();
-            collectedData.setFormId(lastLoadedForm.getForm().getFormId());
-            collectedData.setFormUri(contentUri.toString());
-            collectedData.setFormXmlPath("");
-            collectedData.setFormInstanceName(metaInstanceName);
-            collectedData.setFormLastUpdatedDate(lastUpdatedDate);
-
-            collectedData.setFormModule(lastLoadedForm.getForm().getModules());
-            collectedData.setCollectedBy(loggedUser.getUsername());
-            collectedData.setUpdatedBy("");
-            collectedData.setSupervisedBy("");
-
-            collectedData.setRecordId(household.getId());
-            collectedData.setTableName(household.getTableName());
-
-            this.boxCollectedData.put(collectedData);
-            Log.d("inserting", "new collected data");
-        }else{ //update
-            collectedData.setFormId(lastLoadedForm.getForm().getFormId());
-            collectedData.setFormUri(contentUri.toString());
-            collectedData.setFormXmlPath("");
-            collectedData.setFormInstanceName(metaInstanceName);
-            collectedData.setFormLastUpdatedDate(lastUpdatedDate);
-
-            //collectedData.setFormModule(lastLoadedForm.getForm().getModules());
-            //collectedData.setCollectedBy(loggedUser.getUsername());
-            collectedData.setUpdatedBy(loggedUser.getUsername());
-            //collectedData.setSupervisedBy("");
-
-            collectedData.setRecordId(household.getId());
-            collectedData.setTableName(household.getTableName());
-
-            this.boxCollectedData.put(collectedData);
-            Log.d("updating", "new collected data");
-        }
-
-        showCollectedData();
-    }
-
-    @Override
-    public void onDeleteForm(Uri contentUri) {
-
-        this.boxCollectedData.query().equal(CollectedData_.formUri, contentUri.toString()).build().remove(); //delete where formUri=contentUri
-
-        showCollectedData();
-    }
-
-    @Override
-    public void onFormNotFound(final Uri contenUri) {
-        buildDeleteSavedFormDialog(contenUri);
-    }
-
-    private void buildDeleteSavedFormDialog(final Uri contenUri){
-
-        DialogFactory.createMessageYN(this, R.string.household_details_dialog_del_saved_form_title_lbl, R.string.household_details_dialog_del_saved_form_msg_lbl, new DialogFactory.OnYesNoClickListener() {
-            @Override
-            public void onYesClicked() {
-                onDeleteForm(contenUri);
-            }
-
-            @Override
-            public void onNoClicked() {
-
-            }
-        }).show();
-    }
-
-    /* LOAD FORM VALUES */
-
-    private void onMemberClicked(int position) {
-        MemberArrayAdapter adapter = (MemberArrayAdapter) this.lvHouseholdMembers.getAdapter();
-        Member member = adapter.getItem(position);
-
-        MemberSelectedTask task = new MemberSelectedTask(member);
-        task.execute();
-
-        showLoadingDialog(getString(R.string.loading_dialog_member_details_lbl), true);
-    }
-
-    public FormDataLoader[] getFormLoaders(FormFilter... filters){
-
-        List<FormFilter> listFilters = Arrays.asList(filters);
-
-        String[] userModules = loggedUser.getModules().split(",");
-
-        List<Form> forms = this.boxForms.getAll(); //get all forms
-        List<FormDataLoader> list = new ArrayList<>();
-
-        int i=0;
-        for (Form form : forms){
-            String[] formModules = form.getModules().split(",");
-
-            if (StringUtil.containsAny(userModules, formModules)){ //if the user has access to module specified on Form
-                FormDataLoader loader = new FormDataLoader(form);
-
-                if (form.isFollowUpOnly() && listFilters.contains(FormFilter.FOLLOW_UP)){
-                    list.add(loader);
-                    continue;
-                }
-                if (form.isRegionForm() && listFilters.contains(FormFilter.REGION)){
-                    list.add(loader);
-                    continue;
-                }
-                if (form.isHouseholdForm() && listFilters.contains(FormFilter.HOUSEHOLD)){
-                    list.add(loader);
-                    continue;
-                }
-                if (form.isHouseholdHeadForm() && listFilters.contains(FormFilter.HOUSEHOLD_HEAD)){
-                    list.add(loader);
-                    continue;
-                }
-                if (form.isMemberForm() && listFilters.contains(FormFilter.MEMBER)){
-                    list.add(loader);
-                    continue;
-                }
-            }
-        }
-
-        FormDataLoader[] aList = new FormDataLoader[list.size()];
-
-        return list.toArray(aList);
-    }
-
-    private void loadFormValues(FormDataLoader loader, Household household, Member member, Region region){
-        if (household != null){
-            loader.loadHouseholdValues(household);
-        }
-        if (member != null){
-            loader.loadMemberValues(member);
-        }
-        if (loggedUser != null){
-            loader.loadUserValues(loggedUser);
-        }
-        if (region != null){
-            loader.loadRegionValues(region);
-        }
-
-        loader.loadConstantValues();
-        loader.loadSpecialConstantValues(household, member, loggedUser, region, null);
-
-        //Load variables on datasets
-        for (Dataset dataSet : getDataSets()){
-            Log.d("has-mapped-datasets", dataSet.getName()+", "+loader.hasMappedDatasetVariable(dataSet));
-            if (loader.hasMappedDatasetVariable(dataSet)){
-                Log.d("hasMappedVariables", ""+dataSet.getName());
-                loader.loadDataSetValues(dataSet, household, member, loggedUser, region);
-            }
-        }
-    }
-
-    private void loadFormValues(FormDataLoader[] loaders, Household household, Member member, Region region){
-        for (FormDataLoader loader : loaders){
-            loadFormValues(loader, household, member, region);
-        }
-    }
-
-    private List<Dataset> getDataSets(){
-        List<Dataset> list = this.boxDatasets.getAll();
-        return list;
-    }
-
-    private void showLoadingDialog(String msg, boolean show){
-        if (show) {
-            this.loadingDialog.setMessage(msg);
-            this.loadingDialog.show();
-        } else {
-            this.loadingDialog.hide();
-        }
-    }
-
-    class MemberSelectedTask  extends AsyncTask<Void, Void, Void> {
-        private Household household;
-        private Member member;
-        private Region region;
-        private FormDataLoader[] dataLoaders;
-
-        public MemberSelectedTask(Member member) {
-            //this.household = household;
-            this.member = member;
-            //this.region = region;
-        }
-
-        @Override
-        protected Void doInBackground(Void... voids) {
-
-            this.household = getHousehold(member);
-            this.region = getRegion(household);
-
-            dataLoaders = getFormLoaders(FormFilter.HOUSEHOLD_HEAD, FormFilter.MEMBER);
-            loadFormValues(dataLoaders, household, member, region);
-
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void result) {
-
-            Intent intent = new Intent(HouseholdDetailsActivity.this, MemberDetailsActivity.class);
-            intent.putExtra("user", loggedUser);
-            intent.putExtra("member", this.member);
-            intent.putExtra("dataloaders", dataLoaders);
-
-            showLoadingDialog(null, false);
-
-            startActivity(intent);
-        }
-    }
 }

@@ -1,6 +1,5 @@
 package org.philimone.hds.explorer.main;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -9,7 +8,9 @@ import android.widget.Button;
 import org.philimone.hds.explorer.R;
 import org.philimone.hds.explorer.model.User;
 
-public class SurveyActivity extends Activity {
+import androidx.appcompat.app.AppCompatActivity;
+
+public class SurveyActivity extends AppCompatActivity {
 
     private User loggedUser;
     private Button btSurveyHouseholds;

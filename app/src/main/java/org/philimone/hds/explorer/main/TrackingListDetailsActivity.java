@@ -42,9 +42,10 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import androidx.appcompat.app.AppCompatActivity;
 import io.objectbox.Box;
 
-public class TrackingListDetailsActivity extends Activity implements BarcodeScannerActivity.ResultListener, BarcodeScannerActivity.InvokerClickListener {
+public class TrackingListDetailsActivity extends AppCompatActivity implements BarcodeScannerActivity.ResultListener, BarcodeScannerActivity.InvokerClickListener {
 
     public static final int RC_REGION_DETAILS_TRACKINGLIST = 20;
     public static final int RC_HOUSEHOLD_DETAILS_TRACKINGLIST = 21;

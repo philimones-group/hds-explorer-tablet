@@ -1,6 +1,5 @@
 package org.philimone.hds.explorer.main;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -32,12 +31,13 @@ import java.util.Date;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.appcompat.app.AppCompatActivity;
 import io.objectbox.Box;
 import mz.betainteractive.odk.FormUtilities;
 import mz.betainteractive.odk.listener.OdkFormResultListener;
 import mz.betainteractive.odk.model.FilledForm;
 
-public class RegionDetailsActivity extends Activity implements OdkFormResultListener {
+public class RegionDetailsActivity extends AppCompatActivity implements OdkFormResultListener {
 
     private TextView txtRdHieararchyName;
     private TextView txtRdRegionName;
@@ -322,7 +322,7 @@ public class RegionDetailsActivity extends Activity implements OdkFormResultList
 
     private void buildFormSelectorDialog(List<FormDataLoader> loaders) {
 
-        FormSelectorDialog.createDialog(getFragmentManager(), loaders, new FormSelectorDialog.OnFormSelectedListener() {
+        FormSelectorDialog.createDialog(this.getSupportFragmentManager(), loaders, new FormSelectorDialog.OnFormSelectedListener() {
             @Override
             public void onFormSelected(FormDataLoader formDataLoader) {
                 openOdkForm(formDataLoader);

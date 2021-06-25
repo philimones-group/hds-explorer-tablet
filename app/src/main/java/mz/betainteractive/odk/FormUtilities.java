@@ -1,12 +1,19 @@
 package mz.betainteractive.odk;
 
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
+import android.provider.Settings;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -14,8 +21,18 @@ import org.philimone.hds.explorer.R;
 import org.philimone.hds.explorer.widget.DialogFactory;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.TimeZone;
+import java.util.concurrent.TimeUnit;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 import mz.betainteractive.odk.listener.OdkFormLoadListener;
 import mz.betainteractive.odk.listener.OdkFormResultListener;
 import mz.betainteractive.odk.model.FilledForm;
@@ -26,7 +43,8 @@ public class FormUtilities {
     public static final int SELECTED_ODK_FORM = 51;
     public static final int SELECTED_ODK_REOPEN = 52;
 
-    private Activity mContext;
+    private Context mContext;
+    private Fragment fragment;
 	private String jrFormId;
 	private Uri contentUri;
     private boolean formUnFinished;
@@ -36,13 +54,58 @@ public class FormUtilities {
     private String metaInstanceName;
     private Date lastUpdatedDate;
 
-	public FormUtilities(Activity context) {
-		this.mContext = context;
+    private String deviceId;
+    private ActivityResultLauncher<String> requestPermission;
+    private OdkGeneratedFormLoadTask currentLoadTask;
+    private OnPermissionRequestListener onPermissionRequestListener;
+
+	public FormUtilities(Fragment fragment) {
+	    this.fragment = fragment;
+		this.mContext = fragment.getContext();
+		this.initPermissions();
 	}
-	
+
+    public Context getContext() {
+        return mContext;
+    }
+
+    private void initPermissions(){
+        this.requestPermission = this.fragment.registerForActivityResult(new ActivityResultContracts.RequestPermission(), granted -> {
+            if (granted) {
+                deviceId = getDeviceId();
+                Log.d("deviceidx", ""+deviceId);
+
+                if (this.onPermissionRequestListener != null) {
+                    this.onPermissionRequestListener.requestFinished(granted);
+                }
+
+            } else {
+                //Log.d("deviceid", "no permission to read it");
+                DialogFactory.createMessageInfo(this.mContext, org.philimone.hds.forms.R.string.device_id_title_lbl, org.philimone.hds.forms.R.string.device_id_permissions_error, new DialogFactory.OnClickListener() {
+                    @Override
+                    public void onClicked(DialogFactory.Buttons clickedButton) {
+                        if (onPermissionRequestListener != null) {
+                            onPermissionRequestListener.requestFinished(granted);
+                        }
+                    }
+                }).show();
+            }
+        });
+
+    }
+
+    private void requestPermissionsForReadingPhoneState(OnPermissionRequestListener listener){
+	    this.onPermissionRequestListener = listener;
+        this.requestPermission.launch(Manifest.permission.READ_PHONE_STATE);
+    }
+
+    public void setOdkFormResultListener(OdkFormResultListener listener) {
+	    this.formResultListener = listener;
+    }
+
 	public void loadForm(final FilledForm filledForm) {
-		
-		new OdkGeneratedFormLoadTask(mContext, filledForm, new OdkFormLoadListener() {
+
+		this.currentLoadTask = new OdkGeneratedFormLoadTask(this, filledForm, new OdkFormLoadListener() {
             public void onOdkFormLoadSuccess(Uri contentUri) {
             	//Log.d("contenturi", contentUri+"");
             	
@@ -55,7 +118,7 @@ public class FormUtilities {
                 
                 FormUtilities.this.contentUri = contentUri;
                 
-                mContext.startActivityForResult(new Intent(Intent.ACTION_EDIT, contentUri), SELECTED_ODK_FORM);
+                fragment.startActivityForResult(new Intent(Intent.ACTION_EDIT, contentUri), SELECTED_ODK_FORM);
             }
 
             public void onOdkFormLoadFailure() {
@@ -63,12 +126,12 @@ public class FormUtilities {
             	//Log.d("Cant open ODK Form", "odk");
             	createXFormNotFoundDialog();
             }
-        }).execute();
-    }
+        });
 
-    public void loadForm(String contentUriAsString, final OdkFormResultListener listener){
-        contentUri = Uri.parse(contentUriAsString);
-        loadForm(contentUri, listener);
+		//request permission for reading deviceId - after this execute the load task
+		requestPermissionsForReadingPhoneState(granted -> {
+            currentLoadTask.execute(); //load odk form - regardless of the permission state
+        });
     }
 
     public void loadForm(FilledForm filledForm, String contentUriAsString, final OdkFormResultListener listener){
@@ -76,10 +139,10 @@ public class FormUtilities {
         this.metaInstanceName = "";
         this.lastUpdatedDate = null;
 
-        new OdkGeneratedFormLoadTask(mContext, filledForm, contentUri, new OdkFormLoadListener() {
+        this.currentLoadTask = new OdkGeneratedFormLoadTask(this, filledForm, contentUri, new OdkFormLoadListener() {
             public void onOdkFormLoadSuccess(Uri contentUri) {
                 FormUtilities.this.contentUri = contentUri;
-                mContext.startActivityForResult(new Intent(Intent.ACTION_EDIT, contentUri), SELECTED_ODK_FORM);
+                fragment.startActivityForResult(new Intent(Intent.ACTION_EDIT, contentUri), SELECTED_ODK_FORM);
             }
 
             public void onOdkFormLoadFailure() {
@@ -91,34 +154,12 @@ public class FormUtilities {
                     createSavedXFormNotFoundDialog();
                 }
             }
-        }).execute();
-    }
+        });
 
-    /**
-     * Load Uri that represents a saved xml form
-     * @param content_uri
-     */
-    public void loadForm(final Uri content_uri, final OdkFormResultListener listener){
-
-        new OdkGeneratedFormLoadTask(mContext, content_uri, new OdkFormLoadListener() {
-            public void onOdkFormLoadSuccess(Uri contentUri) {
-                FormUtilities.this.contentUri = contentUri;
-                mContext.startActivityForResult(new Intent(Intent.ACTION_EDIT, contentUri), SELECTED_ODK_FORM);
-            }
-
-            public void onOdkFormLoadFailure() {
-                Log.d("not",""+listener);
-                System.err.println("not-"+listener);
-                //createSavedXFormNotFoundDialog();
-
-                if (listener != null){
-                    listener.onFormNotFound(content_uri);
-                }else{
-                    createSavedXFormNotFoundDialog();
-                }
-            }
-        }).execute();
-
+        //request permission for reading deviceId - after this execute the load task
+        requestPermissionsForReadingPhoneState(granted -> {
+            currentLoadTask.execute(); //load odk form - regardless of the permission state
+        });
     }
 
     private void createXFormNotFoundDialog() {
@@ -156,6 +197,7 @@ public class FormUtilities {
 
         Log.d("activityResult", "res-"+requestCode);
 
+        this.currentLoadTask = null; //already loaded the task and finished
         this.formResultListener = listener;
 
         switch (requestCode) {
@@ -174,6 +216,139 @@ public class FormUtilities {
         } else {
             Toast.makeText(mContext, mContext.getString(R.string.odk_problem_lbl), Toast.LENGTH_LONG).show();
         }
+    }
+
+    private void saveUnfinalizedFile(){
+        ContentResolver resolver = mContext.getContentResolver();
+
+        Cursor cursor = resolver.query(contentUri, new String[] { InstanceProviderAPI.InstanceColumns.STATUS,
+                        InstanceProviderAPI.InstanceColumns.INSTANCE_FILE_PATH, InstanceProviderAPI.InstanceColumns.DISPLAY_NAME, InstanceProviderAPI.InstanceColumns.LAST_STATUS_CHANGE_DATE },
+                InstanceProviderAPI.InstanceColumns.STATUS + "=?",
+                new String[] { InstanceProviderAPI.STATUS_INCOMPLETE }, null);
+
+        Log.d("Running check form", "");
+
+        if (cursor.moveToNext()) {
+            Log.d("move next", ""+cursor.getString(0));
+            xmlFilePath = cursor.getString(cursor.getColumnIndex(InstanceProviderAPI.InstanceColumns.INSTANCE_FILE_PATH)); //used to read the xml file
+
+            String sdate = cursor.getString(cursor.getColumnIndex(InstanceProviderAPI.InstanceColumns.LAST_STATUS_CHANGE_DATE));
+            java.util.Date ludate = new java.util.Date(Long.parseLong(sdate)) ;
+
+            metaInstanceName = cursor.getString(cursor.getColumnIndex(InstanceProviderAPI.InstanceColumns.DISPLAY_NAME));
+            lastUpdatedDate = ludate;
+
+        } else {
+            Log.d("move next", "couldnt find executed form");
+        }
+    }
+
+    private void createUnfinishedFormDialog() {
+        formUnFinished = true;
+
+        DialogFactory dialog = DialogFactory.createMessageYNC(this.mContext, R.string.warning_lbl, R.string.odk_unfinished_dialog_msg, new DialogFactory.OnYesNoCancelClickListener() {
+            @Override
+            public void onYesClicked() { //delete
+                formUnFinished = false;
+                mContext.getContentResolver().delete(contentUri, InstanceProviderAPI.InstanceColumns.STATUS + "=?", new String[] { InstanceProviderAPI.STATUS_INCOMPLETE });
+
+                if (formResultListener != null) {
+                    formResultListener.onDeleteForm(contentUri);
+                }
+            }
+
+            @Override
+            public void onNoClicked() { //change
+                formUnFinished = false;
+                fragment.startActivityForResult(new Intent(Intent.ACTION_EDIT, contentUri), SELECTED_ODK_REOPEN);
+            }
+
+            @Override
+            public void onCancelClicked() { //save
+                Toast.makeText(mContext, mContext.getString(R.string.odk_unfinished_form_saved), Toast.LENGTH_LONG);
+                //save form contentUri
+                saveUnfinalizedFile();
+
+                if (formResultListener != null) {
+                    formResultListener.onFormUnFinalized(contentUri, new File(xmlFilePath), metaInstanceName, lastUpdatedDate);
+                }
+            }
+        });
+        dialog.setYesText(R.string.odk_unfinished_button_delete);
+        dialog.setNoText(R.string.odk_unfinished_button_change);
+        dialog.setCancelText(R.string.odk_unfinished_button_save);
+        dialog.show();
+
+    }
+
+    /* Get special values for forms */
+    public String getStartTimestamp() {
+        TimeZone tz = TimeZone.getDefault();
+        Calendar cal = Calendar.getInstance(tz);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+        long gmt = TimeUnit.HOURS.convert(tz.getRawOffset(), TimeUnit.MILLISECONDS);
+
+        sdf.setCalendar(cal);
+        cal.setTime(new Date());
+
+
+        //Log.d("timezone", "GMT "+gmt);
+        //Log.d("realtime", StringUtil.format(new Date(), "yyyy-MM-dd HH:mm:ss.SSS"));
+        //Log.d("original-date", ""+sdf.format(cal.getTime()));
+
+        cal.add(Calendar.HOUR_OF_DAY, (int) (-1 * gmt)); //Fixing ODK Error on this variable (ODK is adding GMT Hours number to the datetime of "start" variable)
+
+        String dateString = sdf.format(cal.getTime());
+        //Log.d("fixed-datetime", ""+dateString);
+
+
+        return dateString;
+    }
+
+    public String getDeviceId() {
+        TelephonyManager mTelephonyManager = (TelephonyManager) mContext.getSystemService(Context.TELEPHONY_SERVICE);
+
+        if (ActivityCompat.checkSelfPermission(this.mContext, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+            return null;
+        }
+
+        String deviceId = mTelephonyManager.getImei();
+        String orDeviceId;
+
+        if (deviceId != null ) {
+            if ((deviceId.contains("*") || deviceId.contains("000000000000000"))) {
+                deviceId = Settings.Secure.getString(mContext.getContentResolver(), Settings.Secure.ANDROID_ID);
+                orDeviceId = Settings.Secure.ANDROID_ID + ":" + deviceId;
+            } else {
+                orDeviceId = "imei:" + deviceId;
+            }
+        }
+        if ( deviceId == null ) {
+            // no SIM -- WiFi only
+            // Retrieve WiFiManager
+            WifiManager wifi = (WifiManager) mContext.getSystemService(Context.WIFI_SERVICE);
+
+            // Get WiFi status
+            WifiInfo info = wifi.getConnectionInfo();
+
+            if ( info != null ) {
+                deviceId = info.getMacAddress();
+                orDeviceId = "mac:" + deviceId;
+            }
+        }
+        // if it is still null, use ANDROID_ID
+        if ( deviceId == null ) {
+            deviceId = Settings.Secure.getString(mContext.getContentResolver(), Settings.Secure.ANDROID_ID);
+            orDeviceId = Settings.Secure.ANDROID_ID + ":" + deviceId;
+
+            //sbuilder.append("<deviceId>"+ orDeviceId +"</deviceId>" + "\r\n");
+
+            return  orDeviceId;
+        }
+
+        //sbuilder.append("<deviceId>"+ deviceId +"</deviceId>" + "\r\n");
+
+        return deviceId;
     }
 
     class CheckFormStatus extends AsyncTask<Void, Void, Boolean> {
@@ -233,7 +408,9 @@ public class FormUtilities {
                 //When everything is OK - save current form location
 
                 //pass contentUri and filepath to a listener - onFormFinalized, onFormUnfinalized
-                formResultListener.onFormFinalized(contentUri, new File(xmlFilePath), metaInstanceName, lastUpdatedDate);
+                if (formResultListener != null) {
+                    formResultListener.onFormFinalized(contentUri, new File(xmlFilePath), metaInstanceName, lastUpdatedDate);
+                }
             } else {
                 createUnfinishedFormDialog();
             }
@@ -241,61 +418,7 @@ public class FormUtilities {
         }
     }
 
-    private void saveUnfinalizedFile(){
-        ContentResolver resolver = mContext.getContentResolver();
-
-        Cursor cursor = resolver.query(contentUri, new String[] { InstanceProviderAPI.InstanceColumns.STATUS,
-                        InstanceProviderAPI.InstanceColumns.INSTANCE_FILE_PATH, InstanceProviderAPI.InstanceColumns.DISPLAY_NAME, InstanceProviderAPI.InstanceColumns.LAST_STATUS_CHANGE_DATE },
-                InstanceProviderAPI.InstanceColumns.STATUS + "=?",
-                new String[] { InstanceProviderAPI.STATUS_INCOMPLETE }, null);
-
-        Log.d("Running check form", "");
-
-        if (cursor.moveToNext()) {
-            Log.d("move next", ""+cursor.getString(0));
-            xmlFilePath = cursor.getString(cursor.getColumnIndex(InstanceProviderAPI.InstanceColumns.INSTANCE_FILE_PATH)); //used to read the xml file
-
-            String sdate = cursor.getString(cursor.getColumnIndex(InstanceProviderAPI.InstanceColumns.LAST_STATUS_CHANGE_DATE));
-            java.util.Date ludate = new java.util.Date(Long.parseLong(sdate)) ;
-
-            metaInstanceName = cursor.getString(cursor.getColumnIndex(InstanceProviderAPI.InstanceColumns.DISPLAY_NAME));
-            lastUpdatedDate = ludate;
-
-        } else {
-            Log.d("move next", "couldnt find executed form");
-        }
-    }
-
-    private void createUnfinishedFormDialog() {
-        formUnFinished = true;
-
-        DialogFactory dialog = DialogFactory.createMessageYNC(this.mContext, R.string.warning_lbl, R.string.odk_unfinished_dialog_msg, new DialogFactory.OnYesNoCancelClickListener() {
-            @Override
-            public void onYesClicked() { //delete
-                formUnFinished = false;
-                mContext.getContentResolver().delete(contentUri, InstanceProviderAPI.InstanceColumns.STATUS + "=?", new String[] { InstanceProviderAPI.STATUS_INCOMPLETE });
-                formResultListener.onDeleteForm(contentUri);
-            }
-
-            @Override
-            public void onNoClicked() { //change
-                formUnFinished = false;
-                mContext.startActivityForResult(new Intent(Intent.ACTION_EDIT, contentUri), SELECTED_ODK_REOPEN);
-            }
-
-            @Override
-            public void onCancelClicked() { //save
-                Toast.makeText(mContext, mContext.getString(R.string.odk_unfinished_form_saved), Toast.LENGTH_LONG);
-                //save form contentUri
-                saveUnfinalizedFile();
-
-                formResultListener.onFormUnFinalized(contentUri, new File(xmlFilePath), metaInstanceName, lastUpdatedDate);
-            }
-        });
-        dialog.setYesText(R.string.odk_unfinished_button_delete);
-        dialog.setNoText(R.string.odk_unfinished_button_change);
-        dialog.setCancelText(R.string.odk_unfinished_button_save);
-        dialog.show();
-
+    interface OnPermissionRequestListener {
+        void requestFinished(boolean granted);
     }
 }

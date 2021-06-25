@@ -1,10 +1,13 @@
 package org.philimone.hds.explorer.widget;
 
+
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.StringRes;
+import androidx.appcompat.app.AppCompatDialog;
+
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,7 +19,7 @@ import android.widget.TextView;
 import org.philimone.hds.explorer.R;
 import org.philimone.hds.explorer.io.SyncEntityResult;
 
-public class DialogFactory extends Dialog {
+public class DialogFactory extends AppCompatDialog {
 
     private Context mContext;
     private TextView txtDialogTitle;

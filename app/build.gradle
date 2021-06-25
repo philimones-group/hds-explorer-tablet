@@ -70,6 +70,8 @@ dependencies {
 }
 
 dependencies {
+
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     debugImplementation "io.objectbox:objectbox-android-objectbrowser:$objectboxVersion"
     releaseImplementation "io.objectbox:objectbox-android:$objectboxVersion"
 }

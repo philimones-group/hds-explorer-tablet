@@ -18,7 +18,11 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.core.app.ActivityCompat;
+import androidx.fragment.app.FragmentActivity;
+import mz.betainteractive.odk.FormUtilities;
 import mz.betainteractive.odk.FormsProviderAPI;
 import mz.betainteractive.odk.InstanceProviderAPI;
 import mz.betainteractive.odk.listener.OdkFormLoadListener;
@@ -27,6 +31,8 @@ import mz.betainteractive.odk.model.FilledForm;
 import org.jdom2.JDOMException;
 import org.jdom2.input.SAXBuilder;
 import org.philimone.hds.explorer.model.Member;
+import org.philimone.hds.forms.main.FormFragment;
+import org.philimone.hds.forms.widget.dialog.DialogFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
@@ -62,6 +68,7 @@ public class OdkGeneratedFormLoadTask extends AsyncTask<Void, Void, Boolean> {
     private final String specialConstPrefix = "$.";
     private final String repeatGroupAttribute = "jr:template";
 
+    private FormUtilities formUtilities;
     private OdkFormLoadListener listener;
     private ContentResolver resolver;
     private Uri odkUri;
@@ -69,26 +76,31 @@ public class OdkGeneratedFormLoadTask extends AsyncTask<Void, Void, Boolean> {
     private boolean openingSavedUri;
     private Context mContext;
 
-
-    public OdkGeneratedFormLoadTask(Context context, FilledForm filledForm, OdkFormLoadListener listener) {
-        this.listener = listener;
-        this.resolver = context.getContentResolver();
-        this.filledForm = filledForm;
-        this.mContext = context;
+    private OdkGeneratedFormLoadTask(FormUtilities formUtilities) {
+        this.formUtilities = formUtilities;
+        this.mContext = formUtilities.getContext();
     }
 
-    public OdkGeneratedFormLoadTask(Context context, Uri uri, OdkFormLoadListener listener) { //used to open pre-existing collected forms
+    public OdkGeneratedFormLoadTask(FormUtilities formUtilities, FilledForm filledForm, OdkFormLoadListener listener) {
+        this(formUtilities);
         this.listener = listener;
-        this.resolver = context.getContentResolver();
-        this.mContext = context;
+        this.resolver = mContext.getContentResolver();
+        this.filledForm = filledForm;
+
+    }
+
+    public OdkGeneratedFormLoadTask(FormUtilities formUtilities, Uri uri, OdkFormLoadListener listener) { //used to open pre-existing collected forms
+        this(formUtilities);
+        this.listener = listener;
+        this.resolver = mContext.getContentResolver();
         this.odkUri = uri;
         this.openingSavedUri = true;
     }
 
-    public OdkGeneratedFormLoadTask(Context context, FilledForm filledForm, Uri uri, OdkFormLoadListener listener) { //used to open pre-existing collected forms and filling out auto-filled columns
+    public OdkGeneratedFormLoadTask(FormUtilities formUtilities, FilledForm filledForm, Uri uri, OdkFormLoadListener listener) { //used to open pre-existing collected forms and filling out auto-filled columns
+        this(formUtilities);
         this.listener = listener;
-        this.resolver = context.getContentResolver();
-        this.mContext = context;
+        this.resolver = mContext.getContentResolver();
         this.odkUri = uri;
         this.filledForm = filledForm;
         this.openingSavedUri = true;
@@ -133,6 +145,10 @@ public class OdkGeneratedFormLoadTask extends AsyncTask<Void, Void, Boolean> {
         /* ends here - finding odk form on odk database */
 
         Log.d("loading forms", "form_id=" + jrFormId + ",ver=" + formVersion + ", path=" + formFilePath);
+
+
+        //request permission for reading device id
+
 
 
         if (openingSavedUri) {
@@ -305,9 +321,11 @@ public class OdkGeneratedFormLoadTask extends AsyncTask<Void, Void, Boolean> {
                     }
 
                 } else if (name.equalsIgnoreCase("start")) {
-                    sbuilder.append("<" + name + ">" + getStartTimestamp() + "</" + name + ">" + "\r\n");
+                    sbuilder.append("<" + name + ">" + this.formUtilities.getStartTimestamp() + "</" + name + ">" + "\r\n");
                 } else if (name.equalsIgnoreCase("deviceId")) {
-                    sbuilder.append("<" + name + ">" + getDeviceId() + "</" + name + ">" + "\r\n");
+                    String deviceId = this.formUtilities.getDeviceId();
+                    sbuilder.append(deviceId == null ? "<" + name + " />" : "<" + name + ">" + deviceId + "</" + name + ">" + "\r\n");
+                    Log.d("odk-deviceid", ""+deviceId);
                 } else if (isRepeatCountVar(name)) {
                     Log.d("repeat_count", name);
 
@@ -643,82 +661,6 @@ public class OdkGeneratedFormLoadTask extends AsyncTask<Void, Void, Boolean> {
                 readExistingXmlChildNodes(map, n);
             }
         }
-    }
-    /**/
-
-
-    private String getStartTimestamp() {
-        TimeZone tz = TimeZone.getDefault();
-        Calendar cal = Calendar.getInstance(tz);
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-        long gmt = TimeUnit.HOURS.convert(tz.getRawOffset(), TimeUnit.MILLISECONDS);
-
-        sdf.setCalendar(cal);
-        cal.setTime(new Date());
-
-
-        //Log.d("timezone", "GMT "+gmt);
-        //Log.d("realtime", StringUtil.format(new Date(), "yyyy-MM-dd HH:mm:ss.SSS"));
-        //Log.d("original-date", ""+sdf.format(cal.getTime()));
-
-        cal.add(Calendar.HOUR_OF_DAY, (int) (-1 * gmt)); //Fixing ODK Error on this variable (ODK is adding GMT Hours number to the datetime of "start" variable)
-
-        String dateString = sdf.format(cal.getTime());
-        //Log.d("fixed-datetime", ""+dateString);
-
-
-        return dateString;
-    }
-
-    private String getDeviceId() {
-        TelephonyManager mTelephonyManager = (TelephonyManager) mContext.getSystemService(Context.TELEPHONY_SERVICE);
-
-        if (ActivityCompat.checkSelfPermission(this.mContext, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            //return TODO;
-        }
-
-        String deviceId = mTelephonyManager.getDeviceId();
-        String orDeviceId;
-
-        if (deviceId != null ) {
-            if ((deviceId.contains("*") || deviceId.contains("000000000000000"))) {
-                deviceId = Settings.Secure.getString(mContext.getContentResolver(), Settings.Secure.ANDROID_ID);
-                orDeviceId = Settings.Secure.ANDROID_ID + ":" + deviceId;
-            } else {
-                orDeviceId = "imei:" + deviceId;
-            }
-        }
-        if ( deviceId == null ) {
-            // no SIM -- WiFi only
-            // Retrieve WiFiManager
-            WifiManager wifi = (WifiManager) mContext.getSystemService(Context.WIFI_SERVICE);
-
-            // Get WiFi status
-            WifiInfo info = wifi.getConnectionInfo();
-
-            if ( info != null ) {
-                deviceId = info.getMacAddress();
-                orDeviceId = "mac:" + deviceId;
-            }
-        }
-        // if it is still null, use ANDROID_ID
-        if ( deviceId == null ) {
-            deviceId = Settings.Secure.getString(mContext.getContentResolver(), Settings.Secure.ANDROID_ID);
-            orDeviceId = Settings.Secure.ANDROID_ID + ":" + deviceId;
-
-            //sbuilder.append("<deviceId>"+ orDeviceId +"</deviceId>" + "\r\n");
-
-            return  orDeviceId;
-        }
-
-        //sbuilder.append("<deviceId>"+ deviceId +"</deviceId>" + "\r\n");
-
-        return deviceId;
     }
 
     private File saveFile(String xml, String jrFormId) {

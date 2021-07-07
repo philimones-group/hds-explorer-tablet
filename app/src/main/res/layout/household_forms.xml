@@ -33,7 +33,8 @@
             android:paddingEnd="18dp"
             android:paddingTop="15dp"
             android:paddingBottom="15dp"
-            android:background="@drawable/nui_lists_rone_border"
+            android:layout_marginBottom="4dp"
+            android:background="@drawable/nui_list_rborder_panel"
             android:id="@+id/lvCollectedForms"
             />
 

@@ -277,6 +277,16 @@ public class StringUtil {
         return formatter.format(date);
     }
 
+    public static String formatYMD(Date date){
+        java.text.DateFormat formatter = new java.text.SimpleDateFormat("yyyy-MM-dd");
+        return formatter.format(date);
+    }
+
+    public static String formatYMDHMS(Date date){
+        java.text.DateFormat formatter = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        return formatter.format(date);
+    }
+
     public static Date toDate(String date, String format){
         java.text.DateFormat formatter = new java.text.SimpleDateFormat(format);
         try {

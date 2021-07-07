@@ -3,6 +3,6 @@
     <item
         android:width="@dimen/household_visit_button_icon_width"
         android:height="@dimen/household_visit_button_icon_height">
-        <bitmap android:src="@mipmap/nui_int_inmigration_icon" android:gravity="fill" />
+        <bitmap android:src="@mipmap/nui_form_white_icon" android:gravity="fill" />
     </item>
 </layer-list>

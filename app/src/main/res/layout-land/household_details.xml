@@ -160,7 +160,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="15dp"
-                android:text="@string/household_details_members_list_lbl"
+                android:text="@string/household_details_tab_members_list_lbl"
                 android:textSize="@dimen/member_details_other_info_txtsize"
                 android:textColor="@color/nui_color_text_red" />
 

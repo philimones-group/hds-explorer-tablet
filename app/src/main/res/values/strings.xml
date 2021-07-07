@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">HDS Explorer</string>
 
@@ -186,15 +187,31 @@
     <string name="member_details_dialog_del_saved_form_title_lbl">Delete saved info</string>
     <string name="member_details_dialog_del_saved_form_msg_lbl">The associated ODK Form wasnt found, the system will delete the saved information in order to keep collecting data\nDo you want to execute this operation?</string>
 
-    <string name="household_details_members_list_lbl">Members List</string>
+    <string name="household_details_tab_members_list_lbl">Members List</string>
+    <string name="household_details_tab_collected_forms_lbl">Collected Forms</string>
+    <string name="household_details_tab_datasets_lbl">Extra Details</string>
+    <string name="household_details_tab_visit_lbl">Current Visit</string>
     <string name="household_details_head_name_lbl">Head:</string>
     <string name="household_details_head_code_lbl">Code:</string>
     <string name="household_details_region_lbl">Located Region:</string>
+    <string name="household_details_last_visit_lbl">Last Visit Date:</string>
     <string name="household_details_dialog_del_saved_form_title_lbl">Delete saved info</string>
     <string name="household_details_dialog_del_saved_form_msg_lbl">The associated ODK Form wasnt found, the system will delete the saved information in order to keep collecting data\nDo you want to execute this operation?</string>
     <string name="household_details_forms_selector_lbl">Select an Form</string>
-    <string name="household_details_col_data_info_lbl">Collected Forms</string>
-    <string name="household_details_datasets_lbl">Extra Details</string>
+
+    <string name="household_details_bt_create_visit_lbl">Create Visit</string>
+    <string name="household_details_bt_finish_visit_lbl">Finish Visit</string>
+    <string name="household_details_bt_open_visit_lbl">Re-Open Visit</string>
+
+    <string name="household_visit_bt_enum_lbl">Member\nEnumeration</string>
+    <string name="household_visit_bt_birth_lbl">Birth\nRegistration</string>
+    <string name="household_visit_bt_pregnancy_lbl">Pregnancy\nRegistration</string>
+    <string name="household_visit_bt_extinmig_lbl">External\nInMigration</string>
+    <string name="household_visit_bt_intinmig_lbl">Internal\nInMigration</string>
+    <string name="household_visit_bt_outmig_lbl">OutMigration\nRegistration</string>
+    <string name="household_visit_bt_death_lbl">Death\nRegistration</string>
+    <string name="household_visit_bt_marital_lbl">Marital\nRelationship</string>
+    <string name="household_visit_bt_collect_lbl">Collect\nOther Forms</string>
 
     <string name="region_details_code_lbl">Code:</string>
     <string name="region_details_parent_lbl">Parent Region:</string>

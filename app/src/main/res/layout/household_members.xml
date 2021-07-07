@@ -8,7 +8,7 @@
     <!-- List of Members -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_marginTop="10dp"
         android:layout_marginBottom="5dp"
         android:layout_marginLeft="5dp"
@@ -19,7 +19,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="15dp"
-            android:text="@string/household_details_members_list_lbl"
+            android:text="@string/household_details_tab_members_list_lbl"
             android:textSize="@dimen/member_details_other_info_txtsize"
             android:textColor="@color/nui_color_text_red"
             android:visibility="gone"/>
@@ -28,8 +28,9 @@
         <LinearLayout
             android:id="@+id/layout_hh_xdata"
             android:layout_width="match_parent"
-            android:layout_height="260dp"
-            android:background="@drawable/nui_txtbox_rone_wbevel"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="4dp"
+            android:background="@drawable/nui_list_rborder_panel"
             android:orientation="vertical">
 
             <ListView

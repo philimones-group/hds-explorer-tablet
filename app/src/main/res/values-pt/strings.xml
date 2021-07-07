@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">HDS Explorer</string>
 
@@ -186,15 +187,31 @@
     <string name="member_details_dialog_del_saved_form_title_lbl">Apagar informação salva</string>
     <string name="member_details_dialog_del_saved_form_msg_lbl">O formulario ODK salvo não foi encontrado, a informação salva será apagada para permitir colheita de novos formularios\nDeseja prosseguir com a execução deste processo?</string>
 
-    <string name="household_details_members_list_lbl">Lista de Membros</string>
+    <string name="household_details_tab_members_list_lbl">Lista de Membros</string>
+    <string name="household_details_tab_collected_forms_lbl">Formulários Colhidos</string>
+    <string name="household_details_tab_datasets_lbl">Outros detalhes</string>
+    <string name="household_details_tab_visit_lbl">Visita</string>
     <string name="household_details_head_name_lbl">Chefe:</string>
     <string name="household_details_head_code_lbl">Código:</string>
     <string name="household_details_region_lbl">Localização:</string>
+    <string name="household_details_last_visit_lbl">Data da Ultima Visita:</string>
     <string name="household_details_dialog_del_saved_form_title_lbl">Apagar informação salva</string>
     <string name="household_details_dialog_del_saved_form_msg_lbl">O formulario ODK salvo não foi encontrado, a informação salva será apagada para permitir colheita de novos formularios\nDeseja prosseguir com a execução deste processo?</string>
     <string name="household_details_forms_selector_lbl">Selecionar um Formulário</string>
-    <string name="household_details_col_data_info_lbl">Formulários Colhidos</string>
-    <string name="household_details_datasets_lbl">Outros detalhes</string>
+
+    <string name="household_details_bt_create_visit_lbl">Iniciar Visita</string>
+    <string name="household_details_bt_finish_visit_lbl">Terminar Visita</string>
+    <string name="household_details_bt_open_visit_lbl">Reabrir Visita</string>
+
+    <string name="household_visit_bt_enum_lbl">Registo de\nNovo Membro</string>
+    <string name="household_visit_bt_birth_lbl">Registar\nNascimento</string>
+    <string name="household_visit_bt_pregnancy_lbl">Registar\nGravidez</string>
+    <string name="household_visit_bt_extinmig_lbl">Imigração\nExterna</string>
+    <string name="household_visit_bt_intinmig_lbl">Imigração\nInterna</string>
+    <string name="household_visit_bt_outmig_lbl">Emigração\nExterna</string>
+    <string name="household_visit_bt_death_lbl">Registar Morte</string>
+    <string name="household_visit_bt_marital_lbl">Registar de\nUnião Marital</string>
+    <string name="household_visit_bt_collect_lbl">Colher Dados</string>
 
     <string name="region_details_code_lbl">Código:</string>
     <string name="region_details_parent_lbl">Região:</string>

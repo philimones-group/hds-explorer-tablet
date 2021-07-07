@@ -39,4 +39,6 @@ public class MaritalRelationship {
 
     public Date endDate;
 
+    public boolean recentlyCreated;
+
 }

@@ -48,4 +48,6 @@ class OutMigration {
     @Index
     public String visitCode;
 
+    public boolean recentlyCreated;
+
 }

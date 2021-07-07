@@ -33,4 +33,6 @@ public class PregnancyChild {
 
     public ToOne<HeadRelationship> childHeadRelationship;
 
+    public boolean recentlyCreated;
+
 }

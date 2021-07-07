@@ -44,4 +44,6 @@ public class InMigration {
     @Index
     public String visitCode;
 
+    public boolean recentlyCreated;
+
 }

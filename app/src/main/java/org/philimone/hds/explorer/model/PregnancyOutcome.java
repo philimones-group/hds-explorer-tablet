@@ -52,4 +52,6 @@ public class PregnancyOutcome {
     @Backlink
     public ToMany<PregnancyChild> childs;
 
+    public boolean recentlyCreated;
+
 }

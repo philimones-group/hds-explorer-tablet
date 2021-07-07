@@ -48,4 +48,6 @@ public class Visit {
     public Double gpsLatitude;
     public Double gpsLongitude;
 
+    public boolean recentlyCreated;
+
 }

@@ -55,4 +55,6 @@ public class PregnancyRegistration {
     @Index
     public String visitCode;
 
+    public boolean recentlyCreated;
+
 }

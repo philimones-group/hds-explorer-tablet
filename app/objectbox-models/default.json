@@ -941,7 +941,7 @@
     },
     {
       "id": "13:6711218666484267288",
-      "lastPropertyId": "13:2838658658286222441",
+      "lastPropertyId": "14:575101576832350405",
       "name": "PregnancyOutcome",
       "properties": [
         {
@@ -1028,13 +1028,19 @@
           "type": 11,
           "flags": 1548,
           "relationTarget": "Visit"
+        },
+        {
+          "id": "14:575101576832350405",
+          "name": "recentlyCreated",
+          "type": 1,
+          "flags": 4
         }
       ],
       "relations": []
     },
     {
       "id": "14:762193319076805644",
-      "lastPropertyId": "7:2328660741193187207",
+      "lastPropertyId": "8:8355011118466637413",
       "name": "MaritalRelationship",
       "properties": [
         {
@@ -1076,13 +1082,19 @@
           "id": "7:2328660741193187207",
           "name": "endDate",
           "type": 10
+        },
+        {
+          "id": "8:8355011118466637413",
+          "name": "recentlyCreated",
+          "type": 1,
+          "flags": 4
         }
       ],
       "relations": []
     },
     {
       "id": "15:4705936129891303264",
-      "lastPropertyId": "8:4339828814283676446",
+      "lastPropertyId": "9:317397868525718992",
       "name": "PregnancyChild",
       "properties": [
         {
@@ -1139,13 +1151,19 @@
           "type": 11,
           "flags": 1548,
           "relationTarget": "HeadRelationship"
+        },
+        {
+          "id": "9:317397868525718992",
+          "name": "recentlyCreated",
+          "type": 1,
+          "flags": 4
         }
       ],
       "relations": []
     },
     {
       "id": "16:3819298482554722089",
-      "lastPropertyId": "9:4925887990413343720",
+      "lastPropertyId": "10:4882234072737107050",
       "name": "OutMigration",
       "properties": [
         {
@@ -1201,6 +1219,12 @@
           "indexId": "43:3563834430307602453",
           "type": 9,
           "flags": 2048
+        },
+        {
+          "id": "10:4882234072737107050",
+          "name": "recentlyCreated",
+          "type": 1,
+          "flags": 4
         }
       ],
       "relations": []
@@ -1259,7 +1283,7 @@
     },
     {
       "id": "18:2971387062509066349",
-      "lastPropertyId": "7:2080912583819852456",
+      "lastPropertyId": "8:184762347696774538",
       "name": "Death",
       "properties": [
         {
@@ -1302,13 +1326,19 @@
           "indexId": "47:8773230033257953127",
           "type": 9,
           "flags": 2048
+        },
+        {
+          "id": "8:184762347696774538",
+          "name": "recentlyCreated",
+          "type": 1,
+          "flags": 4
         }
       ],
       "relations": []
     },
     {
       "id": "19:1493713431233179094",
-      "lastPropertyId": "14:227076107964842635",
+      "lastPropertyId": "15:366464252479662546",
       "name": "Visit",
       "properties": [
         {
@@ -1393,13 +1423,19 @@
           "name": "gpsLongitude",
           "type": 8,
           "flags": 2
+        },
+        {
+          "id": "15:366464252479662546",
+          "name": "recentlyCreated",
+          "type": 1,
+          "flags": 4
         }
       ],
       "relations": []
     },
     {
       "id": "20:2389375802542346440",
-      "lastPropertyId": "9:4108610534254225622",
+      "lastPropertyId": "10:5201936680176878572",
       "name": "HeadRelationship",
       "properties": [
         {
@@ -1459,13 +1495,19 @@
           "id": "9:4108610534254225622",
           "name": "endDate",
           "type": 10
+        },
+        {
+          "id": "10:5201936680176878572",
+          "name": "recentlyCreated",
+          "type": 1,
+          "flags": 4
         }
       ],
       "relations": []
     },
     {
       "id": "21:4385528013949997550",
-      "lastPropertyId": "14:591142650927775836",
+      "lastPropertyId": "15:661677106363381061",
       "name": "PregnancyRegistration",
       "properties": [
         {
@@ -1548,13 +1590,19 @@
           "indexId": "56:4791760148464300258",
           "type": 9,
           "flags": 2048
+        },
+        {
+          "id": "15:661677106363381061",
+          "name": "recentlyCreated",
+          "type": 1,
+          "flags": 4
         }
       ],
       "relations": []
     },
     {
       "id": "22:8558377030680171203",
-      "lastPropertyId": "9:2140468262032824280",
+      "lastPropertyId": "10:2055096874452751158",
       "name": "InMigration",
       "properties": [
         {
@@ -1610,6 +1658,12 @@
           "indexId": "60:3641365062876875778",
           "type": 9,
           "flags": 2048
+        },
+        {
+          "id": "10:2055096874452751158",
+          "name": "recentlyCreated",
+          "type": 1,
+          "flags": 4
         }
       ],
       "relations": []

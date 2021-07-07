@@ -50,4 +50,6 @@ public class HeadRelationship {
 
     public Date endDate;
 
+    public boolean recentlyCreated;
+
 }

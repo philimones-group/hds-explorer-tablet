@@ -48,7 +48,7 @@ public class Household implements Serializable {
     public Double cosLongitude;
     public Double sinLongitude;
 
-    private Boolean recentlyCreated = false;
+    public Boolean recentlyCreated = false;
 
     public long getId() {
         return id;

@@ -10,18 +10,17 @@ import android.view.ViewGroup;
 
 import org.philimone.hds.explorer.R;
 import org.philimone.hds.explorer.model.Household;
-import org.philimone.hds.explorer.model.PregnancyRegistration;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link HouseholdVisitFragment#newInstance} factory method to
+ * Use the {@link HouseholdVisitButtonsFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class HouseholdVisitFragment extends Fragment {
+public class HouseholdVisitButtonsFragment extends Fragment {
 
     private Household household;
 
-    public HouseholdVisitFragment() {
+    public HouseholdVisitButtonsFragment() {
         // Required empty public constructor
     }
 
@@ -31,8 +30,8 @@ public class HouseholdVisitFragment extends Fragment {
      *
      * @return A new instance of fragment HouseholdVisitFragment.
      */
-    public static HouseholdVisitFragment newInstance(Household household) {
-        HouseholdVisitFragment fragment = new HouseholdVisitFragment();
+    public static HouseholdVisitButtonsFragment newInstance(Household household) {
+        HouseholdVisitButtonsFragment fragment = new HouseholdVisitButtonsFragment();
         fragment.household = household;
         return fragment;
     }
@@ -45,6 +44,6 @@ public class HouseholdVisitFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.household_visit, container, false);
+        return inflater.inflate(R.layout.household_visit_buttons, container, false);
     }
 }

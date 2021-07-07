@@ -33,4 +33,6 @@ public class Death {
     @Index
     public String visitCode;
 
+    public boolean recentlyCreated;
+
 }

@@ -1,7 +1,7 @@
 package org.philimone.hds.explorer.widget.member_details;
 
-import android.app.DialogFragment;
-import android.app.FragmentManager;
+import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.FragmentManager;
 import android.os.Bundle;
 import androidx.annotation.Nullable;
 import android.view.LayoutInflater;

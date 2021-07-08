@@ -8,6 +8,7 @@ import android.util.Log;
 import org.philimone.hds.explorer.R;
 import org.philimone.hds.explorer.adapter.MemberArrayAdapter;
 import org.philimone.hds.explorer.data.FormDataLoader;
+import org.philimone.hds.explorer.data.FormFilter;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
 import org.philimone.hds.explorer.database.Queries;
 import org.philimone.hds.explorer.fragment.MemberFilterFragment;
@@ -47,10 +48,6 @@ public class SurveyMembersActivity extends AppCompatActivity implements MemberFi
     private Box<Dataset> boxDatasets;
     private Box<Household> boxHouseholds;
 
-    public enum FormFilter {
-        REGION, HOUSEHOLD, HOUSEHOLD_HEAD, MEMBER, FOLLOW_UP
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,8 +55,8 @@ public class SurveyMembersActivity extends AppCompatActivity implements MemberFi
 
         this.loggedUser = (User) getIntent().getExtras().get("user");
 
-        this.memberFilterFragment = (MemberFilterFragment) (getFragmentManager().findFragmentById(R.id.memberFilterFragment));
-        this.memberListFragment = (MemberListFragment) getFragmentManager().findFragmentById(R.id.memberListFragment);
+        this.memberFilterFragment = (MemberFilterFragment) (getSupportFragmentManager().findFragmentById(R.id.memberFilterFragment));
+        this.memberListFragment = (MemberListFragment) getSupportFragmentManager().findFragmentById(R.id.memberListFragment);
 
         initBoxes();
         initialize();
@@ -152,50 +149,8 @@ public class SurveyMembersActivity extends AppCompatActivity implements MemberFi
         return household;
     }
 
-    public FormDataLoader[] getFormLoaders(FormFilter... filters){
-
-        List<FormFilter> listFilters = Arrays.asList(filters);
-
-        String[] userModules = loggedUser.getModules().split(",");
-
-        List<Form> forms = this.boxForms.getAll(); //get all forms
-        List<FormDataLoader> list = new ArrayList<>();
-
-        int i=0;
-        for (Form form : forms){
-            String[] formModules = form.getModules().split(",");
-            Log.d("forms", ""+loggedUser.getModules() +" - " + form.getModules() );
-            if (StringUtil.containsAny(userModules, formModules)){ //if the user has access to module specified on Form
-
-                FormDataLoader loader = new FormDataLoader(form);
-
-                if (form.isFollowUpOnly() && listFilters.contains(FormFilter.FOLLOW_UP)){
-                    list.add(loader);
-                    continue;
-                }
-                if (form.isRegionForm() && listFilters.contains(FormFilter.REGION)){
-                    list.add(loader);
-                    continue;
-                }
-                if (form.isHouseholdForm() && listFilters.contains(FormFilter.HOUSEHOLD)){
-                    list.add(loader);
-                    continue;
-                }
-                if (form.isHouseholdHeadForm() && listFilters.contains(FormFilter.HOUSEHOLD_HEAD)){
-                    list.add(loader);
-                    continue;
-                }
-                if (form.isMemberForm() && listFilters.contains(FormFilter.MEMBER)){
-                    list.add(loader);
-                    continue;
-                }
-
-            }
-        }
-
-        FormDataLoader[] aList = new FormDataLoader[list.size()];
-
-        return list.toArray(aList);
+    FormDataLoader[] getFormLoaders(FormFilter... filters) {
+        return FormDataLoader.getFormLoaders(boxForms, loggedUser, filters);
     }
 
     private List<FormFilter> toList(FormFilter... filters){

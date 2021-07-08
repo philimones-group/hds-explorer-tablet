@@ -8,6 +8,7 @@ import android.util.Log;
 import org.philimone.hds.explorer.R;
 import org.philimone.hds.explorer.adapter.MemberArrayAdapter;
 import org.philimone.hds.explorer.data.FormDataLoader;
+import org.philimone.hds.explorer.data.FormFilter;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
 import org.philimone.hds.explorer.database.Queries;
 import org.philimone.hds.explorer.fragment.HouseholdFilterFragment;
@@ -57,10 +58,6 @@ public class SurveyHouseholdsActivity extends AppCompatActivity implements House
     private Box<Household> boxHouseholds;
     private Box<Member> boxMembers;
 
-    public enum FormFilter {
-        REGION, HOUSEHOLD, HOUSEHOLD_HEAD, MEMBER, FOLLOW_UP
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,8 +66,8 @@ public class SurveyHouseholdsActivity extends AppCompatActivity implements House
         this.loggedUser = (User) getIntent().getExtras().get("user");
         //this.censusMode = getIntent().getExtras().getBoolean("censusMode");
 
-        this.householdFilterFragment = (HouseholdFilterFragment) (getFragmentManager().findFragmentById(R.id.householdFilterFragment));
-        this.memberListFragment = (MemberListFragment) getFragmentManager().findFragmentById(R.id.memberListFragment);
+        this.householdFilterFragment = (HouseholdFilterFragment) (getSupportFragmentManager().findFragmentById(R.id.householdFilterFragment));
+        this.memberListFragment = (MemberListFragment) getSupportFragmentManager().findFragmentById(R.id.memberListFragment);
 
         initBoxes();
         initialize();
@@ -161,53 +158,13 @@ public class SurveyHouseholdsActivity extends AppCompatActivity implements House
         startActivityForResult(intent, RequestCodes.SCAN_BARCODE);
     }
 
-    public FormDataLoader[] getFormLoaders(FormFilter... filters){
-
-        List<FormFilter> listFilters = Arrays.asList(filters);
-
-        String[] userModules = loggedUser.getModules().split(",");
-
-        List<Form> forms = this.boxForms.getAll(); //get all forms
-        List<FormDataLoader> list = new ArrayList<>();
-
-        int i=0;
-        for (Form form : forms){
-            String[] formModules = form.getModules().split(",");
-            Log.d("dl", "fm="+form.getModules()+", um"+loggedUser.getModules());
-            if (StringUtil.containsAny(userModules, formModules)){ //if the user has access to module specified on Form
-                FormDataLoader loader = new FormDataLoader(form);
-
-                if (form.isFollowUpOnly() && listFilters.contains(FormFilter.FOLLOW_UP)){
-                    list.add(loader);
-                    continue;
-                }
-                if (form.isRegionForm() && listFilters.contains(FormFilter.REGION)){
-                    list.add(loader);
-                    continue;
-                }
-                if (form.isHouseholdForm() && listFilters.contains(FormFilter.HOUSEHOLD)){
-                    list.add(loader);
-                    continue;
-                }
-                if (form.isHouseholdHeadForm() && listFilters.contains(FormFilter.HOUSEHOLD_HEAD)){
-                    list.add(loader);
-                    continue;
-                }
-                if (form.isMemberForm() && listFilters.contains(FormFilter.MEMBER)){
-                    list.add(loader);
-                    continue;
-                }
-            }
-        }
-
-        FormDataLoader[] aList = new FormDataLoader[list.size()];
-
-        return list.toArray(aList);
+    FormDataLoader[] getFormLoaders(FormFilter... filters) {
+        return FormDataLoader.getFormLoaders(boxForms, loggedUser, filters);
     }
 
-    private List<SurveyMembersActivity.FormFilter> toList(SurveyMembersActivity.FormFilter... filters){
-        List<SurveyMembersActivity.FormFilter> list = new ArrayList<>();
-        for (SurveyMembersActivity.FormFilter f : filters){
+    private List<FormFilter> toList(FormFilter... filters){
+        List<FormFilter> list = new ArrayList<>();
+        for (FormFilter f : filters){
             list.add(f);
         }
         return list;

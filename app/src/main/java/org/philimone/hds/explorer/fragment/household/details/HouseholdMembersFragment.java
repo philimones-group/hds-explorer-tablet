@@ -12,6 +12,7 @@ import android.widget.ListView;
 import org.philimone.hds.explorer.R;
 import org.philimone.hds.explorer.adapter.MemberArrayAdapter;
 import org.philimone.hds.explorer.data.FormDataLoader;
+import org.philimone.hds.explorer.data.FormFilter;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
 import org.philimone.hds.explorer.main.MemberDetailsActivity;
 import org.philimone.hds.explorer.model.Dataset;
@@ -51,10 +52,6 @@ public class HouseholdMembersFragment extends Fragment {
     private Box<Member> boxMembers;
     private Box<Form> boxForms;
     private Box<Dataset> boxDatasets;
-
-    public enum FormFilter {
-        REGION, HOUSEHOLD, HOUSEHOLD_HEAD, MEMBER, FOLLOW_UP
-    }
 
     public HouseholdMembersFragment() {
         // Required empty public constructor
@@ -163,48 +160,8 @@ public class HouseholdMembersFragment extends Fragment {
     /*
     * Loaders
     */
-    public FormDataLoader[] getFormLoaders(FormFilter... filters){
-
-        List<FormFilter> listFilters = Arrays.asList(filters);
-
-        String[] userModules = loggedUser.getModules().split(",");
-
-        List<Form> forms = this.boxForms.getAll(); //get all forms
-        List<FormDataLoader> list = new ArrayList<>();
-
-        int i=0;
-        for (Form form : forms){
-            String[] formModules = form.getModules().split(",");
-
-            if (StringUtil.containsAny(userModules, formModules)){ //if the user has access to module specified on Form
-                FormDataLoader loader = new FormDataLoader(form);
-
-                if (form.isFollowUpOnly() && listFilters.contains(FormFilter.FOLLOW_UP)){
-                    list.add(loader);
-                    continue;
-                }
-                if (form.isRegionForm() && listFilters.contains(FormFilter.REGION)){
-                    list.add(loader);
-                    continue;
-                }
-                if (form.isHouseholdForm() && listFilters.contains(FormFilter.HOUSEHOLD)){
-                    list.add(loader);
-                    continue;
-                }
-                if (form.isHouseholdHeadForm() && listFilters.contains(FormFilter.HOUSEHOLD_HEAD)){
-                    list.add(loader);
-                    continue;
-                }
-                if (form.isMemberForm() && listFilters.contains(FormFilter.MEMBER)){
-                    list.add(loader);
-                    continue;
-                }
-            }
-        }
-
-        FormDataLoader[] aList = new FormDataLoader[list.size()];
-
-        return list.toArray(aList);
+    FormDataLoader[] getFormLoaders(org.philimone.hds.explorer.data.FormFilter... filters) {
+        return FormDataLoader.getFormLoaders(boxForms, loggedUser, filters);
     }
 
     private void loadFormValues(FormDataLoader[] loaders, Household household, Member member, Region region){

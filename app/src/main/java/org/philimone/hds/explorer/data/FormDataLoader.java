@@ -15,12 +15,16 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+import io.objectbox.Box;
 import mz.betainteractive.io.readers.CSVReader;
 import mz.betainteractive.utilities.StringUtil;
 
@@ -42,7 +46,7 @@ public class FormDataLoader implements Serializable {
     private Form form;
     private Map<String, Object> values;
 
-    private static Map<String, CSVReader.CSVRow> generalCSVRows;
+    private Map<String, CSVReader.CSVRow> generalCSVRows;
 
     public FormDataLoader(){
         this.values = new LinkedHashMap<>();
@@ -653,5 +657,51 @@ public class FormDataLoader implements Serializable {
 
         return null;
 
+    }
+
+    /* Static dataloaders */
+    public static FormDataLoader[] getFormLoaders(Box<Form> boxForms, User user, FormFilter... filters){
+
+        List<FormFilter> listFilters = Arrays.asList(filters);
+
+        String[] userModules = user.getModules().split(",");
+
+        List<Form> forms = boxForms.getAll(); //get all forms
+        List<FormDataLoader> list = new ArrayList<>();
+
+        int i=0;
+        for (Form form : forms){
+            String[] formModules = form.getModules().split(",");
+            Log.d("forms", ""+user.getModules() +" - " + form.getModules() );
+            if (StringUtil.containsAny(userModules, formModules)){ //if the user has access to module specified on Form
+
+                FormDataLoader loader = new FormDataLoader(form);
+
+                if (form.isFollowUpOnly() && listFilters.contains(FormFilter.FOLLOW_UP)){
+                    list.add(loader);
+                    continue;
+                }
+                if (form.isRegionForm() && listFilters.contains(FormFilter.REGION)){
+                    list.add(loader);
+                    continue;
+                }
+                if (form.isHouseholdForm() && listFilters.contains(FormFilter.HOUSEHOLD)){
+                    list.add(loader);
+                    continue;
+                }
+                if (form.isHouseholdHeadForm() && listFilters.contains(FormFilter.HOUSEHOLD_HEAD)){
+                    list.add(loader);
+                    continue;
+                }
+                if (form.isMemberForm() && listFilters.contains(FormFilter.MEMBER)){
+                    list.add(loader);
+                    continue;
+                }
+            }
+        }
+
+        FormDataLoader[] aList = new FormDataLoader[list.size()];
+
+        return list.toArray(aList);
     }
 }

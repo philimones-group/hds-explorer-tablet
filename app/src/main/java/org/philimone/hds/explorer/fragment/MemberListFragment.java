@@ -1,7 +1,7 @@
 package org.philimone.hds.explorer.fragment;
 
 
-import android.app.Fragment;
+import androidx.fragment.app.Fragment;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
@@ -388,7 +388,7 @@ public class MemberListFragment extends Fragment {
             return;
         }
 
-        GpsNearBySelectorDialog.createDialog(getFragmentManager(), new GpsNearBySelectorDialog.OnClickListener() {
+        GpsNearBySelectorDialog.createDialog(getParentFragmentManager(), new GpsNearBySelectorDialog.OnClickListener() {
             @Override
             public void onSelectedDistance(Distance distance) {
                 showClosestHouses(currentHousehold, distance);
@@ -409,7 +409,7 @@ public class MemberListFragment extends Fragment {
             return;
         }
 
-        GpsNearBySelectorDialog.createDialog(getFragmentManager(), new GpsNearBySelectorDialog.OnClickListener() {
+        GpsNearBySelectorDialog.createDialog(getParentFragmentManager(), new GpsNearBySelectorDialog.OnClickListener() {
             @Override
             public void onSelectedDistance(Distance distance) {
                 showClosestMembers(member, distance);
@@ -424,7 +424,7 @@ public class MemberListFragment extends Fragment {
 
     private void buildNewTempMemberDialog(){
 
-        MemberFormDialog.createTemporaryMemberDialog(getFragmentManager(), this.currentHousehold, new MemberFormDialog.Listener() {
+        MemberFormDialog.createTemporaryMemberDialog(getParentFragmentManager(), this.currentHousehold, new MemberFormDialog.Listener() {
             @Override
             public void onNewMemberCreated(Member member) {
                 afterTemporaryMemberCreated(member);

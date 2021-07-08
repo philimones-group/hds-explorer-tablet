@@ -1,5 +1,6 @@
 package org.philimone.hds.explorer.main;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -8,7 +9,6 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.google.android.material.tabs.TabItem;
 import com.google.android.material.tabs.TabLayout;
 
 import org.philimone.hds.explorer.R;
@@ -28,6 +28,7 @@ import org.philimone.hds.explorer.model.Region_;
 import org.philimone.hds.explorer.model.User;
 import org.philimone.hds.explorer.model.Visit;
 import org.philimone.hds.explorer.model.Visit_;
+import org.philimone.hds.explorer.settings.RequestCodes;
 import org.philimone.hds.explorer.widget.DialogFactory;
 
 import java.util.ArrayList;
@@ -42,7 +43,7 @@ import mz.betainteractive.utilities.StringUtil;
 
 public class HouseholdDetailsActivity extends AppCompatActivity {
 
-    private enum HouseholdDetailsMode { VISIT_MODE, NORMAL_MODE };
+    private enum HouseholdDetailsMode { NORMAL_MODE, VISIT_MODE, NEW_HOUSEHOLD_MODE };
 
     private TextView hhDetailsName;
     private TextView hhDetailsCode;
@@ -313,7 +314,7 @@ public class HouseholdDetailsActivity extends AppCompatActivity {
     }
 
     private boolean isVisibleForm(Form form){
-        if (requestCode != TrackingListDetailsActivity.RC_HOUSEHOLD_DETAILS_TRACKINGLIST){ //HouseholdDetails was not opened via Tracking/FollowUp lists
+        if (requestCode != RequestCodes.HOUSEHOLD_DETAILS_FROM_TRACKING_LIST_DETAILS){ //HouseholdDetails was not opened via Tracking/FollowUp lists
             if (form.isFollowUpOnly()){ //forms flagged with followUpOnly can only be opened using FollowUp Lists, to be able to open via normal surveys remove the flag on the server
                 return false;
             }

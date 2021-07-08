@@ -21,8 +21,6 @@ public class BarcodeScannerActivity extends AppCompatActivity {
     private boolean returningFromScanning;
     private boolean barcodeWasScanned;
 
-    public static final int SCAN_BARCODE_REQUEST_CODE = 201;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

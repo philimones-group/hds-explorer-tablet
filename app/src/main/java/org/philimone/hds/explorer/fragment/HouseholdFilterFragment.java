@@ -22,9 +22,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.mapswithme.maps.api.MWMPoint;
-import com.mapswithme.maps.api.MapsWithMeApi;
-
 import org.philimone.hds.explorer.R;
 import org.philimone.hds.explorer.adapter.HouseholdArrayAdapter;
 import org.philimone.hds.explorer.adapter.RegionExpandableListAdapter;
@@ -39,7 +36,6 @@ import org.philimone.hds.explorer.model.Household;
 import org.philimone.hds.explorer.model.Household_;
 import org.philimone.hds.explorer.model.Region;
 import org.philimone.hds.explorer.model.User;
-import org.philimone.hds.explorer.widget.DialogFactory;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -56,7 +52,7 @@ public class HouseholdFilterFragment extends Fragment implements RegionExpandabl
     private Context mContext;
     private EditText txtHouseFilterCode;
     private ListView hfHousesList;
-    private Button btHouseFilterClear;
+    private Button btHouseFilterAddNewHousehold;
     private Button btHouseFilterShowRegion;
     private Button btHouseFilterSearch;
     private RelativeLayout hfViewProgressBar;
@@ -141,7 +137,7 @@ public class HouseholdFilterFragment extends Fragment implements RegionExpandabl
 
         this.txtHouseFilterCode = (EditText) view.findViewById(R.id.txtHouseFilterCode);
         this.hfHousesList = (ListView) view.findViewById(R.id.hfHousesList);
-        this.btHouseFilterClear = (Button) view.findViewById(R.id.btHouseFilterClear);
+        this.btHouseFilterAddNewHousehold = (Button) view.findViewById(R.id.btHouseFilterAddNewHousehold);
         this.btHouseFilterSearch = (Button) view.findViewById(R.id.btHouseFilterSearch);
         this.hfViewProgressBar = (RelativeLayout) view.findViewById(R.id.hfViewProgressBar);
 
@@ -200,11 +196,11 @@ public class HouseholdFilterFragment extends Fragment implements RegionExpandabl
         });
 
 
-        if (btHouseFilterClear != null) {
-            this.btHouseFilterClear.setOnClickListener(new View.OnClickListener() {
+        if (btHouseFilterAddNewHousehold != null) {
+            this.btHouseFilterAddNewHousehold.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
+                    onAddNewHouseholdClicked();
                 }
             });
         }
@@ -255,10 +251,6 @@ public class HouseholdFilterFragment extends Fragment implements RegionExpandabl
         }
     }
 
-    public void setBarcodeScannerListener(BarcodeScannerActivity.InvokerClickListener listener){
-        this.barcodeScannerListener = listener;
-    }
-
     private void onHouseFilterCodeClicked() {
         //1-Load scan dialog (scan id or cancel)
         //2-on scan load scanner and read barcode
@@ -267,6 +259,26 @@ public class HouseholdFilterFragment extends Fragment implements RegionExpandabl
         if (this.barcodeScannerListener != null){
             this.barcodeScannerListener.onBarcodeScannerClicked(R.id.txtHouseFilterCode, getString(R.string.household_filter_code_lbl), this);
         }
+    }
+
+    private void onHouseholdClicked(Household household){
+        //paint item as selected
+        this.household = household;
+
+        listener.onHouseholdClick(household);
+    }
+
+    private void onAddNewHouseholdClicked() {
+        //Call HouseholdDetailsActivity in mode NEW_HOUSEHOLD
+        //Receive the recent created Household, put the code on search after it
+    }
+
+    private void onShowRegionClicked() {
+        listener.onShowRegionDetailsClicked(currentRegion);
+    }
+
+    private void onRegionClicked(int groupPosition, int childPosition) {
+        regionAdapter.selectChild(groupPosition, childPosition);
     }
 
     @Override
@@ -278,6 +290,19 @@ public class HouseholdFilterFragment extends Fragment implements RegionExpandabl
 
         txtHouseFilterCode.setText(resultContent);
         txtHouseFilterCode.requestFocus();
+    }
+
+    private void onSelectedRegion(Region region){
+
+        boolean lastLevel = region.getLevel().equals(lastRegionLevel);
+
+        btHouseFilterSearch.setEnabled(lastLevel);
+
+        listener.onSelectedRegion(region);
+    }
+
+    public void setBarcodeScannerListener(BarcodeScannerActivity.InvokerClickListener listener){
+        this.barcodeScannerListener = listener;
     }
 
     public User getLoggedUser() {
@@ -294,14 +319,6 @@ public class HouseholdFilterFragment extends Fragment implements RegionExpandabl
 
     public void setCensusMode(boolean censusMode) {
         this.censusMode = censusMode;
-    }
-
-    private void onShowRegionClicked() {
-        listener.onShowRegionDetailsClicked(currentRegion);
-    }
-
-    private void onRegionClicked(int groupPosition, int childPosition) {
-        regionAdapter.selectChild(groupPosition, childPosition);
     }
 
     @Override
@@ -505,22 +522,6 @@ public class HouseholdFilterFragment extends Fragment implements RegionExpandabl
         //showProgress(true);
         HouseholdSearchTask task = new HouseholdSearchTask(householdCode, null);
         task.execute();
-    }
-
-    private void onHouseholdClicked(Household household){
-        //paint item as selected
-        this.household = household;
-
-        listener.onHouseholdClick(household);
-    }
-
-    private void onSelectedRegion(Region region){
-
-        boolean lastLevel = region.getLevel().equals(lastRegionLevel);
-
-        btHouseFilterSearch.setEnabled(lastLevel);
-
-        listener.onSelectedRegion(region);
     }
 
     private boolean isLastRegionLevel(){

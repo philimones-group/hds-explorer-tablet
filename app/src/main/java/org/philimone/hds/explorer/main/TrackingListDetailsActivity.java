@@ -1,6 +1,5 @@
 package org.philimone.hds.explorer.main;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -34,6 +33,7 @@ import org.philimone.hds.explorer.model.User;
 import org.philimone.hds.explorer.model.followup.TrackingList;
 import org.philimone.hds.explorer.model.followup.TrackingSubjectList;
 import org.philimone.hds.explorer.model.followup.TrackingSubjectList_;
+import org.philimone.hds.explorer.settings.RequestCodes;
 import org.philimone.hds.explorer.widget.LoadingDialog;
 
 import java.util.ArrayList;
@@ -46,11 +46,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import io.objectbox.Box;
 
 public class TrackingListDetailsActivity extends AppCompatActivity implements BarcodeScannerActivity.ResultListener, BarcodeScannerActivity.InvokerClickListener {
-
-    public static final int RC_REGION_DETAILS_TRACKINGLIST = 20;
-    public static final int RC_HOUSEHOLD_DETAILS_TRACKINGLIST = 21;
-    public static final int RC_MEMBER_DETAILS_TRACKINGLIST = 22;
-
 
     private TextView txtTrackListTitle;
     private TextView txtTrackListDetails;
@@ -555,14 +550,14 @@ public class TrackingListDetailsActivity extends AppCompatActivity implements Ba
         //Log.d("res listener size", ""+barcodeResultListeners.size());
 
 
-        startActivityForResult(intent, BarcodeScannerActivity.SCAN_BARCODE_REQUEST_CODE);
+        startActivityForResult(intent, RequestCodes.SCAN_BARCODE);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == BarcodeScannerActivity.SCAN_BARCODE_REQUEST_CODE && resultCode == RESULT_OK){
+        if (requestCode == RequestCodes.SCAN_BARCODE && resultCode == RESULT_OK){
             //send result back to the invoker listener
 
             int txtResId = data.getExtras().getInt("text_box_res_id");
@@ -657,7 +652,7 @@ public class TrackingListDetailsActivity extends AppCompatActivity implements Ba
                 intent.putExtra("user", loggedUser);
                 intent.putExtra("region", region);
                 intent.putExtra("dataloaders", dataLoaders);
-                intent.putExtra("request_code", RC_REGION_DETAILS_TRACKINGLIST);
+                intent.putExtra("request_code", RequestCodes.REGION_DETAILS_FROM_TRACKING_LIST_DETAILS);
             }
 
             if (isHousehold) {
@@ -665,7 +660,7 @@ public class TrackingListDetailsActivity extends AppCompatActivity implements Ba
                 intent.putExtra("user", loggedUser);
                 intent.putExtra("household", household);
                 intent.putExtra("dataloaders", dataLoaders);
-                intent.putExtra("request_code", RC_HOUSEHOLD_DETAILS_TRACKINGLIST);
+                intent.putExtra("request_code", RequestCodes.HOUSEHOLD_DETAILS_FROM_TRACKING_LIST_DETAILS);
             }
 
             if (isMember) {
@@ -673,14 +668,14 @@ public class TrackingListDetailsActivity extends AppCompatActivity implements Ba
                 intent.putExtra("user", loggedUser);
                 intent.putExtra("member", subjectItem.getMember());
                 intent.putExtra("member_studycode", subjectItem.getSubjectType());
-                intent.putExtra("request_code", RC_MEMBER_DETAILS_TRACKINGLIST);
+                intent.putExtra("request_code", RequestCodes.MEMBER_DETAILS_FROM_TRACKING_LIST_DETAILS);
                 intent.putExtra("dataloaders", dataLoaders);
             }
 
 
             showLoadingDialog(null, false);
 
-            startActivityForResult(intent, RC_MEMBER_DETAILS_TRACKINGLIST);
+            startActivityForResult(intent, RequestCodes.MEMBER_DETAILS_FROM_TRACKING_LIST_DETAILS);
         }
     }
 

@@ -1,12 +1,9 @@
 package org.philimone.hds.explorer.main;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
-
-import com.mapswithme.maps.api.MWMPoint;
 
 import org.philimone.hds.explorer.R;
 import org.philimone.hds.explorer.adapter.MemberArrayAdapter;
@@ -22,8 +19,8 @@ import org.philimone.hds.explorer.model.Household;
 import org.philimone.hds.explorer.model.Member;
 import org.philimone.hds.explorer.model.Region;
 import org.philimone.hds.explorer.model.User;
+import org.philimone.hds.explorer.settings.RequestCodes;
 import org.philimone.hds.explorer.widget.LoadingDialog;
-import org.philimone.hds.explorer.widget.member_details.Distance;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -121,14 +118,14 @@ public class SurveyMembersActivity extends AppCompatActivity implements MemberFi
 
         Log.d("res listener size", ""+barcodeResultListeners.size());
 
-        startActivityForResult(intent, BarcodeScannerActivity.SCAN_BARCODE_REQUEST_CODE);
+        startActivityForResult(intent, RequestCodes.SCAN_BARCODE);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == BarcodeScannerActivity.SCAN_BARCODE_REQUEST_CODE && resultCode == RESULT_OK){
+        if (requestCode == RequestCodes.SCAN_BARCODE && resultCode == RESULT_OK){
             //send result back to the invoker listener
 
             int txtResId = data.getExtras().getInt("text_box_res_id");

@@ -21,6 +21,7 @@ import org.philimone.hds.explorer.model.Household;
 import org.philimone.hds.explorer.model.Member;
 import org.philimone.hds.explorer.model.Region;
 import org.philimone.hds.explorer.model.User;
+import org.philimone.hds.explorer.settings.RequestCodes;
 import org.philimone.hds.explorer.widget.LoadingDialog;
 
 import java.util.ArrayList;
@@ -55,8 +56,6 @@ public class SurveyHouseholdsActivity extends AppCompatActivity implements House
     private Box<Dataset> boxDatasets;
     private Box<Household> boxHouseholds;
     private Box<Member> boxMembers;
-
-    private final int MEMBER_DETAILS_REQUEST_CODE = 31;
 
     public enum FormFilter {
         REGION, HOUSEHOLD, HOUSEHOLD_HEAD, MEMBER, FOLLOW_UP
@@ -159,7 +158,7 @@ public class SurveyHouseholdsActivity extends AppCompatActivity implements House
 
         Log.d("res listener size", ""+barcodeResultListeners.size());
 
-        startActivityForResult(intent, BarcodeScannerActivity.SCAN_BARCODE_REQUEST_CODE);
+        startActivityForResult(intent, RequestCodes.SCAN_BARCODE);
     }
 
     public FormDataLoader[] getFormLoaders(FormFilter... filters){
@@ -308,7 +307,7 @@ public class SurveyHouseholdsActivity extends AppCompatActivity implements House
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == MEMBER_DETAILS_REQUEST_CODE){ //if it is a return from MemberDetails - check if it was a new individual and thn update the list members
+        if (requestCode == RequestCodes.MEMBER_DETAILS_FROM_SURVEY_HOUSEHOLDS){ //if it is a return from MemberDetails - check if it was a new individual and thn update the list members
 
             if (data != null && data.getExtras() != null){
                 String houseCode = data.getExtras().getString("household_code");
@@ -326,7 +325,7 @@ public class SurveyHouseholdsActivity extends AppCompatActivity implements House
             return;
         }
 
-        if (requestCode == BarcodeScannerActivity.SCAN_BARCODE_REQUEST_CODE && resultCode == RESULT_OK){
+        if (requestCode == RequestCodes.SCAN_BARCODE && resultCode == RESULT_OK){
             //send result back to the invoker listener
 
             int txtResId = data.getExtras().getInt("text_box_res_id");
@@ -423,7 +422,7 @@ public class SurveyHouseholdsActivity extends AppCompatActivity implements House
 
             showLoadingDialog(null, false);
 
-            startActivityForResult(intent, MEMBER_DETAILS_REQUEST_CODE);
+            startActivityForResult(intent, RequestCodes.MEMBER_DETAILS_FROM_SURVEY_HOUSEHOLDS);
         }
     }
 

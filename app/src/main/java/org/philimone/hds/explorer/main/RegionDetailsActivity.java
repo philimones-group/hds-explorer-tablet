@@ -1,6 +1,5 @@
 package org.philimone.hds.explorer.main;
 
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -23,6 +22,7 @@ import org.philimone.hds.explorer.model.Form;
 import org.philimone.hds.explorer.model.Region;
 import org.philimone.hds.explorer.model.Region_;
 import org.philimone.hds.explorer.model.User;
+import org.philimone.hds.explorer.settings.RequestCodes;
 import org.philimone.hds.explorer.widget.DialogFactory;
 import org.philimone.hds.explorer.widget.FormSelectorDialog;
 
@@ -205,7 +205,7 @@ public class RegionDetailsActivity extends AppCompatActivity implements OdkFormR
     }
 
     private boolean isVisibleForm(Form form){
-        if (activityRequestCode != TrackingListDetailsActivity.RC_REGION_DETAILS_TRACKINGLIST){ //RegionDetails was not opened via Tracking/FollowUp lists
+        if (activityRequestCode != RequestCodes.REGION_DETAILS_FROM_TRACKING_LIST_DETAILS){ //RegionDetails was not opened via Tracking/FollowUp lists
             if (form.isFollowUpOnly()){ //forms flagged with followUpOnly can only be opened using FollowUp Lists, to be able to open via normal surveys remove the flag on the server
                 return false;
             }

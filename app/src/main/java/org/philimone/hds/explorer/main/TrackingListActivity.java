@@ -18,6 +18,7 @@ import org.philimone.hds.explorer.adapter.TrackingListArrayAdapter;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
 import org.philimone.hds.explorer.model.User;
 import org.philimone.hds.explorer.model.followup.TrackingList;
+import org.philimone.hds.explorer.settings.RequestCodes;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,8 +28,6 @@ import io.objectbox.Box;
 import mz.betainteractive.utilities.StringUtil;
 
 public class TrackingListActivity extends AppCompatActivity {
-
-    public static final int RC_TRACKING_LIST_DETAILS = 10;
 
     private User loggedUser;
     private TextView txtTrackListModule;
@@ -139,7 +138,7 @@ public class TrackingListActivity extends AppCompatActivity {
         intent.putExtra("user", loggedUser);
         intent.putExtra("trackinglist", trackingList);
 
-        startActivityForResult(intent, RC_TRACKING_LIST_DETAILS);
+        startActivity(intent);
     }
 
     private void filterSubjectsByCode(String code){

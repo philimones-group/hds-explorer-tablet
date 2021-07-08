@@ -376,14 +376,13 @@
             android:orientation="vertical">
 
             <Button
-                android:id="@+id/btHouseFilterClear"
+                android:id="@+id/btHouseFilterAddNewHousehold"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="5dp"
                 android:background="@drawable/nui_btnd_rone_gflat"
-                android:text="@string/household_filter_clear_lbl"
+                android:text="@string/household_filter_add_house_lbl"
                 android:textSize="@dimen/household_filter_button_textsize"
-                android:visibility="gone"
                 android:elevation="5dp"/>
 
 

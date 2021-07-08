@@ -25,6 +25,7 @@ import org.philimone.hds.explorer.model.Member;
 import org.philimone.hds.explorer.model.Member_;
 import org.philimone.hds.explorer.model.User;
 import org.philimone.hds.explorer.model.enums.temporal.ResidencyEndType;
+import org.philimone.hds.explorer.settings.RequestCodes;
 import org.philimone.hds.explorer.widget.DialogFactory;
 import org.philimone.hds.explorer.widget.FormSelectorDialog;
 
@@ -121,7 +122,7 @@ public class MemberDetailsActivity extends AppCompatActivity implements OdkFormR
     }
 
     private boolean isMemberVisualizableForm(Form form) {
-        if (requestCode != TrackingListDetailsActivity.RC_MEMBER_DETAILS_TRACKINGLIST){ //MemberDetails was not opened via Tracking/FollowUp lists
+        if (requestCode != RequestCodes.MEMBER_DETAILS_FROM_TRACKING_LIST_DETAILS){ //MemberDetails was not opened via Tracking/FollowUp lists
             if (form.isFollowUpOnly()){ //forms flagged with followUpOnly can only be opened using FollowUp Lists, to be able to open via normal surveys remove the flag on the server
                 return false;
             }

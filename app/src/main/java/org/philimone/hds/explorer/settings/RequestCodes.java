@@ -6,6 +6,8 @@ public class RequestCodes {
 
     public static final int HOUSEHOLD_DETAILS_FROM_TRACKING_LIST_DETAILS = 30;
 
+    public static final int HOUSEHOLD_DETAILS_FROM_HFILTER_NEW_HOUSEHOLD = 31;
+
     public static final int MEMBER_DETAILS_FROM_SURVEY_HOUSEHOLDS = 40;
 
     public static final int MEMBER_DETAILS_FROM_TRACKING_LIST_DETAILS = 41;

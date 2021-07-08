@@ -112,7 +112,7 @@ public class SurveyHouseholdsActivity extends AppCompatActivity implements House
     @Override
     public void onSelectedRegion(Region region) {
         FormDataLoader[] dataLoaders = getFormLoaders(FormFilter.REGION);
-        this.householdFilterFragment.checkSupportForRegionForms(dataLoaders);
+        this.householdFilterFragment.checkSupportForRegionForms(dataLoaders); //remove this limitation in future when we create Household/Region Datasets Tab
     }
 
     @Override

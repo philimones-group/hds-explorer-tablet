@@ -1,8 +1,14 @@
 package org.philimone.hds.explorer.fragment;
 
 
-import android.app.Fragment;
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.fragment.app.Fragment;
+
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
@@ -27,8 +33,10 @@ import org.philimone.hds.explorer.adapter.HouseholdArrayAdapter;
 import org.philimone.hds.explorer.adapter.RegionExpandableListAdapter;
 import org.philimone.hds.explorer.adapter.model.HierarchyItem;
 import org.philimone.hds.explorer.data.FormDataLoader;
+import org.philimone.hds.explorer.data.FormFilter;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
 import org.philimone.hds.explorer.main.BarcodeScannerActivity;
+import org.philimone.hds.explorer.main.HouseholdDetailsActivity;
 import org.philimone.hds.explorer.model.ApplicationParam;
 import org.philimone.hds.explorer.model.ApplicationParam_;
 import org.philimone.hds.explorer.model.Form;
@@ -36,11 +44,13 @@ import org.philimone.hds.explorer.model.Household;
 import org.philimone.hds.explorer.model.Household_;
 import org.philimone.hds.explorer.model.Region;
 import org.philimone.hds.explorer.model.User;
+import org.philimone.hds.explorer.settings.RequestCodes;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import androidx.activity.result.ActivityResultLauncher;
 import io.objectbox.Box;
 
 
@@ -92,6 +102,7 @@ public class HouseholdFilterFragment extends Fragment implements RegionExpandabl
     private Box<ApplicationParam> boxAppParams;
     private Box<Region> boxRegions;
     private Box<Household> boxHouseholds;
+    private Box<Form> boxForms;
 
     private RegionExpandableListAdapter regionAdapter;
     private Region currentRegion;
@@ -101,10 +112,22 @@ public class HouseholdFilterFragment extends Fragment implements RegionExpandabl
 
     private boolean censusMode;
 
-
     public enum Buttons {
         COLLECT_DATA, SEARCH_HOUSEHOLDS, GPS_MAP, CLEAR_FILTER
     }
+
+    private ActivityResultLauncher<Intent> addNewHouseholdLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+
+        if (result.getResultCode()== Activity.RESULT_OK) {
+            Intent data = result.getData();
+
+            String code = data.getStringExtra("new_household_code");
+
+            if (code != null) { //returned the new household code - search it
+                searchHouses(code);
+            }
+        }
+    });
 
     public HouseholdFilterFragment() {
         initBoxes();
@@ -126,6 +149,7 @@ public class HouseholdFilterFragment extends Fragment implements RegionExpandabl
         this.boxAppParams = ObjectBoxDatabase.get().boxFor(ApplicationParam.class);
         this.boxRegions = ObjectBoxDatabase.get().boxFor(Region.class);
         this.boxHouseholds = ObjectBoxDatabase.get().boxFor(Household.class);
+        this.boxForms = ObjectBoxDatabase.get().boxFor(Form.class);
     }
 
     private void initialize(View view) {
@@ -249,6 +273,8 @@ public class HouseholdFilterFragment extends Fragment implements RegionExpandabl
                 }
             });
         }
+
+        this.btHouseFilterAddNewHousehold.setEnabled(false);
     }
 
     private void onHouseFilterCodeClicked() {
@@ -271,6 +297,16 @@ public class HouseholdFilterFragment extends Fragment implements RegionExpandabl
     private void onAddNewHouseholdClicked() {
         //Call HouseholdDetailsActivity in mode NEW_HOUSEHOLD
         //Receive the recent created Household, put the code on search after it
+
+        FormDataLoader[] dataLoaders = FormDataLoader.getFormLoaders(this.boxForms, this.loggedUser, FormFilter.HOUSEHOLD);
+
+        Intent intent = new Intent(this.getContext(), HouseholdDetailsActivity.class);
+        intent.putExtra("user", loggedUser);
+        intent.putExtra("region", currentRegion);
+        intent.putExtra("request_code", RequestCodes.HOUSEHOLD_DETAILS_FROM_HFILTER_NEW_HOUSEHOLD);
+        intent.putExtra("dataloaders", dataLoaders);
+
+        addNewHouseholdLauncher.launch(intent);
     }
 
     private void onShowRegionClicked() {
@@ -297,6 +333,8 @@ public class HouseholdFilterFragment extends Fragment implements RegionExpandabl
         boolean lastLevel = region.getLevel().equals(lastRegionLevel);
 
         btHouseFilterSearch.setEnabled(lastLevel);
+        btHouseFilterAddNewHousehold.setEnabled(lastLevel);
+        //btHouseFilterShowRegion.setEnabled(lastLevel); - uncomment this in the future
 
         listener.onSelectedRegion(region);
     }

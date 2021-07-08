@@ -3,9 +3,11 @@ package mz.betainteractive.utilities;
 import java.sql.Timestamp;
 import java.text.Normalizer;
 import java.text.ParseException;
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  * Created by paul on 6/7/15.
@@ -296,6 +298,26 @@ public class StringUtil {
         }
     }
 
+    public static boolean isBlank(String value){
+        return value==null || value.trim().isEmpty();
+    }
+
+    public static boolean isBlankDate(LocalDate value){
+        return value==null;
+    }
+
+    public static boolean isBlankBoolean(Boolean value){
+        return value==null;
+    }
+
+    public static boolean isBlankInteger(Integer value){
+        return value==null;
+    }
+
+    public static boolean isBlankDouble(Double value){
+        return value==null;
+    }
+
     public static boolean containsAny(String[] list, String[] items){
         List<String> aList = Arrays.asList(list);
         return containsAny(aList, items);
@@ -351,18 +373,82 @@ public class StringUtil {
         return str;
     }
 
-    /*numbers*/
+    /**Numbers**/
+    public static boolean isDouble(String str){
+        final String Digits     = "(\\p{Digit}+)";
+        final String HexDigits  = "(\\p{XDigit}+)";
+        // an exponent is 'e' or 'E' followed by an optionally
+        // signed decimal integer.
+        final String Exp        = "[eE][+-]?"+Digits;
+        final String fpRegex    =
+                ("[\\x00-\\x20]*"+  // Optional leading "whitespace"
+                        "[+-]?(" + // Optional sign character
+                        "NaN|" +           // "NaN" string
+                        "Infinity|" +      // "Infinity" string
 
-    public static Double toDouble(String doubleAsText) {
+                        // A decimal floating-point string representing a finite positive
+                        // number without a leading sign has at most five basic pieces:
+                        // Digits . Digits ExponentPart FloatTypeSuffix
+                        //
+                        // Since this method allows integer-only strings as input
+                        // in addition to strings of floating-point literals, the
+                        // two sub-patterns below are simplifications of the grammar
+                        // productions from section 3.10.2 of
+                        // The Java Language Specification.
 
-        if (doubleAsText == null) return null;
+                        // Digits ._opt Digits_opt ExponentPart_opt FloatTypeSuffix_opt
+                        "((("+Digits+"(\\.)?("+Digits+"?)("+Exp+")?)|"+
 
-        try {
-            return Double.parseDouble(doubleAsText);
-        } catch (Exception ex) {
+                        // . Digits ExponentPart_opt FloatTypeSuffix_opt
+                        "(\\.("+Digits+")("+Exp+")?)|"+
 
+                        // Hexadecimal strings
+                        "((" +
+                        // 0[xX] HexDigits ._opt BinaryExponent FloatTypeSuffix_opt
+                        "(0[xX]" + HexDigits + "(\\.)?)|" +
+
+                        // 0[xX] HexDigits_opt . HexDigits BinaryExponent FloatTypeSuffix_opt
+                        "(0[xX]" + HexDigits + "?(\\.)" + HexDigits + ")" +
+
+                        ")[pP][+-]?" + Digits + "))" +
+                        "[fFdD]?))" +
+                        "[\\x00-\\x20]*");// Optional trailing "whitespace"
+
+        /*
+        if (Pattern.matches(fpRegex, str))
+            Double.valueOf(str); // Will not throw NumberFormatException
+        else {
+            // Perform suitable alternative action
+        }*/
+
+        return Pattern.matches(fpRegex, str);
+    }
+
+    public static Double getDouble(String value){
+        try{
+            return Double.parseDouble(value);
+        } catch (Exception ex){
+            return null;
         }
+    }
 
-        return null;
+    public static Integer getInteger(String value){
+        if (value == null) return null;
+
+        try{
+            return Integer.parseInt(value);
+        } catch (Exception ex){
+            return null;
+        }
+    }
+
+    public static Boolean getBoolean(String value){
+        if (value == null) return null;
+
+        try{
+            return Boolean.parseBoolean(value);
+        } catch (Exception ex){
+            return null;
+        }
     }
 }

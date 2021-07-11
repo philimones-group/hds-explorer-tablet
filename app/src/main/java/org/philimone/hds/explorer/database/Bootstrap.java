@@ -22,7 +22,13 @@ import io.objectbox.Box;
  */
 public class Bootstrap {
     private static final String APP_PATH = "org.philimone.hds.explorer";
-    private static String APP_CHILD_PATH = File.separator + "Android" + File.separator + "data" + File.separator + APP_PATH + File.separator + "files"+ File.separator;;
+    private static final String APP_BASE_PATH = File.separator + "Android" + File.separator + "data" + File.separator + APP_PATH + File.separator + "files"+ File.separator;
+    private static final String APP_FORMS_PATH = APP_BASE_PATH + "forms" + File.separator;
+    private static final String APP_INSTANCES_PATH = APP_BASE_PATH + "instances" + File.separator;
+
+    private static String absoluteBasePath;
+    private static String absoluteFormsPath;
+    private static String absoluteInstancesPath;
 
     private Box<ApplicationParam> boxAppParams;
     private Box<SyncReport> boxSyncReports;
@@ -79,34 +85,59 @@ public class Bootstrap {
 
     private static void initializePaths(){
         File root = Environment.getExternalStorageDirectory();
-        String destinationPath = root.getAbsolutePath() + APP_CHILD_PATH;
+        absoluteBasePath = root.getAbsolutePath() + APP_BASE_PATH;
+        absoluteFormsPath = root.getAbsolutePath() + APP_FORMS_PATH;
+        absoluteInstancesPath = root.getAbsolutePath() + APP_INSTANCES_PATH;
 
-        File baseDir = new File(destinationPath);
+        File baseDir = new File(absoluteBasePath);
+        File formsDir = new File(absoluteFormsPath);
+        File instancesDir = new File(absoluteInstancesPath);
+
 
         if (!baseDir.exists()) {
-            boolean created = baseDir.mkdirs();
-            if (!created) {
-                Log.d("app-dirs", "not created");
-            }else{
-                Log.d("app-dirs", "created");
-            }
+            boolean createdBaseDir = baseDir.mkdirs();
+            boolean createdFormsDir = formsDir.mkdirs();
+            boolean createdInstancesDir = instancesDir.mkdirs();
+
+            Log.d("app-dirs", "baseDir-created="+createdBaseDir+", formsDir-created="+createdFormsDir+", instancesDir-created="+createdInstancesDir);
+
         }
     }
 
-    public static String getAppPath(){
-        File root = Environment.getExternalStorageDirectory();
-        String destinationPath = root.getAbsolutePath() + APP_CHILD_PATH;
-
-        if (!new File(destinationPath).exists()){
+    public static String getBasePath(){
+        if (!new File(absoluteBasePath).exists()){
             initializePaths(); //try to initialize path
         }
 
-
-        return destinationPath;
+        return absoluteBasePath;
     }
 
-    public static File getAppPath(String filename) {
-        return new File(getAppPath() + filename);
+    public static String getFormsPath(){
+        if (!new File(absoluteFormsPath).exists()){
+            initializePaths(); //try to initialize path
+        }
+
+        return absoluteFormsPath;
+    }
+
+    public static String getInstancesPath(){
+        if (!new File(absoluteInstancesPath).exists()){
+            initializePaths(); //try to initialize path
+        }
+
+        return absoluteInstancesPath;
+    }
+
+    public static File getBasePathFile(String filename) {
+        return new File(getBasePath() + filename);
+    }
+
+    public static File getFormsPathFile(String filename) {
+        return new File(getFormsPath() + filename);
+    }
+
+    public static File getInstancesPathFile(String filename) {
+        return new File(getInstancesPath() + filename);
     }
 
 }

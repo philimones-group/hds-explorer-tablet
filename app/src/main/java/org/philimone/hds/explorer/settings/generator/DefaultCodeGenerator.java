@@ -130,7 +130,7 @@ public class DefaultCodeGenerator implements CodeGenerator {
 
             String first = existentCodes.get(existentCodes.size()-1);
             String sorder = first.replaceAll(baseCode, "");
-            Integer n = StringUtil.getInteger(sorder);
+            Integer n = StringUtil.toInteger(sorder);
 
             if (n==null) n = 1;
             for (int i=n; i <= 999; i++){
@@ -187,7 +187,7 @@ public class DefaultCodeGenerator implements CodeGenerator {
 
             String first = existentCodes.get(existentCodes.size()-1);
             String sorder = first.replaceAll(baseCode+"-", "");
-            Integer n = StringUtil.getInteger(sorder);
+            Integer n = StringUtil.toInteger(sorder);
 
             if (n==null) n = 1;
             for (int i=n; i <= 99; i++){

@@ -1,5 +1,6 @@
 package org.philimone.hds.explorer.settings.generator;
 
+import org.philimone.hds.explorer.database.ObjectBoxDatabase;
 import org.philimone.hds.explorer.model.Household;
 import org.philimone.hds.explorer.model.Household_;
 import org.philimone.hds.explorer.model.Member;
@@ -31,6 +32,13 @@ public class CodeGeneratorService {
 
     public CodeGeneratorService() {
         this.codeGenerator =  CodeGeneratorFactory.newInstance();
+
+        this.boxUsers = ObjectBoxDatabase.get().boxFor(User.class);
+        this.boxRegions = ObjectBoxDatabase.get().boxFor(Region.class);
+        this.boxHouseholds = ObjectBoxDatabase.get().boxFor(Household.class);
+        this.boxMembers = ObjectBoxDatabase.get().boxFor(Member.class);
+        this.boxVisits = ObjectBoxDatabase.get().boxFor(Visit.class);
+        this.boxPregnancies = ObjectBoxDatabase.get().boxFor(PregnancyRegistration.class);
     }
 
     public boolean isRegionCodeValid(String code) {

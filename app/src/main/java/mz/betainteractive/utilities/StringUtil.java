@@ -424,7 +424,7 @@ public class StringUtil {
         return Pattern.matches(fpRegex, str);
     }
 
-    public static Double getDouble(String value){
+    public static Double toDouble(String value){
         try{
             return Double.parseDouble(value);
         } catch (Exception ex){
@@ -432,7 +432,7 @@ public class StringUtil {
         }
     }
 
-    public static Integer getInteger(String value){
+    public static Integer toInteger(String value){
         if (value == null) return null;
 
         try{
@@ -442,7 +442,7 @@ public class StringUtil {
         }
     }
 
-    public static Boolean getBoolean(String value){
+    public static Boolean toBoolean(String value){
         if (value == null) return null;
 
         try{

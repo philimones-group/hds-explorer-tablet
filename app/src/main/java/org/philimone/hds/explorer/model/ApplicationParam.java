@@ -14,6 +14,7 @@ public class ApplicationParam {
     public static final String APP_URL = "app-url";
     public static final String ODK_URL = "odk-url";
     public static final String REDCAP_URL = "redcap-url";
+    public static final String HFORM_POST_EXECUTION = "hds-execute-on-upload";
 
     @Id
     private long id;

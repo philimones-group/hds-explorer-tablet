@@ -11,6 +11,12 @@
             android:defaultValue="https://icemr2-aws.medcol.mw:8443/hds-explorer-server"
             android:enabled="true" />
 
+        <CheckBoxPreference
+            android:key="hds-execute-on-upload"
+            android:title="@string/settings_execute_on_upload_lbl"
+            android:defaultValue="false"
+            android:enabled="true"/>
+
     </PreferenceCategory>
 
     <PreferenceCategory
@@ -38,6 +44,7 @@
             android:enabled="true"/>
 
     </PreferenceCategory>
+
 
 </PreferenceScreen>
 

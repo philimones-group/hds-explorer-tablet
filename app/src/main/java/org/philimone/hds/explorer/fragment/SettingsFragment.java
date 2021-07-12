@@ -2,6 +2,7 @@ package org.philimone.hds.explorer.fragment;
 
 
 import android.os.Bundle;
+import android.preference.CheckBoxPreference;
 import android.preference.EditTextPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
@@ -14,9 +15,6 @@ import org.philimone.hds.explorer.model.ApplicationParam_;
 
 import io.objectbox.Box;
 
-/**
- * A simple {@link Fragment} subclass.
- */
 public class SettingsFragment extends PreferenceFragment {
 
     private Box<ApplicationParam> boxAppParams;
@@ -50,10 +48,13 @@ public class SettingsFragment extends PreferenceFragment {
         EditTextPreference prefAppUrl = (EditTextPreference) findPreference(ApplicationParam.APP_URL);
         EditTextPreference prefOdkUrl = (EditTextPreference) findPreference(ApplicationParam.ODK_URL);
         EditTextPreference prefRedcapUrl = (EditTextPreference) findPreference(ApplicationParam.REDCAP_URL);
+        CheckBoxPreference prefPostExec = (CheckBoxPreference) findPreference(ApplicationParam.HFORM_POST_EXECUTION);
 
         String app_url = Queries.getApplicationParamValue(this.boxAppParams, ApplicationParam.APP_URL);
         String odk_url = Queries.getApplicationParamValue(this.boxAppParams, ApplicationParam.ODK_URL);
         String redcap_url = Queries.getApplicationParamValue(this.boxAppParams, ApplicationParam.REDCAP_URL);
+        String spost_exec = Queries.getApplicationParamValue(this.boxAppParams, ApplicationParam.HFORM_POST_EXECUTION);
+        Boolean post_exec = spost_exec!=null && spost_exec.equalsIgnoreCase("true");
 
         if (app_url != null){
             setValueInPreference(prefAppUrl, app_url);
@@ -63,6 +64,9 @@ public class SettingsFragment extends PreferenceFragment {
         }
         if (redcap_url != null){
             setValueInPreference(prefRedcapUrl, redcap_url);
+        }
+        if (post_exec != null){
+            setValueInPreference(prefPostExec, post_exec);
         }
 
         prefAppUrl.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
@@ -91,6 +95,15 @@ public class SettingsFragment extends PreferenceFragment {
                 return true;
             }
         });
+
+        prefPostExec.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+            @Override
+            public boolean onPreferenceChange(Preference preference, Object newValue) {
+                //Log.d("value-changed-to", ""+newValue);
+                setValueInDatabase(preference, newValue.toString());
+                return true;
+            }
+        });
     }
 
     private void setValueInPreference(EditTextPreference pref, String value){
@@ -98,9 +111,13 @@ public class SettingsFragment extends PreferenceFragment {
         pref.setSummary(value);
     }
 
-    private void setValueInDatabase(EditTextPreference pref, String newValue){
-        pref.setText(newValue);
-        pref.setSummary(newValue);
+    private void setValueInPreference(CheckBoxPreference pref, boolean value){
+        pref.setChecked(value);
+    }
+
+    private void setValueInDatabase(Preference pref, String newValue){
+        //pref.setText(newValue);
+        //pref.setSummary(newValue);
 
         updateApplicationParam(pref.getKey(), newValue);
     }
@@ -111,11 +128,12 @@ public class SettingsFragment extends PreferenceFragment {
 
         if (param != null) {
             param.value = value;
-            long result = boxAppParams.put(param);
-
-            return result>0;
+        }else {
+            param = new ApplicationParam(name, "string", value);
+            boxAppParams.put(param);
         }
 
-        return false;
+        long result = boxAppParams.put(param);
+        return result>0;
     }
 }

@@ -324,6 +324,8 @@
     <string name="settings_odk_group_url_lbl">Aggregate URL</string>
     <string name="settings_redcap_group_lbl">REDCap</string>
     <string name="settings_redcap_group_url_lbl">Server URL</string>
+    <string name="settings_special_group_lbl">Core Form settings</string>
+    <string name="settings_execute_on_upload_lbl">Execute Core Forms on Upload</string>
 
     <!-- barcode scanner -->
     <string name="barcode_dialog_ask_scan_title">Barcode Id Scanner</string>

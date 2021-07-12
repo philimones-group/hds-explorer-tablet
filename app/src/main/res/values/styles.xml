@@ -34,7 +34,7 @@
         <item name="android:textColor">@color/nui_button_textcolor</item>
     </style>
 
-    <style name="SettingsScreen" parent="Theme.AppCompat.Light">
+    <style name="SettingsScreen" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="android:textColor">@color/nui_color_text_red</item>
         <item name="android:textColorPrimary">#444</item>
         <item name="colorPrimary">#C85E5E</item>

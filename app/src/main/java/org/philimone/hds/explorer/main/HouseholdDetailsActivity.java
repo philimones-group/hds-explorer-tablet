@@ -12,6 +12,7 @@ import com.google.android.material.tabs.TabLayout;
 
 import org.philimone.hds.explorer.R;
 import org.philimone.hds.explorer.data.FormDataLoader;
+import org.philimone.hds.explorer.database.Bootstrap;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
 import org.philimone.hds.explorer.database.Queries;
 import org.philimone.hds.explorer.fragment.household.details.HouseholdDatasetsFragment;
@@ -20,18 +21,33 @@ import org.philimone.hds.explorer.fragment.household.details.HouseholdMembersFra
 import org.philimone.hds.explorer.fragment.household.details.HouseholdVisitFragment;
 import org.philimone.hds.explorer.fragment.household.details.adapter.HouseholdDetailsFragmentAdapter;
 import org.philimone.hds.explorer.model.ApplicationParam;
+import org.philimone.hds.explorer.model.CoreCollectedData;
 import org.philimone.hds.explorer.model.Form;
 import org.philimone.hds.explorer.model.Household;
+import org.philimone.hds.explorer.model.Household_;
 import org.philimone.hds.explorer.model.Region;
 import org.philimone.hds.explorer.model.Region_;
 import org.philimone.hds.explorer.model.User;
 import org.philimone.hds.explorer.model.Visit;
 import org.philimone.hds.explorer.model.Visit_;
+import org.philimone.hds.explorer.model.enums.CoreFormEntity;
 import org.philimone.hds.explorer.settings.RequestCodes;
+import org.philimone.hds.explorer.settings.generator.CodeGeneratorService;
 import org.philimone.hds.explorer.widget.DialogFactory;
+import org.philimone.hds.forms.listeners.FormCollectionListener;
+import org.philimone.hds.forms.main.FormFragment;
+import org.philimone.hds.forms.model.Column;
+import org.philimone.hds.forms.model.ColumnValue;
+import org.philimone.hds.forms.model.HForm;
+import org.philimone.hds.forms.model.ValidationResult;
+import org.philimone.hds.forms.model.XmlFormResult;
 
+import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
@@ -82,12 +98,15 @@ public class HouseholdDetailsActivity extends AppCompatActivity {
 
     private Box<ApplicationParam> boxAppParams;
     private Box<Region> boxRegions;
+    private Box<Household> boxHouseholds;
     private Box<Visit> boxVisits;
+    private Box<CoreCollectedData> boxCoreCollectedData;
 
     private Integer requestCode;
 
     private HouseholdDetailsMode hdetailsMode = HouseholdDetailsMode.NORMAL_MODE;
     private boolean loadNewHousehold = false;
+    private boolean postExecution = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -164,6 +183,14 @@ public class HouseholdDetailsActivity extends AppCompatActivity {
         }
     }
 
+    private void initBoxes() {
+        this.boxAppParams = ObjectBoxDatabase.get().boxFor(ApplicationParam.class);
+        this.boxRegions = ObjectBoxDatabase.get().boxFor(Region.class);
+        this.boxVisits = ObjectBoxDatabase.get().boxFor(Visit.class);
+        this.boxHouseholds = ObjectBoxDatabase.get().boxFor(Household.class);
+        this.boxCoreCollectedData = ObjectBoxDatabase.get().boxFor(CoreCollectedData.class);
+    }
+
     private void readFormDataLoader(){
 
         Object[] objs = (Object[]) getIntent().getExtras().get("dataloaders");
@@ -178,6 +205,8 @@ public class HouseholdDetailsActivity extends AppCompatActivity {
     }
 
     private void initialize() {
+
+        postExecution = Queries.getApplicationParamValue(this.boxAppParams, ApplicationParam.HFORM_POST_EXECUTION).equals("true");
 
         hhDetailsName = (TextView) findViewById(R.id.hhDetailsName);
         hhDetailsCode = (TextView) findViewById(R.id.hhDetailsCode);
@@ -296,12 +325,6 @@ public class HouseholdDetailsActivity extends AppCompatActivity {
         householdDetailsTabViewPager.setOffscreenPageLimit(list.size());
     }
 
-    private void initBoxes() {
-        this.boxAppParams = ObjectBoxDatabase.get().boxFor(ApplicationParam.class);
-        this.boxRegions = ObjectBoxDatabase.get().boxFor(Region.class);
-        this.boxVisits = ObjectBoxDatabase.get().boxFor(Visit.class);
-    }
-
     private void enableButtonsByFormLoaders() {
         boolean hasForms = this.formDataLoaders.size()>0;
         this.btHouseDetailsCollectData.setEnabled(hasForms);
@@ -318,7 +341,12 @@ public class HouseholdDetailsActivity extends AppCompatActivity {
     }
 
     private boolean hasRecentlyCreatedVisit() {
-        Visit lastVisit = this.boxVisits.query().equal(Visit_.householdCode, household.code).order(Visit_.visitDate, QueryBuilder.DESCENDING).build().findFirst();
+        Visit lastVisit = null;
+
+        if (household != null) {
+            lastVisit = this.boxVisits.query().equal(Visit_.householdCode, household.code).order(Visit_.visitDate, QueryBuilder.DESCENDING).build().findFirst();
+        }
+
         return lastVisit != null && lastVisit.recentlyCreated;
     }
 
@@ -434,7 +462,12 @@ public class HouseholdDetailsActivity extends AppCompatActivity {
     }
 
     private void createNewHousehold(){
-        
+        //load new Household HDS-Form and save it
+        if (this.region != null) {
+            loadNewHouseholdForm();
+        } else {
+            DialogFactory.createMessageInfo(this, "Household Enumeration", "Cant create new Household because there is no region selected");
+        }
     }
 
     private void createNewVisit(){
@@ -463,6 +496,114 @@ public class HouseholdDetailsActivity extends AppCompatActivity {
 
         showHouseholdData();
         enableLayoutsByHouseholdMode();
+    }
+
+    /* Household forn */
+    void loadNewHouseholdForm(){
+        InputStream hformFile = getResources().openRawResource(R.raw.household_form);
+
+        CodeGeneratorService codeGenerator = new CodeGeneratorService();
+
+        Map<String, String> preloadedMap = new LinkedHashMap<>();
+        preloadedMap.put("regionCode", region.code);
+        preloadedMap.put("regionName", region.name);
+        preloadedMap.put("householdCode", codeGenerator.generateHouseholdCode(region, loggedUser));
+        //preloadedMap.put("household_name", );
+
+        FormCollectionListener newHouseholdFormListener = new FormCollectionListener() {
+            @Override
+            public ValidationResult onFormValidate(HForm form, Map<String, ColumnValue> collectedValues) {
+
+                ColumnValue columnHouseholdCode = collectedValues.get("householdCode");
+                ColumnValue columnHouseholdName = collectedValues.get("householdName");
+
+                String household_code = columnHouseholdCode.getValue();
+                String household_name = columnHouseholdName.getValue();
+                //String household_gps = collectedValues.get("gps").getValue();
+
+                if (!codeGenerator.isHouseholdCodeValid(household_code)){
+                    String message = getString(R.string.new_household_code_err_lbl);
+                    //DialogFactory.createMessageInfo(HouseholdDetailsActivity.this, R.string.info_lbl, R.string.new_household_code_err_lbl).show();
+                    return new ValidationResult(columnHouseholdCode, message);
+                }
+
+                if (!household_code.startsWith(region.code)){
+                    String message = getString(R.string.new_household_code_region_err_lbl);
+                    //DialogFactory.createMessageInfo(HouseholdDetailsActivity.this, R.string.info_lbl, R.string.new_household_code_region_err_lbl).show();
+                    return new ValidationResult(columnHouseholdCode, message);
+                }
+
+                //check if household with code exists
+                if (boxHouseholds.query().equal(Household_.code, household_code).build().findFirst() != null){
+                    String message = getString(R.string.new_household_code_exists_lbl);
+                    //DialogFactory.createMessageInfo(HouseholdDetailsActivity.this, R.string.info_lbl, R.string.new_household_code_exists_lbl).show();
+                    return new ValidationResult(columnHouseholdCode, message);
+                }
+
+                if (household_name.isEmpty()){
+                    String message = getString(R.string.new_household_code_empty_lbl);
+                    //DialogFactory.createMessageInfo(HouseholdDetailsActivity.this, R.string.info_lbl, R.string.new_household_code_empty_lbl).show();
+                    return new ValidationResult(columnHouseholdName, message);
+                }
+
+                return ValidationResult.noErrors();
+            }
+
+            @Override
+            public void onFormFinished(HForm form, Map<String, ColumnValue> collectedValues, XmlFormResult result) {
+                //saveNewHousehold();
+                ColumnValue colRegionCode = collectedValues.get("regionCode");
+                ColumnValue colRegionName = collectedValues.get("regionName");
+                ColumnValue colHouseholdCode = collectedValues.get("householdCode");
+                ColumnValue colHouseholdName = collectedValues.get("householdName");
+                ColumnValue colHeadCode = collectedValues.get("headCode");
+                ColumnValue colHeadName = collectedValues.get("headName");
+                ColumnValue colCollBy = collectedValues.get("collectedBy");
+                ColumnValue colCollDate = collectedValues.get("collectedDate");
+                ColumnValue colGps = collectedValues.get("gps");
+                Map<String, Double> gpsValues = colGps.getGpsValues();
+                Double gpsLat = gpsValues.get("gps_lat");
+                Double gpsLon = gpsValues.get("gps_lon");
+                Double gpsAlt = gpsValues.get("gps_alt");
+                Double gpsAcc = gpsValues.get("gps_acc");
+
+
+                Household household = new Household();
+                household.region = colRegionCode.getValue();
+                household.code = colHouseholdCode.getValue();
+                household.name = colHouseholdName.getValue();
+                household.headCode = colHeadCode.getValue();
+                household.headName = colHeadName.getValue();
+                household.gpsLatitude = gpsLat;
+                household.gpsLongitude = gpsLon;
+                household.gpsAltitude = gpsAlt;
+                household.gpsAccuracy = gpsAcc;
+                household.recentlyCreated = true;
+                household.recentlyCreatedUri = result.getFilename();
+
+                long entityId = boxHouseholds.put(household);
+
+                CoreCollectedData collectedData = new CoreCollectedData();
+                collectedData.formEntity = CoreFormEntity.HOUSEHOLD;
+                collectedData.formEntityId = entityId;
+                collectedData.formEntityCode = household.code;
+                collectedData.formEntityName = household.name;
+                collectedData.formUuid = result.getFormUuid();
+                collectedData.formFilename = result.getFilename();
+                collectedData.createdDate = new Date();
+
+                boxCoreCollectedData.put(collectedData);
+
+
+                HouseholdDetailsActivity.this.household = household;
+
+                createNewVisit();
+            }
+
+        };
+
+        FormFragment form = FormFragment.newInstance(this.getSupportFragmentManager(), hformFile, Bootstrap.getInstancesPath(), loggedUser.username, preloadedMap, postExecution , newHouseholdFormListener);
+        form.startCollecting();
     }
 
 

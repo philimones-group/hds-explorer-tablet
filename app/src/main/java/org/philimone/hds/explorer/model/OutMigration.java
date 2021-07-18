@@ -50,4 +50,6 @@ class OutMigration {
 
     public boolean recentlyCreated;
 
+    public String recentlyCreatedUri;
+
 }

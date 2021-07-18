@@ -50,4 +50,5 @@ public class Visit {
 
     public boolean recentlyCreated;
 
+    public String recentlyCreatedUri;
 }

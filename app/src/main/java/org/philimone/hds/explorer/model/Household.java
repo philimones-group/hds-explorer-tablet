@@ -49,6 +49,7 @@ public class Household implements Serializable {
     public Double sinLongitude;
 
     public Boolean recentlyCreated = false;
+    public String recentlyCreatedUri;
 
     public long getId() {
         return id;

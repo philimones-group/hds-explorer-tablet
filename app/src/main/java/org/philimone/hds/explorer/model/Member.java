@@ -99,6 +99,8 @@ public class Member implements Serializable {
 
     public Boolean recentlyCreated = false;
 
+    public String recentlyCreatedUri;
+
     @Transient
     private boolean isHouseholdHead; /*not on database*/
     @Transient

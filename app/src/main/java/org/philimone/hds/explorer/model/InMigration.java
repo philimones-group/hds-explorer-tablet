@@ -46,4 +46,5 @@ public class InMigration {
 
     public boolean recentlyCreated;
 
+    public String recentlyCreatedUri;
 }

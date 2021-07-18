@@ -35,4 +35,6 @@ public class Death {
 
     public boolean recentlyCreated;
 
+    public String recentlyCreatedUri;
+
 }

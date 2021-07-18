@@ -35,4 +35,6 @@ public class PregnancyChild {
 
     public boolean recentlyCreated;
 
+    public String recentlyCreatedUri;
+
 }

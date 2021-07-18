@@ -41,4 +41,6 @@ public class MaritalRelationship {
 
     public boolean recentlyCreated;
 
+    public String recentlyCreatedUri;
+
 }

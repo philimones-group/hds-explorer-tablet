@@ -52,4 +52,6 @@ public class HeadRelationship {
 
     public boolean recentlyCreated;
 
+    public String recentlyCreatedUri;
+
 }

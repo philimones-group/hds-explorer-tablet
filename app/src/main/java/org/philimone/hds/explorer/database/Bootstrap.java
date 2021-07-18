@@ -94,15 +94,12 @@ public class Bootstrap {
         File formsDir = new File(absoluteFormsPath);
         File instancesDir = new File(absoluteInstancesPath);
 
+        boolean createdBaseDir = !baseDir.exists() ? baseDir.mkdirs() : false;
+        boolean createdFormsDir = !formsDir.exists() ? formsDir.mkdirs() : false;
+        boolean createdInstancesDir = !instancesDir.exists() ? instancesDir.mkdirs() : false;
 
-        if (!baseDir.exists()) {
-            boolean createdBaseDir = baseDir.mkdirs();
-            boolean createdFormsDir = formsDir.mkdirs();
-            boolean createdInstancesDir = instancesDir.mkdirs();
 
-            Log.d("app-dirs", "baseDir-created="+createdBaseDir+", formsDir-created="+createdFormsDir+", instancesDir-created="+createdInstancesDir);
-
-        }
+        Log.d("app-dirs", "baseDir-created="+createdBaseDir+", formsDir-created="+createdFormsDir+", instancesDir-created="+createdInstancesDir);
     }
 
     public static String getBasePath(){

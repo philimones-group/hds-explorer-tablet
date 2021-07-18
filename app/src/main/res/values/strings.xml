@@ -60,9 +60,12 @@
 
     <!-- Sync Activity -->
     <string name="server_sync_title_lbl">Synchronization Panel</string>
+    <string name="server_sync_download_lbl">Sync Downloads</string>
+    <string name="server_sync_upload_lbl">Sync Uploads</string>
     <string name="server_sync_status_notsynced_lbl">Not Synced</string>
     <string name="server_sync_status_synced_lbl">Last Sync on</string>
     <string name="server_sync_status_sync_error_lbl">Error during last Sync on</string>
+    <string name="server_sync_bt_upload_all_lbl">Upload All Data</string>
     <string name="server_sync_bt_sync_all_lbl">Synchronize All</string>
     <string name="server_sync_bt_sync_lbl">Sync</string>
     <string name="server_sync_bt_stop_lbl">Stop</string>
@@ -72,6 +75,18 @@
     <string name="server_sync_bt_users_lbl">Download Users</string>
     <string name="server_sync_bt_households_lbl">Download Households</string>
     <string name="server_sync_bt_members_lbl">Download Members</string>
+
+    <string name="core_entity_household_lbl">Household Registration</string>
+    <string name="core_entity_member_enu_lbl">Member Enumeration</string>
+    <string name="core_entity_head_relationship_lbl">Head Relationship Registration</string>
+    <string name="core_entity_marital_relationship_lbl">Marital Relationship Registration</string>
+    <string name="core_entity_inmigration_lbl">In Migration Registration</string>
+    <string name="core_entity_external_inmigration_lbl">External InMigration Registration</string>
+    <string name="core_entity_outmigration_lbl">Outmigration Registration</string>
+    <string name="core_entity_pregnancy_reg_lbl">Pregnancy Registration</string>
+    <string name="core_entity_pregnancy_out_lbl">Pregnancy Outcome Registration</string>
+    <string name="core_entity_death_lbl">Death Registration</string>
+    <string name="core_entity_visit_lbl">Visit Registration</string>
 
     <!-- SplashScreen -->
     <string name="splashscreen_hds_explorer_name_1">Health and Demographics</string>
@@ -410,5 +425,7 @@
     <string name="visitLocation_workplace">At Respondent Workplace</string>
     <string name="visitLocation_healthunit">At Health Unit</string>
     <string name="visitLocation_other">Other place</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

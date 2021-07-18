@@ -578,7 +578,7 @@
     },
     {
       "id": "11:1466558823270581169",
-      "lastPropertyId": "25:2364984090495430109",
+      "lastPropertyId": "26:4278846830027807373",
       "name": "Household",
       "properties": [
         {
@@ -722,13 +722,18 @@
           "name": "recentlyCreated",
           "type": 1,
           "flags": 2
+        },
+        {
+          "id": "26:4278846830027807373",
+          "name": "recentlyCreatedUri",
+          "type": 9
         }
       ],
       "relations": []
     },
     {
       "id": "12:5667991198190393360",
-      "lastPropertyId": "34:3948645726340917572",
+      "lastPropertyId": "35:7961567632028419200",
       "name": "Member",
       "properties": [
         {
@@ -935,13 +940,18 @@
           "name": "recentlyCreated",
           "type": 1,
           "flags": 2
+        },
+        {
+          "id": "35:7961567632028419200",
+          "name": "recentlyCreatedUri",
+          "type": 9
         }
       ],
       "relations": []
     },
     {
       "id": "13:6711218666484267288",
-      "lastPropertyId": "13:2838658658286222441",
+      "lastPropertyId": "15:8811241383821536272",
       "name": "PregnancyOutcome",
       "properties": [
         {
@@ -1028,13 +1038,24 @@
           "type": 11,
           "flags": 1548,
           "relationTarget": "Visit"
+        },
+        {
+          "id": "14:575101576832350405",
+          "name": "recentlyCreated",
+          "type": 1,
+          "flags": 4
+        },
+        {
+          "id": "15:8811241383821536272",
+          "name": "recentlyCreatedUri",
+          "type": 9
         }
       ],
       "relations": []
     },
     {
       "id": "14:762193319076805644",
-      "lastPropertyId": "7:2328660741193187207",
+      "lastPropertyId": "9:6486703108143208592",
       "name": "MaritalRelationship",
       "properties": [
         {
@@ -1076,13 +1097,24 @@
           "id": "7:2328660741193187207",
           "name": "endDate",
           "type": 10
+        },
+        {
+          "id": "8:8355011118466637413",
+          "name": "recentlyCreated",
+          "type": 1,
+          "flags": 4
+        },
+        {
+          "id": "9:6486703108143208592",
+          "name": "recentlyCreatedUri",
+          "type": 9
         }
       ],
       "relations": []
     },
     {
       "id": "15:4705936129891303264",
-      "lastPropertyId": "8:4339828814283676446",
+      "lastPropertyId": "10:8063979545576872502",
       "name": "PregnancyChild",
       "properties": [
         {
@@ -1139,13 +1171,24 @@
           "type": 11,
           "flags": 1548,
           "relationTarget": "HeadRelationship"
+        },
+        {
+          "id": "9:317397868525718992",
+          "name": "recentlyCreated",
+          "type": 1,
+          "flags": 4
+        },
+        {
+          "id": "10:8063979545576872502",
+          "name": "recentlyCreatedUri",
+          "type": 9
         }
       ],
       "relations": []
     },
     {
       "id": "16:3819298482554722089",
-      "lastPropertyId": "9:4925887990413343720",
+      "lastPropertyId": "11:7556909418689901606",
       "name": "OutMigration",
       "properties": [
         {
@@ -1201,6 +1244,17 @@
           "indexId": "43:3563834430307602453",
           "type": 9,
           "flags": 2048
+        },
+        {
+          "id": "10:4882234072737107050",
+          "name": "recentlyCreated",
+          "type": 1,
+          "flags": 4
+        },
+        {
+          "id": "11:7556909418689901606",
+          "name": "recentlyCreatedUri",
+          "type": 9
         }
       ],
       "relations": []
@@ -1259,7 +1313,7 @@
     },
     {
       "id": "18:2971387062509066349",
-      "lastPropertyId": "7:2080912583819852456",
+      "lastPropertyId": "9:3398324374613470959",
       "name": "Death",
       "properties": [
         {
@@ -1302,13 +1356,24 @@
           "indexId": "47:8773230033257953127",
           "type": 9,
           "flags": 2048
+        },
+        {
+          "id": "8:184762347696774538",
+          "name": "recentlyCreated",
+          "type": 1,
+          "flags": 4
+        },
+        {
+          "id": "9:3398324374613470959",
+          "name": "recentlyCreatedUri",
+          "type": 9
         }
       ],
       "relations": []
     },
     {
       "id": "19:1493713431233179094",
-      "lastPropertyId": "14:227076107964842635",
+      "lastPropertyId": "16:2857681674868826674",
       "name": "Visit",
       "properties": [
         {
@@ -1393,13 +1458,24 @@
           "name": "gpsLongitude",
           "type": 8,
           "flags": 2
+        },
+        {
+          "id": "15:366464252479662546",
+          "name": "recentlyCreated",
+          "type": 1,
+          "flags": 4
+        },
+        {
+          "id": "16:2857681674868826674",
+          "name": "recentlyCreatedUri",
+          "type": 9
         }
       ],
       "relations": []
     },
     {
       "id": "20:2389375802542346440",
-      "lastPropertyId": "9:4108610534254225622",
+      "lastPropertyId": "11:6589275873550146565",
       "name": "HeadRelationship",
       "properties": [
         {
@@ -1459,13 +1535,24 @@
           "id": "9:4108610534254225622",
           "name": "endDate",
           "type": 10
+        },
+        {
+          "id": "10:5201936680176878572",
+          "name": "recentlyCreated",
+          "type": 1,
+          "flags": 4
+        },
+        {
+          "id": "11:6589275873550146565",
+          "name": "recentlyCreatedUri",
+          "type": 9
         }
       ],
       "relations": []
     },
     {
       "id": "21:4385528013949997550",
-      "lastPropertyId": "14:591142650927775836",
+      "lastPropertyId": "16:928193412132595590",
       "name": "PregnancyRegistration",
       "properties": [
         {
@@ -1548,13 +1635,24 @@
           "indexId": "56:4791760148464300258",
           "type": 9,
           "flags": 2048
+        },
+        {
+          "id": "15:661677106363381061",
+          "name": "recentlyCreated",
+          "type": 1,
+          "flags": 4
+        },
+        {
+          "id": "16:928193412132595590",
+          "name": "recentlyCreatedUri",
+          "type": 9
         }
       ],
       "relations": []
     },
     {
       "id": "22:8558377030680171203",
-      "lastPropertyId": "9:2140468262032824280",
+      "lastPropertyId": "11:6799864465011764947",
       "name": "InMigration",
       "properties": [
         {
@@ -1610,13 +1708,103 @@
           "indexId": "60:3641365062876875778",
           "type": 9,
           "flags": 2048
+        },
+        {
+          "id": "10:2055096874452751158",
+          "name": "recentlyCreated",
+          "type": 1,
+          "flags": 4
+        },
+        {
+          "id": "11:6799864465011764947",
+          "name": "recentlyCreatedUri",
+          "type": 9
+        }
+      ],
+      "relations": []
+    },
+    {
+      "id": "23:4611124115189785343",
+      "lastPropertyId": "13:5414901014302980454",
+      "name": "CoreCollectedData",
+      "properties": [
+        {
+          "id": "1:8449591161039331241",
+          "name": "id",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:3370616002337645491",
+          "name": "entity",
+          "type": 9
+        },
+        {
+          "id": "3:6837027770661672386",
+          "name": "entityId",
+          "type": 6,
+          "flags": 4
+        },
+        {
+          "id": "4:5220208038723477229",
+          "name": "entityCode",
+          "type": 9
+        },
+        {
+          "id": "5:2497883277141160789",
+          "name": "entityName",
+          "type": 9
+        },
+        {
+          "id": "6:4852419270177100516",
+          "name": "formUuid",
+          "indexId": "69:1956688916823236180",
+          "type": 9,
+          "flags": 2080
+        },
+        {
+          "id": "7:950719524887001483",
+          "name": "formFilename",
+          "type": 9
+        },
+        {
+          "id": "8:1895189739581617728",
+          "name": "createdDate",
+          "type": 10
+        },
+        {
+          "id": "9:126830596346355360",
+          "name": "updatedDate",
+          "type": 10
+        },
+        {
+          "id": "10:3182340309030228461",
+          "name": "uploaded",
+          "type": 1,
+          "flags": 4
+        },
+        {
+          "id": "11:6482492710486516629",
+          "name": "uploadedDate",
+          "type": 10
+        },
+        {
+          "id": "12:3430987008502887646",
+          "name": "uploadedWithError",
+          "type": 1,
+          "flags": 4
+        },
+        {
+          "id": "13:5414901014302980454",
+          "name": "uploadedError",
+          "type": 9
         }
       ],
       "relations": []
     }
   ],
-  "lastEntityId": "22:8558377030680171203",
-  "lastIndexId": "68:8994638764943842914",
+  "lastEntityId": "23:4611124115189785343",
+  "lastIndexId": "69:1956688916823236180",
   "lastRelationId": "0:0",
   "lastSequenceId": "0:0",
   "modelVersion": 5,

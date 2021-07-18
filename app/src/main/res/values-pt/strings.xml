@@ -60,9 +60,12 @@
 
     <!-- Sync Activity -->
     <string name="server_sync_title_lbl">Painel de Sincronização</string>
+    <string name="server_sync_download_lbl">Download de dados</string>
+    <string name="server_sync_upload_lbl">Envio de dados</string>
     <string name="server_sync_status_notsynced_lbl">Não foi sincronizado</string>
     <string name="server_sync_status_synced_lbl">Data da ultima sincronização</string>
     <string name="server_sync_status_sync_error_lbl">Data da ultima sincr. com erro</string>
+    <string name="server_sync_bt_upload_all_lbl">Enviar todos dados</string>
     <string name="server_sync_bt_sync_all_lbl">Sincronizar Todos</string>
     <string name="server_sync_bt_sync_lbl">Sincronizar</string>
     <string name="server_sync_bt_stop_lbl">Parar</string>
@@ -72,6 +75,18 @@
     <string name="server_sync_bt_users_lbl">Baixar Usuários</string>
     <string name="server_sync_bt_households_lbl">Baixar Agregados</string>
     <string name="server_sync_bt_members_lbl">Baixar Membros</string>
+
+    <string name="core_entity_household_lbl">Registo de Novo Agregado</string>
+    <string name="core_entity_member_enu_lbl">Registo de Novo Membro</string>
+    <string name="core_entity_head_relationship_lbl">Registo de Relação com chefe</string>
+    <string name="core_entity_marital_relationship_lbl">Registo de União Marital</string>
+    <string name="core_entity_inmigration_lbl">Registo de Imigração</string>
+    <string name="core_entity_external_inmigration_lbl">Registo de Imigração Externa </string>
+    <string name="core_entity_outmigration_lbl">Registo de saida (Emigração)</string>
+    <string name="core_entity_pregnancy_reg_lbl">Registo de Gravidez</string>
+    <string name="core_entity_pregnancy_out_lbl">Registo de Resultado de Gravidez</string>
+    <string name="core_entity_death_lbl">Registo de Morte</string>
+    <string name="core_entity_visit_lbl">Registo de Visita</string>
 
     <!-- SplashScreen -->
     <string name="splashscreen_hds_explorer_name_1">Health and Demographics</string>

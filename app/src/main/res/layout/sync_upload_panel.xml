@@ -13,7 +13,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="15dp"
         android:layout_marginBottom="10dp"
         android:orientation="vertical"
         android:gravity="center">
@@ -35,6 +35,8 @@
         android:id="@+id/collectedDataListView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
         android:background="@drawable/nui_list_rborder_panel"/>
 
 

@@ -11,7 +11,7 @@
         android:paddingTop="5dp"
         android:paddingLeft="15dp"
         android:paddingRight="15dp"
-        android:paddingBottom="15dp"
+        android:paddingBottom="9dp"
         android:orientation="vertical"
         android:background="@drawable/nui_sync_panel_item_back">
 
@@ -19,7 +19,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="3dp"
+            android:paddingTop="2dp"
             android:paddingBottom="3dp"
             android:orientation="horizontal">
 
@@ -46,7 +46,7 @@
                 android:layout_marginBottom="3dp"
                 android:background="@drawable/nui_btnd_sync_rone"
                 android:text="@string/server_sync_bt_sync_lbl"
-                android:textSize="16sp"
+                android:textSize="15sp"
                 android:textStyle="bold"
                 android:elevation="5dp"/>
 
@@ -58,7 +58,7 @@
                 android:layout_marginBottom="3dp"
                 android:background="@drawable/nui_btnd_sync_rone"
                 android:text="@string/server_sync_bt_stop_lbl"
-                android:textSize="16sp"
+                android:textSize="15sp"
                 android:textStyle="bold"
                 android:visibility="gone"
                 android:elevation="5dp"/>

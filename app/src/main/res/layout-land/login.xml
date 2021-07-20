@@ -202,6 +202,7 @@
                     android:textColor="@color/nui_color_text_darkgray"
                     android:background="@android:color/transparent"
                     android:drawableLeft="@drawable/nui_btnd_stg"
+                    android:drawablePadding="5dp"
                     />
 
             </LinearLayout>

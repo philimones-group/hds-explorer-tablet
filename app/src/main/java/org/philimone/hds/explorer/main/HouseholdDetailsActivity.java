@@ -562,10 +562,10 @@ public class HouseholdDetailsActivity extends AppCompatActivity {
                 ColumnValue colCollDate = collectedValues.get("collectedDate");
                 ColumnValue colGps = collectedValues.get("gps");
                 Map<String, Double> gpsValues = colGps.getGpsValues();
-                Double gpsLat = gpsValues.get("gps_lat");
-                Double gpsLon = gpsValues.get("gps_lon");
-                Double gpsAlt = gpsValues.get("gps_alt");
-                Double gpsAcc = gpsValues.get("gps_acc");
+                Double gpsLat = gpsValues.get("gpsLat");
+                Double gpsLon = gpsValues.get("gpsLon");
+                Double gpsAlt = gpsValues.get("gpsAlt");
+                Double gpsAcc = gpsValues.get("gpsAcc");
 
 
                 Household household = new Household();

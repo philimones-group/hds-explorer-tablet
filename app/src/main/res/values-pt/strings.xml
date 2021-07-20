@@ -76,6 +76,11 @@
     <string name="server_sync_bt_households_lbl">Baixar Agregados</string>
     <string name="server_sync_bt_members_lbl">Baixar Membros</string>
 
+    <string name="server_sync_offline_mode_title_lbl">Não é possivel sincronizar</string>
+    <string name="server_sync_offline_mode_msg_lbl">O painel esta no modo offline, para poder sincronizar dados, faça login novamente</string>
+    <string name="server_sync_offline_mode_continue_title_lbl">Não foi possivel conectar ao servidor</string>
+    <string name="server_sync_offline_mode_continue_msg_lbl">Ocorreu um erro ao tentar sincronizar os dados do servidor, tente novamente ou continue no modo offline\n\nDeseja abrir o painel de sincronização no modo offline?</string>
+
     <string name="core_entity_household_lbl">Registo de Novo Agregado</string>
     <string name="core_entity_member_enu_lbl">Registo de Novo Membro</string>
     <string name="core_entity_head_relationship_lbl">Registo de Relação com chefe</string>
@@ -103,8 +108,9 @@
     <string name="login_settings_lbl">Alterar Definições</string>
     <string name="error_no_modules_permission">Este usuário não tem permissões para usar este sistema</string>
     <string name="error_invalid_email">Este email é inválido</string>
+    <string name="error_user_not_found">Usuário não foi encontrado</string>
     <string name="error_invalid_password">Esta senha é muito curta</string>
-    <string name="error_incorrect_password">Esta senha esta incorrecta</string>
+    <string name="error_incorrect_password">O usuário e a senha não foram encontrados</string>
     <string name="error_field_required">Este campo é obrigatório</string>
     <string name="warning_lbl">Aviso!</string>
 

@@ -318,12 +318,12 @@ public class LoginActivity extends AppCompatActivity {
                     loggedUser = user;
                     launchModulesSelector();
                 }else{
-                    txtPassword.setError(getString(R.string.error_invalid_password));
+                    txtPassword.setError(getString(R.string.error_incorrect_password));
                     txtPassword.requestFocus();
                 }
             } else {
-                txtPassword.setError(getString(R.string.error_incorrect_password));
-                txtPassword.requestFocus();
+                txtUsername.setError(getString(R.string.error_user_not_found));
+                txtUsername.requestFocus();
             }
         }
 
@@ -342,6 +342,8 @@ public class LoginActivity extends AppCompatActivity {
 
         private final String mUsername;
         private final String mPassword;
+        private boolean isLocalUser;
+        private boolean connectionFailure;
 
         SyncLoginTask(String username, String password) {
             mUsername = username;
@@ -353,13 +355,17 @@ public class LoginActivity extends AppCompatActivity {
 
             try {
                 // Simulate network access.
-                Thread.sleep(2000);
+                Thread.sleep(1000);
             } catch (InterruptedException e) {
                 return false;
             }
 
             //http request
             try {
+
+                //check if is a local user
+                isLocalUser = boxUsers.query().equal(User_.username, this.mUsername).or().equal(User_.code, this.mUsername).build().findFirst() != null;
+
                 HttpURLConnection connection = null;
                 String basicAuth = "Basic " + new String(Base64.encode((this.mUsername+":"+this.mPassword).getBytes(),Base64.NO_WRAP ));
 
@@ -367,7 +373,7 @@ public class LoginActivity extends AppCompatActivity {
 
                 connection = (HttpURLConnection) url.openConnection();
                 connection.setRequestMethod("GET");
-                connection.setReadTimeout(10000);
+                connection.setReadTimeout(20000);
                 connection.setConnectTimeout(15000);
                 connection.setDoInput(true);
                 connection.setRequestProperty("Authorization", basicAuth);
@@ -389,6 +395,7 @@ public class LoginActivity extends AppCompatActivity {
 
             } catch (Exception e) {
                 e.printStackTrace();
+                connectionFailure = true;
             }
 
             return false;
@@ -402,10 +409,32 @@ public class LoginActivity extends AppCompatActivity {
             if (success) {
                 adminUser = mUsername;
                 adminPassword = mPassword;
-                launchServerSync();
+                launchServerSync(true);
             } else {
-                txtPassword.setError(getString(R.string.error_incorrect_password));
-                txtPassword.requestFocus();
+
+                if (connectionFailure && isLocalUser) {
+
+                    //do you want to continue
+                    DialogFactory.createMessageYN(LoginActivity.this, R.string.server_sync_offline_mode_continue_title_lbl, R.string.server_sync_offline_mode_continue_msg_lbl, new DialogFactory.OnYesNoClickListener() {
+                        @Override
+                        public void onYesClicked() {
+                            launchServerSync(false);
+                        }
+
+                        @Override
+                        public void onNoClicked() {
+
+                        }
+                    }).show();
+
+
+
+                } else { //user not found in server
+                    txtUsername.setError(getString(R.string.error_incorrect_password));
+                    txtUsername.requestFocus();
+                }
+
+
             }
         }
 
@@ -416,11 +445,12 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-    private void launchServerSync() {
+    private void launchServerSync(boolean connectedToServer) {
         Intent intent = new Intent(this, SyncPanelActivity.class);
         intent.putExtra("username", adminUser);
         intent.putExtra("password", adminPassword);
         intent.putExtra("server-url", serverUrl);
+        intent.putExtra("connected", connectedToServer);
 
         //usernameEditText.setText("");
         //passwordEditText.setText("");

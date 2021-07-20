@@ -9,21 +9,16 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 
 import org.philimone.hds.explorer.R;
 import org.philimone.hds.explorer.adapter.CoreCollectedDataArrayAdapter;
-import org.philimone.hds.explorer.adapter.HouseholdArrayAdapter;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
 import org.philimone.hds.explorer.io.SyncUploadEntitiesTask;
 import org.philimone.hds.explorer.io.UploadResponse;
-import org.philimone.hds.explorer.model.ApplicationParam;
 import org.philimone.hds.explorer.model.CoreCollectedData;
-import org.philimone.hds.explorer.model.Household;
-import org.philimone.hds.explorer.model.Region;
-import org.philimone.hds.explorer.model.Visit;
+import org.philimone.hds.explorer.widget.DialogFactory;
 
 import java.util.Date;
 import java.util.List;
@@ -38,6 +33,7 @@ public class SyncUploadPanelFragment extends Fragment implements SyncUploadEntit
     private String username;
     private String password;
     private String serverUrl;
+    private boolean connectedToServer;
 
     private Button btUploadAllData;
     private ListView collectedDataListView;
@@ -52,12 +48,13 @@ public class SyncUploadPanelFragment extends Fragment implements SyncUploadEntit
         initBoxes();
     }
 
-    public static SyncUploadPanelFragment newInstance(String username, String password, String serverUrl) {
+    public static SyncUploadPanelFragment newInstance(String username, String password, String serverUrl, boolean connectedToServer) {
         SyncUploadPanelFragment fragment = new SyncUploadPanelFragment();
 
         fragment.username = username;
         fragment.password = password;
         fragment.serverUrl = serverUrl;
+        fragment.connectedToServer = connectedToServer;
 
         return fragment;
     }
@@ -102,7 +99,7 @@ public class SyncUploadPanelFragment extends Fragment implements SyncUploadEntit
         loadCollectedData();
     }
 
-    private void loadCollectedData() {
+    public void loadCollectedData() {
 
         List<CoreCollectedData> dataList = this.boxCoreCollectedData.getAll();
         CoreCollectedDataArrayAdapter adapter = new CoreCollectedDataArrayAdapter(this.getContext(), dataList);
@@ -111,6 +108,12 @@ public class SyncUploadPanelFragment extends Fragment implements SyncUploadEntit
     }
 
     private void onUploadAllButtonClicked() {
+
+        if (!connectedToServer) { //logged in locally only
+            DialogFactory.createMessageInfo(this.getContext(), R.string.server_sync_offline_mode_title_lbl, R.string.server_sync_offline_mode_msg_lbl).show();
+            return;
+        }
+
         CoreCollectedDataArrayAdapter adapter = (CoreCollectedDataArrayAdapter) collectedDataListView.getAdapter();
 
         Log.d("selected", ""+adapter.getSelectedCollectedData().size());

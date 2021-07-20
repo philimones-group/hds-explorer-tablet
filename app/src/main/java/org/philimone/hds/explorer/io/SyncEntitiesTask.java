@@ -13,6 +13,7 @@ import org.philimone.hds.explorer.database.Queries;
 import org.philimone.hds.explorer.model.ApplicationParam;
 import org.philimone.hds.explorer.model.ApplicationParam_;
 import org.philimone.hds.explorer.model.CollectedData;
+import org.philimone.hds.explorer.model.CoreCollectedData;
 import org.philimone.hds.explorer.model.Dataset;
 import org.philimone.hds.explorer.model.Form;
 import org.philimone.hds.explorer.model.Household;
@@ -92,6 +93,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 	private Box<SyncReport> boxSyncReports;
 	private Box<Module> boxModules;
 	private Box<CollectedData> boxCollectedData;
+	private Box<CoreCollectedData> boxCoreCollectedData;
 	private Box<Form> boxForms;
 	private Box<User> boxUsers;
 	private Box<Region> boxRegions;
@@ -121,6 +123,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 		this.boxSyncReports = ObjectBoxDatabase.get().boxFor(SyncReport.class);
 		this.boxModules = ObjectBoxDatabase.get().boxFor(Module.class);
 		this.boxCollectedData = ObjectBoxDatabase.get().boxFor(CollectedData.class);
+		this.boxCoreCollectedData = ObjectBoxDatabase.get().boxFor(CoreCollectedData.class);
 		this.boxForms = ObjectBoxDatabase.get().boxFor(Form.class);
 		this.boxUsers = ObjectBoxDatabase.get().boxFor(User.class);
 		this.boxRegions = ObjectBoxDatabase.get().boxFor(Region.class);
@@ -265,11 +268,13 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 						break;
 					case HOUSEHOLDS:
 						this.boxHouseholds.removeAll();
+						this.boxCoreCollectedData.removeAll();
 						processUrl(baseurl + API_PATH + "/households/zip", "households.zip");
 						break;
 					case MEMBERS:
 						this.boxMembers.removeAll();
 						this.boxCollectedData.removeAll();
+						this.boxCoreCollectedData.removeAll();
 						processUrl(baseurl + API_PATH + "/members/zip", "members.zip");
 						break;
 				}

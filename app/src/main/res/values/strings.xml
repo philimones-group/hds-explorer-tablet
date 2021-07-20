@@ -76,6 +76,11 @@
     <string name="server_sync_bt_households_lbl">Download Households</string>
     <string name="server_sync_bt_members_lbl">Download Members</string>
 
+    <string name="server_sync_offline_mode_title_lbl">Can\'t Synchronization</string>
+    <string name="server_sync_offline_mode_msg_lbl">You are currently in offline mode, to be able to sync login again</string>
+    <string name="server_sync_offline_mode_continue_title_lbl">Can\'t connect to the Server</string>
+    <string name="server_sync_offline_mode_continue_msg_lbl">An issue occurred while trying to login to the server, try again or continue to offline mode\n\nDo you want to open Synchronization panel in offline mode?</string>
+
     <string name="core_entity_household_lbl">Household Registration</string>
     <string name="core_entity_member_enu_lbl">Member Enumeration</string>
     <string name="core_entity_head_relationship_lbl">Head Relationship Registration</string>
@@ -103,8 +108,9 @@
     <string name="login_settings_lbl">Change Settings</string>
     <string name="error_no_modules_permission">This user doesnt have any permission on this system</string>
     <string name="error_invalid_email">This email address is invalid</string>
+    <string name="error_user_not_found">Login Failed. User not found</string>
     <string name="error_invalid_password">This password is too short</string>
-    <string name="error_incorrect_password">This password is incorrect</string>
+    <string name="error_incorrect_password">Your username and password do not match</string>
     <string name="error_field_required">This field is required</string>
     <string name="warning_lbl">Warning</string>
 

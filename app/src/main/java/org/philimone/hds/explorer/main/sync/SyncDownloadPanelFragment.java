@@ -57,6 +57,7 @@ public class SyncDownloadPanelFragment extends Fragment implements SyncPanelItem
     private String username;
     private String password;
     private String serverUrl;
+    private boolean connectedToServer;
 
     //fragments
     private SyncPanelItemFragment settingsSyncFragment;
@@ -81,11 +82,12 @@ public class SyncDownloadPanelFragment extends Fragment implements SyncPanelItem
         initBoxes();
     }
 
-    public static SyncDownloadPanelFragment newInstance(String username, String password, String serverUrl) {
+    public static SyncDownloadPanelFragment newInstance(String username, String password, String serverUrl, boolean connectedToServer) {
         SyncDownloadPanelFragment fragment = new SyncDownloadPanelFragment();
         fragment.username = username;
         fragment.password = password;
         fragment.serverUrl = serverUrl;
+        fragment.connectedToServer = connectedToServer;
 
         return fragment;
     }
@@ -100,6 +102,14 @@ public class SyncDownloadPanelFragment extends Fragment implements SyncPanelItem
         this.usersSyncFragment = SyncPanelItemFragment.newInstance(getString(R.string.server_sync_bt_users_lbl));
         this.householdsSyncFragment = SyncPanelItemFragment.newInstance(getString(R.string.server_sync_bt_households_lbl));
         this.membersSyncFragment = SyncPanelItemFragment.newInstance(getString(R.string.server_sync_bt_members_lbl));
+
+        this.settingsSyncFragment.setListener(this);
+        this.datasetsSyncFragment.setListener(this);
+        this.trackingListsSyncFragment.setListener(this);
+        this.usersSyncFragment.setListener(this);
+        this.householdsSyncFragment.setListener(this);
+        this.membersSyncFragment.setListener(this);
+
 
     }
 
@@ -249,6 +259,11 @@ public class SyncDownloadPanelFragment extends Fragment implements SyncPanelItem
 
     private void onSyncAllData(){
         //Synchronize One by One
+
+        if (!connectedToServer) { //logged in locally only
+            DialogFactory.createMessageInfo(this.getContext(), R.string.server_sync_offline_mode_title_lbl, R.string.server_sync_offline_mode_msg_lbl).show();
+            return;
+        }
 
         this.synchronizerAllList.clear();
         this.clickedSyncFragment = null;
@@ -408,6 +423,11 @@ public class SyncDownloadPanelFragment extends Fragment implements SyncPanelItem
         Log.d("sync", "sync start");
 
         this.clickedSyncFragment = syncPanelItem;
+
+        if (!connectedToServer) { //logged in locally only
+            DialogFactory.createMessageInfo(this.getContext(), R.string.server_sync_offline_mode_title_lbl, R.string.server_sync_offline_mode_msg_lbl, clickedButton -> syncPanelItem.resetSyncButton()).show();
+            return;
+        }
 
         if (isPermissionGranted(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
             executeSyncStartButton(syncPanelItem);

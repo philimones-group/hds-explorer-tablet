@@ -5,10 +5,6 @@ import android.os.Bundle;
 import com.google.android.material.tabs.TabLayout;
 
 import org.philimone.hds.explorer.R;
-import org.philimone.hds.explorer.fragment.household.details.HouseholdDatasetsFragment;
-import org.philimone.hds.explorer.fragment.household.details.HouseholdFormsFragment;
-import org.philimone.hds.explorer.fragment.household.details.HouseholdMembersFragment;
-import org.philimone.hds.explorer.fragment.household.details.adapter.HouseholdDetailsFragmentAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,12 +22,14 @@ public class SyncPanelActivity extends AppCompatActivity {
     private String username;
     private String password;
     private String serverUrl;
+    private boolean connectedToServer;
 
     private ViewPager2 syncViewPager;
     private TabLayout syncTabLayout;
 
     private SyncDownloadPanelFragment syncDownloadPanel;
     private SyncUploadPanelFragment syncUploadPanel;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +42,8 @@ public class SyncPanelActivity extends AppCompatActivity {
         this.username = (String) getIntent().getExtras().get("username");
         this.password = (String) getIntent().getExtras().get("password");
         this.serverUrl = (String) getIntent().getExtras().get("server-url");
+        this.connectedToServer = getIntent().getExtras().getBoolean("connected");
+
 
         initFragments();
 
@@ -60,8 +60,8 @@ public class SyncPanelActivity extends AppCompatActivity {
     }
 
     private void initFragments(){
-        this.syncDownloadPanel = SyncDownloadPanelFragment.newInstance(this.username, this.password, this.serverUrl);
-        this.syncUploadPanel = SyncUploadPanelFragment.newInstance(this.username, this.password, this.serverUrl);
+        this.syncDownloadPanel = SyncDownloadPanelFragment.newInstance(this.username, this.password, this.serverUrl, connectedToServer);
+        this.syncUploadPanel = SyncUploadPanelFragment.newInstance(this.username, this.password, this.serverUrl, connectedToServer);
 
         List<Fragment> list = new ArrayList<>();
         list.add(this.syncDownloadPanel);
@@ -75,6 +75,11 @@ public class SyncPanelActivity extends AppCompatActivity {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 syncViewPager.setCurrentItem(tab.getPosition());
+                Fragment currentItem = list.get(tab.getPosition());
+
+                if (currentItem instanceof SyncUploadPanelFragment)  {
+                    ((SyncUploadPanelFragment)currentItem).loadCollectedData();
+                }
             }
 
             @Override

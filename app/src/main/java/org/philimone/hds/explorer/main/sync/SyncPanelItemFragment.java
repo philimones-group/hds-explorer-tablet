@@ -127,6 +127,11 @@ public class SyncPanelItemFragment extends Fragment implements View.OnClickListe
         this.syncResult = null;
     }
 
+    public void resetSyncButton(){
+        this.syncButton.setVisibility(View.VISIBLE);
+        this.syncStopButton.setVisibility(View.GONE);
+    }
+
     public void setTitleText(String title){
         this.titleText = title;
 

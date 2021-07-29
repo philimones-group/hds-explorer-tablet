@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Environment;
 import android.util.Log;
 
+import org.philimone.hds.explorer.model.User;
 import org.philimone.hds.explorer.model.enums.SyncEntity;
 import org.philimone.hds.explorer.model.enums.SyncStatus;
 import org.philimone.hds.explorer.model.ApplicationParam;
@@ -21,6 +22,7 @@ import io.objectbox.Box;
  * Will be used to initialize any data on database tables
  */
 public class Bootstrap {
+
     private static final String APP_PATH = "org.philimone.hds.explorer";
     private static final String APP_BASE_PATH = File.separator + "Android" + File.separator + "data" + File.separator + APP_PATH + File.separator + "files"+ File.separator;
     private static final String APP_FORMS_PATH = APP_BASE_PATH + "forms" + File.separator;
@@ -29,6 +31,8 @@ public class Bootstrap {
     private static String absoluteBasePath;
     private static String absoluteFormsPath;
     private static String absoluteInstancesPath;
+
+    private static User currentUser;
 
     private Box<ApplicationParam> boxAppParams;
     private Box<SyncReport> boxSyncReports;
@@ -136,6 +140,14 @@ public class Bootstrap {
 
     public static File getInstancesPathFile(String filename) {
         return new File(getInstancesPath() + filename);
+    }
+
+    public static User getCurrentUser(){
+        return currentUser;
+    }
+
+    public static void setCurrentUser(User user){
+        currentUser = user;
     }
 
 }

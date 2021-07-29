@@ -22,6 +22,7 @@ import android.widget.Toast;
 import org.mindrot.jbcrypt.BCrypt;
 import org.philimone.hds.explorer.BuildConfig;
 import org.philimone.hds.explorer.R;
+import org.philimone.hds.explorer.database.Bootstrap;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
 import org.philimone.hds.explorer.database.Queries;
 import org.philimone.hds.explorer.main.sync.SyncPanelActivity;
@@ -126,6 +127,13 @@ public class LoginActivity extends AppCompatActivity {
 
         initBoxes();
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        Bootstrap.setCurrentUser(null);
     }
 
     private void updateView() {
@@ -316,6 +324,7 @@ public class LoginActivity extends AppCompatActivity {
                 //finish();
                 if(BCrypt.checkpw(mPassword, user.getPassword())){
                     loggedUser = user;
+                    Bootstrap.setCurrentUser(loggedUser);
                     launchModulesSelector();
                 }else{
                     txtPassword.setError(getString(R.string.error_incorrect_password));

@@ -1725,7 +1725,7 @@
     },
     {
       "id": "23:4611124115189785343",
-      "lastPropertyId": "13:5414901014302980454",
+      "lastPropertyId": "17:7786303754416715605",
       "name": "CoreCollectedData",
       "properties": [
         {
@@ -1733,27 +1733,6 @@
           "name": "id",
           "type": 6,
           "flags": 1
-        },
-        {
-          "id": "2:3370616002337645491",
-          "name": "entity",
-          "type": 9
-        },
-        {
-          "id": "3:6837027770661672386",
-          "name": "entityId",
-          "type": 6,
-          "flags": 4
-        },
-        {
-          "id": "4:5220208038723477229",
-          "name": "entityCode",
-          "type": 9
-        },
-        {
-          "id": "5:2497883277141160789",
-          "name": "entityName",
-          "type": 9
         },
         {
           "id": "6:4852419270177100516",
@@ -1798,6 +1777,27 @@
           "id": "13:5414901014302980454",
           "name": "uploadedError",
           "type": 9
+        },
+        {
+          "id": "14:1686942037338588072",
+          "name": "formEntity",
+          "type": 9
+        },
+        {
+          "id": "15:185972732132634450",
+          "name": "formEntityId",
+          "type": 6,
+          "flags": 4
+        },
+        {
+          "id": "16:6749297829121025782",
+          "name": "formEntityCode",
+          "type": 9
+        },
+        {
+          "id": "17:7786303754416715605",
+          "name": "formEntityName",
+          "type": 9
         }
       ],
       "relations": []
@@ -1811,7 +1811,12 @@
   "modelVersionParserMinimum": 5,
   "retiredEntityUids": [],
   "retiredIndexUids": [],
-  "retiredPropertyUids": [],
+  "retiredPropertyUids": [
+    3370616002337645491,
+    6837027770661672386,
+    5220208038723477229,
+    2497883277141160789
+  ],
   "retiredRelationUids": [],
   "version": 1
 }

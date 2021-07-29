@@ -1,7 +1,9 @@
 package org.philimone.hds.explorer.model;
 
 import org.philimone.hds.explorer.model.converters.VisitLocationItemConverter;
+import org.philimone.hds.explorer.model.converters.VisitReasonConverter;
 import org.philimone.hds.explorer.model.enums.VisitLocationItem;
+import org.philimone.hds.explorer.model.enums.VisitReason;
 
 import java.util.Date;
 
@@ -26,6 +28,9 @@ public class Visit {
     public String householdCode;
 
     public Date visitDate;
+
+    @Convert(converter = VisitReasonConverter.class, dbType = String.class)
+    public VisitReason visitReason;
 
     @Convert(converter = VisitLocationItemConverter.class, dbType = String.class)
     public VisitLocationItem visitLocation;

@@ -432,4 +432,10 @@
     <string name="visitLocation_healthunit">Na unidade Sanitária</string>
     <string name="visitLocation_other">Outro lugar</string>
 
+    <string name="visitReason_update_round">Ronda de DSS</string>
+    <string name="visitReason_baseline">Registo de Censo</string>
+    <string name="visitReason_newhouse">Registo de novo Agregado</string>
+    <string name="visitReason_dataclean">Correção de Erros</string>
+    <string name="visitReason_other">Outros motivos</string>
+
 </resources>

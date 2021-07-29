@@ -431,7 +431,12 @@
     <string name="visitLocation_workplace">At Respondent Workplace</string>
     <string name="visitLocation_healthunit">At Health Unit</string>
     <string name="visitLocation_other">Other place</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="visitReason_update_round">Update Rounds</string>
+    <string name="visitReason_baseline">Baseline Registration</string>
+    <string name="visitReason_newhouse">New Household Registration</string>
+    <string name="visitReason_dataclean">Data Cleaning</string>
+    <string name="visitReason_other">Other</string>
+
 
 </resources>

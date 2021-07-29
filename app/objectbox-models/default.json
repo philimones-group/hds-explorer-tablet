@@ -1373,7 +1373,7 @@
     },
     {
       "id": "19:1493713431233179094",
-      "lastPropertyId": "16:2857681674868826674",
+      "lastPropertyId": "17:1414080770107299985",
       "name": "Visit",
       "properties": [
         {
@@ -1468,6 +1468,11 @@
         {
           "id": "16:2857681674868826674",
           "name": "recentlyCreatedUri",
+          "type": 9
+        },
+        {
+          "id": "17:1414080770107299985",
+          "name": "visitReason",
           "type": 9
         }
       ],

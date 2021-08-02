@@ -73,9 +73,15 @@ public class Bootstrap {
         newReports.add(new SyncReport(SyncEntity.DATASETS_CSV_FILES, null, SyncStatus.STATUS_NOT_SYNCED, "Sync. Datasets"));
         newReports.add(new SyncReport(SyncEntity.USERS, null, SyncStatus.STATUS_NOT_SYNCED, "Sync. Users"));
         newReports.add(new SyncReport(SyncEntity.TRACKING_LISTS, null, SyncStatus.STATUS_NOT_SYNCED, "Sync. Tracking Lists"));
+        newReports.add(new SyncReport(SyncEntity.ROUNDS, null, SyncStatus.STATUS_NOT_SYNCED, "Sync. Rounds"));
         newReports.add(new SyncReport(SyncEntity.REGIONS, null, SyncStatus.STATUS_NOT_SYNCED, "Sync. Regions"));
         newReports.add(new SyncReport(SyncEntity.HOUSEHOLDS, null, SyncStatus.STATUS_NOT_SYNCED, "Sync. Households"));
         newReports.add(new SyncReport(SyncEntity.MEMBERS, null, SyncStatus.STATUS_NOT_SYNCED, "Sync. Members"));
+        newReports.add(new SyncReport(SyncEntity.RESIDENCIES, null, SyncStatus.STATUS_NOT_SYNCED, "Sync. Residencies"));
+        newReports.add(new SyncReport(SyncEntity.VISITS, null, SyncStatus.STATUS_NOT_SYNCED, "Sync. Visits"));
+        newReports.add(new SyncReport(SyncEntity.HEAD_RELATIONSHIPS, null, SyncStatus.STATUS_NOT_SYNCED, "Sync. Head Relationships"));
+        newReports.add(new SyncReport(SyncEntity.MARITAL_RELATIONSHIPS, null, SyncStatus.STATUS_NOT_SYNCED, "Sync. Marital Relationships"));
+        newReports.add(new SyncReport(SyncEntity.PREGNANCY_REGISTRATIONS, null, SyncStatus.STATUS_NOT_SYNCED, "Sync. Pregnancies"));
 
         List<SyncEntity> reportIds = reports.stream().map(SyncReport::getReportId).collect(Collectors.toList());
 

@@ -123,7 +123,7 @@ public class MemberDetailsActivity extends AppCompatActivity implements OdkFormR
 
     private boolean isMemberVisualizableForm(Form form) {
         if (requestCode != RequestCodes.MEMBER_DETAILS_FROM_TRACKING_LIST_DETAILS){ //MemberDetails was not opened via Tracking/FollowUp lists
-            if (form.isFollowUpOnly()){ //forms flagged with followUpOnly can only be opened using FollowUp Lists, to be able to open via normal surveys remove the flag on the server
+            if (form.isFollowUpForm()){ //forms flagged with followUpOnly can only be opened using FollowUp Lists, to be able to open via normal surveys remove the flag on the server
                 return false;
             }
         }

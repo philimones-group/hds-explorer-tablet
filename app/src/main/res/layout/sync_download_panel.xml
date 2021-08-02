@@ -82,21 +82,14 @@
                 tools:layout="@layout/sync_download_panel_item" />
 
             <fragment android:name="org.philimone.hds.explorer.main.sync.SyncPanelItemFragment"
-                android:id="@+id/usersSyncFragment"
+                android:id="@+id/householdsDatasetsSyncFragment"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/sync_fragment_margin_bottom"
                 tools:layout="@layout/sync_download_panel_item" />
 
             <fragment android:name="org.philimone.hds.explorer.main.sync.SyncPanelItemFragment"
-                android:id="@+id/householdsSyncFragment"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/sync_fragment_margin_bottom"
-                tools:layout="@layout/sync_download_panel_item" />
-
-            <fragment android:name="org.philimone.hds.explorer.main.sync.SyncPanelItemFragment"
-                android:id="@+id/membersSyncFragment"
+                android:id="@+id/demographicsEventsSyncFragment"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/sync_fragment_margin_bottom"

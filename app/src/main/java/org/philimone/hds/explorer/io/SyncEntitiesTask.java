@@ -16,20 +16,34 @@ import org.philimone.hds.explorer.model.CollectedData;
 import org.philimone.hds.explorer.model.CoreCollectedData;
 import org.philimone.hds.explorer.model.Dataset;
 import org.philimone.hds.explorer.model.Form;
+import org.philimone.hds.explorer.model.HeadRelationship;
 import org.philimone.hds.explorer.model.Household;
+import org.philimone.hds.explorer.model.MaritalRelationship;
 import org.philimone.hds.explorer.model.Member;
 import org.philimone.hds.explorer.model.Module;
+import org.philimone.hds.explorer.model.PregnancyRegistration;
 import org.philimone.hds.explorer.model.Region;
+import org.philimone.hds.explorer.model.Residency;
+import org.philimone.hds.explorer.model.Round;
 import org.philimone.hds.explorer.model.SyncReport;
 import org.philimone.hds.explorer.model.User;
+import org.philimone.hds.explorer.model.Visit;
 import org.philimone.hds.explorer.model.converters.FormMappingConverter;
 import org.philimone.hds.explorer.model.converters.LabelMappingConverter;
+import org.philimone.hds.explorer.model.enums.EstimatedDateOfDeliveryType;
 import org.philimone.hds.explorer.model.enums.Gender;
 import org.philimone.hds.explorer.model.enums.HeadRelationshipType;
+import org.philimone.hds.explorer.model.enums.MaritalEndStatus;
+import org.philimone.hds.explorer.model.enums.MaritalStartStatus;
 import org.philimone.hds.explorer.model.enums.MaritalStatus;
+import org.philimone.hds.explorer.model.enums.PregnancyStatus;
 import org.philimone.hds.explorer.model.enums.SyncEntity;
 import org.philimone.hds.explorer.model.enums.SyncState;
 import org.philimone.hds.explorer.model.enums.SyncStatus;
+import org.philimone.hds.explorer.model.enums.VisitLocationItem;
+import org.philimone.hds.explorer.model.enums.VisitReason;
+import org.philimone.hds.explorer.model.enums.temporal.HeadRelationshipEndType;
+import org.philimone.hds.explorer.model.enums.temporal.HeadRelationshipStartType;
 import org.philimone.hds.explorer.model.enums.temporal.ResidencyEndType;
 import org.philimone.hds.explorer.model.enums.temporal.ResidencyStartType;
 import org.philimone.hds.explorer.model.followup.TrackingList;
@@ -96,12 +110,18 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 	private Box<CoreCollectedData> boxCoreCollectedData;
 	private Box<Form> boxForms;
 	private Box<User> boxUsers;
+	private Box<Round> boxRounds;
 	private Box<Region> boxRegions;
 	private Box<Dataset> boxDatasets;
 	private Box<TrackingList> boxTrackingLists;
 	private Box<TrackingSubjectList> boxTrackingSubjects;
 	private Box<Household> boxHouseholds;
 	private Box<Member> boxMembers;
+	private Box<Residency> boxResidencies;
+	private Box<Visit> boxVisits;
+	private Box<HeadRelationship> boxHeadRelationships;
+	private Box<MaritalRelationship> boxMaritalRelationships;
+	private Box<PregnancyRegistration> boxPregnancyRegistrations;
 
 	private boolean canceled;
 
@@ -126,12 +146,18 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 		this.boxCoreCollectedData = ObjectBoxDatabase.get().boxFor(CoreCollectedData.class);
 		this.boxForms = ObjectBoxDatabase.get().boxFor(Form.class);
 		this.boxUsers = ObjectBoxDatabase.get().boxFor(User.class);
-		this.boxRegions = ObjectBoxDatabase.get().boxFor(Region.class);
 		this.boxDatasets = ObjectBoxDatabase.get().boxFor(Dataset.class);
 		this.boxTrackingLists = ObjectBoxDatabase.get().boxFor(TrackingList.class);
 		this.boxTrackingSubjects = ObjectBoxDatabase.get().boxFor(TrackingSubjectList.class);
+		this.boxRounds = ObjectBoxDatabase.get().boxFor(Round.class);
+		this.boxRegions = ObjectBoxDatabase.get().boxFor(Region.class);
 		this.boxHouseholds = ObjectBoxDatabase.get().boxFor(Household.class);
 		this.boxMembers = ObjectBoxDatabase.get().boxFor(Member.class);
+		this.boxResidencies = ObjectBoxDatabase.get().boxFor(Residency.class);
+		this.boxVisits = ObjectBoxDatabase.get().boxFor(Visit.class);
+		this.boxHeadRelationships = ObjectBoxDatabase.get().boxFor(HeadRelationship.class);
+		this.boxMaritalRelationships = ObjectBoxDatabase.get().boxFor(MaritalRelationship.class);
+		this.boxPregnancyRegistrations = ObjectBoxDatabase.get().boxFor(PregnancyRegistration.class);
 	}
 
 	public void setSyncDatabaseListener(SyncEntitiesListener listener){
@@ -193,6 +219,9 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 			case USERS:
 				builder.append(" " + mContext.getString(R.string.sync_users_lbl));
 				break;
+			case ROUNDS:
+				builder.append(" " + mContext.getString(R.string.sync_rounds_lbl));
+				break;
 			case REGIONS:
 				builder.append(" " + mContext.getString(R.string.sync_regions_lbl));
 				break;
@@ -201,6 +230,21 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 				break;
 			case MEMBERS:
 				builder.append(" " + mContext.getString(R.string.sync_members_lbl));
+				break;
+			case RESIDENCIES:
+				builder.append(" " + mContext.getString(R.string.sync_residencies_lbl));
+				break;
+			case VISITS:
+				builder.append(" " + mContext.getString(R.string.sync_visits_lbl));
+				break;
+			case HEAD_RELATIONSHIPS:
+				builder.append(" " + mContext.getString(R.string.sync_head_relationships_lbl));
+				break;
+			case MARITAL_RELATIONSHIPS:
+				builder.append(" " + mContext.getString(R.string.sync_marital_relationships_lbl));
+				break;
+			case PREGNANCY_REGISTRATIONS:
+				builder.append(" " + mContext.getString(R.string.sync_pregnancies_lbl));
 				break;
 		}
 
@@ -262,6 +306,10 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 						this.boxUsers.removeAll();
 						processUrl(baseurl + API_PATH + "/users/zip", "users.zip");
 						break;
+					case ROUNDS:
+						this.boxRounds.removeAll();
+						processUrl(baseurl + API_PATH + "/rounds/zip", "rounds.zip");
+						break;
 					case REGIONS:
 						this.boxRegions.removeAll();
 						processUrl(baseurl + API_PATH + "/regions/zip", "regions.zip");
@@ -276,6 +324,26 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 						this.boxCollectedData.removeAll();
 						this.boxCoreCollectedData.removeAll();
 						processUrl(baseurl + API_PATH + "/members/zip", "members.zip");
+						break;
+					case RESIDENCIES:
+						this.boxResidencies.removeAll();
+						processUrl(baseurl + API_PATH + "/residencies/zip", "residencies.zip");
+						break;
+					case VISITS:
+						this.boxVisits.removeAll();
+						processUrl(baseurl + API_PATH + "/visits/zip", "visits.zip");
+						break;
+					case HEAD_RELATIONSHIPS:
+						this.boxHeadRelationships.removeAll();
+						processUrl(baseurl + API_PATH + "/hrelationships/zip", "hrelationships.zip");
+						break;
+					case MARITAL_RELATIONSHIPS:
+						this.boxMaritalRelationships.removeAll();
+						processUrl(baseurl + API_PATH + "/mrelationships/zip", "mrelationships.zip");
+						break;
+					case PREGNANCY_REGISTRATIONS:
+						this.boxPregnancyRegistrations.removeAll();
+						processUrl(baseurl + API_PATH + "/pregnancies/zip", "pregnancies.zip");
 						break;
 				}
 
@@ -311,10 +379,10 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 
 	private int getSyncRecordToDownload(SyncEntity entity){
 
-		String result = processUrl(baseurl + API_PATH + "/sync-report/" + entity.getId());
+		String result = processUrl(baseurl + API_PATH + "/sync-report/?id=" + entity.name());
 
 		//Log.d("tag-report", "result="+result);
-
+		//CHANGE THIS - TO HANDLE ERROS
 		return Integer.parseInt(result);
 	}
 
@@ -481,6 +549,18 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 					processHouseholds(parser);
 				} else if (name.equalsIgnoreCase("members")) {
 					processMembers(parser);
+				} else if (name.equalsIgnoreCase("residencies")) {
+					processResidencies(parser);
+				} else if (name.equalsIgnoreCase("rounds")) {
+					processRounds(parser);
+				} else if (name.equalsIgnoreCase("visits")) {
+					processVisits(parser);
+				} else if (name.equalsIgnoreCase("headrelationships")) {
+					processHeadRelationships(parser);
+				} else if (name.equalsIgnoreCase("maritalrelationships")) {
+					processMaritalRelationships(parser);
+				} else if (name.equalsIgnoreCase("pregnancyregistrations")) {
+					processPregnancyRegistrations(parser);
 				}
 				break;
 			}
@@ -553,8 +633,6 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 
 	private void processApplicationParams(XmlPullParser parser) throws Exception {
 
-
-
 		//clear sync_report
 		updateSyncReport(SyncEntity.PARAMETERS, null, SyncStatus.STATUS_NOT_SYNCED);
 
@@ -618,11 +696,10 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 			String[] arrayNames = namesToRemove.toArray(new String[namesToRemove.size()]);
 			boxAppParams.query().in(ApplicationParam_.name, arrayNames).build().remove(); //delete all existing names
 			boxAppParams.put(values); //insert all of them
-
-			savedValues.put(entity, count); //publish progress is a bit slow - its not reporting well the numbers
-			publishProgress(count);
-
 		}
+
+		savedValues.put(entity, count); //publish progress is a bit slow - its not reporting well the numbers
+		publishProgress(count);
 
 		updateSyncReport(SyncEntity.PARAMETERS, new Date(), SyncStatus.STATUS_SYNCED);
 	}
@@ -687,9 +764,11 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 
 		if (!values.isEmpty()) {
 			boxModules.put(values);
-			savedValues.put(entity, count); //publish progress is a bit slow - its not reporting well the numbers
-			publishProgress(count);
 		}
+
+		savedValues.put(entity, count); //publish progress is a bit slow - its not reporting well the numbers
+		publishProgress(count);
+
 		updateSyncReport(SyncEntity.MODULES, new Date(), SyncStatus.STATUS_SYNCED);
 	}
 
@@ -852,13 +931,13 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 			}
 
 			parser.nextTag(); //process isFollowUpOnly
-			if (!isEmptyTag("isFollowUpOnly", parser)) {
+			if (!isEmptyTag("isFollowUpForm", parser)) {
 				parser.next();
-				table.setFollowUpOnly(Boolean.parseBoolean(parser.getText()));
+				table.setFollowUpForm(Boolean.parseBoolean(parser.getText()));
 				parser.nextTag(); //process </isFollowUpOnly>
 				//Log.d(count+"-isFollowUpOnly", "value="+ parser.getText());
 			}else{
-				table.setFollowUpOnly(false);
+				table.setFollowUpForm(false);
 				parser.nextTag();
 			}
 
@@ -1205,6 +1284,9 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 
 		}
 
+		savedValues.put(entity, tlistCount);
+		publishProgress(tlistCount);
+
 		updateSyncReport(SyncEntity.TRACKING_LISTS, new Date(), SyncStatus.STATUS_SYNCED);
 	}
 
@@ -1316,13 +1398,15 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 			parser.nextTag(); // <user>
 			parser.next();
 
-			values.add(table);
-
+			//values.add(table);
+			this.boxUsers.put(table);
+			savedValues.put(entity, count); //publish progress is a bit slow - its not reporting well the numbers
+			publishProgress(count);
 
 			
 		}
 
-		this.boxUsers.put(values);
+		//this.boxUsers.put(values);
 		savedValues.put(entity, count); //publish progress is a bit slow - its not reporting well the numbers
 		publishProgress(count);
 
@@ -1396,13 +1480,11 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 		entity = SyncEntity.REGIONS;
 
 		if (!values.isEmpty()) {
-			count = 0;
-
 			this.boxRegions.put(values);
-			savedValues.put(entity, count); //publish progress is a bit slow - its not reporting well the numbers
-			publishProgress(count);
-
 		}
+
+		savedValues.put(entity, count);
+		publishProgress(count);
 
 		updateSyncReport(SyncEntity.REGIONS, new Date(), SyncStatus.STATUS_SYNCED);
 	}
@@ -1636,6 +1718,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 			this.boxHouseholds.put(values);
 		}
 
+		savedValues.put(entity, count);
 		publishProgress(count);
 
 		updateSyncReport(SyncEntity.HOUSEHOLDS, new Date(), SyncStatus.STATUS_SYNCED);
@@ -2007,9 +2090,770 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 		if (!values.isEmpty()) {
 			this.boxMembers.put(values);
 		}
+
+		savedValues.put(entity, count);
 		publishProgress(count);
 
 		updateSyncReport(SyncEntity.MEMBERS, new Date(), SyncStatus.STATUS_SYNCED);
+	}
+
+	private void processRounds(XmlPullParser parser) throws Exception {
+
+		//clear sync_report
+		updateSyncReport(SyncEntity.ROUNDS, null, SyncStatus.STATUS_NOT_SYNCED);
+
+		List<Round> values = new ArrayList<>();
+		int count = 0;
+		values.clear();
+
+		parser.nextTag();
+
+		while (notEndOfXmlDoc("rounds", parser)) {
+			count++;
+
+			Round table = new Round();
+
+			parser.nextTag(); //roundNumber
+			if (!isEmptyTag("roundNumber", parser)) {
+				parser.next();
+				table.roundNumber = Integer.parseInt(parser.getText());
+				parser.nextTag();
+			}else{
+				//table.roundNumber = 0;
+				parser.nextTag();
+			}
+
+			parser.nextTag(); //startDate
+			if (!isEmptyTag("startDate", parser)) {
+				parser.next();
+				table.startDate = StringUtil.toDate(parser.getText(), "yyyy-MM-dd");
+				parser.nextTag();
+			}else{
+				//table.startDate = false;
+				parser.nextTag();
+			}
+
+			parser.nextTag(); //endDate
+			if (!isEmptyTag("endDate", parser)) {
+				parser.next();
+				table.endDate = StringUtil.toDate(parser.getText(), "yyyy-MM-dd");
+				parser.nextTag();
+			}else{
+				//table.endDate = false;
+				parser.nextTag();
+			}
+
+			parser.nextTag(); //description
+			if (!isEmptyTag("description", parser)) {
+				parser.next();
+				table.description = parser.getText();
+				parser.nextTag();
+			}else{
+				table.description = "";
+				parser.nextTag();
+			}
+
+			parser.nextTag(); //last process tag
+			parser.next();
+
+			//values.add(table);
+			//database.insert(table);
+
+			this.boxRounds.put(table); //try with runTx
+			savedValues.put(entity, count); //publish progress is a bit slow - its not reporting well the numbers
+			publishProgress(count);
+
+
+		}
+
+		if (!values.isEmpty()) {
+			this.boxRounds.put(values);
+		}
+
+		savedValues.put(entity, count);
+		publishProgress(count);
+
+		updateSyncReport(SyncEntity.ROUNDS, new Date(), SyncStatus.STATUS_SYNCED);
+	}
+
+	private void processResidencies(XmlPullParser parser) throws Exception {
+
+		//clear sync_report
+		updateSyncReport(SyncEntity.RESIDENCIES, null, SyncStatus.STATUS_NOT_SYNCED);
+
+		List<Residency> values = new ArrayList<>();
+		int count = 0;
+		values.clear();
+
+		parser.nextTag();
+
+		while (notEndOfXmlDoc("residencies", parser)) {
+			count++;
+
+			Residency table = new Residency();
+
+			parser.nextTag(); //householdCode
+			if (!isEmptyTag("householdCode", parser)) {
+				parser.next();
+				table.householdCode = parser.getText();
+				parser.nextTag();
+			}else{
+				table.householdCode = "";
+				parser.nextTag();
+			}
+
+			parser.nextTag(); //memberCode
+			if (!isEmptyTag("memberCode", parser)) {
+				parser.next();
+				table.memberCode = parser.getText();
+				parser.nextTag();
+			}else{
+				table.memberCode = "";
+				parser.nextTag();
+			}
+
+			parser.nextTag(); //startType
+			if (!isEmptyTag("startType", parser)) {
+				parser.next();
+				table.startType = ResidencyStartType.getFrom(parser.getText());
+				parser.nextTag();
+			}else{
+				table.startType = null;
+				parser.nextTag();
+			}
+
+			parser.nextTag(); //startDate
+			if (!isEmptyTag("startDate", parser)) {
+				parser.next();
+				table.startDate = StringUtil.toDate(parser.getText(), "yyyy-MM-dd");
+				parser.nextTag();
+			}else{
+				//table.startDate = false;
+				parser.nextTag();
+			}
+
+			parser.nextTag(); //endType
+			if (!isEmptyTag("endType", parser)) {
+				parser.next();
+				table.endType = ResidencyEndType.getFrom(parser.getText());
+				parser.nextTag();
+			}else{
+				table.endType = null;
+				parser.nextTag();
+			}
+
+			parser.nextTag(); //endDate
+			if (!isEmptyTag("endDate", parser)) {
+				parser.next();
+				table.endDate = StringUtil.toDate(parser.getText(), "yyyy-MM-dd");
+				parser.nextTag();
+			}else{
+				//table.endDate = false;
+				parser.nextTag();
+			}
+
+			parser.nextTag(); //last process tag
+			parser.next();
+
+			values.add(table);
+
+			//database.insert(table);
+
+			if (count % 500 == 0){
+				this.boxResidencies.put(values); //try with runTx
+				values.clear();
+				savedValues.put(entity, count); //publish progress is a bit slow - its not reporting well the numbers
+				publishProgress(count);
+			}
+
+		}
+
+		if (!values.isEmpty()) {
+			this.boxResidencies.put(values);
+		}
+
+		savedValues.put(entity, count);
+		publishProgress(count);
+
+		updateSyncReport(SyncEntity.RESIDENCIES, new Date(), SyncStatus.STATUS_SYNCED);
+	}
+
+	private void processVisits(XmlPullParser parser) throws Exception {
+
+		//clear sync_report
+		updateSyncReport(SyncEntity.VISITS, null, SyncStatus.STATUS_NOT_SYNCED);
+
+		List<Visit> values = new ArrayList<>();
+		int count = 0;
+		values.clear();
+
+		parser.nextTag();
+
+		while (notEndOfXmlDoc("visits", parser)) {
+			count++;
+
+			Visit table = new Visit();
+
+			parser.nextTag(); //code
+			if (!isEmptyTag("code", parser)) {
+				parser.next();
+				table.code = parser.getText();
+				parser.nextTag();
+			}else{
+				table.code = "";
+				parser.nextTag();
+			}
+
+			parser.nextTag(); //householdCode
+			if (!isEmptyTag("householdCode", parser)) {
+				parser.next();
+				table.householdCode = parser.getText();
+				parser.nextTag();
+			}else{
+				table.householdCode = "";
+				parser.nextTag();
+			}
+
+			parser.nextTag(); //visitDate
+			if (!isEmptyTag("visitDate", parser)) {
+				parser.next();
+				table.visitDate = StringUtil.toDate(parser.getText(), "yyyy-MM-dd");
+				parser.nextTag();
+			}else{
+				//table.visitDate = false;
+				parser.nextTag();
+			}
+
+			parser.nextTag(); //visitReason
+			if (!isEmptyTag("visitReason", parser)) {
+				parser.next();
+				table.visitReason = VisitReason.getFrom(parser.getText());
+				parser.nextTag();
+			}else{
+				table.visitReason = null;
+				parser.nextTag();
+			}
+
+			parser.nextTag(); //visitLocation
+			if (!isEmptyTag("visitLocation", parser)) {
+				parser.next();
+				table.visitLocation = VisitLocationItem.getFrom(parser.getText());
+				parser.nextTag();
+			}else{
+				table.visitLocation = null;
+				parser.nextTag();
+			}
+
+			parser.nextTag(); //visitLocationOther
+			if (!isEmptyTag("visitLocationOther", parser)) {
+				parser.next();
+				table.visitLocationOther = parser.getText();
+				parser.nextTag();
+			}else{
+				table.visitLocationOther = "";
+				parser.nextTag();
+			}
+
+			parser.nextTag(); //roundNumber
+			if (!isEmptyTag("roundNumber", parser)) {
+				parser.next();
+				table.roundNumber = Integer.parseInt(parser.getText());
+				parser.nextTag();
+			}else{
+				//table.roundNumber = 0;
+				parser.nextTag();
+			}
+
+			parser.nextTag(); //respondentCode
+			if (!isEmptyTag("respondentCode", parser)) {
+				parser.next();
+				table.respondentCode = parser.getText();
+				parser.nextTag();
+			}else{
+				table.respondentCode = "";
+				parser.nextTag();
+			}
+
+			parser.nextTag(); //hasInterpreter
+			if (!isEmptyTag("hasInterpreter", parser)) {
+				parser.next();
+				table.hasInterpreter = Boolean.parseBoolean(parser.getText());
+				parser.nextTag();
+			}else{
+				//table.hasInterpreter = false;
+				parser.nextTag();
+			}
+
+			parser.nextTag(); //interpreterName
+			if (!isEmptyTag("interpreterName", parser)) {
+				parser.next();
+				table.interpreterName = parser.getText();
+				parser.nextTag();
+			}else{
+				table.interpreterName = "";
+				parser.nextTag();
+			}
+
+			parser.nextTag(); //gpsAccuracy
+			if (!isEmptyTag("gpsAccuracy", parser)) {
+				parser.next();
+				table.gpsAccuracy = Double.parseDouble(parser.getText());
+				parser.nextTag();
+			}else{
+				//table.gpsAccuracy = 0D;
+				parser.nextTag();
+			}
+
+			parser.nextTag(); //gpsAltitude
+			if (!isEmptyTag("gpsAltitude", parser)) {
+				parser.next();
+				table.gpsAltitude = Double.parseDouble(parser.getText());
+				parser.nextTag();
+			}else{
+				//table.gpsAltitude = 0D;
+				parser.nextTag();
+			}
+
+			parser.nextTag(); //gpsLatitude
+			if (!isEmptyTag("gpsLatitude", parser)) {
+				parser.next();
+				table.gpsLatitude = Double.parseDouble(parser.getText());
+				parser.nextTag();
+			}else{
+				//table.gpsLatitude = 0D;
+				parser.nextTag();
+			}
+
+			parser.nextTag(); //gpsLongitude
+			if (!isEmptyTag("gpsLongitude", parser)) {
+				parser.next();
+				table.gpsLongitude = Double.parseDouble(parser.getText());
+				parser.nextTag();
+			}else{
+				//table.gpsLongitude = 0D;
+				parser.nextTag();
+			}
+
+			parser.nextTag(); //last process tag
+			parser.next();
+
+			values.add(table);
+
+			//database.insert(table);
+
+			if (count % 500 == 0){
+				this.boxVisits.put(values); //try with runTx
+				values.clear();
+				savedValues.put(entity, count); //publish progress is a bit slow - its not reporting well the numbers
+				publishProgress(count);
+			}
+
+		}
+
+		if (!values.isEmpty()) {
+			this.boxVisits.put(values);
+		}
+
+		savedValues.put(entity, count);
+		publishProgress(count);
+
+		updateSyncReport(SyncEntity.VISITS, new Date(), SyncStatus.STATUS_SYNCED);
+	}
+
+	private void processHeadRelationships(XmlPullParser parser) throws Exception {
+
+		//clear sync_report
+		updateSyncReport(SyncEntity.HEAD_RELATIONSHIPS, null, SyncStatus.STATUS_NOT_SYNCED);
+
+		List<HeadRelationship> values = new ArrayList<>();
+		int count = 0;
+		values.clear();
+
+		parser.nextTag();
+
+		while (notEndOfXmlDoc("headrelationships", parser)) {
+			count++;
+
+			HeadRelationship table = new HeadRelationship();
+
+			parser.nextTag(); //householdCode
+			if (!isEmptyTag("householdCode", parser)) {
+				parser.next();
+				table.householdCode = parser.getText();
+				parser.nextTag();
+			}else{
+				table.householdCode = "";
+				parser.nextTag();
+			}
+
+			parser.nextTag(); //memberCode
+			if (!isEmptyTag("memberCode", parser)) {
+				parser.next();
+				table.memberCode = parser.getText();
+				parser.nextTag();
+			}else{
+				table.memberCode = "";
+				parser.nextTag();
+			}
+
+			parser.nextTag(); //headCode
+			if (!isEmptyTag("headCode", parser)) {
+				parser.next();
+				table.headCode = parser.getText();
+				parser.nextTag();
+			}else{
+				table.headCode = "";
+				parser.nextTag();
+			}
+
+			parser.nextTag(); //relationshipType
+			if (!isEmptyTag("relationshipType", parser)) {
+				parser.next();
+				table.relationshipType = HeadRelationshipType.getFrom(parser.getText());
+				parser.nextTag();
+			}else{
+				table.relationshipType = null;
+				parser.nextTag();
+			}
+
+			parser.nextTag(); //startType
+			if (!isEmptyTag("startType", parser)) {
+				parser.next();
+				table.startType = HeadRelationshipStartType.getFrom(parser.getText());
+				parser.nextTag();
+			}else{
+				table.startType = null;
+				parser.nextTag();
+			}
+
+			parser.nextTag(); //startDate
+			if (!isEmptyTag("startDate", parser)) {
+				parser.next();
+				table.startDate = StringUtil.toDate(parser.getText(), "yyyy-MM-dd");
+				parser.nextTag();
+			}else{
+				//table.startDate = false;
+				parser.nextTag();
+			}
+
+			parser.nextTag(); //endType
+			if (!isEmptyTag("endType", parser)) {
+				parser.next();
+				table.endType = HeadRelationshipEndType.getFrom(parser.getText());
+				parser.nextTag();
+			}else{
+				table.endType = null;
+				parser.nextTag();
+			}
+
+			parser.nextTag(); //endDate
+			if (!isEmptyTag("endDate", parser)) {
+				parser.next();
+				table.endDate = StringUtil.toDate(parser.getText(), "yyyy-MM-dd");
+				parser.nextTag();
+			}else{
+				//table.endDate = false;
+				parser.nextTag();
+			}
+
+			parser.nextTag(); //last process tag
+			parser.next();
+
+			values.add(table);
+
+			//database.insert(table);
+
+			if (count % 500 == 0){
+				this.boxHeadRelationships.put(values); //try with runTx
+				values.clear();
+				savedValues.put(entity, count); //publish progress is a bit slow - its not reporting well the numbers
+				publishProgress(count);
+			}
+
+		}
+
+		if (!values.isEmpty()) {
+			this.boxHeadRelationships.put(values);
+		}
+
+		savedValues.put(entity, count);
+		publishProgress(count);
+
+		updateSyncReport(SyncEntity.HEAD_RELATIONSHIPS, new Date(), SyncStatus.STATUS_SYNCED);
+	}
+
+	private void processMaritalRelationships(XmlPullParser parser) throws Exception {
+
+		//clear sync_report
+		updateSyncReport(SyncEntity.MARITAL_RELATIONSHIPS, null, SyncStatus.STATUS_NOT_SYNCED);
+
+		List<MaritalRelationship> values = new ArrayList<>();
+		int count = 0;
+		values.clear();
+
+		parser.nextTag();
+
+		while (notEndOfXmlDoc("maritalrelationships", parser)) {
+			count++;
+
+			MaritalRelationship table = new MaritalRelationship();
+
+			parser.nextTag(); //memberA_code
+			if (!isEmptyTag("memberA_code", parser)) {
+				parser.next();
+				table.memberA_code = parser.getText();
+				parser.nextTag();
+			}else{
+				table.memberA_code = "";
+				parser.nextTag();
+			}
+
+			parser.nextTag(); //memberB_code
+			if (!isEmptyTag("memberB_code", parser)) {
+				parser.next();
+				table.memberB_code = parser.getText();
+				parser.nextTag();
+			}else{
+				table.memberB_code = "";
+				parser.nextTag();
+			}
+
+			parser.nextTag(); //startStatus
+			if (!isEmptyTag("startStatus", parser)) {
+				parser.next();
+				table.startStatus = MaritalStartStatus.getFrom(parser.getText());
+				parser.nextTag();
+			}else{
+				table.startStatus = null;
+				parser.nextTag();
+			}
+
+			parser.nextTag(); //startDate
+			if (!isEmptyTag("startDate", parser)) {
+				parser.next();
+				table.startDate = StringUtil.toDate(parser.getText(), "yyyy-MM-dd");
+				parser.nextTag();
+			}else{
+				//table.startDate = false;
+				parser.nextTag();
+			}
+
+			parser.nextTag(); //endStatus
+			if (!isEmptyTag("endStatus", parser)) {
+				parser.next();
+				table.endStatus = MaritalEndStatus.getFrom(parser.getText());
+				parser.nextTag();
+			}else{
+				table.endStatus = null;
+				parser.nextTag();
+			}
+
+			parser.nextTag(); //endDate
+			if (!isEmptyTag("endDate", parser)) {
+				parser.next();
+				table.endDate = StringUtil.toDate(parser.getText(), "yyyy-MM-dd");
+				parser.nextTag();
+			}else{
+				//table.endDate = false;
+				parser.nextTag();
+			}
+
+			parser.nextTag(); //last process tag
+			parser.next();
+
+			values.add(table);
+
+			//database.insert(table);
+
+			if (count % 500 == 0){
+				this.boxMaritalRelationships.put(values); //try with runTx
+				values.clear();
+				savedValues.put(entity, count); //publish progress is a bit slow - its not reporting well the numbers
+				publishProgress(count);
+			}
+
+		}
+
+		if (!values.isEmpty()) {
+			this.boxMaritalRelationships.put(values);
+		}
+
+		savedValues.put(entity, count);
+		publishProgress(count);
+
+		updateSyncReport(SyncEntity.MARITAL_RELATIONSHIPS, new Date(), SyncStatus.STATUS_SYNCED);
+	}
+
+	private void processPregnancyRegistrations(XmlPullParser parser) throws Exception {
+
+		//clear sync_report
+		updateSyncReport(SyncEntity.PREGNANCY_REGISTRATIONS, null, SyncStatus.STATUS_NOT_SYNCED);
+
+		List<PregnancyRegistration> values = new ArrayList<>();
+		int count = 0;
+		values.clear();
+
+		parser.nextTag();
+
+		while (notEndOfXmlDoc("pregnancyregistrations", parser)) {
+			count++;
+
+			PregnancyRegistration table = new PregnancyRegistration();
+
+			parser.nextTag(); //code
+			if (!isEmptyTag("code", parser)) {
+				parser.next();
+				table.code = parser.getText();
+				parser.nextTag();
+			}else{
+				table.code = "";
+				parser.nextTag();
+			}
+
+			parser.nextTag(); //motherCode
+			if (!isEmptyTag("motherCode", parser)) {
+				parser.next();
+				table.motherCode = parser.getText();
+				parser.nextTag();
+			}else{
+				table.motherCode = "";
+				parser.nextTag();
+			}
+
+			parser.nextTag(); //recordedDate
+			if (!isEmptyTag("recordedDate", parser)) {
+				parser.next();
+				table.recordedDate = StringUtil.toDate(parser.getText(), "yyyy-MM-dd");
+				parser.nextTag();
+			}else{
+				//table.recordedDate = false;
+				parser.nextTag();
+			}
+
+			parser.nextTag(); //pregMonths
+			if (!isEmptyTag("pregMonths", parser)) {
+				parser.next();
+				table.pregMonths = Integer.parseInt(parser.getText());
+				parser.nextTag();
+			}else{
+				//table.pregMonths = 0;
+				parser.nextTag();
+			}
+
+			parser.nextTag(); //eddKnown
+			if (!isEmptyTag("eddKnown", parser)) {
+				parser.next();
+				table.eddKnown = Boolean.parseBoolean(parser.getText());
+				parser.nextTag();
+			}else{
+				//table.eddKnown = false;
+				parser.nextTag();
+			}
+
+			parser.nextTag(); //hasPrenatalRecord
+			if (!isEmptyTag("hasPrenatalRecord", parser)) {
+				parser.next();
+				table.hasPrenatalRecord = Boolean.parseBoolean(parser.getText());
+				parser.nextTag();
+			}else{
+				//table.hasPrenatalRecord = false;
+				parser.nextTag();
+			}
+
+			parser.nextTag(); //eddDate
+			if (!isEmptyTag("eddDate", parser)) {
+				parser.next();
+				table.eddDate = StringUtil.toDate(parser.getText(), "yyyy-MM-dd");
+				parser.nextTag();
+			}else{
+				//table.eddDate = false;
+				parser.nextTag();
+			}
+
+			parser.nextTag(); //eddType
+			if (!isEmptyTag("eddType", parser)) {
+				parser.next();
+				table.eddType = EstimatedDateOfDeliveryType.getFrom(parser.getText());
+				parser.nextTag();
+			}else{
+				table.eddType = null;
+				parser.nextTag();
+			}
+
+			parser.nextTag(); //lmpKnown
+			if (!isEmptyTag("lmpKnown", parser)) {
+				parser.next();
+				table.lmpKnown = Boolean.parseBoolean(parser.getText());
+				parser.nextTag();
+			}else{
+				//table.lmpKnown = false;
+				parser.nextTag();
+			}
+
+			parser.nextTag(); //lmpDate
+			if (!isEmptyTag("lmpDate", parser)) {
+				parser.next();
+				table.lmpDate = StringUtil.toDate(parser.getText(), "yyyy-MM-dd");
+				parser.nextTag();
+			}else{
+				//table.lmpDate = false;
+				parser.nextTag();
+			}
+
+			parser.nextTag(); //expectedDeliveryDate
+			if (!isEmptyTag("expectedDeliveryDate", parser)) {
+				parser.next();
+				table.expectedDeliveryDate = StringUtil.toDate(parser.getText(), "yyyy-MM-dd");
+				parser.nextTag();
+			}else{
+				//table.expectedDeliveryDate = false;
+				parser.nextTag();
+			}
+
+			parser.nextTag(); //status
+			if (!isEmptyTag("status", parser)) {
+				parser.next();
+				table.status = PregnancyStatus.getFrom(parser.getText());
+				parser.nextTag();
+			}else{
+				table.status = null;
+				parser.nextTag();
+			}
+
+			parser.nextTag(); //visitCode
+			if (!isEmptyTag("visitCode", parser)) {
+				parser.next();
+				table.visitCode = parser.getText();
+				parser.nextTag();
+			}else{
+				table.visitCode = "";
+				parser.nextTag();
+			}
+
+			parser.nextTag(); //last process tag
+			parser.next();
+
+			values.add(table);
+
+			//database.insert(table);
+
+			if (count % 500 == 0){
+				this.boxPregnancyRegistrations.put(values); //try with runTx
+				values.clear();
+				savedValues.put(entity, count); //publish progress is a bit slow - its not reporting well the numbers
+				publishProgress(count);
+			}
+
+		}
+
+		if (!values.isEmpty()) {
+			this.boxPregnancyRegistrations.put(values);
+		}
+
+		savedValues.put(entity, count);
+		publishProgress(count);
+
+		updateSyncReport(SyncEntity.PREGNANCY_REGISTRATIONS, new Date(), SyncStatus.STATUS_SYNCED);
 	}
 
 	//database.query(SyncReport.class, DatabaseHelper.SyncReport.COLUMN_REPORT_ID+"=?", new String[]{}, null, null, null);
@@ -2067,10 +2911,15 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 				case DATASETS: 		 downloadedEntity = mContext.getString(R.string.sync_datasets_lbl); 	break;
 				case DATASETS_CSV_FILES: downloadedEntity = mContext.getString(R.string.sync_datasets_csv_lbl); 	break;
 				case TRACKING_LISTS: downloadedEntity = mContext.getString(R.string.sync_tracking_lists_lbl);	break;
+				case ROUNDS: 		 downloadedEntity = mContext.getString(R.string.sync_rounds_lbl); 	break;
 				case USERS: 		 downloadedEntity = mContext.getString(R.string.sync_users_lbl); 	break;
 				case REGIONS: 		 downloadedEntity = mContext.getString(R.string.sync_regions_lbl);	break;
 				case HOUSEHOLDS: 	 downloadedEntity = mContext.getString(R.string.sync_households_lbl);	break;
 				case MEMBERS: 		 downloadedEntity = mContext.getString(R.string.sync_members_lbl); 	  break;
+				case VISITS: 		 downloadedEntity = mContext.getString(R.string.sync_visits_lbl); 	  break;
+				case HEAD_RELATIONSHIPS: 	 downloadedEntity = mContext.getString(R.string.sync_head_relationships_lbl); 	  break;
+				case MARITAL_RELATIONSHIPS:  downloadedEntity = mContext.getString(R.string.sync_marital_relationships_lbl); 	  break;
+				case PREGNANCY_REGISTRATIONS:downloadedEntity = mContext.getString(R.string.sync_pregnancies_lbl); 	  break;
 			}
 
 			boolean error = mapStatuses.get(entity)==SyncStatus.STATUS_SYNC_ERROR;
@@ -2104,9 +2953,14 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 				case DATASETS: 		 downloadedEntity = mContext.getString(R.string.sync_datasets_lbl); 	break;
 				case TRACKING_LISTS: downloadedEntity = mContext.getString(R.string.sync_tracking_lists_lbl);	break;
 				case USERS: 		 downloadedEntity = mContext.getString(R.string.sync_users_lbl); 	break;
+				case ROUNDS: 		 downloadedEntity = mContext.getString(R.string.sync_rounds_lbl); 	break;
 				case REGIONS: 		 downloadedEntity = mContext.getString(R.string.sync_regions_lbl);	break;
 				case HOUSEHOLDS: 	 downloadedEntity = mContext.getString(R.string.sync_households_lbl);	break;
 				case MEMBERS: 		 downloadedEntity = mContext.getString(R.string.sync_members_lbl); 	  break;
+				case VISITS: 		 downloadedEntity = mContext.getString(R.string.sync_visits_lbl); 	  break;
+				case HEAD_RELATIONSHIPS: 	 downloadedEntity = mContext.getString(R.string.sync_head_relationships_lbl); 	  break;
+				case MARITAL_RELATIONSHIPS:  downloadedEntity = mContext.getString(R.string.sync_marital_relationships_lbl); 	  break;
+				case PREGNANCY_REGISTRATIONS:downloadedEntity = mContext.getString(R.string.sync_pregnancies_lbl); 	  break;
 			}
 
 			boolean error = mapStatuses.get(entity)==SyncStatus.STATUS_SYNC_ERROR;

@@ -677,7 +677,7 @@ public class FormDataLoader implements Serializable {
 
                 FormDataLoader loader = new FormDataLoader(form);
 
-                if (form.isFollowUpOnly() && listFilters.contains(FormFilter.FOLLOW_UP)){
+                if (form.isFollowUpForm() && listFilters.contains(FormFilter.FOLLOW_UP)){
                     list.add(loader);
                     continue;
                 }

@@ -37,15 +37,23 @@ import java.util.List;
 import static android.content.Context.MODE_PRIVATE;
 import static org.philimone.hds.explorer.model.enums.SyncEntity.DATASETS;
 import static org.philimone.hds.explorer.model.enums.SyncEntity.DATASETS_CSV_FILES;
+import static org.philimone.hds.explorer.model.enums.SyncEntity.DEMOGRAPHICS_EVENTS;
 import static org.philimone.hds.explorer.model.enums.SyncEntity.FORMS;
+import static org.philimone.hds.explorer.model.enums.SyncEntity.HEAD_RELATIONSHIPS;
 import static org.philimone.hds.explorer.model.enums.SyncEntity.HOUSEHOLDS;
+import static org.philimone.hds.explorer.model.enums.SyncEntity.HOUSEHOLDS_DATASETS;
+import static org.philimone.hds.explorer.model.enums.SyncEntity.MARITAL_RELATIONSHIPS;
 import static org.philimone.hds.explorer.model.enums.SyncEntity.MEMBERS;
 import static org.philimone.hds.explorer.model.enums.SyncEntity.MODULES;
 import static org.philimone.hds.explorer.model.enums.SyncEntity.PARAMETERS;
+import static org.philimone.hds.explorer.model.enums.SyncEntity.PREGNANCY_REGISTRATIONS;
 import static org.philimone.hds.explorer.model.enums.SyncEntity.REGIONS;
+import static org.philimone.hds.explorer.model.enums.SyncEntity.RESIDENCIES;
+import static org.philimone.hds.explorer.model.enums.SyncEntity.ROUNDS;
 import static org.philimone.hds.explorer.model.enums.SyncEntity.SETTINGS;
 import static org.philimone.hds.explorer.model.enums.SyncEntity.TRACKING_LISTS;
 import static org.philimone.hds.explorer.model.enums.SyncEntity.USERS;
+import static org.philimone.hds.explorer.model.enums.SyncEntity.VISITS;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -63,9 +71,8 @@ public class SyncDownloadPanelFragment extends Fragment implements SyncPanelItem
     private SyncPanelItemFragment settingsSyncFragment;
     private SyncPanelItemFragment datasetsSyncFragment;
     private SyncPanelItemFragment trackingListsSyncFragment;
-    private SyncPanelItemFragment usersSyncFragment;
-    private SyncPanelItemFragment householdsSyncFragment;
-    private SyncPanelItemFragment membersSyncFragment;
+    private SyncPanelItemFragment householdsDatasetsSyncFragment;
+    private SyncPanelItemFragment demographicsEventsSyncFragment;
 
     private SyncPanelItemFragment clickedSyncFragment;
 
@@ -99,17 +106,14 @@ public class SyncDownloadPanelFragment extends Fragment implements SyncPanelItem
         this.settingsSyncFragment = SyncPanelItemFragment.newInstance(getString(R.string.server_sync_bt_settings_lbl));
         this.datasetsSyncFragment = SyncPanelItemFragment.newInstance(getString(R.string.server_sync_bt_datasets_lbl));
         this.trackingListsSyncFragment = SyncPanelItemFragment.newInstance(getString(R.string.server_sync_bt_tracking_lists_lbl));
-        this.usersSyncFragment = SyncPanelItemFragment.newInstance(getString(R.string.server_sync_bt_users_lbl));
-        this.householdsSyncFragment = SyncPanelItemFragment.newInstance(getString(R.string.server_sync_bt_households_lbl));
-        this.membersSyncFragment = SyncPanelItemFragment.newInstance(getString(R.string.server_sync_bt_members_lbl));
+        this.householdsDatasetsSyncFragment = SyncPanelItemFragment.newInstance(getString(R.string.server_sync_bt_households_datasets_lbl));
+        this.demographicsEventsSyncFragment = SyncPanelItemFragment.newInstance(getString(R.string.server_sync_bt_dssevents_lbl));
 
         this.settingsSyncFragment.setListener(this);
         this.datasetsSyncFragment.setListener(this);
         this.trackingListsSyncFragment.setListener(this);
-        this.usersSyncFragment.setListener(this);
-        this.householdsSyncFragment.setListener(this);
-        this.membersSyncFragment.setListener(this);
-
+        this.householdsDatasetsSyncFragment.setListener(this);
+        this.demographicsEventsSyncFragment.setListener(this);
 
     }
 
@@ -132,11 +136,9 @@ public class SyncDownloadPanelFragment extends Fragment implements SyncPanelItem
 
         getChildFragmentManager().beginTransaction().replace(R.id.trackingListsSyncFragment, this.trackingListsSyncFragment).commit();
 
-        getChildFragmentManager().beginTransaction().replace(R.id.usersSyncFragment, this.usersSyncFragment).commit();
+        getChildFragmentManager().beginTransaction().replace(R.id.householdsDatasetsSyncFragment, this.householdsDatasetsSyncFragment).commit();
 
-        getChildFragmentManager().beginTransaction().replace(R.id.householdsSyncFragment, this.householdsSyncFragment).commit();
-
-        getChildFragmentManager().beginTransaction().replace(R.id.membersSyncFragment, this.membersSyncFragment).commit();
+        getChildFragmentManager().beginTransaction().replace(R.id.demographicsEventsSyncFragment, this.demographicsEventsSyncFragment).commit();
 
         initPermissions();
         initialize(view);
@@ -222,12 +224,18 @@ public class SyncDownloadPanelFragment extends Fragment implements SyncPanelItem
         SyncReport regions = Queries.getSyncReportBy(boxSyncReports, REGIONS);
         SyncReport households = Queries.getSyncReportBy(boxSyncReports, HOUSEHOLDS);
         SyncReport members = Queries.getSyncReportBy(boxSyncReports, MEMBERS);
+        SyncReport residencies = Queries.getSyncReportBy(boxSyncReports, RESIDENCIES);
+        SyncReport rounds = Queries.getSyncReportBy(boxSyncReports, ROUNDS);
+        SyncReport visits = Queries.getSyncReportBy(boxSyncReports, VISITS);
+        SyncReport hrelationships = Queries.getSyncReportBy(boxSyncReports, HEAD_RELATIONSHIPS);
+        SyncReport mrelationships = Queries.getSyncReportBy(boxSyncReports, MARITAL_RELATIONSHIPS);
+        SyncReport pregnancies = Queries.getSyncReportBy(boxSyncReports, PREGNANCY_REGISTRATIONS);
 
         //setting general status - if one block is bad general is bad
 
         //settings
-        if (modules != null || forms != null || params != null){
-            SyncReport report = getBestReport(modules, forms, params);
+        if (modules != null || forms != null || params != null || users != null){
+            SyncReport report = getBestReport(modules, forms, params, users);
             settingsSyncFragment.setSyncedDate(getStatusMessage(report), report.getStatus());
         }
 
@@ -237,22 +245,21 @@ public class SyncDownloadPanelFragment extends Fragment implements SyncPanelItem
             datasetsSyncFragment.setSyncedDate(getStatusMessage(report), report.getStatus());
         }
 
+        //tracklists
         if (trackLists != null) {
             trackingListsSyncFragment.setSyncedDate(getStatusMessage(trackLists), trackLists.getStatus());
         }
 
-        //households
-        if (regions != null || households != null){
-            SyncReport report = getBestReport(regions, households);
-            householdsSyncFragment.setSyncedDate(getStatusMessage(report), report.getStatus());
+        //households datasets
+        if (rounds != null || regions != null || households != null || members != null || residencies != null){
+            SyncReport report = getBestReport(rounds, regions, households, members, residencies);
+            householdsDatasetsSyncFragment.setSyncedDate(getStatusMessage(report), report.getStatus());
         }
 
-        if (users != null) {
-            usersSyncFragment.setSyncedDate(getStatusMessage(users), users.getStatus());
-        }
-
-        if (members != null) {
-            membersSyncFragment.setSyncedDate(getStatusMessage(members), members.getStatus());
+        //demographics events
+        if (visits != null || hrelationships != null || mrelationships != null || pregnancies != null) {
+            SyncReport report = getBestReport(visits, hrelationships, mrelationships, pregnancies);
+            demographicsEventsSyncFragment.setSyncedDate(getStatusMessage(report), report.getStatus());
         }
 
     }
@@ -277,22 +284,20 @@ public class SyncDownloadPanelFragment extends Fragment implements SyncPanelItem
         Synchronizer settings = () -> syncSettings();
         Synchronizer datasets = () -> syncDatasets();
         Synchronizer tracklists = () -> syncTrackingLists();
-        Synchronizer users = () -> syncUsers();
-        Synchronizer households = () -> syncHouseholds();
-        Synchronizer members = () -> syncMembers();
+        Synchronizer households = () -> syncHouseholdDatasets();
+        Synchronizer dssevents = () -> syncDemographicsEvents();
 
         this.synchronizerAllList.add(settings);
         this.synchronizerAllList.add(datasets);
         this.synchronizerAllList.add(tracklists);
-        this.synchronizerAllList.add(users);
         this.synchronizerAllList.add(households);
-        this.synchronizerAllList.add(members);
+        this.synchronizerAllList.add(dssevents);
 
         settings.executeSync();
     }
 
     private void syncSettings() {
-        SyncEntitiesTask syncEntitiesTask = new SyncEntitiesTask(this.getContext(), this.settingsSyncFragment, serverUrl, username, password, MODULES, PARAMETERS, FORMS);
+        SyncEntitiesTask syncEntitiesTask = new SyncEntitiesTask(this.getContext(), this.settingsSyncFragment, serverUrl, username, password, PARAMETERS, MODULES, FORMS, USERS);
         syncEntitiesTask.execute();
     }
 
@@ -306,18 +311,13 @@ public class SyncDownloadPanelFragment extends Fragment implements SyncPanelItem
         syncEntitiesTask.execute();
     }
 
-    private void syncUsers() {
-        SyncEntitiesTask syncEntitiesTask = new SyncEntitiesTask(this.getContext(), this.usersSyncFragment, serverUrl, username, password, USERS);
+    private void syncHouseholdDatasets() {
+        SyncEntitiesTask syncEntitiesTask = new SyncEntitiesTask(this.getContext(), this.householdsDatasetsSyncFragment, serverUrl, username, password, ROUNDS, REGIONS, HOUSEHOLDS, RESIDENCIES);
         syncEntitiesTask.execute();
     }
 
-    private void syncHouseholds() {
-        SyncEntitiesTask syncEntitiesTask = new SyncEntitiesTask(this.getContext(), this.householdsSyncFragment, serverUrl, username, password, REGIONS, HOUSEHOLDS);
-        syncEntitiesTask.execute();
-    }
-
-    private void syncMembers() {
-        SyncEntitiesTask syncEntitiesTask = new SyncEntitiesTask(this.getContext(), this.membersSyncFragment, serverUrl, username, password, MEMBERS);
+    private void syncDemographicsEvents() {
+        SyncEntitiesTask syncEntitiesTask = new SyncEntitiesTask(this.getContext(), this.demographicsEventsSyncFragment, serverUrl, username, password, VISITS, HEAD_RELATIONSHIPS, MARITAL_RELATIONSHIPS, PREGNANCY_REGISTRATIONS);
         syncEntitiesTask.execute();
     }
 
@@ -340,9 +340,8 @@ public class SyncDownloadPanelFragment extends Fragment implements SyncPanelItem
         SyncEntityResult settingsResult = getEntityResult(prefs, SETTINGS);
         SyncEntityResult datasetsResult = getEntityResult(prefs, DATASETS);
         SyncEntityResult trackListResult = getEntityResult(prefs, TRACKING_LISTS);
-        SyncEntityResult usersResult = getEntityResult(prefs, USERS);
-        SyncEntityResult householdsResult = getEntityResult(prefs, HOUSEHOLDS);
-        SyncEntityResult membersResult = getEntityResult(prefs, MEMBERS);
+        SyncEntityResult householdsResult = getEntityResult(prefs, HOUSEHOLDS_DATASETS);
+        SyncEntityResult dssEventsResult = getEntityResult(prefs, DEMOGRAPHICS_EVENTS);
 
         if (settingsResult != null) {
             settingsSyncFragment.setSyncResult(settingsResult);
@@ -353,14 +352,11 @@ public class SyncDownloadPanelFragment extends Fragment implements SyncPanelItem
         if (trackListResult != null) {
             trackingListsSyncFragment.setSyncResult(trackListResult);
         }
-        if (usersResult != null) {
-            usersSyncFragment.setSyncResult(usersResult);
-        }
         if (householdsResult != null) {
-            householdsSyncFragment.setSyncResult(householdsResult);
+            householdsDatasetsSyncFragment.setSyncResult(householdsResult);
         }
-        if (membersResult != null) {
-            membersSyncFragment.setSyncResult(membersResult);
+        if (dssEventsResult != null) {
+            demographicsEventsSyncFragment.setSyncResult(dssEventsResult);
         }
     }
 
@@ -403,16 +399,12 @@ public class SyncDownloadPanelFragment extends Fragment implements SyncPanelItem
             syncTrackingLists();
         }
 
-        if (syncPanelItem.equals(this.usersSyncFragment)){
-            syncUsers();
+        if (syncPanelItem.equals(this.householdsDatasetsSyncFragment)){
+            syncHouseholdDatasets();
         }
 
-        if (syncPanelItem.equals(this.householdsSyncFragment)){
-            syncHouseholds();
-        }
-
-        if (syncPanelItem.equals(this.membersSyncFragment)){
-            syncMembers();
+        if (syncPanelItem.equals(this.demographicsEventsSyncFragment)){
+            syncDemographicsEvents();
         }
 
         this.clickedSyncFragment = null;

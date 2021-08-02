@@ -45,9 +45,17 @@
     <string name="sync_datasets_lbl">Datasets</string>
     <string name="sync_datasets_csv_lbl">Datasets CSV/ZIP Files</string>
     <string name="sync_tracking_lists_lbl">FollowUp Lists</string>
+    <string name="sync_rounds_lbl">Rounds</string>
     <string name="sync_regions_lbl">Regions</string>
+    <string name="sync_households_datasets_lbl">Households Datasets</string>
     <string name="sync_households_lbl">Households</string>
     <string name="sync_members_lbl">Members</string>
+    <string name="sync_residencies_lbl">Residencies</string>
+    <string name="sync_demographics_events_lbl">Demographics Events</string>
+    <string name="sync_visits_lbl">Visits</string>
+    <string name="sync_head_relationships_lbl">Head Relationships</string>
+    <string name="sync_marital_relationships_lbl">Marital Relationships</string>
+    <string name="sync_pregnancies_lbl">Pregnancies</string>
     <string name="sync_saved_lbl">Saved</string>
     <string name="sync_records_lbl">records</string>
     <string name="sync_successfully_lbl">Data was successfully synchronized.</string>
@@ -72,9 +80,8 @@
     <string name="server_sync_bt_settings_lbl">Download Settings</string>
     <string name="server_sync_bt_datasets_lbl">Download External Datasets</string>
     <string name="server_sync_bt_tracking_lists_lbl">Download Follow Up Lists</string>
-    <string name="server_sync_bt_users_lbl">Download Users</string>
-    <string name="server_sync_bt_households_lbl">Download Households</string>
-    <string name="server_sync_bt_members_lbl">Download Members</string>
+    <string name="server_sync_bt_households_datasets_lbl">Download Households Datasets</string>
+    <string name="server_sync_bt_dssevents_lbl">Download Demographics Events</string>
 
     <string name="server_sync_offline_mode_title_lbl">Can\'t Synchronization</string>
     <string name="server_sync_offline_mode_msg_lbl">You are currently in offline mode, to be able to sync login again</string>

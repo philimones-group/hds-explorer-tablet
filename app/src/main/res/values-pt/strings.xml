@@ -45,9 +45,17 @@
     <string name="sync_datasets_lbl">Datasets</string>
     <string name="sync_datasets_csv_lbl">Datasets CSV/ZIP</string>
     <string name="sync_tracking_lists_lbl">Listas de seguimento</string>
+    <string name="sync_rounds_lbl">Rondas</string>
     <string name="sync_regions_lbl">Regiões</string>
-    <string name="sync_households_lbl">Agregados/Casas</string>
+    <string name="sync_households_datasets_lbl">Dados das Casas/Agregados</string>
+    <string name="sync_households_lbl">Casas/Agregados</string>
     <string name="sync_members_lbl">Membros</string>
+    <string name="sync_residencies_lbl">Residências</string>
+    <string name="sync_demographics_events_lbl">Eventos Demográficos</string>
+    <string name="sync_visits_lbl">Visitas</string>
+    <string name="sync_head_relationships_lbl">Relações com Chefe do Agregado</string>
+    <string name="sync_marital_relationships_lbl">Relações maritais</string>
+    <string name="sync_pregnancies_lbl">Gravidezes</string>
     <string name="sync_saved_lbl">Guardado</string>
     <string name="sync_records_lbl">registros</string>
     <string name="sync_successfully_lbl">Os dados foram sincronizados com sucesso.</string>
@@ -72,9 +80,8 @@
     <string name="server_sync_bt_settings_lbl">Baixar Definições</string>
     <string name="server_sync_bt_datasets_lbl">Baixar Datasets externos</string>
     <string name="server_sync_bt_tracking_lists_lbl">Baixar Listas de Seguimento</string>
-    <string name="server_sync_bt_users_lbl">Baixar Usuários</string>
-    <string name="server_sync_bt_households_lbl">Baixar Agregados</string>
-    <string name="server_sync_bt_members_lbl">Baixar Membros</string>
+    <string name="server_sync_bt_households_datasets_lbl">Baixar Dados das Casas/Agregados</string>
+    <string name="server_sync_bt_dssevents_lbl">Baixar Eventos Demográficos</string>
 
     <string name="server_sync_offline_mode_title_lbl">Não é possivel sincronizar</string>
     <string name="server_sync_offline_mode_msg_lbl">O painel esta no modo offline, para poder sincronizar dados, faça login novamente</string>

@@ -33,7 +33,7 @@ public class Form implements Serializable {
     public boolean isHouseholdForm;
     public boolean isHouseholdHeadForm;
     public boolean isMemberForm;
-    public boolean isFollowUpOnly;
+    public boolean isFollowUpForm;
     public boolean multiCollPerSession;
 
     @Convert(converter = FormMappingConverter.class, dbType = String.class)
@@ -158,12 +158,12 @@ public class Form implements Serializable {
         isMemberForm = memberForm;
     }
 
-    public boolean isFollowUpOnly() {
-        return isFollowUpOnly;
+    public boolean isFollowUpForm() {
+        return isFollowUpForm;
     }
 
-    public void setFollowUpOnly(boolean followUpOnly) {
-        isFollowUpOnly = followUpOnly;
+    public void setFollowUpForm(boolean followUpForm) {
+        isFollowUpForm = followUpForm;
     }
 
     public boolean isMultiCollPerSession() {

@@ -56,7 +56,7 @@ public class SyncEntityResult implements Serializable {
     public SyncEntity getMainEntity(){
         //settings
         for (SyncEntity syncEntity : reportsMap.keySet()) {
-            if (syncEntity == SyncEntity.MODULES || syncEntity == SyncEntity.FORMS || syncEntity == SyncEntity.PARAMETERS){
+            if (syncEntity == SyncEntity.MODULES || syncEntity == SyncEntity.FORMS || syncEntity == SyncEntity.PARAMETERS || syncEntity == SyncEntity.USERS){
                 return SyncEntity.SETTINGS;
             }
             //datasets
@@ -68,16 +68,12 @@ public class SyncEntityResult implements Serializable {
                 return syncEntity;
             }
 
-            if (syncEntity == SyncEntity.REGIONS || syncEntity == SyncEntity.HOUSEHOLDS){
-                return SyncEntity.HOUSEHOLDS;
+            if (syncEntity == SyncEntity.ROUNDS || syncEntity == SyncEntity.REGIONS || syncEntity == SyncEntity.HOUSEHOLDS || syncEntity == SyncEntity.MEMBERS || syncEntity == SyncEntity.RESIDENCIES){
+                return SyncEntity.HOUSEHOLDS_DATASETS;
             }
 
-            if (syncEntity == SyncEntity.USERS) {
-                return syncEntity;
-            }
-
-            if (syncEntity == SyncEntity.MEMBERS) {
-                return syncEntity;
+            if (syncEntity == SyncEntity.VISITS || syncEntity == SyncEntity.HEAD_RELATIONSHIPS || syncEntity == SyncEntity.MARITAL_RELATIONSHIPS || syncEntity == SyncEntity.PREGNANCY_REGISTRATIONS) {
+                return syncEntity.DEMOGRAPHICS_EVENTS;
             }
         }
 

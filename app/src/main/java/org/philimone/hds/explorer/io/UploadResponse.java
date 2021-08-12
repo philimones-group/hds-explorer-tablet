@@ -7,6 +7,7 @@ public class UploadResponse {
 
     public UploadResponse(boolean success, boolean uploaded, String errors) {
         this.success = success;
+        this.uploaded = uploaded;
         this.errors = errors;
     }
 

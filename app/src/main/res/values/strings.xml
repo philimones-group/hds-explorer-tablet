@@ -65,6 +65,9 @@
     <string name="sync_downloaded_msg_lbl">Total of #1 data downloaded:</string>
 
     <string name="sync_result_dialog_title">Synchronization Details</string>
+    <string name="sync_upload_result_dialog_title">Upload Details</string>
+    <string name="sync_upload_instance_id_lbl">UID:</string>
+    <string name="sync_upload_instance_code_lbl">Code:</string>
 
     <!-- Sync Activity -->
     <string name="server_sync_title_lbl">Synchronization Panel</string>
@@ -73,7 +76,7 @@
     <string name="server_sync_status_notsynced_lbl">Not Synced</string>
     <string name="server_sync_status_synced_lbl">Last Sync on</string>
     <string name="server_sync_status_sync_error_lbl">Error during last Sync on</string>
-    <string name="server_sync_bt_upload_all_lbl">Upload All Data</string>
+    <string name="server_sync_bt_upload_all_lbl">Upload Selected Forms</string>
     <string name="server_sync_bt_sync_all_lbl">Synchronize All</string>
     <string name="server_sync_bt_sync_lbl">Sync</string>
     <string name="server_sync_bt_stop_lbl">Stop</string>
@@ -82,6 +85,19 @@
     <string name="server_sync_bt_tracking_lists_lbl">Download Follow Up Lists</string>
     <string name="server_sync_bt_households_datasets_lbl">Download Households Datasets</string>
     <string name="server_sync_bt_dssevents_lbl">Download Demographics Events</string>
+
+    <string name="server_sync_uploaded_date_lbl">Last Uploaded Date:</string>
+    <string name="server_sync_upload_successfully_lbl">Uploaded Successfully:</string>
+    <string name="server_sync_upload_werrors_lbl">Uploaded with Validation Errors:</string>
+    <string name="server_sync_upload_notuploaded_lbl">Not Uploaded:</string>
+    <string name="server_sync_upload_show_not_uploaded_lbl">Show not uploaded forms</string>
+    <string name="server_sync_upload_show_uploaded_forms_lbl">Show uploaded forms</string>
+    <string name="server_sync_upload_show_uploaded_werrors_lbl">Show uploaded with errors</string>
+    <string name="server_sync_upload_select_all">Select All</string>
+    <string name="server_sync_upload_total_lbl">%1$d Forms</string>
+    <string name="server_sync_uploading_form_lbl">Uploading %1$s Form</string>
+    <string name="server_sync_uploading_finished_lbl">Upload Finished</string>
+    <string name="server_sync_upload_errors_result_lbl">Uploaded with Validation Errors</string>
 
     <string name="server_sync_offline_mode_title_lbl">Can\'t Synchronization</string>
     <string name="server_sync_offline_mode_msg_lbl">You are currently in offline mode, to be able to sync login again</string>
@@ -99,6 +115,9 @@
     <string name="core_entity_pregnancy_out_lbl">Pregnancy Outcome Registration</string>
     <string name="core_entity_death_lbl">Death Registration</string>
     <string name="core_entity_visit_lbl">Visit Registration</string>
+    <string name="core_entity_collected_date_lbl">Collected Date:</string>
+    <string name="core_entity_updated_date_lbl">Updated Date:</string>
+    <string name="core_entity_uploaded_date_lbl">Uploaded Date:</string>
 
     <!-- SplashScreen -->
     <string name="splashscreen_hds_explorer_name_1">Health and Demographics</string>

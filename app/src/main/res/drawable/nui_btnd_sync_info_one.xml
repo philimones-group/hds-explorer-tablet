@@ -4,6 +4,12 @@
     <!-- pressed -->
     <item android:state_pressed="true" android:drawable="@mipmap/nui_sync_details_icon_2_small"  />
 
+    <!-- disabled -->
+    <item android:state_enabled="false" android:drawable="@mipmap/nui_sync_details_icon_disabled_small"  />
+
+    <!-- enabled -->
+    <item android:state_enabled="true" android:drawable="@mipmap/nui_sync_details_icon_small"  />
+
     <!-- default -->
     <item android:drawable="@mipmap/nui_sync_details_icon_small" />
 </selector>

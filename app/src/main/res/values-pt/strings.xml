@@ -65,6 +65,9 @@
     <string name="sync_downloaded_msg_lbl">Total de #1 dados guardados:</string>
 
     <string name="sync_result_dialog_title">Detalhes da sincronização</string>
+    <string name="sync_upload_result_dialog_title">Detalhes do envio de dados</string>
+    <string name="sync_upload_instance_id_lbl">UID:</string>
+    <string name="sync_upload_instance_code_lbl">Código:</string>
 
     <!-- Sync Activity -->
     <string name="server_sync_title_lbl">Painel de Sincronização</string>
@@ -73,7 +76,7 @@
     <string name="server_sync_status_notsynced_lbl">Não foi sincronizado</string>
     <string name="server_sync_status_synced_lbl">Data da ultima sincronização</string>
     <string name="server_sync_status_sync_error_lbl">Data da ultima sincr. com erro</string>
-    <string name="server_sync_bt_upload_all_lbl">Enviar todos dados</string>
+    <string name="server_sync_bt_upload_all_lbl">Enviar formulários selecionados</string>
     <string name="server_sync_bt_sync_all_lbl">Sincronizar Todos</string>
     <string name="server_sync_bt_sync_lbl">Sincronizar</string>
     <string name="server_sync_bt_stop_lbl">Parar</string>
@@ -82,6 +85,19 @@
     <string name="server_sync_bt_tracking_lists_lbl">Baixar Listas de Seguimento</string>
     <string name="server_sync_bt_households_datasets_lbl">Baixar Dados das Casas/Agregados</string>
     <string name="server_sync_bt_dssevents_lbl">Baixar Eventos Demográficos</string>
+
+    <string name="server_sync_uploaded_date_lbl">Data do último envio de dados:</string>
+    <string name="server_sync_upload_successfully_lbl">Enviados com sucesso:</string>
+    <string name="server_sync_upload_werrors_lbl">Enviados com erros de validação:</string>
+    <string name="server_sync_upload_notuploaded_lbl">Não enviados:</string>
+    <string name="server_sync_upload_show_not_uploaded_lbl">Mostrar formulários não enviados</string>
+    <string name="server_sync_upload_show_uploaded_forms_lbl">Mostrar formulários enviados</string>
+    <string name="server_sync_upload_show_uploaded_werrors_lbl">Mostrar formulários enviados com erros</string>
+    <string name="server_sync_upload_select_all">Selecionar todos</string>
+    <string name="server_sync_upload_total_lbl">%1$d Formulário(s)</string>
+    <string name="server_sync_uploading_form_lbl">Enviando Formulário de %1$s</string>
+    <string name="server_sync_uploading_finished_lbl">Envio de dados finalizado</string>
+    <string name="server_sync_upload_errors_result_lbl">Enviados com erros de validação</string>
 
     <string name="server_sync_offline_mode_title_lbl">Não é possivel sincronizar</string>
     <string name="server_sync_offline_mode_msg_lbl">O painel esta no modo offline, para poder sincronizar dados, faça login novamente</string>
@@ -99,6 +115,9 @@
     <string name="core_entity_pregnancy_out_lbl">Registo de Resultado de Gravidez</string>
     <string name="core_entity_death_lbl">Registo de Morte</string>
     <string name="core_entity_visit_lbl">Registo de Visita</string>
+    <string name="core_entity_collected_date_lbl">Data da colecta:</string>
+    <string name="core_entity_updated_date_lbl">Data da atualização:</string>
+    <string name="core_entity_uploaded_date_lbl">Data do envio:</string>
 
     <!-- SplashScreen -->
     <string name="splashscreen_hds_explorer_name_1">Health and Demographics</string>
@@ -126,11 +145,11 @@
     <string name="member_filter_list_lbl"><u>Lista de membros encontrados</u></string>
     <string name="member_filter_xdata_lbl">Outras Informações</string>
     <string name="member_filter_name_lbl">Nome</string>
-    <string name="member_filter_code_lbl">Codigo</string>
+    <string name="member_filter_code_lbl">Código</string>
     <string name="member_filter_name_hint">Escreva o nome aqui</string>
-    <string name="member_filter_code_hint">Ex: Codigo do individuo</string>
+    <string name="member_filter_code_hint">Ex: Código do indivíduo</string>
     <string name="member_filter_curr_housename_lbl">Nome / Número da Casa</string>
-    <string name="member_filter_curr_housename_hint">Ex: ACA00001 ou Familia Langa</string>
+    <string name="member_filter_curr_housename_hint">Ex: ACA00001 ou Família Langa</string>
     <string name="member_filter_gender_lbl">Sexo</string>
     <string name="member_filter_gender_male_lbl">Masculino</string>
     <string name="member_filter_gender_female_lbl">Feminino</string>

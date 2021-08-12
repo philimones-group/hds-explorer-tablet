@@ -87,7 +87,7 @@ public class SyncPanelItemFragment extends Fragment implements View.OnClickListe
         this.syncDetails = (Button) view.findViewById(R.id.syncDetails);
         this.syncProgressBar = (ProgressBar) view.findViewById(R.id.syncProgressBar);
         this.syncProgressText = (TextView) view.findViewById(R.id.syncProgressText);
-        this.syncSyncedDate = (TextView) view.findViewById(R.id.syncSyncedDate);
+        this.syncSyncedDate = (TextView) view.findViewById(R.id.syncEntityMsg);
         this.syncProgressMessage = (TextView) view.findViewById(R.id.syncProgressMessage);
         this.syncErrorIcon = (ImageView) view.findViewById(R.id.syncErrorIcon);
 

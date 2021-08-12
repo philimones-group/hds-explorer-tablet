@@ -29,6 +29,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_weight="1"
         android:orientation="vertical" >
     
         <TextView
@@ -64,14 +65,26 @@
         
     </LinearLayout>
 
+    <Button
+        android:id="@+id/btnItemInfo"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_gravity="center"
+        android:layout_marginStart="5dp"
+        android:layout_marginEnd="5dp"
+        android:background="@drawable/nui_btnd_sync_info_one"
+        android:focusable="false"
+        android:enabled="false"/>
+
     <CheckBox
         android:id="@+id/chkProcessed"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginLeft="-36dp"
+        android:layout_marginStart="5dp"
+        android:layout_marginEnd="5dp"
         android:focusable="false"
-        android:enabled="true"
+        android:clickable="false"
         />
 
 </LinearLayout>

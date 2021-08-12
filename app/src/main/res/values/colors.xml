@@ -37,6 +37,7 @@
     <color name="nui_lists_selected_item_color_1">#BFDC92</color>
     <color name="nui_lists_selected_item_color_2">#636363</color> <!-- #818181/#5A5843 -->
     <color name="nui_lists_selected_item_textcolor">#FFF</color>
+    <color name="nui_sync_lists_selected_item_color_1">#D9F3B0</color>
 
     <color name="nui_household_item_textcolor">#444</color>
     <color name="nui_member_item_textcolor">#444</color>

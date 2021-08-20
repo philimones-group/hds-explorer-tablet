@@ -11,7 +11,7 @@ import mz.betainteractive.utilities.ReflectionUtils;
  * Created by paul on 5/20/16.
  */
 @Entity
-public class User implements Serializable {
+public class User implements FormSubject, Serializable {
 
     @Id
     public long id;
@@ -119,5 +119,9 @@ public class User implements Serializable {
 
     public String getValueByName(String variableName){
         return ReflectionUtils.getValueByName(this, variableName);
+    }
+
+    public String getTableName() {
+        return "User";
     }
 }

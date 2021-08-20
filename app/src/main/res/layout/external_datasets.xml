@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".fragment.ExternalDatasetsFragment">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="9dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:orientation="vertical"
+        android:background="@drawable/nui_list_rborder_panel">
+
+        <Spinner
+            android:id="@+id/datasetsSpinner"
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="15dp"
+            android:paddingStart="10dp"
+            android:background="@drawable/nui_spinner_rone_wbevel"
+            android:spinnerMode="dropdown"
+            android:dropDownVerticalOffset="55dp"/>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="10dp"
+            android:background="@drawable/nui_list_rborder_panel">
+
+            <ProgressBar style="?android:attr/progressBarStyleLarge"
+                android:id="@+id/mainListProgressBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:indeterminate="true"
+                android:visibility="gone"/>
+
+            <TextView
+                android:id="@+id/mainListTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                android:textColor="@color/nui_color_text_adgray"
+                android:textStyle="bold"
+                android:text="No data available for this record"/>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/columnsDataList"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginBottom="10dp"
+                android:paddingTop="10dp"
+                android:background="@drawable/nui_list_rborder_panel"
+                android:orientation="vertical" />
+
+        </RelativeLayout>
+
+
+
+    </LinearLayout>
+</FrameLayout>

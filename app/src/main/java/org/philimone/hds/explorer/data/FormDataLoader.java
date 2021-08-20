@@ -518,7 +518,7 @@ public class FormDataLoader implements Serializable {
 
     /* Load Datasets Values */
     public void loadDataSetValues(Dataset dataSet, Household household, Member member, User user, Region region) {
-        String tableName = dataSet.getTableNameField()+".";
+        String tableName = dataSet.getTableName()+".";
         String tableColumnName = dataSet.getTableColumn();
         String linkValue = "";
         CSVReader.CSVRow valueRow = null;
@@ -638,7 +638,6 @@ public class FormDataLoader implements Serializable {
                     String csvKeyCol = row.getField(dataSet.getKeyColumn());
                     //Log.d("keyColValue", ""+csvKeyCol+" == "+linkValue);
                     if (csvKeyCol!=null && csvKeyCol.equals(linkValue)){
-
                         return row; //break the loop
                     }
                 }

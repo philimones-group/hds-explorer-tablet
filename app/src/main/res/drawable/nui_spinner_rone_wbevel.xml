@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:state_pressed="true"  >
+        <layer-list>
+            <!-- background -->
+            <item>
+                <shape android:shape="rectangle">
+                    <gradient
+                        android:gradientRadius="45"
+                        android:centerX="35%"
+                        android:centerY="50%"
+                        android:startColor="#FFFFFF"
+                        android:endColor="#EDEDED"
+                        android:angle="270"
+                        android:type="linear" />
+                    <!-- <solid android:color="@android:color/transparent"/> -->
+                    <stroke android:width="1dp" android:color="@color/nui_color_border_lightgray"/>
+                    <corners android:radius="30dp"/>
+                </shape>
+            </item>
+
+            <!-- arrow -->
+            <item
+                android:gravity="center_vertical|right"
+                android:right="10dp"
+                android:drawable="@drawable/nui_arrow_dpd_up_24" />
+
+        </layer-list>
+
+    </item>
+
+    <item>
+        <layer-list>
+            <!-- background -->
+            <item>
+                <shape android:shape="rectangle">
+                    <gradient
+                        android:gradientRadius="45"
+                        android:centerX="35%"
+                        android:centerY="50%"
+                        android:startColor="#FFFFFF"
+                        android:endColor="#EDEDED"
+                        android:angle="270"
+                        android:type="linear" />
+                    <!-- <solid android:color="@android:color/transparent"/> -->
+                    <stroke android:width="1dp" android:color="@color/nui_color_border_lightgray"/>
+                    <corners android:radius="30dp"/>
+                </shape>
+            </item>
+
+            <!-- arrow -->
+            <item
+                android:gravity="center_vertical|right"
+                android:right="10dp"
+                android:drawable="@drawable/nui_arrow_dpd_down_24" />
+
+        </layer-list>
+
+    </item>
+</selector>

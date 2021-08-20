@@ -13,7 +13,7 @@ import mz.betainteractive.utilities.ReflectionUtils;
  */
 
 @Entity
-public class Household implements Serializable {
+public class Household implements FormSubject, Serializable {
 
     @Id
     public long id;
@@ -290,7 +290,7 @@ public class Household implements Serializable {
     }
 
     public String getTableName() {
-        return "household";
+        return "Household";
     }
 
 }

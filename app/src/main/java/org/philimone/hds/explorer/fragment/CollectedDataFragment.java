@@ -1,6 +1,5 @@
-package org.philimone.hds.explorer.fragment.household.details;
+package org.philimone.hds.explorer.fragment;
 
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -17,6 +16,7 @@ import org.philimone.hds.explorer.database.ObjectBoxDatabase;
 import org.philimone.hds.explorer.model.CollectedData;
 import org.philimone.hds.explorer.model.CollectedData_;
 import org.philimone.hds.explorer.model.Form;
+import org.philimone.hds.explorer.model.FormSubject;
 import org.philimone.hds.explorer.model.Household;
 import org.philimone.hds.explorer.model.User;
 import org.philimone.hds.explorer.widget.DialogFactory;
@@ -37,14 +37,16 @@ import mz.betainteractive.odk.model.FilledForm;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link HouseholdFormsFragment#newInstance} factory method to
+ * Use the {@link CollectedDataFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class HouseholdFormsFragment extends Fragment implements OdkFormResultListener {
+public class CollectedDataFragment extends Fragment implements OdkFormResultListener {
+
+    private enum SubjectMode { REGION, HOUSEHOLD, MEMBER };
 
     private ListView lvCollectedForms;
 
-    private Household household;
+    private FormSubject subject;
     private User loggedUser;
 
     private List<FormDataLoader> formDataLoaders = new ArrayList<>();
@@ -53,9 +55,10 @@ public class HouseholdFormsFragment extends Fragment implements OdkFormResultLis
 
     private Box<CollectedData> boxCollectedData;
     private Box<Form> boxForms;
-    private Box<Household> boxHouseholds;
 
-    public HouseholdFormsFragment() {
+    private SubjectMode subjectMode;
+
+    public CollectedDataFragment() {
         // Required empty public constructor
     }
 
@@ -65,9 +68,9 @@ public class HouseholdFormsFragment extends Fragment implements OdkFormResultLis
      *
      * @return A new instance of fragment HouseholdFormsFragment.
      */
-    public static HouseholdFormsFragment newInstance(Household household, User user, List<FormDataLoader> formDataLoaders) {
-        HouseholdFormsFragment fragment = new HouseholdFormsFragment();
-        fragment.household = household;
+    public static CollectedDataFragment newInstance(FormSubject subject, User user, List<FormDataLoader> formDataLoaders) {
+        CollectedDataFragment fragment = new CollectedDataFragment();
+        fragment.subject = subject;
         fragment.loggedUser = user;
         fragment.formDataLoaders.addAll(formDataLoaders);
         return fragment;
@@ -86,7 +89,7 @@ public class HouseholdFormsFragment extends Fragment implements OdkFormResultLis
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
 
-        return inflater.inflate(R.layout.household_forms, container, false);
+        return inflater.inflate(R.layout.collected_data, container, false);
     }
 
     @Override
@@ -97,18 +100,13 @@ public class HouseholdFormsFragment extends Fragment implements OdkFormResultLis
     }
 
     private void initBoxes() {
-//        this.boxAppParams = ObjectBoxDatabase.get().boxFor(ApplicationParam.class);
         this.boxCollectedData = ObjectBoxDatabase.get().boxFor(CollectedData.class);
         this.boxForms = ObjectBoxDatabase.get().boxFor(Form.class);
-//        this.boxDatasets = ObjectBoxDatabase.get().boxFor(Dataset.class);
-//        this.boxRegions = ObjectBoxDatabase.get().boxFor(Region.class);
-        this.boxHouseholds = ObjectBoxDatabase.get().boxFor(Household.class);
-//        this.boxMembers = ObjectBoxDatabase.get().boxFor(Member.class);
     }
 
     private void initialize(View view) {
 
-        lvCollectedForms = (ListView) view.findViewById(R.id.lvCollectedForms);
+        lvCollectedForms = view.findViewById(R.id.lvCollectedForms);
 
         lvCollectedForms.setOnItemClickListener((parent, view1, position, id) -> onCollectedDataItemClicked(position));
 
@@ -122,14 +120,14 @@ public class HouseholdFormsFragment extends Fragment implements OdkFormResultLis
     private void showCollectedData() {
         //this.showProgress(true);
 
-        List<CollectedData> list = this.boxCollectedData.query().equal(CollectedData_.recordId, household.getId()).and().equal(CollectedData_.tableName, household.getTableName()).build().find();
+        List<CollectedData> list = this.boxCollectedData.query().equal(CollectedData_.recordId, subject.getId()).and().equal(CollectedData_.tableName, subject.getTableName()).build().find();
         List<Form> forms = this.boxForms.getAll();
         List<CollectedDataItem> cdl = new ArrayList<>();
 
         for (CollectedData cd : list){
             if (hasFormDataLoadersContains(cd.getFormId())){
                 Form form = getFormById(forms, cd.getFormId());
-                cdl.add(new CollectedDataItem(household, form, cd));
+                cdl.add(new CollectedDataItem(subject, form, cd));
             }
         }
 
@@ -178,8 +176,8 @@ public class HouseholdFormsFragment extends Fragment implements OdkFormResultLis
     private CollectedData getCollectedData(FormDataLoader formDataLoader){
 
         CollectedData collectedData = this.boxCollectedData.query().equal(CollectedData_.formId, formDataLoader.getForm().getFormId())
-                .and().equal(CollectedData_.recordId, household.getId())
-                .and().equal(CollectedData_.tableName, household.getTableName()).build().findFirst();
+                .and().equal(CollectedData_.recordId, subject.getId())
+                .and().equal(CollectedData_.tableName, subject.getTableName()).build().findFirst();
 
         return collectedData;
     }
@@ -262,19 +260,10 @@ public class HouseholdFormsFragment extends Fragment implements OdkFormResultLis
     public void onFormFinalized(Uri contentUri, File xmlFile, String metaInstanceName, Date lastUpdatedDate) {
         Log.d("form finalized"," "+contentUri+", "+xmlFile);
 
-        //save Collected data
-        //update or insert
-        //Save household and Update the object household
-        if (household.getId()==0){
-            long id = this.boxHouseholds.put(household);
-            household.setId(id);
-        }
-
-
         //search existing record
         CollectedData collectedData = this.boxCollectedData.query().equal(CollectedData_.formUri, contentUri.toString())
-                .and().equal(CollectedData_.recordId, household.getId())
-                .and().equal(CollectedData_.tableName, household.getTableName()).build().findFirst();
+                .and().equal(CollectedData_.recordId, subject.getId())
+                .and().equal(CollectedData_.tableName, subject.getTableName()).build().findFirst();
 
         if (collectedData == null){ //insert
             collectedData = new CollectedData();
@@ -289,8 +278,8 @@ public class HouseholdFormsFragment extends Fragment implements OdkFormResultLis
             collectedData.setUpdatedBy("");
             collectedData.setSupervisedBy("");
 
-            collectedData.setRecordId(household.getId());
-            collectedData.setTableName(household.getTableName());
+            collectedData.setRecordId(subject.getId());
+            collectedData.setTableName(subject.getTableName());
 
             this.boxCollectedData.put(collectedData);
             Log.d("inserting", "new collected data");
@@ -306,8 +295,8 @@ public class HouseholdFormsFragment extends Fragment implements OdkFormResultLis
             collectedData.setUpdatedBy(loggedUser.getUsername());
             //collectedData.setSupervisedBy("");
 
-            collectedData.setRecordId(household.getId());
-            collectedData.setTableName(household.getTableName());
+            collectedData.setRecordId(subject.getId());
+            collectedData.setTableName(subject.getTableName());
 
             this.boxCollectedData.put(collectedData);
             Log.d("updating", "new collected data");
@@ -321,18 +310,10 @@ public class HouseholdFormsFragment extends Fragment implements OdkFormResultLis
     public void onFormUnFinalized(Uri contentUri, File xmlFile, String metaInstanceName, Date lastUpdatedDate) {
         Log.d("form unfinalized"," "+contentUri);
 
-        //save Collected data
-        //update or insert
-        //Save household and Update the object household
-        if (household.getId()==0){
-            long id = this.boxHouseholds.put(household);
-            household.setId(id);
-        }
-
         //search existing record
         CollectedData collectedData = this.boxCollectedData.query().equal(CollectedData_.formUri, contentUri.toString())
-                .and().equal(CollectedData_.recordId, household.getId())
-                .and().equal(CollectedData_.tableName, household.getTableName()).build().findFirst();
+                .and().equal(CollectedData_.recordId, subject.getId())
+                .and().equal(CollectedData_.tableName, subject.getTableName()).build().findFirst();
 
         if (collectedData == null){ //insert
             collectedData = new CollectedData();
@@ -347,8 +328,8 @@ public class HouseholdFormsFragment extends Fragment implements OdkFormResultLis
             collectedData.setUpdatedBy("");
             collectedData.setSupervisedBy("");
 
-            collectedData.setRecordId(household.getId());
-            collectedData.setTableName(household.getTableName());
+            collectedData.setRecordId(subject.getId());
+            collectedData.setTableName(subject.getTableName());
 
             this.boxCollectedData.put(collectedData);
             Log.d("inserting", "new collected data");
@@ -364,8 +345,8 @@ public class HouseholdFormsFragment extends Fragment implements OdkFormResultLis
             collectedData.setUpdatedBy(loggedUser.getUsername());
             //collectedData.setSupervisedBy("");
 
-            collectedData.setRecordId(household.getId());
-            collectedData.setTableName(household.getTableName());
+            collectedData.setRecordId(subject.getId());
+            collectedData.setTableName(subject.getTableName());
 
             this.boxCollectedData.put(collectedData);
             Log.d("updating", "new collected data");

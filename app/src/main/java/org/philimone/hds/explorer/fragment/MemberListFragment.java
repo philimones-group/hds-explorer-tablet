@@ -544,7 +544,7 @@ public class MemberListFragment extends Fragment {
         ArrayList<String> extras = new ArrayList<>();
 
         //load collected data
-        List<CollectedData> list = this.boxCollectedData.query().equal(CollectedData_.tableName, Member.getTableName()).build().find(); //only collected data from members
+        List<CollectedData> list = this.boxCollectedData.query().equal(CollectedData_.tableName, Member.getEmptyMember().getTableName()).build().find(); //only collected data from members
         List<Form> forms = boxForms.getAll();
 
         for (CollectedData cd : list){

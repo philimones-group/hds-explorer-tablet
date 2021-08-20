@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/MainLinearLayout"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="2dp"
+    android:background="@drawable/nui_bottom_border_light"
+    android:orientation="horizontal" >
+
+    <!--
+    <CheckBox
+        android:id="@+id/chkSelected"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:focusable="false"
+        android:enabled="true"
+        />
+    -->
+
+    <ImageView
+        android:id="@+id/iconView"
+        android:layout_width="40dp"
+        android:layout_height="50dp"
+        android:layout_gravity="left|center"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="10dp"
+        android:src="@mipmap/nui_dataset_column_icon" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="7dp"
+        android:orientation="vertical" >
+    
+        <TextView
+            android:id="@+id/txtItem1"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left|bottom"
+            android:layout_marginTop="4dp"
+            android:gravity="center_vertical"
+            android:text="Large Text"
+            android:textColor="#444"
+            android:textStyle="bold"
+            android:textSize="@dimen/extdataset_item_text_1_size" />
+        
+        <TextView
+            android:id="@+id/txtItem2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Medium Text"
+            android:textColor="#444"
+            android:gravity="center_vertical"
+            android:textSize="@dimen/extdataset_item_text_2_size" />
+
+    </LinearLayout>
+
+</LinearLayout>

@@ -312,7 +312,7 @@ public class SyncDownloadPanelFragment extends Fragment implements SyncPanelItem
     }
 
     private void syncHouseholdDatasets() {
-        SyncEntitiesTask syncEntitiesTask = new SyncEntitiesTask(this.getContext(), this.householdsDatasetsSyncFragment, serverUrl, username, password, ROUNDS, REGIONS, HOUSEHOLDS, RESIDENCIES);
+        SyncEntitiesTask syncEntitiesTask = new SyncEntitiesTask(this.getContext(), this.householdsDatasetsSyncFragment, serverUrl, username, password, ROUNDS, REGIONS, HOUSEHOLDS, MEMBERS, RESIDENCIES);
         syncEntitiesTask.execute();
     }
 

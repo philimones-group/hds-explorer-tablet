@@ -1045,6 +1045,17 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 				parser.nextTag();
 			}
 
+			parser.nextTag(); //process COLUMN_LABEL
+			if (!isEmptyTag("label", parser)) {
+				parser.next();
+				table.label = parser.getText();
+				parser.nextTag(); //process </COLUMN_LABEL>
+				//Log.d(count+"-COLUMN_LABEL", "value="+ parser.getText());
+			}else{
+				table.label = "";
+				parser.nextTag();
+			}
+
 			parser.nextTag(); //process COLUMN_KEYCOLUMN
 			if (!isEmptyTag("keyColumn", parser)) {
 				parser.next();
@@ -1059,11 +1070,11 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 			parser.nextTag(); //process COLUMN_TABLE_NAME
 			if (!isEmptyTag("tableName", parser)) {
 				parser.next();
-				table.setTableNameField(parser.getText());
+				table.setTableName(parser.getText());
 				parser.nextTag(); //process </COLUMN_TABLE_NAME>
 				//Log.d(count+"-COLUMN_TABLE_NAME", "value="+ parser.getText());
 			}else{
-				table.setTableNameField("");
+				table.setTableName("");
 				parser.nextTag();
 			}
 
@@ -1075,6 +1086,17 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 				//Log.d(count+"-COLUMN_TABLE_COLUMN", "value="+ parser.getText());
 			}else{
 				table.setTableColumn("");
+				parser.nextTag();
+			}
+
+			parser.nextTag(); //process COLUMN_LABELS
+			if (!isEmptyTag("tableColumnLabels", parser)) {
+				parser.next();
+				table.tableColumnLabels = parser.getText();
+				//Log.d(count+"-COLUMN_LABELS", "value="+ parser.getText());
+				parser.nextTag(); //process </COLUMN_LABELS>
+			}else{
+				table.tableColumnLabels = "";
 				parser.nextTag();
 			}
 
@@ -1120,19 +1142,6 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 			}else{
 				table.setUpdatedDate("");
 				parser.nextTag();
-			}
-
-			parser.nextTag(); //process COLUMN_LABELS
-			if (!isEmptyTag("labels", parser)) {
-				parser.next();
-				Map<String, String> mapLabels = new LabelMappingConverter().convertToEntityProperty(parser.getText());
-				table.setLabels(mapLabels);
-				//Log.d(count+"-COLUMN_LABELS", "value="+ parser.getText());
-				parser.nextTag(); //process </COLUMN_LABELS>
-			}else{
-				table.setLabels(new LinkedHashMap<>());
-				parser.nextTag();
-
 			}
 
 			table.setFilename(""); //an empty filename - the variable will be set after downloading data

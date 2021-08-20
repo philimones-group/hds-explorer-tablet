@@ -3,11 +3,15 @@ package org.philimone.hds.explorer.model;
 import org.philimone.hds.explorer.model.converters.LabelMappingConverter;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import io.objectbox.annotation.Convert;
 import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Id;
+import mz.betainteractive.utilities.StringUtil;
 
 @Entity
 public class Dataset implements Serializable {
@@ -16,9 +20,11 @@ public class Dataset implements Serializable {
     public long id;
     public String datasetId;
     public String name;
+    public String label;
     public String keyColumn;
-    public String tableNameField;
+    public String tableName;
     public String tableColumn;
+    public String tableColumnLabels;
     public String filename;
 
     //public boolean enabled = false;
@@ -27,10 +33,12 @@ public class Dataset implements Serializable {
     public String creationDate;
     public String updatedBy;
     public String updatedDate;
-    @Convert(converter = LabelMappingConverter.class, dbType = String.class)
-    public Map<String, String> labels;
+
+    //@Convert(converter = LabelMappingConverter.class, dbType = String.class)
+    //public Map<String, String> labels;
 
     public Dataset() {
+        //labels = new HashMap<>();
     }
 
     public long getId() {
@@ -64,12 +72,12 @@ public class Dataset implements Serializable {
         this.keyColumn = keyColumn;
     }
 
-    public void setTableNameField(String tableName) {
-        this.tableNameField = tableName;
+    public void setTableName(String tableName) {
+        this.tableName = tableName;
     }
 
-    public String getTableNameField() {
-        return tableNameField;
+    public String getTableName() {
+        return tableName;
     }
 
     public String getTableColumn() {
@@ -120,16 +128,19 @@ public class Dataset implements Serializable {
         this.updatedDate = updatedDate;
     }
 
-    public void setLabels(Map<String, String> labels){
-        this.labels = labels;
+    public List<String> getLabels(){
+        String[] spt = this.tableColumnLabels.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
+        List<String> list = new ArrayList<>();
+
+        for (String label : spt) {
+            list.add(StringUtil.removeQuotes(label));
+        }
+
+        return list;
     }
 
-    public Map<String, String> getLabels(){
-        return this.labels;
+    @Override
+    public String toString() {
+        return this.label;
     }
-
-    public String getTableName() {
-        return "dataset";
-    }
-
 }

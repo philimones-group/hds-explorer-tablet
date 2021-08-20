@@ -9,7 +9,7 @@ import io.objectbox.annotation.Unique;
 import mz.betainteractive.utilities.ReflectionUtils;
 
 @Entity
-public class Region implements Serializable {
+public class Region implements FormSubject, Serializable {
 
     public static String HIERARCHY_1 = "hierarchy1";
     public static String HIERARCHY_2 = "hierarchy2";
@@ -87,7 +87,7 @@ public class Region implements Serializable {
     }
 
     public String getTableName() {
-        return "region";
+        return "Region";
     }
 
 }

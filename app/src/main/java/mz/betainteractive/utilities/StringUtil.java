@@ -55,6 +55,11 @@ public class StringUtil {
         return converted;
     }
 
+    public static String removeQuotes(String label) {
+        label = label.replaceAll("^\"|\"$", "");
+        return label;
+    }
+
     public static boolean isUppercase(String text){
         return text.equals(text.toUpperCase());
     }

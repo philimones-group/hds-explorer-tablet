@@ -2,6 +2,7 @@ package org.philimone.hds.explorer.adapter.model;
 
 import org.philimone.hds.explorer.model.CollectedData;
 import org.philimone.hds.explorer.model.Form;
+import org.philimone.hds.explorer.model.FormSubject;
 import org.philimone.hds.explorer.model.Household;
 import org.philimone.hds.explorer.model.Member;
 import org.philimone.hds.explorer.model.Region;
@@ -25,6 +26,23 @@ public class CollectedDataItem implements Serializable {
         this.member = member;
         this.form = form;
         this.collectedData = collectedData;
+    }
+
+    public CollectedDataItem(FormSubject subject, Form form, CollectedData collectedData) {
+        this.form = form;
+        this.collectedData = collectedData;
+
+        if (subject instanceof Region){
+            this.region = (Region) subject;
+        }
+        if (subject instanceof Household){
+            this.household = (Household) subject;
+        }
+        if (subject instanceof Member){
+            this.member = (Member) subject;
+        }
+
+
     }
 
     public CollectedDataItem(Member member, Form form, CollectedData collectedData) {

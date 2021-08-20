@@ -27,7 +27,7 @@ import mz.betainteractive.utilities.StringUtil;
  * Created by paul on 5/20/16.
  */
 @Entity
-public class Member implements Serializable {
+public class Member implements FormSubject, Serializable {
 
     @Id
     public long id;
@@ -461,8 +461,8 @@ public class Member implements Serializable {
         return m;
     }
 
-    public static String getTableName() {
-        return "member";
+    public String getTableName() {
+        return "Member";
     }
 
 }

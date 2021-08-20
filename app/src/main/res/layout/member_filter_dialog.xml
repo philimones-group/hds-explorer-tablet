@@ -292,13 +292,13 @@
                             android:orientation="vertical">
 
                             <Spinner
-                                style="@style/SpinnerStyle"
                                 android:id="@+id/spnMemFilterStatus"
                                 android:layout_width="match_parent"
                                 android:layout_height="50dp"
-                                android:background="@drawable/nui_txtbox_rone_wbevel"
                                 android:entries="@array/member_current_status"
-                                android:prompt="@string/member_filter_choose_current_status_lbl" />
+                                android:prompt="@string/member_filter_choose_current_status_lbl"
+                                android:background="@drawable/nui_spinner_rone_wbevel"
+                                android:spinnerMode="dialog"/>
 
                         </LinearLayout>
 

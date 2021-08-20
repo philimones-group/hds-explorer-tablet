@@ -31,8 +31,21 @@ public class CSVReader {
     private int errorNumber;
     private BufferedReader reader;
 
+    public CSVReader(File file) {
+        filecsv = file;
+        mapFields = new HashMap<String, Integer>();
+        start();
+    }
+
     public CSVReader(String file) {
         filecsv = new File(file);
+        start();
+    }
+
+    public CSVReader(File file, boolean hasFieldName) {
+        filecsv = file;
+        hasHeader = hasFieldName;
+        mapFields = new LinkedHashMap<String, Integer>();
         start();
     }
 
@@ -42,8 +55,23 @@ public class CSVReader {
         start();
     }
 
+    public CSVReader(File file, String delimiter) {
+        filecsv = file;
+        mapFields = new LinkedHashMap<String, Integer>();
+        this.DELIMITER = delimiter;
+        start();
+    }
+
     public CSVReader(String file, String delimiter) {
         filecsv = new File(file);
+        this.DELIMITER = delimiter;
+        start();
+    }
+
+    public CSVReader(File file, boolean hasFieldName, String delimiter) {
+        filecsv = file;
+        hasHeader = hasFieldName;
+        mapFields = new LinkedHashMap<String, Integer>();
         this.DELIMITER = delimiter;
         start();
     }
@@ -100,6 +128,7 @@ public class CSVReader {
 
         for (int i = 0; i < fields.length; i++) {
             String field = fields[i];
+            field = removeQuotes(field);
             mapFields.put(field, i);
             this.fields.add(field);
         }
@@ -120,7 +149,7 @@ public class CSVReader {
                 fileInputStream = new FileInputStream(filecsv);
             }
 
-            reader = new BufferedReader(new InputStreamReader(fileInputStream, "Cp1252"));
+            reader = new BufferedReader(new InputStreamReader(fileInputStream));
 
             if (hasHeader) {
                 nextLine();
@@ -174,16 +203,24 @@ public class CSVReader {
         String line = reader.readLine(); //scan.nextLine();
         currentLineNumber++;
 
+        //Consider quotes
+        String regex_delimiter = DELIMITER+"(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)";
+
         //System.out.println("Line: "+line);
 
         if (currentLineNumber == 1 && hasHeader) {
-            String[] fields = line.split(DELIMITER);
+            String[] fields = line.split(regex_delimiter);
             fillMapFields(fields);
             return;
         }
 
         currentLine = line;
         reading = false;
+    }
+
+    private String removeQuotes(String str){
+        str = str.replaceAll("^\"|\"$", "");
+        return str;
     }
 
     public Iterable<CSVRow> getRows() {
@@ -194,6 +231,7 @@ public class CSVReader {
         private CSVReader csvReader;
         private String[] row;
         private String rawRow;
+        private String regex_delimiter = DELIMITER+"(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)";
 
         private CSVRow(CSVReader csvReader, String row) {
             this.csvReader = csvReader;
@@ -204,7 +242,7 @@ public class CSVReader {
             }
 
             this.rawRow = row;
-            this.row = row.split(DELIMITER);
+            this.row = row.split(regex_delimiter);
 
             for (int i=0; i<this.row.length; i++){
                 this.row[i] = removeQuotes(this.row[i]);
@@ -318,7 +356,13 @@ public class CSVReader {
             return str;
         }
 
+        public int getFieldCount(){
+            return CSVReader.this.fields.size();
+        }
 
+        public List<String> getFieldNames() {
+            return this.csvReader.getFieldNames();
+        }
     }
 
     private class RowIterable implements Iterable<CSVRow> {

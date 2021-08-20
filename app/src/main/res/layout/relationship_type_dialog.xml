@@ -72,6 +72,9 @@
                 android:paddingStart="15dp"
                 android:entries="@array/relationship_types_array"
                 android:prompt="@string/member_filter_choose_current_status_lbl"
+                android:background="@drawable/nui_spinner_rone_wbevel"
+                android:spinnerMode="dropdown"
+                android:dropDownVerticalOffset="50dp"
                 />
 
         </LinearLayout>

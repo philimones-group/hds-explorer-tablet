@@ -34,6 +34,7 @@ import org.philimone.hds.explorer.widget.DialogFactory;
 
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Collection;
 import java.util.Scanner;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -66,6 +67,7 @@ public class LoginActivity extends AppCompatActivity {
     private String serverUrl;
 
     private Box<User> boxUsers;
+    private Box<Module> boxModules;
 
     private boolean useLocalServer = false;
 
@@ -142,6 +144,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private void initBoxes(){
         this.boxUsers = ObjectBoxDatabase.get().boxFor(User.class);
+        this.boxModules = ObjectBoxDatabase.get().boxFor(Module.class);
 
         retrieveServerUrl();
     }
@@ -473,14 +476,13 @@ public class LoginActivity extends AppCompatActivity {
 
         Intent intent = null;
 
-        String[] modules = loggedUser.getModules().split(",");
 
-        modules = filterSupervisor(modules);
-
-        if (loggedUser.getModules()==null && loggedUser.getModules().isEmpty()){
+        if (loggedUser.modules.isEmpty()){
             DialogFactory.createMessageInfo(this, R.string.error_lbl, R.string.error_no_modules_permission).show();
             return;
         }
+
+        //MODULE SELECTOR SHOULD BE SHOWN
 
         /*
         if (modules.length > 1){
@@ -496,36 +498,12 @@ public class LoginActivity extends AppCompatActivity {
             return;
         }*/
 
+        //get selected modules - from module selector
+        loggedUser.setSelectedModules(Queries.getModulesBy(boxModules, loggedUser.modules));
+
         intent = new Intent(this, SurveyActivity.class);
         intent.putExtra("user", loggedUser);
         startActivity(intent);
-    }
-
-    private String[] filterSupervisor(String[] modules){
-        String[] newstr = null;
-
-        if (isSupervisor(modules) && modules.length>1){
-            newstr = new String[modules.length-1];
-            int i=0;
-            for (String str : modules) {
-                if (str.equals(Module.DSS_SUPERVISOR)) continue;
-                newstr[i++] = str;
-            }
-        }else{
-            return modules;
-        }
-
-        return newstr;
-    }
-
-    private boolean isSupervisor(String[] modules) {
-        for(String s : modules ){
-            if (s.equals(Module.DSS_SUPERVISOR)){
-                return true;
-            }
-        }
-
-        return false;
     }
 }
 

@@ -1,16 +1,21 @@
 package org.philimone.hds.explorer.model;
 
 import org.philimone.hds.explorer.model.converters.LabelMappingConverter;
+import org.philimone.hds.explorer.model.converters.StringCollectionConverter;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import io.objectbox.annotation.Convert;
 import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Id;
+import io.objectbox.annotation.Index;
 import mz.betainteractive.utilities.StringUtil;
 
 @Entity
@@ -34,11 +39,12 @@ public class Dataset implements Serializable {
     public String updatedBy;
     public String updatedDate;
 
-    //@Convert(converter = LabelMappingConverter.class, dbType = String.class)
-    //public Map<String, String> labels;
+    @Index
+    @Convert(converter = StringCollectionConverter.class, dbType = String.class)
+    public Set<String> modules;
 
     public Dataset() {
-        //labels = new HashMap<>();
+        this.modules = new HashSet<>();
     }
 
     public long getId() {
@@ -137,6 +143,10 @@ public class Dataset implements Serializable {
         }
 
         return list;
+    }
+
+    public void setModules(Collection<? extends String> modules) {
+        this.modules.addAll(modules);
     }
 
     @Override

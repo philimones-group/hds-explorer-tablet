@@ -1,14 +1,19 @@
 package org.philimone.hds.explorer.model;
 
 import org.philimone.hds.explorer.model.converters.FormMappingConverter;
+import org.philimone.hds.explorer.model.converters.StringCollectionConverter;
 
 import java.io.Serializable;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Set;
 
 import io.objectbox.annotation.Convert;
 import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Id;
+import io.objectbox.annotation.Index;
 import io.objectbox.annotation.Unique;
 
 /**
@@ -28,7 +33,11 @@ public class Form implements Serializable {
     public String gender; /*M, F, ALL*/
     public int minAge; //0
     public int maxAge; //Default - 120
-    public String modules; //if null - is accessed by all
+
+    @Index
+    @Convert(converter = StringCollectionConverter.class, dbType = String.class)
+    public Set<String> modules; //if empty - is accessed by all
+
     public boolean isRegionForm;
     public boolean isHouseholdForm;
     public boolean isHouseholdHeadForm;
@@ -43,7 +52,8 @@ public class Form implements Serializable {
     public String redcapMapText;
 
     public Form(){
-        formMap = new LinkedHashMap<>();
+        this.formMap = new LinkedHashMap<>();
+        this.modules = new HashSet<>();
     }
 
     public long getId() {
@@ -118,12 +128,12 @@ public class Form implements Serializable {
         this.maxAge = maxAge;
     }
 
-    public String getModules() {
+    public Set<String> getModules() {
         return modules;
     }
 
-    public void setModules(String modules) {
-        this.modules = modules;
+    public void setModules(Collection<? extends String> modules) {
+        this.modules.addAll(modules);
     }
 
     public boolean isRegionForm() {

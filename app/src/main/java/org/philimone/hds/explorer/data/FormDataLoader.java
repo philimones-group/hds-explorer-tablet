@@ -663,16 +663,14 @@ public class FormDataLoader implements Serializable {
 
         List<FormFilter> listFilters = Arrays.asList(filters);
 
-        String[] userModules = user.getModules().split(",");
-
         List<Form> forms = boxForms.getAll(); //get all forms
         List<FormDataLoader> list = new ArrayList<>();
 
         int i=0;
         for (Form form : forms){
-            String[] formModules = form.getModules().split(",");
+
             Log.d("forms", ""+user.getModules() +" - " + form.getModules() );
-            if (StringUtil.containsAny(userModules, formModules)){ //if the user has access to module specified on Form
+            if (StringUtil.containsAny(user.modules, form.modules)){ //if the user has access to module specified on Form
 
                 FormDataLoader loader = new FormDataLoader(form);
 

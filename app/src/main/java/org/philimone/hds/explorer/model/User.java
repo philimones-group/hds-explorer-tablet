@@ -1,9 +1,19 @@
 package org.philimone.hds.explorer.model;
 
-import java.io.Serializable;
+import org.philimone.hds.explorer.model.converters.StringCollectionConverter;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import io.objectbox.annotation.Convert;
 import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Id;
+import io.objectbox.annotation.Index;
+import io.objectbox.annotation.Transient;
 import io.objectbox.annotation.Unique;
 import mz.betainteractive.utilities.ReflectionUtils;
 
@@ -24,21 +34,21 @@ public class User implements FormSubject, Serializable {
     public String username;
     public String password;
     public String email;
-    public String modules;
 
+    @Index
+    @Convert(converter = StringCollectionConverter.class, dbType = String.class)
+    public Set<String> modules;
+
+    @Transient
+    private List<Module> selectedModules;
+    @Transient
+    private String selectedModulesText;
+    @Transient
+    private String selectedModulesCodesText;
 
     public User(){
-
-    }
-
-    public User(String firstName, String lastName, String fullName, String username, String password, String modules, String email) {
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.fullName = fullName;
-        this.username = username;
-        this.password = password;
-        this.modules = modules;
-        this.email = email;
+        this.modules = new HashSet<>();
+        this.selectedModules = new ArrayList<>();
     }
 
     public long getId() {
@@ -97,12 +107,12 @@ public class User implements FormSubject, Serializable {
         this.password = password;
     }
 
-    public String getModules() {
+    public Set<String> getModules() {
         return modules;
     }
 
-    public void setModules(String modules) {
-        this.modules = modules;
+    public void setModules(Collection<? extends String> modules) {
+        this.modules.addAll(modules);
     }
 
     public String getEmail() {
@@ -111,6 +121,31 @@ public class User implements FormSubject, Serializable {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public List<Module> getSelectedModules() {
+        return selectedModules;
+    }
+
+    public void setSelectedModules(List<Module> selectedModules) {
+        StringBuilder str = new StringBuilder();
+
+        for (Module module : selectedModules) {
+            str.append((str.length()==0 ? "" : ",") + module.name);
+            this.selectedModules.add(module);
+        }
+    }
+
+    public String getModulesNamesAsText(Set<String> modules) {
+        StringBuilder str = new StringBuilder();
+
+        for (Module module : this.selectedModules) {
+            if (modules.contains(module.code)) {
+                str.append((str.length()==0 ? "" : ",") + module.name);
+            }
+        }
+
+        return str.toString();
     }
 
     public String toString(){
@@ -124,4 +159,5 @@ public class User implements FormSubject, Serializable {
     public String getTableName() {
         return "User";
     }
+
 }

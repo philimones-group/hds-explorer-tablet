@@ -2,15 +2,26 @@ package org.philimone.hds.explorer.database;
 
 import org.philimone.hds.explorer.model.ApplicationParam;
 import org.philimone.hds.explorer.model.ApplicationParam_;
+import org.philimone.hds.explorer.model.CollectedData;
+import org.philimone.hds.explorer.model.CollectedData_;
 import org.philimone.hds.explorer.model.Household;
 import org.philimone.hds.explorer.model.Household_;
 import org.philimone.hds.explorer.model.Member;
 import org.philimone.hds.explorer.model.Member_;
+import org.philimone.hds.explorer.model.Module;
+import org.philimone.hds.explorer.model.Module_;
 import org.philimone.hds.explorer.model.SyncReport;
 import org.philimone.hds.explorer.model.SyncReport_;
 import org.philimone.hds.explorer.model.enums.SyncEntity;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.Set;
+
 import io.objectbox.Box;
+import mz.betainteractive.utilities.StringUtil;
 
 /**
  * Created by paul on 5/27/16.
@@ -55,4 +66,23 @@ public class Queries {
         return member;
     }
 
+    public static List<CollectedData> getCollectedDataBy(Box<CollectedData> box, Collection<? extends String> modules) {
+        List<CollectedData> list = new ArrayList<>();
+
+        modules.forEach( moduleCode -> {
+            List<CollectedData> clist = box.query().filter((collectedData) -> collectedData.formModules.contains(moduleCode)).build().find();
+            list.addAll(clist);
+        });
+
+        return list;
+    }
+
+    public static List<Module> getModulesBy(Box<Module> box, Collection<? extends String> codes) {
+
+        String[] codesArray = codes.toArray(new String[codes.size()]);
+
+        List<Module> list = box.query().in(Module_.code, codesArray).build().find();
+
+        return list;
+    }
 }

@@ -13,11 +13,12 @@ import org.philimone.hds.explorer.adapter.CollectedDataArrayAdapter;
 import org.philimone.hds.explorer.adapter.model.CollectedDataItem;
 import org.philimone.hds.explorer.data.FormDataLoader;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
+import org.philimone.hds.explorer.database.Queries;
 import org.philimone.hds.explorer.model.CollectedData;
 import org.philimone.hds.explorer.model.CollectedData_;
 import org.philimone.hds.explorer.model.Form;
 import org.philimone.hds.explorer.model.FormSubject;
-import org.philimone.hds.explorer.model.Household;
+import org.philimone.hds.explorer.model.Module;
 import org.philimone.hds.explorer.model.User;
 import org.philimone.hds.explorer.widget.DialogFactory;
 import org.philimone.hds.explorer.widget.FormSelectorDialog;
@@ -55,6 +56,7 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
 
     private Box<CollectedData> boxCollectedData;
     private Box<Form> boxForms;
+    private Box<Module> boxModules;
 
     private SubjectMode subjectMode;
 
@@ -102,6 +104,7 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
     private void initBoxes() {
         this.boxCollectedData = ObjectBoxDatabase.get().boxFor(CollectedData.class);
         this.boxForms = ObjectBoxDatabase.get().boxFor(Form.class);
+        this.boxModules = ObjectBoxDatabase.get().boxFor(Module.class);
     }
 
     private void initialize(View view) {
@@ -273,7 +276,8 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
             collectedData.setFormInstanceName(metaInstanceName);
             collectedData.setFormLastUpdatedDate(lastUpdatedDate);
 
-            collectedData.setFormModule(lastLoadedForm.getForm().getModules());
+            collectedData.setFormModules(lastLoadedForm.getForm().modules);
+
             collectedData.setCollectedBy(loggedUser.getUsername());
             collectedData.setUpdatedBy("");
             collectedData.setSupervisedBy("");
@@ -323,7 +327,8 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
             collectedData.setFormInstanceName(metaInstanceName);
             collectedData.setFormLastUpdatedDate(lastUpdatedDate);
 
-            collectedData.setFormModule(lastLoadedForm.getForm().getModules());
+            collectedData.setFormModules(lastLoadedForm.getForm().modules);
+
             collectedData.setCollectedBy(loggedUser.getUsername());
             collectedData.setUpdatedBy("");
             collectedData.setSupervisedBy("");

@@ -1,7 +1,13 @@
 package org.philimone.hds.explorer.model;
 
-import java.io.Serializable;
+import org.philimone.hds.explorer.model.converters.StringCollectionConverter;
 
+import java.io.Serializable;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+
+import io.objectbox.annotation.Convert;
 import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Id;
 import io.objectbox.annotation.Index;
@@ -50,6 +56,14 @@ public class Household implements FormSubject, Serializable {
 
     public Boolean recentlyCreated = false;
     public String recentlyCreatedUri;
+
+    @Index
+    @Convert(converter = StringCollectionConverter.class, dbType = String.class)
+    public Set<String> modules;
+
+    public Household() {
+        this.modules = new HashSet<>();
+    }
 
     public long getId() {
         return id;
@@ -249,6 +263,10 @@ public class Household implements FormSubject, Serializable {
 
     public void setRecentlyCreated(Boolean recentlyCreated) {
         this.recentlyCreated = recentlyCreated;
+    }
+
+    public void setModules(Collection<? extends String> modules) {
+        this.modules.addAll(modules);
     }
 
     public static Household getEmptyHousehold(){

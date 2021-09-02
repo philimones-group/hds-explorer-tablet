@@ -17,6 +17,7 @@ import org.philimone.hds.explorer.R;
 import org.philimone.hds.explorer.adapter.TrackingListArrayAdapter;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
 import org.philimone.hds.explorer.model.User;
+import org.philimone.hds.explorer.model.converters.StringCollectionConverter;
 import org.philimone.hds.explorer.model.followup.TrackingList;
 import org.philimone.hds.explorer.settings.RequestCodes;
 
@@ -104,7 +105,7 @@ public class TrackingListActivity extends AppCompatActivity {
             }
         });
 
-        this.txtTrackListModule.setText(this.loggedUser.getModules());
+        this.txtTrackListModule.setText(loggedUser.getModulesNamesAsText(loggedUser.modules));
 
         showTrackingLists();
     }
@@ -168,17 +169,14 @@ public class TrackingListActivity extends AppCompatActivity {
      */
     public ArrayList<TrackingList> getTrackingLists(){
 
-        String[] userModules = loggedUser.getModules().split(",");
-
         List<TrackingList> tlists = this.boxTrackingLists.getAll(); //get all forms
 
         ArrayList<TrackingList> list = new ArrayList<>();
 
         int i=0;
         for (TrackingList tl : tlists){
-            String[] modules = tl.getModule().split(",");
             //Log.d("tl", ""+tl.getCode()+", "+StringUtil.containsAny(userModules, modules)+", u:"+userModules[0]+", m:"+modules[0]);
-            if (StringUtil.containsAny(userModules, modules)){ //if the user has access to module specified on Form
+            if (StringUtil.containsAny(loggedUser.modules, tl.modules)){ //if the user has access to module specified on Form
                 list.add(tl);
             }
         }

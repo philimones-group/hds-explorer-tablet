@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import org.philimone.hds.explorer.R;
 
+import org.philimone.hds.explorer.database.Bootstrap;
 import org.philimone.hds.explorer.model.followup.TrackingList;
 import org.philimone.hds.explorer.widget.CirclePercentageBar;
 
@@ -83,7 +84,7 @@ public class TrackingListArrayAdapter extends ArrayAdapter {
 
         txtTitle.setText(trackingList.getName() + ":  " + trackingList.getTitle());
         txtModule.setText(trackingList.getDetails());
-        txtDetails.setText(mContext.getString(R.string.trackinglist_module_lbl) + ":" + trackingList.getModule());
+        txtDetails.setText(mContext.getString(R.string.trackinglist_module_lbl) + ": " + Bootstrap.getCurrentUser().getModulesNamesAsText(trackingList.modules));
         pBar.setPercentageValue(completion);
 
 

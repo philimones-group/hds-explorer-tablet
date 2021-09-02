@@ -17,6 +17,7 @@ import org.philimone.hds.explorer.adapter.TrackingExpandableListAdapter;
 import org.philimone.hds.explorer.adapter.model.TrackingSubListItem;
 import org.philimone.hds.explorer.adapter.model.TrackingSubjectItem;
 import org.philimone.hds.explorer.data.FormDataLoader;
+import org.philimone.hds.explorer.database.Bootstrap;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
 import org.philimone.hds.explorer.database.Queries;
 import org.philimone.hds.explorer.model.CollectedData;
@@ -111,7 +112,7 @@ public class TrackingListDetailsActivity extends AppCompatActivity implements Ba
     }
 
     private void initialize() {
-        this.loggedUser = (User) getIntent().getExtras().get("user");
+        this.loggedUser = Bootstrap.getCurrentUser();
         this.trackingList = (TrackingList) getIntent().getExtras().get("trackinglist");
 
         this.txtTrackListTitle = (TextView) findViewById(R.id.txtTrackListTitle);
@@ -316,7 +317,7 @@ public class TrackingListDetailsActivity extends AppCompatActivity implements Ba
     private TrackingExpandableListAdapter readTrackingSubjectLists(TrackingList trackingList){
 
         List<TrackingSubjectList> listTml = this.boxTrackingSubjects.query().equal(TrackingSubjectList_.trackingId, trackingList.getId()).build().find();
-        List<CollectedData> listCollectedData = this.boxCollectedData.query().equal(CollectedData_.formModule, trackingList.getModule()).build().find();
+        List<CollectedData> listCollectedData = Queries.getCollectedDataBy(this.boxCollectedData, trackingList.modules);
 
         List<String> codesRegions = new ArrayList<>();
         List<String> codesHouseholds = new ArrayList<>();

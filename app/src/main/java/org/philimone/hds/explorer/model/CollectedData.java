@@ -1,10 +1,17 @@
 package org.philimone.hds.explorer.model;
 
-import java.io.Serializable;
-import java.util.Date;
+import org.philimone.hds.explorer.model.converters.StringCollectionConverter;
 
+import java.io.Serializable;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
+
+import io.objectbox.annotation.Convert;
 import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Id;
+import io.objectbox.annotation.Index;
 import io.objectbox.annotation.Unique;
 
 /**
@@ -23,7 +30,11 @@ public class CollectedData implements Serializable {
     public String formXmlPath;
     public String formInstanceName;
     public Date formLastUpdatedDate;
-    public String formModule;
+    @Index
+    @Convert(converter = StringCollectionConverter.class, dbType = String.class)
+    public Set<String> formModules;
+    public String formModulesAsText;
+
     public long recordId;
     public String tableName;
 
@@ -31,6 +42,10 @@ public class CollectedData implements Serializable {
     public String updatedBy;
     public String supervisedBy;
     public boolean supervised;
+
+    public CollectedData() {
+        this.formModules = new HashSet<>();
+    }
 
     public long getId() {
         return id;
@@ -92,12 +107,12 @@ public class CollectedData implements Serializable {
         this.formLastUpdatedDate = formLastUpdatedDate;
     }
 
-    public String getFormModule() {
-        return formModule;
+    public Set<String> getFormModules() {
+        return formModules;
     }
 
-    public void setFormModule(String formModule) {
-        this.formModule = formModule;
+    public void setFormModules(Collection<? extends String> formModules) {
+        this.formModules.addAll(formModules);
     }
 
     public String getCollectedBy() {

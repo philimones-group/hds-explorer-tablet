@@ -10,8 +10,8 @@ import android.widget.TextView;
 
 import org.philimone.hds.explorer.R;
 import org.philimone.hds.explorer.adapter.model.CollectedDataItem;
+import org.philimone.hds.explorer.database.Bootstrap;
 import org.philimone.hds.explorer.model.CollectedData;
-import org.philimone.hds.explorer.model.Member;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -87,12 +87,13 @@ public class CollectedDataArrayAdapter extends ArrayAdapter {
         txtExtra.setText(sdate);
         chkProcessed.setChecked(cd.isFormFinalized());
 
-        if (cdi.getForm()!=null){
-            txtForm.setText(cd.getFormModule() + " -> " + cdi.getForm().getFormName());
-        }else {
-            txtForm.setText(cd.getFormModule() + " -> " + cd.getFormId());
-        }
+        String modulesText = Bootstrap.getCurrentUser().getModulesNamesAsText(cd.formModules);
 
+        if (cdi.getForm()!=null){
+            txtForm.setText(modulesText + " -> " + cdi.getForm().getFormName());
+        }else {
+            txtForm.setText(modulesText + " -> " + cd.getFormId());
+        }
 
         return rowView;
     }

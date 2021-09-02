@@ -359,7 +359,7 @@ public class RegionDetailsActivity extends AppCompatActivity implements OdkFormR
             collectedData.setFormInstanceName(metaInstanceName);
             collectedData.setFormLastUpdatedDate(lastUpdatedDate);
 
-            collectedData.setFormModule(lastLoadedForm.getForm().getModules());
+            collectedData.setFormModules(lastLoadedForm.getForm().getModules());
             collectedData.setCollectedBy(loggedUser.getUsername());
             collectedData.setUpdatedBy("");
             collectedData.setSupervisedBy("");
@@ -417,7 +417,7 @@ public class RegionDetailsActivity extends AppCompatActivity implements OdkFormR
             collectedData.setFormInstanceName(metaInstanceName);
             collectedData.setFormLastUpdatedDate(lastUpdatedDate);
 
-            collectedData.setFormModule(lastLoadedForm.getForm().getModules());
+            collectedData.setFormModules(lastLoadedForm.getForm().getModules());
             collectedData.setCollectedBy(loggedUser.getUsername());
             collectedData.setUpdatedBy("");
             collectedData.setSupervisedBy("");

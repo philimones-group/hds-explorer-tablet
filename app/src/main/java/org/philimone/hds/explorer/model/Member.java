@@ -5,6 +5,7 @@ import org.philimone.hds.explorer.model.converters.HeadRelationshipTypeConverter
 import org.philimone.hds.explorer.model.converters.MaritalStatusConverter;
 import org.philimone.hds.explorer.model.converters.ResidencyEndTypeConverter;
 import org.philimone.hds.explorer.model.converters.ResidencyStartTypeConverter;
+import org.philimone.hds.explorer.model.converters.StringCollectionConverter;
 import org.philimone.hds.explorer.model.enums.Gender;
 import org.philimone.hds.explorer.model.enums.HeadRelationshipType;
 import org.philimone.hds.explorer.model.enums.MaritalStatus;
@@ -12,7 +13,10 @@ import org.philimone.hds.explorer.model.enums.temporal.ResidencyEndType;
 import org.philimone.hds.explorer.model.enums.temporal.ResidencyStartType;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 import io.objectbox.annotation.Convert;
 import io.objectbox.annotation.Entity;
@@ -101,13 +105,17 @@ public class Member implements FormSubject, Serializable {
 
     public String recentlyCreatedUri;
 
+    @Index
+    @Convert(converter = StringCollectionConverter.class, dbType = String.class)
+    public Set<String> modules;
+
     @Transient
     private boolean isHouseholdHead; /*not on database*/
     @Transient
     private boolean isSecHouseholdHead; /*not on database*/
 
     public Member() {
-
+        this.modules = new HashSet<>();
     }
 
     public long getId() {
@@ -400,6 +408,10 @@ public class Member implements FormSubject, Serializable {
 
     public void setRecentlyCreated(Boolean recentlyCreated) {
         this.recentlyCreated = recentlyCreated;
+    }
+
+    public void setModules(Collection<? extends String> modules) {
+        this.modules.addAll(modules);
     }
 
     public String getValueByName(String variableName){

@@ -5,6 +5,7 @@ import java.text.Normalizer;
 import java.text.ParseException;
 import java.time.LocalDate;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -338,7 +339,7 @@ public class StringUtil {
         return false;
     }
 
-    public static boolean containsAny(List<String> list, List<String> items){
+    public static boolean containsAny(Collection<? extends String> list, Collection<? extends String> items){
         for (String item : items){
             if (list.contains(item)){
                 return true;

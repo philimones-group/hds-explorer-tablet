@@ -30,6 +30,7 @@ import org.philimone.hds.explorer.model.User;
 import org.philimone.hds.explorer.model.Visit;
 import org.philimone.hds.explorer.model.converters.FormMappingConverter;
 import org.philimone.hds.explorer.model.converters.LabelMappingConverter;
+import org.philimone.hds.explorer.model.converters.StringCollectionConverter;
 import org.philimone.hds.explorer.model.enums.EstimatedDateOfDeliveryType;
 import org.philimone.hds.explorer.model.enums.Gender;
 import org.philimone.hds.explorer.model.enums.HeadRelationshipType;
@@ -124,6 +125,8 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 	private Box<PregnancyRegistration> boxPregnancyRegistrations;
 
 	private boolean canceled;
+
+	private StringCollectionConverter stringCollectionConverter = new StringCollectionConverter();
 
 	public SyncEntitiesTask(Context context, SyncEntitiesListener listener, String url, String username, String password, SyncEntity... entityToDownload) {
 		this.baseurl = url;
@@ -878,11 +881,11 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 			parser.nextTag(); //process modules
 			if (!isEmptyTag("modules", parser)) {
 				parser.next();
-				table.setModules(parser.getText());
+				table.setModules(stringCollectionConverter.getCollectionFrom(parser.getText()));
 				parser.nextTag(); //process </modules>
 				//Log.d(count+"-modules", "value="+ parser.getText());
 			}else{
-				table.setModules("");
+				//table.modules.clear();
 				parser.nextTag();
 			}
 
@@ -1100,6 +1103,17 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 				parser.nextTag();
 			}
 
+			parser.nextTag(); //process modules
+			if (!isEmptyTag("modules", parser)) {
+				parser.next();
+				table.setModules(stringCollectionConverter.getCollectionFrom(parser.getText()));
+				parser.nextTag(); //process </modules>
+				//Log.d(count+"-modules", "value="+ parser.getText());
+			}else{
+				//table.modules.clear();
+				parser.nextTag();
+			}
+
 			parser.nextTag(); //process COLUMN_CREATED_BY
 			if (!isEmptyTag("createdBy", parser)) {
 				parser.next();
@@ -1190,7 +1204,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 			String trlName = null;
 			String trlDetails = null;
 			String trlTitle = null;
-			String trlModule = null;
+			String trlModules = null;
 
 			if (isTag("tracking_list", parser)) {
 				tlistCount++;
@@ -1199,14 +1213,14 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 				//Log.d("trl-attr-id", "" + parser.getAttributeValue("", "id"));
 				//Log.d("trl-attr-name", "" + parser.getAttributeValue("", "name"));
 				//Log.d("trl-attr-title", "" + parser.getAttributeValue("", "title"));
-				//Log.d("trl-attr-module", "" + parser.getAttributeValue("", "module"));
+				//Log.d("trl-attr-module", "" + parser.getAttributeValue("", "modules"));
 
 				trlId = parser.getAttributeValue("", "id");
 				trlCode = parser.getAttributeValue("", "code");
 				trlName = parser.getAttributeValue("", "name");
 				trlDetails = parser.getAttributeValue("", "details");
 				trlTitle = parser.getAttributeValue("", "title");
-				trlModule = parser.getAttributeValue("", "module");
+				trlModules = parser.getAttributeValue("", "modules");
 
 				//save to database
 				TrackingList trackingList = new TrackingList();
@@ -1214,7 +1228,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 				trackingList.setName(trlName);
 				trackingList.setDetails(trlDetails);
 				trackingList.setTitle(trlTitle);
-				trackingList.setModule(trlModule);
+				trackingList.setModules(stringCollectionConverter.getCollectionFrom(trlModules));
 				trackingList.setCompletionRate(0D);
 
 				trackingId = this.boxTrackingLists.put(trackingList); //insert on db
@@ -1392,14 +1406,14 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 				parser.nextTag();
 			}
 
-			parser.nextTag(); //process <modules>
+			parser.nextTag(); //process modules
 			if (!isEmptyTag("modules", parser)) {
 				parser.next();
-				table.setModules(parser.getText());
+				table.setModules(stringCollectionConverter.getCollectionFrom(parser.getText()));
 				parser.nextTag(); //process </modules>
-				//Log.d(count+"-modules", "value="+ table.getModules());
+				//Log.d(count+"-modules", "value="+ parser.getText());
 			}else{
-				table.setModules("");
+				//table.modules.clear();
 				parser.nextTag();
 			}
 
@@ -1475,6 +1489,17 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 				parser.nextTag();
 			}else{
 				table.setParent("");
+				parser.nextTag();
+			}
+
+			parser.nextTag(); //process modules
+			if (!isEmptyTag("modules", parser)) {
+				parser.next();
+				table.setModules(stringCollectionConverter.getCollectionFrom(parser.getText()));
+				parser.nextTag(); //process </modules>
+				//Log.d(count+"-modules", "value="+ parser.getText());
+			}else{
+				//table.modules.clear();
 				parser.nextTag();
 			}
 
@@ -1704,6 +1729,17 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 				table.setGpsNull(true);
                 parser.nextTag();
             }
+
+			parser.nextTag(); //process modules
+			if (!isEmptyTag("modules", parser)) {
+				parser.next();
+				table.setModules(stringCollectionConverter.getCollectionFrom(parser.getText()));
+				parser.nextTag(); //process </modules>
+				//Log.d(count+"-modules", "value="+ parser.getText());
+			}else{
+				//table.modules.clear();
+				parser.nextTag();
+			}
 
 
 			parser.nextTag(); //last process tag
@@ -2079,6 +2115,17 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 				table.setGpsNull(true);
                 parser.nextTag();
             }
+
+			parser.nextTag(); //process modules
+			if (!isEmptyTag("modules", parser)) {
+				parser.next();
+				table.setModules(stringCollectionConverter.getCollectionFrom(parser.getText()));
+				parser.nextTag(); //process </modules>
+				//Log.d(count+"-modules", "value="+ parser.getText());
+			}else{
+				//table.modules.clear();
+				parser.nextTag();
+			}
 
 
 			parser.nextTag(); //process last tag

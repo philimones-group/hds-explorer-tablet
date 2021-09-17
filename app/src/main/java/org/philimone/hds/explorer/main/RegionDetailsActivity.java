@@ -13,6 +13,7 @@ import org.philimone.hds.explorer.R;
 import org.philimone.hds.explorer.adapter.CollectedDataArrayAdapter;
 import org.philimone.hds.explorer.adapter.model.CollectedDataItem;
 import org.philimone.hds.explorer.data.FormDataLoader;
+import org.philimone.hds.explorer.database.Bootstrap;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
 import org.philimone.hds.explorer.database.Queries;
 import org.philimone.hds.explorer.model.ApplicationParam;
@@ -67,7 +68,7 @@ public class RegionDetailsActivity extends AppCompatActivity implements OdkFormR
         super.onCreate(savedInstanceState);
         setContentView(R.layout.region_details);
 
-        this.loggedUser = (User) getIntent().getExtras().get("user");
+        this.loggedUser = Bootstrap.getCurrentUser();
         this.region = (Region) getIntent().getExtras().get("region");
         this.activityRequestCode = getIntent().getExtras().getInt("request_code");
 

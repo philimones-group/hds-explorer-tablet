@@ -9,6 +9,7 @@ import org.philimone.hds.explorer.R;
 import org.philimone.hds.explorer.adapter.MemberArrayAdapter;
 import org.philimone.hds.explorer.data.FormDataLoader;
 import org.philimone.hds.explorer.data.FormFilter;
+import org.philimone.hds.explorer.database.Bootstrap;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
 import org.philimone.hds.explorer.database.Queries;
 import org.philimone.hds.explorer.fragment.MemberFilterFragment;
@@ -53,7 +54,7 @@ public class SurveyMembersActivity extends AppCompatActivity implements MemberFi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.survey_members);
 
-        this.loggedUser = (User) getIntent().getExtras().get("user");
+        this.loggedUser = Bootstrap.getCurrentUser();
 
         this.memberFilterFragment = (MemberFilterFragment) (getSupportFragmentManager().findFragmentById(R.id.memberFilterFragment));
         this.memberListFragment = (MemberListFragment) getSupportFragmentManager().findFragmentById(R.id.memberListFragment);
@@ -289,7 +290,6 @@ public class SurveyMembersActivity extends AppCompatActivity implements MemberFi
         protected void onPostExecute(Void result) {
 
             Intent intent = new Intent(SurveyMembersActivity.this, MemberDetailsActivity.class);
-            intent.putExtra("user", loggedUser);
             intent.putExtra("member", this.member);
             intent.putExtra("dataloaders", dataLoaders);
 
@@ -324,7 +324,6 @@ public class SurveyMembersActivity extends AppCompatActivity implements MemberFi
         protected void onPostExecute(Void result) {
 
             Intent intent = new Intent(SurveyMembersActivity.this, HouseholdDetailsActivity.class);
-            intent.putExtra("user", loggedUser);
             intent.putExtra("household", household);
             intent.putExtra("dataloaders", dataLoaders);
 

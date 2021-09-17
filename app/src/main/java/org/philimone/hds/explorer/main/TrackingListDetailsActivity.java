@@ -650,7 +650,6 @@ public class TrackingListDetailsActivity extends AppCompatActivity implements Ba
 
             if (isRegion) {
                 intent = new Intent(TrackingListDetailsActivity.this, RegionDetailsActivity.class);
-                intent.putExtra("user", loggedUser);
                 intent.putExtra("region", region);
                 intent.putExtra("dataloaders", dataLoaders);
                 intent.putExtra("request_code", RequestCodes.REGION_DETAILS_FROM_TRACKING_LIST_DETAILS);
@@ -658,7 +657,6 @@ public class TrackingListDetailsActivity extends AppCompatActivity implements Ba
 
             if (isHousehold) {
                 intent = new Intent(TrackingListDetailsActivity.this, HouseholdDetailsActivity.class);
-                intent.putExtra("user", loggedUser);
                 intent.putExtra("household", household);
                 intent.putExtra("dataloaders", dataLoaders);
                 intent.putExtra("request_code", RequestCodes.HOUSEHOLD_DETAILS_FROM_TRACKING_LIST_DETAILS);
@@ -666,7 +664,6 @@ public class TrackingListDetailsActivity extends AppCompatActivity implements Ba
 
             if (isMember) {
                 intent = new Intent(TrackingListDetailsActivity.this, MemberDetailsActivity.class);
-                intent.putExtra("user", loggedUser);
                 intent.putExtra("member", subjectItem.getMember());
                 intent.putExtra("member_studycode", subjectItem.getSubjectType());
                 intent.putExtra("request_code", RequestCodes.MEMBER_DETAILS_FROM_TRACKING_LIST_DETAILS);

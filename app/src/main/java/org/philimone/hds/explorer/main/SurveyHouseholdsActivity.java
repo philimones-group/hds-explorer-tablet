@@ -9,6 +9,7 @@ import org.philimone.hds.explorer.R;
 import org.philimone.hds.explorer.adapter.MemberArrayAdapter;
 import org.philimone.hds.explorer.data.FormDataLoader;
 import org.philimone.hds.explorer.data.FormFilter;
+import org.philimone.hds.explorer.database.Bootstrap;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
 import org.philimone.hds.explorer.database.Queries;
 import org.philimone.hds.explorer.fragment.HouseholdFilterFragment;
@@ -63,7 +64,7 @@ public class SurveyHouseholdsActivity extends AppCompatActivity implements House
         super.onCreate(savedInstanceState);
         setContentView(R.layout.survey_households);
 
-        this.loggedUser = (User) getIntent().getExtras().get("user");
+        this.loggedUser = Bootstrap.getCurrentUser();
         //this.censusMode = getIntent().getExtras().getBoolean("censusMode");
 
         this.householdFilterFragment = (HouseholdFilterFragment) (getSupportFragmentManager().findFragmentById(R.id.householdFilterFragment));
@@ -373,7 +374,6 @@ public class SurveyHouseholdsActivity extends AppCompatActivity implements House
         protected void onPostExecute(Void result) {
 
             Intent intent = new Intent(SurveyHouseholdsActivity.this, MemberDetailsActivity.class);
-            intent.putExtra("user", loggedUser);
             intent.putExtra("member", this.member);
             intent.putExtra("dataloaders", dataLoaders);
 
@@ -408,7 +408,6 @@ public class SurveyHouseholdsActivity extends AppCompatActivity implements House
         protected void onPostExecute(Void result) {
 
             Intent intent = new Intent(SurveyHouseholdsActivity.this, HouseholdDetailsActivity.class);
-            intent.putExtra("user", loggedUser);
             intent.putExtra("household", household);
             intent.putExtra("dataloaders", dataLoaders);
 
@@ -441,7 +440,6 @@ public class SurveyHouseholdsActivity extends AppCompatActivity implements House
             showLoadingDialog(null, false);
 
             Intent intent = new Intent(SurveyHouseholdsActivity.this, RegionDetailsActivity.class);
-            intent.putExtra("user", loggedUser);
             intent.putExtra("region", region);
             intent.putExtra("dataloaders", dataLoaders);
 

@@ -16,6 +16,7 @@ import org.philimone.hds.explorer.R;
 import org.philimone.hds.explorer.adapter.CollectedDataArrayAdapter;
 import org.philimone.hds.explorer.adapter.model.CollectedDataItem;
 import org.philimone.hds.explorer.data.FormDataLoader;
+import org.philimone.hds.explorer.database.Bootstrap;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
 import org.philimone.hds.explorer.model.CollectedData;
 import org.philimone.hds.explorer.model.CollectedData_;
@@ -89,7 +90,7 @@ public class MemberDetailsActivity extends AppCompatActivity implements OdkFormR
         super.onCreate(savedInstanceState);
         setContentView(R.layout.member_details);
 
-        this.loggedUser = (User) getIntent().getExtras().get("user");
+        this.loggedUser = Bootstrap.getCurrentUser();
         this.household = (Household) getIntent().getExtras().get("household");
         this.member = (Member) getIntent().getExtras().get("member");
         this.studyCodeValue = getIntent().getExtras().getString("member_studycode");

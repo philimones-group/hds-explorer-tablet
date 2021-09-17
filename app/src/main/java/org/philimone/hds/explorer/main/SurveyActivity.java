@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.Button;
 
 import org.philimone.hds.explorer.R;
+import org.philimone.hds.explorer.database.Bootstrap;
 import org.philimone.hds.explorer.model.User;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -22,7 +23,7 @@ public class SurveyActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.survey);
 
-        this.loggedUser = (User) getIntent().getExtras().get("user");
+        this.loggedUser = Bootstrap.getCurrentUser();
 
         this.btSurveyHouseholds = (Button) findViewById(R.id.btSurveyHouseholds);
         this.btSurveyMembers = (Button) findViewById(R.id.btSurveyMembers);
@@ -52,19 +53,16 @@ public class SurveyActivity extends AppCompatActivity {
 
     private void openSurveyMembers() {
         Intent intent = new Intent(this, SurveyMembersActivity.class);
-        intent.putExtra("user", loggedUser);
         startActivity(intent);
     }
 
     private void openSurveyHouseholds() {
         Intent intent = new Intent(this, SurveyHouseholdsActivity.class);
-        intent.putExtra("user", loggedUser);
         startActivity(intent);
     }
 
     private void openTrackingLists() {
         Intent intent = new Intent(this, TrackingListActivity.class);
-        intent.putExtra("user", loggedUser);
         startActivity(intent);
     }
 

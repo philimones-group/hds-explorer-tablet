@@ -49,17 +49,17 @@ public class FormSelectorDialog extends DialogFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
+        getDialog().requestWindowFeature(Window.FEATURE_NO_TITLE);
+
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.form_selector, container, false);
-
         return view;
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-        getDialog().requestWindowFeature(Window.FEATURE_NO_TITLE);
 
         initialize(view);
     }

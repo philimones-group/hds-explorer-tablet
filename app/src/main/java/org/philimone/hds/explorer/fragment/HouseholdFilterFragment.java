@@ -143,8 +143,8 @@ public class HouseholdFilterFragment extends Fragment implements RegionExpandabl
         View view = inflater.inflate(R.layout.household_filter, container, false);
         initialize(view);
 
-        loadRegionsList();
         loadHieararchyItems();
+        loadRegionsList();
 
         return view;
     }
@@ -399,7 +399,9 @@ public class HouseholdFilterFragment extends Fragment implements RegionExpandabl
         List<String> smodules = loggedUser.getSelectedModules().stream().map(Module::getCode).collect(Collectors.toList());
 
         List<ApplicationParam> params = boxAppParams.query().startsWith(ApplicationParam_.name, "hierarchy").build().find(); //COLUMN_NAME+" like 'hierarchy%'"
-        List<Region> regions = this.boxRegions.query().filter((r) -> StringUtil.containsAny(r.modules, smodules)).build().find(); //filter by modules
+        List<Region> regions = this.boxRegions.getAll(); //query().filter((r) -> StringUtil.containsAny(r.modules, smodules)).build().find(); //filter by modules
+        //FILTER THE LAST LEVEL REGIONS ONLY
+        //RL1 IS READY -> GET THE PRECEDENTS
 
         ArrayList<HierarchyItem> hierarchies = new ArrayList<>();
         HashMap<HierarchyItem, ArrayList<Region>> regionCollection = new HashMap<>();
@@ -412,8 +414,19 @@ public class HouseholdFilterFragment extends Fragment implements RegionExpandabl
             ArrayList<Region> list = new ArrayList<>();
 
             for (Region region : regions){
-                if (region.getLevel().equals(item.getLevel())){
-                    list.add(region);
+                if (region.getLevel().equals(item.getLevel())){ //Filter Here
+
+                    if (region.getLevel().equals(lastRegionLevel)) {
+
+                        //filter according to the selected user modules
+                        if (StringUtil.containsAny(region.modules, smodules)) {
+                            list.add(region);
+                        }
+
+                    } else {
+                        list.add(region); //not at last level, just add
+                    }
+
                 }
             }
 

@@ -400,8 +400,7 @@ public class HouseholdFilterFragment extends Fragment implements RegionExpandabl
 
         List<ApplicationParam> params = boxAppParams.query().startsWith(ApplicationParam_.name, "hierarchy").build().find(); //COLUMN_NAME+" like 'hierarchy%'"
         List<Region> regions = this.boxRegions.getAll(); //query().filter((r) -> StringUtil.containsAny(r.modules, smodules)).build().find(); //filter by modules
-        //FILTER THE LAST LEVEL REGIONS ONLY
-        //RL1 IS READY -> GET THE PRECEDENTS
+
 
         ArrayList<HierarchyItem> hierarchies = new ArrayList<>();
         HashMap<HierarchyItem, ArrayList<Region>> regionCollection = new HashMap<>();

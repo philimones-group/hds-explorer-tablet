@@ -27,6 +27,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -35,6 +36,7 @@ import io.objectbox.Box;
 import mz.betainteractive.odk.FormUtilities;
 import mz.betainteractive.odk.listener.OdkFormResultListener;
 import mz.betainteractive.odk.model.FilledForm;
+import mz.betainteractive.utilities.StringUtil;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -59,6 +61,8 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
     private Box<Module> boxModules;
 
     private SubjectMode subjectMode;
+
+    private List<String> selectedModules;
 
     public CollectedDataFragment() {
         // Required empty public constructor
@@ -109,6 +113,8 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
 
     private void initialize(View view) {
 
+        selectedModules = loggedUser.getSelectedModules().stream().map(Module::getCode).collect(Collectors.toList());
+
         lvCollectedForms = view.findViewById(R.id.lvCollectedForms);
 
         lvCollectedForms.setOnItemClickListener((parent, view1, position, id) -> onCollectedDataItemClicked(position));
@@ -123,7 +129,7 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
     private void showCollectedData() {
         //this.showProgress(true);
 
-        List<CollectedData> list = this.boxCollectedData.query().equal(CollectedData_.recordId, subject.getId()).and().equal(CollectedData_.tableName, subject.getTableName()).build().find();
+        List<CollectedData> list = getAllCollectedData();
         List<Form> forms = this.boxForms.getAll();
         List<CollectedDataItem> cdl = new ArrayList<>();
 
@@ -176,11 +182,22 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
         return null;
     }
 
+    private List<CollectedData> getAllCollectedData() {
+        List<CollectedData> list = this.boxCollectedData.query().equal(CollectedData_.recordId, subject.getId())
+                                                                .and()
+                                                                .equal(CollectedData_.tableName, subject.getTableName())
+                                                                .filter((c) -> StringUtil.containsAny(c.formModules, selectedModules))  //filter by module
+                                                                .build().find();
+        return list;
+    }
+
     private CollectedData getCollectedData(FormDataLoader formDataLoader){
 
         CollectedData collectedData = this.boxCollectedData.query().equal(CollectedData_.formId, formDataLoader.getForm().getFormId())
-                .and().equal(CollectedData_.recordId, subject.getId())
-                .and().equal(CollectedData_.tableName, subject.getTableName()).build().findFirst();
+                                                                   .and().equal(CollectedData_.recordId, subject.getId())
+                                                                   .and().equal(CollectedData_.tableName, subject.getTableName())
+                                                                   .filter((c) -> StringUtil.containsAny(c.formModules, selectedModules)) //filter by module
+                                                                   .build().findFirst();
 
         return collectedData;
     }

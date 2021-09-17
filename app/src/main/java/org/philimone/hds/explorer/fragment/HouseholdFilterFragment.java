@@ -34,6 +34,7 @@ import org.philimone.hds.explorer.adapter.RegionExpandableListAdapter;
 import org.philimone.hds.explorer.adapter.model.HierarchyItem;
 import org.philimone.hds.explorer.data.FormDataLoader;
 import org.philimone.hds.explorer.data.FormFilter;
+import org.philimone.hds.explorer.database.Bootstrap;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
 import org.philimone.hds.explorer.main.BarcodeScannerActivity;
 import org.philimone.hds.explorer.main.HouseholdDetailsActivity;
@@ -42,6 +43,7 @@ import org.philimone.hds.explorer.model.ApplicationParam_;
 import org.philimone.hds.explorer.model.Form;
 import org.philimone.hds.explorer.model.Household;
 import org.philimone.hds.explorer.model.Household_;
+import org.philimone.hds.explorer.model.Module;
 import org.philimone.hds.explorer.model.Region;
 import org.philimone.hds.explorer.model.User;
 import org.philimone.hds.explorer.settings.RequestCodes;
@@ -49,9 +51,11 @@ import org.philimone.hds.explorer.settings.RequestCodes;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import androidx.activity.result.ActivityResultLauncher;
 import io.objectbox.Box;
+import mz.betainteractive.utilities.StringUtil;
 
 
 /**
@@ -107,7 +111,7 @@ public class HouseholdFilterFragment extends Fragment implements RegionExpandabl
     private RegionExpandableListAdapter regionAdapter;
     private Region currentRegion;
     private String lastRegionLevel = "";
-    private User loggedUser;
+    private User loggedUser = Bootstrap.getCurrentUser();
     private Household household;
 
     private boolean censusMode;
@@ -301,7 +305,6 @@ public class HouseholdFilterFragment extends Fragment implements RegionExpandabl
         FormDataLoader[] dataLoaders = FormDataLoader.getFormLoaders(this.boxForms, this.loggedUser, FormFilter.HOUSEHOLD);
 
         Intent intent = new Intent(this.getContext(), HouseholdDetailsActivity.class);
-        intent.putExtra("user", loggedUser);
         intent.putExtra("region", currentRegion);
         intent.putExtra("request_code", RequestCodes.HOUSEHOLD_DETAILS_FROM_HFILTER_NEW_HOUSEHOLD);
         intent.putExtra("dataloaders", dataLoaders);
@@ -393,8 +396,10 @@ public class HouseholdFilterFragment extends Fragment implements RegionExpandabl
 
     private void loadRegionsList(){
 
+        List<String> smodules = loggedUser.getSelectedModules().stream().map(Module::getCode).collect(Collectors.toList());
+
         List<ApplicationParam> params = boxAppParams.query().startsWith(ApplicationParam_.name, "hierarchy").build().find(); //COLUMN_NAME+" like 'hierarchy%'"
-        List<Region> regions = this.boxRegions.getAll();
+        List<Region> regions = this.boxRegions.query().filter((r) -> StringUtil.containsAny(r.modules, smodules)).build().find(); //filter by modules
 
         ArrayList<HierarchyItem> hierarchies = new ArrayList<>();
         HashMap<HierarchyItem, ArrayList<Region>> regionCollection = new HashMap<>();
@@ -586,8 +591,11 @@ public class HouseholdFilterFragment extends Fragment implements RegionExpandabl
     public HouseholdArrayAdapter loadHouseholdsByFilters(String houseCode) {
         //open loader
         //search
+        List<String> smodules = loggedUser.getSelectedModules().stream().map(Module::getCode).collect(Collectors.toList());
 
-        List<Household> households = this.boxHouseholds.query().startsWith(Household_.code, houseCode).orderDesc(Household_.code).build().find();
+        List<Household> households = this.boxHouseholds.query().startsWith(Household_.code, houseCode).orderDesc(Household_.code) //query by modules
+                                                               .filter((h)->StringUtil.containsAny(h.modules, smodules))
+                                                               .build().find();
 
         HouseholdArrayAdapter currentAdapter = new HouseholdArrayAdapter(this.getActivity(), households);
 

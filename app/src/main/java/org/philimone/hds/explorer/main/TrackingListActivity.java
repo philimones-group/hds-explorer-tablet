@@ -15,7 +15,9 @@ import android.widget.TextView;
 import org.philimone.hds.explorer.R;
 
 import org.philimone.hds.explorer.adapter.TrackingListArrayAdapter;
+import org.philimone.hds.explorer.database.Bootstrap;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
+import org.philimone.hds.explorer.model.Module;
 import org.philimone.hds.explorer.model.User;
 import org.philimone.hds.explorer.model.converters.StringCollectionConverter;
 import org.philimone.hds.explorer.model.followup.TrackingList;
@@ -23,6 +25,7 @@ import org.philimone.hds.explorer.settings.RequestCodes;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import androidx.appcompat.app.AppCompatActivity;
 import io.objectbox.Box;
@@ -62,7 +65,7 @@ public class TrackingListActivity extends AppCompatActivity {
     }
 
     private void initialize() {
-        this.loggedUser = (User) getIntent().getExtras().get("user");
+        this.loggedUser = Bootstrap.getCurrentUser();
 
         this.txtTrackListModule = (TextView) findViewById(R.id.txtTrackListModule);
         this.txtTrackListFilter = (EditText) findViewById(R.id.txtTrackListFilter);
@@ -105,7 +108,7 @@ public class TrackingListActivity extends AppCompatActivity {
             }
         });
 
-        this.txtTrackListModule.setText(loggedUser.getModulesNamesAsText(loggedUser.modules));
+        this.txtTrackListModule.setText(loggedUser.selectedModulesText);
 
         showTrackingLists();
     }
@@ -136,7 +139,6 @@ public class TrackingListActivity extends AppCompatActivity {
         TrackingList trackingList = adapter.getItem(position);
 
         Intent intent = new Intent(this, TrackingListDetailsActivity.class);
-        intent.putExtra("user", loggedUser);
         intent.putExtra("trackinglist", trackingList);
 
         startActivity(intent);
@@ -173,10 +175,12 @@ public class TrackingListActivity extends AppCompatActivity {
 
         ArrayList<TrackingList> list = new ArrayList<>();
 
+        List<String> selectedModules = loggedUser.getSelectedModules().stream().map(Module::getCode).collect(Collectors.toList());
+
         int i=0;
         for (TrackingList tl : tlists){
             //Log.d("tl", ""+tl.getCode()+", "+StringUtil.containsAny(userModules, modules)+", u:"+userModules[0]+", m:"+modules[0]);
-            if (StringUtil.containsAny(loggedUser.modules, tl.modules)){ //if the user has access to module specified on Form
+            if (StringUtil.containsAny(selectedModules, tl.modules)){ //if the user has access to module specified on Form
                 list.add(tl);
             }
         }

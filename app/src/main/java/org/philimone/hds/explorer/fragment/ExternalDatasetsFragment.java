@@ -12,10 +12,13 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import org.philimone.hds.explorer.R;
+import org.philimone.hds.explorer.database.Bootstrap;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
 import org.philimone.hds.explorer.model.Dataset;
 import org.philimone.hds.explorer.model.Dataset_;
 import org.philimone.hds.explorer.model.FormSubject;
+import org.philimone.hds.explorer.model.Module;
+import org.philimone.hds.explorer.model.User;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -23,6 +26,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -33,6 +37,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import io.objectbox.Box;
 import mz.betainteractive.io.readers.CSVReader;
+import mz.betainteractive.utilities.StringUtil;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -50,6 +55,8 @@ public class ExternalDatasetsFragment extends Fragment {
     private Dataset selectedDataset;
 
     private Box<Dataset> boxDatasets;
+
+    private User currentUser = Bootstrap.getCurrentUser();
 
     public ExternalDatasetsFragment() {
         // Required empty public constructor
@@ -143,7 +150,11 @@ public class ExternalDatasetsFragment extends Fragment {
     private void loadDatasetsListToSpinner(){
         this.selectedDataset = null;
 
-        List<Dataset> datasets = this.boxDatasets.query().equal(Dataset_.tableName, this.subject.getTableName()).build().find();
+        List<String> selectedModules = currentUser.getSelectedModules().stream().map(Module::getCode).collect(Collectors.toList());
+
+        List<Dataset> datasets = this.boxDatasets.query().equal(Dataset_.tableName, this.subject.getTableName())
+                                                         .filter((d) -> StringUtil.containsAny(d.modules, selectedModules))  //filter by module
+                                                         .build().find();
 
         if (datasets != null && datasets.size() > 0) {
             Log.d("datasets", ""+datasets.size());

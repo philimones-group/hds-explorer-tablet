@@ -20,6 +20,7 @@ import com.mapswithme.maps.api.MapsWithMeApi;
 
 import org.philimone.hds.explorer.R;
 import org.philimone.hds.explorer.adapter.MemberArrayAdapter;
+import org.philimone.hds.explorer.database.Bootstrap;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
 import org.philimone.hds.explorer.database.Queries;
 import org.philimone.hds.explorer.listeners.ActionListener;
@@ -30,8 +31,10 @@ import org.philimone.hds.explorer.model.Form;
 import org.philimone.hds.explorer.model.Household;
 import org.philimone.hds.explorer.model.Member;
 import org.philimone.hds.explorer.model.Member_;
+import org.philimone.hds.explorer.model.Module;
 import org.philimone.hds.explorer.model.Region;
 import org.philimone.hds.explorer.model.Region_;
+import org.philimone.hds.explorer.model.User;
 import org.philimone.hds.explorer.model.enums.temporal.ResidencyEndType;
 import org.philimone.hds.explorer.widget.DialogFactory;
 import org.philimone.hds.explorer.widget.member_details.Distance;
@@ -42,9 +45,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import io.objectbox.Box;
 import io.objectbox.query.QueryBuilder;
+import mz.betainteractive.utilities.StringUtil;
 import mz.betainteractive.utilities.TextFilters;
 
 
@@ -77,6 +82,8 @@ public class MemberListFragment extends Fragment {
     private Box<Region> boxRegions;
     private Box<Household> boxHouseholds;
     private Box<Member> boxMembers;
+
+    private User currentUser = Bootstrap.getCurrentUser();
 
     public enum Buttons {
         SHOW_HOUSEHOLD, MEMBERS_MAP, NEW_MEMBER_COLLECT, COLLECTED_DATA
@@ -795,7 +802,9 @@ public class MemberListFragment extends Fragment {
             //whereClause += DatabaseHelper.Member.COLUMN_END_TYPE + " = ?";
         }
 
-        List<Member> members = builder.build().find();
+        List<String> smodules = currentUser.getSelectedModules().stream().map(Module::getCode).collect(Collectors.toList());
+
+        List<Member> members = builder.filter((member) -> StringUtil.containsAny(member.modules, smodules)).build().find(); //filters user search by module
 
         MemberArrayAdapter currentAdapter = new MemberArrayAdapter(this.getActivity(), members);
 

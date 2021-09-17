@@ -1,21 +1,19 @@
 package org.philimone.hds.explorer.main;
 
-import android.app.Activity;
 import android.content.Intent;
-import android.os.Handler;
 import android.os.Bundle;
+import android.os.Handler;
 
 import org.philimone.hds.explorer.R;
-import org.philimone.hds.forms.listeners.FormCollectionListener;
-import org.philimone.hds.forms.main.FormFragment;
-import org.philimone.hds.forms.model.ColumnValue;
-import org.philimone.hds.forms.model.HForm;
-import org.philimone.hds.forms.model.ValidationResult;
-import org.philimone.hds.forms.model.XmlFormResult;
-
-import java.util.List;
+import org.philimone.hds.explorer.database.Bootstrap;
+import org.philimone.hds.explorer.database.ObjectBoxDatabase;
+import org.philimone.hds.explorer.main.hdsforms.HouseholdFormUtil;
+import org.philimone.hds.explorer.model.Household;
+import org.philimone.hds.explorer.model.Region;
+import org.philimone.hds.explorer.model.User;
 
 import androidx.appcompat.app.AppCompatActivity;
+import io.objectbox.Box;
 
 public class SplashScreenActivity extends AppCompatActivity {
 
@@ -24,19 +22,14 @@ public class SplashScreenActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.splash_screen);
 
-/*
-        FormFragment.newInstance(getResources().openRawResource(R.raw.hform_model), "paul", new FormCollectionListener() {
-            @Override
-            public ValidationResult onFormValidate(HForm form, List<ColumnValue> collectedValues) {
-                return new ValidationResult(false, collectedValues);
-            }
 
-            @Override
-            public void onFormFinished(HForm form, List<ColumnValue> collectedValues, XmlFormResult result) {
+        //testing
+        //test();
 
-            }
-        }).show(this.getSupportFragmentManager(), "tagmaster");*/
+        startSplashscreen();
+    }
 
+    private void startSplashscreen() {
         Handler handler=new Handler();
         handler.postDelayed(() -> {
             Intent intent=new Intent(SplashScreenActivity.this, LoginActivity.class);
@@ -44,6 +37,27 @@ public class SplashScreenActivity extends AppCompatActivity {
             overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
             finish();
         }, 2000);
+    }
 
+    private void test(){
+        Box<Region> regionBox = ObjectBoxDatabase.get().boxFor(Region.class);
+        Box<User> userBox = ObjectBoxDatabase.get().boxFor(User.class);
+        Region region = regionBox.getAll().stream().findFirst().orElse(null);
+        Bootstrap.setCurrentUser(userBox.getAll().stream().findFirst().orElse(null));
+
+        HouseholdFormUtil householdForm = new HouseholdFormUtil(this.getSupportFragmentManager(), this, region, new HouseholdFormUtil.Listener() {
+            @Override
+            public void onNewHouseholdCreated(Household household) {
+
+
+            }
+
+            @Override
+            public void onHouseholdEdited(Household household) {
+
+            }
+        });
+
+        householdForm.collect();
     }
 }

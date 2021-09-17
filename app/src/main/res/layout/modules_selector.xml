@@ -22,7 +22,7 @@
             android:layout_marginBottom="5dp"
             android:layout_gravity="center"
             android:alpha="0.75"
-            android:background="@mipmap/nui_form_red_filled_icon"
+            android:background="@mipmap/nui_modules_icon"
             android:contentDescription="TODO" />
 
         <TextView
@@ -31,8 +31,8 @@
             android:layout_height="match_parent"
             android:layout_marginLeft="10dp"
             android:gravity="center_vertical"
-            android:text="@string/member_details_forms_selector_lbl"
-            android:textSize="18sp"
+            android:text="@string/modules_selector_select_lbl"
+            android:textSize="22sp"
             android:textColor="@color/nui_color_text_red"
             android:textStyle="bold" />
 
@@ -47,7 +47,7 @@
         android:orientation="vertical">
 
         <ListView
-            android:id="@+id/lvFormsList"
+            android:id="@+id/lvMainList"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginLeft="10dp"

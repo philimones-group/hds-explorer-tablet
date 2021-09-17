@@ -22,19 +22,23 @@ import android.widget.Toast;
 import org.mindrot.jbcrypt.BCrypt;
 import org.philimone.hds.explorer.BuildConfig;
 import org.philimone.hds.explorer.R;
+import org.philimone.hds.explorer.data.FormDataLoader;
 import org.philimone.hds.explorer.database.Bootstrap;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
 import org.philimone.hds.explorer.database.Queries;
+import org.philimone.hds.explorer.fragment.ModulesSelectorDialog;
 import org.philimone.hds.explorer.main.sync.SyncPanelActivity;
 import org.philimone.hds.explorer.model.ApplicationParam;
 import org.philimone.hds.explorer.model.Module;
 import org.philimone.hds.explorer.model.User;
 import org.philimone.hds.explorer.model.User_;
 import org.philimone.hds.explorer.widget.DialogFactory;
+import org.philimone.hds.explorer.widget.FormSelectorDialog;
 
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Collection;
+import java.util.List;
 import java.util.Scanner;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -474,36 +478,38 @@ public class LoginActivity extends AppCompatActivity {
         //Toast.makeText(this, "Sucessfull Login", Toast.LENGTH_LONG);
         //Log.d("logged","logged"+loggedUser.getModules());
 
-        Intent intent = null;
+        List<Module> modules = Queries.getModulesBy(boxModules, loggedUser.modules);
 
-
-        if (loggedUser.modules.isEmpty()){
+        if (modules.isEmpty()){
             DialogFactory.createMessageInfo(this, R.string.error_lbl, R.string.error_no_modules_permission).show();
             return;
         }
 
-        //MODULE SELECTOR SHOULD BE SHOWN
+        if (modules.size() > 1){
 
-        /*
-        if (modules.length > 1){
-            intent = new Intent(this, ModuleSelectorActivity.class); //open Modules Selector
+            ModulesSelectorDialog.createDialog(this.getSupportFragmentManager(), modules, new ModulesSelectorDialog.OnModuleSelectedListener() {
+                @Override
+                public void onModulesSelected(List<Module> selectedModules) {
+                    loggedUser.setSelectedModules(selectedModules);
+                    Intent intent = new Intent(LoginActivity.this, SurveyActivity.class);
+                    startActivity(intent);
+                }
+
+                @Override
+                public void onCancelClicked() {
+
+                }
+            }).show();
+
+        } else {
+            //one module only
+            loggedUser.setSelectedModules(modules);
+            Intent intent = new Intent(this, SurveyActivity.class);
+            startActivity(intent);
         }
 
-        if (modules.length==1 && modules[0].equals(Module.DSS_SURVEY_MODULE)){
-            intent = new Intent(this, SurveyActivity.class); //
-        }
 
-        if (modules.length==1 && modules[0].equals(Module.DSS_OTHERS)){
-            showMessage("Exception", "Not yet Implemented");
-            return;
-        }*/
 
-        //get selected modules - from module selector
-        loggedUser.setSelectedModules(Queries.getModulesBy(boxModules, loggedUser.modules));
-
-        intent = new Intent(this, SurveyActivity.class);
-        intent.putExtra("user", loggedUser);
-        startActivity(intent);
     }
 }
 

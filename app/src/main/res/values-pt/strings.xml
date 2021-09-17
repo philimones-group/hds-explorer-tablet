@@ -374,6 +374,9 @@
     <string name="settings_special_group_lbl">Definições de Formularios</string>
     <string name="settings_execute_on_upload_lbl">Executar depois de transferir ao Servidor</string>
 
+    <!-- Modules Selector -->
+    <string name="modules_selector_select_lbl">Selecione o Módulo</string>
+
     <!-- barcode scanner -->
     <string name="barcode_dialog_ask_scan_title">Scanner de Código de barras</string>
     <string name="barcode_dialog_txt_scan_barcode_lbl">Pretende scanear código de barras para (#)?</string>

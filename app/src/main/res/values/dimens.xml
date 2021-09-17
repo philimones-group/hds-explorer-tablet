@@ -75,6 +75,12 @@
     <dimen name="member_item_icon_width">40dp</dimen>
     <dimen name="member_item_icon_height">40dp</dimen>
 
+    <dimen name="module_item_text_1_size">18sp</dimen>
+    <dimen name="module_item_text_2_size">14sp</dimen>
+    <dimen name="module_item_text_3_size">12sp</dimen>
+    <dimen name="module_item_icon_width">40dp</dimen>
+    <dimen name="module_item_icon_height">40dp</dimen>
+    
     <dimen name="dialog_factory_textsize">16sp</dimen>
     <dimen name="dialog_factory_button_size">150dp</dimen>
     <dimen name="dialog_factory_button_height">50dp</dimen>

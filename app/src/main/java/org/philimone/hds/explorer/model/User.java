@@ -42,9 +42,9 @@ public class User implements FormSubject, Serializable {
     @Transient
     private List<Module> selectedModules;
     @Transient
-    private String selectedModulesText;
+    public String selectedModulesText;
     @Transient
-    private String selectedModulesCodesText;
+    public String selectedModulesCodesText;
 
     public User(){
         this.modules = new HashSet<>();
@@ -129,11 +129,16 @@ public class User implements FormSubject, Serializable {
 
     public void setSelectedModules(List<Module> selectedModules) {
         StringBuilder str = new StringBuilder();
+        StringBuilder str2 = new StringBuilder();
 
         for (Module module : selectedModules) {
             str.append((str.length()==0 ? "" : ",") + module.name);
+            str2.append((str2.length()==0 ? "" : ",") + module.code);
             this.selectedModules.add(module);
         }
+
+        this.selectedModulesText = str.toString();
+        this.selectedModulesCodesText = str2.toString();
     }
 
     public String getModulesNamesAsText(Set<String> modules) {

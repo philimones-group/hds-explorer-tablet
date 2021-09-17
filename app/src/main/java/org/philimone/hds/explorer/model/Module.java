@@ -12,9 +12,7 @@ import io.objectbox.annotation.Unique;
 @Entity
 public class Module implements Serializable {
 
-    public final static String DSS_SURVEY_MODULE = "DSS-SURVEY";
-    public final static String DSS_SUPERVISOR = "DSS-SUPERVISOR";
-    public final static String DSS_OTHERS = "DSS-ANY";
+    public final static String DSS_SURVEY_MODULE = "MX-001";
 
     @Id
     public long id;

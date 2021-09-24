@@ -150,7 +150,7 @@ public class ExternalDatasetsFragment extends Fragment {
     private void loadDatasetsListToSpinner(){
         this.selectedDataset = null;
 
-        List<String> selectedModules = currentUser.getSelectedModules().stream().map(Module::getCode).collect(Collectors.toList());
+        List<String> selectedModules = new ArrayList<>(currentUser.getSelectedModules());
 
         List<Dataset> datasets = this.boxDatasets.query().equal(Dataset_.tableName, this.subject.getTableName())
                                                          .filter((d) -> StringUtil.containsAny(d.modules, selectedModules))  //filter by module

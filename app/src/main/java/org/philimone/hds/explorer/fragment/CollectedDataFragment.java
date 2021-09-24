@@ -62,7 +62,7 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
 
     private SubjectMode subjectMode;
 
-    private List<String> selectedModules;
+    private List<String> selectedModules = new ArrayList<>();
 
     public CollectedDataFragment() {
         // Required empty public constructor
@@ -113,7 +113,7 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
 
     private void initialize(View view) {
 
-        selectedModules = loggedUser.getSelectedModules().stream().map(Module::getCode).collect(Collectors.toList());
+        selectedModules.addAll(loggedUser.getSelectedModules());
 
         lvCollectedForms = view.findViewById(R.id.lvCollectedForms);
 

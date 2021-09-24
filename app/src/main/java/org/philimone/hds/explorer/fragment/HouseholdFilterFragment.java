@@ -396,7 +396,7 @@ public class HouseholdFilterFragment extends Fragment implements RegionExpandabl
 
     private void loadRegionsList(){
 
-        List<String> smodules = loggedUser.getSelectedModules().stream().map(Module::getCode).collect(Collectors.toList());
+        List<String> smodules = new ArrayList<>(loggedUser.getSelectedModules());
 
         List<ApplicationParam> params = boxAppParams.query().startsWith(ApplicationParam_.name, "hierarchy").build().find(); //COLUMN_NAME+" like 'hierarchy%'"
         List<Region> regions = this.boxRegions.getAll(); //query().filter((r) -> StringUtil.containsAny(r.modules, smodules)).build().find(); //filter by modules
@@ -418,6 +418,7 @@ public class HouseholdFilterFragment extends Fragment implements RegionExpandabl
                     if (region.getLevel().equals(lastRegionLevel)) {
 
                         //filter according to the selected user modules
+                        Log.d("test-"+lastRegionLevel, region.name+", contains "+StringUtil.containsAny(region.modules, smodules)+", rmodules="+region.modules+", smodules="+smodules);
                         if (StringUtil.containsAny(region.modules, smodules)) {
                             list.add(region);
                         }
@@ -603,7 +604,7 @@ public class HouseholdFilterFragment extends Fragment implements RegionExpandabl
     public HouseholdArrayAdapter loadHouseholdsByFilters(String houseCode) {
         //open loader
         //search
-        List<String> smodules = loggedUser.getSelectedModules().stream().map(Module::getCode).collect(Collectors.toList());
+        List<String> smodules = new ArrayList<>(loggedUser.getSelectedModules());
 
         List<Household> households = this.boxHouseholds.query().startsWith(Household_.code, houseCode).orderDesc(Household_.code) //query by modules
                                                                .filter((h)->StringUtil.containsAny(h.modules, smodules))

@@ -11,6 +11,7 @@ import android.widget.TextView;
 import org.philimone.hds.explorer.R;
 
 import org.philimone.hds.explorer.database.Bootstrap;
+import org.philimone.hds.explorer.model.User;
 import org.philimone.hds.explorer.model.followup.TrackingList;
 import org.philimone.hds.explorer.widget.CirclePercentageBar;
 
@@ -25,6 +26,7 @@ public class TrackingListArrayAdapter extends ArrayAdapter {
     private List<TrackingList> trackingLists;
     private List<TrackingList> originalLists;
     private Context mContext;
+    private User currentUser;
 
     public TrackingListArrayAdapter(Context context, List<TrackingList> objects){
         super(context, R.layout.tracking_list_item, objects);
@@ -34,6 +36,7 @@ public class TrackingListArrayAdapter extends ArrayAdapter {
         this.trackingLists.addAll(objects);
         this.originalLists.addAll(objects);
         this.mContext = context;
+        this.currentUser = Bootstrap.getCurrentUser();
     }
 
     public TrackingListArrayAdapter(Context context, TrackingList[] objects){
@@ -46,6 +49,7 @@ public class TrackingListArrayAdapter extends ArrayAdapter {
             this.originalLists.add(tl);
         }
         this.mContext = context;
+        this.currentUser = Bootstrap.getCurrentUser();
     }
 
     @Override
@@ -84,7 +88,7 @@ public class TrackingListArrayAdapter extends ArrayAdapter {
 
         txtTitle.setText(trackingList.getName() + ":  " + trackingList.getTitle());
         txtModule.setText(trackingList.getDetails());
-        txtDetails.setText(mContext.getString(R.string.trackinglist_module_lbl) + ": " + Bootstrap.getCurrentUser().getModulesNamesAsText(trackingList.modules));
+        txtDetails.setText(mContext.getString(R.string.trackinglist_module_lbl) + ": " + currentUser.getModulesNamesAsText(trackingList.modules));
         pBar.setPercentageValue(completion);
 
 

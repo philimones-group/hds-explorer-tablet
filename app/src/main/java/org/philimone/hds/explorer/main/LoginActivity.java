@@ -491,6 +491,7 @@ public class LoginActivity extends AppCompatActivity {
                 @Override
                 public void onModulesSelected(List<Module> selectedModules) {
                     loggedUser.setSelectedModules(selectedModules);
+                    boxUsers.put(loggedUser);
                     Intent intent = new Intent(LoginActivity.this, SurveyActivity.class);
                     startActivity(intent);
                 }
@@ -504,6 +505,7 @@ public class LoginActivity extends AppCompatActivity {
         } else {
             //one module only
             loggedUser.setSelectedModules(modules);
+            boxUsers.put(loggedUser);
             Intent intent = new Intent(this, SurveyActivity.class);
             startActivity(intent);
         }

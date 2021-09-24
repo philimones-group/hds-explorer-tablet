@@ -12,6 +12,7 @@ import org.philimone.hds.explorer.R;
 import org.philimone.hds.explorer.adapter.model.CollectedDataItem;
 import org.philimone.hds.explorer.database.Bootstrap;
 import org.philimone.hds.explorer.model.CollectedData;
+import org.philimone.hds.explorer.model.User;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +27,7 @@ public class CollectedDataArrayAdapter extends ArrayAdapter {
     private boolean[] selectedList;
     private boolean multiSelectable;
     private Context mContext;
+    private User currentUser;
 
     public CollectedDataArrayAdapter(Context context, List<CollectedDataItem> objects){
         super(context, R.layout.form_collected_item, objects);
@@ -34,6 +36,7 @@ public class CollectedDataArrayAdapter extends ArrayAdapter {
         this.collectedDataList.addAll(objects);
         this.selectedList = new boolean[objects.size()];
         this.mContext = context;
+        this.currentUser = Bootstrap.getCurrentUser();
     }
 
     public CollectedDataArrayAdapter(Context context, CollectedDataItem[] objects){
@@ -43,6 +46,7 @@ public class CollectedDataArrayAdapter extends ArrayAdapter {
         for (CollectedDataItem cd : objects) this.collectedDataList.add(cd);
         this.selectedList = new boolean[objects.length];
         this.mContext = context;
+        this.currentUser = Bootstrap.getCurrentUser();
     }
 
     /*
@@ -87,7 +91,7 @@ public class CollectedDataArrayAdapter extends ArrayAdapter {
         txtExtra.setText(sdate);
         chkProcessed.setChecked(cd.isFormFinalized());
 
-        String modulesText = Bootstrap.getCurrentUser().getModulesNamesAsText(cd.formModules);
+        String modulesText = currentUser.getModulesNamesAsText(cd.formModules); //should appear the selected names only
 
         if (cdi.getForm()!=null){
             txtForm.setText(modulesText + " -> " + cdi.getForm().getFormName());

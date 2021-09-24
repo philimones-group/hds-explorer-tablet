@@ -4,7 +4,9 @@ import android.content.Context;
 import android.os.Environment;
 import android.util.Log;
 
+import org.philimone.hds.explorer.model.ApplicationParam_;
 import org.philimone.hds.explorer.model.User;
+import org.philimone.hds.explorer.model.User_;
 import org.philimone.hds.explorer.model.enums.SyncEntity;
 import org.philimone.hds.explorer.model.enums.SyncStatus;
 import org.philimone.hds.explorer.model.ApplicationParam;
@@ -32,8 +34,6 @@ public class Bootstrap {
     private static String absoluteFormsPath;
     private static String absoluteInstancesPath;
 
-    private static User currentUser;
-
     private Box<ApplicationParam> boxAppParams;
     private Box<SyncReport> boxSyncReports;
 
@@ -58,6 +58,7 @@ public class Bootstrap {
             boxAppParams.put(new ApplicationParam(ApplicationParam.ODK_URL, "string", "https://icemr2-aws.medcol.mw:8443/ODKAggregate"));        // ODK Aggregate Server URL
             boxAppParams.put(new ApplicationParam(ApplicationParam.REDCAP_URL, "string", "https://apps.betainteractive.net/redcap"));            // REDCap Server URL
             boxAppParams.put(new ApplicationParam(ApplicationParam.HFORM_POST_EXECUTION, "string", "false"));            // REDCap Server URL
+            boxAppParams.put(new ApplicationParam(ApplicationParam.LOGGED_USER, "string", ""));
         }
     }
 
@@ -149,11 +150,24 @@ public class Bootstrap {
     }
 
     public static User getCurrentUser(){
-        return currentUser;
+        Box<ApplicationParam> paramBox = ObjectBoxDatabase.get().boxFor(ApplicationParam.class);
+        Box<User> userBox = ObjectBoxDatabase.get().boxFor(User.class);
+        ApplicationParam param = paramBox.query().equal(ApplicationParam_.name, ApplicationParam.LOGGED_USER).build().findFirst();
+        User loggedUser = param==null ? null : userBox.query().equal(User_.code, param.value).build().findFirst();
+
+        return loggedUser;
     }
 
     public static void setCurrentUser(User user){
-        currentUser = user;
+        Box<ApplicationParam> paramBox = ObjectBoxDatabase.get().boxFor(ApplicationParam.class);
+        ApplicationParam param = paramBox.query().equal(ApplicationParam_.name, ApplicationParam.LOGGED_USER).build().findFirst();
+        param = param==null ? new ApplicationParam(ApplicationParam.LOGGED_USER, "string", "") : param;
+
+
+        param.value = user==null ? "" : user.code;
+
+
+        paramBox.put(param);
     }
 
 }

@@ -1,5 +1,7 @@
 package org.philimone.hds.explorer.model;
 
+import android.util.Log;
+
 import org.philimone.hds.explorer.model.converters.StringCollectionConverter;
 
 import java.io.Serializable;
@@ -39,16 +41,14 @@ public class User implements FormSubject, Serializable {
     @Convert(converter = StringCollectionConverter.class, dbType = String.class)
     public Set<String> modules;
 
-    @Transient
-    private List<Module> selectedModules;
-    @Transient
+    @Convert(converter = StringCollectionConverter.class, dbType = String.class)
+    private Set<String> selectedModules;
+
     public String selectedModulesText;
-    @Transient
-    public String selectedModulesCodesText;
 
     public User(){
         this.modules = new HashSet<>();
-        this.selectedModules = new ArrayList<>();
+        this.selectedModules = new HashSet<>();
     }
 
     public long getId() {
@@ -123,30 +123,30 @@ public class User implements FormSubject, Serializable {
         this.email = email;
     }
 
-    public List<Module> getSelectedModules() {
+    public Set<String> getSelectedModules() {
         return selectedModules;
     }
 
-    public void setSelectedModules(List<Module> selectedModules) {
+    public void setSelectedModules(List<Module> moduleList) {
         StringBuilder str = new StringBuilder();
-        StringBuilder str2 = new StringBuilder();
-
-        for (Module module : selectedModules) {
+        Log.d("modules-null", ""+this.selectedModules);
+        for (Module module : moduleList) {
             str.append((str.length()==0 ? "" : ",") + module.name);
-            str2.append((str2.length()==0 ? "" : ",") + module.code);
-            this.selectedModules.add(module);
+            this.selectedModules.add(module.code);
         }
 
         this.selectedModulesText = str.toString();
-        this.selectedModulesCodesText = str2.toString();
     }
 
+    /*
+     Just show the selected Module Codes
+     */
     public String getModulesNamesAsText(Set<String> modules) {
         StringBuilder str = new StringBuilder();
 
-        for (Module module : this.selectedModules) {
-            if (modules.contains(module.code)) {
-                str.append((str.length()==0 ? "" : ",") + module.name);
+        for (String module : this.selectedModules) {
+            if (modules.contains(module)) {
+                str.append((str.length()==0 ? "" : ", ") + module);
             }
         }
 

@@ -175,7 +175,7 @@ public class TrackingListActivity extends AppCompatActivity {
 
         ArrayList<TrackingList> list = new ArrayList<>();
 
-        List<String> selectedModules = loggedUser.getSelectedModules().stream().map(Module::getCode).collect(Collectors.toList());
+        List<String> selectedModules = new ArrayList<>(loggedUser.getSelectedModules());
 
         int i=0;
         for (TrackingList tl : tlists){

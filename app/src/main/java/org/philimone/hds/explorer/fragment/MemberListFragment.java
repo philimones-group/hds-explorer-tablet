@@ -802,7 +802,7 @@ public class MemberListFragment extends Fragment {
             //whereClause += DatabaseHelper.Member.COLUMN_END_TYPE + " = ?";
         }
 
-        List<String> smodules = currentUser.getSelectedModules().stream().map(Module::getCode).collect(Collectors.toList());
+        List<String> smodules = new ArrayList<>(currentUser.getSelectedModules());
 
         List<Member> members = builder.filter((member) -> StringUtil.containsAny(member.modules, smodules)).build().find(); //filters user search by module
 

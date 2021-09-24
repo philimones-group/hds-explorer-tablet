@@ -305,7 +305,7 @@
     },
     {
       "id": "6:8750397277515397430",
-      "lastPropertyId": "9:151673152352354580",
+      "lastPropertyId": "11:8495148880199970370",
       "name": "User",
       "properties": [
         {
@@ -359,6 +359,16 @@
           "indexId": "74:2235763448950078280",
           "type": 9,
           "flags": 2048
+        },
+        {
+          "id": "10:3717786029310005530",
+          "name": "selectedModules",
+          "type": 9
+        },
+        {
+          "id": "11:8495148880199970370",
+          "name": "selectedModulesText",
+          "type": 9
         }
       ],
       "relations": []

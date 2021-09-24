@@ -1,5 +1,6 @@
 package org.philimone.hds.explorer.fragment;
 
+import androidx.annotation.StringRes;
 import androidx.fragment.app.DialogFragment;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -26,6 +27,7 @@ import org.philimone.hds.explorer.widget.NumberPicker;
 import java.util.List;
 
 import androidx.annotation.Nullable;
+import androidx.fragment.app.FragmentManager;
 import io.objectbox.Box;
 import io.objectbox.query.QueryBuilder;
 import mz.betainteractive.utilities.TextFilters;
@@ -34,6 +36,8 @@ import mz.betainteractive.utilities.TextFilters;
  *
  */
 public class MemberFilterDialog extends DialogFragment {
+
+    private FragmentManager fragmentManager;
 
     private TextView txtDialogTitle;
     private EditText txtMemFilterName;
@@ -75,18 +79,24 @@ public class MemberFilterDialog extends DialogFragment {
         super();
     }
 
-    public static MemberFilterDialog newInstance(Listener memberFilterListener, String title){
-        MemberFilterDialog filterDialog = new MemberFilterDialog();
+    public static MemberFilterDialog newInstance(FragmentManager fm, @StringRes int titleResId, Listener memberFilterListener){
+        return newInstance(fm, titleResId, false, memberFilterListener);
+    }
 
-        filterDialog.listener = memberFilterListener;
-        filterDialog.title = title;
-
+    public static MemberFilterDialog newInstance(FragmentManager fm, @StringRes int titleResId, boolean cancelable, Listener memberFilterListener){
+        MemberFilterDialog filterDialog = newInstance(fm, "", cancelable, memberFilterListener);
+        filterDialog.title = filterDialog.getString(titleResId);
         return filterDialog;
     }
 
-    public static MemberFilterDialog newInstance(Listener memberFilterListener, String title, boolean cancelable){
+    public static MemberFilterDialog newInstance(FragmentManager fm, String title, Listener memberFilterListener){
+        return newInstance(fm, title, false, memberFilterListener);
+    }
+
+    public static MemberFilterDialog newInstance(FragmentManager fm, String title, boolean cancelable, Listener memberFilterListener){
         MemberFilterDialog filterDialog = new MemberFilterDialog();
 
+        filterDialog.fragmentManager = fm;
         filterDialog.listener = memberFilterListener;
         filterDialog.title = title;
         filterDialog.setCancelable(cancelable);
@@ -295,7 +305,7 @@ public class MemberFilterDialog extends DialogFragment {
         }
     }
                             //Household household, String name, String code, String householdCode, String gender, Integer minAge, Integer maxAge, Boolean isDead, Boolean hasOutmigrated, Boolean liveResident
-    public MemberArrayAdapter loadMembersByFilters(String name, String code, String householdCode, String gender, Integer minAge, Integer maxAge, Boolean isDead, Boolean hasOutmigrated, Boolean liveResident) {
+    private MemberArrayAdapter loadMembersByFilters(String name, String code, String householdCode, String gender, Integer minAge, Integer maxAge, Boolean isDead, Boolean hasOutmigrated, Boolean liveResident) {
 
         ResidencyEndType endType = null;
 
@@ -428,9 +438,13 @@ public class MemberFilterDialog extends DialogFragment {
         return currentAdapter;
     }
 
-    public void showProgress(final boolean show) {
+    private void showProgress(final boolean show) {
         mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
         lvMembersList.setVisibility(show ? View.GONE : View.VISIBLE);
+    }
+
+    public void show(){
+        this.show(fragmentManager, "relatype");
     }
 
     class MemberSearchTask extends AsyncTask<Void, Void, MemberArrayAdapter> {

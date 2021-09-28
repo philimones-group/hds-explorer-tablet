@@ -56,6 +56,13 @@ public class SplashScreenActivity extends AppCompatActivity {
             public void onHouseholdEdited(Household household) {
 
             }
+
+            @Override
+            public void onFormCancelled() {
+
+            }
+
+
         });
 
         householdForm.collect();

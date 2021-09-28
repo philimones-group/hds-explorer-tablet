@@ -27,7 +27,7 @@ public class StringCollectionConverter implements PropertyConverter<Set<String>,
         return getStringFrom(entityProperty);
     }
 
-    public Set<String> getCollectionFrom(String databaseValue) {
+    public static Set<String> getCollectionFrom(String databaseValue) {
         Set<String> list = new HashSet<>();
 
         if (!StringUtil.isBlank(databaseValue)) {
@@ -37,7 +37,7 @@ public class StringCollectionConverter implements PropertyConverter<Set<String>,
         return list;
     }
 
-    public String getStringFrom(Collection<? extends String> entityProperty) {
+    public static String getStringFrom(Collection<? extends String> entityProperty) {
         StringBuilder str = new StringBuilder();
 
         entityProperty.forEach( value -> {

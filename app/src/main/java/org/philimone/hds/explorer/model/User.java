@@ -153,6 +153,10 @@ public class User implements FormSubject, Serializable {
         return str.toString();
     }
 
+    public String getSelectedModulesCodes(){
+        return getModulesNamesAsText(selectedModules);
+    }
+
     public String toString(){
         return ""+this.firstName+" "+this.lastName+", user: "+this.username;
     }

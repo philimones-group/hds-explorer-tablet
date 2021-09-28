@@ -1,6 +1,7 @@
 package org.philimone.hds.explorer.main;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -21,6 +22,7 @@ import org.philimone.hds.explorer.fragment.household.details.HouseholdMembersFra
 import org.philimone.hds.explorer.fragment.household.details.HouseholdVisitFragment;
 import org.philimone.hds.explorer.fragment.household.details.adapter.HouseholdDetailsFragmentAdapter;
 import org.philimone.hds.explorer.main.hdsforms.HouseholdFormUtil;
+import org.philimone.hds.explorer.main.hdsforms.VisitFormUtil;
 import org.philimone.hds.explorer.model.ApplicationParam;
 import org.philimone.hds.explorer.model.CoreCollectedData;
 import org.philimone.hds.explorer.model.Form;
@@ -79,6 +81,7 @@ public class HouseholdDetailsActivity extends AppCompatActivity {
 
     private Region region;
     private Household household;
+    private Visit visit;
     private List<FormDataLoader> formDataLoaders = new ArrayList<>();
 
     private User loggedUser;
@@ -268,11 +271,12 @@ public class HouseholdDetailsActivity extends AppCompatActivity {
 
         //New Visit
         DialogFactory.createMessageInfo(this, "", "A Visit Form will be opened now", clickedButton -> {
-            createNewVisit();
+            createNewVisit(false);
         }).show();
     }
 
     private void onFinishVisitClicked() {
+        Log.d("finishing","visit");
         DialogFactory.createMessageInfo(this, "", "Finishing current Visit, comeback later", clickedButton -> {
             closeCurrentVisit();
         }).show();
@@ -291,20 +295,23 @@ public class HouseholdDetailsActivity extends AppCompatActivity {
     }
 
     private void initFragments() {
-        this.householdMembersFragment = HouseholdMembersFragment.newInstance(this.household, this.loggedUser);
-        this.collectedDataFragment = CollectedDataFragment.newInstance(this.household, this.loggedUser, this.formDataLoaders);
-        this.householdDatasetsFragment = ExternalDatasetsFragment.newInstance(this.household);
+        //this.householdMembersFragment = HouseholdMembersFragment.newInstance(this.household, this.loggedUser);
+        //this.collectedDataFragment = CollectedDataFragment.newInstance(this.household, this.loggedUser, this.formDataLoaders);
+        //this.householdDatasetsFragment = ExternalDatasetsFragment.newInstance(this.household);
 
-        List<Fragment> list = new ArrayList<>();
-        list.add(householdMembersFragment);
-        list.add(householdDatasetsFragment);
-        list.add(collectedDataFragment);
+        //List<Fragment> list = new ArrayList<>();
+        //list.add(householdMembersFragment);
+        //list.add(householdDatasetsFragment);
+        //list.add(collectedDataFragment);
 
-        HouseholdDetailsFragmentAdapter adapter = new HouseholdDetailsFragmentAdapter(this.getSupportFragmentManager(),  this.getLifecycle(), list);
-        householdDetailsTabViewPager.setAdapter(adapter);
+        if (household != null) {
+            HouseholdDetailsFragmentAdapter adapter = new HouseholdDetailsFragmentAdapter(this.getSupportFragmentManager(), this.getLifecycle(), household, loggedUser, formDataLoaders);
+            householdDetailsTabViewPager.setAdapter(adapter);
+            //this will create all fragments
+            householdDetailsTabViewPager.setOffscreenPageLimit(3);
+        }
 
-        //this will create all fragments
-        householdDetailsTabViewPager.setOffscreenPageLimit(list.size());
+
     }
 
     private void enableButtonsByFormLoaders() {
@@ -452,11 +459,30 @@ public class HouseholdDetailsActivity extends AppCompatActivity {
         }
     }
 
-    private void createNewVisit(){
-        hdetailsMode = HouseholdDetailsMode.VISIT_MODE;
+    private void createNewVisit(boolean newHouseholdCreated){
 
-        showHouseholdData();
-        enableLayoutsByHouseholdMode();
+        VisitFormUtil visitFormUtil = new VisitFormUtil(this.getSupportFragmentManager(), this, this.household, newHouseholdCreated, new VisitFormUtil.Listener() {
+            @Override
+            public void onNewVisitCreated(Visit visit) {
+                hdetailsMode = HouseholdDetailsMode.VISIT_MODE;
+                showHouseholdData();
+                enableLayoutsByHouseholdMode();
+
+                HouseholdDetailsActivity.this.visit = visit;
+            }
+
+            @Override
+            public void onVisitEdited(Visit visit) {
+
+            }
+
+            @Override
+            public void onFormCancelled() {
+                HouseholdDetailsActivity.this.visit = null;
+            }
+        });
+
+        visitFormUtil.collect();
     }
 
     private void closeCurrentVisit() {
@@ -469,12 +495,16 @@ public class HouseholdDetailsActivity extends AppCompatActivity {
 
         hdetailsMode =  HouseholdDetailsMode.NORMAL_MODE;
 
+        this.visit = null;
+
         showHouseholdData();
         enableLayoutsByHouseholdMode();
     }
 
     private void openPreviousVisit() {
         hdetailsMode = HouseholdDetailsMode.VISIT_MODE;
+
+        //TODO YET
 
         showHouseholdData();
         enableLayoutsByHouseholdMode();
@@ -487,12 +517,18 @@ public class HouseholdDetailsActivity extends AppCompatActivity {
             @Override
             public void onNewHouseholdCreated(Household household) {
                 HouseholdDetailsActivity.this.household = household;
-                createNewVisit();
+                initFragments();
+                createNewVisit(true);
             }
 
             @Override
             public void onHouseholdEdited(Household household) {
 
+            }
+
+            @Override
+            public void onFormCancelled() {
+                HouseholdDetailsActivity.this.finish();
             }
         });
 

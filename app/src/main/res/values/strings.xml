@@ -292,6 +292,18 @@
     <string name="new_household_code_region_err_lbl">The Household Number doesnt belong to the selected neighborhood</string>
     <string name="new_household_code_exists_lbl">The Household Number already exists</string>
 
+    <!-- New Visit -->
+    <string name="new_visit_select_respondent_lbl">Select Interviewee</string>
+    <string name="new_visit_code_err_lbl">The format of the Visit Code is incorrect</string>
+    <string name="new_visit_code_household_err_lbl">The Visit code doesnt reflect the selected household</string>
+    <string name="new_visit_code_exists_lbl">The Visit Code already exists</string>
+    <string name="new_visit_round_number_empty_lbl">The Visit Round Number cannot be empty</string>
+    <string name="new_visit_reason_empty_lbl">The Reason for Visit cannot be empty</string>
+    <string name="new_visit_respondent_empty_lbl">The Visit Interviwee code cannot be empty</string>
+    <string name="new_visit_interpreter_empty_lbl">The Visit Interpreter\'s name cannot be empty</string>
+    <string name="new_visit_location_empty_lbl">The Visit Location cannot be empty</string>
+    <string name="new_visit_location_other_empty_lbl">You must specify where the visit is taking place</string>
+
     <!-- New Member -->
     <string name="new_member_dialog_title_lbl">Census: Add New Member to Household</string>
     <string name="new_member_dialog_collect_lbl">Save and Collect</string>

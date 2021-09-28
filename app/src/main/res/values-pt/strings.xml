@@ -292,6 +292,18 @@
     <string name="new_household_code_region_err_lbl">O código da casa introduzido não pertence a região selecionada!</string>
     <string name="new_household_code_exists_lbl">O código da casa introduzido ja existe!</string>
 
+    <!-- New Visit -->
+    <string name="new_visit_select_respondent_lbl">Selecione o respondente</string>
+    <string name="new_visit_code_err_lbl">O código da visita está incorrecto!</string>
+    <string name="new_visit_code_household_err_lbl">O código da visita introduzido não reflecte a casa selecionada!</string>
+    <string name="new_visit_code_exists_lbl">O código da visita introduzido ja existe!</string>
+    <string name="new_visit_round_number_empty_lbl">O número de ronda não pode estar vazio</string>
+    <string name="new_visit_reason_empty_lbl">O motivo da visita não pode estar vazio</string>
+    <string name="new_visit_respondent_empty_lbl">O código do respondente não pode estar vazio</string>
+    <string name="new_visit_interpreter_empty_lbl">O nome do respondente não pode estar vazio</string>
+    <string name="new_visit_location_empty_lbl">Por favor, selecione onde a visita esta sendo realizada</string>
+    <string name="new_visit_location_other_empty_lbl">Por favor, especifique onde a visita esta sendo realizada</string>
+
     <!-- New Member -->
     <string name="new_member_dialog_title_lbl">Censo: Adicionar novo Membro</string>
     <string name="new_member_dialog_collect_lbl">Guardar e Colher Dados</string>

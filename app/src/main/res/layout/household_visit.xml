@@ -408,41 +408,4 @@
 
     </LinearLayout>
 
-    <!-- Buttons -->
-    <LinearLayout
-        android:id="@+id/hhLayoutButtons"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="0"
-        android:layout_marginTop="5dp"
-        android:layout_marginLeft="5dp"
-        android:layout_marginRight="5dp"
-        android:gravity="center"
-        android:orientation="vertical"
-        android:visibility="gone">
-
-        <Button
-            android:id="@+id/btHouseDetailsFinishVisit"
-            android:layout_width="350dp"
-            android:layout_height="@dimen/member_details_bt_height"
-            android:layout_marginTop="5dp"
-            android:layout_marginBottom="5dp"
-            android:textSize="@dimen/member_details_buttons_textsize"
-            android:textStyle="bold"
-            android:text="@string/household_details_bt_finish_visit_lbl"
-            android:background="@drawable/nui_btnd_rone_dgbevel"
-            android:visibility="visible"/>
-
-        <Button
-            android:id="@+id/btHouseDetailsCollectData"
-            android:layout_width="350dp"
-            android:layout_height="@dimen/member_details_bt_height"
-            android:layout_marginTop="5dp"
-            android:layout_marginBottom="5dp"
-            android:textSize="@dimen/member_details_buttons_textsize"
-            android:textStyle="bold"
-            android:text="@string/member_details_bt_openform_lbl"
-            android:background="@drawable/nui_btnd_rone_dgbevel"/>
-
-    </LinearLayout>
 </LinearLayout>

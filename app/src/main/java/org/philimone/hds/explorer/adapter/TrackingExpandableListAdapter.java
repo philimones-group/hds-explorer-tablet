@@ -90,7 +90,7 @@ public class TrackingExpandableListAdapter extends BaseExpandableListAdapter imp
 
     @Override
     public long getChildId(int groupPosition, int childPosition) {
-        return childPosition;
+        return groupPosition*1000+childPosition;
     }
 
     @Override

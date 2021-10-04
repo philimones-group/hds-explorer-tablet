@@ -30,7 +30,7 @@ public class CirclePercentageBar extends LinearLayout {
     private int displayPercentageValue = 0;
 
     public enum DisplayType {
-        FRACTION, PERCENTAGE
+        FRACTION, PERCENTAGE, UNITS
     }
 
     public CirclePercentageBar(Context context) {
@@ -60,11 +60,18 @@ public class CirclePercentageBar extends LinearLayout {
             //displayCircleColor = ta.getColor(R.styleable.CirclePercentageBar_displayCircleColor, getResources().getColor(R.color.nui_color_circle_color_two, null));
             displayPercentageValue = ta.getInt(R.styleable.CirclePercentageBar_displayPercentageValue, 0);
 
-            if (displayTextType!=null && displayTextType.equals("fraction")){
-                displayType = DisplayType.FRACTION;
-            }else{
+            if (displayTextType!=null){
+                if (displayTextType.equals("fraction")){
+                    displayType = DisplayType.FRACTION;
+                } else if (displayTextType.equals("units")){
+                    displayType = DisplayType.UNITS;
+                } else {
+                    displayType = DisplayType.PERCENTAGE;
+                }
+            } else {
                 displayType = DisplayType.PERCENTAGE;
             }
+
 
         } finally {
             ta.recycle();
@@ -103,8 +110,10 @@ public class CirclePercentageBar extends LinearLayout {
 
         if (displayType==DisplayType.PERCENTAGE){
             this.txtPercentageValue.setText(displayPercentageValue+"%");
-        }else{
+        } else if (displayType==DisplayType.FRACTION){
             this.txtPercentageValue.setText(displayPercentageValue+"/"+maxValue);
+        } else {
+            this.txtPercentageValue.setText(displayPercentageValue+"");
         }
 
         Log.d("text-size", ""+displayTextSize);
@@ -149,8 +158,10 @@ public class CirclePercentageBar extends LinearLayout {
     private void updatePercentageValue(){
         if (displayType==DisplayType.PERCENTAGE){
             this.txtPercentageValue.setText(percentageValue+"%");
-        }else{
+        }else if (displayType == DisplayType.FRACTION){
             this.txtPercentageValue.setText(value+"/"+maxValue);
+        } else {
+            this.txtPercentageValue.setText(value);
         }
     }
 

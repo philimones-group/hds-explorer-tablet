@@ -68,7 +68,7 @@ public class MemberFilterDialog extends DialogFragment {
         EMPTY, IS_DEAD, OUTMIGRATED, RESIDENT
     }
 
-    private View mProgressView;
+    private View progressBarLayout;
     private Box<Member> boxMembers;
 
     private Listener listener;
@@ -138,7 +138,7 @@ public class MemberFilterDialog extends DialogFragment {
         this.nbpMemFilterMinAge = (NumberPicker) view.findViewById(R.id.nbpMemFilterMinAge);
         this.nbpMemFilterMaxAge = (NumberPicker) view.findViewById(R.id.nbpMemFilterMaxAge);
         this.spnMemFilterStatus = (Spinner) view.findViewById(R.id.spnMemFilterStatus);
-        this.mProgressView = view.findViewById(R.id.viewListProgressBar);
+        this.progressBarLayout = view.findViewById(R.id.progressBarLayout);
         this.lvMembersList = (ListView) view.findViewById(R.id.lvMembersList);
         this.btMemFilterClear = (Button) view.findViewById(R.id.btMemFilterClear);
         this.btMemFilterSearch = (Button) view.findViewById(R.id.btMemFilterSearch);
@@ -439,8 +439,8 @@ public class MemberFilterDialog extends DialogFragment {
     }
 
     private void showProgress(final boolean show) {
-        mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-        lvMembersList.setVisibility(show ? View.GONE : View.VISIBLE);
+        //lvMembersList.setAdapter(null);
+        progressBarLayout.setVisibility(show ? View.VISIBLE : View.GONE);
     }
 
     public void show(){

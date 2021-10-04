@@ -80,7 +80,7 @@ public class RegionExpandableListAdapter extends BaseExpandableListAdapter imple
 
     @Override
     public long getChildId(int groupPosition, int childPosition) {
-        return groupPosition;
+        return groupPosition*1000+childPosition;
     }
 
     @Override

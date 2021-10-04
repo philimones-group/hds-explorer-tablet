@@ -344,24 +344,32 @@
         </LinearLayout>
 
         <!-- List -->
-        <LinearLayout
+        <FrameLayout
             android:id="@+id/memberListLayout"
             android:layout_weight="1"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:paddingBottom="5dp"
             android:paddingTop="5dp"
-            android:paddingRight="5dp"
-            android:orientation="horizontal">
+            android:paddingRight="5dp">
 
-            <RelativeLayout
-                android:id="@+id/viewListProgressBar"
+            <ListView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:paddingTop="10dp"
                 android:paddingBottom="10dp"
                 android:background="@drawable/nui_list_rborder_panel"
+                android:id="@+id/lvMembersList"
+                />
+
+            <RelativeLayout
+                android:id="@+id/progressBarLayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
                 android:visibility="gone">
 
                 <ProgressBar
@@ -374,17 +382,7 @@
 
             </RelativeLayout>
 
-            <ListView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:paddingTop="10dp"
-                android:paddingBottom="10dp"
-                android:background="@drawable/nui_list_rborder_panel"
-                android:id="@+id/lvMembersList"
-                />
-
-        </LinearLayout>
+        </FrameLayout>
 
     </LinearLayout>
 

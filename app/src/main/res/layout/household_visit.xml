@@ -167,6 +167,7 @@
         android:layout_height="0dp"
         android:layout_weight="1"
         android:layout_marginBottom="5dp"
+        android:background="@drawable/nui_list_rborder_panel"
         android:orientation="vertical">
 
         <TextView
@@ -182,7 +183,6 @@
             android:id="@+id/layout_hh_xdata"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@drawable/nui_txtbox_rone_wbevel"
             android:orientation="horizontal">
 
             <ListView
@@ -201,10 +201,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:paddingStart="18dp"
-                android:paddingEnd="18dp"
+                android:layoutDirection="rtl"
+                android:paddingEnd="10dp"
                 android:paddingTop="15dp"
                 android:paddingBottom="15dp"
+                android:background="@drawable/nui_lists_events_panel"
                 />
 
 

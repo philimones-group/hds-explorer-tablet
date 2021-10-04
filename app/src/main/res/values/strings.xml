@@ -119,6 +119,8 @@
     <string name="core_entity_updated_date_lbl">Updated Date:</string>
     <string name="core_entity_uploaded_date_lbl">Uploaded Date:</string>
 
+    <string name="core_form_group_item_subtitle">Collected Forms</string>
+
     <!-- SplashScreen -->
     <string name="splashscreen_hds_explorer_name_1">Health and Demographics</string>
     <string name="splashscreen_hds_explorer_name_2">Surveyllance Data Explorer</string>
@@ -478,6 +480,5 @@
     <string name="visitReason_newhouse">New Household Registration</string>
     <string name="visitReason_dataclean">Data Cleaning</string>
     <string name="visitReason_other">Other</string>
-
 
 </resources>

@@ -17,6 +17,8 @@ import org.philimone.hds.explorer.model.Member;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.annotation.LayoutRes;
+
 /**
  * Created by paul on 6/6/16.
  */
@@ -26,10 +28,11 @@ public class MemberArrayAdapter  extends ArrayAdapter<Member> {
     private List<Boolean> supervisedMembers;
     private List<String> extras;
     private Context mContext;
-    private int layoutResId;
+    private @LayoutRes int layoutResId;
     private int selectedIndex = -1;
     private boolean ignoreHeadOfHousehold = false;
     private boolean showHouseholdAndCode = false;
+    private boolean showHouseholdHead = true;
     private MemberIcon memberIcon;
 
     public enum MemberIcon {NORMAL_MEMBER_ICON, NORMAL_HEAD_ICON, NORMAL_SECHEAD_ICON, NORMAL_MEMBER_NEW_ICON, NORMAL_HEAD_NEW_ICON}
@@ -47,6 +50,16 @@ public class MemberArrayAdapter  extends ArrayAdapter<Member> {
         this.mContext = context;
         this.layoutResId = R.layout.member_item_xtra;
     }
+
+    public MemberArrayAdapter(Context context, @LayoutRes int layoutResId, List<Member> objects){
+        super(context, R.layout.member_item, objects);
+
+        this.members = new ArrayList<>();
+        this.members.addAll(objects);
+        this.mContext = context;
+        this.layoutResId = layoutResId;
+    }
+
 
     /**
      * Adapter of a List View Item for members (name, perm-id, and a check box are displayed)
@@ -131,6 +144,10 @@ public class MemberArrayAdapter  extends ArrayAdapter<Member> {
 
     public void setIgnoreHeadOfHousehold(boolean ignoreHeadOfHousehold) {
         this.ignoreHeadOfHousehold = ignoreHeadOfHousehold;
+    }
+
+    public void setShowHouseholdHead(boolean showHouseholdHead) {
+        this.showHouseholdHead = showHouseholdHead;
     }
 
     public void setMemberIcon(MemberIcon memberIcon) {
@@ -221,6 +238,8 @@ public class MemberArrayAdapter  extends ArrayAdapter<Member> {
             txtCode.setTextColor(colorA);
             if (txtExtra!=null) txtExtra.setTextColor(colorA);
         }
+
+        txtExtra.setVisibility(showHouseholdHead ? View.VISIBLE : View.GONE);
 
         return rowView;
     }

@@ -10,7 +10,7 @@
     <ImageView
         android:id="@+id/iconView"
         android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_height="50dp"
         android:layout_gravity="center"
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
@@ -31,7 +31,7 @@
             android:gravity="left|center_horizontal"
             android:text="Large Text"
             android:singleLine="true"
-            android:textSize="@dimen/member_item_text_1_size"
+            android:textSize="15sp"
             android:textStyle="bold"
             android:textColor="@color/nui_member_item_textcolor" />
         

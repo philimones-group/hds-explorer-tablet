@@ -116,9 +116,9 @@ public class CirclePercentageBar extends LinearLayout {
             this.txtPercentageValue.setText(displayPercentageValue+"");
         }
 
-        Log.d("text-size", ""+displayTextSize);
-        Log.d("text-color", ""+displayTextColor);
-        Log.d("circ-color", ""+displayCircleColor);
+        //Log.d("text-size", ""+displayTextSize);
+        //Log.d("text-color", ""+displayTextColor);
+        //Log.d("circ-color", ""+displayCircleColor);
     }
 
     public int getValue() {
@@ -146,7 +146,7 @@ public class CirclePercentageBar extends LinearLayout {
     }
 
     private void calcPercentageByValues() {
-        this.percentageValue = value/maxValue;
+        this.percentageValue = (maxValue==0) ? 0 : value/maxValue;
         this.progressBar.setProgress(this.percentageValue);
         updateViews();
     }
@@ -156,12 +156,15 @@ public class CirclePercentageBar extends LinearLayout {
     }
 
     private void updatePercentageValue(){
+
+        if (txtPercentageValue == null) return;
+
         if (displayType==DisplayType.PERCENTAGE){
             this.txtPercentageValue.setText(percentageValue+"%");
         }else if (displayType == DisplayType.FRACTION){
             this.txtPercentageValue.setText(value+"/"+maxValue);
         } else {
-            this.txtPercentageValue.setText(value);
+            this.txtPercentageValue.setText(value+"");
         }
     }
 

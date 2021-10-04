@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/MainLinearLayout"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:layoutDirection="ltr"
+    android:orientation="horizontal" >
+
+    <ImageView
+        android:id="@+id/groupItemIcon"
+        android:layout_width="40dp"
+        android:layout_height="50dp"
+        android:layout_gravity="left|center"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="5dp"
+        android:src="@mipmap/nui_lists_members_white_icon" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="0dp"
+        android:layout_marginBottom="0dp"
+        android:layout_marginRight="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/txtGroupTitle"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center|left"
+            android:paddingEnd="25dp"
+            android:gravity="left|center_horizontal"
+            android:text="Large Text"
+            android:singleLine="true"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:textColor="@color/nui_member_item_textcolor" />
+
+        <TextView
+            android:id="@+id/txtGroupSubtitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingEnd="25dp"
+            android:text="Medium Text"
+            android:textSize="11sp"
+            android:textColor="@color/nui_member_item_textcolor" />
+
+        
+    </LinearLayout>
+
+    <org.philimone.hds.explorer.widget.CirclePercentageBar
+        xmlns:androidx="http://schemas.android.com/apk/res/org.philimone.hds.explorer"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginLeft="3dp"
+        android:layout_marginRight="5dp"
+        android:layout_gravity="center"
+        android:layout_weight="0"
+        android:focusable="false"
+        androidx:displayTextType="units"
+        androidx:displayTextSize="12"
+        androidx:displayTextColor="@color/nui_color_circle_color_one"
+        androidx:displayCircleColor="@color/nui_color_circle_color_two"
+        androidx:displayPercentageValue="0"
+        android:visibility="gone"
+        android:id="@+id/pbarChildsItem"/>
+
+</LinearLayout>

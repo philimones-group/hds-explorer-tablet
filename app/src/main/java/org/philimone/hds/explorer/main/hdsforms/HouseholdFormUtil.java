@@ -163,6 +163,7 @@ public class HouseholdFormUtil implements FormCollectionListener {
         long entityId = boxHouseholds.put(household);
 
         CoreCollectedData collectedData = new CoreCollectedData();
+        //collectedData.visitId = visit.id; //will be updated when visit is created
         collectedData.formEntity = CoreFormEntity.HOUSEHOLD;
         collectedData.formEntityId = entityId;
         collectedData.formEntityCode = household.code;

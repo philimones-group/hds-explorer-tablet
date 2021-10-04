@@ -19,6 +19,9 @@ import androidx.viewpager2.adapter.FragmentStateAdapter;
 public class HouseholdDetailsFragmentAdapter extends FragmentStateAdapter {
 
     private final List<Fragment> fragments = new ArrayList<>();
+    private HouseholdMembersFragment fragMembers;
+    private CollectedDataFragment fragCollected;
+    private ExternalDatasetsFragment fragDatasets;
     private Household household;
     private User user;
     private List<FormDataLoader> formDataLoaders;
@@ -36,9 +39,9 @@ public class HouseholdDetailsFragmentAdapter extends FragmentStateAdapter {
     public Fragment createFragment(int position) {
 
         switch (position) {
-            case 0: return HouseholdMembersFragment.newInstance(this.household, this.user);
-            case 1: return CollectedDataFragment.newInstance(this.household, this.user, this.formDataLoaders);
-            case 2: return ExternalDatasetsFragment.newInstance(this.household);
+            case 0: this.fragMembers = HouseholdMembersFragment.newInstance(this.household, this.user); return this.fragMembers;
+            case 1: this.fragCollected = CollectedDataFragment.newInstance(this.household, this.user, this.formDataLoaders); return this.fragCollected;
+            case 2: this.fragDatasets = ExternalDatasetsFragment.newInstance(this.household); return this.fragDatasets;
             default: return null;
         }
 

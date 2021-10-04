@@ -19,6 +19,8 @@ public class CoreCollectedData {
     @Convert(converter = CoreFormEntityConverter.class, dbType = String.class)
     public CoreFormEntity formEntity;
 
+    public long visitId;
+
     public long formEntityId;
 
     public String formEntityCode;

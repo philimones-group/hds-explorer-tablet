@@ -10,6 +10,7 @@ import org.philimone.hds.explorer.database.Queries;
 import org.philimone.hds.explorer.fragment.MemberFilterDialog;
 import org.philimone.hds.explorer.model.ApplicationParam;
 import org.philimone.hds.explorer.model.CoreCollectedData;
+import org.philimone.hds.explorer.model.CoreCollectedData_;
 import org.philimone.hds.explorer.model.Household;
 import org.philimone.hds.explorer.model.Household_;
 import org.philimone.hds.explorer.model.Member;
@@ -259,6 +260,7 @@ public class VisitFormUtil implements FormCollectionListener {
         long entityId = boxVisits.put(visit);
 
         CoreCollectedData collectedData = new CoreCollectedData();
+        collectedData.visitId = visit.id;
         collectedData.formEntity = CoreFormEntity.VISIT;
         collectedData.formEntityId = entityId;
         collectedData.formEntityCode = visit.code;
@@ -269,10 +271,27 @@ public class VisitFormUtil implements FormCollectionListener {
 
         boxCoreCollectedData.put(collectedData);
 
+        updateNewHouseholdCoreCollectedData(visit);
+
         if (listener != null) {
             listener.onNewVisitCreated(visit);
         }
 
+    }
+
+    private void updateNewHouseholdCoreCollectedData(Visit visit) {
+        if (newHouseholdCreated) {
+            CoreCollectedData coreData = boxCoreCollectedData.query().equal(CoreCollectedData_.formEntityCode, household.code).and()
+                                                                     .equal(CoreCollectedData_.formEntity, CoreFormEntity.HOUSEHOLD.code).build().findFirst();
+
+            Log.d("found household", "core: "+coreData);
+
+            //update household with visit
+            if (coreData != null) {
+                coreData.visitId = visit.id;
+                boxCoreCollectedData.put(coreData);
+            }
+        }
     }
 
     public void onFormCancelled(){

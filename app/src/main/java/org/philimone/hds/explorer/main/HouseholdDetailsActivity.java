@@ -39,7 +39,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
 import androidx.viewpager2.widget.ViewPager2;
 import io.objectbox.Box;
 import io.objectbox.query.QueryBuilder;
@@ -74,10 +73,9 @@ public class HouseholdDetailsActivity extends AppCompatActivity {
     private RelativeLayout mainPanelTabsLayout;
     private LinearLayout mainPanelVisitLayout;
 
-    private HouseholdMembersFragment householdMembersFragment;
     private HouseholdVisitFragment householdVisitFragment;
-    private CollectedDataFragment collectedDataFragment;
-    private ExternalDatasetsFragment householdDatasetsFragment;
+
+    private HouseholdDetailsFragmentAdapter fragmentAdapter;
 
     private Region region;
     private Household household;
@@ -94,7 +92,7 @@ public class HouseholdDetailsActivity extends AppCompatActivity {
 
     private Integer requestCode;
 
-    private HouseholdDetailsMode hdetailsMode = HouseholdDetailsMode.NORMAL_MODE;
+    private HouseholdDetailsMode hdetailsMode;
     private boolean loadNewHousehold = false;
 
     @Override
@@ -104,16 +102,20 @@ public class HouseholdDetailsActivity extends AppCompatActivity {
 
         readIntentData();
 
-        initModes();
         initBoxes();
         initialize();
+    }
 
-        this.loadNewHousehold = hdetailsMode==HouseholdDetailsMode.NEW_HOUSEHOLD_MODE; //Will be true only once
+    @Override
+    protected void onResume() {
+        super.onResume();
     }
 
     @Override
     protected void onPostResume() {
         super.onPostResume();
+
+        initModes();
 
         //if its the first time - load HForm Household
         if (this.loadNewHousehold==true){
@@ -157,16 +159,16 @@ public class HouseholdDetailsActivity extends AppCompatActivity {
 
     private void initModes() {
         if (requestCode == null) {
-            this.hdetailsMode = HouseholdDetailsMode.NORMAL_MODE;
+            setHouseholdMode();
             return;
         }
 
         if (requestCode == RequestCodes.HOUSEHOLD_DETAILS_FROM_HFILTER_NEW_HOUSEHOLD) {
-            this.hdetailsMode = HouseholdDetailsMode.NEW_HOUSEHOLD_MODE;
+            setNewHouseholdMode();
         }
 
         if (requestCode == RequestCodes.HOUSEHOLD_DETAILS_FROM_TRACKING_LIST_DETAILS) {
-            this.hdetailsMode = HouseholdDetailsMode.TRACKING_MODE;
+            setTrackingMode();
         }
     }
 
@@ -240,7 +242,6 @@ public class HouseholdDetailsActivity extends AppCompatActivity {
             onOpenVisitClicked();
         });
 
-        //householdDetailsTabViewPager.setOnPaddLayoutChangeListener((View.OnLayoutChangeListener) new TabLayout.TabLayoutOnPageChangeListener(householdDetailsTabLayout));
         householdDetailsTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
@@ -258,40 +259,7 @@ public class HouseholdDetailsActivity extends AppCompatActivity {
             }
         });
 
-        initFragments();
-
-        showHouseholdData();
-
-        enableButtonsByFormLoaders();
-        enableButtonsByIntentData();
-        enableLayoutsByHouseholdMode();
-    }
-
-    private void onCreateVisitClicked() {
-
-        //New Visit
-        DialogFactory.createMessageInfo(this, "", "A Visit Form will be opened now", clickedButton -> {
-            createNewVisit(false);
-        }).show();
-    }
-
-    private void onFinishVisitClicked() {
-        Log.d("finishing","visit");
-        DialogFactory.createMessageInfo(this, "", "Finishing current Visit, comeback later", clickedButton -> {
-            closeCurrentVisit();
-        }).show();
-    }
-
-    private void onOpenVisitClicked() {
-        openPreviousVisit();
-    }
-
-    private void onCollectDataClicked(){
-
-        this.householdDetailsTabViewPager.setCurrentItem(1, true);
-
-        //Go to HouseholdFormsFragment and call this action
-        this.collectedDataFragment.onCollectData();
+        initializeButtons();
     }
 
     private void initFragments() {
@@ -304,9 +272,9 @@ public class HouseholdDetailsActivity extends AppCompatActivity {
         //list.add(householdDatasetsFragment);
         //list.add(collectedDataFragment);
 
-        if (household != null) {
-            HouseholdDetailsFragmentAdapter adapter = new HouseholdDetailsFragmentAdapter(this.getSupportFragmentManager(), this.getLifecycle(), household, loggedUser, formDataLoaders);
-            householdDetailsTabViewPager.setAdapter(adapter);
+        if (household != null && fragmentAdapter == null) {
+            fragmentAdapter = new HouseholdDetailsFragmentAdapter(this.getSupportFragmentManager(), this.getLifecycle(), household, loggedUser, formDataLoaders);
+            householdDetailsTabViewPager.setAdapter(fragmentAdapter);
             //this will create all fragments
             householdDetailsTabViewPager.setOffscreenPageLimit(3);
         }
@@ -314,12 +282,7 @@ public class HouseholdDetailsActivity extends AppCompatActivity {
 
     }
 
-    private void enableButtonsByFormLoaders() {
-        boolean hasForms = this.formDataLoaders.size()>0;
-        this.btHouseDetailsCollectData.setEnabled(hasForms);
-    }
-
-    private void enableButtonsByIntentData() {
+    private void initializeButtons() {
         Object item = getIntent().getExtras().get("enable-collect-data");
 
         Boolean enaColData = (item==null) ? null : (boolean)item;
@@ -327,78 +290,12 @@ public class HouseholdDetailsActivity extends AppCompatActivity {
         if (enaColData != null){
             this.btHouseDetailsCollectData.setEnabled(enaColData.booleanValue());
         }
+
+        boolean hasForms = this.formDataLoaders.size()>0;
+        this.btHouseDetailsCollectData.setEnabled(hasForms);
     }
 
-    private boolean hasRecentlyCreatedVisit() {
-        Visit lastVisit = null;
-
-        if (household != null) {
-            lastVisit = this.boxVisits.query().equal(Visit_.householdCode, household.code).order(Visit_.visitDate, QueryBuilder.DESCENDING).build().findFirst();
-        }
-
-        return lastVisit != null && lastVisit.recentlyCreated;
-    }
-
-    private void enableLayoutsByHouseholdMode() {
-
-        boolean recentlyCreatedVisit = hasRecentlyCreatedVisit();
-
-        if (hdetailsMode == HouseholdDetailsMode.NORMAL_MODE) {
-            btHouseDetailsCreateVisit.setEnabled(true);
-            btHouseDetailsFinishVisit.setEnabled(false);
-            btHouseDetailsOpenVisit.setEnabled(recentlyCreatedVisit);
-
-            btHouseDetailsCreateVisit.setVisibility(View.VISIBLE);
-            btHouseDetailsFinishVisit.setVisibility(View.GONE);
-            btHouseDetailsOpenVisit.setVisibility(recentlyCreatedVisit ? View.VISIBLE : View.GONE);
-
-            mainPanelTabsLayout.setVisibility(View.VISIBLE);
-            mainPanelVisitLayout.setVisibility(View.GONE);
-        }
-
-        if (hdetailsMode == HouseholdDetailsMode.VISIT_MODE) {
-            btHouseDetailsCreateVisit.setEnabled(false);
-            btHouseDetailsFinishVisit.setEnabled(true);
-            btHouseDetailsOpenVisit.setEnabled(false);
-
-            btHouseDetailsCreateVisit.setVisibility(View.GONE);
-            btHouseDetailsFinishVisit.setVisibility(View.VISIBLE);
-            btHouseDetailsOpenVisit.setVisibility(View.GONE);
-
-            mainPanelTabsLayout.setVisibility(View.GONE);
-            mainPanelVisitLayout.setVisibility(View.VISIBLE);
-        }
-
-        if (hdetailsMode == HouseholdDetailsMode.NEW_HOUSEHOLD_MODE) {
-            btHouseDetailsCreateVisit.setEnabled(false);
-            btHouseDetailsFinishVisit.setEnabled(true);
-            btHouseDetailsOpenVisit.setEnabled(false);
-
-            btHouseDetailsCreateVisit.setVisibility(View.GONE);
-            btHouseDetailsFinishVisit.setVisibility(View.VISIBLE);
-            btHouseDetailsOpenVisit.setVisibility(View.GONE);
-
-            mainPanelTabsLayout.setVisibility(View.GONE);
-            mainPanelVisitLayout.setVisibility(View.VISIBLE);
-        }
-
-        if (hdetailsMode == HouseholdDetailsMode.TRACKING_MODE) {
-            btHouseDetailsCreateVisit.setEnabled(false);
-            btHouseDetailsFinishVisit.setEnabled(false);
-            btHouseDetailsOpenVisit.setEnabled(false);
-
-            btHouseDetailsCreateVisit.setVisibility(View.GONE);
-            btHouseDetailsFinishVisit.setVisibility(View.GONE);
-            btHouseDetailsOpenVisit.setVisibility(View.GONE);
-
-            mainPanelTabsLayout.setVisibility(View.VISIBLE);
-            mainPanelVisitLayout.setVisibility(View.GONE);
-        }
-
-
-    }
-
-    private void showHouseholdData(){
+    private void displayHouseholdDetails(){
 
         if (household == null) return;
 
@@ -450,6 +347,116 @@ public class HouseholdDetailsActivity extends AppCompatActivity {
         return false;
     }
 
+    private void onCreateVisitClicked() {
+        loadNewVisitForm(false);
+    }
+
+    private void onFinishVisitClicked() {
+        Log.d("finishing","visit");
+        DialogFactory.createMessageInfo(this, "", "Finishing current Visit, comeback later", clickedButton -> {
+            closeCurrentVisit();
+        }).show();
+    }
+
+    private void onOpenVisitClicked() {
+        openPreviousVisit();
+    }
+
+    private void onCollectDataClicked(){
+
+        this.householdDetailsTabViewPager.setCurrentItem(1, true);
+
+        //Go to HouseholdFormsFragment and call this action
+        //this.collectedDataFragment.onCollectData();
+
+    }
+
+    private boolean hasRecentlyCreatedVisit() {
+        Visit lastVisit = null;
+
+        if (household != null) {
+            lastVisit = this.boxVisits.query().equal(Visit_.householdCode, household.code).order(Visit_.visitDate, QueryBuilder.DESCENDING).build().findFirst();
+        }
+
+        return lastVisit != null && lastVisit.recentlyCreated;
+    }
+
+    private void setHouseholdMode(){
+        this.hdetailsMode = HouseholdDetailsMode.NORMAL_MODE;
+        boolean recentlyCreatedVisit = hasRecentlyCreatedVisit();
+
+        btHouseDetailsCreateVisit.setEnabled(true);
+        btHouseDetailsFinishVisit.setEnabled(false);
+        btHouseDetailsOpenVisit.setEnabled(recentlyCreatedVisit);
+
+        btHouseDetailsCreateVisit.setVisibility(View.VISIBLE);
+        btHouseDetailsFinishVisit.setVisibility(View.GONE);
+        btHouseDetailsOpenVisit.setVisibility(recentlyCreatedVisit ? View.VISIBLE : View.GONE);
+
+        mainPanelTabsLayout.setVisibility(View.VISIBLE);
+        mainPanelVisitLayout.setVisibility(View.GONE);
+
+        displayHouseholdDetails();
+        initFragments();
+    }
+
+    private void setVisitMode(){
+        this.hdetailsMode = HouseholdDetailsMode.VISIT_MODE;
+
+        btHouseDetailsCreateVisit.setEnabled(false);
+        btHouseDetailsFinishVisit.setEnabled(true);
+        btHouseDetailsOpenVisit.setEnabled(false);
+
+        btHouseDetailsCreateVisit.setVisibility(View.GONE);
+        btHouseDetailsFinishVisit.setVisibility(View.VISIBLE);
+        btHouseDetailsOpenVisit.setVisibility(View.GONE);
+
+        mainPanelTabsLayout.setVisibility(View.GONE);
+        mainPanelVisitLayout.setVisibility(View.VISIBLE);
+
+        displayHouseholdDetails();
+
+        //load visit fragment
+        if (this.householdVisitFragment != null) {
+            this.householdVisitFragment.load(household, visit, loggedUser);
+        }
+
+    }
+
+    private void setNewHouseholdMode(){
+        this.hdetailsMode = HouseholdDetailsMode.NEW_HOUSEHOLD_MODE;
+        this.loadNewHousehold = true;
+
+        btHouseDetailsCreateVisit.setEnabled(false);
+        btHouseDetailsFinishVisit.setEnabled(true);
+        btHouseDetailsOpenVisit.setEnabled(false);
+
+        btHouseDetailsCreateVisit.setVisibility(View.GONE);
+        btHouseDetailsFinishVisit.setVisibility(View.VISIBLE);
+        btHouseDetailsOpenVisit.setVisibility(View.GONE);
+
+        mainPanelTabsLayout.setVisibility(View.GONE);
+        mainPanelVisitLayout.setVisibility(View.VISIBLE);
+    }
+
+    private void setTrackingMode(){
+        this.hdetailsMode = HouseholdDetailsMode.NORMAL_MODE;
+
+        btHouseDetailsCreateVisit.setEnabled(false);
+        btHouseDetailsFinishVisit.setEnabled(false);
+        btHouseDetailsOpenVisit.setEnabled(false);
+
+        btHouseDetailsCreateVisit.setVisibility(View.GONE);
+        btHouseDetailsFinishVisit.setVisibility(View.GONE);
+        btHouseDetailsOpenVisit.setVisibility(View.GONE);
+
+        mainPanelTabsLayout.setVisibility(View.VISIBLE);
+        mainPanelVisitLayout.setVisibility(View.GONE);
+
+        displayHouseholdDetails();
+        initFragments();
+    }
+
     private void createNewHousehold(){
         //load new Household HDS-Form and save it
         if (this.region != null) {
@@ -459,66 +466,25 @@ public class HouseholdDetailsActivity extends AppCompatActivity {
         }
     }
 
-    private void createNewVisit(boolean newHouseholdCreated){
-
-        VisitFormUtil visitFormUtil = new VisitFormUtil(this.getSupportFragmentManager(), this, this.household, newHouseholdCreated, new VisitFormUtil.Listener() {
-            @Override
-            public void onNewVisitCreated(Visit visit) {
-                hdetailsMode = HouseholdDetailsMode.VISIT_MODE;
-                showHouseholdData();
-                enableLayoutsByHouseholdMode();
-
-                HouseholdDetailsActivity.this.visit = visit;
-            }
-
-            @Override
-            public void onVisitEdited(Visit visit) {
-
-            }
-
-            @Override
-            public void onFormCancelled() {
-                HouseholdDetailsActivity.this.visit = null;
-            }
-        });
-
-        visitFormUtil.collect();
-    }
-
     private void closeCurrentVisit() {
-
         //close visit methods
-
-        if (hdetailsMode == HouseholdDetailsMode.NEW_HOUSEHOLD_MODE) {
-
-        }
-
-        hdetailsMode =  HouseholdDetailsMode.NORMAL_MODE;
-
         this.visit = null;
 
-        showHouseholdData();
-        enableLayoutsByHouseholdMode();
+        setHouseholdMode();
     }
 
     private void openPreviousVisit() {
-        hdetailsMode = HouseholdDetailsMode.VISIT_MODE;
-
-        //TODO YET
-
-        showHouseholdData();
-        enableLayoutsByHouseholdMode();
+        setVisitMode();
     }
 
-    /* Household forn */
-    void loadNewHouseholdForm(){
+    /* Household Form */
+    private void loadNewHouseholdForm(){
 
         HouseholdFormUtil householdForm = new HouseholdFormUtil(this.getSupportFragmentManager(), this, this.region, new HouseholdFormUtil.Listener() {
             @Override
             public void onNewHouseholdCreated(Household household) {
                 HouseholdDetailsActivity.this.household = household;
-                initFragments();
-                createNewVisit(true);
+                loadNewVisitForm(true);
             }
 
             @Override
@@ -536,5 +502,28 @@ public class HouseholdDetailsActivity extends AppCompatActivity {
 
     }
 
+    /* Visit Form */
+    private void loadNewVisitForm(boolean newHouseholdCreated){
+
+        VisitFormUtil visitFormUtil = new VisitFormUtil(this.getSupportFragmentManager(), this, this.household, newHouseholdCreated, new VisitFormUtil.Listener() {
+            @Override
+            public void onNewVisitCreated(Visit visit) {
+                HouseholdDetailsActivity.this.visit = visit;
+                setVisitMode();
+            }
+
+            @Override
+            public void onVisitEdited(Visit visit) {
+
+            }
+
+            @Override
+            public void onFormCancelled() {
+                HouseholdDetailsActivity.this.visit = null;
+            }
+        });
+
+        visitFormUtil.collect();
+    }
 
 }

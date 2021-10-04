@@ -1784,7 +1784,7 @@
     },
     {
       "id": "23:4611124115189785343",
-      "lastPropertyId": "17:7786303754416715605",
+      "lastPropertyId": "18:6272219543731895396",
       "name": "CoreCollectedData",
       "properties": [
         {
@@ -1857,6 +1857,12 @@
           "id": "17:7786303754416715605",
           "name": "formEntityName",
           "type": 9
+        },
+        {
+          "id": "18:6272219543731895396",
+          "name": "visitId",
+          "type": 6,
+          "flags": 4
         }
       ],
       "relations": []

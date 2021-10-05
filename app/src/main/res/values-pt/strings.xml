@@ -252,6 +252,9 @@
     <string name="household_details_bt_finish_visit_lbl">Terminar Visita</string>
     <string name="household_details_bt_open_visit_lbl">Reabrir Visita</string>
 
+    <string name="household_details_visit_panel_lbl">Visita a casa</string>
+    <string name="household_details_visit_not_closed_lbl">Termine a visita antes de sair do painel de detalhes da casa</string>
+
     <string name="household_visit_bt_enum_lbl">Registo de\nNovo Membro</string>
     <string name="household_visit_bt_birth_lbl">Registar\nNascimento</string>
     <string name="household_visit_bt_pregnancy_lbl">Registar\nGravidez</string>

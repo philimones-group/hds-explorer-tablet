@@ -104,18 +104,12 @@ public class HouseholdDetailsActivity extends AppCompatActivity {
 
         initBoxes();
         initialize();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
+        initModes();
     }
 
     @Override
     protected void onPostResume() {
         super.onPostResume();
-
-        initModes();
 
         //if its the first time - load HForm Household
         if (this.loadNewHousehold==true){
@@ -125,8 +119,17 @@ public class HouseholdDetailsActivity extends AppCompatActivity {
         this.loadNewHousehold = false; //on other resumes will not load new household
     }
 
-    private void readIntentData() {
+    @Override
+    public void onBackPressed() {
+        if (visit != null) {
+            //close visit first
+            DialogFactory.createMessageInfo(this, getString(R.string.household_details_visit_panel_lbl), getString(R.string.household_details_visit_not_closed_lbl)).show();
+        } else {
+            super.onBackPressed();
+        }
+    }
 
+    private void readIntentData() {
 
         this.loggedUser = Bootstrap.getCurrentUser();
 
@@ -158,7 +161,7 @@ public class HouseholdDetailsActivity extends AppCompatActivity {
     }
 
     private void initModes() {
-        if (requestCode == null) {
+        if (requestCode == null || requestCode == 0) {
             setHouseholdMode();
             return;
         }

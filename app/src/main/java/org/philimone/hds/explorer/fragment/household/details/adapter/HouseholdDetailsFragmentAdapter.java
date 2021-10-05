@@ -40,8 +40,8 @@ public class HouseholdDetailsFragmentAdapter extends FragmentStateAdapter {
 
         switch (position) {
             case 0: this.fragMembers = HouseholdMembersFragment.newInstance(this.household, this.user); return this.fragMembers;
-            case 1: this.fragCollected = CollectedDataFragment.newInstance(this.household, this.user, this.formDataLoaders); return this.fragCollected;
-            case 2: this.fragDatasets = ExternalDatasetsFragment.newInstance(this.household); return this.fragDatasets;
+            case 1: this.fragDatasets = ExternalDatasetsFragment.newInstance(this.household); return this.fragDatasets;
+            case 2: this.fragCollected = CollectedDataFragment.newInstance(this.household, this.user, this.formDataLoaders); return this.fragCollected;
             default: return null;
         }
 

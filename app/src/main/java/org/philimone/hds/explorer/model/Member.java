@@ -43,7 +43,7 @@ public class Member implements FormSubject, Serializable {
     @Convert(converter = GenderConverter.class, dbType = String.class)
     public Gender gender;
 
-    public String dob;
+    public Date dob;
     public int age;
     public int ageAtDeath;
 
@@ -72,18 +72,18 @@ public class Member implements FormSubject, Serializable {
     @Index
     @Convert(converter = ResidencyStartTypeConverter.class, dbType = String.class)
     public ResidencyStartType startType;
-    public String startDate;
+    public Date startDate;
 
     @Index
     @Convert(converter = ResidencyEndTypeConverter.class, dbType = String.class)
     public ResidencyEndType endType;
-    public String endDate;
+    public Date endDate;
 
     @Index
     public String entryHousehold;
     @Convert(converter = ResidencyStartTypeConverter.class, dbType = String.class)
     public ResidencyStartType entryType;
-    public String entryDate;
+    public Date entryDate;
 
     @Index
     @Convert(converter = HeadRelationshipTypeConverter.class, dbType = String.class)
@@ -150,15 +150,11 @@ public class Member implements FormSubject, Serializable {
         this.gender = gender;
     }
 
-    public String getDob() {
+    public Date getDob() {
         return dob;
     }
 
-    public Date getDobDate(){
-        return StringUtil.toDate(dob, "yyyy-MM-dd");
-    }
-
-    public void setDob(String dob) {
+    public void setDob(Date dob) {
         this.dob = dob;
     }
 
@@ -234,11 +230,11 @@ public class Member implements FormSubject, Serializable {
         this.startType = startType;
     }
 
-    public String getStartDate() {
+    public Date getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(String startDate) {
+    public void setStartDate(Date startDate) {
         this.startDate = startDate;
     }
 
@@ -250,12 +246,12 @@ public class Member implements FormSubject, Serializable {
         this.endType = endType;
     }
 
-    public String getEndDate() {
+    public Date getEndDate() {
         return endDate;
     }
 
-    public void setEndDate(String endDate) {
-        this.endDate = endDate ==null ? "" : endDate;
+    public void setEndDate(Date endDate) {
+        this.endDate = endDate;
     }
 
     public Double getGpsAccuracy() {
@@ -362,11 +358,11 @@ public class Member implements FormSubject, Serializable {
         this.entryType = entryType;
     }
 
-    public String getEntryDate() {
+    public Date getEntryDate() {
         return entryDate;
     }
 
-    public void setEntryDate(String entryDate) {
+    public void setEntryDate(Date entryDate) {
         this.entryDate = entryDate;
     }
 
@@ -423,7 +419,7 @@ public class Member implements FormSubject, Serializable {
         member.code = "";
         member.name = "";
         member.gender = Gender.MALE;
-        member.dob = "";
+        member.dob = null;
         member.age = 0;
         member.ageAtDeath = 0;
 
@@ -439,9 +435,9 @@ public class Member implements FormSubject, Serializable {
         member.householdCode = "";
         member.householdName = "";
         member.startType = null;
-        member.startDate = "";
+        member.startDate = null;
         member.endType = null;
-        member.endDate = "";
+        member.endDate = null;
 
         member.entryHousehold = "";
         member.entryType = null;
@@ -462,6 +458,10 @@ public class Member implements FormSubject, Serializable {
 
 
         return member;
+    }
+
+    public boolean isUnknownIndividual(){
+        return code.equals("UNK");
     }
 
     public static Member getUnknownIndividual(){

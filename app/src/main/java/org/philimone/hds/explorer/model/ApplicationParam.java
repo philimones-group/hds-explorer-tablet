@@ -16,6 +16,12 @@ public class ApplicationParam {
     public static final String REDCAP_URL = "redcap-url";
     public static final String HFORM_POST_EXECUTION = "hds-execute-on-upload";
     public static final String LOGGED_USER = "logged-user";
+    public static final String PARAMS_TRACKLIST_MAX_DATA_COLUMNS = "hds.explorer.trackinglists.max_data_columns";
+    public static final String PARAMS_GENDER_CHECKING = "hds.explorer.constraints.gender.checking";
+    public static final String PARAMS_MIN_AGE_OF_FATHER = "hds.explorer.constraints.father.age.min";
+    public static final String PARAMS_MIN_AGE_OF_MOTHER = "hds.explorer.constraints.mother.age.min";
+    public static final String PARAMS_MIN_AGE_OF_HEAD   = "hds.explorer.constraints.head.age.min";
+    public static final String PARAMS_MIN_AGE_OF_SPOUSE   = "hds.explorer.constraints.spouse.age.min";
 
     @Id
     private long id;

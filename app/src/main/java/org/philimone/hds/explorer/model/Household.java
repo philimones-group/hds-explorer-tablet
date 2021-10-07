@@ -269,6 +269,18 @@ public class Household implements FormSubject, Serializable {
         this.modules.addAll(modules);
     }
 
+    public void updateGpsCalculations(){
+        if (gpsLatitude != null) {
+            sinLatitude = Math.sin(gpsLatitude);
+            cosLatitude = Math.cos(gpsLatitude);
+        }
+
+        if (gpsLongitude != null) {
+            sinLongitude = Math.sin(gpsLongitude);
+            cosLongitude = Math.cos(gpsLongitude);
+        }
+    }
+
     public static Household getEmptyHousehold(){
         Household household = new Household();
         household.code = "";

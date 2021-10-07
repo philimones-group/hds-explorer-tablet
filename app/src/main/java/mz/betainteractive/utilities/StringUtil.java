@@ -304,6 +304,10 @@ public class StringUtil {
         }
     }
 
+    public static Date toDateYMD(String date){
+        return toDate(date, "yyyy-MM-dd");
+    }
+
     public static boolean isBlank(String value){
         return value==null || value.trim().isEmpty();
     }

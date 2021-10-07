@@ -1819,10 +1819,10 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
             parser.nextTag(); //process <dob>
             if (!isEmptyTag("dob", parser)) {
                 parser.next();
-                table.setDob(parser.getText());
+                table.dob = StringUtil.toDate(parser.getText(), "yyyy-MM-dd");
                 parser.nextTag(); //process </dob>
             }else{
-                table.setDob("");
+                table.dob = null;
                 parser.nextTag();
             }
 
@@ -1949,10 +1949,10 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
             parser.nextTag(); //process <startDate>
             if (!isEmptyTag("startDate", parser)) {
                 parser.next();
-                table.setStartDate(parser.getText());
+                table.startDate = StringUtil.toDateYMD(parser.getText());
                 parser.nextTag(); //process </startDate>
             }else{
-                table.setStartDate("");
+                table.startDate = null;
                 parser.nextTag();
             }
 
@@ -1971,11 +1971,11 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
                 parser.next();
 				//Log.d("note endDate", parser.getText() + ", " +parser.getPositionDescription());
 				if (parser.getText()!=null){
-					table.setEndDate(parser.getText());
+					table.endDate = StringUtil.toDateYMD(parser.getText());
 					parser.nextTag(); //process </endDate>
 				}
             }else{
-                table.setEndDate("");
+                table.endDate = null;
                 parser.nextTag();
                 //Log.d("e endDate", table.getEndDate());
             }
@@ -2013,11 +2013,11 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 				parser.next();
 				//Log.d("note entryDate", parser.getText() + ", " +parser.getPositionDescription());
 				if (parser.getText()!=null){
-					table.setEntryDate(parser.getText());
+					table.entryDate = StringUtil.toDateYMD(parser.getText());
 					parser.nextTag(); //process </entryDate>
 				}
 			}else{
-				table.setEntryDate("");
+				table.entryDate = null;
 				parser.nextTag();
 				//Log.d("e entryDate", table.getEntryDate());
 			}

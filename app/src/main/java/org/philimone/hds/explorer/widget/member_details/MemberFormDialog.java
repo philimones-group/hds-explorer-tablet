@@ -200,8 +200,8 @@ public class MemberFormDialog extends DialogFragment {
         member.setCode(txtNewMemCode.getText().toString());
         member.setName(txtNewMemName.getText().toString());
         member.setGender(chkNewMemGMale.isChecked() ? Gender.MALE : Gender.FEMALE);
-        member.setDob(StringUtil.format(GeneralUtil.getDate(dtpNewMemDob), "yyyy-MM-dd" ));
-        member.setAge(GeneralUtil.getAge(GeneralUtil.getDate(dtpNewMemDob)));
+        member.dob = GeneralUtil.getDate(dtpNewMemDob);
+        member.setAge(GeneralUtil.getAge(member.dob));
 
         member.setStartType(ResidencyStartType.ENUMERATION);
 
@@ -216,7 +216,7 @@ public class MemberFormDialog extends DialogFragment {
             txtNewMemName.requestFocus();
             return null;
         }
-        if (member.getDobDate().after(new Date())){
+        if (member.dob.after(new Date())){
             DialogFactory.createMessageInfo(getActivity(), R.string.info_lbl, R.string.member_list_newmem_dob_err_lbl).show();
             return null;
         }

@@ -31,7 +31,7 @@
             android:layout_height="match_parent"
             android:layout_marginLeft="10dp"
             android:gravity="center_vertical"
-            android:text="@string/new_member_dialog_title_lbl"
+            android:text="@string/new_member_title_lbl"
             android:textSize="18sp"
             android:textColor="@color/nui_color_text_red"
             android:textStyle="bold" />
@@ -277,7 +277,7 @@
             android:layout_marginLeft="10dp"
             android:textSize="@dimen/member_form_dialog_button_textsize"
             android:textStyle="bold"
-            android:text="@string/new_member_dialog_collect_lbl"
+            android:text="@string/new_member_collect_lbl"
             android:background="@drawable/nui_btnd_rone_dgbevel"/>
 
 

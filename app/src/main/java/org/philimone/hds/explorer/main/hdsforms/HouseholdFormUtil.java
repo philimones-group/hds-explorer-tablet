@@ -156,6 +156,7 @@ public class HouseholdFormUtil implements FormCollectionListener {
         household.gpsLongitude = gpsLon;
         household.gpsAltitude = gpsAlt;
         household.gpsAccuracy = gpsAcc;
+        household.updateGpsCalculations();
         household.recentlyCreated = true;
         household.recentlyCreatedUri = result.getFilename();
         household.modules.addAll(StringCollectionConverter.getCollectionFrom(colModules.getValue()));

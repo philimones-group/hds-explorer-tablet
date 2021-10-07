@@ -286,7 +286,7 @@
                     android:layout_marginLeft="10dp"
                     android:textSize="@dimen/member_form_dialog_button_textsize"
                     android:textStyle="bold"
-                    android:text="@string/new_member_dialog_collect_lbl"
+                    android:text="@string/new_member_collect_lbl"
                     android:background="@drawable/nui_btnd_rone_dgbevel"/>
 
 

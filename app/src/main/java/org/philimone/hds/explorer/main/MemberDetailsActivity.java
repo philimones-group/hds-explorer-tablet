@@ -40,6 +40,7 @@ import io.objectbox.Box;
 import mz.betainteractive.odk.FormUtilities;
 import mz.betainteractive.odk.listener.OdkFormResultListener;
 import mz.betainteractive.odk.model.FilledForm;
+import mz.betainteractive.utilities.StringUtil;
 
 public class MemberDetailsActivity extends AppCompatActivity implements OdkFormResultListener {
 
@@ -262,7 +263,7 @@ public class MemberDetailsActivity extends AppCompatActivity implements OdkFormR
         mbDetailsCode.setText(member.getCode());
         mbDetailsGender.setText(member.getGender().getId());
         mbDetailsAge.setText(member.getAge()+"");
-        mbDetailsDob.setText(member.getDob());
+        mbDetailsDob.setText(StringUtil.formatYMD(member.dob));
         mbDetailsHouseNo.setText(member.getHouseholdName());
         mbDetailsEndType.setText(getEndTypeMsg(member));
         mbDetailsEndDate.setText(getEndDateMsg(member));
@@ -358,10 +359,12 @@ public class MemberDetailsActivity extends AppCompatActivity implements OdkFormR
     }
 
     private String getEndDateMsg(Member member){
-        String date = member.getEndDate();
-        if (member.getEndType() == ResidencyEndType.NOT_APPLICABLE) return date = member.getStartDate();
+        Date date = member.getEndDate();
+        if (member.getEndType() == ResidencyEndType.NOT_APPLICABLE) {
+            date = member.getStartDate();
+        }
 
-        return member.getEndDate();
+        return StringUtil.formatYMD(date);
     }
 
     private String getParentName(String name){

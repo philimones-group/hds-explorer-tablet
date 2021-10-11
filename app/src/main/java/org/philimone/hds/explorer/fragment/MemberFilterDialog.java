@@ -1,6 +1,5 @@
 package org.philimone.hds.explorer.fragment;
 
-import androidx.annotation.StringRes;
 import androidx.fragment.app.DialogFragment;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -63,6 +62,8 @@ public class MemberFilterDialog extends DialogFragment {
     private Integer filterMaxAge;
     private boolean filterMaxAgeExclusive;
     private Integer filterStatus;
+
+    private boolean startSearchOnShow;
 
     public enum StatusFilter {
         EMPTY, IS_DEAD, OUTMIGRATED, RESIDENT
@@ -205,6 +206,16 @@ public class MemberFilterDialog extends DialogFragment {
         }
 
         initializeSpinners();
+
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        if (startSearchOnShow) {
+            onSearch();
+        }
     }
 
     private void initializeSpinners(){
@@ -295,6 +306,10 @@ public class MemberFilterDialog extends DialogFragment {
             case OUTMIGRATED: this.filterStatus = 2; break;
             case RESIDENT: this.filterStatus = 3; break;
         }
+    }
+
+    public void setStartSearchOnShow(boolean searchOnShow) {
+        this.startSearchOnShow = searchOnShow;
     }
 
     private void onMemberClicked(Member member){

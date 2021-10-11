@@ -11,7 +11,6 @@ import org.philimone.hds.explorer.fragment.MemberFilterDialog;
 import org.philimone.hds.explorer.model.ApplicationParam;
 import org.philimone.hds.explorer.model.ApplicationParam_;
 import org.philimone.hds.explorer.model.CoreCollectedData;
-import org.philimone.hds.explorer.model.CoreCollectedData_;
 import org.philimone.hds.explorer.model.HeadRelationship;
 import org.philimone.hds.explorer.model.Household;
 import org.philimone.hds.explorer.model.Member;
@@ -20,14 +19,11 @@ import org.philimone.hds.explorer.model.Residency;
 import org.philimone.hds.explorer.model.Residency_;
 import org.philimone.hds.explorer.model.User;
 import org.philimone.hds.explorer.model.Visit;
-import org.philimone.hds.explorer.model.Visit_;
 import org.philimone.hds.explorer.model.converters.StringCollectionConverter;
 import org.philimone.hds.explorer.model.enums.CoreFormEntity;
 import org.philimone.hds.explorer.model.enums.Gender;
 import org.philimone.hds.explorer.model.enums.HeadRelationshipType;
 import org.philimone.hds.explorer.model.enums.MaritalStatus;
-import org.philimone.hds.explorer.model.enums.VisitLocationItem;
-import org.philimone.hds.explorer.model.enums.VisitReason;
 import org.philimone.hds.explorer.model.enums.temporal.HeadRelationshipEndType;
 import org.philimone.hds.explorer.model.enums.temporal.HeadRelationshipStartType;
 import org.philimone.hds.explorer.model.enums.temporal.ResidencyEndType;
@@ -361,7 +357,7 @@ public class MemberEnumerationFormUtil implements FormCollectionListener {
 
         //save core collected data
         CoreCollectedData collectedData = new CoreCollectedData();
-        collectedData.visitId = member.id;
+        collectedData.visitId = visit.id;
         collectedData.formEntity = CoreFormEntity.MEMBER_ENU;
         collectedData.formEntityId = member.id;
         collectedData.formEntityCode = member.code;
@@ -453,6 +449,7 @@ public class MemberEnumerationFormUtil implements FormCollectionListener {
         dialog.setGenderMaleOnly();
         dialog.setFilterMinAge(12, true);
         dialog.setFilterHouseCode(household.getCode());
+        dialog.setStartSearchOnShow(true);
         dialog.show();
     }
 
@@ -468,6 +465,7 @@ public class MemberEnumerationFormUtil implements FormCollectionListener {
         dialog.setGenderFemaleOnly();
         dialog.setFilterMinAge(12, true);
         dialog.setFilterHouseCode(household.getCode());
+        dialog.setStartSearchOnShow(true);
         dialog.show();
     }
 

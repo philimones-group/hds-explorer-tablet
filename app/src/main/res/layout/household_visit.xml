@@ -185,16 +185,33 @@
             android:layout_height="match_parent"
             android:orientation="horizontal">
 
-            <ListView
-                android:id="@+id/lvHouseholdMembers"
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:paddingStart="18dp"
-                android:paddingEnd="18dp"
-                android:paddingTop="15dp"
-                android:paddingBottom="15dp"
-                />
+                android:layout_weight="1" >
+
+                <ListView
+                    android:id="@+id/lvHouseholdMembers"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:paddingStart="18dp"
+                    android:paddingEnd="18dp"
+                    android:paddingTop="15dp"
+                    android:paddingBottom="15dp"
+                    />
+
+                <Button
+                    android:id="@+id/btClearMember"
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginRight="8dp"
+                    android:background="@drawable/nui_btnd_back_two"
+                    android:text=""
+                    android:visibility="visible" />
+
+            </RelativeLayout>
 
             <ExpandableListView
                 android:id="@+id/elvVisitCollected"

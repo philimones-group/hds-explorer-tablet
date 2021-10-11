@@ -5,10 +5,10 @@ import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 import io.objectbox.Box;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ExpandableListView;
 import android.widget.ListView;
@@ -17,25 +17,22 @@ import org.philimone.hds.explorer.R;
 import org.philimone.hds.explorer.adapter.CoreCollectedExpandableAdapter;
 import org.philimone.hds.explorer.adapter.MemberArrayAdapter;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
+import org.philimone.hds.explorer.main.hdsforms.MemberEnumerationFormUtil;
 import org.philimone.hds.explorer.model.CollectedData;
 import org.philimone.hds.explorer.model.CoreCollectedData;
 import org.philimone.hds.explorer.model.CoreCollectedData_;
-import org.philimone.hds.explorer.model.Dataset;
 import org.philimone.hds.explorer.model.Form;
 import org.philimone.hds.explorer.model.Household;
 import org.philimone.hds.explorer.model.Member;
 import org.philimone.hds.explorer.model.Member_;
-import org.philimone.hds.explorer.model.Region;
 import org.philimone.hds.explorer.model.User;
 import org.philimone.hds.explorer.model.Visit;
 import org.philimone.hds.explorer.model.enums.CoreFormEntity;
 import org.philimone.hds.explorer.model.enums.Gender;
-import org.philimone.hds.explorer.widget.LoadingDialog;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -46,6 +43,7 @@ public class HouseholdVisitFragment extends Fragment {
 
     private ListView lvHouseholdMembers;
     private ExpandableListView elvVisitCollected;
+    private Button btClearMember;
     private Button btnVisitMemberEnu;
     private Button btnVisitBirthReg;
     private Button btnVisitPregnancyReg;
@@ -93,7 +91,8 @@ public class HouseholdVisitFragment extends Fragment {
         this.visit = visit;
         this.loggedUser = user;
 
-        loadContentToViews();
+        loadDataToListViews();
+        setHouseholdMode();
     }
 
     @Override
@@ -123,6 +122,7 @@ public class HouseholdVisitFragment extends Fragment {
     private void initialize(View view) {
         this.lvHouseholdMembers = view.findViewById(R.id.lvHouseholdMembers);
         this.elvVisitCollected = view.findViewById(R.id.elvVisitCollected);
+        this.btClearMember = view.findViewById(R.id.btClearMember);
         this.btnVisitMemberEnu = view.findViewById(R.id.btnVisitMemberEnu);
         this.btnVisitBirthReg = view.findViewById(R.id.btnVisitBirthReg);
         this.btnVisitPregnancyReg = view.findViewById(R.id.btnVisitPregnancyReg);
@@ -139,13 +139,64 @@ public class HouseholdVisitFragment extends Fragment {
             onMembersLongClick(position);
             return true;
         });
+
+        this.btClearMember.setOnClickListener( v -> {
+            onClearMemberClicked();
+        });
+
+        this.btnVisitMemberEnu.setOnClickListener(v -> {
+            onEnumerationClicked();
+        });
+
+        this.btnVisitMaritalRelationship.setOnClickListener( v -> {
+            onMaritalClicked();
+        });
+
+        this.btnVisitExtInmigration.setOnClickListener(v -> {
+            onExtInMigrationClicked();
+        });
     }
 
-    private void loadContentToViews() {
-        loadMembersToList();
-        loadCollectedEventsToList();
+    private void selectMember(Member member){
+
+        int index = getMembersAdapter().indexOf(member);
+        Log.d("new-members", "size="+getMembersAdapter().getCount()+", index="+index);
+        onMembersClick(index);
+    }
+
+    private void onClearMemberClicked() {
         setHouseholdMode();
     }
+
+    private void onExtInMigrationClicked() {
+    }
+
+    private void onMaritalClicked() {
+    }
+
+    private void onEnumerationClicked() {
+        MemberEnumerationFormUtil formUtil = new MemberEnumerationFormUtil(getActivity().getSupportFragmentManager(), this.getContext(), this.visit, this.household, new MemberEnumerationFormUtil.Listener() {
+            @Override
+            public void onNewMemberCreated(Member member) {
+                selectedMember = member;
+                loadDataToListViews();
+                selectMember(member);
+            }
+
+            @Override
+            public void onMemberEdited(Member member) {
+
+            }
+
+            @Override
+            public void onFormCancelled() {
+
+            }
+        });
+
+        formUtil.collect();
+    }
+
 
     private void onMembersClick(int position) {
         //select one member and highlight
@@ -155,6 +206,8 @@ public class HouseholdVisitFragment extends Fragment {
 
         this.selectedMember = adapter.getItem(position);
         setMemberMode();
+
+        btClearMember.setVisibility(View.VISIBLE);
     }
 
     private void onMembersLongClick(int position) {
@@ -172,6 +225,9 @@ public class HouseholdVisitFragment extends Fragment {
     }
 
     private void clearMemberSelection(){
+
+        btClearMember.setVisibility(View.GONE);
+
         MemberArrayAdapter adapter = getMembersAdapter();
 
         if (adapter != null){
@@ -210,6 +266,9 @@ public class HouseholdVisitFragment extends Fragment {
     }
 
     private void loadMembersToList() {
+
+        btClearMember.setVisibility(View.GONE);
+
         if (household == null) return;
 
         List<Member> members = this.boxMembers.query().equal(Member_.householdCode, household.getCode()).build().find();
@@ -250,5 +309,9 @@ public class HouseholdVisitFragment extends Fragment {
         CoreCollectedExpandableAdapter adapter = new CoreCollectedExpandableAdapter(this.getContext(), mapData);
         this.elvVisitCollected.setAdapter(adapter);
     }
-    
+
+    private void loadDataToListViews(){
+        loadMembersToList();
+        loadCollectedEventsToList();
+    }
 }

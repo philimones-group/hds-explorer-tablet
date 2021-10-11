@@ -21,7 +21,7 @@
         android:supportsRtl="true"
         android:usesCleartextTraffic="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".main.SplashScreenActivity" android:windowSoftInputMode="stateHidden|adjustPan">
+        <activity android:name=".main.SplashScreenActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -35,7 +35,7 @@
             android:theme="@style/zxing_CaptureTheme"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
-            android:name=".main.BarcodeScannerActivity" android:windowSoftInputMode="stateHidden|adjustPan"
+            android:name=".main.BarcodeScannerActivity"
             android:theme="@style/ThemeNoActionBar" />
         <activity
             android:name=".main.LoginActivity" android:windowSoftInputMode="stateHidden|adjustPan"
@@ -46,7 +46,7 @@
         <activity android:name=".main.SurveyActivity" android:windowSoftInputMode="stateHidden|adjustPan" />
         <activity android:name=".main.SurveyHouseholdsActivity" android:windowSoftInputMode="stateHidden|adjustPan" />
         <activity android:name=".main.SurveyMembersActivity" android:windowSoftInputMode="stateHidden|adjustPan" />
-        <activity android:name=".main.HouseholdDetailsActivity" android:windowSoftInputMode="stateHidden|adjustPan" />
+        <activity android:name=".main.HouseholdDetailsActivity" android:windowSoftInputMode="stateHidden|adjustResize" />
         <activity android:name=".main.MemberDetailsActivity" android:windowSoftInputMode="stateHidden|adjustPan" />
         <activity android:name=".main.GpsSearchedListActivity" android:windowSoftInputMode="stateHidden|adjustPan" />
         <activity android:name=".main.TrackingListActivity" android:windowSoftInputMode="stateHidden|adjustPan" />

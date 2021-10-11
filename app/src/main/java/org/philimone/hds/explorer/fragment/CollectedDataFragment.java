@@ -144,6 +144,10 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
         this.lvCollectedForms.setAdapter(adapter);
     }
 
+    public void reloadCollectedData(){
+        showCollectedData();
+    }
+
     private void onCollectedDataItemClicked(int position) {
         CollectedDataArrayAdapter adapter = (CollectedDataArrayAdapter) this.lvCollectedForms.getAdapter();
         CollectedDataItem dataItem = adapter.getItem(position);

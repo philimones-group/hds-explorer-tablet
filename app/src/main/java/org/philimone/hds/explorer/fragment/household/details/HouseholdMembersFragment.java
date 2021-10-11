@@ -153,7 +153,7 @@ public class HouseholdMembersFragment extends Fragment {
         }
     }
 
-    public void updateHouseholdMembers() {
+    public void reloadMembers() {
         this.showHouseholdMembers();
     }
 

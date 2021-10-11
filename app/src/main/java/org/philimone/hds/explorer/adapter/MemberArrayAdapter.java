@@ -154,6 +154,17 @@ public class MemberArrayAdapter  extends ArrayAdapter<Member> {
         this.memberIcon = memberIcon;
     }
 
+    public int indexOf(Member member) {
+        for (int i = 0; i < this.members.size(); i++) {
+            Member m = this.members.get(i);
+            if (m != null && m.code.equals(member.code)) {
+                return i;
+            }
+        }
+
+        return -1;
+    }
+
     @Override
     public Member getItem(int position) {
         return members.get(position);

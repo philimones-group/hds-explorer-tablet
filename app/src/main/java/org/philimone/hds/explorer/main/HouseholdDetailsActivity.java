@@ -285,6 +285,20 @@ public class HouseholdDetailsActivity extends AppCompatActivity {
 
     }
 
+    private void reloadFragmentsData(){
+        if (fragmentAdapter != null) {
+            HouseholdMembersFragment membersFragment = this.fragmentAdapter.getFragmentMembers();
+            CollectedDataFragment collectedDataFragment = this.fragmentAdapter.getFragmentCollected();
+
+            if (membersFragment != null) {
+                membersFragment.reloadMembers();
+            }
+            if (collectedDataFragment != null) {
+                collectedDataFragment.reloadCollectedData();
+            }
+        }
+    }
+
     private void initializeButtons() {
         Object item = getIntent().getExtras().get("enable-collect-data");
 
@@ -424,6 +438,7 @@ public class HouseholdDetailsActivity extends AppCompatActivity {
             this.householdVisitFragment.load(household, visit, loggedUser);
         }
 
+        Log.d("visit code", ""+visit.code);
     }
 
     private void setNewHouseholdMode(){
@@ -473,11 +488,18 @@ public class HouseholdDetailsActivity extends AppCompatActivity {
         //close visit methods
         this.visit = null;
 
+        reloadFragmentsData();
         setHouseholdMode();
     }
 
     private void openPreviousVisit() {
-        setVisitMode();
+
+        Visit lastVisit = this.boxVisits.query().equal(Visit_.householdCode, household.code).order(Visit_.visitDate, QueryBuilder.DESCENDING).build().findFirst();
+
+        if (lastVisit != null) {
+            this.visit = lastVisit;
+            setVisitMode();
+        }
     }
 
     /* Household Form */

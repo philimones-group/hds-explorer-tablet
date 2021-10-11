@@ -154,6 +154,7 @@ public class VisitFormUtil implements FormCollectionListener {
         VisitReason visit_reason = VisitReason.getFrom(colVisitReason.getValue());
         boolean hasInterpreter = colHasInterpreter.getValue()!=null && colHasInterpreter.getValue().equalsIgnoreCase("true");
         VisitLocationItem visit_location = VisitLocationItem.getFrom(colVisitLocation.getValue());
+        Date visitDate = colVisitDate.getDateValue();
 
         if (!codeGenerator.isVisitCodeValid(visit_code)){
             String message = this.context.getString(R.string.new_household_code_err_lbl);
@@ -169,6 +170,11 @@ public class VisitFormUtil implements FormCollectionListener {
         if (boxVisits.query().equal(Visit_.code, visit_code).build().findFirst() != null){
             String message = this.context.getString(R.string.new_visit_code_exists_lbl);
             return new ValidationResult(colCode, message);
+        }
+
+        if (visitDate.after(new Date())){ //is in the future
+            String message = this.context.getString(R.string.new_visit_date_not_great_today_lbl);
+            return new ValidationResult(colVisitDate, message);
         }
 
         if (StringUtil.isBlank(colRoundNumber.getValue())){

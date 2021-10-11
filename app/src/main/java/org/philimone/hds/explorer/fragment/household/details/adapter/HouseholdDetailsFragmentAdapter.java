@@ -61,4 +61,16 @@ public class HouseholdDetailsFragmentAdapter extends FragmentStateAdapter {
     public boolean containsItem(long itemId) {
         return itemId >= 0 && itemId <= 2;
     }
+
+    public HouseholdMembersFragment getFragmentMembers() {
+        return fragMembers;
+    }
+
+    public CollectedDataFragment getFragmentCollected() {
+        return fragCollected;
+    }
+
+    public ExternalDatasetsFragment getFragmentDatasets() {
+        return fragDatasets;
+    }
 }

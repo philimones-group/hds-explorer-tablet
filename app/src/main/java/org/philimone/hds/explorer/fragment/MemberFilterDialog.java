@@ -78,7 +78,7 @@ public class MemberFilterDialog extends DialogFragment {
     public MemberFilterDialog(){
         super();
     }
-
+    /*
     public static MemberFilterDialog newInstance(FragmentManager fm, @StringRes int titleResId, Listener memberFilterListener){
         return newInstance(fm, titleResId, false, memberFilterListener);
     }
@@ -87,7 +87,7 @@ public class MemberFilterDialog extends DialogFragment {
         MemberFilterDialog filterDialog = newInstance(fm, "", cancelable, memberFilterListener);
         filterDialog.title = filterDialog.getString(titleResId);
         return filterDialog;
-    }
+    }*/
 
     public static MemberFilterDialog newInstance(FragmentManager fm, String title, Listener memberFilterListener){
         return newInstance(fm, title, false, memberFilterListener);

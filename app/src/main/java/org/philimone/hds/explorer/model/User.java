@@ -128,6 +128,9 @@ public class User implements FormSubject, Serializable {
     }
 
     public void setSelectedModules(List<Module> moduleList) {
+        this.selectedModules.clear();
+        this.selectedModulesText = "";
+
         StringBuilder str = new StringBuilder();
         Log.d("modules-null", ""+this.selectedModules);
         for (Module module : moduleList) {

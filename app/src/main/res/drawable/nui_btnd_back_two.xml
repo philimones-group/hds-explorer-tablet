@@ -15,8 +15,10 @@
                 </shape>
             </item>
 
-            <item android:gravity="center">
-                <bitmap android:src="@mipmap/nui_back_arrow" android:gravity="left" />
+            <item android:gravity="center"
+                  android:width="50dp"
+                  android:height="50dp">
+                <bitmap android:src="@mipmap/nui_back_arrow" android:gravity="fill" />
             </item>
         </layer-list>
     </item>

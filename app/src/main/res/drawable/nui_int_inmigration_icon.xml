@@ -1,8 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-    <item
-        android:width="@dimen/household_visit_button_icon_width"
-        android:height="@dimen/household_visit_button_icon_height">
-        <bitmap android:src="@mipmap/nui_int_inmigration_icon" android:gravity="fill" />
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- disabled -->
+    <item android:state_enabled="false">
+        <layer-list>
+            <item
+                android:width="@dimen/household_visit_button_icon_width"
+                android:height="@dimen/household_visit_button_icon_height">
+                <bitmap android:src="@mipmap/nui_int_inmigration_icon" android:gravity="fill" android:alpha="0.4" />
+            </item>
+        </layer-list>
     </item>
-</layer-list>
+    <!-- normal -->
+    <item>
+        <layer-list>
+            <item
+                android:width="@dimen/household_visit_button_icon_width"
+                android:height="@dimen/household_visit_button_icon_height">
+                <bitmap android:src="@mipmap/nui_int_inmigration_icon" android:gravity="fill" />
+            </item>
+        </layer-list>
+    </item>
+</selector>

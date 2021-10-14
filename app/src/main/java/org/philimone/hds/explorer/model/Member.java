@@ -9,6 +9,7 @@ import org.philimone.hds.explorer.model.converters.StringCollectionConverter;
 import org.philimone.hds.explorer.model.enums.Gender;
 import org.philimone.hds.explorer.model.enums.HeadRelationshipType;
 import org.philimone.hds.explorer.model.enums.MaritalStatus;
+import org.philimone.hds.explorer.model.enums.SubjectEntity;
 import org.philimone.hds.explorer.model.enums.temporal.ResidencyEndType;
 import org.philimone.hds.explorer.model.enums.temporal.ResidencyStartType;
 
@@ -473,8 +474,8 @@ public class Member implements FormSubject, Serializable {
         return m;
     }
 
-    public String getTableName() {
-        return "Member";
+    public SubjectEntity getTableName() {
+        return SubjectEntity.MEMBER;
     }
 
 }

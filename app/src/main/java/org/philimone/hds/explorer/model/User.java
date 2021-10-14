@@ -3,6 +3,7 @@ package org.philimone.hds.explorer.model;
 import android.util.Log;
 
 import org.philimone.hds.explorer.model.converters.StringCollectionConverter;
+import org.philimone.hds.explorer.model.enums.SubjectEntity;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -168,8 +169,9 @@ public class User implements FormSubject, Serializable {
         return ReflectionUtils.getValueByName(this, variableName);
     }
 
-    public String getTableName() {
-        return "User";
+    @Override
+    public SubjectEntity getTableName() {
+        return SubjectEntity.USER;
     }
 
 }

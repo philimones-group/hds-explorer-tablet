@@ -13,7 +13,6 @@ import org.philimone.hds.explorer.adapter.CollectedDataArrayAdapter;
 import org.philimone.hds.explorer.adapter.model.CollectedDataItem;
 import org.philimone.hds.explorer.data.FormDataLoader;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
-import org.philimone.hds.explorer.database.Queries;
 import org.philimone.hds.explorer.model.CollectedData;
 import org.philimone.hds.explorer.model.CollectedData_;
 import org.philimone.hds.explorer.model.Form;
@@ -27,7 +26,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -189,7 +187,7 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
     private List<CollectedData> getAllCollectedData() {
         List<CollectedData> list = this.boxCollectedData.query().equal(CollectedData_.recordId, subject.getId())
                                                                 .and()
-                                                                .equal(CollectedData_.tableName, subject.getTableName())
+                                                                .equal(CollectedData_.recordEntity, subject.getTableName().code)
                                                                 .filter((c) -> StringUtil.containsAny(c.formModules, selectedModules))  //filter by module
                                                                 .build().find();
         return list;
@@ -199,7 +197,7 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
 
         CollectedData collectedData = this.boxCollectedData.query().equal(CollectedData_.formId, formDataLoader.getForm().getFormId())
                                                                    .and().equal(CollectedData_.recordId, subject.getId())
-                                                                   .and().equal(CollectedData_.tableName, subject.getTableName())
+                                                                   .and().equal(CollectedData_.recordEntity, subject.getTableName().code)
                                                                    .filter((c) -> StringUtil.containsAny(c.formModules, selectedModules)) //filter by module
                                                                    .build().findFirst();
 
@@ -287,7 +285,7 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
         //search existing record
         CollectedData collectedData = this.boxCollectedData.query().equal(CollectedData_.formUri, contentUri.toString())
                 .and().equal(CollectedData_.recordId, subject.getId())
-                .and().equal(CollectedData_.tableName, subject.getTableName()).build().findFirst();
+                .and().equal(CollectedData_.recordEntity, subject.getTableName().code).build().findFirst();
 
         if (collectedData == null){ //insert
             collectedData = new CollectedData();
@@ -304,7 +302,7 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
             collectedData.setSupervisedBy("");
 
             collectedData.setRecordId(subject.getId());
-            collectedData.setTableName(subject.getTableName());
+            collectedData.setRecordEntity(subject.getTableName());
 
             this.boxCollectedData.put(collectedData);
             Log.d("inserting", "new collected data");
@@ -321,7 +319,7 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
             //collectedData.setSupervisedBy("");
 
             collectedData.setRecordId(subject.getId());
-            collectedData.setTableName(subject.getTableName());
+            collectedData.setRecordEntity(subject.getTableName());
 
             this.boxCollectedData.put(collectedData);
             Log.d("updating", "new collected data");
@@ -338,7 +336,7 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
         //search existing record
         CollectedData collectedData = this.boxCollectedData.query().equal(CollectedData_.formUri, contentUri.toString())
                 .and().equal(CollectedData_.recordId, subject.getId())
-                .and().equal(CollectedData_.tableName, subject.getTableName()).build().findFirst();
+                .and().equal(CollectedData_.recordEntity, subject.getTableName().code).build().findFirst();
 
         if (collectedData == null){ //insert
             collectedData = new CollectedData();
@@ -355,7 +353,7 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
             collectedData.setSupervisedBy("");
 
             collectedData.setRecordId(subject.getId());
-            collectedData.setTableName(subject.getTableName());
+            collectedData.setRecordEntity(subject.getTableName());
 
             this.boxCollectedData.put(collectedData);
             Log.d("inserting", "new collected data");
@@ -372,7 +370,7 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
             //collectedData.setSupervisedBy("");
 
             collectedData.setRecordId(subject.getId());
-            collectedData.setTableName(subject.getTableName());
+            collectedData.setRecordEntity(subject.getTableName());
 
             this.boxCollectedData.put(collectedData);
             Log.d("updating", "new collected data");

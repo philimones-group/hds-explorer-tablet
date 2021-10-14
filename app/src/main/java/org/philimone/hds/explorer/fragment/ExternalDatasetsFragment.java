@@ -152,7 +152,7 @@ public class ExternalDatasetsFragment extends Fragment {
 
         List<String> selectedModules = new ArrayList<>(currentUser.getSelectedModules());
 
-        List<Dataset> datasets = this.boxDatasets.query().equal(Dataset_.tableName, this.subject.getTableName())
+        List<Dataset> datasets = this.boxDatasets.query().equal(Dataset_.tableName, this.subject.getTableName().code)
                                                          .filter((d) -> StringUtil.containsAny(d.modules, selectedModules))  //filter by module
                                                          .build().find();
 

@@ -1,6 +1,8 @@
 package org.philimone.hds.explorer.model;
 
 import org.philimone.hds.explorer.model.converters.StringCollectionConverter;
+import org.philimone.hds.explorer.model.converters.SubjectEntityConverter;
+import org.philimone.hds.explorer.model.enums.SubjectEntity;
 
 import java.io.Serializable;
 import java.util.Collection;
@@ -35,8 +37,13 @@ public class CollectedData implements Serializable {
     public Set<String> formModules;
     public String formModulesAsText;
 
+    @Index
+    public long visitId; /* will be different from zero if the form was collected during a DSS Household Visit*/
+    @Index
     public long recordId;
-    public String tableName;
+
+    @Convert(converter = SubjectEntityConverter.class, dbType = String.class)
+    public SubjectEntity recordEntity;
 
     public String collectedBy;
     public String updatedBy;
@@ -79,8 +86,12 @@ public class CollectedData implements Serializable {
         this.recordId = recordId;
     }
 
-    public void setTableName(String tableName) {
-        this.tableName = tableName;
+    public SubjectEntity getRecordEntity() {
+        return recordEntity;
+    }
+
+    public void setRecordEntity(SubjectEntity recordEntity) {
+        this.recordEntity = recordEntity;
     }
 
     public String getFormXmlPath() {

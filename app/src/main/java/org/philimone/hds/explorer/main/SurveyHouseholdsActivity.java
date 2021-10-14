@@ -306,7 +306,7 @@ public class SurveyHouseholdsActivity extends AppCompatActivity implements House
         //get collected data
         CollectedData collectedData = this.boxCollectedData.query().equal(CollectedData_.formId, formId)
                                                            .and().equal(CollectedData_.recordId, recordId)
-                                                           .and().equal(CollectedData_.tableName, tableName).build().findFirst();
+                                                           .and().equal(CollectedData_.recordEntity, tableName).build().findFirst();
 
         return collectedData;
     }

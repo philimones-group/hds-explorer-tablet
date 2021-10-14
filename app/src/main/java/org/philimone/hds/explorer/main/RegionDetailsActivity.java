@@ -180,7 +180,7 @@ public class RegionDetailsActivity extends AppCompatActivity implements OdkFormR
     private void showCollectedData() {
         //this.showProgress(true);
 
-        List<CollectedData> list = this.boxCollectedData.query().equal(CollectedData_.recordId, region.getId()).and().equal(CollectedData_.tableName, region.getTableName()).build().find();
+        List<CollectedData> list = this.boxCollectedData.query().equal(CollectedData_.recordId, region.getId()).and().equal(CollectedData_.recordEntity, region.getTableName().code).build().find();
         List<Form> forms = this.boxForms.getAll();
         List<CollectedDataItem> cdl = new ArrayList<>();
 
@@ -274,7 +274,7 @@ public class RegionDetailsActivity extends AppCompatActivity implements OdkFormR
 
         CollectedData collectedData = this.boxCollectedData.query().equal(CollectedData_.formId, formDataLoader.getForm().getFormId())
                                                                    .and().equal(CollectedData_.recordId, region.getId())
-                                                                   .and().equal(CollectedData_.tableName, region.getTableName()).build().findFirst();
+                                                                   .and().equal(CollectedData_.recordEntity, region.getTableName().code).build().findFirst();
 
         return collectedData;
     }
@@ -349,7 +349,7 @@ public class RegionDetailsActivity extends AppCompatActivity implements OdkFormR
         //search existing record
         CollectedData collectedData = this.boxCollectedData.query().equal(CollectedData_.formUri, contentUri.toString())
                 .and().equal(CollectedData_.recordId, region.getId())
-                .and().equal(CollectedData_.tableName, region.getTableName()).build().findFirst();
+                .and().equal(CollectedData_.recordEntity, region.getTableName().code).build().findFirst();
 
 
         if (collectedData == null){ //insert
@@ -366,7 +366,7 @@ public class RegionDetailsActivity extends AppCompatActivity implements OdkFormR
             collectedData.setSupervisedBy("");
 
             collectedData.setRecordId(region.getId());
-            collectedData.setTableName(region.getTableName());
+            collectedData.setRecordEntity(region.getTableName());
 
             this.boxCollectedData.put(collectedData);
 
@@ -384,7 +384,7 @@ public class RegionDetailsActivity extends AppCompatActivity implements OdkFormR
             //collectedData.setSupervisedBy("");
 
             collectedData.setRecordId(region.getId());
-            collectedData.setTableName(region.getTableName());
+            collectedData.setRecordEntity(region.getTableName());
 
             this.boxCollectedData.put(collectedData);
             Log.d("updating", "new collected data");
@@ -408,7 +408,7 @@ public class RegionDetailsActivity extends AppCompatActivity implements OdkFormR
         //search existing record
         CollectedData collectedData = this.boxCollectedData.query().equal(CollectedData_.formUri, contentUri.toString())
                 .and().equal(CollectedData_.recordId, region.getId())
-                .and().equal(CollectedData_.tableName, region.getTableName()).build().findFirst();
+                .and().equal(CollectedData_.recordEntity, region.getTableName().code).build().findFirst();
 
         if (collectedData == null){ //insert
             collectedData = new CollectedData();
@@ -424,7 +424,7 @@ public class RegionDetailsActivity extends AppCompatActivity implements OdkFormR
             collectedData.setSupervisedBy("");
 
             collectedData.setRecordId(region.getId());
-            collectedData.setTableName(region.getTableName());
+            collectedData.setRecordEntity(region.getTableName());
 
             this.boxCollectedData.put(collectedData);
             Log.d("inserting", "new collected data");
@@ -441,7 +441,7 @@ public class RegionDetailsActivity extends AppCompatActivity implements OdkFormR
             //collectedData.setSupervisedBy("");
 
             collectedData.setRecordId(region.getId());
-            collectedData.setTableName(region.getTableName());
+            collectedData.setRecordEntity(region.getTableName());
 
             this.boxCollectedData.put(collectedData);
             Log.d("updating", "new collected data");

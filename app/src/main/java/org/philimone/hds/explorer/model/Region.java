@@ -1,6 +1,7 @@
 package org.philimone.hds.explorer.model;
 
 import org.philimone.hds.explorer.model.converters.StringCollectionConverter;
+import org.philimone.hds.explorer.model.enums.SubjectEntity;
 
 import java.io.Serializable;
 import java.util.Collection;
@@ -102,8 +103,9 @@ public class Region implements FormSubject, Serializable {
         return ReflectionUtils.getValueByName(this, variableName);
     }
 
-    public String getTableName() {
-        return "Region";
+    @Override
+    public SubjectEntity getTableName() {
+        return SubjectEntity.REGION;
     }
 
 }

@@ -15,7 +15,7 @@ import io.objectbox.relation.ToMany;
 import io.objectbox.relation.ToOne;
 
 @Entity
-public class PregnancyOutcome {
+public class PregnancyOutcome implements CoreEntity {
 
     @Id
     public long id;
@@ -55,5 +55,20 @@ public class PregnancyOutcome {
     public boolean recentlyCreated;
 
     public String recentlyCreatedUri;
+
+    @Override
+    public long getId() {
+        return this.id;
+    }
+
+    @Override
+    public boolean isRecentlyCreated() {
+        return this.recentlyCreated;
+    }
+
+    @Override
+    public String getRecentlyCreatedUri() {
+        return this.recentlyCreatedUri;
+    }
 
 }

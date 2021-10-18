@@ -114,6 +114,8 @@
     <string name="core_entity_pregnancy_reg_lbl">Registo de Gravidez</string>
     <string name="core_entity_pregnancy_out_lbl">Registo de Resultado de Gravidez</string>
     <string name="core_entity_death_lbl">Registo de Morte</string>
+    <string name="core_entity_changehoh_lbl">Mudança de Chefe Agregado</string>
+    <string name="core_entity_member_not_visited_lbl">Membro não visitado</string>
     <string name="core_entity_visit_lbl">Registo de Visita</string>
     <string name="core_entity_collected_date_lbl">Data da colecta:</string>
     <string name="core_entity_updated_date_lbl">Data da atualização:</string>
@@ -250,7 +252,7 @@
 
     <string name="household_details_bt_create_visit_lbl">Iniciar Visita</string>
     <string name="household_details_bt_finish_visit_lbl">Terminar Visita</string>
-    <string name="household_details_bt_open_visit_lbl">Reabrir Visita</string>
+    <string name="household_details_bt_open_visit_lbl">Reabrir Ultima Visita</string>
 
     <string name="household_details_visit_panel_lbl">Visita a casa</string>
     <string name="household_details_visit_not_closed_lbl">Termine a visita antes de sair do painel de detalhes da casa</string>
@@ -263,6 +265,8 @@
     <string name="household_visit_bt_outmig_lbl">Emigração\nExterna</string>
     <string name="household_visit_bt_death_lbl">Registar Morte</string>
     <string name="household_visit_bt_marital_lbl">Registar de\nUnião Marital</string>
+    <string name="household_visit_bt_changehoh_lbl">Mudança de\nChefe</string>
+    <string name="household_visit_bt_incomplete_lbl">Visita \nIncompleta</string>
     <string name="household_visit_bt_collect_lbl">Colher Dados</string>
 
     <string name="region_details_code_lbl">Código:</string>

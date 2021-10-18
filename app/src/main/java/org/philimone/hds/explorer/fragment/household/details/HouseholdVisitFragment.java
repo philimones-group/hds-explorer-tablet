@@ -19,6 +19,7 @@ import org.philimone.hds.explorer.adapter.MemberArrayAdapter;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
 import org.philimone.hds.explorer.main.hdsforms.MemberEnumerationFormUtil;
 import org.philimone.hds.explorer.model.CollectedData;
+import org.philimone.hds.explorer.model.CollectedData_;
 import org.philimone.hds.explorer.model.CoreCollectedData;
 import org.philimone.hds.explorer.model.CoreCollectedData_;
 import org.philimone.hds.explorer.model.Form;
@@ -29,6 +30,7 @@ import org.philimone.hds.explorer.model.User;
 import org.philimone.hds.explorer.model.Visit;
 import org.philimone.hds.explorer.model.enums.CoreFormEntity;
 import org.philimone.hds.explorer.model.enums.Gender;
+import org.philimone.hds.explorer.model.enums.SubjectEntity;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -53,6 +55,8 @@ public class HouseholdVisitFragment extends Fragment {
     private Button btnVisitDeath;
     private Button btnVisitMaritalRelationship;
     private Button btnVisitExtraForm;
+    private Button btnVisitMemberIncomplete;
+    private Button btnVisitChangeHead;
 
     private Household household;
     private Visit visit;
@@ -132,6 +136,8 @@ public class HouseholdVisitFragment extends Fragment {
         this.btnVisitDeath = view.findViewById(R.id.btnVisitDeath);
         this.btnVisitMaritalRelationship = view.findViewById(R.id.btnVisitMaritalRelationship);
         this.btnVisitExtraForm = view.findViewById(R.id.btnVisitExtraForm);
+        this.btnVisitMemberIncomplete = view.findViewById(R.id.btnVisitMemberIncomplete);
+        this.btnVisitChangeHead = view.findViewById(R.id.btnVisitChangeHead);
 
         this.lvHouseholdMembers.setOnItemClickListener((parent, view1, position, id) -> onMembersClick(position));
 
@@ -249,10 +255,20 @@ public class HouseholdVisitFragment extends Fragment {
         this.btnVisitDeath.setEnabled(false);
         this.btnVisitMaritalRelationship.setEnabled(false);
         this.btnVisitExtraForm.setEnabled(false); //we need to analyse better this
+
+        this.btnVisitChangeHead.setEnabled(true);
+        this.btnVisitPregnancyReg.setVisibility(View.GONE);
+        this.btnVisitChangeHead.setVisibility(View.VISIBLE);
+
+        this.btnVisitMemberIncomplete.setEnabled(false);
+        this.btnVisitMemberEnu.setVisibility(View.VISIBLE);
+        this.btnVisitMemberIncomplete.setVisibility(View.GONE);
     }
     
     private void setMemberMode() {
         this.currentEventMode = VisitEventsMode.MEMBER_EVENTS;
+
+        boolean notVisited = countCollectedForms(selectedMember)==0;
 
         this.btnVisitMemberEnu.setEnabled(false);
         this.btnVisitBirthReg.setEnabled(this.selectedMember!=null && this.selectedMember.gender== Gender.FEMALE);
@@ -263,6 +279,14 @@ public class HouseholdVisitFragment extends Fragment {
         this.btnVisitDeath.setEnabled(true);
         this.btnVisitMaritalRelationship.setEnabled(true);
         this.btnVisitExtraForm.setEnabled(true); //we need to analyse better this
+
+        this.btnVisitChangeHead.setEnabled(false);
+        this.btnVisitPregnancyReg.setVisibility(View.VISIBLE);
+        this.btnVisitChangeHead.setVisibility(View.GONE);
+
+        this.btnVisitMemberIncomplete.setEnabled(notVisited);
+        this.btnVisitMemberEnu.setVisibility(View.GONE);
+        this.btnVisitMemberIncomplete.setVisibility(View.VISIBLE);
     }
 
     private void loadMembersToList() {
@@ -299,6 +323,8 @@ public class HouseholdVisitFragment extends Fragment {
         mapData.put(CoreFormEntity.PREGNANCY_REGISTRATION, new ArrayList<CoreCollectedData>());
         mapData.put(CoreFormEntity.PREGNANCY_OUTCOME, new ArrayList<CoreCollectedData>());
         mapData.put(CoreFormEntity.DEATH, new ArrayList<CoreCollectedData>());
+        mapData.put(CoreFormEntity.CHANGE_HOUSEHOLD_HEAD, new ArrayList<CoreCollectedData>());
+        mapData.put(CoreFormEntity.MEMBER_NOT_VISITED, new ArrayList<CoreCollectedData>());
         mapData.put(CoreFormEntity.VISIT, new ArrayList<CoreCollectedData>());
 
         //group the coreList in Map
@@ -313,5 +339,22 @@ public class HouseholdVisitFragment extends Fragment {
     private void loadDataToListViews(){
         loadMembersToList();
         loadCollectedEventsToList();
+    }
+
+    private long countCollectedForms(Member member) {
+        long count1 = this.boxCoreCollectedData.query().equal(CoreCollectedData_.visitId, visit.id)
+                .equal(CoreCollectedData_.formEntityCode, member.code)
+                .notEqual(CoreCollectedData_.formEntity, CoreFormEntity.VISIT.code).build().count(); //CHECK FOR VISITS (visit id is equal to member.id)
+
+        long count2 = this.boxCollectedData.query().equal(CollectedData_.visitId, visit.id)
+                .equal(CollectedData_.recordId, member.id)
+                .equal(CollectedData_.recordEntity, SubjectEntity.MEMBER.code).build().count();
+
+        //any form collected for this member
+        return count1 + count2;
+    }
+
+    public interface VisitListener {
+
     }
 }

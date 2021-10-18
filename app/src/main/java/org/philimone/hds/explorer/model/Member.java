@@ -32,7 +32,7 @@ import mz.betainteractive.utilities.StringUtil;
  * Created by paul on 5/20/16.
  */
 @Entity
-public class Member implements FormSubject, Serializable {
+public class Member implements CoreEntity, FormSubject, Serializable {
 
     @Id
     public long id;
@@ -102,7 +102,7 @@ public class Member implements FormSubject, Serializable {
     public Double cosLongitude;
     public Double sinLongitude;
 
-    public Boolean recentlyCreated = false;
+    public boolean recentlyCreated = false;
 
     public String recentlyCreatedUri;
 
@@ -117,10 +117,6 @@ public class Member implements FormSubject, Serializable {
 
     public Member() {
         this.modules = new HashSet<>();
-    }
-
-    public long getId() {
-        return id;
     }
 
     public void setId(long id) {
@@ -399,10 +395,6 @@ public class Member implements FormSubject, Serializable {
         this.gpsNull = gpsNull;
     }
 
-    public Boolean isRecentlyCreated() {
-        return recentlyCreated;
-    }
-
     public void setRecentlyCreated(Boolean recentlyCreated) {
         this.recentlyCreated = recentlyCreated;
     }
@@ -476,6 +468,21 @@ public class Member implements FormSubject, Serializable {
 
     public SubjectEntity getTableName() {
         return SubjectEntity.MEMBER;
+    }
+
+    @Override
+    public long getId() {
+        return this.id;
+    }
+
+    @Override
+    public boolean isRecentlyCreated() {
+        return this.recentlyCreated;
+    }
+
+    @Override
+    public String getRecentlyCreatedUri() {
+        return this.recentlyCreatedUri;
     }
 
 }

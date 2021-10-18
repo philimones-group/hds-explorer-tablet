@@ -20,7 +20,7 @@ import mz.betainteractive.utilities.ReflectionUtils;
  */
 
 @Entity
-public class Household implements FormSubject, Serializable {
+public class Household implements CoreEntity, FormSubject, Serializable {
 
     @Id
     public long id;
@@ -55,7 +55,7 @@ public class Household implements FormSubject, Serializable {
     public Double cosLongitude;
     public Double sinLongitude;
 
-    public Boolean recentlyCreated = false;
+    public boolean recentlyCreated = false;
     public String recentlyCreatedUri;
 
     @Index
@@ -64,10 +64,6 @@ public class Household implements FormSubject, Serializable {
 
     public Household() {
         this.modules = new HashSet<>();
-    }
-
-    public long getId() {
-        return id;
     }
 
     public void setId(long id) {
@@ -258,11 +254,7 @@ public class Household implements FormSubject, Serializable {
         this.gpsNull = gpsNull;
     }
 
-    public Boolean isRecentlyCreated() {
-        return recentlyCreated;
-    }
-
-    public void setRecentlyCreated(Boolean recentlyCreated) {
+    public void setRecentlyCreated(boolean recentlyCreated) {
         this.recentlyCreated = recentlyCreated;
     }
 
@@ -324,5 +316,22 @@ public class Household implements FormSubject, Serializable {
     public SubjectEntity getTableName() {
         return SubjectEntity.HOUSEHOLD;
     }
+
+    @Override
+    public long getId() {
+        return this.id;
+    }
+
+    @Override
+    public boolean isRecentlyCreated() {
+        return this.recentlyCreated;
+    }
+
+    @Override
+    public String getRecentlyCreatedUri() {
+        return this.recentlyCreatedUri;
+    }
+
+
 
 }

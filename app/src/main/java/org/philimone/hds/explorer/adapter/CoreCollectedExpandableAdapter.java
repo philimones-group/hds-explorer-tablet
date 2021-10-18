@@ -168,6 +168,10 @@ public class CoreCollectedExpandableAdapter extends BaseExpandableListAdapter im
                 return R.mipmap.nui_baby_icon_dark;
             case DEATH:
                 return R.mipmap.nui_death_icon_dark;
+            case CHANGE_HOUSEHOLD_HEAD:
+                return R.mipmap.nui_changehoh_icon_dark;
+            case MEMBER_NOT_VISITED:
+                return R.mipmap.nui_member_incomplete_icon_dark;
 
         }
 

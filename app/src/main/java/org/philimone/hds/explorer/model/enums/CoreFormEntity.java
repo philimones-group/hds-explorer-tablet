@@ -19,6 +19,8 @@ public enum CoreFormEntity {
     PREGNANCY_REGISTRATION ("rawPregnancyRegistration", R.string.core_entity_pregnancy_reg_lbl),
     PREGNANCY_OUTCOME      ("rawPregnancyOutcome",      R.string.core_entity_pregnancy_out_lbl),
     DEATH                  ("rawDeath",                 R.string.core_entity_death_lbl),
+    CHANGE_HOUSEHOLD_HEAD  ("rawChangeHead",            R.string.core_entity_changehoh_lbl),
+    MEMBER_NOT_VISITED     ("rawMemberNotVisited",      R.string.core_entity_member_not_visited_lbl),
     VISIT                  ("rawVisit",                 R.string.core_entity_visit_lbl),
 
     INVALID_ENUM    ( "-1", R.string.invalid_enum_value);

@@ -11,7 +11,7 @@ import io.objectbox.annotation.Index;
 import io.objectbox.relation.ToOne;
 
 @Entity
-public class PregnancyChild {
+public class PregnancyChild implements CoreEntity {
 
     @Id
     public long id;
@@ -36,5 +36,20 @@ public class PregnancyChild {
     public boolean recentlyCreated;
 
     public String recentlyCreatedUri;
+
+    @Override
+    public long getId() {
+        return this.id;
+    }
+
+    @Override
+    public boolean isRecentlyCreated() {
+        return this.recentlyCreated;
+    }
+
+    @Override
+    public String getRecentlyCreatedUri() {
+        return this.recentlyCreatedUri;
+    }
 
 }

@@ -41,82 +41,46 @@ import io.objectbox.Box;
 import io.objectbox.query.QueryBuilder;
 import mz.betainteractive.utilities.StringUtil;
 
-public class VisitFormUtil implements FormCollectionListener {
-    private FragmentManager fragmentManager;
-    private Context context;
+public class VisitFormUtil extends FormUtil<Visit> {
 
-    private HForm form;
-    private CodeGeneratorService codeGenerator;
-    private Map<String, String> preloadedMap;
-
-    private Box<ApplicationParam> boxAppParams;
     private Box<Household> boxHouseholds;
     private Box<Visit> boxVisits;
-    private Box<Round> boxRounds;
     private Box<CoreCollectedData> boxCoreCollectedData;
 
-    private User loggedUser;
     private Household household;
-    private boolean postExecution;
-    private Round currentRound;
     private Member respondentMember;
     private boolean newHouseholdCreated;
-    private Listener listener;
 
-    public VisitFormUtil(FragmentManager fragmentManager, Context context, Household household, boolean newHouseholdCreated, Listener listener){
-        this.fragmentManager = fragmentManager;
-        this.context = context;
+    public VisitFormUtil(FragmentManager fragmentManager, Context context, Household household, boolean newHouseholdCreated, FormUtilListener<Visit> listener){
+        super(fragmentManager, context, FormUtil.getVisitForm(context), listener);
 
         this.household = household;
-
-        this.preloadedMap = new LinkedHashMap<>();
-        this.codeGenerator = new CodeGeneratorService();
-        this.listener = listener;
-
-        this.loggedUser = Bootstrap.getCurrentUser();
-
         this.newHouseholdCreated = newHouseholdCreated;
 
         initBoxes();
         initialize();
     }
 
-    public VisitFormUtil(FragmentManager fragmentManager, Context context, Household household, Listener listener){
-        this.fragmentManager = fragmentManager;
-        this.context = context;
+    public VisitFormUtil(FragmentManager fragmentManager, Context context, Household household, Visit visit, FormUtilListener<Visit> listener){
+        super(fragmentManager, context, FormUtil.getVisitForm(context), visit, listener);
 
         this.household = household;
-
-        this.preloadedMap = new LinkedHashMap<>();
-        this.codeGenerator = new CodeGeneratorService();
-        this.listener = listener;
-
-        this.loggedUser = Bootstrap.getCurrentUser();
-
-        this.newHouseholdCreated = false;
 
         initBoxes();
         initialize();
     }
 
-    private void initBoxes() {
-        this.boxAppParams = ObjectBoxDatabase.get().boxFor(ApplicationParam.class);
+    @Override
+    protected void initBoxes() {
+        super.initBoxes();
+
         this.boxHouseholds = ObjectBoxDatabase.get().boxFor(Household.class);
         this.boxVisits = ObjectBoxDatabase.get().boxFor(Visit.class);
-        this.boxRounds = ObjectBoxDatabase.get().boxFor(Round.class);
         this.boxCoreCollectedData = ObjectBoxDatabase.get().boxFor(CoreCollectedData.class);
     }
 
-    private void initialize(){
-        InputStream inputStream = this.context.getResources().openRawResource(R.raw.visit_form);
-        this.form = new ExcelFormParser(inputStream).getForm();
-
-        this.currentRound = this.boxRounds.query().order(Round_.roundNumber, QueryBuilder.DESCENDING).build().findFirst();
-
-        postExecution = Queries.getApplicationParamValue(this.boxAppParams, ApplicationParam.HFORM_POST_EXECUTION).equals("true");
-    }
-
-    private void preloadValues() {
+    @Override
+    protected void preloadValues() {
 
         preloadedMap.put("code", codeGenerator.generateVisitCode(household));
         preloadedMap.put("householdCode", household.code);
@@ -167,7 +131,8 @@ public class VisitFormUtil implements FormCollectionListener {
         }
 
         //check if visit with code exists
-        if (boxVisits.query().equal(Visit_.code, visit_code).build().findFirst() != null){
+        boolean visitExists = boxVisits.query().equal(Visit_.code, visit_code).build().findFirst() != null;
+        if (visitExists && currentMode==Mode.CREATE){
             String message = this.context.getString(R.string.new_visit_code_exists_lbl);
             return new ValidationResult(colCode, message);
         }
@@ -244,7 +209,8 @@ public class VisitFormUtil implements FormCollectionListener {
 
         Log.d("dates", ""+colVisitDate.getValue()+", "+colVisitDate.getDateValue());
 
-        Visit visit = new Visit();
+        Visit visit = (currentMode==Mode.EDIT) ? entity : new Visit(); //EDIT VS CREATE
+
         visit.code = colCode.getValue();
         visit.householdCode = colHouseholdCode.getValue();
         visit.visitDate = colVisitDate.getDateValue();
@@ -263,43 +229,35 @@ public class VisitFormUtil implements FormCollectionListener {
         visit.recentlyCreated = true;
         visit.recentlyCreatedUri = result.getFilename();
 
-        long entityId = boxVisits.put(visit);
+        boxVisits.put(visit);
 
-        CoreCollectedData collectedData = new CoreCollectedData();
-        collectedData.visitId = visit.id;
-        collectedData.formEntity = CoreFormEntity.VISIT;
-        collectedData.formEntityId = entityId;
-        collectedData.formEntityCode = visit.code;
-        collectedData.formEntityName = visit.code;
-        collectedData.formUuid = result.getFormUuid();
-        collectedData.formFilename = result.getFilename();
-        collectedData.createdDate = new Date();
+        if (currentMode == Mode.CREATE) {
+            CoreCollectedData collectedData = new CoreCollectedData();
+            collectedData.visitId = visit.id;
+            collectedData.formEntity = CoreFormEntity.VISIT;
+            collectedData.formEntityId = visit.id;
+            collectedData.formEntityCode = visit.code;
+            collectedData.formEntityName = visit.code;
+            collectedData.formUuid = result.getFormUuid();
+            collectedData.formFilename = result.getFilename();
+            collectedData.createdDate = new Date();
 
-        boxCoreCollectedData.put(collectedData);
+            boxCoreCollectedData.put(collectedData);
 
-        updateNewHouseholdCoreCollectedData(visit);
+            updateNewHouseholdCoreCollectedData(visit);
+        }
 
         if (listener != null) {
-            listener.onNewVisitCreated(visit);
-        }
-
-    }
-
-    private void updateNewHouseholdCoreCollectedData(Visit visit) {
-        if (newHouseholdCreated) {
-            CoreCollectedData coreData = boxCoreCollectedData.query().equal(CoreCollectedData_.formEntityCode, household.code).and()
-                                                                     .equal(CoreCollectedData_.formEntity, CoreFormEntity.HOUSEHOLD.code).build().findFirst();
-
-            Log.d("found household", "core: "+coreData);
-
-            //update household with visit
-            if (coreData != null) {
-                coreData.visitId = visit.id;
-                boxCoreCollectedData.put(coreData);
+            if (currentMode == Mode.CREATE) {
+                listener.onNewEntityCreated(visit);
+            } else if (currentMode == Mode.EDIT) {
+                listener.onEntityEdited(visit);
             }
         }
+
     }
 
+    @Override
     public void onFormCancelled(){
         if (listener != null) {
             listener.onFormCancelled();
@@ -308,7 +266,7 @@ public class VisitFormUtil implements FormCollectionListener {
 
     public void collect() {
 
-        if (newHouseholdCreated) {
+        if (newHouseholdCreated || currentMode==Mode.EDIT) {
             executeCollectForm();
         } else {
             selectRespondent();
@@ -324,18 +282,19 @@ public class VisitFormUtil implements FormCollectionListener {
         filterDialog.show();
     }
 
-    private void executeCollectForm() {
-        preloadValues();
-        FormFragment form = FormFragment.newInstance(this.fragmentManager, this.form, Bootstrap.getInstancesPath(), loggedUser.username, preloadedMap, postExecution, newHouseholdCreated, this);
-        form.startCollecting();
-    }
+    private void updateNewHouseholdCoreCollectedData(Visit visit) {
+        if (newHouseholdCreated) {
+            CoreCollectedData coreData = boxCoreCollectedData.query().equal(CoreCollectedData_.formEntityCode, household.code).and()
+                    .equal(CoreCollectedData_.formEntity, CoreFormEntity.HOUSEHOLD.code).build().findFirst();
 
-    public interface Listener {
-        void onNewVisitCreated(Visit visit);
+            Log.d("found household", "core: "+coreData);
 
-        void onVisitEdited(Visit visit);
-
-        void onFormCancelled();
+            //update household with visit
+            if (coreData != null) {
+                coreData.visitId = visit.id;
+                boxCoreCollectedData.put(coreData);
+            }
+        }
     }
 
 }

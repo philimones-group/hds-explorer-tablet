@@ -21,6 +21,7 @@ import org.philimone.hds.explorer.fragment.CollectedDataFragment;
 import org.philimone.hds.explorer.fragment.household.details.HouseholdMembersFragment;
 import org.philimone.hds.explorer.fragment.household.details.HouseholdVisitFragment;
 import org.philimone.hds.explorer.fragment.household.details.adapter.HouseholdDetailsFragmentAdapter;
+import org.philimone.hds.explorer.main.hdsforms.FormUtilListener;
 import org.philimone.hds.explorer.main.hdsforms.HouseholdFormUtil;
 import org.philimone.hds.explorer.main.hdsforms.VisitFormUtil;
 import org.philimone.hds.explorer.model.ApplicationParam;
@@ -493,12 +494,28 @@ public class HouseholdDetailsActivity extends AppCompatActivity {
     }
 
     private void openPreviousVisit() {
-
+        //get the recently created visit
         Visit lastVisit = this.boxVisits.query().equal(Visit_.householdCode, household.code).order(Visit_.visitDate, QueryBuilder.DESCENDING).build().findFirst();
 
-        if (lastVisit != null) {
-            this.visit = lastVisit;
-            setVisitMode();
+        if (lastVisit != null && lastVisit.recentlyCreated) {
+
+            VisitFormUtil visitFormUtil = new VisitFormUtil(this.getSupportFragmentManager(), this, this.household, lastVisit, new FormUtilListener<Visit>() {
+                @Override
+                public void onNewEntityCreated(Visit entity) { }
+
+                @Override
+                public void onEntityEdited(Visit entity) {
+                    HouseholdDetailsActivity.this.visit = entity;
+                    setVisitMode();
+                }
+
+                @Override
+                public void onFormCancelled() {
+                    HouseholdDetailsActivity.this.visit = null;
+                }
+            });
+
+            visitFormUtil.collect();
         }
     }
 
@@ -530,15 +547,15 @@ public class HouseholdDetailsActivity extends AppCompatActivity {
     /* Visit Form */
     private void loadNewVisitForm(boolean newHouseholdCreated){
 
-        VisitFormUtil visitFormUtil = new VisitFormUtil(this.getSupportFragmentManager(), this, this.household, newHouseholdCreated, new VisitFormUtil.Listener() {
+        VisitFormUtil visitFormUtil = new VisitFormUtil(this.getSupportFragmentManager(), this, this.household, newHouseholdCreated, new FormUtilListener<Visit>() {
             @Override
-            public void onNewVisitCreated(Visit visit) {
-                HouseholdDetailsActivity.this.visit = visit;
+            public void onNewEntityCreated(Visit entity) {
+                HouseholdDetailsActivity.this.visit = entity;
                 setVisitMode();
             }
 
             @Override
-            public void onVisitEdited(Visit visit) {
+            public void onEntityEdited(Visit entity) {
 
             }
 

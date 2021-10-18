@@ -32,57 +32,38 @@ import java.util.Map;
 import androidx.fragment.app.FragmentManager;
 import io.objectbox.Box;
 
-public class HouseholdFormUtil implements FormCollectionListener {
-    private FragmentManager fragmentManager;
-    private Context context;
+public class HouseholdFormUtil extends FormUtil<Household> {
 
-    private HForm form;
-    private CodeGeneratorService codeGenerator;
-    private Map<String, String> preloadedMap;
-
-    private Box<ApplicationParam> boxAppParams;
     private Box<Household> boxHouseholds;
     private Box<CoreCollectedData> boxCoreCollectedData;
-
-    private User loggedUser;
     private Region region;
-    private boolean postExecution;
-    private Listener listener;
 
-    public HouseholdFormUtil(FragmentManager fragmentManager, Context context, Region region, Listener listener){
-        this.fragmentManager = fragmentManager;
-        this.context = context;
+    public HouseholdFormUtil(FragmentManager fragmentManager, Context context, Region region, FormUtilListener<Household> listener){
+        super(fragmentManager, context, FormUtil.getHouseholdForm(context), listener);
 
         this.region = region;
-
-        this.preloadedMap = new LinkedHashMap<>();
-        this.codeGenerator = new CodeGeneratorService();
-        this.listener = listener;
-
-        this.loggedUser = Bootstrap.getCurrentUser();
 
         initBoxes();
         initialize();
     }
 
-    private void initBoxes() {
-        this.boxAppParams = ObjectBoxDatabase.get().boxFor(ApplicationParam.class);
+    @Override
+    protected void initBoxes() {
         this.boxHouseholds = ObjectBoxDatabase.get().boxFor(Household.class);
         this.boxCoreCollectedData = ObjectBoxDatabase.get().boxFor(CoreCollectedData.class);
     }
 
-    private void initialize(){
-        InputStream inputStream = this.context.getResources().openRawResource(R.raw.household_form);
-        this.form = new ExcelFormParser(inputStream).getForm();
-
-        postExecution = Queries.getApplicationParamValue(this.boxAppParams, ApplicationParam.HFORM_POST_EXECUTION).equals("true");
-    }
-
-    private void preloadValues() {
+    @Override
+    protected void preloadValues() {
         preloadedMap.put("regionCode", region.code);
         preloadedMap.put("regionName", region.name);
-        preloadedMap.put("householdCode", codeGenerator.generateHouseholdCode(region, loggedUser));
-        preloadedMap.put("modules", loggedUser.getSelectedModulesCodes());
+        preloadedMap.put("householdCode", codeGenerator.generateHouseholdCode(region, this.user));
+        preloadedMap.put("modules", this.user.getSelectedModulesCodes());
+    }
+
+    @Override
+    protected void preloadUpdatedValues() {
+        //nothing to update yet
     }
 
     @Override
@@ -127,6 +108,11 @@ public class HouseholdFormUtil implements FormCollectionListener {
 
         Log.d("resultxml", result.getXmlResult());
 
+        if (currentMode == Mode.EDIT) {
+            System.out.println("Editing Household Not implemented yet");
+            assert 1==0;
+        }
+
         //saveNewHousehold();
         ColumnValue colRegionCode = collectedValues.get("regionCode");
         ColumnValue colRegionName = collectedValues.get("regionName");
@@ -161,12 +147,12 @@ public class HouseholdFormUtil implements FormCollectionListener {
         household.recentlyCreatedUri = result.getFilename();
         household.modules.addAll(StringCollectionConverter.getCollectionFrom(colModules.getValue()));
 
-        long entityId = boxHouseholds.put(household);
+        boxHouseholds.put(household);
 
         CoreCollectedData collectedData = new CoreCollectedData();
         //collectedData.visitId = visit.id; //will be updated when visit is created
         collectedData.formEntity = CoreFormEntity.HOUSEHOLD;
-        collectedData.formEntityId = entityId;
+        collectedData.formEntityId = household.id;
         collectedData.formEntityCode = household.code;
         collectedData.formEntityName = household.name;
         collectedData.formUuid = result.getFormUuid();
@@ -177,7 +163,7 @@ public class HouseholdFormUtil implements FormCollectionListener {
 
 
         if (listener != null) {
-            listener.onNewHouseholdCreated(household);
+            listener.onNewEntityCreated(household);
         }
 
     }
@@ -189,20 +175,9 @@ public class HouseholdFormUtil implements FormCollectionListener {
         }
     }
 
+    @Override
     public void collect() {
-
-        preloadValues();
-
-        FormFragment form = FormFragment.newInstance(this.fragmentManager, this.form, Bootstrap.getInstancesPath(), loggedUser.username, preloadedMap, postExecution , this);
-        form.startCollecting();
-    }
-
-    public interface Listener {
-        void onNewHouseholdCreated(Household household);
-
-        void onHouseholdEdited(Household household);
-
-        void onFormCancelled();
+        executeCollectForm();
     }
 
 }

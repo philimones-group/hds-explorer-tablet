@@ -39,13 +39,14 @@ public class SplashScreenActivity extends AppCompatActivity {
         }, 2000);
     }
 
+    /*
     private void test(){
         Box<Region> regionBox = ObjectBoxDatabase.get().boxFor(Region.class);
         Box<User> userBox = ObjectBoxDatabase.get().boxFor(User.class);
         Region region = regionBox.getAll().stream().findFirst().orElse(null);
         Bootstrap.setCurrentUser(userBox.getAll().stream().findFirst().orElse(null));
 
-        HouseholdFormUtil householdForm = new HouseholdFormUtil(this.getSupportFragmentManager(), this, region, new HouseholdFormUtil.Listener() {
+        HouseholdFormUtil householdForm = new HouseholdFormUtil(this.getSupportFragmentManager(), this, region, new FormUtilListener() {
             @Override
             public void onNewHouseholdCreated(Household household) {
 
@@ -66,5 +67,5 @@ public class SplashScreenActivity extends AppCompatActivity {
         });
 
         householdForm.collect();
-    }
+    }*/
 }

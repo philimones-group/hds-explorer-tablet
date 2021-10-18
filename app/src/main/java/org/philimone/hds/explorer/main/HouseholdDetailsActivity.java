@@ -435,6 +435,7 @@ public class HouseholdDetailsActivity extends AppCompatActivity {
         displayHouseholdDetails();
 
         //load visit fragment
+        Log.d("setvisitmode", "visitFragment="+householdVisitFragment+", household="+household);
         if (this.householdVisitFragment != null) {
             this.householdVisitFragment.load(household, visit, loggedUser);
         }
@@ -522,15 +523,15 @@ public class HouseholdDetailsActivity extends AppCompatActivity {
     /* Household Form */
     private void loadNewHouseholdForm(){
 
-        HouseholdFormUtil householdForm = new HouseholdFormUtil(this.getSupportFragmentManager(), this, this.region, new HouseholdFormUtil.Listener() {
+        HouseholdFormUtil householdForm = new HouseholdFormUtil(this.getSupportFragmentManager(), this, this.region, new FormUtilListener<Household>() {
             @Override
-            public void onNewHouseholdCreated(Household household) {
+            public void onNewEntityCreated(Household household) {
                 HouseholdDetailsActivity.this.household = household;
                 loadNewVisitForm(true);
             }
 
             @Override
-            public void onHouseholdEdited(Household household) {
+            public void onEntityEdited(Household household) {
 
             }
 

@@ -17,6 +17,7 @@ import org.philimone.hds.explorer.R;
 import org.philimone.hds.explorer.adapter.CoreCollectedExpandableAdapter;
 import org.philimone.hds.explorer.adapter.MemberArrayAdapter;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
+import org.philimone.hds.explorer.main.hdsforms.FormUtilListener;
 import org.philimone.hds.explorer.main.hdsforms.MemberEnumerationFormUtil;
 import org.philimone.hds.explorer.model.CollectedData;
 import org.philimone.hds.explorer.model.CollectedData_;
@@ -181,16 +182,16 @@ public class HouseholdVisitFragment extends Fragment {
     }
 
     private void onEnumerationClicked() {
-        MemberEnumerationFormUtil formUtil = new MemberEnumerationFormUtil(getActivity().getSupportFragmentManager(), this.getContext(), this.visit, this.household, new MemberEnumerationFormUtil.Listener() {
+        MemberEnumerationFormUtil formUtil = new MemberEnumerationFormUtil(getActivity().getSupportFragmentManager(), this.getContext(), this.visit, this.household, new FormUtilListener<Member>() {
             @Override
-            public void onNewMemberCreated(Member member) {
+            public void onNewEntityCreated(Member member) {
                 selectedMember = member;
                 loadDataToListViews();
                 selectMember(member);
             }
 
             @Override
-            public void onMemberEdited(Member member) {
+            public void onEntityEdited(Member member) {
 
             }
 
@@ -354,7 +355,4 @@ public class HouseholdVisitFragment extends Fragment {
         return count1 + count2;
     }
 
-    public interface VisitListener {
-
-    }
 }

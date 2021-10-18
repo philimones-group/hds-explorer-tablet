@@ -101,6 +101,11 @@ public class VisitFormUtil extends FormUtil<Visit> {
     }
 
     @Override
+    protected void preloadUpdatedValues() {
+        //nothing to preload, but think about changing the respondent
+    }
+
+    @Override
     public ValidationResult onFormValidate(HForm form, Map<String, ColumnValue> collectedValues) {
         ColumnValue colCode = collectedValues.get("code");
         ColumnValue colHouseholdCode = collectedValues.get("householdCode");
@@ -264,6 +269,7 @@ public class VisitFormUtil extends FormUtil<Visit> {
         }
     }
 
+    @Override
     public void collect() {
 
         if (newHouseholdCreated || currentMode==Mode.EDIT) {

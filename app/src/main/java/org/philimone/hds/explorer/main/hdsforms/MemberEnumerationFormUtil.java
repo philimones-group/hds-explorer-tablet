@@ -48,84 +48,69 @@ import io.objectbox.Box;
 import mz.betainteractive.utilities.GeneralUtil;
 import mz.betainteractive.utilities.StringUtil;
 
-public class MemberEnumerationFormUtil implements FormCollectionListener {
-    private FragmentManager fragmentManager;
-    private Context context;
+public class MemberEnumerationFormUtil extends FormUtil<Member> {
 
-    private HForm form;
-    private CodeGeneratorService codeGenerator;
-    private Map<String, String> preloadedMap;
-
-    private Box<ApplicationParam> boxAppParams;
     private Box<Household> boxHouseholds;
     private Box<Member> boxMembers;
     private Box<Residency> boxResidencies;
     private Box<HeadRelationship> boxHeadRelationships;
-    private Box<Visit> boxVisits;
     private Box<CoreCollectedData> boxCoreCollectedData;
 
-    private User loggedUser;
     private Household household;
     private Visit visit;
     private Member father;
     private Member mother;
     private boolean isFirstHouseholdMember;
     private int minimunHeadAge;
-    private boolean postExecution;
-    private Listener listener;
 
-    public MemberEnumerationFormUtil(FragmentManager fragmentManager, Context context, Visit visit, Household household, Listener listener){
-        this.fragmentManager = fragmentManager;
-        this.context = context;
+    public MemberEnumerationFormUtil(FragmentManager fragmentManager, Context context, Visit visit, Household household, FormUtilListener<Member> listener){
+        super(fragmentManager, context, FormUtil.getMemberEnuForm(context), listener);
+
+        Log.d("from-const-memenu-household", ""+household);
 
         this.household = household;
         this.visit = visit;
-
-        this.preloadedMap = new LinkedHashMap<>();
-        this.codeGenerator = new CodeGeneratorService();
-        this.listener = listener;
-
-        this.loggedUser = Bootstrap.getCurrentUser();
 
         initBoxes();
         initialize();
     }
 
-    private void initBoxes() {
-        this.boxAppParams = ObjectBoxDatabase.get().boxFor(ApplicationParam.class);
+    public MemberEnumerationFormUtil(FragmentManager fragmentManager, Context context, Visit visit, Household household, Member memberToEdit, FormUtilListener<Member> listener){
+        super(fragmentManager, context, FormUtil.getMemberEnuForm(context), memberToEdit, listener);
+
+        this.household = household;
+        this.visit = visit;
+
+        initBoxes();
+        initialize();
+
+        this.father = boxMembers.query().equal(Member_.code, memberToEdit.fatherCode).build().findFirst();
+        this.mother = boxMembers.query().equal(Member_.code, memberToEdit.motherCode).build().findFirst();
+    }
+
+    @Override
+    protected void initBoxes() {
+        super.initBoxes();
+
         this.boxHouseholds = ObjectBoxDatabase.get().boxFor(Household.class);
         this.boxMembers = ObjectBoxDatabase.get().boxFor(Member.class);
         this.boxResidencies = ObjectBoxDatabase.get().boxFor(Residency.class);
         this.boxHeadRelationships = ObjectBoxDatabase.get().boxFor(HeadRelationship.class);
-        this.boxVisits = ObjectBoxDatabase.get().boxFor(Visit.class);
         this.boxCoreCollectedData = ObjectBoxDatabase.get().boxFor(CoreCollectedData.class);
     }
 
-    private void initialize(){
-        InputStream inputStream = this.context.getResources().openRawResource(R.raw.member_enu_form);
-        this.form = new ExcelFormParser(inputStream).getForm();
-        Log.d("hform", ""+this.form);
-        this.postExecution = Queries.getApplicationParamValue(this.boxAppParams, ApplicationParam.HFORM_POST_EXECUTION).equals("true");
+    @Override
+    protected void initialize(){
+        super.initialize();
+
+        Log.d("on-memenu-util-init-household", ""+household);
 
         this.isFirstHouseholdMember = boxResidencies.query().equal(Residency_.householdCode, household.code).and().equal(Residency_.endType, ResidencyEndType.NOT_APPLICABLE.code).build().count()==0; //find any resident
         this.minimunHeadAge = retrieveMinimumHeadAge();
     }
 
-    private int retrieveMinimumHeadAge() {
-        ApplicationParam param = this.boxAppParams.query().equal(ApplicationParam_.name, ApplicationParam.PARAMS_MIN_AGE_OF_HEAD).build().findFirst();
-
-        if (param != null) {
-            try {
-                return Integer.parseInt(param.value);
-            } catch (Exception ex) {
-
-            }
-        }
-
-        return 12;
-    }
-
-    private void preloadValues() {
+    @Override
+    protected void preloadValues() {
         //member_details_unknown_lbl
         preloadedMap.put("visitCode", this.visit.code);
         preloadedMap.put("code", codeGenerator.generateMemberCode(household));
@@ -135,12 +120,21 @@ public class MemberEnumerationFormUtil implements FormCollectionListener {
         preloadedMap.put("motherName", mother.isUnknownIndividual() ? context.getString(R.string.member_details_unknown_lbl) : mother.name);
         preloadedMap.put("fatherCode", father.code);
         preloadedMap.put("fatherName", father.isUnknownIndividual() ? context.getString(R.string.member_details_unknown_lbl) : father.name);
-        preloadedMap.put("modules", loggedUser.getSelectedModulesCodes());
+        preloadedMap.put("modules", this.user.getSelectedModulesCodes());
 
         if (isFirstHouseholdMember) {
             preloadedMap.put("headRelationshipType", "HOH");
         }
 
+    }
+
+    @Override
+    protected void preloadUpdatedValues() {
+        //only father and mother can be updated using dialogs
+        preloadedMap.put("motherCode", mother.code);
+        preloadedMap.put("motherName", mother.isUnknownIndividual() ? context.getString(R.string.member_details_unknown_lbl) : mother.name);
+        preloadedMap.put("fatherCode", father.code);
+        preloadedMap.put("fatherName", father.isUnknownIndividual() ? context.getString(R.string.member_details_unknown_lbl) : father.name);
     }
 
     @Override
@@ -263,6 +257,12 @@ public class MemberEnumerationFormUtil implements FormCollectionListener {
 
         Log.d("resultxml", result.getXmlResult());
 
+        if (currentMode == Mode.EDIT) {
+            System.out.println("Editing Member Enumeration Not implemented yet");
+            assert 1==0;
+        }
+
+
         //saveNewHousehold();
         ColumnValue colVisitCode = collectedValues.get("visitCode");
         ColumnValue colCode = collectedValues.get("code"); //check if code is valid + check duplicate + member belongs to household
@@ -376,29 +376,44 @@ public class MemberEnumerationFormUtil implements FormCollectionListener {
 
 
         if (listener != null) {
-            listener.onNewMemberCreated(member);
+            listener.onNewEntityCreated(member);
         }
 
     }
 
+    @Override
     public void onFormCancelled(){
         if (listener != null) {
             listener.onFormCancelled();
         }
     }
 
+    @Override
     public void collect() {
 
         //filterFather, Mother
         //Is the Father/Mother of this Member known and exists on DSS?
 
-        checkFatherDialog();
+        if (currentMode == Mode.CREATE) {
+            checkFatherDialog();
+        } else if (currentMode == Mode.EDIT) {
+            checkChangeFatherDialog();
+        }
+
     }
 
-    private void executeCollectForm() {
-        preloadValues();
-        FormFragment formFragment = FormFragment.newInstance(this.fragmentManager, this.form, Bootstrap.getInstancesPath(), loggedUser.username, preloadedMap, postExecution, this);
-        formFragment.startCollecting();
+    private int retrieveMinimumHeadAge() {
+        ApplicationParam param = this.boxAppParams.query().equal(ApplicationParam_.name, ApplicationParam.PARAMS_MIN_AGE_OF_HEAD).build().findFirst();
+
+        if (param != null) {
+            try {
+                return Integer.parseInt(param.value);
+            } catch (Exception ex) {
+
+            }
+        }
+
+        return 12;
     }
 
     private void checkFatherDialog(){
@@ -437,6 +452,40 @@ public class MemberEnumerationFormUtil implements FormCollectionListener {
 
     }
 
+    private void checkChangeFatherDialog(){
+
+        DialogFactory.createMessageYN(this.context, R.string.new_member_dialog_change_title_lbl, R.string.new_member_dialog_father_change_lbl, new DialogFactory.OnYesNoClickListener() {
+            @Override
+            public void onYesClicked() {
+                openFatherFilterDialog();
+            }
+
+            @Override
+            public void onNoClicked() {
+                //father remains unchanged
+                checkChangeMotherDialog();
+            }
+        }).show();
+
+    }
+
+    private void checkChangeMotherDialog(){
+
+        DialogFactory.createMessageYN(this.context, R.string.new_member_dialog_change_title_lbl, R.string.new_member_dialog_father_change_lbl, new DialogFactory.OnYesNoClickListener() {
+            @Override
+            public void onYesClicked() {
+                openMotherFilterDialog();
+            }
+
+            @Override
+            public void onNoClicked() {
+                //mother remains unchanged
+                executeCollectForm();
+            }
+        }).show();
+
+    }
+
     private void openFatherFilterDialog(){
 
         MemberFilterDialog dialog = MemberFilterDialog.newInstance(this.fragmentManager, context.getString(R.string.new_member_dialog_father_select_lbl), false, member -> {
@@ -467,15 +516,6 @@ public class MemberEnumerationFormUtil implements FormCollectionListener {
         dialog.setFilterHouseCode(household.getCode());
         dialog.setStartSearchOnShow(true);
         dialog.show();
-    }
-
-
-    public interface Listener {
-        void onNewMemberCreated(Member member);
-
-        void onMemberEdited(Member member);
-
-        void onFormCancelled();
     }
 
 }

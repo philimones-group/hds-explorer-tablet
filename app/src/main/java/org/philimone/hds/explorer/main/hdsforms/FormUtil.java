@@ -63,9 +63,6 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
         this.currentMode = Mode.CREATE;
         
         this.listener = listener;
-
-        initBoxes();
-        initialize();
     }
 
     protected FormUtil(FragmentManager fragmentManager, Context context, HForm hform, T existentEntity, FormUtilListener<T> listener){
@@ -80,9 +77,6 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
         this.entity = existentEntity;
 
         this.listener = listener;
-
-        initBoxes();
-        initialize();
     }
 
     protected void initBoxes(){
@@ -97,6 +91,8 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
 
     protected abstract void preloadValues();
 
+    protected abstract void preloadUpdatedValues();
+
     public abstract void collect();
 
     protected void executeCollectForm() {
@@ -107,7 +103,8 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
         }
 
         if (currentMode == Mode.EDIT) {
-            FormFragment form = FormFragment.newInstance(this.fragmentManager, this.form, Bootstrap.getInstancesPath(), user.username, this.entity.getRecentlyCreatedUri(), postExecution, false, true, this);
+            preloadUpdatedValues();
+            FormFragment form = FormFragment.newInstance(this.fragmentManager, this.form, Bootstrap.getInstancesPath(), user.username, this.entity.getRecentlyCreatedUri(), preloadedMap, postExecution, false, true, this);
             form.startCollecting();
         }
     }
@@ -115,6 +112,18 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
     /* statics */
     protected static HForm getVisitForm(Context context) {
         InputStream inputStream = context.getResources().openRawResource(R.raw.visit_form);
+        HForm form = new ExcelFormParser(inputStream).getForm();
+        return form;
+    }
+
+    protected static HForm getMemberEnuForm(Context context) {
+        InputStream inputStream = context.getResources().openRawResource(R.raw.member_enu_form);
+        HForm form = new ExcelFormParser(inputStream).getForm();
+        return form;
+    }
+
+    protected static HForm getHouseholdForm(Context context) {
+        InputStream inputStream = context.getResources().openRawResource(R.raw.household_form);
         HForm form = new ExcelFormParser(inputStream).getForm();
         return form;
     }

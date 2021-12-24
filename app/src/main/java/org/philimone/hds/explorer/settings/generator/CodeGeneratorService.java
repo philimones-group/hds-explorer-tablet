@@ -9,6 +9,8 @@ import org.philimone.hds.explorer.model.PregnancyRegistration;
 import org.philimone.hds.explorer.model.PregnancyRegistration_;
 import org.philimone.hds.explorer.model.Region;
 import org.philimone.hds.explorer.model.Region_;
+import org.philimone.hds.explorer.model.Round;
+import org.philimone.hds.explorer.model.Round_;
 import org.philimone.hds.explorer.model.User;
 import org.philimone.hds.explorer.model.User_;
 import org.philimone.hds.explorer.model.Visit;
@@ -27,6 +29,7 @@ public class CodeGeneratorService {
     private Box<Household> boxHouseholds;
     private Box<Member> boxMembers;
     private Box<Visit> boxVisits;
+    private Box<Round> boxRounds;
     private Box<PregnancyRegistration> boxPregnancies;
     
 
@@ -38,6 +41,7 @@ public class CodeGeneratorService {
         this.boxHouseholds = ObjectBoxDatabase.get().boxFor(Household.class);
         this.boxMembers = ObjectBoxDatabase.get().boxFor(Member.class);
         this.boxVisits = ObjectBoxDatabase.get().boxFor(Visit.class);
+        this.boxRounds = ObjectBoxDatabase.get().boxFor(Round.class);
         this.boxPregnancies = ObjectBoxDatabase.get().boxFor(PregnancyRegistration.class);
     }
 
@@ -73,7 +77,6 @@ public class CodeGeneratorService {
     }
 
     public String generateHouseholdCode(Region region, User user) {
-
         String cbase = region.code + user.code;
         String[] codesArray = boxHouseholds.query().startsWith(Household_.code, cbase)
                                                    .order(Household_.code).build()
@@ -97,7 +100,8 @@ public class CodeGeneratorService {
 
     public String generateVisitCode(Household household) {
 
-        String cbase = household.code;
+        long round = boxRounds.query().build().property(Round_.roundNumber).max();
+        String cbase = household.code + String.format("%03d", round);
         String[] codesArray = boxVisits.query().startsWith(Visit_.code, cbase)
                                                .order(Visit_.code).build()
                                                .property(Visit_.code).findStrings();

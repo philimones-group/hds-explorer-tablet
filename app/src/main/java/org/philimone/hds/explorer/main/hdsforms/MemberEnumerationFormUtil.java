@@ -520,11 +520,19 @@ public class MemberEnumerationFormUtil extends FormUtil<Member> {
 
     private void openFatherFilterDialog(){
 
-        MemberFilterDialog dialog = MemberFilterDialog.newInstance(this.fragmentManager, context.getString(R.string.new_member_dialog_father_select_lbl), false, member -> {
-            Log.d("selected-father", ""+member.getCode());
+        MemberFilterDialog dialog = MemberFilterDialog.newInstance(this.fragmentManager, context.getString(R.string.new_member_dialog_father_select_lbl), true, new MemberFilterDialog.Listener() {
+            @Override
+            public void onSelectedMember(Member member) {
+                Log.d("selected-father", ""+member.getCode());
 
-            father = member;
-            checkMotherDialog();
+                father = member;
+                checkMotherDialog();
+            }
+
+            @Override
+            public void onCanceled() {
+
+            }
         });
 
         dialog.setGenderMaleOnly();
@@ -536,11 +544,19 @@ public class MemberEnumerationFormUtil extends FormUtil<Member> {
 
     private void openMotherFilterDialog(){
 
-        MemberFilterDialog dialog = MemberFilterDialog.newInstance(this.fragmentManager, context.getString(R.string.new_member_dialog_mother_select_lbl), false, member -> {
-            Log.d("selected-mother", ""+member.getCode());
+        MemberFilterDialog dialog = MemberFilterDialog.newInstance(this.fragmentManager, context.getString(R.string.new_member_dialog_mother_select_lbl), true, new MemberFilterDialog.Listener() {
+            @Override
+            public void onSelectedMember(Member member) {
+                Log.d("selected-mother", ""+member.getCode());
 
-            mother = member;
-            executeCollectForm();
+                mother = member;
+                executeCollectForm();
+            }
+
+            @Override
+            public void onCanceled() {
+
+            }
         });
 
         dialog.setGenderFemaleOnly();

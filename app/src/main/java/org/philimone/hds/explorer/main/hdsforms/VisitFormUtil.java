@@ -280,9 +280,17 @@ public class VisitFormUtil extends FormUtil<Visit> {
     }
 
     private void selectRespondent(){
-        MemberFilterDialog filterDialog = MemberFilterDialog.newInstance(this.fragmentManager, this.context.getString(R.string.new_visit_select_respondent_lbl), selectedMember -> {
-            respondentMember = selectedMember;
-            executeCollectForm();
+        MemberFilterDialog filterDialog = MemberFilterDialog.newInstance(this.fragmentManager, this.context.getString(R.string.new_visit_select_respondent_lbl), new MemberFilterDialog.Listener() {
+            @Override
+            public void onSelectedMember(Member member) {
+                respondentMember = member;
+                executeCollectForm();
+            }
+
+            @Override
+            public void onCanceled() {
+
+            }
         });
 
         filterDialog.show();

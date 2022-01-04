@@ -341,16 +341,39 @@
     <string name="new_member_dialog_father_select_lbl">Select the father of the Member?</string>
     <string name="new_member_dialog_father_exists_lbl">Is the father known and registered in the system?</string>
     <string name="new_member_dialog_father_change_lbl">Do you want to update the father of this Member?</string>
-    <string name="new_member_dialog_spouse_select_lbl">Select the spouse of the Member?</string>
-    <string name="new_member_dialog_spouse_exists_lbl">Does the Member has a spouse known and registered in the system?</string>
-    <string name="new_member_dialog_spouse_change_lbl">Do you want to update the spouse of this Member?</string>
-    <string name="new_member_dialog_spouse_type_change_lbl">Do you want to update the Marital Status of this Member?</string>
     <string name="new_member_dialog_household_head_warning_lbl">This is the first Member to be registered in this Household.\nIt will be declared automatically as Head of the Household!</string>
     <string name="new_member_dialog_household_head_updated_lbl">The information of Household is updated!</string>
 
     <string name="relationship_type_title_lbl">Member Marital Status</string>
     <string name="relationship_type_question_lbl">Select the Marital Status?</string>
     <string name="relationship_type_select_btn_lbl">Select</string>
+
+    <string name="maritalrelationship_spouse_select_lbl">Select the spouse of the Member?</string>
+    <string name="maritalrelationship_spouse_exists_lbl">Does the Member has a spouse known and registered in the system?</string>
+    <string name="maritalrelationship_spouse_change_lbl">Do you want to update the spouse of this Member?</string>
+    <string name="maritalrelationship_spouse_type_change_lbl">Do you want to update the Marital Status of this Member?</string>
+    <string name="maritalrelationship_visit_code_empty_lbl">The Visit Code cannot be empty</string>
+    <string name="maritalrelationship_member_a_code_empty_lbl">The Member A Code cannot be empty</string>
+    <string name="maritalrelationship_member_b_code_empty_lbl">The Member B Code cannot be empty</string>
+    <string name="maritalrelationship_member_a_status_empty_lbl">The Member A current status cannot be empty</string>
+    <string name="maritalrelationship_member_b_status_empty_lbl">The Member B current status cannot be empty</string>
+    <string name="maritalrelationship_relationship_type_empty_lbl">The New Marital Status cannot be empty</string>
+    <string name="maritalrelationship_relationship_date_empty_lbl">The Event Date cannot be empty</string>
+    <string name="maritalrelationship_same_member_lbl">The Member A code is the same as Member B code, the spouse must be a different individual</string>
+    <string name="maritalrelationship_spouse_a_not_found_lbl">The Member A was not found in the database</string>
+    <string name="maritalrelationship_spouse_b_not_found_lbl">The Member B was not found in the database</string>
+    <string name="maritalrelationship_eventdate_not_great_today_lbl">The event date cannot be greater than today</string>
+    <string name="maritalrelationship_eventdate_not_before_member_dob_lbl">The event date cannot be before Members date of birth</string>
+    <string name="maritalrelationship_dob_minimum_spouse_age_lbl">The minimum spouse age to register a marital relationship is (%1$s)</string>
+    <string name="maritalrelationship_gender_must_be_opposite_lbl">The gender of the spouse is invalid, must be the opposite, one must be Male and other Female</string>
+    <string name="maritalrelationship_dead_members_lbl">Cannot create a new Marital Relationship for dead Members</string>
+    <string name="maritalrelationship_p1_previous_not_closed_lbl">Cannot create a new Marital Relationship because previous relationship of Member [%1$s] is not closed</string>
+    <string name="maritalrelationship_p2_previous_enddate_overlap_lbl">Cannot create a new Marital Relationship because the startDate of the current relationship is before or equals to the endDate of the previous relationship of Member [%1$s]</string>
+    <string name="maritalrelationship_cp1_current_dont_exists_lbl">Cannot close the Marital Relationship because no relationship record were found for member A and B.</string>
+    <string name="maritalrelationship_cp2_already_closed_lbl">Cannot close the Marital Relationship because its already closed with type [%1$s]</string>
+    <string name="maritalrelationship_cp3_dates_overlap_lbl">Cannot close the Marital Relationship because the endDate cannot be before or equal to the startDate</string>
+
+
 
     <string-array name="relationship_types_array">
         <item>Single</item>

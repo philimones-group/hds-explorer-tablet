@@ -18,6 +18,7 @@ import org.philimone.hds.explorer.adapter.CoreCollectedExpandableAdapter;
 import org.philimone.hds.explorer.adapter.MemberArrayAdapter;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
 import org.philimone.hds.explorer.main.hdsforms.FormUtilListener;
+import org.philimone.hds.explorer.main.hdsforms.MaritalRelationshipFormUtil;
 import org.philimone.hds.explorer.main.hdsforms.MemberEnumerationFormUtil;
 import org.philimone.hds.explorer.model.CollectedData;
 import org.philimone.hds.explorer.model.CollectedData_;
@@ -25,6 +26,7 @@ import org.philimone.hds.explorer.model.CoreCollectedData;
 import org.philimone.hds.explorer.model.CoreCollectedData_;
 import org.philimone.hds.explorer.model.Form;
 import org.philimone.hds.explorer.model.Household;
+import org.philimone.hds.explorer.model.MaritalRelationship;
 import org.philimone.hds.explorer.model.Member;
 import org.philimone.hds.explorer.model.Member_;
 import org.philimone.hds.explorer.model.User;
@@ -355,6 +357,28 @@ public class HouseholdVisitFragment extends Fragment {
 
     private void onMaritalClicked() {
         //get current selected member
+        //this.selectedMember
+
+        Log.d("on-enum-click-member", ""+this.selectedMember);
+
+        MaritalRelationshipFormUtil formUtil = new MaritalRelationshipFormUtil(getActivity().getSupportFragmentManager(), this.getContext(), this.visit, this.selectedMember, new FormUtilListener<MaritalRelationship>() {
+            @Override
+            public void onNewEntityCreated(MaritalRelationship maritalRelationship) {
+                loadDataToListViews();
+            }
+
+            @Override
+            public void onEntityEdited(MaritalRelationship maritalRelationship) {
+
+            }
+
+            @Override
+            public void onFormCancelled() {
+
+            }
+        });
+
+        formUtil.collect();
     }
 
     private void onExtInMigrationClicked() {

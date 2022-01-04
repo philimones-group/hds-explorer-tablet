@@ -4,6 +4,8 @@ import org.philimone.hds.explorer.model.ApplicationParam;
 import org.philimone.hds.explorer.model.ApplicationParam_;
 import org.philimone.hds.explorer.model.CollectedData;
 import org.philimone.hds.explorer.model.CollectedData_;
+import org.philimone.hds.explorer.model.Death;
+import org.philimone.hds.explorer.model.Death_;
 import org.philimone.hds.explorer.model.Household;
 import org.philimone.hds.explorer.model.Household_;
 import org.philimone.hds.explorer.model.Member;
@@ -64,6 +66,12 @@ public class Queries {
 
         Member member = box.query().equal(Member_.id, id).build().findFirst();
         return member;
+    }
+
+    public static Death getDeathByCode(Box<Death> box, String code){
+
+        Death death = box.query().equal(Death_.memberCode, code).build().findFirst();
+        return death;
     }
 
     public static List<CollectedData> getCollectedDataBy(Box<CollectedData> box, Collection<? extends String> modules) {

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- pressed -->
+    <item android:state_pressed="true" >
+        <layer-list>
+
+            <item android:gravity="center"
+                  android:width="45dp"
+                  android:height="45dp">
+                <bitmap android:src="@mipmap/nui_dialog_close_dark_icon" android:gravity="fill" />
+            </item>
+        </layer-list>
+    </item>
+
+    <!-- normal -->
+    <item>
+        <layer-list>
+
+            <item android:gravity="center"
+                  android:width="45dp"
+                  android:height="45dp">
+                <bitmap android:src="@mipmap/nui_dialog_close_icon" android:gravity="fill" />
+            </item>
+        </layer-list>
+    </item>
+</selector>
+

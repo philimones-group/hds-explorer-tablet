@@ -10,7 +10,7 @@
     <!-- Dialog Header -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="60dp"
+        android:layout_height="57dp"
         android:background="@drawable/nui_dialog_border_thin"
         android:orientation="horizontal"
         android:elevation="5dp">
@@ -28,14 +28,24 @@
 
         <TextView
             android:id="@+id/txtDialogTitle"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
+            android:layout_weight="1"
             android:layout_marginLeft="10dp"
             android:gravity="center_vertical"
             android:text="Title"
             android:textSize="18sp"
             android:textColor="@color/nui_color_text_red"
             android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/btDialogClose"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginEnd="10dp"
+            android:layout_gravity="center"
+            android:background="@drawable/nui_btnd_dialog_close"
+            />
 
     </LinearLayout>
 

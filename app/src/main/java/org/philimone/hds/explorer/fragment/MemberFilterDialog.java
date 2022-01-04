@@ -39,6 +39,7 @@ public class MemberFilterDialog extends DialogFragment {
     private FragmentManager fragmentManager;
 
     private TextView txtDialogTitle;
+    private Button btDialogClose;
     private EditText txtMemFilterName;
     private EditText txtMemFilterCode;
     private EditText txtMemFilterHouseCode;
@@ -130,6 +131,7 @@ public class MemberFilterDialog extends DialogFragment {
     private void initialize(View view) {
 
         this.txtDialogTitle = (TextView) view.findViewById(R.id.txtDialogTitle);
+        this.btDialogClose = (Button) view.findViewById(R.id.btDialogClose);
         this.txtMemFilterName = (EditText) view.findViewById(R.id.txtMemFilterName);
         this.txtMemFilterCode = (EditText) view.findViewById(R.id.txtMemFilterCode);
         this.txtMemFilterHouseCode = (EditText) view.findViewById(R.id.txtMemFilterCurrHousecode);
@@ -155,6 +157,15 @@ public class MemberFilterDialog extends DialogFragment {
             @Override
             public void onClick(View v) {
                 onSearch();
+            }
+        });
+
+        this.btDialogClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (isCancelable()) {
+                    closeDialog();
+                }
             }
         });
 
@@ -462,6 +473,14 @@ public class MemberFilterDialog extends DialogFragment {
         this.show(fragmentManager, "relatype");
     }
 
+    private void closeDialog(){
+        dismiss();
+
+        if (this.listener != null){
+            this.listener.onCanceled();
+        }
+    }
+
     class MemberSearchTask extends AsyncTask<Void, Void, MemberArrayAdapter> {
         private String name;
         private String code;
@@ -499,6 +518,8 @@ public class MemberFilterDialog extends DialogFragment {
 
     public interface Listener {
         void onSelectedMember(Member member);
+
+        void onCanceled();
     }
 
 }

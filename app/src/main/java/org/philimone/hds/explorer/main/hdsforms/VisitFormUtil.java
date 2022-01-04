@@ -126,7 +126,7 @@ public class VisitFormUtil extends FormUtil<Visit> {
         Date visitDate = colVisitDate.getDateValue();
 
         if (!codeGenerator.isVisitCodeValid(visit_code)){
-            String message = this.context.getString(R.string.new_household_code_err_lbl);
+            String message = this.context.getString(R.string.new_visit_code_err_lbl);
             return new ValidationResult(colCode, message);
         }
 
@@ -301,6 +301,11 @@ public class VisitFormUtil extends FormUtil<Visit> {
                 boxCoreCollectedData.put(coreData);
             }
         }
+    }
+
+    public static void UpdateEndTimestamp(Context context, String xmlSavedFormPath) {
+        HForm form = getVisitForm(context);
+        FormFragment.UpdateEndTimestamp(form, xmlSavedFormPath);
     }
 
 }

@@ -171,40 +171,6 @@ public class HouseholdVisitFragment extends Fragment {
         onMembersClick(index);
     }
 
-    private void onClearMemberClicked() {
-        setHouseholdMode();
-    }
-
-    private void onExtInMigrationClicked() {
-    }
-
-    private void onMaritalClicked() {
-    }
-
-    private void onEnumerationClicked() {
-        MemberEnumerationFormUtil formUtil = new MemberEnumerationFormUtil(getActivity().getSupportFragmentManager(), this.getContext(), this.visit, this.household, new FormUtilListener<Member>() {
-            @Override
-            public void onNewEntityCreated(Member member) {
-                selectedMember = member;
-                loadDataToListViews();
-                selectMember(member);
-            }
-
-            @Override
-            public void onEntityEdited(Member member) {
-
-            }
-
-            @Override
-            public void onFormCancelled() {
-
-            }
-        });
-
-        formUtil.collect();
-    }
-
-
     private void onMembersClick(int position) {
         //select one member and highlight
 
@@ -354,5 +320,67 @@ public class HouseholdVisitFragment extends Fragment {
         //any form collected for this member
         return count1 + count2;
     }
+
+    //region Events Execution
+
+    private void onClearMemberClicked() {
+        setHouseholdMode();
+    }
+
+    private void onEnumerationClicked() {
+
+        Log.d("on-enum-click-household", ""+this.household);
+
+        MemberEnumerationFormUtil formUtil = new MemberEnumerationFormUtil(getActivity().getSupportFragmentManager(), this.getContext(), this.visit, this.household, new FormUtilListener<Member>() {
+            @Override
+            public void onNewEntityCreated(Member member) {
+                selectedMember = member;
+                loadDataToListViews();
+                selectMember(member);
+            }
+
+            @Override
+            public void onEntityEdited(Member member) {
+
+            }
+
+            @Override
+            public void onFormCancelled() {
+
+            }
+        });
+
+        formUtil.collect();
+    }
+
+    private void onMaritalClicked() {
+        //get current selected member
+    }
+
+    private void onExtInMigrationClicked() {
+
+    }
+
+
+
+    public List<Member> getNonVisitedMembers() {
+        ///check if all individuals were visited
+        List<Member> members = this.boxMembers.query().equal(Member_.householdCode, household.getCode()).build().find();
+        List<Member> membersNotVisited = new ArrayList<>();
+
+        members.forEach(member -> {
+            long count = countCollectedForms(member);
+            //any form collected for this member
+            if (count == 0) {
+                membersNotVisited.add(member);
+            }
+        });
+
+
+        return membersNotVisited;
+
+    }
+
+    //endregion
 
 }

@@ -268,6 +268,8 @@
     <string name="household_visit_bt_changehoh_lbl">Change Head\nof Household</string>
     <string name="household_visit_bt_incomplete_lbl">Visit Member\nNot possible</string>
     <string name="household_visit_bt_collect_lbl">Collect\nOther Forms</string>
+    <string name="household_visit_not_finished_title_lbl">Visit not Finished</string>
+    <string name="household_visit_not_finished_msg_lbl">Not all the Members were visited during this Visit\nPlease collect the (Visit Member not Possible) Form\nFor the following Members:\n(%1$s)</string>
 
     <string name="region_details_code_lbl">Code:</string>
     <string name="region_details_parent_lbl">Parent Region:</string>

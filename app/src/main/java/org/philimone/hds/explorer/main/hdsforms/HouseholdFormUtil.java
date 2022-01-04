@@ -49,6 +49,8 @@ public class HouseholdFormUtil extends FormUtil<Household> {
 
     @Override
     protected void initBoxes() {
+        super.initBoxes();
+
         this.boxHouseholds = ObjectBoxDatabase.get().boxFor(Household.class);
         this.boxCoreCollectedData = ObjectBoxDatabase.get().boxFor(CoreCollectedData.class);
     }

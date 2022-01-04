@@ -16,7 +16,6 @@ import org.philimone.hds.explorer.data.FormDataLoader;
 import org.philimone.hds.explorer.database.Bootstrap;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
 import org.philimone.hds.explorer.database.Queries;
-import org.philimone.hds.explorer.fragment.ExternalDatasetsFragment;
 import org.philimone.hds.explorer.fragment.CollectedDataFragment;
 import org.philimone.hds.explorer.fragment.household.details.HouseholdMembersFragment;
 import org.philimone.hds.explorer.fragment.household.details.HouseholdVisitFragment;
@@ -28,6 +27,7 @@ import org.philimone.hds.explorer.model.ApplicationParam;
 import org.philimone.hds.explorer.model.CoreCollectedData;
 import org.philimone.hds.explorer.model.Form;
 import org.philimone.hds.explorer.model.Household;
+import org.philimone.hds.explorer.model.Member;
 import org.philimone.hds.explorer.model.Region;
 import org.philimone.hds.explorer.model.Region_;
 import org.philimone.hds.explorer.model.User;
@@ -370,10 +370,9 @@ public class HouseholdDetailsActivity extends AppCompatActivity {
     }
 
     private void onFinishVisitClicked() {
-        Log.d("finishing","visit");
-        DialogFactory.createMessageInfo(this, "", "Finishing current Visit, comeback later", clickedButton -> {
-            closeCurrentVisit();
-        }).show();
+        Log.d("finishingx","visit");
+
+        finishVisit();
     }
 
     private void onOpenVisitClicked() {
@@ -486,12 +485,34 @@ public class HouseholdDetailsActivity extends AppCompatActivity {
         }
     }
 
-    private void closeCurrentVisit() {
+    private void finishVisit() {
         //close visit methods
-        this.visit = null;
 
-        reloadFragmentsData();
-        setHouseholdMode();
+        //finsih the visit in visit fragment
+        if (householdVisitFragment != null)  {
+            List<Member> notVisited = householdVisitFragment.getNonVisitedMembers();
+
+            //Not all of the individuals were visited
+            if (notVisited.size()>0) {
+                String list = "";
+                for (Member member : notVisited){
+                    list += list.isEmpty() ? member.code : ", "+member.code;
+                }
+
+                DialogFactory.createMessageInfo(this, getString(R.string.household_visit_not_finished_title_lbl), getString(R.string.household_visit_not_finished_msg_lbl, list)).show();
+                return;
+            }
+            //Log.d("ending visit", "me");
+
+            //close visit - update endtimestamp
+            VisitFormUtil.UpdateEndTimestamp(this, this.visit.getRecentlyCreatedUri());
+
+            //finish visit mode
+            this.visit = null;
+            setHouseholdMode();
+        }
+
+
     }
 
     private void openPreviousVisit() {

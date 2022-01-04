@@ -62,6 +62,8 @@ public class MemberEnumerationFormUtil extends FormUtil<Member> {
     private Member mother;
     private boolean isFirstHouseholdMember;
     private int minimunHeadAge;
+    private int minimunFatherAge;
+    private int minimunMotherAge;
 
     public MemberEnumerationFormUtil(FragmentManager fragmentManager, Context context, Visit visit, Household household, FormUtilListener<Member> listener){
         super(fragmentManager, context, FormUtil.getMemberEnuForm(context), listener);
@@ -107,6 +109,8 @@ public class MemberEnumerationFormUtil extends FormUtil<Member> {
 
         this.isFirstHouseholdMember = boxResidencies.query().equal(Residency_.householdCode, household.code).and().equal(Residency_.endType, ResidencyEndType.NOT_APPLICABLE.code).build().count()==0; //find any resident
         this.minimunHeadAge = retrieveMinimumHeadAge();
+        this.minimunFatherAge = retrieveMinimumFatherAge();
+        this.minimunMotherAge = retrieveMinimumMotherAge();
     }
 
     @Override
@@ -416,6 +420,34 @@ public class MemberEnumerationFormUtil extends FormUtil<Member> {
         return 12;
     }
 
+    private int retrieveMinimumFatherAge() {
+        ApplicationParam param = this.boxAppParams.query().equal(ApplicationParam_.name, ApplicationParam.PARAMS_MIN_AGE_OF_FATHER).build().findFirst();
+
+        if (param != null) {
+            try {
+                return Integer.parseInt(param.value);
+            } catch (Exception ex) {
+
+            }
+        }
+
+        return 12;
+    }
+
+    private int retrieveMinimumMotherAge() {
+        ApplicationParam param = this.boxAppParams.query().equal(ApplicationParam_.name, ApplicationParam.PARAMS_MIN_AGE_OF_MOTHER).build().findFirst();
+
+        if (param != null) {
+            try {
+                return Integer.parseInt(param.value);
+            } catch (Exception ex) {
+
+            }
+        }
+
+        return 12;
+    }
+
     private void checkFatherDialog(){
 
         DialogFactory.createMessageYN(this.context, R.string.new_member_dialog_father_select_lbl, R.string.new_member_dialog_father_exists_lbl, new DialogFactory.OnYesNoClickListener() {
@@ -496,7 +528,7 @@ public class MemberEnumerationFormUtil extends FormUtil<Member> {
         });
 
         dialog.setGenderMaleOnly();
-        dialog.setFilterMinAge(12, true);
+        dialog.setFilterMinAge(this.minimunFatherAge, true);
         dialog.setFilterHouseCode(household.getCode());
         dialog.setStartSearchOnShow(true);
         dialog.show();
@@ -512,7 +544,7 @@ public class MemberEnumerationFormUtil extends FormUtil<Member> {
         });
 
         dialog.setGenderFemaleOnly();
-        dialog.setFilterMinAge(12, true);
+        dialog.setFilterMinAge(this.minimunMotherAge, true);
         dialog.setFilterHouseCode(household.getCode());
         dialog.setStartSearchOnShow(true);
         dialog.show();

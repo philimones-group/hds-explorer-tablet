@@ -134,4 +134,54 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
         return form;
     }
 
+    protected static HForm getExternalInMigrationForm(Context context) {
+        InputStream inputStream = context.getResources().openRawResource(R.raw.ext_inmigration_form);
+        HForm form = new ExcelFormParser(inputStream).getForm();
+        return form;
+    }
+
+    protected static HForm getInMigrationForm(Context context) {
+        InputStream inputStream = context.getResources().openRawResource(R.raw.inmigration_form);
+        HForm form = new ExcelFormParser(inputStream).getForm();
+        return form;
+    }
+
+    protected static HForm getOutmigrationForm(Context context) {
+        InputStream inputStream = context.getResources().openRawResource(R.raw.outmigration_form);
+        HForm form = new ExcelFormParser(inputStream).getForm();
+        return form;
+    }
+
+    protected static HForm getPregnacyRegistrationForm(Context context) {
+        InputStream inputStream = context.getResources().openRawResource(R.raw.pregnancy_registration_form);
+        HForm form = new ExcelFormParser(inputStream).getForm();
+        return form;
+    }
+
+    protected static HForm getPregnancyOutcomeForm(Context context) {
+        InputStream inputStream = context.getResources().openRawResource(R.raw.pregnancy_outcome_form);
+        HForm form = new ExcelFormParser(inputStream).getForm();
+        return form;
+    }
+
+    protected static HForm getDeathForm(Context context) {
+        InputStream inputStream = context.getResources().openRawResource(R.raw.death_form);
+        HForm form = new ExcelFormParser(inputStream).getForm();
+        return form;
+    }
+
+    protected static HForm getChangeHeadForm(Context context) {
+        InputStream inputStream = context.getResources().openRawResource(R.raw.change_head_form);
+        HForm form = new ExcelFormParser(inputStream).getForm();
+        return form;
+    }
+
+    protected static HForm getIncompleteForm(Context context) {
+        InputStream inputStream = context.getResources().openRawResource(R.raw.incomplete_form);
+        HForm form = new ExcelFormParser(inputStream).getForm();
+        return form;
+    }
+
+
+
 }

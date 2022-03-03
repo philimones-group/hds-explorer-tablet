@@ -101,7 +101,7 @@ public class CodeGeneratorService {
     public String generateVisitCode(Household household) {
 
         long round = boxRounds.query().build().property(Round_.roundNumber).max();
-        String cbase = household.code + String.format("%03d", round);
+        String cbase = household.code + "-" + String.format("%03d", round);
         String[] codesArray = boxVisits.query().startsWith(Visit_.code, cbase)
                                                .order(Visit_.code).build()
                                                .property(Visit_.code).findStrings();

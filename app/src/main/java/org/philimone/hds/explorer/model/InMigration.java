@@ -1,6 +1,8 @@
 package org.philimone.hds.explorer.model;
 
+import org.philimone.hds.explorer.model.converters.ExternalInMigrationTypeConverter;
 import org.philimone.hds.explorer.model.converters.InMigrationTypeConverter;
+import org.philimone.hds.explorer.model.enums.temporal.ExternalInMigrationType;
 import org.philimone.hds.explorer.model.enums.temporal.InMigrationType;
 
 import java.util.Date;
@@ -25,6 +27,9 @@ public class InMigration implements CoreEntity {
     @Convert(converter = InMigrationTypeConverter.class, dbType = String.class)
     public InMigrationType type;
     //public ToOne<Household> origin;
+
+    @Convert(converter = ExternalInMigrationTypeConverter.class, dbType = String.class)
+    public ExternalInMigrationType extMigType;
 
     @Index
     public String originCode;

@@ -45,6 +45,7 @@ import java.util.Map;
 
 import androidx.fragment.app.FragmentManager;
 import io.objectbox.Box;
+import io.objectbox.query.QueryBuilder;
 import mz.betainteractive.utilities.GeneralUtil;
 import mz.betainteractive.utilities.StringUtil;
 
@@ -68,7 +69,7 @@ public class MemberEnumerationFormUtil extends FormUtil<Member> {
     public MemberEnumerationFormUtil(FragmentManager fragmentManager, Context context, Visit visit, Household household, FormUtilListener<Member> listener){
         super(fragmentManager, context, FormUtil.getMemberEnuForm(context), listener);
 
-        Log.d("from-const-memenu-household", ""+household);
+        //Log.d("enu-household", ""+household);
 
         this.household = household;
         this.visit = visit;
@@ -86,8 +87,8 @@ public class MemberEnumerationFormUtil extends FormUtil<Member> {
         initBoxes();
         initialize();
 
-        this.father = boxMembers.query().equal(Member_.code, memberToEdit.fatherCode).build().findFirst();
-        this.mother = boxMembers.query().equal(Member_.code, memberToEdit.motherCode).build().findFirst();
+        this.father = boxMembers.query().equal(Member_.code, memberToEdit.fatherCode, QueryBuilder.StringOrder.CASE_SENSITIVE).build().findFirst();
+        this.mother = boxMembers.query().equal(Member_.code, memberToEdit.motherCode, QueryBuilder.StringOrder.CASE_SENSITIVE).build().findFirst();
     }
 
     @Override
@@ -105,9 +106,9 @@ public class MemberEnumerationFormUtil extends FormUtil<Member> {
     protected void initialize(){
         super.initialize();
 
-        Log.d("on-memenu-util-init-household", ""+household);
+        Log.d("init-household", ""+household);
 
-        this.isFirstHouseholdMember = boxResidencies.query().equal(Residency_.householdCode, household.code).and().equal(Residency_.endType, ResidencyEndType.NOT_APPLICABLE.code).build().count()==0; //find any resident
+        this.isFirstHouseholdMember = boxResidencies.query().equal(Residency_.householdCode, household.code, QueryBuilder.StringOrder.CASE_SENSITIVE).and().equal(Residency_.endType, ResidencyEndType.NOT_APPLICABLE.code, QueryBuilder.StringOrder.CASE_SENSITIVE).build().count()==0; //find any resident
         this.minimunHeadAge = retrieveMinimumHeadAge();
         this.minimunFatherAge = retrieveMinimumFatherAge();
         this.minimunMotherAge = retrieveMinimumMotherAge();
@@ -186,7 +187,7 @@ public class MemberEnumerationFormUtil extends FormUtil<Member> {
         }
 
         //check if visit with code exists
-        if (boxMembers.query().equal(Member_.code, code).build().findFirst() != null){
+        if (boxMembers.query().equal(Member_.code, code, QueryBuilder.StringOrder.CASE_SENSITIVE).build().findFirst() != null){
             String message = this.context.getString(R.string.new_member_code_exists_lbl);
             return new ValidationResult(colCode, message);
         }
@@ -407,7 +408,7 @@ public class MemberEnumerationFormUtil extends FormUtil<Member> {
     }
 
     private int retrieveMinimumHeadAge() {
-        ApplicationParam param = this.boxAppParams.query().equal(ApplicationParam_.name, ApplicationParam.PARAMS_MIN_AGE_OF_HEAD).build().findFirst();
+        ApplicationParam param = this.boxAppParams.query().equal(ApplicationParam_.name, ApplicationParam.PARAMS_MIN_AGE_OF_HEAD, QueryBuilder.StringOrder.CASE_SENSITIVE).build().findFirst();
 
         if (param != null) {
             try {
@@ -421,7 +422,7 @@ public class MemberEnumerationFormUtil extends FormUtil<Member> {
     }
 
     private int retrieveMinimumFatherAge() {
-        ApplicationParam param = this.boxAppParams.query().equal(ApplicationParam_.name, ApplicationParam.PARAMS_MIN_AGE_OF_FATHER).build().findFirst();
+        ApplicationParam param = this.boxAppParams.query().equal(ApplicationParam_.name, ApplicationParam.PARAMS_MIN_AGE_OF_FATHER, QueryBuilder.StringOrder.CASE_SENSITIVE).build().findFirst();
 
         if (param != null) {
             try {
@@ -435,7 +436,7 @@ public class MemberEnumerationFormUtil extends FormUtil<Member> {
     }
 
     private int retrieveMinimumMotherAge() {
-        ApplicationParam param = this.boxAppParams.query().equal(ApplicationParam_.name, ApplicationParam.PARAMS_MIN_AGE_OF_MOTHER).build().findFirst();
+        ApplicationParam param = this.boxAppParams.query().equal(ApplicationParam_.name, ApplicationParam.PARAMS_MIN_AGE_OF_MOTHER, QueryBuilder.StringOrder.CASE_SENSITIVE).build().findFirst();
 
         if (param != null) {
             try {

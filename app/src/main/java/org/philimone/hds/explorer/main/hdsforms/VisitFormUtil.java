@@ -136,7 +136,7 @@ public class VisitFormUtil extends FormUtil<Visit> {
         }
 
         //check if visit with code exists
-        boolean visitExists = boxVisits.query().equal(Visit_.code, visit_code).build().findFirst() != null;
+        boolean visitExists = boxVisits.query().equal(Visit_.code, visit_code, QueryBuilder.StringOrder.CASE_SENSITIVE).build().findFirst() != null;
         if (visitExists && currentMode==Mode.CREATE){
             String message = this.context.getString(R.string.new_visit_code_exists_lbl);
             return new ValidationResult(colCode, message);
@@ -298,8 +298,8 @@ public class VisitFormUtil extends FormUtil<Visit> {
 
     private void updateNewHouseholdCoreCollectedData(Visit visit) {
         if (newHouseholdCreated) {
-            CoreCollectedData coreData = boxCoreCollectedData.query().equal(CoreCollectedData_.formEntityCode, household.code).and()
-                    .equal(CoreCollectedData_.formEntity, CoreFormEntity.HOUSEHOLD.code).build().findFirst();
+            CoreCollectedData coreData = boxCoreCollectedData.query().equal(CoreCollectedData_.formEntityCode, household.code, QueryBuilder.StringOrder.CASE_SENSITIVE).and()
+                    .equal(CoreCollectedData_.formEntity, CoreFormEntity.HOUSEHOLD.code, QueryBuilder.StringOrder.CASE_SENSITIVE).build().findFirst();
 
             Log.d("found household", "core: "+coreData);
 

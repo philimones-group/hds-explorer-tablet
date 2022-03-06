@@ -50,7 +50,7 @@
           "name": "reportId",
           "indexId": "2:4164162751688505500",
           "type": 5,
-          "flags": 42
+          "flags": 40
         },
         {
           "id": "3:2769361473299522230",
@@ -60,8 +60,7 @@
         {
           "id": "4:7869309583654207735",
           "name": "status",
-          "type": 5,
-          "flags": 2
+          "type": 5
         },
         {
           "id": "5:3252109160459234355",
@@ -145,7 +144,7 @@
           "name": "recordId",
           "indexId": "80:686241525943846293",
           "type": 6,
-          "flags": 12
+          "flags": 8
         },
         {
           "id": "10:9007620515819279104",
@@ -165,8 +164,7 @@
         {
           "id": "13:2237943481496083857",
           "name": "supervised",
-          "type": 1,
-          "flags": 4
+          "type": 1
         },
         {
           "id": "14:4256807764831453477",
@@ -185,7 +183,7 @@
           "name": "visitId",
           "indexId": "79:7609001230703897994",
           "type": 6,
-          "flags": 12
+          "flags": 8
         },
         {
           "id": "17:3542950461871546568",
@@ -241,14 +239,12 @@
         {
           "id": "8:6629339201875079740",
           "name": "minAge",
-          "type": 5,
-          "flags": 4
+          "type": 5
         },
         {
           "id": "9:6027502942909983393",
           "name": "maxAge",
-          "type": 5,
-          "flags": 4
+          "type": 5
         },
         {
           "id": "10:8598081639733697612",
@@ -260,32 +256,27 @@
         {
           "id": "11:7638559578440504117",
           "name": "isRegionForm",
-          "type": 1,
-          "flags": 4
+          "type": 1
         },
         {
           "id": "12:5717018509669231888",
           "name": "isHouseholdForm",
-          "type": 1,
-          "flags": 4
+          "type": 1
         },
         {
           "id": "13:3367695941686189144",
           "name": "isHouseholdHeadForm",
-          "type": 1,
-          "flags": 4
+          "type": 1
         },
         {
           "id": "14:4503672896553030112",
           "name": "isMemberForm",
-          "type": 1,
-          "flags": 4
+          "type": 1
         },
         {
           "id": "16:8099185753883136310",
           "name": "multiCollPerSession",
-          "type": 1,
-          "flags": 4
+          "type": 1
         },
         {
           "id": "17:3316269938882047692",
@@ -305,8 +296,7 @@
         {
           "id": "20:7111462965614881981",
           "name": "isFollowUpForm",
-          "type": 1,
-          "flags": 4
+          "type": 1
         }
       ],
       "relations": []
@@ -541,8 +531,7 @@
         {
           "id": "7:1924866507771471648",
           "name": "completionRate",
-          "type": 8,
-          "flags": 2
+          "type": 8
         },
         {
           "id": "8:7009157992245032545",
@@ -568,15 +557,14 @@
         {
           "id": "2:5725100781648148031",
           "name": "listId",
-          "type": 5,
-          "flags": 4
+          "type": 5
         },
         {
           "id": "3:1326838877413323265",
           "name": "trackingId",
           "indexId": "11:6045550207819154134",
           "type": 6,
-          "flags": 12
+          "flags": 8
         },
         {
           "id": "4:4295709092647014232",
@@ -612,14 +600,12 @@
         {
           "id": "9:3235012691595534058",
           "name": "subjectVisit",
-          "type": 5,
-          "flags": 4
+          "type": 5
         },
         {
           "id": "10:6293785398273052682",
           "name": "completionRate",
-          "type": 8,
-          "flags": 2
+          "type": 8
         }
       ],
       "relations": []
@@ -714,62 +700,52 @@
         {
           "id": "16:7128772223710667049",
           "name": "gpsNull",
-          "type": 1,
-          "flags": 4
+          "type": 1
         },
         {
           "id": "17:7254466909449227124",
           "name": "gpsAccuracy",
-          "type": 8,
-          "flags": 2
+          "type": 8
         },
         {
           "id": "18:8398307957546037181",
           "name": "gpsAltitude",
-          "type": 8,
-          "flags": 2
+          "type": 8
         },
         {
           "id": "19:9150192127574834997",
           "name": "gpsLatitude",
-          "type": 8,
-          "flags": 2
+          "type": 8
         },
         {
           "id": "20:1200263450823692865",
           "name": "gpsLongitude",
-          "type": 8,
-          "flags": 2
+          "type": 8
         },
         {
           "id": "21:215620516736193895",
           "name": "cosLatitude",
-          "type": 8,
-          "flags": 2
+          "type": 8
         },
         {
           "id": "22:3367146530009920724",
           "name": "sinLatitude",
-          "type": 8,
-          "flags": 2
+          "type": 8
         },
         {
           "id": "23:6644892540952340540",
           "name": "cosLongitude",
-          "type": 8,
-          "flags": 2
+          "type": 8
         },
         {
           "id": "24:3894124192035512250",
           "name": "sinLongitude",
-          "type": 8,
-          "flags": 2
+          "type": 8
         },
         {
           "id": "25:2364984090495430109",
           "name": "recentlyCreated",
-          "type": 1,
-          "flags": 4
+          "type": 1
         },
         {
           "id": "26:4278846830027807373",
@@ -824,14 +800,12 @@
         {
           "id": "6:569333044267633268",
           "name": "age",
-          "type": 5,
-          "flags": 4
+          "type": 5
         },
         {
           "id": "7:788745505368619038",
           "name": "ageAtDeath",
-          "type": 5,
-          "flags": 4
+          "type": 5
         },
         {
           "id": "8:7673327863841448091",
@@ -939,62 +913,52 @@
         {
           "id": "25:656351578957865593",
           "name": "gpsNull",
-          "type": 1,
-          "flags": 4
+          "type": 1
         },
         {
           "id": "26:3083417150791012479",
           "name": "gpsAccuracy",
-          "type": 8,
-          "flags": 2
+          "type": 8
         },
         {
           "id": "27:5203282235729321401",
           "name": "gpsAltitude",
-          "type": 8,
-          "flags": 2
+          "type": 8
         },
         {
           "id": "28:573294219257051884",
           "name": "gpsLatitude",
-          "type": 8,
-          "flags": 2
+          "type": 8
         },
         {
           "id": "29:3952845717931552260",
           "name": "gpsLongitude",
-          "type": 8,
-          "flags": 2
+          "type": 8
         },
         {
           "id": "30:4961878175760984794",
           "name": "cosLatitude",
-          "type": 8,
-          "flags": 2
+          "type": 8
         },
         {
           "id": "31:2062219987784273587",
           "name": "sinLatitude",
-          "type": 8,
-          "flags": 2
+          "type": 8
         },
         {
           "id": "32:848608619838870887",
           "name": "cosLongitude",
-          "type": 8,
-          "flags": 2
+          "type": 8
         },
         {
           "id": "33:6902174600372311113",
           "name": "sinLongitude",
-          "type": 8,
-          "flags": 2
+          "type": 8
         },
         {
           "id": "34:3948645726340917572",
           "name": "recentlyCreated",
-          "type": 1,
-          "flags": 4
+          "type": 1
         },
         {
           "id": "35:7961567632028419200",
@@ -1046,14 +1010,12 @@
         {
           "id": "5:9103116633862824046",
           "name": "numberOfOutcomes",
-          "type": 5,
-          "flags": 2
+          "type": 5
         },
         {
           "id": "6:1301490141218821663",
           "name": "numberOfLivebirths",
-          "type": 5,
-          "flags": 2
+          "type": 5
         },
         {
           "id": "7:268454912903570115",
@@ -1082,7 +1044,7 @@
           "name": "motherId",
           "indexId": "30:7778310959557681308",
           "type": 11,
-          "flags": 1548,
+          "flags": 520,
           "relationTarget": "Member"
         },
         {
@@ -1090,7 +1052,7 @@
           "name": "fatherId",
           "indexId": "31:4542554123660622073",
           "type": 11,
-          "flags": 1548,
+          "flags": 520,
           "relationTarget": "Member"
         },
         {
@@ -1098,14 +1060,13 @@
           "name": "visitId",
           "indexId": "32:6404337691905915906",
           "type": 11,
-          "flags": 1548,
+          "flags": 520,
           "relationTarget": "Visit"
         },
         {
           "id": "14:575101576832350405",
           "name": "recentlyCreated",
-          "type": 1,
-          "flags": 4
+          "type": 1
         },
         {
           "id": "15:8811241383821536272",
@@ -1163,8 +1124,7 @@
         {
           "id": "8:8355011118466637413",
           "name": "recentlyCreated",
-          "type": 1,
-          "flags": 4
+          "type": 1
         },
         {
           "id": "9:6486703108143208592",
@@ -1207,15 +1167,14 @@
         {
           "id": "5:6110844930661124760",
           "name": "childOrdinalPosition",
-          "type": 5,
-          "flags": 2
+          "type": 5
         },
         {
           "id": "6:1321471512305634297",
           "name": "outcomeId",
           "indexId": "37:6521620120535022703",
           "type": 11,
-          "flags": 1548,
+          "flags": 520,
           "relationTarget": "PregnancyOutcome"
         },
         {
@@ -1223,7 +1182,7 @@
           "name": "childId",
           "indexId": "38:7596246704268911865",
           "type": 11,
-          "flags": 1548,
+          "flags": 520,
           "relationTarget": "Member"
         },
         {
@@ -1231,14 +1190,13 @@
           "name": "childHeadRelationshipId",
           "indexId": "39:1561595666871032662",
           "type": 11,
-          "flags": 1548,
+          "flags": 520,
           "relationTarget": "HeadRelationship"
         },
         {
           "id": "9:317397868525718992",
           "name": "recentlyCreated",
-          "type": 1,
-          "flags": 4
+          "type": 1
         },
         {
           "id": "10:8063979545576872502",
@@ -1310,8 +1268,7 @@
         {
           "id": "10:4882234072737107050",
           "name": "recentlyCreated",
-          "type": 1,
-          "flags": 4
+          "type": 1
         },
         {
           "id": "11:7556909418689901606",
@@ -1399,8 +1356,7 @@
         {
           "id": "4:2498262576828802448",
           "name": "ageAtDeath",
-          "type": 5,
-          "flags": 2
+          "type": 5
         },
         {
           "id": "5:9003873518481791823",
@@ -1422,8 +1378,7 @@
         {
           "id": "8:184762347696774538",
           "name": "recentlyCreated",
-          "type": 1,
-          "flags": 4
+          "type": 1
         },
         {
           "id": "9:3398324374613470959",
@@ -1476,8 +1431,7 @@
         {
           "id": "7:320448392978694511",
           "name": "roundNumber",
-          "type": 5,
-          "flags": 2
+          "type": 5
         },
         {
           "id": "8:8730069946652983176",
@@ -1489,8 +1443,7 @@
         {
           "id": "9:8656367356956767014",
           "name": "hasInterpreter",
-          "type": 1,
-          "flags": 2
+          "type": 1
         },
         {
           "id": "10:1137971815956565534",
@@ -1500,32 +1453,27 @@
         {
           "id": "11:260965198189010674",
           "name": "gpsAccuracy",
-          "type": 8,
-          "flags": 2
+          "type": 8
         },
         {
           "id": "12:706431753693703619",
           "name": "gpsAltitude",
-          "type": 8,
-          "flags": 2
+          "type": 8
         },
         {
           "id": "13:3908412261189086649",
           "name": "gpsLatitude",
-          "type": 8,
-          "flags": 2
+          "type": 8
         },
         {
           "id": "14:227076107964842635",
           "name": "gpsLongitude",
-          "type": 8,
-          "flags": 2
+          "type": 8
         },
         {
           "id": "15:366464252479662546",
           "name": "recentlyCreated",
-          "type": 1,
-          "flags": 4
+          "type": 1
         },
         {
           "id": "16:2857681674868826674",
@@ -1606,8 +1554,7 @@
         {
           "id": "10:5201936680176878572",
           "name": "recentlyCreated",
-          "type": 1,
-          "flags": 4
+          "type": 1
         },
         {
           "id": "11:6589275873550146565",
@@ -1650,20 +1597,17 @@
         {
           "id": "5:4687132305839750986",
           "name": "pregMonths",
-          "type": 5,
-          "flags": 2
+          "type": 5
         },
         {
           "id": "6:4453694995126507580",
           "name": "eddKnown",
-          "type": 1,
-          "flags": 2
+          "type": 1
         },
         {
           "id": "7:8633669672344144914",
           "name": "hasPrenatalRecord",
-          "type": 1,
-          "flags": 2
+          "type": 1
         },
         {
           "id": "8:5684994806060174092",
@@ -1678,8 +1622,7 @@
         {
           "id": "10:20928073278322770",
           "name": "lmpKnown",
-          "type": 1,
-          "flags": 2
+          "type": 1
         },
         {
           "id": "11:6381215411249329857",
@@ -1706,8 +1649,7 @@
         {
           "id": "15:661677106363381061",
           "name": "recentlyCreated",
-          "type": 1,
-          "flags": 4
+          "type": 1
         },
         {
           "id": "16:928193412132595590",
@@ -1779,8 +1721,7 @@
         {
           "id": "10:2055096874452751158",
           "name": "recentlyCreated",
-          "type": 1,
-          "flags": 4
+          "type": 1
         },
         {
           "id": "11:6799864465011764947",
@@ -1831,8 +1772,7 @@
         {
           "id": "10:3182340309030228461",
           "name": "uploaded",
-          "type": 1,
-          "flags": 4
+          "type": 1
         },
         {
           "id": "11:6482492710486516629",
@@ -1842,8 +1782,7 @@
         {
           "id": "12:3430987008502887646",
           "name": "uploadedWithError",
-          "type": 1,
-          "flags": 4
+          "type": 1
         },
         {
           "id": "13:5414901014302980454",
@@ -1858,8 +1797,7 @@
         {
           "id": "15:185972732132634450",
           "name": "formEntityId",
-          "type": 6,
-          "flags": 4
+          "type": 6
         },
         {
           "id": "16:6749297829121025782",
@@ -1874,8 +1812,7 @@
         {
           "id": "18:6272219543731895396",
           "name": "visitId",
-          "type": 6,
-          "flags": 4
+          "type": 6
         }
       ],
       "relations": []
@@ -1896,7 +1833,7 @@
           "name": "roundNumber",
           "indexId": "70:67084700946354295",
           "type": 5,
-          "flags": 44
+          "flags": 40
         },
         {
           "id": "3:7411712708185058930",

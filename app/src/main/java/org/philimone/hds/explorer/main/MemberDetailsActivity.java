@@ -37,6 +37,7 @@ import java.util.List;
 
 import androidx.appcompat.app.AppCompatActivity;
 import io.objectbox.Box;
+import io.objectbox.query.QueryBuilder;
 import mz.betainteractive.odk.FormUtilities;
 import mz.betainteractive.odk.listener.OdkFormResultListener;
 import mz.betainteractive.odk.model.FilledForm;
@@ -295,7 +296,7 @@ public class MemberDetailsActivity extends AppCompatActivity implements OdkFormR
     }
 
     private void retrieveAllHouseholdMembers(){
-        List<Member> members = this.boxMembers.query().equal(Member_.householdCode, this.member.getHouseholdCode()).build().find();
+        List<Member> members = this.boxMembers.query().equal(Member_.householdCode, this.member.getHouseholdCode(), QueryBuilder.StringOrder.CASE_SENSITIVE).build().find();
 
         this.allHouseholdMembers.clear();
         this.allHouseholdMembers.addAll(members);
@@ -318,7 +319,7 @@ public class MemberDetailsActivity extends AppCompatActivity implements OdkFormR
     private void showCollectedData() {
         //this.showProgress(true);
 
-        List<CollectedData> list = this.boxCollectedData.query().equal(CollectedData_.recordId, member.getId()).and().equal(CollectedData_.recordEntity, member.getTableName().code).build().find();
+        List<CollectedData> list = this.boxCollectedData.query().equal(CollectedData_.recordId, member.getId()).and().equal(CollectedData_.recordEntity, member.getTableName().code, QueryBuilder.StringOrder.CASE_SENSITIVE).build().find();
         List<Form> forms = this.boxForms.getAll();
         List<CollectedDataItem> cdl = new ArrayList<>();
 
@@ -413,9 +414,9 @@ public class MemberDetailsActivity extends AppCompatActivity implements OdkFormR
 
     private CollectedData getCollectedData(FormDataLoader formDataLoader){
 
-        CollectedData collectedData = this.boxCollectedData.query().equal(CollectedData_.formId, formDataLoader.getForm().getFormId())
+        CollectedData collectedData = this.boxCollectedData.query().equal(CollectedData_.formId, formDataLoader.getForm().getFormId(), QueryBuilder.StringOrder.CASE_SENSITIVE)
                                                            .and().equal(CollectedData_.recordId, member.getId())
-                                                           .and().equal(CollectedData_.recordEntity, member.getTableName().code).build().findFirst();
+                                                           .and().equal(CollectedData_.recordEntity, member.getTableName().code, QueryBuilder.StringOrder.CASE_SENSITIVE).build().findFirst();
 
         return collectedData;
     }
@@ -493,9 +494,9 @@ public class MemberDetailsActivity extends AppCompatActivity implements OdkFormR
         }
 
         //search existing record
-        CollectedData collectedData = this.boxCollectedData.query().equal(CollectedData_.formUri, contentUri.toString())
+        CollectedData collectedData = this.boxCollectedData.query().equal(CollectedData_.formUri, contentUri.toString(), QueryBuilder.StringOrder.CASE_SENSITIVE)
                 .and().equal(CollectedData_.recordId, member.getId())
-                .and().equal(CollectedData_.recordEntity, member.getTableName().code).build().findFirst();
+                .and().equal(CollectedData_.recordEntity, member.getTableName().code, QueryBuilder.StringOrder.CASE_SENSITIVE).build().findFirst();
 
 
         if (collectedData == null){ //insert
@@ -551,9 +552,9 @@ public class MemberDetailsActivity extends AppCompatActivity implements OdkFormR
         }
 
         //search existing record
-        CollectedData collectedData = this.boxCollectedData.query().equal(CollectedData_.formUri, contentUri.toString())
+        CollectedData collectedData = this.boxCollectedData.query().equal(CollectedData_.formUri, contentUri.toString(), QueryBuilder.StringOrder.CASE_SENSITIVE)
                                                            .and().equal(CollectedData_.recordId, member.getId())
-                                                           .and().equal(CollectedData_.recordEntity, member.getTableName().code).build().findFirst();
+                                                           .and().equal(CollectedData_.recordEntity, member.getTableName().code, QueryBuilder.StringOrder.CASE_SENSITIVE).build().findFirst();
 
         if (collectedData == null){ //insert
             collectedData = new CollectedData();
@@ -599,7 +600,7 @@ public class MemberDetailsActivity extends AppCompatActivity implements OdkFormR
     @Override
     public void onDeleteForm(Uri contentUri) {
 
-        this.boxCollectedData.query().equal(CollectedData_.formUri, contentUri.toString()).build().remove(); //delete where formUri=contentUri
+        this.boxCollectedData.query().equal(CollectedData_.formUri, contentUri.toString(), QueryBuilder.StringOrder.CASE_SENSITIVE).build().remove(); //delete where formUri=contentUri
 
         showCollectedData();
     }

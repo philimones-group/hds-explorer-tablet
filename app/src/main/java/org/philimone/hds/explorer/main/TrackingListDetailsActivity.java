@@ -45,6 +45,7 @@ import java.util.List;
 
 import androidx.appcompat.app.AppCompatActivity;
 import io.objectbox.Box;
+import io.objectbox.query.QueryBuilder;
 
 public class TrackingListDetailsActivity extends AppCompatActivity implements BarcodeScannerActivity.ResultListener, BarcodeScannerActivity.InvokerClickListener {
 
@@ -241,7 +242,7 @@ public class TrackingListDetailsActivity extends AppCompatActivity implements Ba
     private Region getRegion(Household household){
         if (household == null || household.getRegion()==null) return null;
 
-        Region region = this.boxRegions.query().equal(Region_.code, household.getRegion()).build().findFirst();
+        Region region = this.boxRegions.query().equal(Region_.code, household.getRegion(), QueryBuilder.StringOrder.CASE_SENSITIVE).build().findFirst();
 
         return region;
     }
@@ -394,7 +395,7 @@ public class TrackingListDetailsActivity extends AppCompatActivity implements Ba
     private List<Region> getRegions(List<String> codes){
         String[] arrayCodes = codes.toArray(new String[codes.size()]);
 
-        List<Region> regions = this.boxRegions.query().in(Region_.code, arrayCodes).build().find();
+        List<Region> regions = this.boxRegions.query().in(Region_.code, arrayCodes, QueryBuilder.StringOrder.CASE_SENSITIVE).build().find();
         //Queries.getAllRegionBy(db, DatabaseHelper.Region.COLUMN_CODE +" IN ("+ StringUtil.toInClause(codes) +")", null);
 
         if (regions==null) return new ArrayList<>();
@@ -406,7 +407,7 @@ public class TrackingListDetailsActivity extends AppCompatActivity implements Ba
 
         String[] codesArray = codes.toArray(new String[codes.size()]);
 
-        List<Household> households = this.boxHouseholds.query().in(Household_.code, codesArray).build().find();
+        List<Household> households = this.boxHouseholds.query().in(Household_.code, codesArray, QueryBuilder.StringOrder.CASE_SENSITIVE).build().find();
 
         if (households==null) return new ArrayList<>();
 
@@ -415,7 +416,7 @@ public class TrackingListDetailsActivity extends AppCompatActivity implements Ba
 
     private List<Member> getMembers(List<String> codes){
         String[] codesArray = codes.toArray(new String[codes.size()]);
-        List<Member> members = this.boxMembers.query().in(Member_.code, codesArray).build().find();
+        List<Member> members = this.boxMembers.query().in(Member_.code, codesArray, QueryBuilder.StringOrder.CASE_SENSITIVE).build().find();
 
         if (members==null) return new ArrayList<>();
 

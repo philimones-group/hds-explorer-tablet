@@ -36,6 +36,7 @@ import java.util.Set;
 
 import androidx.appcompat.app.AppCompatActivity;
 import io.objectbox.Box;
+import io.objectbox.query.QueryBuilder;
 import mz.betainteractive.utilities.StringUtil;
 
 import static org.philimone.hds.explorer.fragment.MemberListFragment.Buttons.MEMBERS_MAP;
@@ -304,9 +305,9 @@ public class SurveyHouseholdsActivity extends AppCompatActivity implements House
 
     private CollectedData getCollectedData(String formId, long recordId, String tableName){
         //get collected data
-        CollectedData collectedData = this.boxCollectedData.query().equal(CollectedData_.formId, formId)
+        CollectedData collectedData = this.boxCollectedData.query().equal(CollectedData_.formId, formId, QueryBuilder.StringOrder.CASE_SENSITIVE)
                                                            .and().equal(CollectedData_.recordId, recordId)
-                                                           .and().equal(CollectedData_.recordEntity, tableName).build().findFirst();
+                                                           .and().equal(CollectedData_.recordEntity, tableName, QueryBuilder.StringOrder.CASE_SENSITIVE).build().findFirst();
 
         return collectedData;
     }

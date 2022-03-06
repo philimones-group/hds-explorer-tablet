@@ -1719,7 +1719,7 @@
     },
     {
       "id": "22:8558377030680171203",
-      "lastPropertyId": "11:6799864465011764947",
+      "lastPropertyId": "12:4270296408225220650",
       "name": "InMigration",
       "properties": [
         {
@@ -1785,6 +1785,11 @@
         {
           "id": "11:6799864465011764947",
           "name": "recentlyCreatedUri",
+          "type": 9
+        },
+        {
+          "id": "12:4270296408225220650",
+          "name": "extMigType",
           "type": 9
         }
       ],

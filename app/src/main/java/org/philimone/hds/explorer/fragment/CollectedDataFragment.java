@@ -31,6 +31,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import io.objectbox.Box;
+import io.objectbox.query.QueryBuilder;
 import mz.betainteractive.odk.FormUtilities;
 import mz.betainteractive.odk.listener.OdkFormResultListener;
 import mz.betainteractive.odk.model.FilledForm;
@@ -187,7 +188,7 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
     private List<CollectedData> getAllCollectedData() {
         List<CollectedData> list = this.boxCollectedData.query().equal(CollectedData_.recordId, subject.getId())
                                                                 .and()
-                                                                .equal(CollectedData_.recordEntity, subject.getTableName().code)
+                                                                .equal(CollectedData_.recordEntity, subject.getTableName().code, QueryBuilder.StringOrder.CASE_SENSITIVE)
                                                                 .filter((c) -> StringUtil.containsAny(c.formModules, selectedModules))  //filter by module
                                                                 .build().find();
         return list;
@@ -195,9 +196,9 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
 
     private CollectedData getCollectedData(FormDataLoader formDataLoader){
 
-        CollectedData collectedData = this.boxCollectedData.query().equal(CollectedData_.formId, formDataLoader.getForm().getFormId())
+        CollectedData collectedData = this.boxCollectedData.query().equal(CollectedData_.formId, formDataLoader.getForm().getFormId(), QueryBuilder.StringOrder.CASE_SENSITIVE)
                                                                    .and().equal(CollectedData_.recordId, subject.getId())
-                                                                   .and().equal(CollectedData_.recordEntity, subject.getTableName().code)
+                                                                   .and().equal(CollectedData_.recordEntity, subject.getTableName().code, QueryBuilder.StringOrder.CASE_SENSITIVE)
                                                                    .filter((c) -> StringUtil.containsAny(c.formModules, selectedModules)) //filter by module
                                                                    .build().findFirst();
 
@@ -283,9 +284,9 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
         Log.d("form finalized"," "+contentUri+", "+xmlFile);
 
         //search existing record
-        CollectedData collectedData = this.boxCollectedData.query().equal(CollectedData_.formUri, contentUri.toString())
+        CollectedData collectedData = this.boxCollectedData.query().equal(CollectedData_.formUri, contentUri.toString(), QueryBuilder.StringOrder.CASE_SENSITIVE)
                 .and().equal(CollectedData_.recordId, subject.getId())
-                .and().equal(CollectedData_.recordEntity, subject.getTableName().code).build().findFirst();
+                .and().equal(CollectedData_.recordEntity, subject.getTableName().code, QueryBuilder.StringOrder.CASE_SENSITIVE).build().findFirst();
 
         if (collectedData == null){ //insert
             collectedData = new CollectedData();
@@ -334,9 +335,9 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
         Log.d("form unfinalized"," "+contentUri);
 
         //search existing record
-        CollectedData collectedData = this.boxCollectedData.query().equal(CollectedData_.formUri, contentUri.toString())
+        CollectedData collectedData = this.boxCollectedData.query().equal(CollectedData_.formUri, contentUri.toString(), QueryBuilder.StringOrder.CASE_SENSITIVE)
                 .and().equal(CollectedData_.recordId, subject.getId())
-                .and().equal(CollectedData_.recordEntity, subject.getTableName().code).build().findFirst();
+                .and().equal(CollectedData_.recordEntity, subject.getTableName().code, QueryBuilder.StringOrder.CASE_SENSITIVE).build().findFirst();
 
         if (collectedData == null){ //insert
             collectedData = new CollectedData();
@@ -382,7 +383,7 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
     @Override
     public void onDeleteForm(Uri contentUri) {
 
-        this.boxCollectedData.query().equal(CollectedData_.formUri, contentUri.toString()).build().remove(); //delete where formUri=contentUri
+        this.boxCollectedData.query().equal(CollectedData_.formUri, contentUri.toString(), QueryBuilder.StringOrder.CASE_SENSITIVE).build().remove(); //delete where formUri=contentUri
 
         showCollectedData();
     }

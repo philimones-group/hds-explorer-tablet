@@ -55,6 +55,7 @@ import java.util.stream.Collectors;
 
 import androidx.activity.result.ActivityResultLauncher;
 import io.objectbox.Box;
+import io.objectbox.query.QueryBuilder;
 import mz.betainteractive.utilities.StringUtil;
 
 
@@ -398,7 +399,7 @@ public class HouseholdFilterFragment extends Fragment implements RegionExpandabl
 
         List<String> smodules = new ArrayList<>(loggedUser.getSelectedModules());
 
-        List<ApplicationParam> params = boxAppParams.query().startsWith(ApplicationParam_.name, "hierarchy").build().find(); //COLUMN_NAME+" like 'hierarchy%'"
+        List<ApplicationParam> params = boxAppParams.query().startsWith(ApplicationParam_.name, "hierarchy", QueryBuilder.StringOrder.CASE_SENSITIVE).build().find(); //COLUMN_NAME+" like 'hierarchy%'"
         List<Region> regions = this.boxRegions.getAll(); //query().filter((r) -> StringUtil.containsAny(r.modules, smodules)).build().find(); //filter by modules
 
 
@@ -441,7 +442,7 @@ public class HouseholdFilterFragment extends Fragment implements RegionExpandabl
 
     private void loadHieararchyItems(){
 
-        List<ApplicationParam> params = boxAppParams.query().startsWith(ApplicationParam_.name, "hierarchy").build().find(); //COLUMN_NAME+" like 'hierarchy%'"
+        List<ApplicationParam> params = boxAppParams.query().startsWith(ApplicationParam_.name, "hierarchy", QueryBuilder.StringOrder.CASE_SENSITIVE).build().find(); //COLUMN_NAME+" like 'hierarchy%'"
 
         for (ApplicationParam param : params){
 
@@ -606,7 +607,7 @@ public class HouseholdFilterFragment extends Fragment implements RegionExpandabl
         //search
         List<String> smodules = new ArrayList<>(loggedUser.getSelectedModules());
 
-        List<Household> households = this.boxHouseholds.query().startsWith(Household_.code, houseCode).orderDesc(Household_.code) //query by modules
+        List<Household> households = this.boxHouseholds.query().startsWith(Household_.code, houseCode, QueryBuilder.StringOrder.CASE_SENSITIVE).orderDesc(Household_.code) //query by modules
                                                                .filter((h)->StringUtil.containsAny(h.modules, smodules))
                                                                .build().find();
 

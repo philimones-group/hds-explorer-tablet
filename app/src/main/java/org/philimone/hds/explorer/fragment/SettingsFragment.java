@@ -14,6 +14,7 @@ import org.philimone.hds.explorer.model.ApplicationParam;
 import org.philimone.hds.explorer.model.ApplicationParam_;
 
 import io.objectbox.Box;
+import io.objectbox.query.QueryBuilder;
 
 public class SettingsFragment extends PreferenceFragment {
 
@@ -124,7 +125,7 @@ public class SettingsFragment extends PreferenceFragment {
 
     private boolean updateApplicationParam(String name, String value){
 
-        ApplicationParam param = boxAppParams.query().equal(ApplicationParam_.name, name).build().findFirst();
+        ApplicationParam param = boxAppParams.query().equal(ApplicationParam_.name, name, QueryBuilder.StringOrder.CASE_SENSITIVE).build().findFirst();
 
         if (param != null) {
             param.value = value;

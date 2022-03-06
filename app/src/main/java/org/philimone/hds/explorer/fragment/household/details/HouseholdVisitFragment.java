@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 import io.objectbox.Box;
+import io.objectbox.query.QueryBuilder;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -264,7 +265,7 @@ public class HouseholdVisitFragment extends Fragment {
 
         if (household == null) return;
 
-        List<Member> members = this.boxMembers.query().equal(Member_.householdCode, household.getCode()).build().find();
+        List<Member> members = this.boxMembers.query().equal(Member_.householdCode, household.getCode(), QueryBuilder.StringOrder.CASE_SENSITIVE).build().find();
 
         MemberArrayAdapter adapter = new MemberArrayAdapter(this.getContext(), R.layout.household_visit_member_item, members);
         adapter.setShowHouseholdHead(false);
@@ -297,9 +298,9 @@ public class HouseholdVisitFragment extends Fragment {
         mapData.put(CoreFormEntity.VISIT, new ArrayList<CoreCollectedData>());
 
         //group the coreList in Map
-        coreList.forEach(collectedData -> {
+        for(CoreCollectedData collectedData : coreList) {
             mapData.get(collectedData.formEntity).add(collectedData);
-        });
+        }
 
         CoreCollectedExpandableAdapter adapter = new CoreCollectedExpandableAdapter(this.getContext(), mapData);
         this.elvVisitCollected.setAdapter(adapter);
@@ -312,12 +313,12 @@ public class HouseholdVisitFragment extends Fragment {
 
     private long countCollectedForms(Member member) {
         long count1 = this.boxCoreCollectedData.query().equal(CoreCollectedData_.visitId, visit.id)
-                .equal(CoreCollectedData_.formEntityCode, member.code)
-                .notEqual(CoreCollectedData_.formEntity, CoreFormEntity.VISIT.code).build().count(); //CHECK FOR VISITS (visit id is equal to member.id)
+                .equal(CoreCollectedData_.formEntityCode, member.code, QueryBuilder.StringOrder.CASE_SENSITIVE)
+                .notEqual(CoreCollectedData_.formEntity, CoreFormEntity.VISIT.code, QueryBuilder.StringOrder.CASE_SENSITIVE).build().count(); //CHECK FOR VISITS (visit id is equal to member.id)
 
         long count2 = this.boxCollectedData.query().equal(CollectedData_.visitId, visit.id)
                 .equal(CollectedData_.recordId, member.id)
-                .equal(CollectedData_.recordEntity, SubjectEntity.MEMBER.code).build().count();
+                .equal(CollectedData_.recordEntity, SubjectEntity.MEMBER.code, QueryBuilder.StringOrder.CASE_SENSITIVE).build().count();
 
         //any form collected for this member
         return count1 + count2;
@@ -389,16 +390,16 @@ public class HouseholdVisitFragment extends Fragment {
 
     public List<Member> getNonVisitedMembers() {
         ///check if all individuals were visited
-        List<Member> members = this.boxMembers.query().equal(Member_.householdCode, household.getCode()).build().find();
+        List<Member> members = this.boxMembers.query().equal(Member_.householdCode, household.getCode(), QueryBuilder.StringOrder.CASE_SENSITIVE).build().find();
         List<Member> membersNotVisited = new ArrayList<>();
 
-        members.forEach(member -> {
+        for (Member member : members) {
             long count = countCollectedForms(member);
             //any form collected for this member
             if (count == 0) {
                 membersNotVisited.add(member);
             }
-        });
+        }
 
 
         return membersNotVisited;

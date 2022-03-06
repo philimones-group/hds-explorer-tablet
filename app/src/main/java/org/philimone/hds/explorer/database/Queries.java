@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Set;
 
 import io.objectbox.Box;
+import io.objectbox.query.QueryBuilder;
 import mz.betainteractive.utilities.StringUtil;
 
 /**
@@ -31,12 +32,12 @@ import mz.betainteractive.utilities.StringUtil;
 public class Queries {
 
     public static ApplicationParam getApplicationParamBy(Box<ApplicationParam> box, String name){
-        ApplicationParam param = box.query().equal(ApplicationParam_.name, name).build().findFirst();
+        ApplicationParam param = box.query().equal(ApplicationParam_.name, name, QueryBuilder.StringOrder.CASE_SENSITIVE).build().findFirst();
         return param;
     }
 
     public static String getApplicationParamValue(Box<ApplicationParam> box, String name){
-        ApplicationParam param = box.query().equal(ApplicationParam_.name, name).build().findFirst();
+        ApplicationParam param = box.query().equal(ApplicationParam_.name, name, QueryBuilder.StringOrder.CASE_SENSITIVE).build().findFirst();
 
         if (param != null){
             return param.getValue();
@@ -51,14 +52,14 @@ public class Queries {
     }
 
     public static Household getHouseholdByCode(Box<Household> box, String code){
-        Household household = box.query().equal(Household_.code, code).build().findFirst();
+        Household household = box.query().equal(Household_.code, code, QueryBuilder.StringOrder.CASE_SENSITIVE).build().findFirst();
 
         return household;
     }
 
     public static Member getMemberByCode(Box<Member> box, String code){
 
-        Member member = box.query().equal(Member_.code, code).build().findFirst();
+        Member member = box.query().equal(Member_.code, code, QueryBuilder.StringOrder.CASE_SENSITIVE).build().findFirst();
         return member;
     }
 
@@ -70,7 +71,7 @@ public class Queries {
 
     public static Death getDeathByCode(Box<Death> box, String code){
 
-        Death death = box.query().equal(Death_.memberCode, code).build().findFirst();
+        Death death = box.query().equal(Death_.memberCode, code, QueryBuilder.StringOrder.CASE_SENSITIVE).build().findFirst();
         return death;
     }
 
@@ -89,7 +90,7 @@ public class Queries {
 
         String[] codesArray = codes.toArray(new String[codes.size()]);
 
-        List<Module> list = box.query().in(Module_.code, codesArray).build().find();
+        List<Module> list = box.query().in(Module_.code, codesArray, QueryBuilder.StringOrder.CASE_SENSITIVE).build().find();
 
         return list;
     }

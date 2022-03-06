@@ -32,6 +32,7 @@ import java.util.Map;
 
 import androidx.fragment.app.FragmentManager;
 import io.objectbox.Box;
+import io.objectbox.query.QueryBuilder;
 import mz.betainteractive.utilities.GeneralUtil;
 import mz.betainteractive.utilities.StringUtil;
 
@@ -67,8 +68,8 @@ public class MaritalRelationshipFormUtil extends FormUtil<MaritalRelationship> {
         initBoxes();
         initialize();
 
-        this.spouseA = boxMembers.query().equal(Member_.code, relationshipToEdit.memberA_code).build().findFirst();
-        this.spouseB = boxMembers.query().equal(Member_.code, relationshipToEdit.memberB_code).build().findFirst();
+        this.spouseA = boxMembers.query().equal(Member_.code, relationshipToEdit.memberA_code, QueryBuilder.StringOrder.CASE_SENSITIVE).build().findFirst();
+        this.spouseB = boxMembers.query().equal(Member_.code, relationshipToEdit.memberB_code, QueryBuilder.StringOrder.CASE_SENSITIVE).build().findFirst();
     }
 
     @Override
@@ -232,15 +233,15 @@ public class MaritalRelationshipFormUtil extends FormUtil<MaritalRelationship> {
         //Start: MAR, LIV
         //End: DIV, SEP, WID
 
-        MaritalRelationship previousRelA = boxMaritalRelationships.query().equal(MaritalRelationship_.memberA_code, spouseA.code)
+        MaritalRelationship previousRelA = boxMaritalRelationships.query().equal(MaritalRelationship_.memberA_code, spouseA.code, QueryBuilder.StringOrder.CASE_SENSITIVE)
                                                                           .or()
-                                                                          .equal(MaritalRelationship_.memberB_code, spouseA.code)
+                                                                          .equal(MaritalRelationship_.memberB_code, spouseA.code, QueryBuilder.StringOrder.CASE_SENSITIVE)
                                                                           .orderDesc(MaritalRelationship_.startDate)
                                                                           .build().findFirst();
 
-        MaritalRelationship previousRelB = boxMaritalRelationships.query().equal(MaritalRelationship_.memberA_code, spouseB.code)
+        MaritalRelationship previousRelB = boxMaritalRelationships.query().equal(MaritalRelationship_.memberA_code, spouseB.code, QueryBuilder.StringOrder.CASE_SENSITIVE)
                 .or()
-                .equal(MaritalRelationship_.memberB_code, spouseB.code)
+                .equal(MaritalRelationship_.memberB_code, spouseB.code, QueryBuilder.StringOrder.CASE_SENSITIVE)
                 .orderDesc(MaritalRelationship_.startDate)
                 .build().findFirst();
 
@@ -398,9 +399,9 @@ public class MaritalRelationshipFormUtil extends FormUtil<MaritalRelationship> {
         //2. select a spouse
 
 
-        MaritalRelationship maritalRelationship = boxMaritalRelationships.query().equal(MaritalRelationship_.memberA_code, spouseA.code)
+        MaritalRelationship maritalRelationship = boxMaritalRelationships.query().equal(MaritalRelationship_.memberA_code, spouseA.code, QueryBuilder.StringOrder.CASE_SENSITIVE)
                                                                                  .or()
-                                                                                 .equal(MaritalRelationship_.memberB_code, spouseA.code)
+                                                                                 .equal(MaritalRelationship_.memberB_code, spouseA.code, QueryBuilder.StringOrder.CASE_SENSITIVE)
                                                                                  .orderDesc(MaritalRelationship_.startDate)
                                                                                  .build().findFirst();
 
@@ -416,8 +417,8 @@ public class MaritalRelationshipFormUtil extends FormUtil<MaritalRelationship> {
 
             if (existsRelationshipToClose) {
                 //if its about to close a relationship pull in the same order it was registered
-                this.spouseA = boxMembers.query().equal(Member_.code, maritalRelationship.memberA_code).build().findFirst();
-                this.spouseB = boxMembers.query().equal(Member_.code, maritalRelationship.memberB_code).build().findFirst();
+                this.spouseA = boxMembers.query().equal(Member_.code, maritalRelationship.memberA_code, QueryBuilder.StringOrder.CASE_SENSITIVE).build().findFirst();
+                this.spouseB = boxMembers.query().equal(Member_.code, maritalRelationship.memberB_code, QueryBuilder.StringOrder.CASE_SENSITIVE).build().findFirst();
 
                 executeCollectForm();
             } else {
@@ -439,7 +440,7 @@ public class MaritalRelationshipFormUtil extends FormUtil<MaritalRelationship> {
     }
 
     private int retrieveMinimumSpouseAge() {
-        ApplicationParam param = this.boxAppParams.query().equal(ApplicationParam_.name, ApplicationParam.PARAMS_MIN_AGE_OF_SPOUSE).build().findFirst();
+        ApplicationParam param = this.boxAppParams.query().equal(ApplicationParam_.name, ApplicationParam.PARAMS_MIN_AGE_OF_SPOUSE, QueryBuilder.StringOrder.CASE_SENSITIVE).build().findFirst();
 
         if (param != null) {
             try {
@@ -453,7 +454,7 @@ public class MaritalRelationshipFormUtil extends FormUtil<MaritalRelationship> {
     }
 
     private boolean retrieveGenderChecking() {
-        ApplicationParam param = this.boxAppParams.query().equal(ApplicationParam_.name, ApplicationParam.PARAMS_GENDER_CHECKING).build().findFirst();
+        ApplicationParam param = this.boxAppParams.query().equal(ApplicationParam_.name, ApplicationParam.PARAMS_GENDER_CHECKING, QueryBuilder.StringOrder.CASE_SENSITIVE).build().findFirst();
 
         if (param != null) {
             try {

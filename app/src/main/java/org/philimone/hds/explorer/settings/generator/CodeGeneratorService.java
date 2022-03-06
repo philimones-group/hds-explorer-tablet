@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import io.objectbox.Box;
+import io.objectbox.query.QueryBuilder;
 
 public class CodeGeneratorService {
 
@@ -78,7 +79,7 @@ public class CodeGeneratorService {
 
     public String generateHouseholdCode(Region region, User user) {
         String cbase = region.code + user.code;
-        String[] codesArray = boxHouseholds.query().startsWith(Household_.code, cbase)
+        String[] codesArray = boxHouseholds.query().startsWith(Household_.code, cbase, QueryBuilder.StringOrder.CASE_SENSITIVE)
                                                    .order(Household_.code).build()
                                                    .property(Household_.code).findStrings();
 
@@ -90,7 +91,7 @@ public class CodeGeneratorService {
     public String generateMemberCode(Household household) {
 
         String cbase = household.code;
-        String[] codesArray = boxMembers.query().startsWith(Member_.code, cbase)
+        String[] codesArray = boxMembers.query().startsWith(Member_.code, cbase, QueryBuilder.StringOrder.CASE_SENSITIVE)
                                                 .order(Member_.code).build()
                                                 .property(Member_.code).findStrings();
         List<String> codes = Arrays.asList(codesArray); //Member.findAllByCodeLike("${cbase}%", [sort:'code', order: 'asc']).collect{ t -> t.code};
@@ -102,7 +103,7 @@ public class CodeGeneratorService {
 
         long round = boxRounds.query().build().property(Round_.roundNumber).max();
         String cbase = household.code + "-" + String.format("%03d", round);
-        String[] codesArray = boxVisits.query().startsWith(Visit_.code, cbase)
+        String[] codesArray = boxVisits.query().startsWith(Visit_.code, cbase, QueryBuilder.StringOrder.CASE_SENSITIVE)
                                                .order(Visit_.code).build()
                                                .property(Visit_.code).findStrings();
 
@@ -122,7 +123,7 @@ public class CodeGeneratorService {
     public String generatePregnancyCode(Member mother) {
 
         String cbase = mother.code;
-        String[] codesArray = boxPregnancies.query().startsWith(PregnancyRegistration_.code, cbase)
+        String[] codesArray = boxPregnancies.query().startsWith(PregnancyRegistration_.code, cbase, QueryBuilder.StringOrder.CASE_SENSITIVE)
                                                     .order(PregnancyRegistration_.code).build()
                                                     .property(PregnancyRegistration_.code).findStrings();
 

@@ -317,8 +317,8 @@ public class HouseholdDetailsActivity extends AppCompatActivity {
 
         if (household == null) return;
 
-        Region region = this.boxRegions.query().equal(Region_.code, household.region).build().findFirst();
-        Visit lastVisit = this.boxVisits.query().equal(Visit_.householdCode, household.code).order(Visit_.visitDate, QueryBuilder.DESCENDING).build().findFirst();
+        Region region = this.boxRegions.query().equal(Region_.code, household.region, QueryBuilder.StringOrder.CASE_SENSITIVE).build().findFirst();
+        Visit lastVisit = this.boxVisits.query().equal(Visit_.householdCode, household.code, QueryBuilder.StringOrder.CASE_SENSITIVE).order(Visit_.visitDate, QueryBuilder.DESCENDING).build().findFirst();
         String hierarchyName = getHierarchyName(region);
 
         hhDetailsName.setText(household.getName());
@@ -392,7 +392,7 @@ public class HouseholdDetailsActivity extends AppCompatActivity {
         Visit lastVisit = null;
 
         if (household != null) {
-            lastVisit = this.boxVisits.query().equal(Visit_.householdCode, household.code).order(Visit_.visitDate, QueryBuilder.DESCENDING).build().findFirst();
+            lastVisit = this.boxVisits.query().equal(Visit_.householdCode, household.code, QueryBuilder.StringOrder.CASE_SENSITIVE).order(Visit_.visitDate, QueryBuilder.DESCENDING).build().findFirst();
         }
 
         return lastVisit != null && lastVisit.recentlyCreated;
@@ -517,7 +517,7 @@ public class HouseholdDetailsActivity extends AppCompatActivity {
 
     private void openPreviousVisit() {
         //get the recently created visit
-        Visit lastVisit = this.boxVisits.query().equal(Visit_.householdCode, household.code).order(Visit_.visitDate, QueryBuilder.DESCENDING).build().findFirst();
+        Visit lastVisit = this.boxVisits.query().equal(Visit_.householdCode, household.code, QueryBuilder.StringOrder.CASE_SENSITIVE).order(Visit_.visitDate, QueryBuilder.DESCENDING).build().findFirst();
 
         if (lastVisit != null && lastVisit.recentlyCreated) {
 

@@ -1,16 +1,15 @@
 package org.philimone.hds.explorer.database;
 
-import android.content.Context;
 import android.os.Environment;
 import android.util.Log;
 
+import org.philimone.hds.explorer.model.ApplicationParam;
 import org.philimone.hds.explorer.model.ApplicationParam_;
+import org.philimone.hds.explorer.model.SyncReport;
 import org.philimone.hds.explorer.model.User;
 import org.philimone.hds.explorer.model.User_;
 import org.philimone.hds.explorer.model.enums.SyncEntity;
 import org.philimone.hds.explorer.model.enums.SyncStatus;
-import org.philimone.hds.explorer.model.ApplicationParam;
-import org.philimone.hds.explorer.model.SyncReport;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -18,6 +17,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import io.objectbox.Box;
+import io.objectbox.query.QueryBuilder;
 
 /**
  * Created by paul on 5/26/16.
@@ -37,7 +37,7 @@ public class Bootstrap {
     private Box<ApplicationParam> boxAppParams;
     private Box<SyncReport> boxSyncReports;
 
-    public Bootstrap(Context context){
+    public Bootstrap(){
         initBoxes();
     }
 
@@ -87,11 +87,11 @@ public class Bootstrap {
         List<SyncEntity> reportIds = reports.stream().map(SyncReport::getReportId).collect(Collectors.toList());
 
         //not are good pratice
-        newReports.forEach( report -> {
+        for (SyncReport report : newReports){
             if (!reportIds.contains(report.getReportId())){
                 boxSyncReports.put(report);
             }
-        });
+        }
 
     }
 
@@ -152,15 +152,15 @@ public class Bootstrap {
     public static User getCurrentUser(){
         Box<ApplicationParam> paramBox = ObjectBoxDatabase.get().boxFor(ApplicationParam.class);
         Box<User> userBox = ObjectBoxDatabase.get().boxFor(User.class);
-        ApplicationParam param = paramBox.query().equal(ApplicationParam_.name, ApplicationParam.LOGGED_USER).build().findFirst();
-        User loggedUser = param==null ? null : userBox.query().equal(User_.code, param.value).build().findFirst();
+        ApplicationParam param = paramBox.query().equal(ApplicationParam_.name, ApplicationParam.LOGGED_USER, QueryBuilder.StringOrder.CASE_SENSITIVE).build().findFirst();
+        User loggedUser = param==null ? null : userBox.query().equal(User_.code, param.value, QueryBuilder.StringOrder.CASE_SENSITIVE).build().findFirst();
 
         return loggedUser;
     }
 
     public static void setCurrentUser(User user){
         Box<ApplicationParam> paramBox = ObjectBoxDatabase.get().boxFor(ApplicationParam.class);
-        ApplicationParam param = paramBox.query().equal(ApplicationParam_.name, ApplicationParam.LOGGED_USER).build().findFirst();
+        ApplicationParam param = paramBox.query().equal(ApplicationParam_.name, ApplicationParam.LOGGED_USER, QueryBuilder.StringOrder.CASE_SENSITIVE).build().findFirst();
         param = param==null ? new ApplicationParam(ApplicationParam.LOGGED_USER, "string", "") : param;
 
 

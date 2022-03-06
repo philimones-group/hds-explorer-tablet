@@ -43,6 +43,7 @@ import java.util.Scanner;
 
 import androidx.appcompat.app.AppCompatActivity;
 import io.objectbox.Box;
+import io.objectbox.query.QueryBuilder;
 
 /**
  * A login screen that offers login via email/password.
@@ -311,7 +312,7 @@ public class LoginActivity extends AppCompatActivity {
 
             try {
                 // Simulate network access.
-                user = boxUsers.query().equal(User_.username, this.mUsername).or().equal(User_.code, this.mUsername).build().findFirst();
+                user = boxUsers.query().equal(User_.username, this.mUsername, QueryBuilder.StringOrder.CASE_SENSITIVE).or().equal(User_.code, this.mUsername, QueryBuilder.StringOrder.CASE_SENSITIVE).build().findFirst();
                 Log.d("user-"+this.mUsername, "found "+ (user != null));
 
             } catch (Exception e) {
@@ -380,7 +381,7 @@ public class LoginActivity extends AppCompatActivity {
             try {
 
                 //check if is a local user
-                isLocalUser = boxUsers.query().equal(User_.username, this.mUsername).or().equal(User_.code, this.mUsername).build().findFirst() != null;
+                isLocalUser = boxUsers.query().equal(User_.username, this.mUsername, QueryBuilder.StringOrder.CASE_SENSITIVE).or().equal(User_.code, this.mUsername, QueryBuilder.StringOrder.CASE_SENSITIVE).build().findFirst() != null;
 
                 HttpURLConnection connection = null;
                 String basicAuth = "Basic " + new String(Base64.encode((this.mUsername+":"+this.mPassword).getBytes(),Base64.NO_WRAP ));

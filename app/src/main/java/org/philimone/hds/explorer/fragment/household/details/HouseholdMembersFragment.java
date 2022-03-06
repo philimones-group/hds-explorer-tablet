@@ -33,6 +33,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import io.objectbox.Box;
+import io.objectbox.query.QueryBuilder;
 import mz.betainteractive.utilities.StringUtil;
 
 /**
@@ -132,13 +133,13 @@ public class HouseholdMembersFragment extends Fragment {
 
     private Region getRegion(String code){
 
-        Region region = this.boxRegions.query().equal(Region_.code, code).build().findFirst();
+        Region region = this.boxRegions.query().equal(Region_.code, code, QueryBuilder.StringOrder.CASE_SENSITIVE).build().findFirst();
 
         return region;
     }
 
     private void showHouseholdMembers(){
-        List<Member> members = this.boxMembers.query().equal(Member_.householdCode, household.getCode()).build().find();
+        List<Member> members = this.boxMembers.query().equal(Member_.householdCode, household.getCode(), QueryBuilder.StringOrder.CASE_SENSITIVE).build().find();
 
         MemberArrayAdapter adapter = new MemberArrayAdapter(this.getContext(), members);
         this.lvHouseholdMembers.setAdapter(adapter);

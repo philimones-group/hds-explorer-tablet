@@ -72,6 +72,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import io.objectbox.Box;
+import io.objectbox.query.QueryBuilder;
 import mz.betainteractive.utilities.StringUtil;
 
 /**
@@ -697,7 +698,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 			count = values.size();
 
 			String[] arrayNames = namesToRemove.toArray(new String[namesToRemove.size()]);
-			boxAppParams.query().in(ApplicationParam_.name, arrayNames).build().remove(); //delete all existing names
+			boxAppParams.query().in(ApplicationParam_.name, arrayNames, QueryBuilder.StringOrder.CASE_SENSITIVE).build().remove(); //delete all existing names
 			boxAppParams.put(values); //insert all of them
 		}
 

@@ -36,6 +36,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import io.objectbox.Box;
+import io.objectbox.query.QueryBuilder;
 import mz.betainteractive.io.readers.CSVReader;
 import mz.betainteractive.utilities.StringUtil;
 
@@ -152,7 +153,7 @@ public class ExternalDatasetsFragment extends Fragment {
 
         List<String> selectedModules = new ArrayList<>(currentUser.getSelectedModules());
 
-        List<Dataset> datasets = this.boxDatasets.query().equal(Dataset_.tableName, this.subject.getTableName().code)
+        List<Dataset> datasets = this.boxDatasets.query().equal(Dataset_.tableName, this.subject.getTableName().code, QueryBuilder.StringOrder.CASE_SENSITIVE)
                                                          .filter((d) -> StringUtil.containsAny(d.modules, selectedModules))  //filter by module
                                                          .build().find();
 

@@ -28,6 +28,7 @@ import java.util.Date;
 
 import androidx.annotation.Nullable;
 import io.objectbox.Box;
+import io.objectbox.query.QueryBuilder;
 import mz.betainteractive.utilities.GeneralUtil;
 import mz.betainteractive.utilities.StringUtil;
 
@@ -259,7 +260,7 @@ public class MemberFormDialog extends DialogFragment {
         String orderBy = DatabaseHelper.Member.COLUMN_CODE + " DESC";
         */
 
-        Member member = this.boxMembers.query().startsWith(Member_.code, baseId).orderDesc(Member_.code).build().findFirst();
+        Member member = this.boxMembers.query().startsWith(Member_.code, baseId, QueryBuilder.StringOrder.CASE_SENSITIVE).orderDesc(Member_.code).build().findFirst();
 
         if (member != null) {
             String lastGeneratedId = member.getCode();

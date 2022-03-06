@@ -22,6 +22,7 @@ import org.philimone.hds.explorer.widget.DialogFactory;
 
 import androidx.annotation.Nullable;
 import io.objectbox.Box;
+import io.objectbox.query.QueryBuilder;
 
 /**
  *
@@ -194,7 +195,7 @@ public class HouseholdFormDialog extends DialogFragment {
 
         String generatedId = null;
 
-        Household lastHousehold = this.boxHouseholds.query().startsWith(Household_.code, baseId).orderDesc(Household_.code).build().findFirst();
+        Household lastHousehold = this.boxHouseholds.query().startsWith(Household_.code, baseId, QueryBuilder.StringOrder.CASE_SENSITIVE).orderDesc(Household_.code).build().findFirst();
 
         if (lastHousehold != null) {
             String lastGeneratedId = lastHousehold.code;

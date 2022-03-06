@@ -352,21 +352,21 @@ public class MemberFilterDialog extends DialogFragment {
             String text = filter.getFilterText();
             switch (filter.getFilterType()) {
                 case STARTSWITH:
-                    builder.startsWith(Member_.name, text);
+                    builder.startsWith(Member_.name, text, QueryBuilder.StringOrder.CASE_SENSITIVE);
                     break;
                 case ENDSWITH:
-                    builder.endsWith(Member_.name, text);
+                    builder.endsWith(Member_.name, text, QueryBuilder.StringOrder.CASE_SENSITIVE);
                     break;
                 case CONTAINS:
-                    builder.contains(Member_.name, text);
+                    builder.contains(Member_.name, text, QueryBuilder.StringOrder.CASE_SENSITIVE);
                     break;
                 case MULTIPLE_CONTAINS:
                     for (String t : filter.getFilterTexts()) {
-                        builder.contains(Member_.name, t);
+                        builder.contains(Member_.name, t, QueryBuilder.StringOrder.CASE_SENSITIVE);
                     }                    
                     break;
                 case NONE:
-                    builder.equal(Member_.name, text);
+                    builder.equal(Member_.name, text, QueryBuilder.StringOrder.CASE_SENSITIVE);
                     break;
                 case EMPTY:
                     break;
@@ -379,21 +379,21 @@ public class MemberFilterDialog extends DialogFragment {
             String text = filter.getFilterText();
             switch (filter.getFilterType()) {
                 case STARTSWITH:
-                    builder.startsWith(Member_.code, text);
+                    builder.startsWith(Member_.code, text, QueryBuilder.StringOrder.CASE_SENSITIVE);
                     break;
                 case ENDSWITH:
-                    builder.endsWith(Member_.code, text);
+                    builder.endsWith(Member_.code, text, QueryBuilder.StringOrder.CASE_SENSITIVE);
                     break;
                 case CONTAINS:
-                    builder.contains(Member_.code, text);
+                    builder.contains(Member_.code, text, QueryBuilder.StringOrder.CASE_SENSITIVE);
                     break;
                 case MULTIPLE_CONTAINS:
                     for (String t : filter.getFilterTexts()) {
-                        builder.contains(Member_.code, t);
+                        builder.contains(Member_.code, t, QueryBuilder.StringOrder.CASE_SENSITIVE);
                     }
                     break;
                 case NONE:
-                    builder.equal(Member_.code, text);
+                    builder.equal(Member_.code, text, QueryBuilder.StringOrder.CASE_SENSITIVE);
                     break;
                 case EMPTY:
                     break;
@@ -405,21 +405,21 @@ public class MemberFilterDialog extends DialogFragment {
             String text = filter.getFilterText();
             switch (filter.getFilterType()) {
                 case STARTSWITH:
-                    builder.startsWith(Member_.householdCode, text);
+                    builder.startsWith(Member_.householdCode, text, QueryBuilder.StringOrder.CASE_SENSITIVE);
                     break;
                 case ENDSWITH:
-                    builder.endsWith(Member_.householdCode, text);
+                    builder.endsWith(Member_.householdCode, text, QueryBuilder.StringOrder.CASE_SENSITIVE);
                     break;
                 case CONTAINS:
-                    builder.contains(Member_.householdCode, text);
+                    builder.contains(Member_.householdCode, text, QueryBuilder.StringOrder.CASE_SENSITIVE);
                     break;
                 case MULTIPLE_CONTAINS:
                     for (String t : filter.getFilterTexts()) {
-                        builder.contains(Member_.householdCode, t);
+                        builder.contains(Member_.householdCode, t, QueryBuilder.StringOrder.CASE_SENSITIVE);
                     }
                     break;
                 case NONE:
-                    builder.equal(Member_.householdCode, text);
+                    builder.equal(Member_.householdCode, text, QueryBuilder.StringOrder.CASE_SENSITIVE);
                     break;
                 case EMPTY:
                     break;
@@ -428,7 +428,7 @@ public class MemberFilterDialog extends DialogFragment {
             
         }
         if (!gender.isEmpty()){
-            builder.equal(Member_.gender, gender);
+            builder.equal(Member_.gender, gender, QueryBuilder.StringOrder.CASE_SENSITIVE);
             //whereClause += DatabaseHelper.Member.COLUMN_GENDER + " = ?";
         }
 
@@ -453,7 +453,7 @@ public class MemberFilterDialog extends DialogFragment {
         }
 
         if (endType != null){
-            builder.equal(Member_.endType, endType.getId());
+            builder.equal(Member_.endType, endType.getId(), QueryBuilder.StringOrder.CASE_SENSITIVE);
             //whereClause += DatabaseHelper.Member.COLUMN_END_TYPE + " = ?";
         }
 

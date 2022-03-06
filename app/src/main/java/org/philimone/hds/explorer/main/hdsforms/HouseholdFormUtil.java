@@ -31,6 +31,7 @@ import java.util.Map;
 
 import androidx.fragment.app.FragmentManager;
 import io.objectbox.Box;
+import io.objectbox.query.QueryBuilder;
 
 public class HouseholdFormUtil extends FormUtil<Household> {
 
@@ -90,7 +91,7 @@ public class HouseholdFormUtil extends FormUtil<Household> {
         }
 
         //check if household with code exists
-        if (boxHouseholds.query().equal(Household_.code, household_code).build().findFirst() != null){
+        if (boxHouseholds.query().equal(Household_.code, household_code, QueryBuilder.StringOrder.CASE_SENSITIVE).build().findFirst() != null){
             String message = this.context.getString(R.string.new_household_code_exists_lbl);
             //DialogFactory.createMessageInfo(HouseholdDetailsActivity.this, R.string.info_lbl, R.string.new_household_code_exists_lbl).show();
             return new ValidationResult(columnHouseholdCode, message);

@@ -3,11 +3,11 @@ apply plugin: 'com.android.library'
 android {
 
   // Define these properties in the gradle.properties file in the root project folder
-  compileSdkVersion 23
+  compileSdkVersion 30
 
     defaultConfig {
-    minSdkVersion 19
-    targetSdkVersion 23
+    minSdkVersion 21
+    targetSdkVersion 30
   }
 
   sourceSets.main {

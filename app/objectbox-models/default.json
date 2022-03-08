@@ -1852,10 +1852,60 @@
         }
       ],
       "relations": []
+    },
+    {
+      "id": "25:5164176128447748791",
+      "lastPropertyId": "7:3171399490707587928",
+      "name": "IncompleteVisit",
+      "properties": [
+        {
+          "id": "1:2784649561582739190",
+          "name": "id",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:2853630552028545313",
+          "name": "reason",
+          "type": 9
+        },
+        {
+          "id": "3:4249570797175088918",
+          "name": "reasonOther",
+          "type": 9
+        },
+        {
+          "id": "4:2027498616017061860",
+          "name": "recentlyCreated",
+          "type": 1
+        },
+        {
+          "id": "5:5917779927443900377",
+          "name": "recentlyCreatedUri",
+          "type": 9
+        },
+        {
+          "id": "6:1916277854761728089",
+          "name": "visitId",
+          "indexId": "81:8725619436885642033",
+          "type": 11,
+          "flags": 520,
+          "relationTarget": "Visit"
+        },
+        {
+          "id": "7:3171399490707587928",
+          "name": "memberId",
+          "indexId": "82:5796881041787694389",
+          "type": 11,
+          "flags": 520,
+          "relationTarget": "Member"
+        }
+      ],
+      "relations": []
     }
   ],
-  "lastEntityId": "24:2322818229263179311",
-  "lastIndexId": "80:686241525943846293",
+  "lastEntityId": "25:5164176128447748791",
+  "lastIndexId": "82:5796881041787694389",
   "lastRelationId": "0:0",
   "lastSequenceId": "0:0",
   "modelVersion": 5,

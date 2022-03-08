@@ -176,7 +176,7 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
         return form;
     }
 
-    protected static HForm getIncompleteForm(Context context) {
+    protected static HForm getIncompleteVisitForm(Context context) {
         InputStream inputStream = context.getResources().openRawResource(R.raw.incomplete_form);
         HForm form = new ExcelFormParser(inputStream).getForm();
         return form;

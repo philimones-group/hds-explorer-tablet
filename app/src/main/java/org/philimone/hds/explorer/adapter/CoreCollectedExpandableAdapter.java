@@ -11,7 +11,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.philimone.hds.explorer.R;
-import org.philimone.hds.explorer.adapter.model.TrackingSubListItem;
 import org.philimone.hds.explorer.model.CoreCollectedData;
 import org.philimone.hds.explorer.model.enums.CoreFormEntity;
 import org.philimone.hds.explorer.widget.CirclePercentageBar;
@@ -20,7 +19,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 import androidx.annotation.DrawableRes;
 import mz.betainteractive.utilities.StringUtil;
@@ -170,7 +168,7 @@ public class CoreCollectedExpandableAdapter extends BaseExpandableListAdapter im
                 return R.mipmap.nui_death_icon_dark;
             case CHANGE_HOUSEHOLD_HEAD:
                 return R.mipmap.nui_changehoh_icon_dark;
-            case MEMBER_NOT_VISITED:
+            case INCOMPLETE_VISIT:
                 return R.mipmap.nui_member_incomplete_icon_dark;
 
         }

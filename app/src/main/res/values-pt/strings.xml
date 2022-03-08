@@ -372,6 +372,12 @@
     <string name="maritalrelationship_cp2_already_closed_lbl">Cannot close the Marital Relationship because its already closed with type [%1$s]</string>
     <string name="maritalrelationship_cp3_dates_overlap_lbl">Cannot close the Marital Relationship because the endDate cannot be before or equal to the startDate</string>
 
+    <string name="incomplete_visit_visit_code_empty">The Visit Code cannot be empty</string>
+    <string name="incomplete_visit_member_code_empty">The Member Code cannot be empty</string>
+    <string name="incomplete_visit_reason_empty">The Reason for not being visited cannot be empty</string>
+    <string name="incomplete_visit_reason_other_empty">The Other reason for not being visited cannot be empty</string>
+    <string name="incomplete_visit_member_not_found_lbl">The Member was not found in the database</string>
+
     <string-array name="relationship_types_array">
         <item>Solteiro</item>
         <item>Casado</item>
@@ -525,5 +531,14 @@
     <string name="visitReason_newhouse">Registo de novo Agregado</string>
     <string name="visitReason_dataclean">Correção de Erros</string>
     <string name="visitReason_other">Outros motivos</string>
+
+    <string name="incompleteVisitReason_unavail_today">Não esta disponível hoje</string>
+    <string name="incompleteVisitReason_unavail_round">Não esta disponível nesta ronda (temporariamente fora, pelos estudos, trabalho, etc)</string>
+    <string name="incompleteVisitReason_unwilling">Não deseja participar nesta ronda</string>
+    <string name="incompleteVisitReason_hospitalized">Hospitalizado</string>
+    <string name="incompleteVisitReason_relocated">Emigrou para fora da area de estudo</string>
+    <string name="incompleteVisitReason_withdrew">Rejeitou/Retirou o consentimento</string>
+    <string name="incompleteVisitReason_dead">Morto</string>
+    <string name="incompleteVisitReason_other">Outra</string>
 
 </resources>

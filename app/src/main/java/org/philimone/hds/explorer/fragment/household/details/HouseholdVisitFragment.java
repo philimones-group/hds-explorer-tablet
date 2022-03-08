@@ -21,12 +21,14 @@ import org.philimone.hds.explorer.database.ObjectBoxDatabase;
 import org.philimone.hds.explorer.main.hdsforms.FormUtilListener;
 import org.philimone.hds.explorer.main.hdsforms.MaritalRelationshipFormUtil;
 import org.philimone.hds.explorer.main.hdsforms.MemberEnumerationFormUtil;
+import org.philimone.hds.explorer.main.hdsforms.IncompleteVisitFormUtil;
 import org.philimone.hds.explorer.model.CollectedData;
 import org.philimone.hds.explorer.model.CollectedData_;
 import org.philimone.hds.explorer.model.CoreCollectedData;
 import org.philimone.hds.explorer.model.CoreCollectedData_;
 import org.philimone.hds.explorer.model.Form;
 import org.philimone.hds.explorer.model.Household;
+import org.philimone.hds.explorer.model.IncompleteVisit;
 import org.philimone.hds.explorer.model.MaritalRelationship;
 import org.philimone.hds.explorer.model.Member;
 import org.philimone.hds.explorer.model.Member_;
@@ -152,6 +154,10 @@ public class HouseholdVisitFragment extends Fragment {
 
         this.btClearMember.setOnClickListener( v -> {
             onClearMemberClicked();
+        });
+
+        this.btnVisitMemberIncomplete.setOnClickListener(v -> {
+            onIncompleteVisitClicked();
         });
 
         this.btnVisitMemberEnu.setOnClickListener(v -> {
@@ -294,7 +300,7 @@ public class HouseholdVisitFragment extends Fragment {
         mapData.put(CoreFormEntity.PREGNANCY_OUTCOME, new ArrayList<CoreCollectedData>());
         mapData.put(CoreFormEntity.DEATH, new ArrayList<CoreCollectedData>());
         mapData.put(CoreFormEntity.CHANGE_HOUSEHOLD_HEAD, new ArrayList<CoreCollectedData>());
-        mapData.put(CoreFormEntity.MEMBER_NOT_VISITED, new ArrayList<CoreCollectedData>());
+        mapData.put(CoreFormEntity.INCOMPLETE_VISIT, new ArrayList<CoreCollectedData>());
         mapData.put(CoreFormEntity.VISIT, new ArrayList<CoreCollectedData>());
 
         //group the coreList in Map
@@ -330,6 +336,31 @@ public class HouseholdVisitFragment extends Fragment {
         setHouseholdMode();
     }
 
+    private void onIncompleteVisitClicked() {
+        //get current selected member
+        //this.selectedMember
+        Log.d("on-incomplete-clicked", ""+this.selectedMember);
+
+        IncompleteVisitFormUtil formUtil = new IncompleteVisitFormUtil(getActivity().getSupportFragmentManager(), this.getContext(), this.visit, this.selectedMember, new FormUtilListener<IncompleteVisit>() {
+            @Override
+            public void onNewEntityCreated(IncompleteVisit entity) {
+                loadDataToListViews();
+            }
+
+            @Override
+            public void onEntityEdited(IncompleteVisit entity) {
+                loadDataToListViews();
+            }
+
+            @Override
+            public void onFormCancelled() {
+
+            }
+        });
+
+        formUtil.collect();
+    }
+
     private void onEnumerationClicked() {
 
         Log.d("on-enum-click-household", ""+this.household);
@@ -360,7 +391,7 @@ public class HouseholdVisitFragment extends Fragment {
         //get current selected member
         //this.selectedMember
 
-        Log.d("on-enum-click-member", ""+this.selectedMember);
+        Log.d("on-marital-clicked", ""+this.selectedMember);
 
         MaritalRelationshipFormUtil formUtil = new MaritalRelationshipFormUtil(getActivity().getSupportFragmentManager(), this.getContext(), this.visit, this.selectedMember, new FormUtilListener<MaritalRelationship>() {
             @Override

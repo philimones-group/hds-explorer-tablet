@@ -15,12 +15,18 @@ import org.philimone.hds.explorer.model.ApplicationParam_;
 import org.philimone.hds.explorer.model.CollectedData;
 import org.philimone.hds.explorer.model.CoreCollectedData;
 import org.philimone.hds.explorer.model.Dataset;
+import org.philimone.hds.explorer.model.Death;
 import org.philimone.hds.explorer.model.Form;
 import org.philimone.hds.explorer.model.HeadRelationship;
 import org.philimone.hds.explorer.model.Household;
+import org.philimone.hds.explorer.model.InMigration;
+import org.philimone.hds.explorer.model.IncompleteVisit;
 import org.philimone.hds.explorer.model.MaritalRelationship;
 import org.philimone.hds.explorer.model.Member;
 import org.philimone.hds.explorer.model.Module;
+import org.philimone.hds.explorer.model.OutMigration;
+import org.philimone.hds.explorer.model.PregnancyChild;
+import org.philimone.hds.explorer.model.PregnancyOutcome;
 import org.philimone.hds.explorer.model.PregnancyRegistration;
 import org.philimone.hds.explorer.model.Region;
 import org.philimone.hds.explorer.model.Residency;
@@ -29,7 +35,6 @@ import org.philimone.hds.explorer.model.SyncReport;
 import org.philimone.hds.explorer.model.User;
 import org.philimone.hds.explorer.model.Visit;
 import org.philimone.hds.explorer.model.converters.FormMappingConverter;
-import org.philimone.hds.explorer.model.converters.LabelMappingConverter;
 import org.philimone.hds.explorer.model.converters.StringCollectionConverter;
 import org.philimone.hds.explorer.model.enums.EstimatedDateOfDeliveryType;
 import org.philimone.hds.explorer.model.enums.Gender;
@@ -124,6 +129,12 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 	private Box<HeadRelationship> boxHeadRelationships;
 	private Box<MaritalRelationship> boxMaritalRelationships;
 	private Box<PregnancyRegistration> boxPregnancyRegistrations;
+	private Box<Death> boxDeaths;
+	private Box<IncompleteVisit> boxIncompleteVisits;
+	private Box<InMigration> boxInmigrations;
+	private Box<OutMigration> boxOutmigrations;
+	private Box<PregnancyChild> boxPregnancyChilds;
+	private Box<PregnancyOutcome> boxPregnancyOuts;
 
 	private boolean canceled;
 
@@ -162,6 +173,12 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 		this.boxHeadRelationships = ObjectBoxDatabase.get().boxFor(HeadRelationship.class);
 		this.boxMaritalRelationships = ObjectBoxDatabase.get().boxFor(MaritalRelationship.class);
 		this.boxPregnancyRegistrations = ObjectBoxDatabase.get().boxFor(PregnancyRegistration.class);
+		this.boxDeaths = ObjectBoxDatabase.get().boxFor(Death.class);
+		this.boxIncompleteVisits = ObjectBoxDatabase.get().boxFor(IncompleteVisit.class);
+		this.boxInmigrations = ObjectBoxDatabase.get().boxFor(InMigration.class);
+		this.boxOutmigrations = ObjectBoxDatabase.get().boxFor(OutMigration.class);
+		this.boxPregnancyChilds = ObjectBoxDatabase.get().boxFor(PregnancyChild.class);
+		this.boxPregnancyOuts = ObjectBoxDatabase.get().boxFor(PregnancyOutcome.class);
 	}
 
 	public void setSyncDatabaseListener(SyncEntitiesListener listener){
@@ -327,6 +344,13 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 						this.boxMembers.removeAll();
 						this.boxCollectedData.removeAll();
 						this.boxCoreCollectedData.removeAll();
+						//remove related to members
+						boxDeaths.removeAll();
+						boxIncompleteVisits.removeAll();
+						boxInmigrations.removeAll();
+						boxOutmigrations.removeAll();
+						boxPregnancyChilds.removeAll();
+						boxPregnancyOuts.removeAll();
 						processUrl(baseurl + API_PATH + "/members/zip", "members.zip");
 						break;
 					case RESIDENCIES:

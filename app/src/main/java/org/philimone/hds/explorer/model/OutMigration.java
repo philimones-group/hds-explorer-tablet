@@ -12,7 +12,7 @@ import io.objectbox.annotation.Index;
 import io.objectbox.relation.ToOne;
 
 @Entity
-class OutMigration implements CoreEntity {
+public class OutMigration implements CoreEntity {
 
     @Id
     public long id;

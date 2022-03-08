@@ -1,5 +1,7 @@
 package org.philimone.hds.explorer.settings.generator;
 
+import android.util.Log;
+
 import org.philimone.hds.explorer.model.User;
 
 import java.util.List;
@@ -128,10 +130,10 @@ public class DefaultCodeGenerator implements CodeGenerator {
             return baseCode+"-001";
         } else {
 
-            String first = existentCodes.get(existentCodes.size()-1);
-            String sorder = first.replaceAll(baseCode, "");
+            String last = existentCodes.get(existentCodes.size()-1);
+            String sorder = last.replaceAll(baseCode+"-", "");
             Integer n = StringUtil.toInteger(sorder);
-
+            Log.d("sorder", ""+sorder+", int="+n);
             if (n==null) n = 1;
             for (int i=n; i <= 999; i++){
                 String code = baseCode + "-" + String.format("%03d", i);

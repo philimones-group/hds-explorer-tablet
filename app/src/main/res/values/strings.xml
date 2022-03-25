@@ -379,6 +379,15 @@
     <string name="incomplete_visit_reason_other_empty">The Other reason for not being visited cannot be empty</string>
     <string name="incomplete_visit_member_not_found_lbl">The Member was not found in the database</string>
 
+    <!-- external inmigration -->
+    <string name="external_inmigration_asktype_lbl">Is the Member already registered in the DSS? (Its returning to the study area)</string>
+    <string name="external_inmigration_select_return_member_lbl">Select the Member that will return to DSS?</string>
+    <string name="external_inmigration_reentry_lbl">Registered Member returning to the HDSS</string>
+    <string name="external_inmigration_entry_lbl">New Member Registration (First Entry)</string>
+    <string name="external_inmigration_migrationdate_empty_lbl">The Migration date cannot be empty</string>
+    <string name="external_inmigration_migrationdate_not_great_today_lbl">The Migration date cannot be greater than today</string>
+    <string name="external_inmigration_migrationdate_not_before_dob_lbl">The Migration date cannot be before the date of birth</string>
+
     <string-array name="relationship_types_array">
         <item>Single</item>
         <item>Married</item>
@@ -492,7 +501,6 @@
     <string name="eventType_birth">Birth</string>
     <string name="eventType_internal_inmigration">Internal InMigration</string>
     <string name="eventType_external_inmigration">External InMigration</string>
-    <string name="eventType_returning_inmigration">Returning InMigration</string>
     <string name="eventType_not_applicable">Not Applicable (Currently Living Here)</string>
     <string name="eventType_internal_outmigration">Internal OutMigration</string>
     <string name="eventType_external_outmigration">External OutMigration</string>

@@ -18,6 +18,7 @@ import org.philimone.hds.explorer.R;
 import org.philimone.hds.explorer.adapter.CoreCollectedExpandableAdapter;
 import org.philimone.hds.explorer.adapter.MemberArrayAdapter;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
+import org.philimone.hds.explorer.main.hdsforms.ExternalInMigrationFormUtil;
 import org.philimone.hds.explorer.main.hdsforms.FormUtilListener;
 import org.philimone.hds.explorer.main.hdsforms.MaritalRelationshipFormUtil;
 import org.philimone.hds.explorer.main.hdsforms.MemberEnumerationFormUtil;
@@ -414,10 +415,29 @@ public class HouseholdVisitFragment extends Fragment {
     }
 
     private void onExtInMigrationClicked() {
+        Log.d("on-enum-click-household", ""+this.household);
 
+        ExternalInMigrationFormUtil formUtil = new ExternalInMigrationFormUtil(getActivity().getSupportFragmentManager(), this.getContext(), this.visit, this.household, new FormUtilListener<Member>() {
+            @Override
+            public void onNewEntityCreated(Member member) {
+                selectedMember = member;
+                loadDataToListViews();
+                selectMember(member);
+            }
+
+            @Override
+            public void onEntityEdited(Member member) {
+
+            }
+
+            @Override
+            public void onFormCancelled() {
+
+            }
+        });
+
+        formUtil.collect();
     }
-
-
 
     public List<Member> getNonVisitedMembers() {
         ///check if all individuals were visited

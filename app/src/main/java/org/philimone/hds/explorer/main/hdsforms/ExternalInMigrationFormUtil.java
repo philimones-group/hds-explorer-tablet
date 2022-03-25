@@ -3,10 +3,10 @@ package org.philimone.hds.explorer.main.hdsforms;
 import android.content.Context;
 import android.util.Log;
 
+import androidx.fragment.app.FragmentManager;
+
 import org.philimone.hds.explorer.R;
-import org.philimone.hds.explorer.database.Bootstrap;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
-import org.philimone.hds.explorer.database.Queries;
 import org.philimone.hds.explorer.fragment.MemberFilterDialog;
 import org.philimone.hds.explorer.model.ApplicationParam;
 import org.philimone.hds.explorer.model.ApplicationParam_;
@@ -17,39 +17,33 @@ import org.philimone.hds.explorer.model.Member;
 import org.philimone.hds.explorer.model.Member_;
 import org.philimone.hds.explorer.model.Residency;
 import org.philimone.hds.explorer.model.Residency_;
-import org.philimone.hds.explorer.model.User;
 import org.philimone.hds.explorer.model.Visit;
 import org.philimone.hds.explorer.model.converters.StringCollectionConverter;
 import org.philimone.hds.explorer.model.enums.CoreFormEntity;
 import org.philimone.hds.explorer.model.enums.Gender;
 import org.philimone.hds.explorer.model.enums.HeadRelationshipType;
 import org.philimone.hds.explorer.model.enums.MaritalStatus;
+import org.philimone.hds.explorer.model.enums.temporal.ExternalInMigrationType;
 import org.philimone.hds.explorer.model.enums.temporal.HeadRelationshipEndType;
 import org.philimone.hds.explorer.model.enums.temporal.HeadRelationshipStartType;
+import org.philimone.hds.explorer.model.enums.temporal.InMigrationType;
 import org.philimone.hds.explorer.model.enums.temporal.ResidencyEndType;
 import org.philimone.hds.explorer.model.enums.temporal.ResidencyStartType;
-import org.philimone.hds.explorer.settings.generator.CodeGeneratorService;
 import org.philimone.hds.explorer.widget.DialogFactory;
-import org.philimone.hds.forms.listeners.FormCollectionListener;
-import org.philimone.hds.forms.main.FormFragment;
 import org.philimone.hds.forms.model.ColumnValue;
 import org.philimone.hds.forms.model.HForm;
 import org.philimone.hds.forms.model.ValidationResult;
 import org.philimone.hds.forms.model.XmlFormResult;
-import org.philimone.hds.forms.parsers.ExcelFormParser;
 
-import java.io.InputStream;
 import java.util.Date;
-import java.util.LinkedHashMap;
 import java.util.Map;
 
-import androidx.fragment.app.FragmentManager;
 import io.objectbox.Box;
 import io.objectbox.query.QueryBuilder;
 import mz.betainteractive.utilities.GeneralUtil;
 import mz.betainteractive.utilities.StringUtil;
 
-public class MemberEnumerationFormUtil extends FormUtil<Member> {
+public class ExternalInMigrationFormUtil extends FormUtil<Member> {
 
     private Box<Household> boxHouseholds;
     private Box<Member> boxMembers;
@@ -61,13 +55,15 @@ public class MemberEnumerationFormUtil extends FormUtil<Member> {
     private Visit visit;
     private Member father;
     private Member mother;
+    private Member returningMember;
+    private ExternalInMigrationType externalInMigrationType = ExternalInMigrationType.ENTRY; //default is first entry
     private boolean isFirstHouseholdMember;
     private int minimunHeadAge;
     private int minimunFatherAge;
     private int minimunMotherAge;
 
-    public MemberEnumerationFormUtil(FragmentManager fragmentManager, Context context, Visit visit, Household household, FormUtilListener<Member> listener){
-        super(fragmentManager, context, FormUtil.getMemberEnuForm(context), listener);
+    public ExternalInMigrationFormUtil(FragmentManager fragmentManager, Context context, Visit visit, Household household, FormUtilListener<Member> listener){
+        super(fragmentManager, context, FormUtil.getExternalInMigrationForm(context), listener);
 
         //Log.d("enu-household", ""+household);
 
@@ -78,8 +74,8 @@ public class MemberEnumerationFormUtil extends FormUtil<Member> {
         initialize();
     }
 
-    public MemberEnumerationFormUtil(FragmentManager fragmentManager, Context context, Visit visit, Household household, Member memberToEdit, FormUtilListener<Member> listener){
-        super(fragmentManager, context, FormUtil.getMemberEnuForm(context), memberToEdit, listener);
+    public ExternalInMigrationFormUtil(FragmentManager fragmentManager, Context context, Visit visit, Household household, Member memberToEdit, FormUtilListener<Member> listener){
+        super(fragmentManager, context, FormUtil.getExternalInMigrationForm(context), memberToEdit, listener);
 
         this.household = household;
         this.visit = visit;
@@ -117,14 +113,27 @@ public class MemberEnumerationFormUtil extends FormUtil<Member> {
     @Override
     protected void preloadValues() {
         //member_details_unknown_lbl
+
+        String memberCode = codeGenerator.generateMemberCode(household);
+
         preloadedMap.put("visitCode", this.visit.code);
-        preloadedMap.put("code", codeGenerator.generateMemberCode(household));
-        preloadedMap.put("householdCode", household.code);
-        preloadedMap.put("householdName", household.name);
+        preloadedMap.put("memberCode", memberCode);
         preloadedMap.put("motherCode", mother.code);
         preloadedMap.put("motherName", mother.isUnknownIndividual() ? context.getString(R.string.member_details_unknown_lbl) : mother.name);
         preloadedMap.put("fatherCode", father.code);
         preloadedMap.put("fatherName", father.isUnknownIndividual() ? context.getString(R.string.member_details_unknown_lbl) : father.name);
+        preloadedMap.put("migrationType", InMigrationType.EXTERNAL.code);
+        preloadedMap.put("extMigrationType", externalInMigrationType.code); //Must be selected
+
+        if (externalInMigrationType==ExternalInMigrationType.REENTRY){
+            preloadedMap.put("memberCode", returningMember.code);
+            preloadedMap.put("memberName", returningMember.name);
+            preloadedMap.put("memberGender", returningMember.gender.code);
+            preloadedMap.put("memberDob", StringUtil.formatYMD(returningMember.dob));
+            preloadedMap.put("originCode", returningMember.householdCode); //but I dont think we need this since the member is coming from outside the dss
+        }
+
+        preloadedMap.put("destinationCode", household.code);
         preloadedMap.put("modules", this.user.getSelectedModulesCodes());
 
         if (isFirstHouseholdMember) {
@@ -146,50 +155,61 @@ public class MemberEnumerationFormUtil extends FormUtil<Member> {
     public ValidationResult onFormValidate(HForm form, Map<String, ColumnValue> collectedValues) {
 
         ColumnValue colVisitCode = collectedValues.get("visitCode");
-        ColumnValue colCode = collectedValues.get("code"); //check if code is valid + check duplicate + member belongs to household
-        ColumnValue colHouseholdCode = collectedValues.get("householdCode");
-        ColumnValue colHouseholdName = collectedValues.get("householdName");
+        ColumnValue colMemberCode = collectedValues.get("memberCode"); //check if code is valid + check duplicate + member belongs to household
         ColumnValue colMotherCode = collectedValues.get("motherCode"); //not blank
         ColumnValue colMotherName = collectedValues.get("motherName");
         ColumnValue colFatherCode = collectedValues.get("fatherCode"); //not blank
         ColumnValue colFatherName = collectedValues.get("fatherName");
-        ColumnValue colName = collectedValues.get("name"); //not blank
-        ColumnValue colGender = collectedValues.get("gender"); //not blank
-        ColumnValue colDob = collectedValues.get("dob"); //date cannot be in future + head min age
+        ColumnValue colMemberName = collectedValues.get("memberName"); //not blank
+        ColumnValue colMemberGender = collectedValues.get("memberGender"); //not blank
+        ColumnValue colMemberDob = collectedValues.get("memberDob"); //date cannot be in future + head min age
         ColumnValue colHeadRelationshipType = collectedValues.get("headRelationshipType"); //not blank
-        ColumnValue colResidencyStartDate = collectedValues.get("residencyStartDate"); //not null cannot be in the future nor before dob
+        ColumnValue colMigrationType = collectedValues.get("migrationType");
+        ColumnValue colExtMigrationType = collectedValues.get("extMigrationType");
+        ColumnValue colOriginCode = collectedValues.get("originCode");
+        ColumnValue colOriginOther = collectedValues.get("originOther");
+        ColumnValue colDestinationCode = collectedValues.get("destinationCode");
+        ColumnValue colMigrationDate = collectedValues.get("migrationDate"); //not null cannot be in the future nor before dob
+        ColumnValue colMigrationReason = collectedValues.get("migrationReason");
+        ColumnValue colMigrationReasonOther = collectedValues.get("migrationReasonOther");
+
         //ColumnValue colCollectedBy = collectedValues.get("collectedBy");
         //ColumnValue colCollectedDate = collectedValues.get("collectedDate");
         //ColumnValue colModules = collectedValues.get("modules");
 
         String visitCode = colVisitCode.getValue();
-        String code = colCode.getValue();
-        String householdCode = colHouseholdCode.getValue();
-        String householdName = colHouseholdName.getValue();
+        String memberCode = colMemberCode.getValue();
         String motherCode = colMotherCode.getValue();
         String motherName = colMotherName.getValue();
         String fatherCode = colFatherCode.getValue();
         String fatherName = colFatherName.getValue();
-        String name = colName.getValue();
-        Gender gender = Gender.getFrom(colGender.getValue());
-        Date dob = colDob.getDateValue();
+        String memberName = colMemberName.getValue();
+        Gender memberGender = Gender.getFrom(colMemberGender.getValue());
+        Date memberDob = colMemberDob.getDateValue();
         HeadRelationshipType headRelationshipType = HeadRelationshipType.getFrom(colHeadRelationshipType.getValue());
-        Date residencyStartDate = colResidencyStartDate.getDateValue();
+        InMigrationType migrationType = InMigrationType.getFrom(colMigrationType.getValue());
+        ExternalInMigrationType extMigrationType = ExternalInMigrationType.getFrom(colExtMigrationType.getValue());
+        String originCode = colOriginCode.getValue();
+        String originOther = colOriginOther.getValue();
+        String destinationCode = colDestinationCode.getValue();
+        Date migrationDate = colMigrationDate.getDateValue();
 
-        if (!codeGenerator.isMemberCodeValid(code)){
+        //validations
+        //memberCode blank/valid
+        if (!codeGenerator.isMemberCodeValid(memberCode)){
             String message = this.context.getString(R.string.new_member_code_err_lbl);
-            return new ValidationResult(colCode, message);
+            return new ValidationResult(colMemberCode, message);
         }
-
-        if (!code.startsWith(household.code)){
+        //memberCode - valid household on first entry
+        if (extMigrationType==ExternalInMigrationType.ENTRY && !memberCode.startsWith(household.code)){
             String message = this.context.getString(R.string.new_member_code_household_err_lbl);
-            return new ValidationResult(colCode, message);
+            return new ValidationResult(colMemberCode, message);
         }
 
         //check if visit with code exists
-        if (boxMembers.query().equal(Member_.code, code, QueryBuilder.StringOrder.CASE_SENSITIVE).build().findFirst() != null){
+        if (boxMembers.query().equal(Member_.code, memberCode, QueryBuilder.StringOrder.CASE_SENSITIVE).build().findFirst() != null){
             String message = this.context.getString(R.string.new_member_code_exists_lbl);
-            return new ValidationResult(colCode, message);
+            return new ValidationResult(colMemberCode, message);
         }
 
         if (StringUtil.isBlank(motherCode)){
@@ -202,25 +222,25 @@ public class MemberEnumerationFormUtil extends FormUtil<Member> {
             return new ValidationResult(colFatherCode, message);
         }
 
-        if (StringUtil.isBlank(name)){
+        if (StringUtil.isBlank(memberName)){
             String message = this.context.getString(R.string.new_member_name_empty_lbl);
-            return new ValidationResult(colName, message);
+            return new ValidationResult(colMemberName, message);
         }
 
-        if (gender == null){
+        if (memberGender == null){
             String message = this.context.getString(R.string.new_member_gender_empty_lbl);
-            return new ValidationResult(colGender, message);
+            return new ValidationResult(colMemberGender, message);
         }
 
-        if (dob == null){
+        if (memberDob == null){
             String message = this.context.getString(R.string.new_member_dob_empty_lbl);
-            return new ValidationResult(colDob, message);
+            return new ValidationResult(colMemberDob, message);
         }
 
         //dob cannot be in future
-        if (dob.after(new Date())){ //is in the future
+        if (memberDob.after(new Date())){ //is in the future
             String message = this.context.getString(R.string.new_member_dob_not_great_today_lbl);
-            return new ValidationResult(colDob, message);
+            return new ValidationResult(colMemberDob, message);
         }
 
         if (headRelationshipType == null){
@@ -229,29 +249,29 @@ public class MemberEnumerationFormUtil extends FormUtil<Member> {
         }
 
         //dob age must be greater or equals to head min age
-        if (isFirstHouseholdMember) { //head
-            int age = GeneralUtil.getAge(dob);
+        if (headRelationshipType == HeadRelationshipType.HEAD_OF_HOUSEHOLD) { //head
+            int age = GeneralUtil.getAge(memberDob);
             if (age < minimunHeadAge){
                 String message = this.context.getString(R.string.new_member_dob_minimum_age_head_lbl, minimunHeadAge+"");
-                return new ValidationResult(colDob, message);
+                return new ValidationResult(colMemberDob, message);
             }
         }
 
-        if (residencyStartDate == null){
-            String message = this.context.getString(R.string.new_member_residency_startdate_empty_lbl);
-            return new ValidationResult(colResidencyStartDate, message);
+        if (migrationDate == null){
+            String message = this.context.getString(R.string.external_inmigration_migrationdate_empty_lbl);
+            return new ValidationResult(colMigrationDate, message);
         }
 
-        //startdate cannot be in the future
-        if (residencyStartDate.after(new Date())){ //is in the future
-            String message = this.context.getString(R.string.new_member_residency_startdate_not_great_today_lbl);
-            return new ValidationResult(colResidencyStartDate, message);
+        //migration date cannot be in the future
+        if (migrationDate.after(new Date())){ //is in the future
+            String message = this.context.getString(R.string.external_inmigration_migrationdate_not_great_today_lbl);
+            return new ValidationResult(colMigrationDate, message);
         }
 
-        //residency start date cannot be before dob
-        if (residencyStartDate.before(dob)){ //is before dob
-            String message = this.context.getString(R.string.new_member_residency_startdate_not_before_dob_lbl);
-            return new ValidationResult(colResidencyStartDate, message);
+        //migration date cannot be before dob
+        if (migrationDate.before(memberDob)){ //is before dob
+            String message = this.context.getString(R.string.external_inmigration_migrationdate_not_before_dob_lbl);
+            return new ValidationResult(colMigrationDate, message);
         }
 
         return ValidationResult.noErrors();
@@ -270,59 +290,79 @@ public class MemberEnumerationFormUtil extends FormUtil<Member> {
 
         //saveNewHousehold();
         ColumnValue colVisitCode = collectedValues.get("visitCode");
-        ColumnValue colCode = collectedValues.get("code"); //check if code is valid + check duplicate + member belongs to household
-        ColumnValue colHouseholdCode = collectedValues.get("householdCode");
-        ColumnValue colHouseholdName = collectedValues.get("householdName");
+        ColumnValue colMemberCode = collectedValues.get("memberCode"); //check if code is valid + check duplicate + member belongs to household
         ColumnValue colMotherCode = collectedValues.get("motherCode"); //not blank
         ColumnValue colMotherName = collectedValues.get("motherName");
         ColumnValue colFatherCode = collectedValues.get("fatherCode"); //not blank
         ColumnValue colFatherName = collectedValues.get("fatherName");
-        ColumnValue colName = collectedValues.get("name"); //not blank
-        ColumnValue colGender = collectedValues.get("gender"); //not blank
-        ColumnValue colDob = collectedValues.get("dob"); //date cannot be in future + head min age
+        ColumnValue colMemberName = collectedValues.get("memberName"); //not blank
+        ColumnValue colMemberGender = collectedValues.get("memberGender"); //not blank
+        ColumnValue colMemberDob = collectedValues.get("memberDob"); //date cannot be in future + head min age
         ColumnValue colHeadRelationshipType = collectedValues.get("headRelationshipType"); //not blank
-        ColumnValue colResidencyStartDate = collectedValues.get("residencyStartDate"); //not null cannot be in the future nor before dob
+        ColumnValue colMigrationType = collectedValues.get("migrationType");
+        ColumnValue colExtMigrationType = collectedValues.get("extMigrationType");
+        ColumnValue colOriginCode = collectedValues.get("originCode");
+        ColumnValue colOriginOther = collectedValues.get("originOther");
+        ColumnValue colDestinationCode = collectedValues.get("destinationCode");
+        ColumnValue colMigrationDate = collectedValues.get("migrationDate"); //not null cannot be in the future nor before dob
+        ColumnValue colMigrationReason = collectedValues.get("migrationReason");
+        ColumnValue colMigrationReasonOther = collectedValues.get("migrationReasonOther");
+
         ColumnValue colCollectedBy = collectedValues.get("collectedBy");
         ColumnValue colCollectedDate = collectedValues.get("collectedDate");
         ColumnValue colModules = collectedValues.get("modules");
 
         String visitCode = colVisitCode.getValue();
-        String code = colCode.getValue();
-        String householdCode = colHouseholdCode.getValue();
-        String householdName = colHouseholdName.getValue();
+        String memberCode = colMemberCode.getValue();
         String motherCode = colMotherCode.getValue();
         String motherName = colMotherName.getValue();
         String fatherCode = colFatherCode.getValue();
         String fatherName = colFatherName.getValue();
-        String name = colName.getValue();
-        Gender gender = Gender.getFrom(colGender.getValue());
-        Date dob = colDob.getDateValue();
+        String memberName = colMemberName.getValue();
+        Gender memberGender = Gender.getFrom(colMemberGender.getValue());
+        Date memberDob = colMemberDob.getDateValue();
         HeadRelationshipType headRelationshipType = HeadRelationshipType.getFrom(colHeadRelationshipType.getValue());
-        Date residencyStartDate = colResidencyStartDate.getDateValue();
+        InMigrationType migrationType = InMigrationType.getFrom(colMigrationType.getValue());
+        ExternalInMigrationType extMigrationType = ExternalInMigrationType.getFrom(colExtMigrationType.getValue());
+        String originCode = colOriginCode.getValue();
+        String originOther = colOriginOther.getValue();
+        String destinationCode = colDestinationCode.getValue();
+        Date migrationDate = colMigrationDate.getDateValue();
 
-        Member member = new Member();
-        member.code = code;
-        member.name = name;
-        member.gender = gender;
-        member.dob = dob;
-        member.age = GeneralUtil.getAge(dob);
-        member.ageAtDeath = 0;
-        member.motherCode = motherCode;
-        member.motherName = motherName;
-        member.fatherCode = fatherCode;
-        member.fatherName = fatherName;
-        member.maritalStatus = MaritalStatus.SINGLE; //always single
-        //member.spouseCode = null;
-        //member.spouseName = null;
-        member.householdCode = householdCode;
-        member.householdName = householdName;
-        member.startType = ResidencyStartType.ENUMERATION;
-        member.startDate = residencyStartDate;
+        //create member, residency, headrelationship, inmigration
+
+        Member member = null;
+
+        if (extMigrationType == ExternalInMigrationType.ENTRY) {
+            member = new Member();
+
+            member.code = memberCode;
+            member.name = memberName;
+            member.gender = memberGender;
+            member.dob = memberDob;
+            member.age = GeneralUtil.getAge(memberDob);
+            member.ageAtDeath = 0;
+            member.motherCode = motherCode;
+            member.motherName = motherName;
+            member.fatherCode = fatherCode;
+            member.fatherName = fatherName;
+            member.maritalStatus = MaritalStatus.SINGLE; //always start as single
+            member.householdCode = household.code;
+            member.householdName = household.name;
+            member.entryHousehold = household.code;
+            member.entryType = ResidencyStartType.EXTERNAL_INMIGRATION;
+            member.entryDate = migrationDate;
+
+        } else {
+            member = returningMember;
+        }
+
+        //residency current status
+        member.startType = ResidencyStartType.EXTERNAL_INMIGRATION;
+        member.startDate = migrationDate;
         member.endType = ResidencyEndType.NOT_APPLICABLE;
         member.endDate = null;
-        member.entryHousehold = householdCode;
-        member.entryType = ResidencyStartType.ENUMERATION;
-        member.entryDate = residencyStartDate;
+
         member.headRelationshipType = headRelationshipType;
         member.gpsNull = household.gpsNull;
         member.gpsAccuracy = household.gpsAccuracy;
@@ -333,6 +373,7 @@ public class MemberEnumerationFormUtil extends FormUtil<Member> {
         member.sinLatitude = household.sinLatitude;
         member.cosLongitude = household.cosLongitude;
         member.sinLongitude = household.sinLongitude;
+
         member.recentlyCreated = true;
         member.recentlyCreatedUri = result.getFilename();
         member.modules.addAll(StringCollectionConverter.getCollectionFrom(colModules.getValue()));
@@ -340,20 +381,20 @@ public class MemberEnumerationFormUtil extends FormUtil<Member> {
 
         //Residency
         Residency residency = new Residency();
-        residency.householdCode = householdCode;
+        residency.householdCode = household.code;
         residency.memberCode = member.code;
-        residency.startType = ResidencyStartType.ENUMERATION;
-        residency.startDate = residencyStartDate;
+        residency.startType = ResidencyStartType.EXTERNAL_INMIGRATION;
+        residency.startDate = migrationDate;
         residency.endType = ResidencyEndType.NOT_APPLICABLE;
         residency.endDate = null;
 
         //HeadRelationship
         HeadRelationship headRelationship = new HeadRelationship();
-        headRelationship.householdCode = householdCode;
+        headRelationship.householdCode = household.code;
         headRelationship.memberCode = member.code;
         headRelationship.relationshipType = headRelationshipType;
         headRelationship.startType = HeadRelationshipStartType.ENUMERATION;
-        headRelationship.startDate = residencyStartDate;
+        headRelationship.startDate = migrationDate;
         headRelationship.endType = HeadRelationshipEndType.NOT_APPLICABLE;
         headRelationship.endDate = null;
 
@@ -365,7 +406,7 @@ public class MemberEnumerationFormUtil extends FormUtil<Member> {
         //save core collected data
         CoreCollectedData collectedData = new CoreCollectedData();
         collectedData.visitId = visit.id;
-        collectedData.formEntity = CoreFormEntity.MEMBER_ENU;
+        collectedData.formEntity = CoreFormEntity.EXTERNAL_INMIGRATION;
         collectedData.formEntityId = member.id;
         collectedData.formEntityCode = member.code;
         collectedData.formEntityName = member.name;
@@ -380,7 +421,6 @@ public class MemberEnumerationFormUtil extends FormUtil<Member> {
             household.headName = member.name;
             boxHouseholds.put(household);
         }
-
 
         if (listener != null) {
             listener.onNewEntityCreated(member);
@@ -397,12 +437,11 @@ public class MemberEnumerationFormUtil extends FormUtil<Member> {
 
     @Override
     public void collect() {
-
         //filterFather, Mother
         //Is the Father/Mother of this Member known and exists on DSS?
 
         if (currentMode == Mode.CREATE) {
-            checkFatherDialog();
+            selectExtInMigTypeDialog();
         } else if (currentMode == Mode.EDIT) {
             checkChangeFatherDialog();
         }
@@ -449,6 +488,53 @@ public class MemberEnumerationFormUtil extends FormUtil<Member> {
         }
 
         return 12;
+    }
+
+    private void selectExtInMigTypeDialog(){
+        //Title: External InMigration
+        //Select the Type of Migration to be executed
+        //Is The member you are about to InMigrate already registered in the DSS
+        //New Member Registration (First Entry)
+        //A Registered Member returning to the HDSS
+
+        DialogFactory.createMessageYN(this.context, R.string.eventType_external_inmigration, R.string.external_inmigration_asktype_lbl, new DialogFactory.OnYesNoClickListener() {
+            @Override
+            public void onYesClicked() {
+                //A member its returning to the DSS
+                externalInMigrationType = ExternalInMigrationType.REENTRY;
+                openReturningMemberFilterDialog();
+            }
+
+            @Override
+            public void onNoClicked() {
+                //its a first entry - go filter father and mother
+                externalInMigrationType = ExternalInMigrationType.ENTRY;
+                checkFatherDialog();
+            }
+        }).show();
+    }
+
+    private void openReturningMemberFilterDialog(){
+
+        MemberFilterDialog dialog = MemberFilterDialog.newInstance(this.fragmentManager, context.getString(R.string.external_inmigration_select_return_member_lbl), true, new MemberFilterDialog.Listener() {
+            @Override
+            public void onSelectedMember(Member member) {
+                Log.d("selected-member", ""+member.getCode());
+
+                returningMember = member;
+                checkFatherDialog();
+            }
+
+            @Override
+            public void onCanceled() {
+
+            }
+        });
+
+        dialog.setFilterHouseCode(household.getCode());
+        dialog.setFilterStatus(MemberFilterDialog.StatusFilter.OUTMIGRATED);
+        dialog.setStartSearchOnShow(true);
+        dialog.show();
     }
 
     private void checkFatherDialog(){

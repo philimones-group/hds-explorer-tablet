@@ -378,6 +378,15 @@
     <string name="incomplete_visit_reason_other_empty">The Other reason for not being visited cannot be empty</string>
     <string name="incomplete_visit_member_not_found_lbl">The Member was not found in the database</string>
 
+    <!-- external inmigration -->
+    <string name="external_inmigration_asktype_lbl">O membro ja foi alguma vez registado no sistema? (Retorno a area de estudo)</string>
+    <string name="external_inmigration_select_return_member_lbl">Selecione o membro que deve retornar ao DSS?</string>
+    <string name="external_inmigration_reentry_lbl">Retorno do membro ao HDSS</string>
+    <string name="external_inmigration_entry_lbl">Registo de um novo membro (Primeira entrada)</string>
+    <string name="external_inmigration_migrationdate_empty_lbl">A data da migração não pode estar vazia</string>
+    <string name="external_inmigration_migrationdate_not_great_today_lbl">A data da migração não pode ser maior que a data de hoje</string>
+    <string name="external_inmigration_migrationdate_not_before_dob_lbl">A data da migração não pode ser antes da data de nascimento</string>
+
     <string-array name="relationship_types_array">
         <item>Solteiro</item>
         <item>Casado</item>
@@ -491,7 +500,6 @@
     <string name="eventType_birth">Nascimento</string>
     <string name="eventType_internal_inmigration">Imigração Interna</string>
     <string name="eventType_external_inmigration">Imigração Externa</string>
-    <string name="eventType_returning_inmigration">Imigração Externa (Retorno a DSS)</string>
     <string name="eventType_not_applicable">Não Aplicavel (Residindo nesta casa)</string>
     <string name="eventType_internal_outmigration">Emigração Interna</string>
     <string name="eventType_external_outmigration">Emigração Externa</string>

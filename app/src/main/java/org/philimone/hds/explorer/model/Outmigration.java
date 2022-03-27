@@ -1,9 +1,7 @@
 package org.philimone.hds.explorer.model;
 
-import org.philimone.hds.explorer.model.converters.ExternalInMigrationTypeConverter;
-import org.philimone.hds.explorer.model.converters.InMigrationTypeConverter;
-import org.philimone.hds.explorer.model.enums.temporal.ExternalInMigrationType;
-import org.philimone.hds.explorer.model.enums.temporal.InMigrationType;
+import org.philimone.hds.explorer.model.converters.OutMigrationTypeConverter;
+import org.philimone.hds.explorer.model.enums.temporal.OutMigrationType;
 
 import java.util.Date;
 
@@ -14,7 +12,7 @@ import io.objectbox.annotation.Index;
 import io.objectbox.relation.ToOne;
 
 @Entity
-public class InMigration implements CoreEntity {
+public class Outmigration implements CoreEntity {
 
     @Id
     public long id;
@@ -24,24 +22,25 @@ public class InMigration implements CoreEntity {
     @Index
     public String memberCode;
 
-    @Convert(converter = InMigrationTypeConverter.class, dbType = String.class)
-    public InMigrationType type;
-    //public ToOne<Household> origin;
+    @Convert(converter = OutMigrationTypeConverter.class, dbType = String.class)
+    public OutMigrationType migrationType;
 
-    @Convert(converter = ExternalInMigrationTypeConverter.class, dbType = String.class)
-    public ExternalInMigrationType extMigType;
+    //public ToOne<Household> origin;
 
     @Index
     public String originCode;
 
-    public String originOther;
+    //public ToOne<Residency> originResidency;
+
     //public ToOne<Household> destination;
+
     @Index
     public String destinationCode;
 
-    //public ToOne<Residency> destinationResidency;
+    public String destinationOther;
 
     public Date migrationDate;
+
     public String migrationReason;
 
     //public ToOne<Visit> visit;
@@ -67,4 +66,5 @@ public class InMigration implements CoreEntity {
     public String getRecentlyCreatedUri() {
         return this.recentlyCreatedUri;
     }
+
 }

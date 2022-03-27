@@ -19,12 +19,12 @@ import org.philimone.hds.explorer.model.Death;
 import org.philimone.hds.explorer.model.Form;
 import org.philimone.hds.explorer.model.HeadRelationship;
 import org.philimone.hds.explorer.model.Household;
-import org.philimone.hds.explorer.model.InMigration;
+import org.philimone.hds.explorer.model.Inmigration;
 import org.philimone.hds.explorer.model.IncompleteVisit;
 import org.philimone.hds.explorer.model.MaritalRelationship;
 import org.philimone.hds.explorer.model.Member;
 import org.philimone.hds.explorer.model.Module;
-import org.philimone.hds.explorer.model.OutMigration;
+import org.philimone.hds.explorer.model.Outmigration;
 import org.philimone.hds.explorer.model.PregnancyChild;
 import org.philimone.hds.explorer.model.PregnancyOutcome;
 import org.philimone.hds.explorer.model.PregnancyRegistration;
@@ -131,8 +131,8 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 	private Box<PregnancyRegistration> boxPregnancyRegistrations;
 	private Box<Death> boxDeaths;
 	private Box<IncompleteVisit> boxIncompleteVisits;
-	private Box<InMigration> boxInmigrations;
-	private Box<OutMigration> boxOutmigrations;
+	private Box<Inmigration> boxInmigrations;
+	private Box<Outmigration> boxOutmigrations;
 	private Box<PregnancyChild> boxPregnancyChilds;
 	private Box<PregnancyOutcome> boxPregnancyOuts;
 
@@ -175,8 +175,8 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 		this.boxPregnancyRegistrations = ObjectBoxDatabase.get().boxFor(PregnancyRegistration.class);
 		this.boxDeaths = ObjectBoxDatabase.get().boxFor(Death.class);
 		this.boxIncompleteVisits = ObjectBoxDatabase.get().boxFor(IncompleteVisit.class);
-		this.boxInmigrations = ObjectBoxDatabase.get().boxFor(InMigration.class);
-		this.boxOutmigrations = ObjectBoxDatabase.get().boxFor(OutMigration.class);
+		this.boxInmigrations = ObjectBoxDatabase.get().boxFor(Inmigration.class);
+		this.boxOutmigrations = ObjectBoxDatabase.get().boxFor(Outmigration.class);
 		this.boxPregnancyChilds = ObjectBoxDatabase.get().boxFor(PregnancyChild.class);
 		this.boxPregnancyOuts = ObjectBoxDatabase.get().boxFor(PregnancyOutcome.class);
 	}

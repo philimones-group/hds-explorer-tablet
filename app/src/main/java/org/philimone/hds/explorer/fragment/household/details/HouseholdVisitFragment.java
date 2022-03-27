@@ -172,6 +172,10 @@ public class HouseholdVisitFragment extends Fragment {
         this.btnVisitExtInmigration.setOnClickListener(v -> {
             onExtInMigrationClicked();
         });
+
+        this.btnVisitIntInmigration.setOnClickListener(v -> {
+            onIntInmigrationClicked();
+        });
     }
 
     private void selectMember(Member member){
@@ -437,6 +441,10 @@ public class HouseholdVisitFragment extends Fragment {
         });
 
         formUtil.collect();
+    }
+
+    private void onIntInmigrationClicked() {
+
     }
 
     public List<Member> getNonVisitedMembers() {

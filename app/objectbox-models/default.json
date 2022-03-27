@@ -1209,7 +1209,7 @@
     {
       "id": "16:3819298482554722089",
       "lastPropertyId": "11:7556909418689901606",
-      "name": "OutMigration",
+      "name": "Outmigration",
       "properties": [
         {
           "id": "1:8362195345808277114",
@@ -1662,7 +1662,7 @@
     {
       "id": "22:8558377030680171203",
       "lastPropertyId": "12:4270296408225220650",
-      "name": "InMigration",
+      "name": "Inmigration",
       "properties": [
         {
           "id": "1:1440221648797133215",

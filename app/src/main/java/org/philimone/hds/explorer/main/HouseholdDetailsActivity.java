@@ -336,6 +336,7 @@ public class HouseholdDetailsActivity extends AppCompatActivity {
         //    this.householdFormsFragment.showCollectedData();
         //}
 
+        reloadFragmentsData();
     }
 
     private String getHierarchyName(Region region){

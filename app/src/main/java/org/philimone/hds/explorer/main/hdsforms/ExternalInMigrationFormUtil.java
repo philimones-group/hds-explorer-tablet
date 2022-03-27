@@ -283,7 +283,7 @@ public class ExternalInMigrationFormUtil extends FormUtil<Member> {
         Log.d("resultxml", result.getXmlResult());
 
         if (currentMode == Mode.EDIT) {
-            System.out.println("Editing Member Enumeration Not implemented yet");
+            System.out.println("Editing External InMigration Not implemented yet");
             assert 1==0;
         }
 

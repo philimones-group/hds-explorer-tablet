@@ -293,7 +293,7 @@
                             android:textSize="@dimen/member_filter_textsize"
                             android:textColor="@color/nui_color_text_red"
                             android:text="@string/member_filter_current_status_lbl"
-                            />
+                            android:textStyle="bold" />
 
                         <LinearLayout
                             android:id="@+id/layout_mf_xdata"
@@ -305,10 +305,9 @@
                                 android:id="@+id/spnMemFilterStatus"
                                 android:layout_width="match_parent"
                                 android:layout_height="50dp"
-                                android:entries="@array/member_current_status"
-                                android:prompt="@string/member_filter_choose_current_status_lbl"
                                 android:background="@drawable/nui_spinner_rone_wbevel"
-                                android:spinnerMode="dialog"/>
+                                android:spinnerMode="dialog"
+                                />
 
                         </LinearLayout>
 

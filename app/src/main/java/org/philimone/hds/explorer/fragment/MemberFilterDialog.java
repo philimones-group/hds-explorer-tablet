@@ -3,6 +3,7 @@ package org.philimone.hds.explorer.fragment;
 import androidx.fragment.app.DialogFragment;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -63,6 +64,8 @@ public class MemberFilterDialog extends DialogFragment {
     private Integer filterMaxAge;
     private boolean filterMaxAgeExclusive;
     private Integer filterStatus;
+    private boolean filterStatusExclusive;
+    private String filterExcludeHousehold;
 
     private boolean startSearchOnShow;
 
@@ -208,9 +211,6 @@ public class MemberFilterDialog extends DialogFragment {
             nbpMemFilterMinAge.setValue(filterMaxAge);
             nbpMemFilterMaxAge.setEnabled(!filterMaxAgeExclusive);
         }
-        if (filterStatus != null){
-            spnMemFilterStatus.setSelection(filterStatus);
-        }
 
         if (title != null){
             this.txtDialogTitle.setText(title);
@@ -218,6 +218,7 @@ public class MemberFilterDialog extends DialogFragment {
 
         initializeSpinners();
 
+        updateFilterStatus();
     }
 
     @Override
@@ -232,8 +233,12 @@ public class MemberFilterDialog extends DialogFragment {
     private void initializeSpinners(){
         String[] statuses = getContext().getResources().getStringArray(R.array.member_current_status);
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this.getContext(), R.layout.spinner_list_item, statuses);
+
+        //adapter.setDropDownViewResource(R.layout.spinner_list_head);
+
         spnMemFilterStatus.setAdapter(adapter);
     }
+
 
     private void onSearch() {
         String name = txtMemFilterName.getText().toString();
@@ -262,6 +267,13 @@ public class MemberFilterDialog extends DialogFragment {
         this.nbpMemFilterMinAge.setValue(0);
         this.nbpMemFilterMaxAge.setValue(120);
         //this.spnMemFilterStatus.
+    }
+
+    private void updateFilterStatus(){
+        if (this.spnMemFilterStatus != null && filterStatus != null) {
+            this.spnMemFilterStatus.setSelection(filterStatus);
+            this.spnMemFilterStatus.setEnabled(filterStatusExclusive);
+        }
     }
 
     private void updateGenderMaleOnly(){
@@ -310,13 +322,21 @@ public class MemberFilterDialog extends DialogFragment {
         this.filterMaxAgeExclusive = exclusive;
     }
 
-    public void setFilterStatus(StatusFilter filter) {
+    public void setFilterExcludeHousehold(String householdCode) {
+        this.filterExcludeHousehold = householdCode;
+    }
+
+    public void setFilterStatus(StatusFilter filter, boolean exclusiveSelection) {
         switch (filter){
             case EMPTY: this.filterStatus = 0; break;
             case IS_DEAD: this.filterStatus = 1; break;
             case OUTMIGRATED: this.filterStatus = 2; break;
             case RESIDENT: this.filterStatus = 3; break;
         }
+
+        this.filterStatusExclusive = exclusiveSelection;
+
+        updateFilterStatus();
     }
 
     public void setStartSearchOnShow(boolean searchOnShow) {
@@ -383,6 +403,7 @@ public class MemberFilterDialog extends DialogFragment {
                     break;
                 case ENDSWITH:
                     builder.endsWith(Member_.code, text, QueryBuilder.StringOrder.CASE_SENSITIVE);
+                    Log.d("running-code", "endswith="+text);
                     break;
                 case CONTAINS:
                     builder.contains(Member_.code, text, QueryBuilder.StringOrder.CASE_SENSITIVE);
@@ -453,9 +474,15 @@ public class MemberFilterDialog extends DialogFragment {
         }
 
         if (endType != null){
-            builder.equal(Member_.endType, endType.getId(), QueryBuilder.StringOrder.CASE_SENSITIVE);
+            builder.equal(Member_.endType, endType.code, QueryBuilder.StringOrder.CASE_SENSITIVE);
             //whereClause += DatabaseHelper.Member.COLUMN_END_TYPE + " = ?";
         }
+
+        if (filterExcludeHousehold != null) {
+            builder.notEqual(Member_.householdCode, filterExcludeHousehold, QueryBuilder.StringOrder.CASE_SENSITIVE);
+        }
+
+        Log.d("sql", builder.toString());
 
         List<Member> members = builder.build().find();
 

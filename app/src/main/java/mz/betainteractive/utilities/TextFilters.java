@@ -28,7 +28,7 @@ public class TextFilters {
         }
 
         if (!text.contains(wildcard)) {
-            filterType = Filter.NONE;
+            filterType = Filter.STARTSWITH;
             filterText = text;
         } else {
 
@@ -43,13 +43,13 @@ public class TextFilters {
             }
 
             if (last_index == first_index && first_index==0) { //then the last_index is not the last, otherwise the if before would be true
-                filterType = Filter.STARTSWITH;
+                filterType = Filter.ENDSWITH;
                 filterText = text.replaceAll(wildcard, "");
                 return;
             }
 
             if (last_index == first_index && last_index==text.length()-1 ) {
-                filterType = Filter.ENDSWITH;
+                filterType = Filter.STARTSWITH;
                 filterText = text.replaceAll(wildcard, "");
                 return;
             }

@@ -532,7 +532,7 @@ public class ExternalInMigrationFormUtil extends FormUtil<Member> {
         });
 
         dialog.setFilterHouseCode(household.getCode());
-        dialog.setFilterStatus(MemberFilterDialog.StatusFilter.OUTMIGRATED);
+        dialog.setFilterStatus(MemberFilterDialog.StatusFilter.OUTMIGRATED, true);
         dialog.setStartSearchOnShow(true);
         dialog.show();
     }

@@ -328,6 +328,7 @@
     <string name="new_member_dob_not_great_today_lbl">A data de nascimento não pode esta no futuro</string>
     <string name="new_member_dob_minimum_age_head_lbl">A idade minima para o membro seja chefe de agregado é (%1$s)</string>
     <string name="new_member_head_relattype_empty_lbl">A relação com o chefe de agregado não pode estar vazio</string>
+    <string name="new_member_migration_type_empty_lbl">o tipo de migração não pode estar vazio</string>
     <string name="new_member_residency_startdate_empty_lbl">A data do censo não pode estar vazio</string>
     <string name="new_member_residency_startdate_not_great_today_lbl">A data do censo não pode estar no futuro</string>
     <string name="new_member_residency_startdate_not_before_dob_lbl">A data do censo não pode ser antes da data de nascimento</string>
@@ -383,6 +384,7 @@
     <string name="external_inmigration_select_return_member_lbl">Selecione o membro que deve retornar ao DSS?</string>
     <string name="external_inmigration_reentry_lbl">Retorno do membro ao HDSS</string>
     <string name="external_inmigration_entry_lbl">Registo de um novo membro (Primeira entrada)</string>
+    <string name="external_inmigration_migration_type_empty_lbl">O tipo de migração não pode estar vazio</string>
     <string name="external_inmigration_migrationdate_empty_lbl">A data da migração não pode estar vazia</string>
     <string name="external_inmigration_migrationdate_not_great_today_lbl">A data da migração não pode ser maior que a data de hoje</string>
     <string name="external_inmigration_migrationdate_not_before_dob_lbl">A data da migração não pode ser antes da data de nascimento</string>

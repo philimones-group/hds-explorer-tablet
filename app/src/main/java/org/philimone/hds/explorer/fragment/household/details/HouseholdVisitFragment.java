@@ -24,6 +24,7 @@ import org.philimone.hds.explorer.main.hdsforms.InternalInMigrationFormUtil;
 import org.philimone.hds.explorer.main.hdsforms.MaritalRelationshipFormUtil;
 import org.philimone.hds.explorer.main.hdsforms.MemberEnumerationFormUtil;
 import org.philimone.hds.explorer.main.hdsforms.IncompleteVisitFormUtil;
+import org.philimone.hds.explorer.main.hdsforms.OutmigrationFormUtil;
 import org.philimone.hds.explorer.model.CollectedData;
 import org.philimone.hds.explorer.model.CollectedData_;
 import org.philimone.hds.explorer.model.CoreCollectedData;
@@ -35,11 +36,13 @@ import org.philimone.hds.explorer.model.Inmigration;
 import org.philimone.hds.explorer.model.MaritalRelationship;
 import org.philimone.hds.explorer.model.Member;
 import org.philimone.hds.explorer.model.Member_;
+import org.philimone.hds.explorer.model.Outmigration;
 import org.philimone.hds.explorer.model.User;
 import org.philimone.hds.explorer.model.Visit;
 import org.philimone.hds.explorer.model.enums.CoreFormEntity;
 import org.philimone.hds.explorer.model.enums.Gender;
 import org.philimone.hds.explorer.model.enums.SubjectEntity;
+import org.philimone.hds.explorer.model.enums.temporal.ResidencyEndType;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -178,6 +181,10 @@ public class HouseholdVisitFragment extends Fragment {
         this.btnVisitIntInmigration.setOnClickListener(v -> {
             onIntInmigrationClicked();
         });
+
+        this.btnVisitOutmigration.setOnClickListener(v -> {
+            onOutmigrationClicked();
+        });
     }
 
     private void selectMember(Member member){
@@ -278,7 +285,9 @@ public class HouseholdVisitFragment extends Fragment {
 
         if (household == null) return;
 
-        List<Member> members = this.boxMembers.query().equal(Member_.householdCode, household.getCode(), QueryBuilder.StringOrder.CASE_SENSITIVE).build().find();
+        List<Member> members = this.boxMembers.query().equal(Member_.householdCode, household.getCode(), QueryBuilder.StringOrder.CASE_SENSITIVE)
+                                                      .equal(Member_.endType, ResidencyEndType.NOT_APPLICABLE.code, QueryBuilder.StringOrder.CASE_SENSITIVE)
+                                                      .build().find();
 
         MemberArrayAdapter adapter = new MemberArrayAdapter(this.getContext(), R.layout.household_visit_member_item, members);
         adapter.setShowHouseholdHead(false);
@@ -458,6 +467,29 @@ public class HouseholdVisitFragment extends Fragment {
 
             @Override
             public void onEntityEdited(Inmigration inmigration) {
+
+            }
+
+            @Override
+            public void onFormCancelled() {
+
+            }
+        });
+
+        formUtil.collect();
+    }
+
+    private void onOutmigrationClicked() {
+        Log.d("on-outmigration", ""+this.selectedMember);
+
+        OutmigrationFormUtil formUtil = new OutmigrationFormUtil(getActivity().getSupportFragmentManager(), this.getContext(), this.visit, this.household, this.selectedMember, new FormUtilListener<Outmigration>() {
+            @Override
+            public void onNewEntityCreated(Outmigration outmigration) {
+                loadDataToListViews();
+            }
+
+            @Override
+            public void onEntityEdited(Outmigration outmigration) {
 
             }
 

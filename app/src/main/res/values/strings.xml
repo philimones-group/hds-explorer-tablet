@@ -230,7 +230,7 @@
 
     <string name="member_details_unknown_lbl">Unknown Individual</string>
     <string name="member_details_endtype_na_lbl">Currently Living Here</string>
-    <string name="member_details_endtype_ext_lbl">Emigrated</string>
+    <string name="member_details_endtype_ext_lbl">Outmigrated</string>
     <string name="member_details_endtype_dth_lbl">Died</string>
     <string name="member_details_name_unknown_lbl">Unknown Name</string>
     <string name="member_details_member_enddate_lbl">Status Date</string>
@@ -329,6 +329,7 @@
     <string name="new_member_dob_not_great_today_lbl">The date of birth cannot be greater than today</string>
     <string name="new_member_dob_minimum_age_head_lbl">The minimum age to be head of a household is (%1$s)</string>
     <string name="new_member_head_relattype_empty_lbl">The Head Relationship Type cannot be empty</string>
+    <string name="new_member_migration_type_empty_lbl">The Migration Type cannot be empty</string>
     <string name="new_member_residency_startdate_empty_lbl">The Residency start date cannot be empty</string>
     <string name="new_member_residency_startdate_not_great_today_lbl">The Residency start date cannot be greater than today</string>
     <string name="new_member_residency_startdate_not_before_dob_lbl">The Residency start date cannot be before the date of birth</string>
@@ -384,6 +385,7 @@
     <string name="external_inmigration_select_return_member_lbl">Select the Member that will return to DSS?</string>
     <string name="external_inmigration_reentry_lbl">Registered Member returning to the HDSS</string>
     <string name="external_inmigration_entry_lbl">New Member Registration (First Entry)</string>
+    <string name="external_inmigration_migration_type_empty_lbl">The Migration Type cannot be empty</string>
     <string name="external_inmigration_migrationdate_empty_lbl">The Migration date cannot be empty</string>
     <string name="external_inmigration_migrationdate_not_great_today_lbl">The Migration date cannot be greater than today</string>
     <string name="external_inmigration_migrationdate_not_before_dob_lbl">The Migration date cannot be before the date of birth</string>

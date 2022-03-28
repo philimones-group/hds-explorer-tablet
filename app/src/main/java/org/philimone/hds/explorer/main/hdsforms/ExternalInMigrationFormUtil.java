@@ -248,6 +248,11 @@ public class ExternalInMigrationFormUtil extends FormUtil<Member> {
             return new ValidationResult(colHeadRelationshipType, message);
         }
 
+        if (migrationType == null){
+            String message = this.context.getString(R.string.external_inmigration_migration_type_empty_lbl);
+            return new ValidationResult(colMigrationType, message);
+        }
+
         //dob age must be greater or equals to head min age
         if (headRelationshipType == HeadRelationshipType.HEAD_OF_HOUSEHOLD) { //head
             int age = GeneralUtil.getAge(memberDob);

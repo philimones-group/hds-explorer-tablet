@@ -338,7 +338,7 @@ public class SurveyHouseholdsActivity extends AppCompatActivity implements House
 
         @Override
         protected MemberArrayAdapter doInBackground(Void... params) {
-            return memberListFragment.loadMembersByFilters(household, name, code, houseCode, gender, null, null, null, null, null);
+            return memberListFragment.loadMembersByFilters(household, name, code, houseCode, gender, null, null, null, null, true);
         }
 
         @Override

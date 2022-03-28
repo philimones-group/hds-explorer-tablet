@@ -176,6 +176,11 @@ public class InternalInMigrationFormUtil extends FormUtil<Inmigration> {
             return new ValidationResult(colHeadRelationshipType, message);
         }
 
+        if (migrationType == null){
+            String message = this.context.getString(R.string.external_inmigration_migration_type_empty_lbl);
+            return new ValidationResult(colMigrationType, message);
+        }
+
         //dob age must be greater or equals to head min age
         if (headRelationshipType == HeadRelationshipType.HEAD_OF_HOUSEHOLD) { //head
             int age = GeneralUtil.getAge(this.selectedMember.dob);
@@ -243,7 +248,7 @@ public class InternalInMigrationFormUtil extends FormUtil<Inmigration> {
         String migrationReason = colMigrationReason.getValue();
         String migrationReasonOther = colMigrationReasonOther.getValue();
 
-        //create member, residency, headrelationship, inmigration
+        //update member, create/update residency, headrelationship, create inmigration
 
         Inmigration inmigration = new Inmigration();
         inmigration.visitCode = visitCode;

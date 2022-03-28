@@ -23,6 +23,7 @@ import org.philimone.hds.explorer.model.Member_;
 import org.philimone.hds.explorer.model.Region;
 import org.philimone.hds.explorer.model.Region_;
 import org.philimone.hds.explorer.model.User;
+import org.philimone.hds.explorer.model.enums.temporal.ResidencyEndType;
 import org.philimone.hds.explorer.widget.LoadingDialog;
 
 import java.util.ArrayList;
@@ -139,7 +140,9 @@ public class HouseholdMembersFragment extends Fragment {
     }
 
     private void showHouseholdMembers(){
-        List<Member> members = this.boxMembers.query().equal(Member_.householdCode, household.getCode(), QueryBuilder.StringOrder.CASE_SENSITIVE).build().find();
+        List<Member> members = this.boxMembers.query().equal(Member_.householdCode, household.getCode(), QueryBuilder.StringOrder.CASE_SENSITIVE)
+                                                      .equal(Member_.endType, ResidencyEndType.NOT_APPLICABLE.code, QueryBuilder.StringOrder.CASE_SENSITIVE)
+                                                      .build().find();
 
         MemberArrayAdapter adapter = new MemberArrayAdapter(this.getContext(), members);
         this.lvHouseholdMembers.setAdapter(adapter);

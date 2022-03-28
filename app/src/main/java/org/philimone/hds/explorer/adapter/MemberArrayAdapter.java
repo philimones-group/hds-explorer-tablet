@@ -184,8 +184,15 @@ public class MemberArrayAdapter  extends ArrayAdapter<Member> {
 
         Member mb = members.get(position);
 
+        String endType = "";
+        switch (mb.endType){
+            case DEATH: endType = "- DTH"; break;
+            case EXTERNAL_OUTMIGRATION: endType = "- EXT"; break;
+        }
+
         txtName.setText(mb.getName());
-        txtCode.setText(mb.getCode());
+        txtCode.setText(mb.getCode()+endType);
+
 
         if (showHouseholdAndCode){
             txtCode.setText(mb.getHouseholdName() +" -> "+mb.getCode());
@@ -240,9 +247,15 @@ public class MemberArrayAdapter  extends ArrayAdapter<Member> {
             }
         }
 
+        if (endType != null && !endType.isEmpty()){
+            //paint with a color
+            txtCode.setTypeface(null, Typeface.BOLD);
+            rowView.setBackgroundColor(mContext.getResources().getColor(R.color.nui_lists_item_special_textcolor));
+        }
+
         if (selectedIndex == position){
-            int colorA = mContext.getColor(R.color.nui_lists_selected_item_textcolor);
-            int colorB = mContext.getColor(R.color.nui_lists_selected_item_color_2);
+            int colorA = mContext.getResources().getColor(R.color.nui_lists_selected_item_textcolor);
+            int colorB = mContext.getResources().getColor(R.color.nui_lists_selected_item_color_2);
 
             rowView.setBackgroundColor(colorB);
             txtName.setTextColor(colorA);

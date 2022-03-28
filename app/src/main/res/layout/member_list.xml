@@ -86,6 +86,8 @@
                 android:layout_weight="1"
                 android:paddingTop="10dp"
                 android:paddingBottom="10dp"
+                android:paddingStart="2dp"
+                android:paddingEnd="2dp"
                 android:background="@drawable/nui_members_list_panel"
                 android:id="@+id/lvMembersList"
                 />

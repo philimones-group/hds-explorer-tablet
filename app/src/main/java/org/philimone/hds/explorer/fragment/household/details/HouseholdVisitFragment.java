@@ -20,6 +20,7 @@ import org.philimone.hds.explorer.adapter.MemberArrayAdapter;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
 import org.philimone.hds.explorer.main.hdsforms.ExternalInMigrationFormUtil;
 import org.philimone.hds.explorer.main.hdsforms.FormUtilListener;
+import org.philimone.hds.explorer.main.hdsforms.InternalInMigrationFormUtil;
 import org.philimone.hds.explorer.main.hdsforms.MaritalRelationshipFormUtil;
 import org.philimone.hds.explorer.main.hdsforms.MemberEnumerationFormUtil;
 import org.philimone.hds.explorer.main.hdsforms.IncompleteVisitFormUtil;
@@ -30,6 +31,7 @@ import org.philimone.hds.explorer.model.CoreCollectedData_;
 import org.philimone.hds.explorer.model.Form;
 import org.philimone.hds.explorer.model.Household;
 import org.philimone.hds.explorer.model.IncompleteVisit;
+import org.philimone.hds.explorer.model.Inmigration;
 import org.philimone.hds.explorer.model.MaritalRelationship;
 import org.philimone.hds.explorer.model.Member;
 import org.philimone.hds.explorer.model.Member_;
@@ -231,7 +233,7 @@ public class HouseholdVisitFragment extends Fragment {
         this.btnVisitBirthReg.setEnabled(false);
         this.btnVisitPregnancyReg.setEnabled(false);
         this.btnVisitExtInmigration.setEnabled(true);
-        this.btnVisitIntInmigration.setEnabled(false);
+        this.btnVisitIntInmigration.setEnabled(true);
         this.btnVisitOutmigration.setEnabled(false);
         this.btnVisitDeath.setEnabled(false);
         this.btnVisitMaritalRelationship.setEnabled(false);
@@ -255,7 +257,7 @@ public class HouseholdVisitFragment extends Fragment {
         this.btnVisitBirthReg.setEnabled(this.selectedMember!=null && this.selectedMember.gender== Gender.FEMALE);
         this.btnVisitPregnancyReg.setEnabled(this.selectedMember!=null && this.selectedMember.gender== Gender.FEMALE);
         this.btnVisitExtInmigration.setEnabled(false);
-        this.btnVisitIntInmigration.setEnabled(true);
+        this.btnVisitIntInmigration.setEnabled(false);
         this.btnVisitOutmigration.setEnabled(true);
         this.btnVisitDeath.setEnabled(true);
         this.btnVisitMaritalRelationship.setEnabled(true);
@@ -419,7 +421,7 @@ public class HouseholdVisitFragment extends Fragment {
     }
 
     private void onExtInMigrationClicked() {
-        Log.d("on-enum-click-household", ""+this.household);
+        Log.d("on-extinmigration", ""+this.household);
 
         ExternalInMigrationFormUtil formUtil = new ExternalInMigrationFormUtil(getActivity().getSupportFragmentManager(), this.getContext(), this.visit, this.household, new FormUtilListener<Member>() {
             @Override
@@ -444,7 +446,28 @@ public class HouseholdVisitFragment extends Fragment {
     }
 
     private void onIntInmigrationClicked() {
+        Log.d("on-int-tinmigration", ""+this.household);
 
+        InternalInMigrationFormUtil formUtil = new InternalInMigrationFormUtil(getActivity().getSupportFragmentManager(), this.getContext(), this.visit, this.household, new FormUtilListener<Inmigration>() {
+            @Override
+            public void onNewEntityCreated(Inmigration inmigration) {
+                selectedMember = boxMembers.query().equal(Member_.code, inmigration.memberCode, QueryBuilder.StringOrder.CASE_SENSITIVE).build().findFirst();
+                loadDataToListViews();
+                selectMember(selectedMember);
+            }
+
+            @Override
+            public void onEntityEdited(Inmigration inmigration) {
+
+            }
+
+            @Override
+            public void onFormCancelled() {
+
+            }
+        });
+
+        formUtil.collect();
     }
 
     public List<Member> getNonVisitedMembers() {

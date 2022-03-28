@@ -387,6 +387,9 @@
     <string name="external_inmigration_migrationdate_not_great_today_lbl">A data da migração não pode ser maior que a data de hoje</string>
     <string name="external_inmigration_migrationdate_not_before_dob_lbl">A data da migração não pode ser antes da data de nascimento</string>
 
+    <string name="internal_inmigration_select_inmig_member_lbl">Selecione o membro que irá imigrar para esta casa?</string>
+    <string name="internal_inmigration_select_inmig_no_residency_lbl">O membro selecionado não esta registado em nenhuma casa. Por favor contact o gestor de dados!</string>
+
     <string-array name="relationship_types_array">
         <item>Solteiro</item>
         <item>Casado</item>
@@ -422,7 +425,7 @@
 
     <!-- Member Filter Dialog -->
     <string-array name="member_current_status">
-        <item></item>
+        <item>Todos</item>
         <item>Falecido</item>
         <item>Emigrou</item>
         <item>Residente</item>

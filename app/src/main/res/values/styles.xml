@@ -12,6 +12,7 @@
         <item name="android:textViewStyle">@style/customTextViewStyle</item>
         <item name="android:buttonStyle">@style/customButtonStyle</item>
         <item name="android:dialogTheme">@style/CustomDialog</item>
+        <item name="android:spinnerItemStyle">@style/spinnerStyle</item>
     </style>
 
     <style name="CustomDialog" parent="@style/AppTheme">

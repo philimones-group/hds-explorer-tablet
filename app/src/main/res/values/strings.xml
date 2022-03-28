@@ -388,6 +388,9 @@
     <string name="external_inmigration_migrationdate_not_great_today_lbl">The Migration date cannot be greater than today</string>
     <string name="external_inmigration_migrationdate_not_before_dob_lbl">The Migration date cannot be before the date of birth</string>
 
+    <string name="internal_inmigration_select_inmig_member_lbl">Select the Inmigrating Member?</string>
+    <string name="internal_inmigration_select_inmig_no_residency_lbl">The selected Member is not registered in any household. Please contact the Data Managers!</string>
+
     <string-array name="relationship_types_array">
         <item>Single</item>
         <item>Married</item>
@@ -423,7 +426,7 @@
 
     <!-- Member Filter Dialog -->
     <string-array name="member_current_status">
-        <item></item>
+        <item>All</item>
         <item>Is Dead</item>
         <item>Outmigrated</item>
         <item>Resident</item>

@@ -7,6 +7,7 @@ import androidx.fragment.app.FragmentManager;
 
 import org.philimone.hds.explorer.R;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
+import org.philimone.hds.explorer.database.Queries;
 import org.philimone.hds.explorer.fragment.MemberFilterDialog;
 import org.philimone.hds.explorer.model.ApplicationParam;
 import org.philimone.hds.explorer.model.ApplicationParam_;
@@ -196,7 +197,7 @@ public class ExternalInMigrationFormUtil extends FormUtil<Member> {
 
         //validations
         //memberCode blank/valid
-        if (!codeGenerator.isMemberCodeValid(memberCode)){
+        if (extMigrationType==ExternalInMigrationType.ENTRY && !codeGenerator.isMemberCodeValid(memberCode)){
             String message = this.context.getString(R.string.new_member_code_err_lbl);
             return new ValidationResult(colMemberCode, message);
         }
@@ -207,7 +208,7 @@ public class ExternalInMigrationFormUtil extends FormUtil<Member> {
         }
 
         //check if visit with code exists
-        if (boxMembers.query().equal(Member_.code, memberCode, QueryBuilder.StringOrder.CASE_SENSITIVE).build().findFirst() != null){
+        if (extMigrationType==ExternalInMigrationType.ENTRY && Queries.getMemberByCode(boxMembers, memberCode) != null){
             String message = this.context.getString(R.string.new_member_code_exists_lbl);
             return new ValidationResult(colMemberCode, message);
         }
@@ -532,7 +533,10 @@ public class ExternalInMigrationFormUtil extends FormUtil<Member> {
                 Log.d("selected-member", ""+member.getCode());
 
                 returningMember = member;
-                checkFatherDialog();
+                father = Queries.getMemberByCode(boxMembers, member.fatherCode);
+                mother = Queries.getMemberByCode(boxMembers, member.motherCode);
+
+                executeCollectForm();
             }
 
             @Override

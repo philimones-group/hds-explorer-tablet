@@ -152,7 +152,7 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
         return form;
     }
 
-    protected static HForm getPregnacyRegistrationForm(Context context) {
+    protected static HForm getPregnancyRegistrationForm(Context context) {
         InputStream inputStream = context.getResources().openRawResource(R.raw.pregnancy_registration_form);
         HForm form = new ExcelFormParser(inputStream).getForm();
         return form;

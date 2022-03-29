@@ -392,6 +392,13 @@
     <string name="internal_inmigration_select_inmig_member_lbl">Selecione o membro que irá imigrar para esta casa?</string>
     <string name="internal_inmigration_select_inmig_no_residency_lbl">O membro selecionado não esta registado em nenhuma casa. Por favor contact o gestor de dados!</string>
 
+    <!-- pregnancy registration -->
+    <string name="pregnancy_registration_code_err_lbl">O código do registro de gravidez está incorrecto</string>
+    <string name="pregnancy_registration_mothercode_empty_lbl">O código da mãe não pode estar vazio</string>
+    <string name="pregnancy_registration_status_empty_lbl">O estado da gravidez não pode estar vazio</string>
+    <string name="pregnancy_registration_eddate_empty_lbl">A data provável do parto não pode estar vazia</string>
+    <string name="pregnancy_registration_eddate_not_before_dob_lbl">A data provável do parto não pode ser antes da data de nascimento</string>
+
     <string-array name="relationship_types_array">
         <item>Solteiro</item>
         <item>Casado</item>

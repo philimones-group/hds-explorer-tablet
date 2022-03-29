@@ -393,6 +393,13 @@
     <string name="internal_inmigration_select_inmig_member_lbl">Select the Inmigrating Member?</string>
     <string name="internal_inmigration_select_inmig_no_residency_lbl">The selected Member is not registered in any household. Please contact the Data Managers!</string>
 
+    <!-- pregnancy registration -->
+    <string name="pregnancy_registration_code_err_lbl">The format of the Pregnancy Code is incorrect</string>
+    <string name="pregnancy_registration_mothercode_empty_lbl">The Name of the Member cannot be empty</string>
+    <string name="pregnancy_registration_status_empty_lbl">The Pregnancy Status cannot be empty</string>
+    <string name="pregnancy_registration_eddate_empty_lbl">The estimated date of delivery cannot be empty</string>
+    <string name="pregnancy_registration_eddate_not_before_dob_lbl">The estimated date of delivery cannot be before the date of birth</string>
+
     <string-array name="relationship_types_array">
         <item>Single</item>
         <item>Married</item>

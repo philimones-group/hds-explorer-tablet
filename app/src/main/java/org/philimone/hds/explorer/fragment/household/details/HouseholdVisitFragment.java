@@ -25,6 +25,7 @@ import org.philimone.hds.explorer.main.hdsforms.MaritalRelationshipFormUtil;
 import org.philimone.hds.explorer.main.hdsforms.MemberEnumerationFormUtil;
 import org.philimone.hds.explorer.main.hdsforms.IncompleteVisitFormUtil;
 import org.philimone.hds.explorer.main.hdsforms.OutmigrationFormUtil;
+import org.philimone.hds.explorer.main.hdsforms.PregnancyRegistrationFormUtil;
 import org.philimone.hds.explorer.model.CollectedData;
 import org.philimone.hds.explorer.model.CollectedData_;
 import org.philimone.hds.explorer.model.CoreCollectedData;
@@ -37,6 +38,7 @@ import org.philimone.hds.explorer.model.MaritalRelationship;
 import org.philimone.hds.explorer.model.Member;
 import org.philimone.hds.explorer.model.Member_;
 import org.philimone.hds.explorer.model.Outmigration;
+import org.philimone.hds.explorer.model.PregnancyRegistration;
 import org.philimone.hds.explorer.model.User;
 import org.philimone.hds.explorer.model.Visit;
 import org.philimone.hds.explorer.model.enums.CoreFormEntity;
@@ -184,6 +186,10 @@ public class HouseholdVisitFragment extends Fragment {
 
         this.btnVisitOutmigration.setOnClickListener(v -> {
             onOutmigrationClicked();
+        });
+
+        this.btnVisitPregnancyReg.setOnClickListener(v -> {
+            onPregnancyRegistrationClicked();
         });
     }
 
@@ -490,6 +496,29 @@ public class HouseholdVisitFragment extends Fragment {
 
             @Override
             public void onEntityEdited(Outmigration outmigration) {
+
+            }
+
+            @Override
+            public void onFormCancelled() {
+
+            }
+        });
+
+        formUtil.collect();
+    }
+
+    private void onPregnancyRegistrationClicked() {
+        Log.d("on-pregregistration", ""+this.selectedMember);
+
+        PregnancyRegistrationFormUtil formUtil = new PregnancyRegistrationFormUtil(getActivity().getSupportFragmentManager(), this.getContext(), this.visit, this.household, this.selectedMember, new FormUtilListener<PregnancyRegistration>() {
+            @Override
+            public void onNewEntityCreated(PregnancyRegistration pregnancyRegistration) {
+                loadDataToListViews();
+            }
+
+            @Override
+            public void onEntityEdited(PregnancyRegistration pregnancyRegistration) {
 
             }
 

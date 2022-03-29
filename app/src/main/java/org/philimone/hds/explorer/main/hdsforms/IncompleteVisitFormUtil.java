@@ -212,6 +212,11 @@ public class IncompleteVisitFormUtil extends FormUtil<IncompleteVisit> {
     }
 
     @Override
+    public String onFormCallMethod(String methodExpression) {
+        return null;
+    }
+
+    @Override
     public void collect() {
         executeCollectForm();
     }

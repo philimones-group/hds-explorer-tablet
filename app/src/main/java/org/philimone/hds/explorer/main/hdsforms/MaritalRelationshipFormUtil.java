@@ -392,6 +392,11 @@ public class MaritalRelationshipFormUtil extends FormUtil<MaritalRelationship> {
     }
 
     @Override
+    public String onFormCallMethod(String methodExpression) {
+        return null;
+    }
+
+    @Override
     public void collect() {
 
         //Check if MemberA has a registered marital relationship?

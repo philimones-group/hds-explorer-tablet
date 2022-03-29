@@ -356,6 +356,11 @@ public class InternalInMigrationFormUtil extends FormUtil<Inmigration> {
     }
 
     @Override
+    public String onFormCallMethod(String methodExpression) {
+        return null;
+    }
+
+    @Override
     public void collect() {
         //filterFather, Mother
         //Is the Father/Mother of this Member known and exists on DSS?

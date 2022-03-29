@@ -396,6 +396,11 @@ public class MemberEnumerationFormUtil extends FormUtil<Member> {
     }
 
     @Override
+    public String onFormCallMethod(String methodExpression) {
+        return null;
+    }
+
+    @Override
     public void collect() {
 
         //filterFather, Mother

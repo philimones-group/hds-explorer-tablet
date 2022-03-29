@@ -270,6 +270,11 @@ public class VisitFormUtil extends FormUtil<Visit> {
     }
 
     @Override
+    public String onFormCallMethod(String methodExpression) {
+        return null;
+    }
+
+    @Override
     public void collect() {
 
         if (newHouseholdCreated || currentMode==Mode.EDIT) {

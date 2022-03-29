@@ -274,6 +274,11 @@ public class OutmigrationFormUtil extends FormUtil<Outmigration> {
     }
 
     @Override
+    public String onFormCallMethod(String methodExpression) {
+        return null;
+    }
+
+    @Override
     public void collect() {
 
         memberResidency = boxResidencies.query().equal(Residency_.memberCode, this.member.code, QueryBuilder.StringOrder.CASE_SENSITIVE)

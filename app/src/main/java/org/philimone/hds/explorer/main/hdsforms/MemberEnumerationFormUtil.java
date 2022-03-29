@@ -4,9 +4,7 @@ import android.content.Context;
 import android.util.Log;
 
 import org.philimone.hds.explorer.R;
-import org.philimone.hds.explorer.database.Bootstrap;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
-import org.philimone.hds.explorer.database.Queries;
 import org.philimone.hds.explorer.fragment.MemberFilterDialog;
 import org.philimone.hds.explorer.model.ApplicationParam;
 import org.philimone.hds.explorer.model.ApplicationParam_;
@@ -17,7 +15,6 @@ import org.philimone.hds.explorer.model.Member;
 import org.philimone.hds.explorer.model.Member_;
 import org.philimone.hds.explorer.model.Residency;
 import org.philimone.hds.explorer.model.Residency_;
-import org.philimone.hds.explorer.model.User;
 import org.philimone.hds.explorer.model.Visit;
 import org.philimone.hds.explorer.model.converters.StringCollectionConverter;
 import org.philimone.hds.explorer.model.enums.CoreFormEntity;
@@ -28,19 +25,13 @@ import org.philimone.hds.explorer.model.enums.temporal.HeadRelationshipEndType;
 import org.philimone.hds.explorer.model.enums.temporal.HeadRelationshipStartType;
 import org.philimone.hds.explorer.model.enums.temporal.ResidencyEndType;
 import org.philimone.hds.explorer.model.enums.temporal.ResidencyStartType;
-import org.philimone.hds.explorer.settings.generator.CodeGeneratorService;
 import org.philimone.hds.explorer.widget.DialogFactory;
-import org.philimone.hds.forms.listeners.FormCollectionListener;
-import org.philimone.hds.forms.main.FormFragment;
 import org.philimone.hds.forms.model.ColumnValue;
 import org.philimone.hds.forms.model.HForm;
 import org.philimone.hds.forms.model.ValidationResult;
 import org.philimone.hds.forms.model.XmlFormResult;
-import org.philimone.hds.forms.parsers.ExcelFormParser;
 
-import java.io.InputStream;
 import java.util.Date;
-import java.util.LinkedHashMap;
 import java.util.Map;
 
 import androidx.fragment.app.FragmentManager;
@@ -396,7 +387,7 @@ public class MemberEnumerationFormUtil extends FormUtil<Member> {
     }
 
     @Override
-    public String onFormCallMethod(String methodExpression) {
+    public String onFormCallMethod(String methodExpression, String[] args) {
         return null;
     }
 

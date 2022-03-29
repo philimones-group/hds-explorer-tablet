@@ -4,29 +4,19 @@ import android.content.Context;
 import android.util.Log;
 
 import org.philimone.hds.explorer.R;
-import org.philimone.hds.explorer.database.Bootstrap;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
-import org.philimone.hds.explorer.database.Queries;
-import org.philimone.hds.explorer.model.ApplicationParam;
 import org.philimone.hds.explorer.model.CoreCollectedData;
 import org.philimone.hds.explorer.model.Household;
 import org.philimone.hds.explorer.model.Household_;
 import org.philimone.hds.explorer.model.Region;
-import org.philimone.hds.explorer.model.User;
 import org.philimone.hds.explorer.model.converters.StringCollectionConverter;
 import org.philimone.hds.explorer.model.enums.CoreFormEntity;
-import org.philimone.hds.explorer.settings.generator.CodeGeneratorService;
-import org.philimone.hds.forms.listeners.FormCollectionListener;
-import org.philimone.hds.forms.main.FormFragment;
 import org.philimone.hds.forms.model.ColumnValue;
 import org.philimone.hds.forms.model.HForm;
 import org.philimone.hds.forms.model.ValidationResult;
 import org.philimone.hds.forms.model.XmlFormResult;
-import org.philimone.hds.forms.parsers.ExcelFormParser;
 
-import java.io.InputStream;
 import java.util.Date;
-import java.util.LinkedHashMap;
 import java.util.Map;
 
 import androidx.fragment.app.FragmentManager;
@@ -179,7 +169,7 @@ public class HouseholdFormUtil extends FormUtil<Household> {
     }
 
     @Override
-    public String onFormCallMethod(String methodExpression) {
+    public String onFormCallMethod(String methodExpression, String[] args) {
         return null;
     }
 

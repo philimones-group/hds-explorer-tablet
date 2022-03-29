@@ -7,9 +7,6 @@ import androidx.fragment.app.FragmentManager;
 
 import org.philimone.hds.explorer.R;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
-import org.philimone.hds.explorer.fragment.MemberFilterDialog;
-import org.philimone.hds.explorer.model.ApplicationParam;
-import org.philimone.hds.explorer.model.ApplicationParam_;
 import org.philimone.hds.explorer.model.CoreCollectedData;
 import org.philimone.hds.explorer.model.HeadRelationship;
 import org.philimone.hds.explorer.model.HeadRelationship_;
@@ -20,12 +17,9 @@ import org.philimone.hds.explorer.model.Residency;
 import org.philimone.hds.explorer.model.Residency_;
 import org.philimone.hds.explorer.model.Visit;
 import org.philimone.hds.explorer.model.enums.CoreFormEntity;
-import org.philimone.hds.explorer.model.enums.HeadRelationshipType;
 import org.philimone.hds.explorer.model.enums.temporal.HeadRelationshipEndType;
-import org.philimone.hds.explorer.model.enums.temporal.HeadRelationshipStartType;
 import org.philimone.hds.explorer.model.enums.temporal.OutMigrationType;
 import org.philimone.hds.explorer.model.enums.temporal.ResidencyEndType;
-import org.philimone.hds.explorer.model.enums.temporal.ResidencyStartType;
 import org.philimone.hds.explorer.widget.DialogFactory;
 import org.philimone.hds.forms.model.ColumnValue;
 import org.philimone.hds.forms.model.HForm;
@@ -37,7 +31,6 @@ import java.util.Map;
 
 import io.objectbox.Box;
 import io.objectbox.query.QueryBuilder;
-import mz.betainteractive.utilities.GeneralUtil;
 import mz.betainteractive.utilities.StringUtil;
 
 public class OutmigrationFormUtil extends FormUtil<Outmigration> {
@@ -274,7 +267,7 @@ public class OutmigrationFormUtil extends FormUtil<Outmigration> {
     }
 
     @Override
-    public String onFormCallMethod(String methodExpression) {
+    public String onFormCallMethod(String methodExpression, String[] args) {
         return null;
     }
 

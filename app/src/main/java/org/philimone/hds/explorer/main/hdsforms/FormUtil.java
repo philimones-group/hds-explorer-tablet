@@ -15,6 +15,7 @@ import org.philimone.hds.explorer.settings.generator.CodeGeneratorService;
 import org.philimone.hds.forms.listeners.FormCollectionListener;
 import org.philimone.hds.forms.main.FormFragment;
 import org.philimone.hds.forms.model.HForm;
+import org.philimone.hds.forms.model.PreloadMap;
 import org.philimone.hds.forms.parsers.ExcelFormParser;
 
 import java.io.InputStream;
@@ -34,7 +35,7 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
     protected HForm form;
     protected T entity;
     protected CodeGeneratorService codeGenerator;
-    protected Map<String, String> preloadedMap;
+    protected PreloadMap preloadedMap;
 
     protected boolean backgroundMode;
     protected boolean postExecution;
@@ -58,7 +59,7 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
         this.form = hform;
         this.user = Bootstrap.getCurrentUser();
         this.codeGenerator = new CodeGeneratorService();
-        this.preloadedMap = new LinkedHashMap<>();
+        this.preloadedMap = new PreloadMap();
 
         this.currentMode = Mode.CREATE;
         
@@ -71,7 +72,7 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
         this.form = hform;
         this.user = Bootstrap.getCurrentUser();
         this.codeGenerator = new CodeGeneratorService();
-        this.preloadedMap = new LinkedHashMap<>();
+        this.preloadedMap = new PreloadMap();
 
         this.currentMode = Mode.EDIT;
         this.entity = existentEntity;

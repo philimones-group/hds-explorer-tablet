@@ -15,6 +15,7 @@ import org.philimone.hds.explorer.model.Member;
 import org.philimone.hds.explorer.model.Visit;
 import org.philimone.hds.explorer.model.enums.CoreFormEntity;
 import org.philimone.hds.explorer.model.enums.IncompleteVisitReason;
+import org.philimone.hds.forms.model.CollectedDataMap;
 import org.philimone.hds.forms.model.ColumnValue;
 import org.philimone.hds.forms.model.HForm;
 import org.philimone.hds.forms.model.ValidationResult;
@@ -95,7 +96,7 @@ public class IncompleteVisitFormUtil extends FormUtil<IncompleteVisit> {
     }
 
     @Override
-    public ValidationResult onFormValidate(HForm form, Map<String, ColumnValue> collectedValues) {
+    public ValidationResult onFormValidate(HForm form, CollectedDataMap collectedValues) {
 
         ColumnValue colVisitCode = collectedValues.get("visitCode");
         ColumnValue colHouseholdCode = collectedValues.get("householdCode");
@@ -146,7 +147,7 @@ public class IncompleteVisitFormUtil extends FormUtil<IncompleteVisit> {
     }
 
     @Override
-    public void onFormFinished(HForm form, Map<String, ColumnValue> collectedValues, XmlFormResult result) {
+    public void onFormFinished(HForm form, CollectedDataMap collectedValues, XmlFormResult result) {
 
         Log.d("resultxml", result.getXmlResult());
 

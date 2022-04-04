@@ -22,6 +22,7 @@ import org.philimone.hds.explorer.model.enums.MaritalEndStatus;
 import org.philimone.hds.explorer.model.enums.MaritalStartStatus;
 import org.philimone.hds.explorer.model.enums.MaritalStatus;
 import org.philimone.hds.explorer.widget.DialogFactory;
+import org.philimone.hds.forms.model.CollectedDataMap;
 import org.philimone.hds.forms.model.ColumnValue;
 import org.philimone.hds.forms.model.HForm;
 import org.philimone.hds.forms.model.ValidationResult;
@@ -113,7 +114,7 @@ public class MaritalRelationshipFormUtil extends FormUtil<MaritalRelationship> {
     }
 
     @Override
-    public ValidationResult onFormValidate(HForm form, Map<String, ColumnValue> collectedValues) {
+    public ValidationResult onFormValidate(HForm form, CollectedDataMap collectedValues) {
 
         ColumnValue colVisitCode = collectedValues.get("visitCode");
         ColumnValue colMemberA = collectedValues.get("memberA");
@@ -293,7 +294,7 @@ public class MaritalRelationshipFormUtil extends FormUtil<MaritalRelationship> {
     }
 
     @Override
-    public void onFormFinished(HForm form, Map<String, ColumnValue> collectedValues, XmlFormResult result) {
+    public void onFormFinished(HForm form, CollectedDataMap collectedValues, XmlFormResult result) {
 
         Log.d("resultxml", result.getXmlResult());
 

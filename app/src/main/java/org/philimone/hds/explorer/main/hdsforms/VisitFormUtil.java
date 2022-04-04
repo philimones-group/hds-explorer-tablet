@@ -16,6 +16,7 @@ import org.philimone.hds.explorer.model.enums.CoreFormEntity;
 import org.philimone.hds.explorer.model.enums.VisitLocationItem;
 import org.philimone.hds.explorer.model.enums.VisitReason;
 import org.philimone.hds.forms.main.FormFragment;
+import org.philimone.hds.forms.model.CollectedDataMap;
 import org.philimone.hds.forms.model.ColumnValue;
 import org.philimone.hds.forms.model.HForm;
 import org.philimone.hds.forms.model.ValidationResult;
@@ -94,7 +95,7 @@ public class VisitFormUtil extends FormUtil<Visit> {
     }
 
     @Override
-    public ValidationResult onFormValidate(HForm form, Map<String, ColumnValue> collectedValues) {
+    public ValidationResult onFormValidate(HForm form, CollectedDataMap collectedValues) {
         ColumnValue colCode = collectedValues.get("code");
         ColumnValue colHouseholdCode = collectedValues.get("householdCode");
         ColumnValue colVisitDate = collectedValues.get("visitDate"); //check date in future / in past
@@ -175,7 +176,7 @@ public class VisitFormUtil extends FormUtil<Visit> {
     }
 
     @Override
-    public void onFormFinished(HForm form, Map<String, ColumnValue> collectedValues, XmlFormResult result) {
+    public void onFormFinished(HForm form, CollectedDataMap collectedValues, XmlFormResult result) {
 
         Log.d("resultxml", result.getXmlResult());
 

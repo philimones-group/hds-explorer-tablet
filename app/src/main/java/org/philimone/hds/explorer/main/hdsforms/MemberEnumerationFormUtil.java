@@ -26,6 +26,7 @@ import org.philimone.hds.explorer.model.enums.temporal.HeadRelationshipStartType
 import org.philimone.hds.explorer.model.enums.temporal.ResidencyEndType;
 import org.philimone.hds.explorer.model.enums.temporal.ResidencyStartType;
 import org.philimone.hds.explorer.widget.DialogFactory;
+import org.philimone.hds.forms.model.CollectedDataMap;
 import org.philimone.hds.forms.model.ColumnValue;
 import org.philimone.hds.forms.model.HForm;
 import org.philimone.hds.forms.model.ValidationResult;
@@ -52,6 +53,7 @@ public class MemberEnumerationFormUtil extends FormUtil<Member> {
     private Visit visit;
     private Member father;
     private Member mother;
+    private Member head;
     private boolean isFirstHouseholdMember;
     private int minimunHeadAge;
     private int minimunFatherAge;
@@ -134,7 +136,7 @@ public class MemberEnumerationFormUtil extends FormUtil<Member> {
     }
 
     @Override
-    public ValidationResult onFormValidate(HForm form, Map<String, ColumnValue> collectedValues) {
+    public ValidationResult onFormValidate(HForm form, CollectedDataMap collectedValues) {
 
         ColumnValue colVisitCode = collectedValues.get("visitCode");
         ColumnValue colCode = collectedValues.get("code"); //check if code is valid + check duplicate + member belongs to household
@@ -249,7 +251,7 @@ public class MemberEnumerationFormUtil extends FormUtil<Member> {
     }
 
     @Override
-    public void onFormFinished(HForm form, Map<String, ColumnValue> collectedValues, XmlFormResult result) {
+    public void onFormFinished(HForm form, CollectedDataMap collectedValues, XmlFormResult result) {
 
         Log.d("resultxml", result.getXmlResult());
 

@@ -15,6 +15,7 @@ import org.philimone.hds.explorer.model.Visit;
 import org.philimone.hds.explorer.model.enums.CoreFormEntity;
 import org.philimone.hds.explorer.model.enums.EstimatedDateOfDeliveryType;
 import org.philimone.hds.explorer.model.enums.PregnancyStatus;
+import org.philimone.hds.forms.model.CollectedDataMap;
 import org.philimone.hds.forms.model.ColumnValue;
 import org.philimone.hds.forms.model.HForm;
 import org.philimone.hds.forms.model.ValidationResult;
@@ -91,7 +92,7 @@ public class PregnancyRegistrationFormUtil extends FormUtil<PregnancyRegistratio
     }
 
     @Override
-    public ValidationResult onFormValidate(HForm form, Map<String, ColumnValue> collectedValues) {
+    public ValidationResult onFormValidate(HForm form, CollectedDataMap collectedValues) {
 
         ColumnValue colVisitCode = collectedValues.get("visitCode");
         ColumnValue colCode = collectedValues.get("code");
@@ -161,7 +162,7 @@ public class PregnancyRegistrationFormUtil extends FormUtil<PregnancyRegistratio
     }
 
     @Override
-    public void onFormFinished(HForm form, Map<String, ColumnValue> collectedValues, XmlFormResult result) {
+    public void onFormFinished(HForm form, CollectedDataMap collectedValues, XmlFormResult result) {
 
         Log.d("resultxml", result.getXmlResult());
 

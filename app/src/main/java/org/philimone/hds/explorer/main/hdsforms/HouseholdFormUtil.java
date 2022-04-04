@@ -11,6 +11,7 @@ import org.philimone.hds.explorer.model.Household_;
 import org.philimone.hds.explorer.model.Region;
 import org.philimone.hds.explorer.model.converters.StringCollectionConverter;
 import org.philimone.hds.explorer.model.enums.CoreFormEntity;
+import org.philimone.hds.forms.model.CollectedDataMap;
 import org.philimone.hds.forms.model.ColumnValue;
 import org.philimone.hds.forms.model.HForm;
 import org.philimone.hds.forms.model.ValidationResult;
@@ -60,7 +61,7 @@ public class HouseholdFormUtil extends FormUtil<Household> {
     }
 
     @Override
-    public ValidationResult onFormValidate(HForm form, Map<String, ColumnValue> collectedValues) {
+    public ValidationResult onFormValidate(HForm form, CollectedDataMap collectedValues) {
         ColumnValue columnHouseholdCode = collectedValues.get("householdCode");
         ColumnValue columnHouseholdName = collectedValues.get("householdName");
 
@@ -97,7 +98,7 @@ public class HouseholdFormUtil extends FormUtil<Household> {
     }
 
     @Override
-    public void onFormFinished(HForm form, Map<String, ColumnValue> collectedValues, XmlFormResult result) {
+    public void onFormFinished(HForm form, CollectedDataMap collectedValues, XmlFormResult result) {
 
         Log.d("resultxml", result.getXmlResult());
 

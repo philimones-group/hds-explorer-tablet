@@ -399,6 +399,19 @@
     <string name="pregnancy_registration_eddate_empty_lbl">A data provável do parto não pode estar vazia</string>
     <string name="pregnancy_registration_eddate_not_before_dob_lbl">A data provável do parto não pode ser antes da data de nascimento</string>
 
+    <!-- pregnancy outcome -->
+
+
+    <!-- death registration -->
+    <string name="death_visit_code_empty_lbl">O código da visita não pode estar vazio</string>
+    <string name="death_member_code_empty_lbl">O código do membro não pode estar vazio</string>
+    <string name="death_member_code_exists_lbl">O membro identificado já possui registo de óbito</string>
+    <string name="death_deathdate_empty_lbl">A data da morte não pode estar vazia</string>
+    <string name="death_deathdate_not_before_dob_lbl">A data da morte não pode ser antes da data de nascimento</string>
+    <string name="death_deathdate_not_great_today_lbl">A data da morte não pode ser maior que a data de hoje</string>
+    <string name="death_new_head_code_empty_lbl">O código do novo chefe de agregado não pode estar vazio</string>
+    <string name="death_new_head_select_lbl">Selecione o novo chefe do agregado</string>
+
     <string-array name="relationship_types_array">
         <item>Solteiro</item>
         <item>Casado</item>

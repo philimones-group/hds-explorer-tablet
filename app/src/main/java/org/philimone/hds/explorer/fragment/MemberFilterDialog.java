@@ -66,6 +66,7 @@ public class MemberFilterDialog extends DialogFragment {
     private Integer filterStatus;
     private boolean filterStatusExclusive;
     private String filterExcludeHousehold;
+    private String filterExcludeMember;
 
     private boolean startSearchOnShow;
 
@@ -82,6 +83,7 @@ public class MemberFilterDialog extends DialogFragment {
 
     public MemberFilterDialog(){
         super();
+        initBoxes();
     }
     /*
     public static MemberFilterDialog newInstance(FragmentManager fm, @StringRes int titleResId, Listener memberFilterListener){
@@ -123,7 +125,6 @@ public class MemberFilterDialog extends DialogFragment {
 
         getDialog().setTitle(title==null ? "" : title);
 
-        initBoxes();
         initialize(view);
     }
 
@@ -272,7 +273,7 @@ public class MemberFilterDialog extends DialogFragment {
     private void updateFilterStatus(){
         if (this.spnMemFilterStatus != null && filterStatus != null) {
             this.spnMemFilterStatus.setSelection(filterStatus);
-            this.spnMemFilterStatus.setEnabled(filterStatusExclusive);
+            this.spnMemFilterStatus.setEnabled(!filterStatusExclusive);
         }
     }
 
@@ -324,6 +325,10 @@ public class MemberFilterDialog extends DialogFragment {
 
     public void setFilterExcludeHousehold(String householdCode) {
         this.filterExcludeHousehold = householdCode;
+    }
+
+    public void setFilterExcludeMember(String memberCode) {
+        this.filterExcludeMember = memberCode;
     }
 
     public void setFilterStatus(StatusFilter filter, boolean exclusiveSelection) {
@@ -480,6 +485,10 @@ public class MemberFilterDialog extends DialogFragment {
 
         if (filterExcludeHousehold != null) {
             builder.notEqual(Member_.householdCode, filterExcludeHousehold, QueryBuilder.StringOrder.CASE_SENSITIVE);
+        }
+
+        if (filterExcludeMember != null) {
+            builder.notEqual(Member_.code, filterExcludeMember, QueryBuilder.StringOrder.CASE_SENSITIVE);
         }
 
         Log.d("sql", builder.toString());

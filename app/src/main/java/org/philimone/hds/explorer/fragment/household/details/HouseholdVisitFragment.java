@@ -18,6 +18,7 @@ import org.philimone.hds.explorer.R;
 import org.philimone.hds.explorer.adapter.CoreCollectedExpandableAdapter;
 import org.philimone.hds.explorer.adapter.MemberArrayAdapter;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
+import org.philimone.hds.explorer.main.hdsforms.DeathFormUtil;
 import org.philimone.hds.explorer.main.hdsforms.ExternalInMigrationFormUtil;
 import org.philimone.hds.explorer.main.hdsforms.FormUtilListener;
 import org.philimone.hds.explorer.main.hdsforms.InternalInMigrationFormUtil;
@@ -30,6 +31,7 @@ import org.philimone.hds.explorer.model.CollectedData;
 import org.philimone.hds.explorer.model.CollectedData_;
 import org.philimone.hds.explorer.model.CoreCollectedData;
 import org.philimone.hds.explorer.model.CoreCollectedData_;
+import org.philimone.hds.explorer.model.Death;
 import org.philimone.hds.explorer.model.Form;
 import org.philimone.hds.explorer.model.Household;
 import org.philimone.hds.explorer.model.IncompleteVisit;
@@ -191,6 +193,10 @@ public class HouseholdVisitFragment extends Fragment {
         this.btnVisitPregnancyReg.setOnClickListener(v -> {
             onPregnancyRegistrationClicked();
         });
+
+        this.btnVisitDeath.setOnClickListener(v -> {
+            onDeathClicked();
+        });
     }
 
     private void selectMember(Member member){
@@ -340,8 +346,10 @@ public class HouseholdVisitFragment extends Fragment {
     }
 
     private long countCollectedForms(Member member) {
-        long count1 = this.boxCoreCollectedData.query().equal(CoreCollectedData_.visitId, visit.id)
+        long count1 = this.boxCoreCollectedData.query()
+                .equal(CoreCollectedData_.visitId, visit.id)
                 .equal(CoreCollectedData_.formEntityCode, member.code, QueryBuilder.StringOrder.CASE_SENSITIVE)
+                .contains(CoreCollectedData_.formEntityCodes, member.code, QueryBuilder.StringOrder.CASE_SENSITIVE)
                 .notEqual(CoreCollectedData_.formEntity, CoreFormEntity.VISIT.code, QueryBuilder.StringOrder.CASE_SENSITIVE).build().count(); //CHECK FOR VISITS (visit id is equal to member.id)
 
         long count2 = this.boxCollectedData.query().equal(CollectedData_.visitId, visit.id)
@@ -531,9 +539,33 @@ public class HouseholdVisitFragment extends Fragment {
         formUtil.collect();
     }
 
+    private void onDeathClicked() {
+        Log.d("on-death", ""+this.selectedMember);
+
+        DeathFormUtil formUtil = new DeathFormUtil(getActivity().getSupportFragmentManager(), this.getContext(), this.visit, this.household, this.selectedMember, new FormUtilListener<Death>() {
+            @Override
+            public void onNewEntityCreated(Death death) {
+                loadDataToListViews();
+            }
+
+            @Override
+            public void onEntityEdited(Death death) {
+
+            }
+
+            @Override
+            public void onFormCancelled() {
+
+            }
+        });
+
+        formUtil.collect();
+    }
+
     public List<Member> getNonVisitedMembers() {
         ///check if all individuals were visited
-        List<Member> members = this.boxMembers.query().equal(Member_.householdCode, household.getCode(), QueryBuilder.StringOrder.CASE_SENSITIVE).build().find();
+        List<Member> members = this.boxMembers.query().equal(Member_.householdCode, household.getCode(), QueryBuilder.StringOrder.CASE_SENSITIVE)
+                                                      .and().equal(Member_.endType, ResidencyEndType.NOT_APPLICABLE.code, QueryBuilder.StringOrder.CASE_SENSITIVE).build().find();
         List<Member> membersNotVisited = new ArrayList<>();
 
         for (Member member : members) {

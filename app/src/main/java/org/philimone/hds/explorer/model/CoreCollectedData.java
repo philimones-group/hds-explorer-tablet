@@ -25,6 +25,8 @@ public class CoreCollectedData {
 
     public String formEntityCode;
 
+    public String formEntityCodes; /* other affected objects */
+
     public String formEntityName;
 
     @Unique

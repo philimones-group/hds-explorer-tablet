@@ -394,10 +394,12 @@
 
     <!-- pregnancy registration -->
     <string name="pregnancy_registration_code_err_lbl">O código do registro de gravidez está incorrecto</string>
+    <string name="pregnancy_registration_code_exists_lbl">Este código da gravidez ja existe!</string>
     <string name="pregnancy_registration_mothercode_empty_lbl">O código da mãe não pode estar vazio</string>
     <string name="pregnancy_registration_status_empty_lbl">O estado da gravidez não pode estar vazio</string>
     <string name="pregnancy_registration_eddate_empty_lbl">A data provável do parto não pode estar vazia</string>
     <string name="pregnancy_registration_eddate_not_before_dob_lbl">A data provável do parto não pode ser antes da data de nascimento</string>
+    <string name="pregnancy_registration_previous_pending_lbl">Esta mãe se encontra com uma gravidez pendente registada no sistema, é necessário primeiro fazer registo do Resultado da gravidez anterior para poder registar uma nova.</string>
 
     <!-- pregnancy outcome -->
 

@@ -11,6 +11,7 @@ import org.philimone.hds.explorer.model.CoreCollectedData;
 import org.philimone.hds.explorer.model.Household;
 import org.philimone.hds.explorer.model.Member;
 import org.philimone.hds.explorer.model.PregnancyRegistration;
+import org.philimone.hds.explorer.model.PregnancyRegistration_;
 import org.philimone.hds.explorer.model.Visit;
 import org.philimone.hds.explorer.model.enums.CoreFormEntity;
 import org.philimone.hds.explorer.model.enums.EstimatedDateOfDeliveryType;
@@ -22,9 +23,9 @@ import org.philimone.hds.forms.model.ValidationResult;
 import org.philimone.hds.forms.model.XmlFormResult;
 
 import java.util.Date;
-import java.util.Map;
 
 import io.objectbox.Box;
+import io.objectbox.query.QueryBuilder;
 import mz.betainteractive.utilities.GeneralUtil;
 import mz.betainteractive.utilities.StringUtil;
 
@@ -36,7 +37,7 @@ public class PregnancyRegistrationFormUtil extends FormUtil<PregnancyRegistratio
 
     private Household household;
     private Visit visit;
-    private Member member;
+    private Member mother;
 
     public PregnancyRegistrationFormUtil(FragmentManager fragmentManager, Context context, Visit visit, Household household, Member member, FormUtilListener<PregnancyRegistration> listener){
         super(fragmentManager, context, FormUtil.getPregnancyRegistrationForm(context), listener);
@@ -44,7 +45,7 @@ public class PregnancyRegistrationFormUtil extends FormUtil<PregnancyRegistratio
         //Log.d("enu-household", ""+household);
 
         this.household = household;
-        this.member = member;
+        this.mother = member;
         this.visit = visit;
 
         initBoxes();
@@ -80,9 +81,9 @@ public class PregnancyRegistrationFormUtil extends FormUtil<PregnancyRegistratio
         //member_details_unknown_lbl
 
         preloadedMap.put("visitCode", this.visit.code);
-        preloadedMap.put("code", codeGenerator.generatePregnancyCode(this.member));
-        preloadedMap.put("motherCode", this.member.code);
-        preloadedMap.put("motherName", this.member.name);
+        preloadedMap.put("code", codeGenerator.generatePregnancyCode(this.mother));
+        preloadedMap.put("motherCode", this.mother.code);
+        preloadedMap.put("motherName", this.mother.name);
         preloadedMap.put("modules", this.user.getSelectedModulesCodes());
     }
 
@@ -134,12 +135,16 @@ public class PregnancyRegistrationFormUtil extends FormUtil<PregnancyRegistratio
             return new ValidationResult(colMotherCode, message);
         }
 
+        //code is duplicate
+        if (boxPregnancyRegistrations.query().equal(PregnancyRegistration_.code, code, QueryBuilder.StringOrder.CASE_SENSITIVE).build().count() > 0){
+            String message = this.context.getString(R.string.new_member_code_exists_lbl);
+            return new ValidationResult(colCode, message);
+        }
+
         if (StringUtil.isBlank(motherCode)){
             String message = this.context.getString(R.string.pregnancy_registration_mothercode_empty_lbl);
             return new ValidationResult(colMotherName, message);
         }
-
-        //validate
 
         //validate preg status
         if (status == null){
@@ -153,10 +158,17 @@ public class PregnancyRegistrationFormUtil extends FormUtil<PregnancyRegistratio
         }
 
         //eddDate cannot be before dob
-        if (eddDate != null && eddDate.before(this.member.dob)){ //is before dob
+        if (eddDate != null && eddDate.before(this.mother.dob)){ //is before dob
             String message = this.context.getString(R.string.pregnancy_registration_eddate_not_before_dob_lbl);
             return new ValidationResult(colEddDate, message);
         }
+
+        PregnancyRegistration pregReg = getLastPregnancyRegistration(this.mother);
+        if (pregReg != null && pregReg.status == PregnancyStatus.PREGNANT){
+            String message = this.context.getString(R.string.pregnancy_registration_previous_pending_lbl);
+            return new ValidationResult(colCode, message);
+        }
+
 
         return ValidationResult.noErrors();
     }
@@ -212,7 +224,7 @@ public class PregnancyRegistrationFormUtil extends FormUtil<PregnancyRegistratio
         PregnancyRegistration pregnancy = new PregnancyRegistration();
         pregnancy.visitCode = visitCode;
         pregnancy.code = code;
-        pregnancy.motherCode = member.code;
+        pregnancy.motherCode = mother.code;
         pregnancy.recordedDate = recordedDate;
         pregnancy.pregMonths = pregMonths;
         pregnancy.eddKnown = eddKnown;
@@ -230,9 +242,9 @@ public class PregnancyRegistrationFormUtil extends FormUtil<PregnancyRegistratio
         CoreCollectedData collectedData = new CoreCollectedData();
         collectedData.visitId = visit.id;
         collectedData.formEntity = CoreFormEntity.PREGNANCY_REGISTRATION;
-        collectedData.formEntityId = member.id;
-        collectedData.formEntityCode = member.code;
-        collectedData.formEntityName = member.name;
+        collectedData.formEntityId = mother.id;
+        collectedData.formEntityCode = mother.code;
+        collectedData.formEntityName = mother.name;
         collectedData.formUuid = result.getFormUuid();
         collectedData.formFilename = result.getFilename();
         collectedData.createdDate = new Date();
@@ -259,6 +271,14 @@ public class PregnancyRegistrationFormUtil extends FormUtil<PregnancyRegistratio
     @Override
     public void collect() {
         executeCollectForm();
+    }
+
+    private PregnancyRegistration getLastPregnancyRegistration(Member motherMember){
+        //def pregnancies = PregnancyRegistration.executeQuery("select p from PregnancyRegistration p where p.mother.code=? order by p.recordedDate desc", [motherCode], [offset:0, max:1])
+        PregnancyRegistration pregnancyRegistration = this.boxPregnancyRegistrations.query(PregnancyRegistration_.motherCode.equal(motherMember.code))
+                                                                                    .orderDesc(PregnancyRegistration_.recordedDate).build().findFirst();
+
+        return pregnancyRegistration;
     }
 
     String handleMethodExecution(String methodExpression, String[] args) {

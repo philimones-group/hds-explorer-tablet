@@ -18,6 +18,8 @@ import org.philimone.hds.explorer.R;
 import org.philimone.hds.explorer.adapter.CoreCollectedExpandableAdapter;
 import org.philimone.hds.explorer.adapter.MemberArrayAdapter;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
+import org.philimone.hds.explorer.listeners.HouseholdDetailsListener;
+import org.philimone.hds.explorer.main.hdsforms.ChangeHeadFormUtil;
 import org.philimone.hds.explorer.main.hdsforms.DeathFormUtil;
 import org.philimone.hds.explorer.main.hdsforms.ExternalInMigrationFormUtil;
 import org.philimone.hds.explorer.main.hdsforms.FormUtilListener;
@@ -33,6 +35,7 @@ import org.philimone.hds.explorer.model.CoreCollectedData;
 import org.philimone.hds.explorer.model.CoreCollectedData_;
 import org.philimone.hds.explorer.model.Death;
 import org.philimone.hds.explorer.model.Form;
+import org.philimone.hds.explorer.model.HeadRelationship;
 import org.philimone.hds.explorer.model.Household;
 import org.philimone.hds.explorer.model.IncompleteVisit;
 import org.philimone.hds.explorer.model.Inmigration;
@@ -83,12 +86,19 @@ public class HouseholdVisitFragment extends Fragment {
     private Box<Form> boxForms;
     private Box<CollectedData> boxCollectedData;
     private Box<CoreCollectedData> boxCoreCollectedData;
-    
+
+    private HouseholdDetailsListener householdDetailsListener;
+
     private VisitEventsMode currentEventMode = VisitEventsMode.HOUSEHOLD_EVENTS;
     
     private enum VisitEventsMode { HOUSEHOLD_EVENTS, MEMBER_EVENTS}
 
-    public HouseholdVisitFragment() {
+    public HouseholdVisitFragment(){
+        initBoxes();
+    }
+
+    public HouseholdVisitFragment(HouseholdDetailsListener listener) {
+        this.householdDetailsListener = listener;
         initBoxes();
     }
 
@@ -98,11 +108,12 @@ public class HouseholdVisitFragment extends Fragment {
      *
      * @return A new instance of fragment HouseholdVisitFragment.
      */
-    public static HouseholdVisitFragment newInstance(Household household, Visit visit, User user) {
-        HouseholdVisitFragment fragment = new HouseholdVisitFragment();
+    public static HouseholdVisitFragment newInstance(Household household, Visit visit, User user, HouseholdDetailsListener listener) {
+        HouseholdVisitFragment fragment = new HouseholdVisitFragment(listener);
         fragment.household = household;
         fragment.visit = visit;
         fragment.loggedUser = user;
+        fragment.householdDetailsListener = listener;
         return fragment;
     }
 
@@ -128,6 +139,14 @@ public class HouseholdVisitFragment extends Fragment {
         initialize(view);
 
         return view;
+    }
+
+    public HouseholdDetailsListener getHouseholdDetailsListener() {
+        return householdDetailsListener;
+    }
+
+    public void setHouseholdDetailsListener(HouseholdDetailsListener householdDetailsListener) {
+        this.householdDetailsListener = householdDetailsListener;
     }
 
     private void initBoxes() {
@@ -196,6 +215,10 @@ public class HouseholdVisitFragment extends Fragment {
 
         this.btnVisitDeath.setOnClickListener(v -> {
             onDeathClicked();
+        });
+
+        this.btnVisitChangeHead.setOnClickListener(v -> {
+            onChangeHeadClicked();
         });
     }
 
@@ -550,6 +573,33 @@ public class HouseholdVisitFragment extends Fragment {
 
             @Override
             public void onEntityEdited(Death death) {
+
+            }
+
+            @Override
+            public void onFormCancelled() {
+
+            }
+        });
+
+        formUtil.collect();
+    }
+
+    private void onChangeHeadClicked() {
+        Log.d("on-changehead", ""+this.household.code);
+
+        ChangeHeadFormUtil formUtil = new ChangeHeadFormUtil(getActivity().getSupportFragmentManager(), this.getContext(), this.visit, this.household, new FormUtilListener<Member>() {
+            @Override
+            public void onNewEntityCreated(Member newHeadMember) {
+                loadDataToListViews();
+
+                if (householdDetailsListener != null) {
+                    householdDetailsListener.updateHouseholdDetails();
+                }
+            }
+
+            @Override
+            public void onEntityEdited(Member newHeadMember) {
 
             }
 

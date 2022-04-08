@@ -20,6 +20,7 @@ import org.philimone.hds.explorer.fragment.CollectedDataFragment;
 import org.philimone.hds.explorer.fragment.household.details.HouseholdMembersFragment;
 import org.philimone.hds.explorer.fragment.household.details.HouseholdVisitFragment;
 import org.philimone.hds.explorer.fragment.household.details.adapter.HouseholdDetailsFragmentAdapter;
+import org.philimone.hds.explorer.listeners.HouseholdDetailsListener;
 import org.philimone.hds.explorer.main.hdsforms.FormUtilListener;
 import org.philimone.hds.explorer.main.hdsforms.HouseholdFormUtil;
 import org.philimone.hds.explorer.main.hdsforms.VisitFormUtil;
@@ -45,7 +46,7 @@ import io.objectbox.Box;
 import io.objectbox.query.QueryBuilder;
 import mz.betainteractive.utilities.StringUtil;
 
-public class HouseholdDetailsActivity extends AppCompatActivity {
+public class HouseholdDetailsActivity extends AppCompatActivity implements HouseholdDetailsListener {
 
     private enum HouseholdDetailsMode {
         NORMAL_MODE,        /* Default, when Details is normally - can create/open visit*/
@@ -219,6 +220,7 @@ public class HouseholdDetailsActivity extends AppCompatActivity {
         //visitTabItem = findViewById(R.id.visitTabItem);
 
         this.householdVisitFragment = (HouseholdVisitFragment) (getSupportFragmentManager().findFragmentById(R.id.householdVisitFragment));
+        this.householdVisitFragment.setHouseholdDetailsListener(this);
 
         btHouseDetailsBack.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -591,4 +593,8 @@ public class HouseholdDetailsActivity extends AppCompatActivity {
         visitFormUtil.collect();
     }
 
+    @Override
+    public void updateHouseholdDetails() {
+        displayHouseholdDetails();
+    }
 }

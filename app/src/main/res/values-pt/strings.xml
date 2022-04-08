@@ -412,6 +412,15 @@
     <string name="death_new_head_code_empty_lbl">O código do novo chefe de agregado não pode estar vazio</string>
     <string name="death_new_head_select_lbl">Selecione o novo chefe do agregado</string>
 
+    <!-- changehead registration -->
+    <string name="changehead_visit_code_empty_lbl">O código da visita não pode estar vazio</string>
+    <string name="changehead_oldhead_code_empty_lbl">O código do antigo chefe do agregado não pode estar vazio</string>
+    <string name="changehead_newhead_code_empty_lbl">O código do novo chefe do agregado não pode estar vazio</string>
+    <string name="changehead_eventdate_empty_lbl">A data do evento não pode estar vazia</string>
+    <string name="changehead_eventdate_not_before_dob_lbl">A data do evento não pode ser antes da data de nascimento</string>
+    <string name="changehead_eventdate_not_great_today_lbl">A data da evento não pode ser maior que a data de hoje</string>
+    <string name="changehead_new_head_select_lbl">Selecione o novo chefe do agregado</string>
+    
     <string-array name="relationship_types_array">
         <item>Solteiro</item>
         <item>Casado</item>

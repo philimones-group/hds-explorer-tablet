@@ -162,6 +162,9 @@ public class DeathFormUtil extends FormUtil<Death> {
     }
 
     private List<Member> getHouseholdResidentsExcDeadHead() {
+
+        //order list with new head of household as the first id
+
         List<Residency> residencies = this.boxResidencies.query(
                 Residency_.householdCode.equal(this.household.code).and(Residency_.endType.equal(ResidencyEndType.NOT_APPLICABLE.code)))
                 .order(Residency_.memberCode)
@@ -172,12 +175,28 @@ public class DeathFormUtil extends FormUtil<Death> {
         for (Residency residency : residencies) {
             if (!member.code.equals(residency.memberCode)) { //its not the dead member
                 residentMembersExDeadHead.add(residency.memberCode);
-                Log.d("member", ""+residency.memberCode);
+                //Log.d("member", ""+residency.memberCode);
             }
         }
 
         List<Member> members = this.boxMembers.query(Member_.code.oneOf(residentMembersExDeadHead.toArray(new String[0]))).build().find();
-Log.d("members", members.size()+"");
+
+        return members;
+    }
+
+    private List<Member> reorderWithHeadAsFirst(List<Member> members, Member headMember){
+        Member extractedMember = null;
+        for (Member mb : members){
+            if (mb.code.equals(headMember.code)){
+                extractedMember = mb;
+            }
+        }
+
+        if (extractedMember != null){
+            members.remove(extractedMember);
+            members.add(0, extractedMember);
+        }
+
         return members;
     }
 
@@ -185,8 +204,9 @@ Log.d("members", members.size()+"");
     protected void preloadValues() {
         //member_details_unknown_lbl
 
+        reorderWithHeadAsFirst(this.householdResidents, newHeadMember);
+
         preloadedMap.put("visitCode", this.visit.code);
-        preloadedMap.put("code", codeGenerator.generatePregnancyCode(this.member));
         preloadedMap.put("memberCode", this.member.code);
         preloadedMap.put("memberName", this.member.name);
         preloadedMap.put("isHouseholdHead", this.isHouseholdHead.toString().toUpperCase());

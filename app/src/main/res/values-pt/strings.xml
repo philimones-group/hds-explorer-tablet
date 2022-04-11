@@ -394,7 +394,7 @@
 
     <!-- pregnancy registration -->
     <string name="pregnancy_registration_code_err_lbl">O código do registro de gravidez está incorrecto</string>
-    <string name="pregnancy_registration_code_exists_lbl">Este código da gravidez ja existe!</string>
+    <string name="pregnancy_registration_code_exists_lbl">Código duplicado, Este código da gravidez ja existe!</string>
     <string name="pregnancy_registration_mothercode_empty_lbl">O código da mãe não pode estar vazio</string>
     <string name="pregnancy_registration_status_empty_lbl">O estado da gravidez não pode estar vazio</string>
     <string name="pregnancy_registration_eddate_empty_lbl">A data provável do parto não pode estar vazia</string>
@@ -402,7 +402,16 @@
     <string name="pregnancy_registration_previous_pending_lbl">Esta mãe se encontra com uma gravidez pendente registada no sistema, é necessário primeiro fazer registo do Resultado da gravidez anterior para poder registar uma nova.</string>
 
     <!-- pregnancy outcome -->
-
+    <string name="pregnancy_outcome_code_err_lbl">O código do registro de gravidez está incorrecto</string>
+    <string name="pregnancy_outcome_code_exists_lbl">Código duplicado, Este código da gravidez ja existe!</string>
+    <string name="pregnancy_outcome_mothercode_empty_lbl">O código da mãe não pode estar vazio</string>
+    <string name="pregnancy_outcome_nroutcomes_empty_lbl">O número de bebês nascidos não pode estar vazio</string>
+    <string name="pregnancy_outcome_outcomedate_empty_lbl">A data do parto não pode estar vazia</string>
+    <string name="pregnancy_outcome_outcdate_not_before_dob_lbl">A data do parto não pode ser antes da data de nascimento da mãe</string>
+    <string name="pregnancy_outcome_previous_pending_lbl">Esta mãe se encontra com uma gravidez pendente registada no sistema, é necessário primeiro fazer registo do Resultado da gravidez anterior para poder registar uma nova.</string>
+    <string name="pregnancy_outcome_nroutcomes_title_lbl">Resultado da gravidez</string>
+    <string name="pregnancy_outcome_nroutcomes_lbl">O número de bebês nascidos</string>
+    <string name="pregnancy_outcome_create_pregreg_info_lbl">Não existe registo de gravidez,\nUm novo registo de gravidez será criado com o estado [já deu parto],\nDe seguida prossiga com o registro do resultado da gravidez</string>
 
     <!-- death registration -->
     <string name="death_visit_code_empty_lbl">O código da visita não pode estar vazio</string>

@@ -38,6 +38,7 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
     protected PreloadMap preloadedMap;
 
     protected boolean backgroundMode;
+    protected boolean resumeMode;
     protected boolean postExecution;
     protected Round currentRound;
     protected User user;
@@ -99,7 +100,7 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
     protected void executeCollectForm() {
         if (currentMode == Mode.CREATE) {
             preloadValues();
-            FormFragment form = FormFragment.newInstance(this.fragmentManager, this.form, Bootstrap.getInstancesPath(), user.username, preloadedMap, postExecution, backgroundMode, this);
+            FormFragment form = FormFragment.newInstance(this.fragmentManager, this.form, Bootstrap.getInstancesPath(), user.username, preloadedMap, postExecution, backgroundMode, resumeMode, this);
             form.startCollecting();
         }
 

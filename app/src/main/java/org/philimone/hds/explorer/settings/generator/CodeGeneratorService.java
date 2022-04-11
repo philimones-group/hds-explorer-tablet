@@ -16,6 +16,7 @@ import org.philimone.hds.explorer.model.User_;
 import org.philimone.hds.explorer.model.Visit;
 import org.philimone.hds.explorer.model.Visit_;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -95,6 +96,26 @@ public class CodeGeneratorService {
                                                 .order(Member_.code).build()
                                                 .property(Member_.code).findStrings();
         List<String> codes = Arrays.asList(codesArray); //Member.findAllByCodeLike("${cbase}%", [sort:'code', order: 'asc']).collect{ t -> t.code};
+
+        return codeGenerator.generateMemberCode(cbase, codes);
+    }
+
+    public String generateMemberCode(Household household, List<String> extraCodes) {
+
+        String cbase = household.code;
+        String[] codesArray = boxMembers.query().startsWith(Member_.code, cbase, QueryBuilder.StringOrder.CASE_SENSITIVE)
+                .order(Member_.code).build()
+                .property(Member_.code).findStrings();
+        List<String> codes = new ArrayList<>(); //Member.findAllByCodeLike("${cbase}%", [sort:'code', order: 'asc']).collect{ t -> t.code};
+
+        for (int i = 0; i < codesArray.length; i++) {
+            codes.add(codesArray[i]);
+        }
+
+        for (String code : extraCodes) {
+            codes.add(code);
+        }
+        //codes.addAll(extraCodes);
 
         return codeGenerator.generateMemberCode(cbase, codes);
     }

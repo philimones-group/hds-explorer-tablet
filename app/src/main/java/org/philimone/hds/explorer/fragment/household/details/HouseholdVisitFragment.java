@@ -28,6 +28,7 @@ import org.philimone.hds.explorer.main.hdsforms.MaritalRelationshipFormUtil;
 import org.philimone.hds.explorer.main.hdsforms.MemberEnumerationFormUtil;
 import org.philimone.hds.explorer.main.hdsforms.IncompleteVisitFormUtil;
 import org.philimone.hds.explorer.main.hdsforms.OutmigrationFormUtil;
+import org.philimone.hds.explorer.main.hdsforms.PregnancyOutcomeFormUtil;
 import org.philimone.hds.explorer.main.hdsforms.PregnancyRegistrationFormUtil;
 import org.philimone.hds.explorer.model.CollectedData;
 import org.philimone.hds.explorer.model.CollectedData_;
@@ -43,6 +44,7 @@ import org.philimone.hds.explorer.model.MaritalRelationship;
 import org.philimone.hds.explorer.model.Member;
 import org.philimone.hds.explorer.model.Member_;
 import org.philimone.hds.explorer.model.Outmigration;
+import org.philimone.hds.explorer.model.PregnancyOutcome;
 import org.philimone.hds.explorer.model.PregnancyRegistration;
 import org.philimone.hds.explorer.model.User;
 import org.philimone.hds.explorer.model.Visit;
@@ -574,7 +576,24 @@ public class HouseholdVisitFragment extends Fragment {
     }
 
     private void onPregnancyOutcomeClicked() {
+        Log.d("on-pregoutcome", ""+this.selectedMember);
 
+        new PregnancyOutcomeFormUtil(getActivity().getSupportFragmentManager(), this.getContext(), this.visit, this.household, this.selectedMember, new FormUtilListener<PregnancyOutcome>() {
+            @Override
+            public void onNewEntityCreated(PregnancyOutcome pregnancyOutcome) {
+                loadDataToListViews();
+            }
+
+            @Override
+            public void onEntityEdited(PregnancyOutcome pregnancyOutcome) {
+
+            }
+
+            @Override
+            public void onFormCancelled() {
+
+            }
+        }).collect();
     }
 
     private void onDeathClicked() {

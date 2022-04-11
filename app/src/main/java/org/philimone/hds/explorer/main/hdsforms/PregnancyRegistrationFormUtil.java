@@ -38,6 +38,8 @@ public class PregnancyRegistrationFormUtil extends FormUtil<PregnancyRegistratio
     private Household household;
     private Visit visit;
     private Member mother;
+    private boolean nonPregnantRegistration = false;
+    private PregnancyStatus loadedPregnancyStatus;
 
     public PregnancyRegistrationFormUtil(FragmentManager fragmentManager, Context context, Visit visit, Household household, Member member, FormUtilListener<PregnancyRegistration> listener){
         super(fragmentManager, context, FormUtil.getPregnancyRegistrationForm(context), listener);
@@ -50,6 +52,25 @@ public class PregnancyRegistrationFormUtil extends FormUtil<PregnancyRegistratio
 
         initBoxes();
         initialize();
+    }
+
+    public PregnancyRegistrationFormUtil(FragmentManager fragmentManager, Context context, Visit visit, Household household, Member member, PregnancyStatus pregnancyStatus, FormUtilListener<PregnancyRegistration> listener){
+        super(fragmentManager, context, FormUtil.getPregnancyRegistrationForm(context), listener);
+
+        //Log.d("enu-household", ""+household);
+
+        this.household = household;
+        this.mother = member;
+        this.visit = visit;
+        this.loadedPregnancyStatus = pregnancyStatus;
+
+        initBoxes();
+        initialize();
+
+        if (pregnancyStatus != null && pregnancyStatus != PregnancyStatus.PREGNANT){
+            this.nonPregnantRegistration = true;
+            this.resumeMode = true;
+        }
     }
 
     public PregnancyRegistrationFormUtil(FragmentManager fragmentManager, Context context, Visit visit, Household household, PregnancyRegistration pregToEdit, FormUtilListener<PregnancyRegistration> listener){
@@ -84,6 +105,11 @@ public class PregnancyRegistrationFormUtil extends FormUtil<PregnancyRegistratio
         preloadedMap.put("code", codeGenerator.generatePregnancyCode(this.mother));
         preloadedMap.put("motherCode", this.mother.code);
         preloadedMap.put("motherName", this.mother.name);
+
+        if (nonPregnantRegistration) {
+            preloadedMap.put("status", loadedPregnancyStatus.code);
+        }
+
         preloadedMap.put("modules", this.user.getSelectedModulesCodes());
     }
 
@@ -137,13 +163,18 @@ public class PregnancyRegistrationFormUtil extends FormUtil<PregnancyRegistratio
 
         //code is duplicate
         if (boxPregnancyRegistrations.query().equal(PregnancyRegistration_.code, code, QueryBuilder.StringOrder.CASE_SENSITIVE).build().count() > 0){
-            String message = this.context.getString(R.string.new_member_code_exists_lbl);
+            String message = this.context.getString(R.string.pregnancy_registration_code_exists_lbl);
             return new ValidationResult(colCode, message);
         }
 
         if (StringUtil.isBlank(motherCode)){
             String message = this.context.getString(R.string.pregnancy_registration_mothercode_empty_lbl);
-            return new ValidationResult(colMotherName, message);
+            return new ValidationResult(colMotherCode, message);
+        }
+
+        if (recordedDate == null) {
+            String message = "";
+            return new ValidationResult(colRecordedDate, message);
         }
 
         //validate preg status
@@ -152,7 +183,7 @@ public class PregnancyRegistrationFormUtil extends FormUtil<PregnancyRegistratio
             return new ValidationResult(colStatus, message);
         }
 
-        if (eddKnown==true && status==PregnancyStatus.PREGNANT && eddDate == null){
+        if ((eddKnown != null && eddKnown==true) && status==PregnancyStatus.PREGNANT && eddDate == null){
             String message = this.context.getString(R.string.pregnancy_registration_eddate_empty_lbl);
             return new ValidationResult(colEddDate, message);
         }

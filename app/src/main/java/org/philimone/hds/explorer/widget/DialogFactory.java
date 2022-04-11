@@ -1,34 +1,35 @@
 package org.philimone.hds.explorer.widget;
 
 
-import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.StringRes;
 import androidx.appcompat.app.AppCompatDialog;
 
-import android.util.Log;
-import android.view.LayoutInflater;
+import android.text.InputType;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
-import android.widget.LinearLayout;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import org.philimone.hds.explorer.R;
-import org.philimone.hds.explorer.io.SyncEntityResult;
+
+import mz.betainteractive.utilities.StringUtil;
 
 public class DialogFactory extends AppCompatDialog {
 
     private Context mContext;
     private TextView txtDialogTitle;
     private TextView txtDialogMessage;
+    private EditText txtDialogInput;
     private Button btDialogOk;
     private Button btDialogYes;
     private Button btDialogNo;
     private Button btDialogCancel;
 
+    private boolean hasInput;
     private boolean hasOkButton = true;
     private boolean hasYesButton = false;
     private boolean hasNoButton = false;
@@ -41,11 +42,16 @@ public class DialogFactory extends AppCompatDialog {
     private String dialogCancelText;
     private String dialogOkText;
 
+    private DialogInputType dialogInputType;
+
     public enum Buttons { OK, YES, NO, CANCEL };
+
+    public enum DialogInputType { NUMBER, TEXT, LONGTEXT}
 
     private OnClickListener okClickListener;
     private OnYesNoClickListener yesNoClickListener;
     private OnYesNoCancelClickListener yesNoCancelClickListener;
+    private OnInputTextListener inputTextListener;
 
     public DialogFactory(@NonNull Context context) {
         super(context);
@@ -76,6 +82,21 @@ public class DialogFactory extends AppCompatDialog {
         dialog.hasCancelButton = cancelButton;
         dialog.hasYesButton = yesButton;
         dialog.hasNoButton = noButton;
+
+        return dialog;
+    }
+
+    public static DialogFactory newInstance(Context context, @StringRes int titleResId, @StringRes  int messageResId, boolean cancelButton){
+        DialogFactory dialog = new DialogFactory(context);
+
+        dialog.dialogTitle = context.getString(titleResId);
+        dialog.dialogMessage = context.getString(messageResId);
+
+        dialog.hasInput = true;
+        dialog.hasOkButton = true;
+        dialog.hasCancelButton = cancelButton;
+        dialog.hasYesButton = false;
+        dialog.hasNoButton = false;
 
         return dialog;
     }
@@ -128,6 +149,13 @@ public class DialogFactory extends AppCompatDialog {
         return dialog;
     }
 
+    public static DialogFactory createNumberInput(Context context, @StringRes int titleResId, @StringRes int messageResId, OnInputTextListener listener){
+        DialogFactory dialog = newInstance(context, titleResId, messageResId, true);
+        dialog.inputTextListener = listener;
+        dialog.dialogInputType = DialogInputType.NUMBER;
+        return dialog;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -141,6 +169,7 @@ public class DialogFactory extends AppCompatDialog {
     private void initialize(){
         this.txtDialogTitle = (TextView) findViewById(R.id.txtDialogTitle);
         this.txtDialogMessage = (TextView) findViewById(R.id.txtDialogMessage);
+        this.txtDialogInput = findViewById(R.id.txtDialogInput);
         this.btDialogOk = (Button) findViewById(R.id.btDialogOk);
         this.btDialogYes = (Button) findViewById(R.id.btDialogYes);
         this.btDialogNo = (Button) findViewById(R.id.btDialogNo);
@@ -178,16 +207,43 @@ public class DialogFactory extends AppCompatDialog {
                 }
             });
 
+        if (this.txtDialogInput != null)
+            //this.txtDialogInput.sett
+
         doLayout();
     }
 
     private void onCancelCicked(){
         dismiss();
+
+        if (inputTextListener != null){
+            inputTextListener.onCancel();
+            return;
+        }
+
         if (yesNoCancelClickListener != null) yesNoCancelClickListener.onCancelClicked();
     }
 
     private void onOkClicked() {
         dismiss();
+
+        if (hasInput){
+            if (inputTextListener != null){
+                String value = txtDialogInput.getText().toString();
+
+                if (StringUtil.isBlank(value)){
+                    return;
+                }
+
+                if (dialogInputType==DialogInputType.NUMBER) {
+                    inputTextListener.onNumberTyped(Integer.parseInt(value));
+                } else {
+                    inputTextListener.onTextTyped(value);
+                }
+            }
+            return;
+        }
+
         if (okClickListener != null) okClickListener.onClicked(Buttons.OK);
     }
 
@@ -209,6 +265,10 @@ public class DialogFactory extends AppCompatDialog {
         if (this.txtDialogTitle != null){
             this.txtDialogTitle.setText(this.dialogTitle);
             this.txtDialogMessage.setText(this.dialogMessage);
+        }
+
+        if (txtDialogInput != null){
+            txtDialogInput.setText("");
         }
 
         if (this.btDialogYes != null && this.dialogYesText != null)
@@ -276,6 +336,20 @@ public class DialogFactory extends AppCompatDialog {
         this.btDialogYes.setVisibility(hasYesButton ? View.VISIBLE : View.GONE);
         this.btDialogNo.setVisibility(hasNoButton ? View.VISIBLE : View.GONE);
         this.btDialogCancel.setVisibility(hasCancelButton ? View.VISIBLE : View.GONE);
+        this.txtDialogInput.setVisibility(hasInput ? View.VISIBLE : View.GONE);
+
+        if (dialogInputType == DialogInputType.NUMBER){
+            txtDialogInput.setInputType(InputType.TYPE_CLASS_NUMBER);
+        }
+
+        if (dialogInputType == DialogInputType.TEXT){
+            txtDialogInput.setInputType(InputType.TYPE_CLASS_TEXT);
+        }
+
+        if (dialogInputType == DialogInputType.LONGTEXT){
+            txtDialogInput.setInputType(InputType.TYPE_TEXT_FLAG_MULTI_LINE);
+        }
+
 
     }
 
@@ -305,5 +379,13 @@ public class DialogFactory extends AppCompatDialog {
         void onNoClicked();
 
         void onCancelClicked();
+    }
+
+    public interface OnInputTextListener {
+        void onNumberTyped(Integer value);
+
+        void onTextTyped(String value);
+
+        void onCancel();
     }
 }

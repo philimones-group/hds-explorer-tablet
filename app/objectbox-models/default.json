@@ -1136,7 +1136,7 @@
     },
     {
       "id": "15:4705936129891303264",
-      "lastPropertyId": "10:8063979545576872502",
+      "lastPropertyId": "11:7254300316628327267",
       "name": "PregnancyChild",
       "properties": [
         {
@@ -1201,6 +1201,11 @@
         {
           "id": "10:8063979545576872502",
           "name": "recentlyCreatedUri",
+          "type": 9
+        },
+        {
+          "id": "11:7254300316628327267",
+          "name": "childHeadRelationshipType",
           "type": 9
         }
       ],

@@ -213,6 +213,10 @@ public class HouseholdVisitFragment extends Fragment {
             onPregnancyRegistrationClicked();
         });
 
+        this.btnVisitBirthReg.setOnClickListener(v -> {
+            onPregnancyOutcomeClicked();
+        });
+
         this.btnVisitDeath.setOnClickListener(v -> {
             onDeathClicked();
         });
@@ -220,6 +224,7 @@ public class HouseholdVisitFragment extends Fragment {
         this.btnVisitChangeHead.setOnClickListener(v -> {
             onChangeHeadClicked();
         });
+
     }
 
     private void selectMember(Member member){
@@ -369,11 +374,17 @@ public class HouseholdVisitFragment extends Fragment {
     }
 
     private long countCollectedForms(Member member) {
-        long count1 = this.boxCoreCollectedData.query()
+        /*long count1 = this.boxCoreCollectedData.query()
                 .equal(CoreCollectedData_.visitId, visit.id)
                 .equal(CoreCollectedData_.formEntityCode, member.code, QueryBuilder.StringOrder.CASE_SENSITIVE)
                 .contains(CoreCollectedData_.formEntityCodes, member.code, QueryBuilder.StringOrder.CASE_SENSITIVE)
                 .notEqual(CoreCollectedData_.formEntity, CoreFormEntity.VISIT.code, QueryBuilder.StringOrder.CASE_SENSITIVE).build().count(); //CHECK FOR VISITS (visit id is equal to member.id)
+        */
+
+        long count1 = this.boxCoreCollectedData.query(
+                CoreCollectedData_.visitId.equal(visit.id)
+           .and(CoreCollectedData_.formEntityCode.equal(member.code).or(CoreCollectedData_.formEntityCodes.contains(member.code)))
+           .and(CoreCollectedData_.formEntity.notEqual(CoreFormEntity.VISIT.code))).build().count();
 
         long count2 = this.boxCollectedData.query().equal(CollectedData_.visitId, visit.id)
                 .equal(CollectedData_.recordId, member.id)
@@ -560,6 +571,10 @@ public class HouseholdVisitFragment extends Fragment {
         });
 
         formUtil.collect();
+    }
+
+    private void onPregnancyOutcomeClicked() {
+
     }
 
     private void onDeathClicked() {

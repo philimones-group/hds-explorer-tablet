@@ -2,6 +2,7 @@ package org.philimone.hds.explorer.model;
 
 import org.philimone.hds.explorer.model.converters.HeadRelationshipTypeConverter;
 import org.philimone.hds.explorer.model.converters.PregnancyOutcomeTypeConverter;
+import org.philimone.hds.explorer.model.enums.HeadRelationshipType;
 import org.philimone.hds.explorer.model.enums.PregnancyOutcomeType;
 
 import io.objectbox.annotation.Convert;
@@ -30,6 +31,9 @@ public class PregnancyChild implements CoreEntity {
     public String childCode;
 
     public Integer childOrdinalPosition;
+
+    @Convert(converter = HeadRelationshipTypeConverter.class, dbType = String.class)
+    public HeadRelationshipType childHeadRelationshipType;
 
     public ToOne<HeadRelationship> childHeadRelationship;
 

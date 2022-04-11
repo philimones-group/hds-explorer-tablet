@@ -298,10 +298,11 @@
     <string name="new_household_name_hint">ex: 0101-0001</string>
     <string name="new_household_bt_collect_lbl">Colher Dados (ODK)</string>
     <string name="new_household_bt_cancel_lbl">Cancelar</string>
-    <string name="new_household_code_err_lbl">O código da casa está incorrecto!</string>
-    <string name="new_household_code_empty_lbl">O código da casa não pode estar vazio</string>
-    <string name="new_household_code_region_err_lbl">O código da casa introduzido não pertence a região selecionada!</string>
-    <string name="new_household_code_exists_lbl">O código da casa introduzido ja existe!</string>
+    <string name="new_household_code_err_lbl">O código do agregado está incorrecto!</string>
+    <string name="new_household_code_empty_lbl">O código da agregado não pode estar vazio</string>
+    <string name="new_household_name_empty_lbl">O nome do agregado não pode estar vazio</string>
+    <string name="new_household_code_region_err_lbl">O código do agregado introduzido não pertence a região selecionada!</string>
+    <string name="new_household_code_exists_lbl">O código do agregado introduzido ja existe!</string>
 
     <!-- New Visit -->
     <string name="new_visit_select_respondent_lbl">Selecione o respondente</string>

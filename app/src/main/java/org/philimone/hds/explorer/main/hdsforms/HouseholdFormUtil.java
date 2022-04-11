@@ -23,6 +23,7 @@ import java.util.Map;
 import androidx.fragment.app.FragmentManager;
 import io.objectbox.Box;
 import io.objectbox.query.QueryBuilder;
+import mz.betainteractive.utilities.StringUtil;
 
 public class HouseholdFormUtil extends FormUtil<Household> {
 
@@ -69,6 +70,11 @@ public class HouseholdFormUtil extends FormUtil<Household> {
         String household_name = columnHouseholdName.getValue();
         //String household_gps = collectedValues.get("gps").getValue();
 
+        if (StringUtil.isBlank(household_code)){
+            String message = this.context.getString(R.string.new_household_code_empty_lbl);
+            return new ValidationResult(columnHouseholdCode, message);
+        }
+
         if (!codeGenerator.isHouseholdCodeValid(household_code)){
             String message = this.context.getString(R.string.new_household_code_err_lbl);
             //DialogFactory.createMessageInfo(HouseholdDetailsActivity.this, R.string.info_lbl, R.string.new_household_code_err_lbl).show();
@@ -88,8 +94,8 @@ public class HouseholdFormUtil extends FormUtil<Household> {
             return new ValidationResult(columnHouseholdCode, message);
         }
 
-        if (household_name.isEmpty()){
-            String message = this.context.getString(R.string.new_household_code_empty_lbl);
+        if (StringUtil.isBlank(household_name)){
+            String message = this.context.getString(R.string.new_household_name_empty_lbl);
             //DialogFactory.createMessageInfo(HouseholdDetailsActivity.this, R.string.info_lbl, R.string.new_household_code_empty_lbl).show();
             return new ValidationResult(columnHouseholdName, message);
         }

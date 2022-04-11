@@ -300,8 +300,9 @@
     <string name="new_household_bt_cancel_lbl">Cancel</string>
     <string name="new_household_code_err_lbl">The format of the Household Code is incorrect</string>
     <string name="new_household_code_empty_lbl">The Household Code cannot be empty</string>
-    <string name="new_household_code_region_err_lbl">The Household Number doesnt belong to the selected neighborhood</string>
-    <string name="new_household_code_exists_lbl">The Household Number already exists</string>
+    <string name="new_household_name_empty_lbl">The Household Name cannot be empty</string>
+    <string name="new_household_code_region_err_lbl">The Household Code doesnt belong to the selected neighborhood</string>
+    <string name="new_household_code_exists_lbl">The Household Code already exists</string>
 
     <!-- New Visit -->
     <string name="new_visit_select_respondent_lbl">Select Interviewee</string>

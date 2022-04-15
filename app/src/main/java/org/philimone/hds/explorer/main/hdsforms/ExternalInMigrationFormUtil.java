@@ -379,7 +379,7 @@ public class ExternalInMigrationFormUtil extends FormUtil<Member> {
         member.sinLatitude = household.sinLatitude;
         member.cosLongitude = household.cosLongitude;
         member.sinLongitude = household.sinLongitude;
-
+        member.collectedId = collectedValues.get(HForm.COLUMN_ID).getValue();
         member.recentlyCreated = true;
         member.recentlyCreatedUri = result.getFilename();
         member.modules.addAll(StringCollectionConverter.getCollectionFrom(colModules.getValue()));

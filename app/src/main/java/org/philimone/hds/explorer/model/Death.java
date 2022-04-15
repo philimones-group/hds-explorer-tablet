@@ -33,6 +33,9 @@ public class Death implements CoreEntity {
     @Index
     public String visitCode;
 
+    @Unique
+    public String collectedId;
+
     public boolean recentlyCreated;
 
     public String recentlyCreatedUri;
@@ -40,6 +43,11 @@ public class Death implements CoreEntity {
     @Override
     public long getId() {
         return this.id;
+    }
+
+    @Override
+    public String getCollectedId() {
+        return collectedId;
     }
 
     @Override

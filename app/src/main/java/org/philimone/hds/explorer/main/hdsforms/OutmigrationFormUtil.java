@@ -223,6 +223,7 @@ public class OutmigrationFormUtil extends FormUtil<Outmigration> {
         outmigration.destinationOther = destinationOther;
         outmigration.migrationDate = migrationDate;
         outmigration.migrationReason = migrationReasonOther != null ?  migrationReasonOther : migrationReason;
+        outmigration.collectedId = collectedValues.get(HForm.COLUMN_ID).getValue();
         outmigration.recentlyCreated = true;
         outmigration.recentlyCreatedUri = result.getFilename();
         this.boxOutmigrations.put(outmigration);

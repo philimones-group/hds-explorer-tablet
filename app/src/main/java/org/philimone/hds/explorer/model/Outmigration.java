@@ -9,6 +9,7 @@ import io.objectbox.annotation.Convert;
 import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Id;
 import io.objectbox.annotation.Index;
+import io.objectbox.annotation.Unique;
 import io.objectbox.relation.ToOne;
 
 @Entity
@@ -48,6 +49,9 @@ public class Outmigration implements CoreEntity {
     @Index
     public String visitCode;
 
+    @Unique
+    public String collectedId;
+
     public boolean recentlyCreated;
 
     public String recentlyCreatedUri;
@@ -55,6 +59,11 @@ public class Outmigration implements CoreEntity {
     @Override
     public long getId() {
         return this.id;
+    }
+
+    @Override
+    public String getCollectedId() {
+        return collectedId;
     }
 
     @Override

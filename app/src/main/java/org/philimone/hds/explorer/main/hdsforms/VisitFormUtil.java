@@ -220,6 +220,7 @@ public class VisitFormUtil extends FormUtil<Visit> {
         visit.gpsLongitude = gpsLon;
         visit.gpsAltitude = gpsAlt;
         visit.gpsAccuracy = gpsAcc;
+        visit.collectedId = collectedValues.get(HForm.COLUMN_ID).getValue();
         visit.recentlyCreated = true;
         visit.recentlyCreatedUri = result.getFilename();
 

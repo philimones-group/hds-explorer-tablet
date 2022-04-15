@@ -181,6 +181,7 @@ public class IncompleteVisitFormUtil extends FormUtil<IncompleteVisit> {
         incompleteVisit.member.setTarget(this.member);
         incompleteVisit.reason = reason;
         incompleteVisit.reasonOther = reason==IncompleteVisitReason.OTHER ? reasonOther : null;
+        incompleteVisit.collectedId = collectedValues.get(HForm.COLUMN_ID).getValue();
         incompleteVisit.recentlyCreated = true;
         incompleteVisit.recentlyCreatedUri = result.getFilename();
 

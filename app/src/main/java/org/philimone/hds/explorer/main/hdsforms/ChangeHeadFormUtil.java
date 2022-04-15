@@ -345,8 +345,6 @@ public class ChangeHeadFormUtil extends FormUtil<Member> {
         newHeadRelationship.startDate = GeneralUtil.getDateAdd(eventDate, 1);
         newHeadRelationship.endType = HeadRelationshipEndType.NOT_APPLICABLE;
         newHeadRelationship.endDate = null;
-        newHeadRelationship.recentlyCreated = true;
-        newHeadRelationship.recentlyCreatedUri = result.getFilename();
         this.boxHeadRelationships.put(newHeadRelationship);
 
         this.household.headCode = newHeadMember.code;
@@ -380,7 +378,6 @@ public class ChangeHeadFormUtil extends FormUtil<Member> {
             headRelationship.startDate = GeneralUtil.getDateAdd(eventDate, 1);
             headRelationship.endType = HeadRelationshipEndType.NOT_APPLICABLE;
             headRelationship.endDate = null;
-            headRelationship.recentlyCreated = true;
             this.boxHeadRelationships.put(headRelationship);
         }
         affectedMembers = addAffectedMembers(affectedMembers, this.newHeadMember.code);
@@ -388,7 +385,7 @@ public class ChangeHeadFormUtil extends FormUtil<Member> {
         //save core collected data
         CoreCollectedData collectedData = new CoreCollectedData();
         collectedData.visitId = visit.id;
-        collectedData.formEntity = CoreFormEntity.DEATH;
+        collectedData.formEntity = CoreFormEntity.CHANGE_HOUSEHOLD_HEAD;
         collectedData.formEntityId = oldHeadMember.id;
         collectedData.formEntityCode = oldHeadMember.code;
         collectedData.formEntityCodes = affectedMembers; //new head code, spouse, head related individuals

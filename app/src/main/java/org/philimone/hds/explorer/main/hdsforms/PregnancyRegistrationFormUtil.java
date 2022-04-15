@@ -265,6 +265,7 @@ public class PregnancyRegistrationFormUtil extends FormUtil<PregnancyRegistratio
         pregnancy.lmpKnown = lmpKnown;
         pregnancy.lmpDate = lmpDate;
         pregnancy.expectedDeliveryDate = expectedDeliveryDate;
+        pregnancy.collectedId = collectedValues.get(HForm.COLUMN_ID).getValue();
         pregnancy.recentlyCreated = true;
         pregnancy.recentlyCreatedUri = result.getFilename();
         this.boxPregnancyRegistrations.put(pregnancy);

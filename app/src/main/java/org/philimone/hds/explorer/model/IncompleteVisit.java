@@ -24,6 +24,9 @@ public class IncompleteVisit implements CoreEntity {
 
     public String reasonOther;
 
+    @Unique
+    public String collectedId;
+
     public boolean recentlyCreated;
 
     public String recentlyCreatedUri;
@@ -31,6 +34,11 @@ public class IncompleteVisit implements CoreEntity {
     @Override
     public long getId() {
         return this.id;
+    }
+
+    @Override
+    public String getCollectedId() {
+        return collectedId;
     }
 
     @Override

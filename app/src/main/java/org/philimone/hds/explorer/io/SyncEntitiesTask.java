@@ -1755,6 +1755,16 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
                 parser.nextTag();
             }
 
+			parser.nextTag(); //process <collectedId>
+			if (!isEmptyTag("collectedId", parser)) {
+				parser.next();
+				table.collectedId = parser.getText();
+				parser.nextTag(); //process </collectedId>
+			}else{
+				table.collectedId = "";
+				parser.nextTag();
+			}
+
 			parser.nextTag(); //process modules
 			if (!isEmptyTag("modules", parser)) {
 				parser.next();
@@ -2141,6 +2151,16 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
                 parser.nextTag();
             }
 
+			parser.nextTag(); //process <collectedId>
+			if (!isEmptyTag("collectedId", parser)) {
+				parser.next();
+				table.collectedId = parser.getText();
+				parser.nextTag(); //process </collectedId>
+			}else{
+				table.collectedId = "";
+				parser.nextTag();
+			}
+
 			parser.nextTag(); //process modules
 			if (!isEmptyTag("modules", parser)) {
 				parser.next();
@@ -2515,6 +2535,16 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 				parser.nextTag();
 			}
 
+			parser.nextTag(); //process <collectedId>
+			if (!isEmptyTag("collectedId", parser)) {
+				parser.next();
+				table.collectedId = parser.getText();
+				parser.nextTag(); //process </collectedId>
+			}else{
+				table.collectedId = "";
+				parser.nextTag();
+			}
+
 			parser.nextTag(); //last process tag
 			parser.next();
 
@@ -2738,6 +2768,16 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 				//table.endDate = false;
 				parser.nextTag();
 			}
+			parser.nextTag(); //process <collectedId>
+			if (!isEmptyTag("collectedId", parser)) {
+				parser.next();
+				table.collectedId = parser.getText();
+				parser.nextTag(); //process </collectedId>
+			}else{
+				table.collectedId = "";
+				parser.nextTag();
+			}
+
 
 			parser.nextTag(); //last process tag
 			parser.next();
@@ -2908,6 +2948,16 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 				parser.nextTag();
 			}else{
 				table.visitCode = "";
+				parser.nextTag();
+			}
+
+			parser.nextTag(); //process <collectedId>
+			if (!isEmptyTag("collectedId", parser)) {
+				parser.next();
+				table.collectedId = parser.getText();
+				parser.nextTag(); //process </collectedId>
+			}else{
+				table.collectedId = "";
 				parser.nextTag();
 			}
 

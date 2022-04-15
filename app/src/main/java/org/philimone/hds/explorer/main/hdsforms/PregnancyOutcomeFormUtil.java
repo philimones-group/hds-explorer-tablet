@@ -399,6 +399,7 @@ public class PregnancyOutcomeFormUtil extends FormUtil<PregnancyOutcome> {
         pregnancyOutcome.outcomeDate = outcomeDate;
         pregnancyOutcome.birthPlace = birthPlace;
         pregnancyOutcome.birthPlaceOther = birthPlaceOther;
+        pregnancyOutcome.collectedId = collectedValues.get(HForm.COLUMN_ID).getValue();
         pregnancyOutcome.recentlyCreated = true;
         pregnancyOutcome.recentlyCreatedUri = result.getFilename();
 
@@ -547,6 +548,12 @@ public class PregnancyOutcomeFormUtil extends FormUtil<PregnancyOutcome> {
 
     @Override
     public void collect() {
+
+        //Limit by Age
+        if (GeneralUtil.getAge(this.mother.dob, new Date()) < this.minimunMotherAge) {
+
+            return;
+        }
 
         this.pregnancyRegistration = getLastPregnancyRegistration(this.mother);
 

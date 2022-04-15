@@ -179,7 +179,6 @@ public class MemberEnumerationFormUtil extends FormUtil<Member> {
             return new ValidationResult(colCode, message);
         }
 
-        //check if visit with code exists
         if (boxMembers.query().equal(Member_.code, code, QueryBuilder.StringOrder.CASE_SENSITIVE).build().findFirst() != null){
             String message = this.context.getString(R.string.new_member_code_exists_lbl);
             return new ValidationResult(colCode, message);
@@ -326,6 +325,7 @@ public class MemberEnumerationFormUtil extends FormUtil<Member> {
         member.sinLatitude = household.sinLatitude;
         member.cosLongitude = household.cosLongitude;
         member.sinLongitude = household.sinLongitude;
+        member.collectedId = collectedValues.get(HForm.COLUMN_ID).getValue();
         member.recentlyCreated = true;
         member.recentlyCreatedUri = result.getFilename();
         member.modules.addAll(StringCollectionConverter.getCollectionFrom(colModules.getValue()));

@@ -260,6 +260,7 @@ public class InternalInMigrationFormUtil extends FormUtil<Inmigration> {
         inmigration.destinationCode = this.household.code;
         inmigration.migrationDate = migrationDate;
         inmigration.migrationReason = migrationReasonOther != null ?  migrationReasonOther : migrationReason;
+        inmigration.collectedId = collectedValues.get(HForm.COLUMN_ID).getValue();
         inmigration.recentlyCreated = true;
         inmigration.recentlyCreatedUri = result.getFilename();
         boxInmigrations.put(inmigration);

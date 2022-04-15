@@ -102,6 +102,9 @@ public class Member implements CoreEntity, FormSubject, Serializable {
     public Double cosLongitude;
     public Double sinLongitude;
 
+    @Unique
+    public String collectedId;
+
     public boolean recentlyCreated = false;
 
     public String recentlyCreatedUri;
@@ -473,6 +476,11 @@ public class Member implements CoreEntity, FormSubject, Serializable {
     @Override
     public long getId() {
         return this.id;
+    }
+
+    @Override
+    public String getCollectedId() {
+        return collectedId;
     }
 
     @Override

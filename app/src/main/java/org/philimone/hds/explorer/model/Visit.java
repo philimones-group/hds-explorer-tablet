@@ -53,6 +53,9 @@ public class Visit implements CoreEntity {
     public Double gpsLatitude;
     public Double gpsLongitude;
 
+    @Unique
+    public String collectedId;
+
     public boolean recentlyCreated;
 
     public String recentlyCreatedUri;
@@ -60,6 +63,11 @@ public class Visit implements CoreEntity {
     @Override
     public long getId() {
         return this.id;
+    }
+
+    @Override
+    public String getCollectedId() {
+        return collectedId;
     }
 
     @Override

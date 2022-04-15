@@ -32,6 +32,7 @@ import org.philimone.hds.explorer.model.enums.temporal.HeadRelationshipEndType;
 import org.philimone.hds.explorer.model.enums.temporal.HeadRelationshipStartType;
 import org.philimone.hds.explorer.model.enums.temporal.ResidencyEndType;
 import org.philimone.hds.forms.model.CollectedDataMap;
+import org.philimone.hds.forms.model.Column;
 import org.philimone.hds.forms.model.ColumnValue;
 import org.philimone.hds.forms.model.HForm;
 import org.philimone.hds.forms.model.RepeatColumnValue;
@@ -204,7 +205,9 @@ public class DeathFormUtil extends FormUtil<Death> {
     protected void preloadValues() {
         //member_details_unknown_lbl
 
-        reorderWithHeadAsFirst(this.householdResidents, newHeadMember);
+        if (this.householdResidents != null) {
+            reorderWithHeadAsFirst(this.householdResidents, newHeadMember);
+        }
 
         preloadedMap.put("visitCode", this.visit.code);
         preloadedMap.put("memberCode", this.member.code);
@@ -400,6 +403,7 @@ public class DeathFormUtil extends FormUtil<Death> {
         death.deathCause = deathCauseOther==null ? deathCause : deathCauseOther;
         death.deathPlace = deathPlaceOther==null ? deathPlace : deathPlaceOther;
         death.ageAtDeath = GeneralUtil.getAge(member.dob, deathDate);
+        death.collectedId = collectedValues.get(HForm.COLUMN_ID).getValue();
         death.recentlyCreated = true;
         death.recentlyCreatedUri = result.getFilename();
         this.boxDeaths.put(death);
@@ -454,7 +458,6 @@ public class DeathFormUtil extends FormUtil<Death> {
                 headRelationship.startDate = GeneralUtil.getDateAdd(deathDate, 1);
                 headRelationship.endType = HeadRelationshipEndType.NOT_APPLICABLE;
                 headRelationship.endDate = null;
-                headRelationship.recentlyCreated = true;
                 this.boxHeadRelationships.put(headRelationship);
             }
             affectedMembers = addAffectedMembers(affectedMembers, this.newHeadMember.code);

@@ -343,6 +343,7 @@ public class MaritalRelationshipFormUtil extends FormUtil<MaritalRelationship> {
             maritalRelationship.endStatus = MaritalEndStatus.NOT_APPLICABLE;
             maritalRelationship.endDate = null;
 
+            maritalRelationship.collectedId = collectedValues.get(HForm.COLUMN_ID).getValue();
             maritalRelationship.recentlyCreated = true;
             maritalRelationship.recentlyCreatedUri = result.getFilename();
 

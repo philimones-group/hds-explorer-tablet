@@ -143,6 +143,7 @@ public class HouseholdFormUtil extends FormUtil<Household> {
         household.gpsAltitude = gpsAlt;
         household.gpsAccuracy = gpsAcc;
         household.updateGpsCalculations();
+        household.collectedId = collectedValues.get(HForm.COLUMN_ID).getValue();
         household.recentlyCreated = true;
         household.recentlyCreatedUri = result.getFilename();
         household.modules.addAll(StringCollectionConverter.getCollectionFrom(colModules.getValue()));

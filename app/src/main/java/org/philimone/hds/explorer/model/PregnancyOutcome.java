@@ -52,6 +52,9 @@ public class PregnancyOutcome implements CoreEntity {
     @Backlink
     public ToMany<PregnancyChild> childs;
 
+    @Unique
+    public String collectedId;
+
     public boolean recentlyCreated;
 
     public String recentlyCreatedUri;
@@ -59,6 +62,11 @@ public class PregnancyOutcome implements CoreEntity {
     @Override
     public long getId() {
         return this.id;
+    }
+
+    @Override
+    public String getCollectedId() {
+        return collectedId;
     }
 
     @Override

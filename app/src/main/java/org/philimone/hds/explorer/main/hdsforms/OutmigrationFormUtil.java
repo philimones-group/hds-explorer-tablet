@@ -7,7 +7,9 @@ import androidx.fragment.app.FragmentManager;
 
 import org.philimone.hds.explorer.R;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
+import org.philimone.hds.explorer.database.Queries;
 import org.philimone.hds.explorer.model.CoreCollectedData;
+import org.philimone.hds.explorer.model.Death;
 import org.philimone.hds.explorer.model.HeadRelationship;
 import org.philimone.hds.explorer.model.HeadRelationship_;
 import org.philimone.hds.explorer.model.Household;
@@ -17,6 +19,7 @@ import org.philimone.hds.explorer.model.Residency;
 import org.philimone.hds.explorer.model.Residency_;
 import org.philimone.hds.explorer.model.Visit;
 import org.philimone.hds.explorer.model.enums.CoreFormEntity;
+import org.philimone.hds.explorer.model.enums.HeadRelationshipType;
 import org.philimone.hds.explorer.model.enums.temporal.HeadRelationshipEndType;
 import org.philimone.hds.explorer.model.enums.temporal.OutMigrationType;
 import org.philimone.hds.explorer.model.enums.temporal.ResidencyEndType;
@@ -42,6 +45,7 @@ public class OutmigrationFormUtil extends FormUtil<Outmigration> {
     private Box<HeadRelationship> boxHeadRelationships;
     private Box<Outmigration> boxOutmigrations;
     private Box<CoreCollectedData> boxCoreCollectedData;
+    protected Box<Death> boxDeaths;
 
     private Household household;
     private Visit visit;
@@ -82,6 +86,7 @@ public class OutmigrationFormUtil extends FormUtil<Outmigration> {
         this.boxHeadRelationships = ObjectBoxDatabase.get().boxFor(HeadRelationship.class);
         this.boxOutmigrations = ObjectBoxDatabase.get().boxFor(Outmigration.class);
         this.boxCoreCollectedData = ObjectBoxDatabase.get().boxFor(CoreCollectedData.class);
+        this.boxDeaths = ObjectBoxDatabase.get().boxFor(Death.class);
     }
 
     @Override
@@ -171,7 +176,30 @@ public class OutmigrationFormUtil extends FormUtil<Outmigration> {
             return new ValidationResult(colMigrationDate, message);
         }
 
+        //check destinationCode, originCode existence - both a selected automatically
+        //check Member Death Status - if returning to DSS
+        if (Queries.getDeathByCode(this.boxDeaths, memberCode)!=null){
+            String message = this.context.getString(R.string.outmigration_death_exists_lbl);
+            return new ValidationResult(colMemberCode, message);
+        }
+
+        //check if Member is a head of household of another household
+        if (isHeadOfHousehold(memberCode, household.code)) {
+            String message = this.context.getString(R.string.outmigration_is_head_of_household_lbl);
+            return new ValidationResult(colMemberCode, message);
+        }
+
         return ValidationResult.noErrors();
+    }
+
+    private boolean isHeadOfHousehold(String memberCode, String householdCode) {
+        long count = this.boxHeadRelationships.query(
+                HeadRelationship_.memberCode.equal(memberCode).and(HeadRelationship_.householdCode.equal(householdCode))
+            .and(HeadRelationship_.relationshipType.equal(HeadRelationshipType.HEAD_OF_HOUSEHOLD.code))
+            .and(HeadRelationship_.endType.equal(HeadRelationshipEndType.NOT_APPLICABLE.code)))
+            .build().count();
+
+        return count > 0;
     }
 
     @Override

@@ -390,9 +390,15 @@
     <string name="external_inmigration_migrationdate_empty_lbl">The Migration date cannot be empty</string>
     <string name="external_inmigration_migrationdate_not_great_today_lbl">The Migration date cannot be greater than today</string>
     <string name="external_inmigration_migrationdate_not_before_dob_lbl">The Migration date cannot be before the date of birth</string>
+    <string name="external_inmigration_death_exists_lbl">Cannot create an Inmigration. The selected member is dead</string>
+    <string name="external_inmigration_head_relationship_opened_lbl">Cannot create an Inmigration. The last Head Relationship of this member is not closed</string>
 
     <string name="internal_inmigration_select_inmig_member_lbl">Select the Inmigrating Member?</string>
     <string name="internal_inmigration_select_inmig_no_residency_lbl">The selected Member is not registered in any household. Please contact the Data Managers!</string>
+    <string name="internal_inmigration_is_head_of_household_lbl">The selected Member is a Head of another household. Must first end his current Head Relationship to move to another household!</string>
+
+    <string name="outmigration_death_exists_lbl">Cannot create an Outmigration. The selected member is dead</string>
+    <string name="outmigration_is_head_of_household_lbl">The selected Member is a Head of this household. Must first end his current Head Relationship to move to another household!</string>
 
     <!-- pregnancy registration -->
     <string name="pregnancy_registration_code_err_lbl">The format of the Pregnancy Code is incorrect</string>

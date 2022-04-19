@@ -389,9 +389,15 @@
     <string name="external_inmigration_migrationdate_empty_lbl">A data da migração não pode estar vazia</string>
     <string name="external_inmigration_migrationdate_not_great_today_lbl">A data da migração não pode ser maior que a data de hoje</string>
     <string name="external_inmigration_migrationdate_not_before_dob_lbl">A data da migração não pode ser antes da data de nascimento</string>
+    <string name="external_inmigration_death_exists_lbl">Não é possivel imigrar o membro. O membro selecionado está registado como morto</string>
+    <string name="external_inmigration_head_relationship_opened_lbl">Não é possivel imigrar o membro. O ultimo estado da relação com o chefe de agregado encontra-se aberto</string>
 
     <string name="internal_inmigration_select_inmig_member_lbl">Selecione o membro que irá imigrar para esta casa?</string>
     <string name="internal_inmigration_select_inmig_no_residency_lbl">O membro selecionado não esta registado em nenhuma casa. Por favor contact o gestor de dados!</string>
+    <string name="internal_inmigration_is_head_of_household_lbl">O membro selecionado é chefe de um outro agregado. É necessario primeiro deixar de ser o chefe para poder imigrar!</string>
+
+    <string name="outmigration_death_exists_lbl">Não é possivel emigrar o membro. O membro selecionado está registado como morto</string>
+    <string name="outmigration_is_head_of_household_lbl">O membro selecionado é chefe deste agregado. É necessario primeiro deixar de ser o chefe para poder emigrar!</string>
 
     <!-- pregnancy registration -->
     <string name="pregnancy_registration_code_err_lbl">O código do registro de gravidez está incorrecto</string>

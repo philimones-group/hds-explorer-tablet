@@ -12,7 +12,9 @@ import org.philimone.hds.explorer.fragment.MemberFilterDialog;
 import org.philimone.hds.explorer.model.ApplicationParam;
 import org.philimone.hds.explorer.model.ApplicationParam_;
 import org.philimone.hds.explorer.model.CoreCollectedData;
+import org.philimone.hds.explorer.model.Death;
 import org.philimone.hds.explorer.model.HeadRelationship;
+import org.philimone.hds.explorer.model.HeadRelationship_;
 import org.philimone.hds.explorer.model.Household;
 import org.philimone.hds.explorer.model.Member;
 import org.philimone.hds.explorer.model.Member_;
@@ -51,6 +53,7 @@ public class ExternalInMigrationFormUtil extends FormUtil<Member> {
     private Box<Residency> boxResidencies;
     private Box<HeadRelationship> boxHeadRelationships;
     private Box<CoreCollectedData> boxCoreCollectedData;
+    private Box<Death> boxDeaths;
 
     private Household household;
     private Visit visit;
@@ -97,6 +100,7 @@ public class ExternalInMigrationFormUtil extends FormUtil<Member> {
         this.boxResidencies = ObjectBoxDatabase.get().boxFor(Residency.class);
         this.boxHeadRelationships = ObjectBoxDatabase.get().boxFor(HeadRelationship.class);
         this.boxCoreCollectedData = ObjectBoxDatabase.get().boxFor(CoreCollectedData.class);
+        this.boxDeaths = ObjectBoxDatabase.get().boxFor(Death.class);
     }
 
     @Override
@@ -280,7 +284,33 @@ public class ExternalInMigrationFormUtil extends FormUtil<Member> {
             return new ValidationResult(colMigrationDate, message);
         }
 
+        //check destinationCode, originCode existence
+        //check Member Death Status - if returning to DSS
+        if (externalInMigrationType == ExternalInMigrationType.REENTRY) {
+
+            if (Queries.getDeathByCode(this.boxDeaths, memberCode)!=null){
+                String message = this.context.getString(R.string.external_inmigration_death_exists_lbl);
+                return new ValidationResult(colMemberCode, message);
+            }
+
+            //check Member last closed headtype status - if returning to DSS
+            HeadRelationship lastHeadRelationship = getLastOpenedHeadRelationship(memberCode);
+            if (lastHeadRelationship != null) {
+                String message = this.context.getString(R.string.external_inmigration_head_relationship_opened_lbl);
+                return new ValidationResult(colMemberCode, message);
+            }
+        }
+
         return ValidationResult.noErrors();
+    }
+
+    private HeadRelationship getLastOpenedHeadRelationship(String memberCode) {
+        HeadRelationship lastHeadRelationship = this.boxHeadRelationships.query(
+                HeadRelationship_.memberCode.equal(memberCode).and(HeadRelationship_.endType.equal(HeadRelationshipEndType.NOT_APPLICABLE.code)))
+                .orderDesc(HeadRelationship_.startDate)
+                .build().findFirst();
+
+        return lastHeadRelationship;
     }
 
     @Override

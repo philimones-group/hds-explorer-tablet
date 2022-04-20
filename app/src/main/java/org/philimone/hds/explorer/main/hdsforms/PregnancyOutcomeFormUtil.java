@@ -15,6 +15,7 @@ import org.philimone.hds.explorer.model.HeadRelationship;
 import org.philimone.hds.explorer.model.HeadRelationship_;
 import org.philimone.hds.explorer.model.Household;
 import org.philimone.hds.explorer.model.Member;
+import org.philimone.hds.explorer.model.Member_;
 import org.philimone.hds.explorer.model.PregnancyChild;
 import org.philimone.hds.explorer.model.PregnancyOutcome;
 import org.philimone.hds.explorer.model.PregnancyOutcome_;
@@ -276,7 +277,7 @@ public class PregnancyOutcomeFormUtil extends FormUtil<PregnancyOutcome> {
         }
 
         //validate preg status
-        if (nrOfOutcomes == null || nrOfOutcomes == 0){
+        if (nrOfOutcomes == null || nrOfOutcomes <= 0){
             String message = this.context.getString(R.string.pregnancy_outcome_nroutcomes_empty_lbl);
             return new ValidationResult(colNrOfOutcomes, message);
         }
@@ -299,7 +300,58 @@ public class PregnancyOutcomeFormUtil extends FormUtil<PregnancyOutcome> {
 
         //validate childs
         for (int i = 0; i < repChilds.getCount(); i++) {
+            ColumnValue colOutcomeType = repChilds.get("outcomeType", i);
+            ColumnValue colChildCode = repChilds.get("childCode", i);
+            ColumnValue colChildName = repChilds.get("childName", i);
+            ColumnValue colChildGender = repChilds.get("childGender", i);
+            ColumnValue colChildOrdPosition = repChilds.get("childOrdinalPosition", i);
+            ColumnValue colChildRelationship = repChilds.get("headRelationshipType", i);
 
+            PregnancyOutcomeType outcomeType = PregnancyOutcomeType.getFrom(colOutcomeType.getValue());
+            String childCode = colChildCode.getValue();
+            String childName = colChildName.getValue();
+            Gender childGender = Gender.getFrom(colChildGender.getValue());
+            Integer ordinalPosition = colChildOrdPosition.getIntegerValue();
+            HeadRelationshipType headRelationshipType = HeadRelationshipType.getFrom(colChildRelationship.getValue());
+
+            if (outcomeType == null) {
+                //Outcome Type cannot be null
+                String message = "";
+                return new ValidationResult(colOutcomeType, message);
+            }
+
+            if (outcomeType == PregnancyOutcomeType.LIVEBIRTH) {
+                //check code
+                if (!codeGenerator.isMemberCodeValid(childCode)){
+                    String message = this.context.getString(R.string.pregnancy_outcome_member_code_err_lbl);
+                    return new ValidationResult(colChildCode, message);
+                }
+
+                if (!childCode.startsWith(household.code)){
+                    String message = this.context.getString(R.string.pregnancy_outcome_member_code_household_err_lbl);
+                    return new ValidationResult(colChildCode, message);
+                }
+
+                if (boxMembers.query().equal(Member_.code, childCode, QueryBuilder.StringOrder.CASE_SENSITIVE).build().findFirst() != null){
+                    String message = this.context.getString(R.string.pregnancy_outcome_member_code_exists_lbl);
+                    return new ValidationResult(colChildCode, message);
+                }
+
+                if (StringUtil.isBlank(childName)){
+                    String message = this.context.getString(R.string.pregnancy_outcome_member_name_empty_lbl);
+                    return new ValidationResult(colChildName, message);
+                }
+
+                if (childGender == null){
+                    String message = this.context.getString(R.string.pregnancy_outcome_member_gender_empty_lbl);
+                    return new ValidationResult(colChildGender, message);
+                }
+
+                if (headRelationshipType == null){
+                    String message = this.context.getString(R.string.pregnancy_outcome_member_head_relattype_empty_lbl);
+                    return new ValidationResult(colChildRelationship, message);
+                }
+            }
         }
 
         return ValidationResult.noErrors();
@@ -551,7 +603,7 @@ public class PregnancyOutcomeFormUtil extends FormUtil<PregnancyOutcome> {
 
         //Limit by Age
         if (GeneralUtil.getAge(this.mother.dob, new Date()) < this.minimunMotherAge) {
-
+            DialogFactory.createMessageInfo(this.context, R.string.core_entity_pregnancy_out_lbl, R.string.pregnancy_registration_mother_age_err_lbl).show();
             return;
         }
 

@@ -7,6 +7,8 @@ import androidx.fragment.app.FragmentManager;
 
 import org.philimone.hds.explorer.R;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
+import org.philimone.hds.explorer.model.ApplicationParam;
+import org.philimone.hds.explorer.model.ApplicationParam_;
 import org.philimone.hds.explorer.model.CoreCollectedData;
 import org.philimone.hds.explorer.model.Household;
 import org.philimone.hds.explorer.model.Member;
@@ -16,6 +18,7 @@ import org.philimone.hds.explorer.model.Visit;
 import org.philimone.hds.explorer.model.enums.CoreFormEntity;
 import org.philimone.hds.explorer.model.enums.EstimatedDateOfDeliveryType;
 import org.philimone.hds.explorer.model.enums.PregnancyStatus;
+import org.philimone.hds.explorer.widget.DialogFactory;
 import org.philimone.hds.forms.model.CollectedDataMap;
 import org.philimone.hds.forms.model.ColumnValue;
 import org.philimone.hds.forms.model.HForm;
@@ -40,6 +43,7 @@ public class PregnancyRegistrationFormUtil extends FormUtil<PregnancyRegistratio
     private Member mother;
     private boolean nonPregnantRegistration = false;
     private PregnancyStatus loadedPregnancyStatus;
+    private int minimunMotherAge;
 
     public PregnancyRegistrationFormUtil(FragmentManager fragmentManager, Context context, Visit visit, Household household, Member member, FormUtilListener<PregnancyRegistration> listener){
         super(fragmentManager, context, FormUtil.getPregnancyRegistrationForm(context), listener);
@@ -95,6 +99,8 @@ public class PregnancyRegistrationFormUtil extends FormUtil<PregnancyRegistratio
     @Override
     protected void initialize(){
         super.initialize();
+
+        this.minimunMotherAge = retrieveMinimumMotherAge();
     }
 
     @Override
@@ -302,6 +308,13 @@ public class PregnancyRegistrationFormUtil extends FormUtil<PregnancyRegistratio
 
     @Override
     public void collect() {
+
+        //Limit by Age
+        if (GeneralUtil.getAge(this.mother.dob, new Date()) < this.minimunMotherAge) {
+            DialogFactory.createMessageInfo(this.context, R.string.core_entity_pregnancy_out_lbl, R.string.pregnancy_registration_mother_age_err_lbl).show();
+            return;
+        }
+
         executeCollectForm();
     }
 
@@ -311,6 +324,20 @@ public class PregnancyRegistrationFormUtil extends FormUtil<PregnancyRegistratio
                                                                                     .orderDesc(PregnancyRegistration_.recordedDate).build().findFirst();
 
         return pregnancyRegistration;
+    }
+
+    private int retrieveMinimumMotherAge() {
+        ApplicationParam param = this.boxAppParams.query().equal(ApplicationParam_.name, ApplicationParam.PARAMS_MIN_AGE_OF_MOTHER, QueryBuilder.StringOrder.CASE_SENSITIVE).build().findFirst();
+
+        if (param != null) {
+            try {
+                return Integer.parseInt(param.value);
+            } catch (Exception ex) {
+
+            }
+        }
+
+        return 12;
     }
 
     String handleMethodExecution(String methodExpression, String[] args) {

@@ -330,6 +330,19 @@ public class DeathFormUtil extends FormUtil<Death> {
         }
 
         //other validations
+        /*
+        if (isHouseholdHead){
+            Residency residency = this.boxResidencies.query(
+                    Residency_.memberCode.equal(newHeadCode)
+                    .and(Residency_.endType.equal(ResidencyEndType.NOT_APPLICABLE.code))
+                    .and(Residency_.householdCode.notEqual(household.code)))
+                    .orderDesc(Residency_.startDate).build().findFirst();
+
+            if (residency != null){
+                String message = "";
+            }
+        }
+        */
 
         return ValidationResult.noErrors();
     }
@@ -533,7 +546,7 @@ public class DeathFormUtil extends FormUtil<Death> {
         });
 
         dialog.setFilterMinAge(this.minimunHeadAge, true);
-        dialog.setFilterHouseCode(visit.householdCode);
+        dialog.setFilterHouseCode(visit.householdCode, true);
         dialog.setFilterStatus(MemberFilterDialog.StatusFilter.RESIDENT, true);
         dialog.setFilterExcludeMember(this.member.code);
         dialog.setStartSearchOnShow(true);

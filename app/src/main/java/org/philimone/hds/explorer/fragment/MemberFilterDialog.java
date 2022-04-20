@@ -59,6 +59,7 @@ public class MemberFilterDialog extends DialogFragment {
     private String filterName;
     private String filterCode;
     private String filterHouseCode;
+    private boolean filterHouseCodeExclusive;
     private Integer filterMinAge;
     private boolean filterMinAgeExclusive;
     private Integer filterMaxAge;
@@ -270,6 +271,12 @@ public class MemberFilterDialog extends DialogFragment {
         //this.spnMemFilterStatus.
     }
 
+    private void updateFilterHouseCode(){
+        if (this.txtMemFilterHouseCode != null && filterHouseCode != null) {
+            this.txtMemFilterHouseCode.setEnabled(!filterHouseCodeExclusive);
+        }
+    }
+
     private void updateFilterStatus(){
         if (this.spnMemFilterStatus != null && filterStatus != null) {
             this.spnMemFilterStatus.setSelection(filterStatus);
@@ -310,7 +317,12 @@ public class MemberFilterDialog extends DialogFragment {
     }
 
     public void setFilterHouseCode(String filterHouseCode) {
+        setFilterHouseCode(filterHouseCode, false);
+    }
+
+    public void setFilterHouseCode(String filterHouseCode, boolean exclusive) {
         this.filterHouseCode = filterHouseCode;
+        this.filterHouseCodeExclusive = exclusive;
     }
 
     public void setFilterMinAge(int filterMinAge, boolean exclusive) {

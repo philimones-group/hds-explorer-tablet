@@ -442,9 +442,10 @@
     <string name="changehead_oldhead_code_empty_lbl">The Old Head of Household Code cannot be empty</string>
     <string name="changehead_newhead_code_empty_lbl">The New Head of Household Code cannot be empty</string>
     <string name="changehead_eventdate_empty_lbl">The Date of the event cannot be empty</string>
-    <string name="changehead_eventdate_not_before_dob_lbl">The date of the event cannot be before the date of birth</string>
+    <string name="changehead_eventdate_not_before_dob_lbl">The date of the event cannot be before the date of birth of the new head of household</string>
     <string name="changehead_eventdate_not_great_today_lbl">The date of the event cannot be greater than today</string>
     <string name="changehead_new_head_select_lbl">Select the new Head of Household</string>
+    <string name="changehead_new_head_is_head_of_household_lbl">The new Head of Household is a Head of another household. Must first end his current Head Relationship to declare it as head of another!</string>
     
     <string-array name="relationship_types_array">
         <item>Single</item>

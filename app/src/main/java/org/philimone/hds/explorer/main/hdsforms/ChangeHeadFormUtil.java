@@ -244,40 +244,56 @@ public class ChangeHeadFormUtil extends FormUtil<Member> {
         //validations
 
         if (StringUtil.isBlank(visitCode)){
-            String message = this.context.getString(R.string.death_visit_code_empty_lbl);
+            String message = this.context.getString(R.string.changehead_visit_code_empty_lbl);
             return new ValidationResult(colVisitCode, message);
         }
 
         if (StringUtil.isBlank(oldHeadCode)){
-            String message = this.context.getString(R.string.death_member_code_empty_lbl);
+            String message = this.context.getString(R.string.changehead_oldhead_code_empty_lbl);
             return new ValidationResult(colOldHeadCode, message);
         }
 
         if (StringUtil.isBlank(newHeadCode)){
-            String message = this.context.getString(R.string.death_member_code_empty_lbl);
+            String message = this.context.getString(R.string.changehead_newhead_code_empty_lbl);
             return new ValidationResult(colNewHeadCode, message);
         }
 
         if (eventDate == null) {
-            String message = this.context.getString(R.string.death_deathdate_empty_lbl);
+            String message = this.context.getString(R.string.changehead_eventdate_empty_lbl);
             return new ValidationResult(colEventDate, message);
         }
 
-        //eddDate cannot be before dob
-        if (eventDate != null && eventDate.before(this.oldHeadMember.dob)){ //is before dob
-            String message = this.context.getString(R.string.death_deathdate_not_before_dob_lbl);
+        //eventDate cannot be before dob
+        if (eventDate != null && eventDate.before(this.newHeadMember.dob)){ //is before dob
+            String message = this.context.getString(R.string.changehead_eventdate_not_before_dob_lbl);
             return new ValidationResult(colEventDate, message);
         }
 
         if (eventDate != null && eventDate.after(new Date())){ //is before dob
-            String message = this.context.getString(R.string.death_deathdate_not_before_dob_lbl);
+            String message = this.context.getString(R.string.changehead_eventdate_not_great_today_lbl);
             return new ValidationResult(colEventDate, message);
         }
 
         //other validations
+        //C6. Check Age of the new head of Household - done by filtering
+
+        //check if new head member is a head of household of another household
+        if (isHeadOfHouseholdSomewhere(newHeadCode)) {
+            String message = this.context.getString(R.string.changehead_new_head_is_head_of_household_lbl);
+            return new ValidationResult(colNewHeadCode, message);
+        }
 
         return ValidationResult.noErrors();
     }
+    private boolean isHeadOfHouseholdSomewhere(String memberCode) {
+        long count = this.boxHeadRelationships.query(
+                HeadRelationship_.memberCode.equal(memberCode).and(HeadRelationship_.relationshipType.equal(HeadRelationshipType.HEAD_OF_HOUSEHOLD.code))
+                        .and(HeadRelationship_.endType.equal(HeadRelationshipEndType.NOT_APPLICABLE.code)))
+                .build().count();
+
+        return count > 0;
+    }
+
 
     @Override
     public void onFormFinished(HForm form, CollectedDataMap collectedValues, XmlFormResult result) {

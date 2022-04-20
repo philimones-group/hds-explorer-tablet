@@ -445,7 +445,8 @@
     <string name="changehead_eventdate_not_before_dob_lbl">A data do evento não pode ser antes da data de nascimento</string>
     <string name="changehead_eventdate_not_great_today_lbl">A data da evento não pode ser maior que a data de hoje</string>
     <string name="changehead_new_head_select_lbl">Selecione o novo chefe do agregado</string>
-    
+    <string name="changehead_new_head_is_head_of_household_lbl">O novo chefe do agregado é chefe de um outro agregado. É necessario primeiro deixar de ser o chefe para poder tornar-se chefe neste!</string>
+
     <string-array name="relationship_types_array">
         <item>Solteiro</item>
         <item>Casado</item>

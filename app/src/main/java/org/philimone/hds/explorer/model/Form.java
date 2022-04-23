@@ -1,6 +1,6 @@
 package org.philimone.hds.explorer.model;
 
-import org.philimone.hds.explorer.model.converters.FormMappingConverter;
+import org.philimone.hds.explorer.model.converters.MapStringConverter;
 import org.philimone.hds.explorer.model.converters.StringCollectionConverter;
 
 import java.io.Serializable;
@@ -45,7 +45,7 @@ public class Form implements Serializable {
     public boolean isFollowUpForm;
     public boolean multiCollPerSession;
 
-    @Convert(converter = FormMappingConverter.class, dbType = String.class)
+    @Convert(converter = MapStringConverter.class, dbType = String.class)
     public Map<String, String> formMap;
 
     public String redcapApi;

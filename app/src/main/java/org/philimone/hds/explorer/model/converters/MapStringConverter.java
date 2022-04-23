@@ -5,7 +5,7 @@ import java.util.Map;
 
 import io.objectbox.converter.PropertyConverter;
 
-public class FormMappingConverter implements PropertyConverter<Map<String, String>, String> {
+public class MapStringConverter implements PropertyConverter<Map<String, String>, String> {
 
     private String mapAsText = "";
 

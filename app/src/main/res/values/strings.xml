@@ -41,6 +41,7 @@
     <string name="sync_params_lbl">App. Parameters</string>
     <string name="sync_modules_lbl">Modules</string>
     <string name="sync_forms_lbl">ODK Forms</string>
+    <string name="sync_coreforms_lbl">Core Forms Extensions</string>
     <string name="sync_users_lbl">Users</string>
     <string name="sync_datasets_lbl">Datasets</string>
     <string name="sync_datasets_csv_lbl">Datasets CSV/ZIP Files</string>
@@ -55,7 +56,12 @@
     <string name="sync_visits_lbl">Visits</string>
     <string name="sync_head_relationships_lbl">Head Relationships</string>
     <string name="sync_marital_relationships_lbl">Marital Relationships</string>
-    <string name="sync_pregnancies_lbl">Pregnancies</string>
+    <string name="sync_inmigrations_lbl">Inmigrations</string>
+    <string name="sync_outmigrations_lbl">Outmigrations</string>
+    <string name="sync_pregnancy_registrations_lbl">Pregnancies</string>
+    <string name="sync_pregnancy_outcomes_lbl">Pregnancy Outcomes</string>
+    <string name="sync_deaths_lbl">Deaths</string>
+    <string name="sync_incomplete_visits_lbl">Incomplete Visits</string>
     <string name="sync_saved_lbl">Saved</string>
     <string name="sync_records_lbl">records</string>
     <string name="sync_successfully_lbl">Data was successfully synchronized.</string>

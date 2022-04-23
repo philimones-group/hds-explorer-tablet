@@ -34,7 +34,7 @@ import org.philimone.hds.explorer.model.Round;
 import org.philimone.hds.explorer.model.SyncReport;
 import org.philimone.hds.explorer.model.User;
 import org.philimone.hds.explorer.model.Visit;
-import org.philimone.hds.explorer.model.converters.FormMappingConverter;
+import org.philimone.hds.explorer.model.converters.MapStringConverter;
 import org.philimone.hds.explorer.model.converters.StringCollectionConverter;
 import org.philimone.hds.explorer.model.enums.EstimatedDateOfDeliveryType;
 import org.philimone.hds.explorer.model.enums.Gender;
@@ -265,7 +265,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 				builder.append(" " + mContext.getString(R.string.sync_marital_relationships_lbl));
 				break;
 			case PREGNANCY_REGISTRATIONS:
-				builder.append(" " + mContext.getString(R.string.sync_pregnancies_lbl));
+				builder.append(" " + mContext.getString(R.string.sync_pregnancy_registrations_lbl));
 				break;
 		}
 
@@ -983,7 +983,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 			parser.nextTag(); //process formMap
 			if (!isEmptyTag("formMap", parser)) {
 				parser.next();
-				Map<String, String> map = new FormMappingConverter().convertToEntityProperty(parser.getText());
+				Map<String, String> map = new MapStringConverter().convertToEntityProperty(parser.getText());
 				table.setFormMap(map);
 				//Log.d(count+"-formMap", "value="+ parser.getText());
 				parser.nextTag(); //process </formMap>
@@ -3050,7 +3050,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 				case VISITS: 		 downloadedEntity = mContext.getString(R.string.sync_visits_lbl); 	  break;
 				case HEAD_RELATIONSHIPS: 	 downloadedEntity = mContext.getString(R.string.sync_head_relationships_lbl); 	  break;
 				case MARITAL_RELATIONSHIPS:  downloadedEntity = mContext.getString(R.string.sync_marital_relationships_lbl); 	  break;
-				case PREGNANCY_REGISTRATIONS:downloadedEntity = mContext.getString(R.string.sync_pregnancies_lbl); 	  break;
+				case PREGNANCY_REGISTRATIONS:downloadedEntity = mContext.getString(R.string.sync_pregnancy_registrations_lbl); 	  break;
 			}
 
 			boolean error = mapStatuses.get(entity)==SyncStatus.STATUS_SYNC_ERROR;
@@ -3091,7 +3091,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 				case VISITS: 		 downloadedEntity = mContext.getString(R.string.sync_visits_lbl); 	  break;
 				case HEAD_RELATIONSHIPS: 	 downloadedEntity = mContext.getString(R.string.sync_head_relationships_lbl); 	  break;
 				case MARITAL_RELATIONSHIPS:  downloadedEntity = mContext.getString(R.string.sync_marital_relationships_lbl); 	  break;
-				case PREGNANCY_REGISTRATIONS:downloadedEntity = mContext.getString(R.string.sync_pregnancies_lbl); 	  break;
+				case PREGNANCY_REGISTRATIONS:downloadedEntity = mContext.getString(R.string.sync_pregnancy_registrations_lbl); 	  break;
 			}
 
 			boolean error = mapStatuses.get(entity)==SyncStatus.STATUS_SYNC_ERROR;

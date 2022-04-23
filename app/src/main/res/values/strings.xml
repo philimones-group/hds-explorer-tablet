@@ -41,7 +41,7 @@
     <string name="sync_params_lbl">App. Parameters</string>
     <string name="sync_modules_lbl">Modules</string>
     <string name="sync_forms_lbl">ODK Forms</string>
-    <string name="sync_coreforms_lbl">Core Forms Extensions</string>
+    <string name="sync_coreforms_exts_lbl">Core Forms Extensions</string>
     <string name="sync_users_lbl">Users</string>
     <string name="sync_datasets_lbl">Datasets</string>
     <string name="sync_datasets_csv_lbl">Datasets CSV/ZIP Files</string>

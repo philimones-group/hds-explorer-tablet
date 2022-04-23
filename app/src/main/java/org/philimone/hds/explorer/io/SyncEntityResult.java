@@ -56,7 +56,7 @@ public class SyncEntityResult implements Serializable {
     public SyncEntity getMainEntity(){
         //settings
         for (SyncEntity syncEntity : reportsMap.keySet()) {
-            if (syncEntity == SyncEntity.MODULES || syncEntity == SyncEntity.FORMS || syncEntity == SyncEntity.PARAMETERS || syncEntity == SyncEntity.USERS){
+            if (syncEntity == SyncEntity.MODULES || syncEntity == SyncEntity.FORMS || syncEntity == SyncEntity.CORE_FORMS_EXT || syncEntity == SyncEntity.PARAMETERS || syncEntity == SyncEntity.USERS){
                 return SyncEntity.SETTINGS;
             }
             //datasets

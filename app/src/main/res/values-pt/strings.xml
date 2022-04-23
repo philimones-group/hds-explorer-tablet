@@ -41,7 +41,7 @@
     <string name="sync_params_lbl">Pârametros</string>
     <string name="sync_modules_lbl">Módulos</string>
     <string name="sync_forms_lbl">Formulários ODK</string>
-    <string name="sync_coreforms_lbl">Ext. Formulários HDS</string>
+    <string name="sync_coreforms_exts_lbl">Ext. Formulários HDS</string>
     <string name="sync_users_lbl">Usuários</string>
     <string name="sync_datasets_lbl">Datasets</string>
     <string name="sync_datasets_csv_lbl">Datasets CSV/ZIP</string>

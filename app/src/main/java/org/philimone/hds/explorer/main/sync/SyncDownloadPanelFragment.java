@@ -39,6 +39,7 @@ import static org.philimone.hds.explorer.model.enums.SyncEntity.DATASETS;
 import static org.philimone.hds.explorer.model.enums.SyncEntity.DATASETS_CSV_FILES;
 import static org.philimone.hds.explorer.model.enums.SyncEntity.DEMOGRAPHICS_EVENTS;
 import static org.philimone.hds.explorer.model.enums.SyncEntity.FORMS;
+import static org.philimone.hds.explorer.model.enums.SyncEntity.CORE_FORMS_EXT;
 import static org.philimone.hds.explorer.model.enums.SyncEntity.HEAD_RELATIONSHIPS;
 import static org.philimone.hds.explorer.model.enums.SyncEntity.HOUSEHOLDS;
 import static org.philimone.hds.explorer.model.enums.SyncEntity.HOUSEHOLDS_DATASETS;
@@ -216,6 +217,7 @@ public class SyncDownloadPanelFragment extends Fragment implements SyncPanelItem
 
         SyncReport modules = Queries.getSyncReportBy(boxSyncReports, MODULES);
         SyncReport forms = Queries.getSyncReportBy(boxSyncReports, FORMS);
+        SyncReport coreforms = Queries.getSyncReportBy(boxSyncReports, CORE_FORMS_EXT);
         SyncReport params = Queries.getSyncReportBy(boxSyncReports, PARAMETERS);
         SyncReport datasetCsv = Queries.getSyncReportBy(boxSyncReports, DATASETS_CSV_FILES);
         SyncReport datasets = Queries.getSyncReportBy(boxSyncReports, DATASETS);
@@ -234,7 +236,7 @@ public class SyncDownloadPanelFragment extends Fragment implements SyncPanelItem
         //setting general status - if one block is bad general is bad
 
         //settings
-        if (modules != null || forms != null || params != null || users != null){
+        if (modules != null || forms != null || coreforms != null || params != null || users != null){
             SyncReport report = getBestReport(modules, forms, params, users);
             settingsSyncFragment.setSyncedDate(getStatusMessage(report), report.getStatus());
         }
@@ -297,7 +299,7 @@ public class SyncDownloadPanelFragment extends Fragment implements SyncPanelItem
     }
 
     private void syncSettings() {
-        SyncEntitiesTask syncEntitiesTask = new SyncEntitiesTask(this.getContext(), this.settingsSyncFragment, serverUrl, username, password, PARAMETERS, MODULES, FORMS, USERS);
+        SyncEntitiesTask syncEntitiesTask = new SyncEntitiesTask(this.getContext(), this.settingsSyncFragment, serverUrl, username, password, PARAMETERS, MODULES, FORMS, CORE_FORMS_EXT, USERS);
         syncEntitiesTask.execute();
     }
 

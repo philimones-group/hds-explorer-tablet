@@ -13,7 +13,7 @@ public enum SyncEntity {
     PARAMETERS         (1, R.string.sync_params_lbl),
     MODULES            (2, R.string.sync_modules_lbl),
     FORMS              (3, R.string.sync_forms_lbl),
-    CORE_FORMS_EXT     (4, R.string.sync_coreforms_lbl),
+    CORE_FORMS_EXT     (4, R.string.sync_coreforms_exts_lbl),
     USERS              (5, R.string.sync_users_lbl),
     DATASETS           (6, R.string.sync_datasets_lbl),
     DATASETS_CSV_FILES (7, R.string.sync_datasets_csv_lbl),

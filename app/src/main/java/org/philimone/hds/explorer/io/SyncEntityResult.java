@@ -72,7 +72,7 @@ public class SyncEntityResult implements Serializable {
                 return SyncEntity.HOUSEHOLDS_DATASETS;
             }
 
-            if (syncEntity == SyncEntity.VISITS || syncEntity == SyncEntity.HEAD_RELATIONSHIPS || syncEntity == SyncEntity.MARITAL_RELATIONSHIPS || syncEntity == SyncEntity.PREGNANCY_REGISTRATIONS) {
+            if (syncEntity == SyncEntity.VISITS || syncEntity == SyncEntity.HEAD_RELATIONSHIPS || syncEntity == SyncEntity.MARITAL_RELATIONSHIPS || syncEntity == SyncEntity.PREGNANCY_REGISTRATIONS || syncEntity == SyncEntity.DEATHS) {
                 return syncEntity.DEMOGRAPHICS_EVENTS;
             }
         }

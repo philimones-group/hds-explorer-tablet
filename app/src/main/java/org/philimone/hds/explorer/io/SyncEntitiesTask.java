@@ -37,6 +37,7 @@ import org.philimone.hds.explorer.model.User;
 import org.philimone.hds.explorer.model.Visit;
 import org.philimone.hds.explorer.model.converters.MapStringConverter;
 import org.philimone.hds.explorer.model.converters.StringCollectionConverter;
+import org.philimone.hds.explorer.model.enums.CoreFormEntity;
 import org.philimone.hds.explorer.model.enums.EstimatedDateOfDeliveryType;
 import org.philimone.hds.explorer.model.enums.Gender;
 import org.philimone.hds.explorer.model.enums.HeadRelationshipType;
@@ -273,6 +274,9 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 			case PREGNANCY_REGISTRATIONS:
 				builder.append(" " + mContext.getString(R.string.sync_pregnancy_registrations_lbl));
 				break;
+			case DEATHS:
+				builder.append(" " + mContext.getString(R.string.sync_deaths_lbl));
+				break;
 		}
 
 		if (values.length > 0) {
@@ -382,6 +386,10 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 					case PREGNANCY_REGISTRATIONS:
 						this.boxPregnancyRegistrations.removeAll();
 						processUrl(baseurl + API_PATH + "/pregnancies/zip", "pregnancies.zip");
+						break;
+					case DEATHS:
+						this.boxDeaths.removeAll();
+						processUrl(baseurl + API_PATH + "/deaths/zip", "deaths.zip");
 						break;
 				}
 
@@ -601,6 +609,8 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 					processMaritalRelationships(parser);
 				} else if (name.equalsIgnoreCase("pregnancyregistrations")) {
 					processPregnancyRegistrations(parser);
+				} else if (name.equalsIgnoreCase("deaths")) {
+					processDeaths(parser);
 				}
 				break;
 			}
@@ -1077,6 +1087,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 			if (!isEmptyTag("formId", parser)) {
 				parser.next();
 				table.formId = parser.getText();
+				table.formEntity = CoreFormEntity.getFrom(table.formId);
 				parser.nextTag(); //process </formId>
 				//Log.d(count+"-formId", "value="+ parser.getText());
 			}else{
@@ -3100,6 +3111,118 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 		updateSyncReport(SyncEntity.PREGNANCY_REGISTRATIONS, new Date(), SyncStatus.STATUS_SYNCED);
 	}
 
+	private void processDeaths(XmlPullParser parser) throws Exception {
+
+		//clear sync_report
+		updateSyncReport(SyncEntity.DEATHS, null, SyncStatus.STATUS_NOT_SYNCED);
+
+		List<Death> values = new ArrayList<>();
+		int count = 0;
+		values.clear();
+
+		parser.nextTag();
+
+		while (notEndOfXmlDoc("deaths", parser)) {
+			count++;
+
+			Death table = new Death();
+
+			parser.nextTag(); //memberCode
+			if (!isEmptyTag("memberCode", parser)) {
+				parser.next();
+				table.memberCode = parser.getText();
+				parser.nextTag();
+			}else{
+				table.memberCode = "";
+				parser.nextTag();
+			}
+
+			parser.nextTag(); //deathDate
+			if (!isEmptyTag("deathDate", parser)) {
+				parser.next();
+				table.deathDate = StringUtil.toDate(parser.getText(), "yyyy-MM-dd");
+				parser.nextTag();
+			}else{
+				table.deathDate = null;
+				parser.nextTag();
+			}
+
+			parser.nextTag(); //ageAtDeath
+			if (!isEmptyTag("ageAtDeath", parser)) {
+				parser.next();
+				table.ageAtDeath = Integer.parseInt(parser.getText());
+				parser.nextTag();
+			}else{
+				//table.ageAtDeath = 0;
+				parser.nextTag();
+			}
+
+			parser.nextTag(); //deathCause
+			if (!isEmptyTag("deathCause", parser)) {
+				parser.next();
+				table.deathCause = parser.getText();
+				parser.nextTag();
+			}else{
+				table.deathCause = "";
+				parser.nextTag();
+			}
+
+			parser.nextTag(); //deathPlace
+			if (!isEmptyTag("deathPlace", parser)) {
+				parser.next();
+				table.deathPlace = parser.getText();
+				parser.nextTag();
+			}else{
+				table.deathPlace = "";
+				parser.nextTag();
+			}
+
+			parser.nextTag(); //visitCode
+			if (!isEmptyTag("visitCode", parser)) {
+				parser.next();
+				table.visitCode = parser.getText();
+				parser.nextTag();
+			}else{
+				table.visitCode = "";
+				parser.nextTag();
+			}
+
+			parser.nextTag(); //process <collectedId>
+			if (!isEmptyTag("collectedId", parser)) {
+				parser.next();
+				table.collectedId = parser.getText();
+				parser.nextTag(); //process </collectedId>
+			}else{
+				table.collectedId = "";
+				parser.nextTag();
+			}
+
+			parser.nextTag(); //last process tag
+			parser.next();
+
+			values.add(table);
+
+			//database.insert(table);
+
+			if (count % 500 == 0){
+				this.boxDeaths.put(values); //try with runTx
+				values.clear();
+				savedValues.put(entity, count); //publish progress is a bit slow - its not reporting well the numbers
+				publishProgress(count);
+			}
+
+		}
+
+		if (!values.isEmpty()) {
+			this.boxDeaths.put(values);
+		}
+
+		savedValues.put(entity, count);
+		publishProgress(count);
+
+		updateSyncReport(SyncEntity.DEATHS, new Date(), SyncStatus.STATUS_SYNCED);
+	}
+
 	//database.query(SyncReport.class, DatabaseHelper.SyncReport.COLUMN_REPORT_ID+"=?", new String[]{}, null, null, null);
 	private void updateSyncReport(SyncEntity syncEntity, Date date, SyncStatus status){
 
@@ -3165,6 +3288,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 				case HEAD_RELATIONSHIPS: 	 downloadedEntity = mContext.getString(R.string.sync_head_relationships_lbl); 	  break;
 				case MARITAL_RELATIONSHIPS:  downloadedEntity = mContext.getString(R.string.sync_marital_relationships_lbl); 	  break;
 				case PREGNANCY_REGISTRATIONS:downloadedEntity = mContext.getString(R.string.sync_pregnancy_registrations_lbl); 	  break;
+				case DEATHS:         downloadedEntity = mContext.getString(R.string.sync_deaths_lbl); break;
 			}
 
 			boolean error = mapStatuses.get(entity)==SyncStatus.STATUS_SYNC_ERROR;
@@ -3207,6 +3331,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 				case HEAD_RELATIONSHIPS: 	 downloadedEntity = mContext.getString(R.string.sync_head_relationships_lbl); 	  break;
 				case MARITAL_RELATIONSHIPS:  downloadedEntity = mContext.getString(R.string.sync_marital_relationships_lbl); 	  break;
 				case PREGNANCY_REGISTRATIONS:downloadedEntity = mContext.getString(R.string.sync_pregnancy_registrations_lbl); 	  break;
+				case DEATHS:         downloadedEntity = mContext.getString(R.string.sync_deaths_lbl); break;
 			}
 
 			boolean error = mapStatuses.get(entity)==SyncStatus.STATUS_SYNC_ERROR;

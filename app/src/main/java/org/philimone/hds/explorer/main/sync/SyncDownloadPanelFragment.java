@@ -37,6 +37,7 @@ import java.util.List;
 import static android.content.Context.MODE_PRIVATE;
 import static org.philimone.hds.explorer.model.enums.SyncEntity.DATASETS;
 import static org.philimone.hds.explorer.model.enums.SyncEntity.DATASETS_CSV_FILES;
+import static org.philimone.hds.explorer.model.enums.SyncEntity.DEATHS;
 import static org.philimone.hds.explorer.model.enums.SyncEntity.DEMOGRAPHICS_EVENTS;
 import static org.philimone.hds.explorer.model.enums.SyncEntity.FORMS;
 import static org.philimone.hds.explorer.model.enums.SyncEntity.CORE_FORMS_EXT;
@@ -232,6 +233,7 @@ public class SyncDownloadPanelFragment extends Fragment implements SyncPanelItem
         SyncReport hrelationships = Queries.getSyncReportBy(boxSyncReports, HEAD_RELATIONSHIPS);
         SyncReport mrelationships = Queries.getSyncReportBy(boxSyncReports, MARITAL_RELATIONSHIPS);
         SyncReport pregnancies = Queries.getSyncReportBy(boxSyncReports, PREGNANCY_REGISTRATIONS);
+        SyncReport deaths = Queries.getSyncReportBy(boxSyncReports, DEATHS);
 
         //setting general status - if one block is bad general is bad
 
@@ -259,7 +261,7 @@ public class SyncDownloadPanelFragment extends Fragment implements SyncPanelItem
         }
 
         //demographics events
-        if (visits != null || hrelationships != null || mrelationships != null || pregnancies != null) {
+        if (visits != null || hrelationships != null || mrelationships != null || pregnancies != null || deaths != null) {
             SyncReport report = getBestReport(visits, hrelationships, mrelationships, pregnancies);
             demographicsEventsSyncFragment.setSyncedDate(getStatusMessage(report), report.getStatus());
         }
@@ -319,7 +321,7 @@ public class SyncDownloadPanelFragment extends Fragment implements SyncPanelItem
     }
 
     private void syncDemographicsEvents() {
-        SyncEntitiesTask syncEntitiesTask = new SyncEntitiesTask(this.getContext(), this.demographicsEventsSyncFragment, serverUrl, username, password, VISITS, HEAD_RELATIONSHIPS, MARITAL_RELATIONSHIPS, PREGNANCY_REGISTRATIONS);
+        SyncEntitiesTask syncEntitiesTask = new SyncEntitiesTask(this.getContext(), this.demographicsEventsSyncFragment, serverUrl, username, password, VISITS, HEAD_RELATIONSHIPS, MARITAL_RELATIONSHIPS, PREGNANCY_REGISTRATIONS, DEATHS);
         syncEntitiesTask.execute();
     }
 

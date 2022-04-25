@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import org.philimone.hds.explorer.R;
 import org.philimone.hds.explorer.model.CoreCollectedData;
+import org.philimone.hds.explorer.model.CoreFormExtension;
 import org.philimone.hds.explorer.model.enums.CoreFormEntity;
 import org.philimone.hds.explorer.widget.CirclePercentageBar;
 
@@ -21,6 +22,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 import androidx.annotation.DrawableRes;
+import androidx.annotation.StringRes;
+
 import mz.betainteractive.utilities.StringUtil;
 
 public class CoreCollectedExpandableAdapter extends BaseExpandableListAdapter implements Serializable {
@@ -112,16 +115,18 @@ public class CoreCollectedExpandableAdapter extends BaseExpandableListAdapter im
         }
 
         CoreCollectedData cd = (CoreCollectedData) getChild(groupPosition, childPosition);
+        CoreFormExtension formExtension = cd.extension.getTarget();
 
         TextView txtItem1 = rowView.findViewById(R.id.txtItem1);
         TextView txtItem2 = rowView.findViewById(R.id.txtItem2);
         TextView txtItem3 = rowView.findViewById(R.id.txtItem3);
+        TextView txtItem4 = rowView.findViewById(R.id.txtItem4);
         Button button = rowView.findViewById(R.id.btnItemInfo);
         CheckBox chkProcessed = rowView.findViewById(R.id.chkProcessed);
 
         button.setVisibility(View.GONE);
         chkProcessed.setVisibility(View.GONE);
-        txtItem3.setVisibility(View.GONE);
+        txtItem3.setVisibility(formExtension==null ? View.GONE : View.VISIBLE);
 
         String createdDate = cd.createdDate==null ? "" : StringUtil.format(cd.createdDate, "yyyy-MM-dd HH:mm:ss");
         String updatedDate = cd.updatedDate==null ? "" : StringUtil.format(cd.updatedDate, "yyyy-MM-dd HH:mm:ss");
@@ -131,8 +136,22 @@ public class CoreCollectedExpandableAdapter extends BaseExpandableListAdapter im
         txtItem1.setText(cd.formEntityName);
         //txtItem2.setText(code + this.mContext.getString(cd.formEntity.name));
         txtItem2.setText(createdDate);
-        //txtItem3.setText(mContext.getString(R.string.core_entity_collected_date_lbl)+createdDate+", " + mContext.getString(R.string.core_entity_uploaded_date_lbl)+uploadedDate);
-        //txtItem3.setText(mContext.getString(R.string.core_entity_collected_date_lbl)+createdDate+", " + mContext.getString(R.string.core_entity_uploaded_date_lbl)+uploadedDate);
+
+        if (formExtension != null) {
+            String message = "";
+
+            if (cd.extensionCollected) {
+                message = mContext.getString(R.string.core_form_group_item_extension_collected_lbl);
+            } else if(formExtension.required){
+                message = mContext.getString(R.string.core_form_group_item_extension_not_collected_lbl);
+            } else {
+                message = mContext.getString(R.string.core_form_group_item_extension_not_required_lbl);
+            }
+
+            txtItem3.setText(mContext.getString(R.string.core_form_group_item_extension_lbl));
+            txtItem4.setText(message);
+        }
+
 
         return rowView;
     }

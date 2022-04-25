@@ -99,7 +99,7 @@ public class ExternalInMigrationFormUtil extends FormUtil<Member> {
         this.boxMembers = ObjectBoxDatabase.get().boxFor(Member.class);
         this.boxResidencies = ObjectBoxDatabase.get().boxFor(Residency.class);
         this.boxHeadRelationships = ObjectBoxDatabase.get().boxFor(HeadRelationship.class);
-        this.boxCoreCollectedData = ObjectBoxDatabase.get().boxFor(CoreCollectedData.class);
+
         this.boxDeaths = ObjectBoxDatabase.get().boxFor(Death.class);
     }
 
@@ -440,7 +440,7 @@ public class ExternalInMigrationFormUtil extends FormUtil<Member> {
         boxHeadRelationships.put(headRelationship);
 
         //save core collected data
-        CoreCollectedData collectedData = new CoreCollectedData();
+        collectedData = new CoreCollectedData();
         collectedData.visitId = visit.id;
         collectedData.formEntity = CoreFormEntity.EXTERNAL_INMIGRATION;
         collectedData.formEntityId = member.id;
@@ -449,6 +449,7 @@ public class ExternalInMigrationFormUtil extends FormUtil<Member> {
         collectedData.formUuid = result.getFormUuid();
         collectedData.formFilename = result.getFilename();
         collectedData.createdDate = new Date();
+        collectedData.extension.setTarget(this.getFormExtension(collectedData.formEntity));
 
         boxCoreCollectedData.put(collectedData);
 

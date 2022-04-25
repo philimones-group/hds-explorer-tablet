@@ -85,7 +85,7 @@ public class OutmigrationFormUtil extends FormUtil<Outmigration> {
         this.boxResidencies = ObjectBoxDatabase.get().boxFor(Residency.class);
         this.boxHeadRelationships = ObjectBoxDatabase.get().boxFor(HeadRelationship.class);
         this.boxOutmigrations = ObjectBoxDatabase.get().boxFor(Outmigration.class);
-        this.boxCoreCollectedData = ObjectBoxDatabase.get().boxFor(CoreCollectedData.class);
+
         this.boxDeaths = ObjectBoxDatabase.get().boxFor(Death.class);
     }
 
@@ -272,7 +272,7 @@ public class OutmigrationFormUtil extends FormUtil<Outmigration> {
         this.boxMembers.put(member);
 
         //save core collected data
-        CoreCollectedData collectedData = new CoreCollectedData();
+        collectedData = new CoreCollectedData();
         collectedData.visitId = visit.id;
         collectedData.formEntity = CoreFormEntity.OUTMIGRATION;
         collectedData.formEntityId = member.id;
@@ -281,6 +281,7 @@ public class OutmigrationFormUtil extends FormUtil<Outmigration> {
         collectedData.formUuid = result.getFormUuid();
         collectedData.formFilename = result.getFilename();
         collectedData.createdDate = new Date();
+        collectedData.extension.setTarget(this.getFormExtension(collectedData.formEntity));
         this.boxCoreCollectedData.put(collectedData);
 
         if (listener != null) {

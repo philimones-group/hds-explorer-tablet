@@ -1,6 +1,8 @@
 package org.philimone.hds.explorer.model;
 
+import org.philimone.hds.explorer.model.converters.CoreFormEntityConverter;
 import org.philimone.hds.explorer.model.converters.MapStringConverter;
+import org.philimone.hds.explorer.model.enums.CoreFormEntity;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -20,6 +22,9 @@ public class CoreFormExtension {
 
     @Unique
     public String formId;
+
+    @Convert(converter = CoreFormEntityConverter.class, dbType = String.class)
+    public CoreFormEntity formEntity;
 
     public String extFormId;
 

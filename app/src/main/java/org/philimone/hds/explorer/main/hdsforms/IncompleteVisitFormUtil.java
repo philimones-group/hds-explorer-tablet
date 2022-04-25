@@ -67,7 +67,7 @@ public class IncompleteVisitFormUtil extends FormUtil<IncompleteVisit> {
         this.boxMembers = ObjectBoxDatabase.get().boxFor(Member.class);
         this.boxDeaths = ObjectBoxDatabase.get().boxFor(Death.class);
         this.boxIncompleteVisits = ObjectBoxDatabase.get().boxFor(IncompleteVisit.class);
-        this.boxCoreCollectedData = ObjectBoxDatabase.get().boxFor(CoreCollectedData.class);
+
     }
 
     @Override
@@ -189,7 +189,7 @@ public class IncompleteVisitFormUtil extends FormUtil<IncompleteVisit> {
         boxIncompleteVisits.put(incompleteVisit);
 
         //save core collected data
-        CoreCollectedData collectedData = new CoreCollectedData();
+        collectedData = new CoreCollectedData();
         collectedData.visitId = visit.id;
         collectedData.formEntity = CoreFormEntity.INCOMPLETE_VISIT;
         collectedData.formEntityId = member.id;
@@ -198,6 +198,7 @@ public class IncompleteVisitFormUtil extends FormUtil<IncompleteVisit> {
         collectedData.formUuid = result.getFormUuid();
         collectedData.formFilename = result.getFilename();
         collectedData.createdDate = new Date();
+        collectedData.extension.setTarget(this.getFormExtension(collectedData.formEntity));
 
         boxCoreCollectedData.put(collectedData);
 

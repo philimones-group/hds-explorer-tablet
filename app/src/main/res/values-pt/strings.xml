@@ -4,7 +4,7 @@
 
     <!-- Copyright    -->
     <string name="copyright_app_name_lbl">HDS Explorer v1.0</string>
-    <string name="copyright_app_company_lbl">© 2020 Philimone\'s Group</string>
+    <string name="copyright_app_company_lbl">© 2022 Philimone\'s Group</string>
     <string name="copyright_app_developers_lbl">Desenvolvido por Paulo Filimone</string>
 
     <!-- General buttons and Strings-->
@@ -128,6 +128,11 @@
     <string name="core_entity_uploaded_date_lbl">Data do envio:</string>
 
     <string name="core_form_group_item_subtitle">Formulários colhidos</string>
+    <string name="core_form_group_item_extension_lbl">Extensão:</string>
+    <string name="core_form_group_item_extension_not_collected_lbl">Não Colectado</string>
+    <string name="core_form_group_item_extension_collected_lbl">Colectado</string>
+    <string name="core_form_group_item_extension_not_required_lbl">Não é obrigatorio</string>
+
 
     <!-- SplashScreen -->
     <string name="splashscreen_hds_explorer_name_1">Health and Demographics</string>

@@ -128,6 +128,10 @@
     <string name="core_entity_uploaded_date_lbl">Uploaded Date:</string>
 
     <string name="core_form_group_item_subtitle">Collected Forms</string>
+    <string name="core_form_group_item_extension_lbl">Extension:</string>
+    <string name="core_form_group_item_extension_not_collected_lbl">Not Collected</string>
+    <string name="core_form_group_item_extension_collected_lbl">Collected</string>
+    <string name="core_form_group_item_extension_not_required_lbl">Not Required</string>
 
     <!-- SplashScreen -->
     <string name="splashscreen_hds_explorer_name_1">Health and Demographics</string>

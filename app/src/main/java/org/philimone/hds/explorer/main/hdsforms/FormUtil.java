@@ -7,10 +7,14 @@ import org.philimone.hds.explorer.database.Bootstrap;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
 import org.philimone.hds.explorer.database.Queries;
 import org.philimone.hds.explorer.model.ApplicationParam;
+import org.philimone.hds.explorer.model.CoreCollectedData;
 import org.philimone.hds.explorer.model.CoreEntity;
+import org.philimone.hds.explorer.model.CoreFormExtension;
+import org.philimone.hds.explorer.model.CoreFormExtension_;
 import org.philimone.hds.explorer.model.Round;
 import org.philimone.hds.explorer.model.Round_;
 import org.philimone.hds.explorer.model.User;
+import org.philimone.hds.explorer.model.enums.CoreFormEntity;
 import org.philimone.hds.explorer.settings.generator.CodeGeneratorService;
 import org.philimone.hds.forms.listeners.FormCollectionListener;
 import org.philimone.hds.forms.main.FormFragment;
@@ -34,6 +38,7 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
     protected Context context;
     protected HForm form;
     protected T entity;
+    protected CoreCollectedData collectedData;
     protected CodeGeneratorService codeGenerator;
     protected PreloadMap preloadedMap;
 
@@ -45,6 +50,8 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
 
     protected Box<ApplicationParam> boxAppParams;
     protected Box<Round> boxRounds;
+    protected Box<CoreCollectedData> boxCoreCollectedData;
+    protected Box<CoreFormExtension> boxCoreFormExtension;
 
     protected Mode currentMode;
     
@@ -84,6 +91,8 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
     protected void initBoxes(){
         this.boxAppParams = ObjectBoxDatabase.get().boxFor(ApplicationParam.class);
         this.boxRounds = ObjectBoxDatabase.get().boxFor(Round.class);
+        this.boxCoreCollectedData = ObjectBoxDatabase.get().boxFor(CoreCollectedData.class);
+        this.boxCoreFormExtension = ObjectBoxDatabase.get().boxFor(CoreFormExtension.class);
     }
 
     protected void initialize() {
@@ -109,6 +118,11 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
             FormFragment form = FormFragment.newInstance(this.fragmentManager, this.form, Bootstrap.getInstancesPath(), user.username, this.entity.getRecentlyCreatedUri(), preloadedMap, postExecution, false, true, this);
             form.startCollecting();
         }
+    }
+
+    protected CoreFormExtension getFormExtension(CoreFormEntity formEntity){
+        CoreFormEntity cformEntity = formEntity==CoreFormEntity.EXTERNAL_INMIGRATION ? CoreFormEntity.INMIGRATION : formEntity;
+        return this.boxCoreFormExtension.query(CoreFormExtension_.formEntity.equal(cformEntity.code)).build().findFirst();
     }
 
     /* statics */

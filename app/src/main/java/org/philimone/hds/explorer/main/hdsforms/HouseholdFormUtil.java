@@ -45,7 +45,7 @@ public class HouseholdFormUtil extends FormUtil<Household> {
         super.initBoxes();
 
         this.boxHouseholds = ObjectBoxDatabase.get().boxFor(Household.class);
-        this.boxCoreCollectedData = ObjectBoxDatabase.get().boxFor(CoreCollectedData.class);
+
     }
 
     @Override
@@ -150,7 +150,7 @@ public class HouseholdFormUtil extends FormUtil<Household> {
 
         boxHouseholds.put(household);
 
-        CoreCollectedData collectedData = new CoreCollectedData();
+        collectedData = new CoreCollectedData();
         //collectedData.visitId = visit.id; //will be updated when visit is created
         collectedData.formEntity = CoreFormEntity.HOUSEHOLD;
         collectedData.formEntityId = household.id;
@@ -159,6 +159,7 @@ public class HouseholdFormUtil extends FormUtil<Household> {
         collectedData.formUuid = result.getFormUuid();
         collectedData.formFilename = result.getFilename();
         collectedData.createdDate = new Date();
+        collectedData.extension.setTarget(this.getFormExtension(collectedData.formEntity));
 
         boxCoreCollectedData.put(collectedData);
 

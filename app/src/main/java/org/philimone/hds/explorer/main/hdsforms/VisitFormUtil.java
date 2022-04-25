@@ -65,7 +65,7 @@ public class VisitFormUtil extends FormUtil<Visit> {
 
         this.boxHouseholds = ObjectBoxDatabase.get().boxFor(Household.class);
         this.boxVisits = ObjectBoxDatabase.get().boxFor(Visit.class);
-        this.boxCoreCollectedData = ObjectBoxDatabase.get().boxFor(CoreCollectedData.class);
+
     }
 
     @Override
@@ -227,7 +227,7 @@ public class VisitFormUtil extends FormUtil<Visit> {
         boxVisits.put(visit);
 
         if (currentMode == Mode.CREATE) {
-            CoreCollectedData collectedData = new CoreCollectedData();
+            collectedData = new CoreCollectedData();
             collectedData.visitId = visit.id;
             collectedData.formEntity = CoreFormEntity.VISIT;
             collectedData.formEntityId = visit.id;
@@ -236,6 +236,7 @@ public class VisitFormUtil extends FormUtil<Visit> {
             collectedData.formUuid = result.getFormUuid();
             collectedData.formFilename = result.getFilename();
             collectedData.createdDate = new Date();
+        collectedData.extension.setTarget(this.getFormExtension(collectedData.formEntity));
 
             boxCoreCollectedData.put(collectedData);
 

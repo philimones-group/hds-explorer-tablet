@@ -107,7 +107,7 @@ public class PregnancyOutcomeFormUtil extends FormUtil<PregnancyOutcome> {
         this.boxPregnancyOutcomes = ObjectBoxDatabase.get().boxFor(PregnancyOutcome.class);
         this.boxHeadRelationships = ObjectBoxDatabase.get().boxFor(HeadRelationship.class);
         this.boxResidencies = ObjectBoxDatabase.get().boxFor(Residency.class);
-        this.boxCoreCollectedData = ObjectBoxDatabase.get().boxFor(CoreCollectedData.class);
+
     }
 
     @Override
@@ -517,7 +517,7 @@ public class PregnancyOutcomeFormUtil extends FormUtil<PregnancyOutcome> {
 
 
         //save core collected data
-        CoreCollectedData collectedData = new CoreCollectedData();
+        collectedData = new CoreCollectedData();
         collectedData.visitId = visit.id;
         collectedData.formEntity = CoreFormEntity.PREGNANCY_OUTCOME;
         collectedData.formEntityId = mother.id;
@@ -527,6 +527,7 @@ public class PregnancyOutcomeFormUtil extends FormUtil<PregnancyOutcome> {
         collectedData.formUuid = result.getFormUuid();
         collectedData.formFilename = result.getFilename();
         collectedData.createdDate = new Date();
+        collectedData.extension.setTarget(this.getFormExtension(collectedData.formEntity));
         this.boxCoreCollectedData.put(collectedData);
 
         if (listener != null) {

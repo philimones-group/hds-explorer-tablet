@@ -9,6 +9,7 @@ import io.objectbox.annotation.Convert;
 import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Id;
 import io.objectbox.annotation.Unique;
+import io.objectbox.relation.ToOne;
 
 @Entity
 public class CoreCollectedData {
@@ -46,7 +47,18 @@ public class CoreCollectedData {
 
     public String  uploadedError;
 
+    public ToOne<CoreFormExtension> extension;
+
+    public boolean extensionCollected;
+
+    public String extensionCollectedUri;
+
     public CoreCollectedData() {
         this.createdDate = new Date();
+    }
+
+    public CoreCollectedData(CoreFormEntity formEntity) {
+        this();
+        this.formEntity = formEntity;
     }
 }

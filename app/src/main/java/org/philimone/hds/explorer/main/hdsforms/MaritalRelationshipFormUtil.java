@@ -31,6 +31,7 @@ import org.philimone.hds.forms.model.XmlFormResult;
 import java.util.Date;
 import java.util.Map;
 
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import io.objectbox.Box;
 import io.objectbox.query.QueryBuilder;
@@ -51,8 +52,8 @@ public class MaritalRelationshipFormUtil extends FormUtil<MaritalRelationship> {
     private int minimunSpouseAge;
     private boolean genderChecking;
 
-    public MaritalRelationshipFormUtil(FragmentManager fragmentManager, Context context, Visit visit, Member spouseA, FormUtilListener<MaritalRelationship> listener){
-        super(fragmentManager, context, FormUtil.getMaritalRelationshipForm(context), listener);
+    public MaritalRelationshipFormUtil(Fragment fragment, Context context, Visit visit, Member spouseA, FormUtilListener<MaritalRelationship> listener){
+        super(fragment, context, FormUtil.getMaritalRelationshipForm(context), listener);
 
         this.visit = visit;
         this.spouseA = spouseA;
@@ -61,8 +62,8 @@ public class MaritalRelationshipFormUtil extends FormUtil<MaritalRelationship> {
         initialize();
     }
 
-    public MaritalRelationshipFormUtil(FragmentManager fragmentManager, Context context, Visit visit, MaritalRelationship relationshipToEdit, FormUtilListener<MaritalRelationship> listener){
-        super(fragmentManager, context, FormUtil.getMaritalRelationshipForm(context), relationshipToEdit, listener);
+    public MaritalRelationshipFormUtil(Fragment fragment, Context context, Visit visit, MaritalRelationship relationshipToEdit, FormUtilListener<MaritalRelationship> listener){
+        super(fragment, context, FormUtil.getMaritalRelationshipForm(context), relationshipToEdit, listener);
 
         this.visit = visit;
 

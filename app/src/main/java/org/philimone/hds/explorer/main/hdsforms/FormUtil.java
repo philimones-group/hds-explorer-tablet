@@ -1,39 +1,60 @@
 package org.philimone.hds.explorer.main.hdsforms;
 
 import android.content.Context;
+import android.net.Uri;
+import android.util.Log;
 
 import org.philimone.hds.explorer.R;
+import org.philimone.hds.explorer.data.FormDataLoader;
 import org.philimone.hds.explorer.database.Bootstrap;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
 import org.philimone.hds.explorer.database.Queries;
 import org.philimone.hds.explorer.model.ApplicationParam;
+import org.philimone.hds.explorer.model.CollectedData;
+import org.philimone.hds.explorer.model.CollectedData_;
 import org.philimone.hds.explorer.model.CoreCollectedData;
 import org.philimone.hds.explorer.model.CoreEntity;
 import org.philimone.hds.explorer.model.CoreFormExtension;
 import org.philimone.hds.explorer.model.CoreFormExtension_;
+import org.philimone.hds.explorer.model.Form;
+import org.philimone.hds.explorer.model.FormSubject;
 import org.philimone.hds.explorer.model.Round;
 import org.philimone.hds.explorer.model.Round_;
 import org.philimone.hds.explorer.model.User;
 import org.philimone.hds.explorer.model.enums.CoreFormEntity;
 import org.philimone.hds.explorer.settings.generator.CodeGeneratorService;
+import org.philimone.hds.explorer.widget.DialogFactory;
 import org.philimone.hds.forms.listeners.FormCollectionListener;
 import org.philimone.hds.forms.main.FormFragment;
+import org.philimone.hds.forms.model.CollectedDataMap;
+import org.philimone.hds.forms.model.ColumnValue;
 import org.philimone.hds.forms.model.HForm;
 import org.philimone.hds.forms.model.PreloadMap;
+import org.philimone.hds.forms.model.RepeatColumnValue;
 import org.philimone.hds.forms.parsers.ExcelFormParser;
 
+import java.io.File;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import io.objectbox.Box;
 import io.objectbox.query.QueryBuilder;
+import mz.betainteractive.odk.FormUtilities;
+import mz.betainteractive.odk.listener.OdkFormResultListener;
+import mz.betainteractive.odk.model.FilledForm;
+import mz.betainteractive.utilities.StringUtil;
 
 public abstract class FormUtil<T extends CoreEntity> implements FormCollectionListener {
 
     protected enum Mode { CREATE, EDIT }
 
+    protected Fragment fragment;
     protected FragmentManager fragmentManager;
     protected Context context;
     protected HForm form;
@@ -52,6 +73,7 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
     protected Box<Round> boxRounds;
     protected Box<CoreCollectedData> boxCoreCollectedData;
     protected Box<CoreFormExtension> boxCoreFormExtension;
+    protected Box<CollectedData> boxCollectedData;
 
     protected Mode currentMode;
     
@@ -61,8 +83,9 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
 
     /* Load a Editor */
 
-    protected FormUtil(FragmentManager fragmentManager, Context context, HForm hform, FormUtilListener<T> listener){
-        this.fragmentManager = fragmentManager;
+    protected FormUtil(Fragment fragment, Context context, HForm hform, FormUtilListener<T> listener){
+        this.fragment = fragment;
+        this.fragmentManager = fragment.getActivity().getSupportFragmentManager();
         this.context = context;
         this.form = hform;
         this.user = Bootstrap.getCurrentUser();
@@ -70,12 +93,13 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
         this.preloadedMap = new PreloadMap();
 
         this.currentMode = Mode.CREATE;
-        
+
         this.listener = listener;
     }
 
-    protected FormUtil(FragmentManager fragmentManager, Context context, HForm hform, T existentEntity, FormUtilListener<T> listener){
-        this.fragmentManager = fragmentManager;
+    protected FormUtil(Fragment fragment, Context context, HForm hform, T existentEntity, FormUtilListener<T> listener){
+        this.fragment = fragment;
+        this.fragmentManager = fragment.getActivity().getSupportFragmentManager();
         this.context = context;
         this.form = hform;
         this.user = Bootstrap.getCurrentUser();
@@ -93,11 +117,16 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
         this.boxRounds = ObjectBoxDatabase.get().boxFor(Round.class);
         this.boxCoreCollectedData = ObjectBoxDatabase.get().boxFor(CoreCollectedData.class);
         this.boxCoreFormExtension = ObjectBoxDatabase.get().boxFor(CoreFormExtension.class);
+        this.boxCollectedData = ObjectBoxDatabase.get().boxFor(CollectedData.class);
     }
 
     protected void initialize() {
         this.currentRound = this.boxRounds.query().order(Round_.roundNumber, QueryBuilder.DESCENDING).build().findFirst();
         postExecution = Queries.getApplicationParamValue(this.boxAppParams, ApplicationParam.HFORM_POST_EXECUTION).equals("true");
+    }
+
+    public Context getContext(){
+        return context;
     }
 
     protected abstract void preloadValues();

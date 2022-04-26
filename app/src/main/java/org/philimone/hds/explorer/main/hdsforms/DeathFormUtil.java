@@ -3,6 +3,7 @@ package org.philimone.hds.explorer.main.hdsforms;
 import android.content.Context;
 import android.util.Log;
 
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import org.philimone.hds.explorer.R;
@@ -74,8 +75,8 @@ public class DeathFormUtil extends FormUtil<Death> {
     private List<Member> householdResidents;
     private int minimunHeadAge;
 
-    public DeathFormUtil(FragmentManager fragmentManager, Context context, Visit visit, Household household, Member member, FormUtilListener<Death> listener){
-        super(fragmentManager, context, FormUtil.getDeathForm(context), listener);
+    public DeathFormUtil(Fragment fragment, Context context, Visit visit, Household household, Member member, FormUtilListener<Death> listener){
+        super(fragment, context, FormUtil.getDeathForm(context), listener);
 
         //Log.d("enu-household", ""+household);
 
@@ -87,8 +88,8 @@ public class DeathFormUtil extends FormUtil<Death> {
         initialize();
     }
 
-    public DeathFormUtil(FragmentManager fragmentManager, Context context, Visit visit, Household household, Death deathToEdit, FormUtilListener<Death> listener){
-        super(fragmentManager, context, FormUtil.getDeathForm(context), deathToEdit, listener);
+    public DeathFormUtil(Fragment fragment, Context context, Visit visit, Household household, Death deathToEdit, FormUtilListener<Death> listener){
+        super(fragment, context, FormUtil.getDeathForm(context), deathToEdit, listener);
 
         this.household = household;
         this.visit = visit;

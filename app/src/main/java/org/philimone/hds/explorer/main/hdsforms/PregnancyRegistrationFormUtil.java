@@ -3,6 +3,7 @@ package org.philimone.hds.explorer.main.hdsforms;
 import android.content.Context;
 import android.util.Log;
 
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import org.philimone.hds.explorer.R;
@@ -45,8 +46,8 @@ public class PregnancyRegistrationFormUtil extends FormUtil<PregnancyRegistratio
     private PregnancyStatus loadedPregnancyStatus;
     private int minimunMotherAge;
 
-    public PregnancyRegistrationFormUtil(FragmentManager fragmentManager, Context context, Visit visit, Household household, Member member, FormUtilListener<PregnancyRegistration> listener){
-        super(fragmentManager, context, FormUtil.getPregnancyRegistrationForm(context), listener);
+    public PregnancyRegistrationFormUtil(Fragment fragment, Context context, Visit visit, Household household, Member member, FormUtilListener<PregnancyRegistration> listener){
+        super(fragment, context, FormUtil.getPregnancyRegistrationForm(context), listener);
 
         //Log.d("enu-household", ""+household);
 
@@ -58,8 +59,8 @@ public class PregnancyRegistrationFormUtil extends FormUtil<PregnancyRegistratio
         initialize();
     }
 
-    public PregnancyRegistrationFormUtil(FragmentManager fragmentManager, Context context, Visit visit, Household household, Member member, PregnancyStatus pregnancyStatus, FormUtilListener<PregnancyRegistration> listener){
-        super(fragmentManager, context, FormUtil.getPregnancyRegistrationForm(context), listener);
+    public PregnancyRegistrationFormUtil(Fragment fragment, Context context, Visit visit, Household household, Member member, PregnancyStatus pregnancyStatus, FormUtilListener<PregnancyRegistration> listener){
+        super(fragment, context, FormUtil.getPregnancyRegistrationForm(context), listener);
 
         //Log.d("enu-household", ""+household);
 
@@ -77,8 +78,8 @@ public class PregnancyRegistrationFormUtil extends FormUtil<PregnancyRegistratio
         }
     }
 
-    public PregnancyRegistrationFormUtil(FragmentManager fragmentManager, Context context, Visit visit, Household household, PregnancyRegistration pregToEdit, FormUtilListener<PregnancyRegistration> listener){
-        super(fragmentManager, context, FormUtil.getPregnancyRegistrationForm(context), pregToEdit, listener);
+    public PregnancyRegistrationFormUtil(Fragment fragment, Context context, Visit visit, Household household, PregnancyRegistration pregToEdit, FormUtilListener<PregnancyRegistration> listener){
+        super(fragment, context, FormUtil.getPregnancyRegistrationForm(context), pregToEdit, listener);
 
         this.household = household;
         this.visit = visit;

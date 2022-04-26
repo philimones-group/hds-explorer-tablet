@@ -3,6 +3,7 @@ package org.philimone.hds.explorer.main.hdsforms;
 import android.content.Context;
 import android.util.Log;
 
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import org.philimone.hds.explorer.R;
@@ -66,8 +67,8 @@ public class ExternalInMigrationFormUtil extends FormUtil<Member> {
     private int minimunFatherAge;
     private int minimunMotherAge;
 
-    public ExternalInMigrationFormUtil(FragmentManager fragmentManager, Context context, Visit visit, Household household, FormUtilListener<Member> listener){
-        super(fragmentManager, context, FormUtil.getExternalInMigrationForm(context), listener);
+    public ExternalInMigrationFormUtil(Fragment fragment, Context context, Visit visit, Household household, FormUtilListener<Member> listener){
+        super(fragment, context, FormUtil.getExternalInMigrationForm(context), listener);
 
         //Log.d("enu-household", ""+household);
 
@@ -78,8 +79,8 @@ public class ExternalInMigrationFormUtil extends FormUtil<Member> {
         initialize();
     }
 
-    public ExternalInMigrationFormUtil(FragmentManager fragmentManager, Context context, Visit visit, Household household, Member memberToEdit, FormUtilListener<Member> listener){
-        super(fragmentManager, context, FormUtil.getExternalInMigrationForm(context), memberToEdit, listener);
+    public ExternalInMigrationFormUtil(Fragment fragment, Context context, Visit visit, Household household, Member memberToEdit, FormUtilListener<Member> listener){
+        super(fragment, context, FormUtil.getExternalInMigrationForm(context), memberToEdit, listener);
 
         this.household = household;
         this.visit = visit;

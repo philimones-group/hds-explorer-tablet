@@ -3,6 +3,7 @@ package org.philimone.hds.explorer.main.hdsforms;
 import android.content.Context;
 import android.util.Log;
 
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import org.philimone.hds.explorer.R;
@@ -38,8 +39,8 @@ public class IncompleteVisitFormUtil extends FormUtil<IncompleteVisit> {
     private Member member;
     private IncompleteVisit currentIncompleteVisit;
 
-    public IncompleteVisitFormUtil(FragmentManager fragmentManager, Context context, Visit visit, Member member, FormUtilListener<IncompleteVisit> listener){
-        super(fragmentManager, context, FormUtil.getIncompleteVisitForm(context), listener);
+    public IncompleteVisitFormUtil(Fragment fragment, Context context, Visit visit, Member member, FormUtilListener<IncompleteVisit> listener){
+        super(fragment, context, FormUtil.getIncompleteVisitForm(context), listener);
 
         this.visit = visit;
         this.member = member;
@@ -48,8 +49,8 @@ public class IncompleteVisitFormUtil extends FormUtil<IncompleteVisit> {
         initialize();
     }
 
-    public IncompleteVisitFormUtil(FragmentManager fragmentManager, Context context, Visit visit, IncompleteVisit incompleteVisitToEdit, FormUtilListener<IncompleteVisit> listener){
-        super(fragmentManager, context, FormUtil.getIncompleteVisitForm(context), incompleteVisitToEdit, listener);
+    public IncompleteVisitFormUtil(Fragment fragment, Context context, Visit visit, IncompleteVisit incompleteVisitToEdit, FormUtilListener<IncompleteVisit> listener){
+        super(fragment, context, FormUtil.getIncompleteVisitForm(context), incompleteVisitToEdit, listener);
 
         this.visit = visit;
 

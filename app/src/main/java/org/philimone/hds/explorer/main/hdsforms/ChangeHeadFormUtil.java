@@ -3,6 +3,7 @@ package org.philimone.hds.explorer.main.hdsforms;
 import android.content.Context;
 import android.util.Log;
 
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import org.philimone.hds.explorer.R;
@@ -65,8 +66,8 @@ public class ChangeHeadFormUtil extends FormUtil<Member> {
     private List<Member> householdResidents;
     private int minimunHeadAge;
 
-    public ChangeHeadFormUtil(FragmentManager fragmentManager, Context context, Visit visit, Household household, FormUtilListener<Member> listener){
-        super(fragmentManager, context, FormUtil.getChangeHeadForm(context), listener);
+    public ChangeHeadFormUtil(Fragment fragment, Context context, Visit visit, Household household, FormUtilListener<Member> listener){
+        super(fragment, context, FormUtil.getChangeHeadForm(context), listener);
 
         //Log.d("enu-household", ""+household);
 
@@ -77,8 +78,8 @@ public class ChangeHeadFormUtil extends FormUtil<Member> {
         initialize();
     }
 
-    public ChangeHeadFormUtil(FragmentManager fragmentManager, Context context, Visit visit, Household household, Member newHeadMember, FormUtilListener<Member> listener){
-        super(fragmentManager, context, FormUtil.getChangeHeadForm(context), newHeadMember, listener);
+    public ChangeHeadFormUtil(Fragment fragment, Context context, Visit visit, Household household, Member newHeadMember, FormUtilListener<Member> listener){
+        super(fragment, context, FormUtil.getChangeHeadForm(context), newHeadMember, listener);
 
         this.household = household;
         this.visit = visit;

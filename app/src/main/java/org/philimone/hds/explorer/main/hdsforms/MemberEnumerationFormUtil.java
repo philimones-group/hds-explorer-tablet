@@ -35,6 +35,7 @@ import org.philimone.hds.forms.model.XmlFormResult;
 import java.util.Date;
 import java.util.Map;
 
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import io.objectbox.Box;
 import io.objectbox.query.QueryBuilder;
@@ -59,8 +60,8 @@ public class MemberEnumerationFormUtil extends FormUtil<Member> {
     private int minimunFatherAge;
     private int minimunMotherAge;
 
-    public MemberEnumerationFormUtil(FragmentManager fragmentManager, Context context, Visit visit, Household household, FormUtilListener<Member> listener){
-        super(fragmentManager, context, FormUtil.getMemberEnuForm(context), listener);
+    public MemberEnumerationFormUtil(Fragment fragment, Context context, Visit visit, Household household, FormUtilListener<Member> listener){
+        super(fragment, context, FormUtil.getMemberEnuForm(context), listener);
 
         //Log.d("enu-household", ""+household);
 
@@ -71,8 +72,8 @@ public class MemberEnumerationFormUtil extends FormUtil<Member> {
         initialize();
     }
 
-    public MemberEnumerationFormUtil(FragmentManager fragmentManager, Context context, Visit visit, Household household, Member memberToEdit, FormUtilListener<Member> listener){
-        super(fragmentManager, context, FormUtil.getMemberEnuForm(context), memberToEdit, listener);
+    public MemberEnumerationFormUtil(Fragment fragment, Context context, Visit visit, Household household, Member memberToEdit, FormUtilListener<Member> listener){
+        super(fragment, context, FormUtil.getMemberEnuForm(context), memberToEdit, listener);
 
         this.household = household;
         this.visit = visit;

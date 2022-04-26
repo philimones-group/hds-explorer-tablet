@@ -407,7 +407,7 @@ public class HouseholdVisitFragment extends Fragment {
         //this.selectedMember
         Log.d("on-incomplete-clicked", ""+this.selectedMember);
 
-        IncompleteVisitFormUtil formUtil = new IncompleteVisitFormUtil(getActivity().getSupportFragmentManager(), this.getContext(), this.visit, this.selectedMember, new FormUtilListener<IncompleteVisit>() {
+        IncompleteVisitFormUtil formUtil = new IncompleteVisitFormUtil(this, this.getContext(), this.visit, this.selectedMember, new FormUtilListener<IncompleteVisit>() {
             @Override
             public void onNewEntityCreated(IncompleteVisit entity) {
                 loadDataToListViews();
@@ -431,7 +431,7 @@ public class HouseholdVisitFragment extends Fragment {
 
         Log.d("on-enum-click-household", ""+this.household);
 
-        MemberEnumerationFormUtil formUtil = new MemberEnumerationFormUtil(getActivity().getSupportFragmentManager(), this.getContext(), this.visit, this.household, new FormUtilListener<Member>() {
+        MemberEnumerationFormUtil formUtil = new MemberEnumerationFormUtil(this, this.getContext(), this.visit, this.household, new FormUtilListener<Member>() {
             @Override
             public void onNewEntityCreated(Member member) {
                 selectedMember = member;
@@ -459,7 +459,7 @@ public class HouseholdVisitFragment extends Fragment {
 
         Log.d("on-marital-clicked", ""+this.selectedMember);
 
-        MaritalRelationshipFormUtil formUtil = new MaritalRelationshipFormUtil(getActivity().getSupportFragmentManager(), this.getContext(), this.visit, this.selectedMember, new FormUtilListener<MaritalRelationship>() {
+        MaritalRelationshipFormUtil formUtil = new MaritalRelationshipFormUtil(this, this.getContext(), this.visit, this.selectedMember, new FormUtilListener<MaritalRelationship>() {
             @Override
             public void onNewEntityCreated(MaritalRelationship maritalRelationship) {
                 loadDataToListViews();
@@ -482,7 +482,7 @@ public class HouseholdVisitFragment extends Fragment {
     private void onExtInMigrationClicked() {
         Log.d("on-extinmigration", ""+this.household);
 
-        ExternalInMigrationFormUtil formUtil = new ExternalInMigrationFormUtil(getActivity().getSupportFragmentManager(), this.getContext(), this.visit, this.household, new FormUtilListener<Member>() {
+        ExternalInMigrationFormUtil formUtil = new ExternalInMigrationFormUtil(this, this.getContext(), this.visit, this.household, new FormUtilListener<Member>() {
             @Override
             public void onNewEntityCreated(Member member) {
                 selectedMember = member;
@@ -507,7 +507,7 @@ public class HouseholdVisitFragment extends Fragment {
     private void onIntInmigrationClicked() {
         Log.d("on-int-tinmigration", ""+this.household);
 
-        InternalInMigrationFormUtil formUtil = new InternalInMigrationFormUtil(getActivity().getSupportFragmentManager(), this.getContext(), this.visit, this.household, new FormUtilListener<Inmigration>() {
+        InternalInMigrationFormUtil formUtil = new InternalInMigrationFormUtil(this, this.getContext(), this.visit, this.household, new FormUtilListener<Inmigration>() {
             @Override
             public void onNewEntityCreated(Inmigration inmigration) {
                 selectedMember = boxMembers.query().equal(Member_.code, inmigration.memberCode, QueryBuilder.StringOrder.CASE_SENSITIVE).build().findFirst();
@@ -532,7 +532,7 @@ public class HouseholdVisitFragment extends Fragment {
     private void onOutmigrationClicked() {
         Log.d("on-outmigration", ""+this.selectedMember);
 
-        OutmigrationFormUtil formUtil = new OutmigrationFormUtil(getActivity().getSupportFragmentManager(), this.getContext(), this.visit, this.household, this.selectedMember, new FormUtilListener<Outmigration>() {
+        OutmigrationFormUtil formUtil = new OutmigrationFormUtil(this, this.getContext(), this.visit, this.household, this.selectedMember, new FormUtilListener<Outmigration>() {
             @Override
             public void onNewEntityCreated(Outmigration outmigration) {
                 loadDataToListViews();
@@ -555,7 +555,7 @@ public class HouseholdVisitFragment extends Fragment {
     private void onPregnancyRegistrationClicked() {
         Log.d("on-pregregistration", ""+this.selectedMember);
 
-        PregnancyRegistrationFormUtil formUtil = new PregnancyRegistrationFormUtil(getActivity().getSupportFragmentManager(), this.getContext(), this.visit, this.household, this.selectedMember, new FormUtilListener<PregnancyRegistration>() {
+        PregnancyRegistrationFormUtil formUtil = new PregnancyRegistrationFormUtil(this, this.getContext(), this.visit, this.household, this.selectedMember, new FormUtilListener<PregnancyRegistration>() {
             @Override
             public void onNewEntityCreated(PregnancyRegistration pregnancyRegistration) {
                 loadDataToListViews();
@@ -578,7 +578,7 @@ public class HouseholdVisitFragment extends Fragment {
     private void onPregnancyOutcomeClicked() {
         Log.d("on-pregoutcome", ""+this.selectedMember);
 
-        new PregnancyOutcomeFormUtil(getActivity().getSupportFragmentManager(), this.getContext(), this.visit, this.household, this.selectedMember, new FormUtilListener<PregnancyOutcome>() {
+        new PregnancyOutcomeFormUtil(this, this.getContext(), this.visit, this.household, this.selectedMember, new FormUtilListener<PregnancyOutcome>() {
             @Override
             public void onNewEntityCreated(PregnancyOutcome pregnancyOutcome) {
                 loadDataToListViews();
@@ -599,7 +599,7 @@ public class HouseholdVisitFragment extends Fragment {
     private void onDeathClicked() {
         Log.d("on-death", ""+this.selectedMember);
 
-        DeathFormUtil formUtil = new DeathFormUtil(getActivity().getSupportFragmentManager(), this.getContext(), this.visit, this.household, this.selectedMember, new FormUtilListener<Death>() {
+        DeathFormUtil formUtil = new DeathFormUtil(this, this.getContext(), this.visit, this.household, this.selectedMember, new FormUtilListener<Death>() {
             @Override
             public void onNewEntityCreated(Death death) {
                 loadDataToListViews();
@@ -622,7 +622,7 @@ public class HouseholdVisitFragment extends Fragment {
     private void onChangeHeadClicked() {
         Log.d("on-changehead", ""+this.household.code);
 
-        ChangeHeadFormUtil formUtil = new ChangeHeadFormUtil(getActivity().getSupportFragmentManager(), this.getContext(), this.visit, this.household, new FormUtilListener<Member>() {
+        ChangeHeadFormUtil formUtil = new ChangeHeadFormUtil(this, this.getContext(), this.visit, this.household, new FormUtilListener<Member>() {
             @Override
             public void onNewEntityCreated(Member newHeadMember) {
                 loadDataToListViews();

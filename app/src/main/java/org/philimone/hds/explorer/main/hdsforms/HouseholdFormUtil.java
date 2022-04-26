@@ -20,6 +20,7 @@ import org.philimone.hds.forms.model.XmlFormResult;
 import java.util.Date;
 import java.util.Map;
 
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import io.objectbox.Box;
 import io.objectbox.query.QueryBuilder;
@@ -31,8 +32,8 @@ public class HouseholdFormUtil extends FormUtil<Household> {
     private Box<CoreCollectedData> boxCoreCollectedData;
     private Region region;
 
-    public HouseholdFormUtil(FragmentManager fragmentManager, Context context, Region region, FormUtilListener<Household> listener){
-        super(fragmentManager, context, FormUtil.getHouseholdForm(context), listener);
+    public HouseholdFormUtil(Fragment fragment, Context context, Region region, FormUtilListener<Household> listener){
+        super(fragment, context, FormUtil.getHouseholdForm(context), listener);
 
         this.region = region;
 

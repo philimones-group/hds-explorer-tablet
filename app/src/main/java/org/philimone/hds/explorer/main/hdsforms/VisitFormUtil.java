@@ -25,6 +25,7 @@ import org.philimone.hds.forms.model.XmlFormResult;
 import java.util.Date;
 import java.util.Map;
 
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import io.objectbox.Box;
 import io.objectbox.query.QueryBuilder;
@@ -40,8 +41,8 @@ public class VisitFormUtil extends FormUtil<Visit> {
     private Member respondentMember;
     private boolean newHouseholdCreated;
 
-    public VisitFormUtil(FragmentManager fragmentManager, Context context, Household household, boolean newHouseholdCreated, FormUtilListener<Visit> listener){
-        super(fragmentManager, context, FormUtil.getVisitForm(context), listener);
+    public VisitFormUtil(Fragment fragment, Context context, Household household, boolean newHouseholdCreated, FormUtilListener<Visit> listener){
+        super(fragment, context, FormUtil.getVisitForm(context), listener);
 
         this.household = household;
         this.newHouseholdCreated = newHouseholdCreated;
@@ -50,8 +51,8 @@ public class VisitFormUtil extends FormUtil<Visit> {
         initialize();
     }
 
-    public VisitFormUtil(FragmentManager fragmentManager, Context context, Household household, Visit visit, FormUtilListener<Visit> listener){
-        super(fragmentManager, context, FormUtil.getVisitForm(context), visit, listener);
+    public VisitFormUtil(Fragment fragment, Context context, Household household, Visit visit, FormUtilListener<Visit> listener){
+        super(fragment, context, FormUtil.getVisitForm(context), visit, listener);
 
         this.household = household;
 

@@ -528,13 +528,20 @@ public class PregnancyOutcomeFormUtil extends FormUtil<PregnancyOutcome> {
         collectedData.formUuid = result.getFormUuid();
         collectedData.formFilename = result.getFilename();
         collectedData.createdDate = new Date();
+        collectedData.collectedId = collectedValues.get(HForm.COLUMN_ID).getValue();
         collectedData.extension.setTarget(this.getFormExtension(collectedData.formEntity));
         this.boxCoreCollectedData.put(collectedData);
 
-        if (listener != null) {
-            listener.onNewEntityCreated(pregnancyOutcome);
-        }
+        this.entity = pregnancyOutcome;
+        this.collectExtensionForm(collectedValues);
 
+    }
+
+    @Override
+    protected void onFinishedExtensionCollection() {
+        if (listener != null) {
+            listener.onNewEntityCreated(this.entity);
+        }
     }
 
     private String addAffectedMembers(String members, String memberCode) {

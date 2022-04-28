@@ -133,6 +133,10 @@
     <string name="core_form_group_item_extension_collected_lbl">Collected</string>
     <string name="core_form_group_item_extension_not_required_lbl">Not Required</string>
 
+    <string name="form_util_extension_collect_lbl">Form Extension</string>
+    <string name="form_util_extension_collect_optional_lbl">Do you want to collect more details about "%1$s" using the Form Extension?</string>
+    <string name="form_util_extension_collect_required_msg_lbl">You will now be redirected to collect more details about "%1$s"!</string>
+
     <!-- SplashScreen -->
     <string name="splashscreen_hds_explorer_name_1">Health and Demographics</string>
     <string name="splashscreen_hds_explorer_name_2">Surveyllance Data Explorer</string>

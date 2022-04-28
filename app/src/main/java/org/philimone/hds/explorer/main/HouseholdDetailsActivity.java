@@ -524,7 +524,7 @@ public class HouseholdDetailsActivity extends AppCompatActivity implements House
 
         if (lastVisit != null && lastVisit.recentlyCreated) {
 
-            VisitFormUtil visitFormUtil = new VisitFormUtil(this.getSupportFragmentManager(), this, this.household, lastVisit, new FormUtilListener<Visit>() {
+            VisitFormUtil visitFormUtil = new VisitFormUtil(this, this, this.household, lastVisit, new FormUtilListener<Visit>() {
                 @Override
                 public void onNewEntityCreated(Visit entity) { }
 
@@ -547,7 +547,7 @@ public class HouseholdDetailsActivity extends AppCompatActivity implements House
     /* Household Form */
     private void loadNewHouseholdForm(){
 
-        HouseholdFormUtil householdForm = new HouseholdFormUtil(this.getSupportFragmentManager(), this, this.region, new FormUtilListener<Household>() {
+        HouseholdFormUtil householdForm = new HouseholdFormUtil(this, this, this.region, new FormUtilListener<Household>() {
             @Override
             public void onNewEntityCreated(Household household) {
                 HouseholdDetailsActivity.this.household = household;
@@ -572,7 +572,7 @@ public class HouseholdDetailsActivity extends AppCompatActivity implements House
     /* Visit Form */
     private void loadNewVisitForm(boolean newHouseholdCreated){
 
-        VisitFormUtil visitFormUtil = new VisitFormUtil(this.getSupportFragmentManager(), this, this.household, newHouseholdCreated, new FormUtilListener<Visit>() {
+        VisitFormUtil visitFormUtil = new VisitFormUtil(this, this, this.household, newHouseholdCreated, new FormUtilListener<Visit>() {
             @Override
             public void onNewEntityCreated(Visit entity) {
                 HouseholdDetailsActivity.this.visit = entity;

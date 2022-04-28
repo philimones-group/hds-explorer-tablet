@@ -287,13 +287,20 @@ public class PregnancyRegistrationFormUtil extends FormUtil<PregnancyRegistratio
         collectedData.formUuid = result.getFormUuid();
         collectedData.formFilename = result.getFilename();
         collectedData.createdDate = new Date();
+        collectedData.collectedId = collectedValues.get(HForm.COLUMN_ID).getValue();
         collectedData.extension.setTarget(this.getFormExtension(collectedData.formEntity));
         this.boxCoreCollectedData.put(collectedData);
 
-        if (listener != null) {
-            listener.onNewEntityCreated(pregnancy);
-        }
+        this.entity = pregnancy;
+        this.collectExtensionForm(collectedValues);
 
+    }
+
+    @Override
+    protected void onFinishedExtensionCollection() {
+        if (listener != null) {
+            listener.onNewEntityCreated(this.entity);
+        }
     }
 
     @Override

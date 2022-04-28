@@ -56,6 +56,10 @@ public class FilledForm {
 
     public void put(String variable, Object value){
     	values.put(variable, value);
+
+    	if (value instanceof Map){
+    		mapRepeatGroup.put(variable, (Map<String, String>) value);
+		}
     }
 
 	public void putAll(Map<String, Object> mapValues){
@@ -135,6 +139,9 @@ public class FilledForm {
 	}
 
 	/*Repeat Groups*/
+	public boolean isRepeatGroup(String variableName) {
+		return mapRepeatGroup.containsKey(variableName);
+	}
 
 	public boolean isMemberRepeatGroup(String variableName){
 		String value = values.get(variableName)+"";

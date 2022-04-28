@@ -44,6 +44,8 @@ public class CollectedData implements Serializable {
 
     @Convert(converter = SubjectEntityConverter.class, dbType = String.class)
     public SubjectEntity recordEntity;
+    @Index
+    public String collectedId;
 
     public String collectedBy;
     public String updatedBy;

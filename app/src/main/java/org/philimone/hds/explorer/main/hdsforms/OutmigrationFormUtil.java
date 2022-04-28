@@ -282,13 +282,20 @@ public class OutmigrationFormUtil extends FormUtil<Outmigration> {
         collectedData.formUuid = result.getFormUuid();
         collectedData.formFilename = result.getFilename();
         collectedData.createdDate = new Date();
+        collectedData.collectedId = collectedValues.get(HForm.COLUMN_ID).getValue();
         collectedData.extension.setTarget(this.getFormExtension(collectedData.formEntity));
         this.boxCoreCollectedData.put(collectedData);
 
-        if (listener != null) {
-            listener.onNewEntityCreated(outmigration);
-        }
+        this.entity = outmigration;
+        this.collectExtensionForm(collectedValues);
 
+    }
+
+    @Override
+    protected void onFinishedExtensionCollection() {
+        if (listener != null) {
+            listener.onNewEntityCreated(this.entity);
+        }
     }
 
     @Override

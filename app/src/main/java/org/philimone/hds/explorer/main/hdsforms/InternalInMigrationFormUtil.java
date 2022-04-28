@@ -366,6 +366,7 @@ public class InternalInMigrationFormUtil extends FormUtil<Inmigration> {
         collectedData.formUuid = result.getFormUuid();
         collectedData.formFilename = result.getFilename();
         collectedData.createdDate = new Date();
+        collectedData.collectedId = collectedValues.get(HForm.COLUMN_ID).getValue();
         collectedData.extension.setTarget(this.getFormExtension(collectedData.formEntity));
         this.boxCoreCollectedData.put(collectedData);
 
@@ -375,10 +376,16 @@ public class InternalInMigrationFormUtil extends FormUtil<Inmigration> {
             boxHouseholds.put(household);
         }
 
-        if (listener != null) {
-            listener.onNewEntityCreated(inmigration);
-        }
+        this.entity = inmigration;
+        this.collectExtensionForm(collectedValues);
 
+    }
+
+    @Override
+    protected void onFinishedExtensionCollection() {
+        if (listener != null) {
+            listener.onNewEntityCreated(this.entity);
+        }
     }
 
     @Override

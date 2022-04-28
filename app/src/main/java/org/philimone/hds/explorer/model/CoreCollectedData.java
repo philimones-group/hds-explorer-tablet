@@ -8,6 +8,7 @@ import java.util.Date;
 import io.objectbox.annotation.Convert;
 import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Id;
+import io.objectbox.annotation.Index;
 import io.objectbox.annotation.Unique;
 import io.objectbox.relation.ToOne;
 
@@ -46,6 +47,9 @@ public class CoreCollectedData {
     public boolean uploadedWithError;
 
     public String  uploadedError;
+
+    @Index
+    public String collectedId;
 
     public ToOne<CoreFormExtension> extension;
 

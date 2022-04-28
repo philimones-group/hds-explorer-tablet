@@ -93,6 +93,8 @@ public class SyncUploadEntitiesTask extends AsyncTask<Void, Integer, UploadRespo
             case PREGNANCY_OUTCOME:      return url + "/pregnancyoutcomes";
             case DEATH:                  return url + "/deaths";
             case VISIT:                  return url + "/visits";
+            case CHANGE_HOUSEHOLD_HEAD:  return url + "/changeheads";
+            case INCOMPLETE_VISIT:       return url + "/incompletevisits";
             case INVALID_ENUM:           return null;
         }
 

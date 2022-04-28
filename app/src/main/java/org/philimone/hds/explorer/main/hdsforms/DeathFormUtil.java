@@ -489,13 +489,20 @@ public class DeathFormUtil extends FormUtil<Death> {
         collectedData.formUuid = result.getFormUuid();
         collectedData.formFilename = result.getFilename();
         collectedData.createdDate = new Date();
+        collectedData.collectedId = collectedValues.get(HForm.COLUMN_ID).getValue();
         collectedData.extension.setTarget(this.getFormExtension(collectedData.formEntity));
         this.boxCoreCollectedData.put(collectedData);
 
-        if (listener != null) {
-            listener.onNewEntityCreated(death);
-        }
+        this.entity = death;
+        this.collectExtensionForm(collectedValues);
 
+    }
+
+    @Override
+    protected void onFinishedExtensionCollection() {
+        if (listener != null) {
+            listener.onNewEntityCreated(entity);
+        }
     }
 
     private String addAffectedMembers(String members, String memberCode) {

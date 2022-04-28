@@ -133,6 +133,9 @@
     <string name="core_form_group_item_extension_collected_lbl">Colectado</string>
     <string name="core_form_group_item_extension_not_required_lbl">Não é obrigatorio</string>
 
+    <string name="form_util_extension_collect_lbl">Extensão do Formulário</string>
+    <string name="form_util_extension_collect_optional_lbl">Deseja colectar mais detalhes sobre o(a) "%1$s" usando a extensão do Formulário?</string>
+    <string name="form_util_extension_collect_required_msg_lbl">Em breve sera redirecionado para colectar mais detalhes sobre o(a) "%1$s"!</string>
 
     <!-- SplashScreen -->
     <string name="splashscreen_hds_explorer_name_1">Health and Demographics</string>

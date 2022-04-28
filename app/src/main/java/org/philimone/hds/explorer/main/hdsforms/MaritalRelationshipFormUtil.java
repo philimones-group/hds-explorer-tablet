@@ -377,15 +377,21 @@ public class MaritalRelationshipFormUtil extends FormUtil<MaritalRelationship> {
         collectedData.formUuid = result.getFormUuid();
         collectedData.formFilename = result.getFilename();
         collectedData.createdDate = new Date();
+        collectedData.collectedId = collectedValues.get(HForm.COLUMN_ID).getValue();
         collectedData.extension.setTarget(this.getFormExtension(collectedData.formEntity));
 
         boxCoreCollectedData.put(collectedData);
 
+        this.entity = maritalRelationship;
+        this.collectExtensionForm(collectedValues);
 
+    }
+
+    @Override
+    protected void onFinishedExtensionCollection() {
         if (listener != null) {
-            listener.onNewEntityCreated(maritalRelationship);
+            listener.onNewEntityCreated(this.entity);
         }
-
     }
 
     @Override

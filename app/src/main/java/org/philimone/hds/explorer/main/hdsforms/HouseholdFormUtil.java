@@ -20,6 +20,7 @@ import org.philimone.hds.forms.model.XmlFormResult;
 import java.util.Date;
 import java.util.Map;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import io.objectbox.Box;
@@ -34,6 +35,15 @@ public class HouseholdFormUtil extends FormUtil<Household> {
 
     public HouseholdFormUtil(Fragment fragment, Context context, Region region, FormUtilListener<Household> listener){
         super(fragment, context, FormUtil.getHouseholdForm(context), listener);
+
+        this.region = region;
+
+        initBoxes();
+        initialize();
+    }
+
+    public HouseholdFormUtil(AppCompatActivity activity, Context context, Region region, FormUtilListener<Household> listener){
+        super(activity, context, FormUtil.getHouseholdForm(context), listener);
 
         this.region = region;
 
@@ -160,15 +170,21 @@ public class HouseholdFormUtil extends FormUtil<Household> {
         collectedData.formUuid = result.getFormUuid();
         collectedData.formFilename = result.getFilename();
         collectedData.createdDate = new Date();
+        collectedData.collectedId = collectedValues.get(HForm.COLUMN_ID).getValue();
         collectedData.extension.setTarget(this.getFormExtension(collectedData.formEntity));
 
         boxCoreCollectedData.put(collectedData);
 
+        this.entity = household;
+        collectExtensionForm(collectedValues);
 
+    }
+
+    @Override
+    protected void onFinishedExtensionCollection() {
         if (listener != null) {
-            listener.onNewEntityCreated(household);
+            listener.onNewEntityCreated(this.entity);
         }
-
     }
 
     @Override

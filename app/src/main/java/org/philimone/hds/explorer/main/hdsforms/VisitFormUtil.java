@@ -25,6 +25,7 @@ import org.philimone.hds.forms.model.XmlFormResult;
 import java.util.Date;
 import java.util.Map;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import io.objectbox.Box;
@@ -53,6 +54,25 @@ public class VisitFormUtil extends FormUtil<Visit> {
 
     public VisitFormUtil(Fragment fragment, Context context, Household household, Visit visit, FormUtilListener<Visit> listener){
         super(fragment, context, FormUtil.getVisitForm(context), visit, listener);
+
+        this.household = household;
+
+        initBoxes();
+        initialize();
+    }
+
+    public VisitFormUtil(AppCompatActivity activity, Context context, Household household, boolean newHouseholdCreated, FormUtilListener<Visit> listener){
+        super(activity, context, FormUtil.getVisitForm(context), listener);
+
+        this.household = household;
+        this.newHouseholdCreated = newHouseholdCreated;
+
+        initBoxes();
+        initialize();
+    }
+
+    public VisitFormUtil(AppCompatActivity activity, Context context, Household household, Visit visit, FormUtilListener<Visit> listener){
+        super(activity, context, FormUtil.getVisitForm(context), visit, listener);
 
         this.household = household;
 
@@ -237,6 +257,7 @@ public class VisitFormUtil extends FormUtil<Visit> {
             collectedData.formUuid = result.getFormUuid();
             collectedData.formFilename = result.getFilename();
             collectedData.createdDate = new Date();
+        collectedData.collectedId = collectedValues.get(HForm.COLUMN_ID).getValue();
         collectedData.extension.setTarget(this.getFormExtension(collectedData.formEntity));
 
             boxCoreCollectedData.put(collectedData);
@@ -244,6 +265,14 @@ public class VisitFormUtil extends FormUtil<Visit> {
             updateNewHouseholdCoreCollectedData(visit);
         }
 
+        this.entity = visit;
+        this.collectExtensionForm(collectedValues);
+
+    }
+
+    @Override
+    protected void onFinishedExtensionCollection() {
+        Visit visit = this.entity;
         if (listener != null) {
             if (currentMode == Mode.CREATE) {
                 listener.onNewEntityCreated(visit);
@@ -251,7 +280,6 @@ public class VisitFormUtil extends FormUtil<Visit> {
                 listener.onEntityEdited(visit);
             }
         }
-
     }
 
     @Override

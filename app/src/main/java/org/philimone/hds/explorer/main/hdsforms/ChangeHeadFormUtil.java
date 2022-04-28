@@ -283,6 +283,7 @@ public class ChangeHeadFormUtil extends FormUtil<Member> {
 
         return ValidationResult.noErrors();
     }
+
     private boolean isHeadOfHouseholdSomewhere(String memberCode) {
         long count = this.boxHeadRelationships.query(
                 HeadRelationship_.memberCode.equal(memberCode).and(HeadRelationship_.relationshipType.equal(HeadRelationshipType.HEAD_OF_HOUSEHOLD.code))
@@ -407,13 +408,19 @@ public class ChangeHeadFormUtil extends FormUtil<Member> {
         collectedData.formUuid = result.getFormUuid();
         collectedData.formFilename = result.getFilename();
         collectedData.createdDate = new Date();
+        collectedData.collectedId = collectedValues.get(HForm.COLUMN_ID).getValue();
         collectedData.extension.setTarget(this.getFormExtension(collectedData.formEntity));
         this.boxCoreCollectedData.put(collectedData);
 
+        this.collectExtensionForm(collectedValues);
+
+    }
+
+    @Override
+    protected void onFinishedExtensionCollection() {
         if (listener != null) {
             listener.onNewEntityCreated(newHeadMember);
         }
-
     }
 
     private String addAffectedMembers(String members, String memberCode) {

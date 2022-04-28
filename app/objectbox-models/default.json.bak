@@ -103,7 +103,7 @@
     },
     {
       "id": "4:136916130421403055",
-      "lastPropertyId": "17:3542950461871546568",
+      "lastPropertyId": "18:911686321780812726",
       "name": "CollectedData",
       "properties": [
         {
@@ -189,6 +189,13 @@
           "id": "17:3542950461871546568",
           "name": "recordEntity",
           "type": 9
+        },
+        {
+          "id": "18:911686321780812726",
+          "name": "collectedId",
+          "indexId": "96:5550492903331625789",
+          "type": 9,
+          "flags": 2048
         }
       ],
       "relations": []
@@ -1803,7 +1810,7 @@
     },
     {
       "id": "23:4611124115189785343",
-      "lastPropertyId": "21:2999816385167271722",
+      "lastPropertyId": "22:3641773736184406289",
       "name": "CoreCollectedData",
       "properties": [
         {
@@ -1893,6 +1900,14 @@
           "id": "21:2999816385167271722",
           "name": "extensionCollectedUri",
           "type": 9
+        },
+        {
+          "id": "22:3641773736184406289",
+          "name": "extensionId",
+          "indexId": "95:1700250319007294824",
+          "type": 11,
+          "flags": 520,
+          "relationTarget": "CoreFormExtension"
         }
       ],
       "relations": []
@@ -2043,7 +2058,7 @@
     }
   ],
   "lastEntityId": "26:1585784821968195154",
-  "lastIndexId": "94:4134862433521015725",
+  "lastIndexId": "96:5550492903331625789",
   "lastRelationId": "0:0",
   "lastSequenceId": "0:0",
   "modelVersion": 5,

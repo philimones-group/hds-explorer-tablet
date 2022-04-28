@@ -1066,7 +1066,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 		int count = 0;
 		values.clear();
 
-		parser.nextTag(); //<form>
+		parser.nextTag(); //<coreformext>
 		while (notEndOfXmlDoc("coreformexts", parser)) {
 			count++;
 
@@ -1077,7 +1077,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 				parser.next();
 				table.formName = parser.getText();
 				parser.nextTag(); //process </formName>
-				//Log.d(count+"-formName", "value="+ parser.getText());
+				//Log.d(count+"-formName", "value="+ table.formName);
 			}else{
 				table.formName = "";
 				parser.nextTag();

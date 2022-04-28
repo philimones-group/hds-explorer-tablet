@@ -12,8 +12,7 @@ public enum IncompleteVisitReason {
     12. Onde é que a visita esta sendo realizada?
     */
 
-    UNAVAILABLE_TODAY ("UNAVAILABLE_TODAY", R.string.incompleteVisitReason_unavail_today),30+++++
-
+    UNAVAILABLE_TODAY ("UNAVAILABLE_TODAY", R.string.incompleteVisitReason_unavail_today),
     UNAVAILABLE_ROUND ("UNAVAILABLE_ROUND",R.string.incompleteVisitReason_unavail_round),
     UNWILLING         ("UNWILLING",R.string.incompleteVisitReason_unwilling),
     HOSPITALIZED      ("HOSPITALIZED",R.string.incompleteVisitReason_hospitalized),

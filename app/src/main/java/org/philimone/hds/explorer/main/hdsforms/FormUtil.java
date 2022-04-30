@@ -74,7 +74,7 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
     protected Box<CoreFormExtension> boxCoreFormExtension;
     protected Box<CollectedData> boxCollectedData;
 
-    private FormUtilities formUtilities;
+    protected FormUtilities odkFormUtilities;
     private FilledForm lastLoadedForm;
 
     protected Mode currentMode;
@@ -85,7 +85,7 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
 
     /* Load a Editor */
 
-    protected FormUtil(Fragment fragment, Context context, HForm hform, FormUtilListener<T> listener){
+    protected FormUtil(Fragment fragment, Context context, HForm hform, FormUtilities odkFormUtilities, FormUtilListener<T> listener){
         this.fragment = fragment;
         this.fragmentManager = fragment.getActivity().getSupportFragmentManager();
         this.context = context;
@@ -97,12 +97,13 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
         this.currentMode = Mode.CREATE;
 
         //ODK Form Utilities
-        formUtilities = new FormUtilities(fragment, this);
+        this.odkFormUtilities = odkFormUtilities;
+        this.odkFormUtilities.setOdkFormResultListener(this);
 
         this.listener = listener;
     }
 
-    protected FormUtil(Fragment fragment, Context context, HForm hform, T existentEntity, FormUtilListener<T> listener){
+    protected FormUtil(Fragment fragment, Context context, HForm hform, T existentEntity, FormUtilities odkFormUtilities, FormUtilListener<T> listener){
         this.fragment = fragment;
         this.fragmentManager = fragment.getActivity().getSupportFragmentManager();
         this.context = context;
@@ -115,12 +116,13 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
         this.entity = existentEntity;
 
         //ODK Form Utilities
-        formUtilities = new FormUtilities(fragment, this);
+        this.odkFormUtilities = odkFormUtilities;
+        this.odkFormUtilities.setOdkFormResultListener(this);
 
         this.listener = listener;
     }
 
-    protected FormUtil(AppCompatActivity activity, Context context, HForm hform, FormUtilListener<T> listener){
+    protected FormUtil(AppCompatActivity activity, Context context, HForm hform, FormUtilities odkFormUtilities, FormUtilListener<T> listener){
         this.activity = activity;
         this.fragmentManager = activity.getSupportFragmentManager();
         this.context = context;
@@ -132,12 +134,13 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
         this.currentMode = Mode.CREATE;
 
         //ODK Form Utilities
-        formUtilities = new FormUtilities(activity, this);
+        this.odkFormUtilities = odkFormUtilities;
+        this.odkFormUtilities.setOdkFormResultListener(this);
 
         this.listener = listener;
     }
 
-    protected FormUtil(AppCompatActivity activity, Context context, HForm hform, T existentEntity, FormUtilListener<T> listener){
+    protected FormUtil(AppCompatActivity activity, Context context, HForm hform, T existentEntity, FormUtilities odkFormUtilities, FormUtilListener<T> listener){
         this.activity = activity;
         this.fragmentManager = activity.getSupportFragmentManager();
         this.context = context;
@@ -150,7 +153,8 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
         this.entity = existentEntity;
 
         //ODK Form Utilities
-        formUtilities = new FormUtilities(activity, this);
+        this.odkFormUtilities = odkFormUtilities;
+        this.odkFormUtilities.setOdkFormResultListener(this);
 
         this.listener = listener;
     }
@@ -337,9 +341,9 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
         CollectedData collectedData = getCollectedData(filledForm);
 
         if (collectedData == null){
-            formUtilities.loadForm(filledForm);
+            odkFormUtilities.loadForm(filledForm);
         }else{
-            formUtilities.loadForm(filledForm, collectedData.getFormUri(), this); //load existent form
+            odkFormUtilities.loadForm(filledForm, collectedData.getFormUri(), this); //load existent form
         }
 
     }
@@ -349,9 +353,9 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
         this.lastLoadedForm = filledForm;
 
         if (collectedData == null){
-            formUtilities.loadForm(filledForm);
+            odkFormUtilities.loadForm(filledForm);
         }else{
-            formUtilities.loadForm(filledForm, collectedData.getFormUri(), this);
+            odkFormUtilities.loadForm(filledForm, collectedData.getFormUri(), this);
         }
 
     }

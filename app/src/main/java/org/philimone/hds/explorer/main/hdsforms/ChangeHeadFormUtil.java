@@ -47,6 +47,7 @@ import java.util.stream.Collectors;
 
 import io.objectbox.Box;
 import io.objectbox.query.QueryBuilder;
+import mz.betainteractive.odk.FormUtilities;
 import mz.betainteractive.utilities.GeneralUtil;
 import mz.betainteractive.utilities.StringUtil;
 
@@ -66,8 +67,8 @@ public class ChangeHeadFormUtil extends FormUtil<Member> {
     private List<Member> householdResidents;
     private int minimunHeadAge;
 
-    public ChangeHeadFormUtil(Fragment fragment, Context context, Visit visit, Household household, FormUtilListener<Member> listener){
-        super(fragment, context, FormUtil.getChangeHeadForm(context), listener);
+    public ChangeHeadFormUtil(Fragment fragment, Context context, Visit visit, Household household, FormUtilities odkFormUtilities, FormUtilListener<Member> listener){
+        super(fragment, context, FormUtil.getChangeHeadForm(context), odkFormUtilities, listener);
 
         //Log.d("enu-household", ""+household);
 
@@ -78,8 +79,8 @@ public class ChangeHeadFormUtil extends FormUtil<Member> {
         initialize();
     }
 
-    public ChangeHeadFormUtil(Fragment fragment, Context context, Visit visit, Household household, Member newHeadMember, FormUtilListener<Member> listener){
-        super(fragment, context, FormUtil.getChangeHeadForm(context), newHeadMember, listener);
+    public ChangeHeadFormUtil(Fragment fragment, Context context, Visit visit, Household household, Member newHeadMember, FormUtilities odkFormUtilities, FormUtilListener<Member> listener){
+        super(fragment, context, FormUtil.getChangeHeadForm(context), newHeadMember, odkFormUtilities, listener);
 
         this.household = household;
         this.visit = visit;

@@ -26,6 +26,7 @@ import java.util.Date;
 import java.util.Map;
 
 import io.objectbox.Box;
+import mz.betainteractive.odk.FormUtilities;
 import mz.betainteractive.utilities.StringUtil;
 
 public class IncompleteVisitFormUtil extends FormUtil<IncompleteVisit> {
@@ -39,8 +40,8 @@ public class IncompleteVisitFormUtil extends FormUtil<IncompleteVisit> {
     private Member member;
     private IncompleteVisit currentIncompleteVisit;
 
-    public IncompleteVisitFormUtil(Fragment fragment, Context context, Visit visit, Member member, FormUtilListener<IncompleteVisit> listener){
-        super(fragment, context, FormUtil.getIncompleteVisitForm(context), listener);
+    public IncompleteVisitFormUtil(Fragment fragment, Context context, Visit visit, Member member, FormUtilities odkFormUtilities, FormUtilListener<IncompleteVisit> listener){
+        super(fragment, context, FormUtil.getIncompleteVisitForm(context), odkFormUtilities, listener);
 
         this.visit = visit;
         this.member = member;
@@ -49,8 +50,8 @@ public class IncompleteVisitFormUtil extends FormUtil<IncompleteVisit> {
         initialize();
     }
 
-    public IncompleteVisitFormUtil(Fragment fragment, Context context, Visit visit, IncompleteVisit incompleteVisitToEdit, FormUtilListener<IncompleteVisit> listener){
-        super(fragment, context, FormUtil.getIncompleteVisitForm(context), incompleteVisitToEdit, listener);
+    public IncompleteVisitFormUtil(Fragment fragment, Context context, Visit visit, IncompleteVisit incompleteVisitToEdit, FormUtilities odkFormUtilities, FormUtilListener<IncompleteVisit> listener){
+        super(fragment, context, FormUtil.getIncompleteVisitForm(context), incompleteVisitToEdit, odkFormUtilities, listener);
 
         this.visit = visit;
 

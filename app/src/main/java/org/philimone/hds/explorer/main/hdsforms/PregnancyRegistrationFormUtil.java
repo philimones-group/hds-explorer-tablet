@@ -30,6 +30,7 @@ import java.util.Date;
 
 import io.objectbox.Box;
 import io.objectbox.query.QueryBuilder;
+import mz.betainteractive.odk.FormUtilities;
 import mz.betainteractive.utilities.GeneralUtil;
 import mz.betainteractive.utilities.StringUtil;
 
@@ -46,8 +47,8 @@ public class PregnancyRegistrationFormUtil extends FormUtil<PregnancyRegistratio
     private PregnancyStatus loadedPregnancyStatus;
     private int minimunMotherAge;
 
-    public PregnancyRegistrationFormUtil(Fragment fragment, Context context, Visit visit, Household household, Member member, FormUtilListener<PregnancyRegistration> listener){
-        super(fragment, context, FormUtil.getPregnancyRegistrationForm(context), listener);
+    public PregnancyRegistrationFormUtil(Fragment fragment, Context context, Visit visit, Household household, Member member, FormUtilities odkFormUtilities, FormUtilListener<PregnancyRegistration> listener){
+        super(fragment, context, FormUtil.getPregnancyRegistrationForm(context), odkFormUtilities, listener);
 
         //Log.d("enu-household", ""+household);
 
@@ -59,8 +60,8 @@ public class PregnancyRegistrationFormUtil extends FormUtil<PregnancyRegistratio
         initialize();
     }
 
-    public PregnancyRegistrationFormUtil(Fragment fragment, Context context, Visit visit, Household household, Member member, PregnancyStatus pregnancyStatus, FormUtilListener<PregnancyRegistration> listener){
-        super(fragment, context, FormUtil.getPregnancyRegistrationForm(context), listener);
+    public PregnancyRegistrationFormUtil(Fragment fragment, Context context, Visit visit, Household household, Member member, PregnancyStatus pregnancyStatus, FormUtilities odkFormUtilities, FormUtilListener<PregnancyRegistration> listener){
+        super(fragment, context, FormUtil.getPregnancyRegistrationForm(context), odkFormUtilities, listener);
 
         //Log.d("enu-household", ""+household);
 
@@ -78,8 +79,8 @@ public class PregnancyRegistrationFormUtil extends FormUtil<PregnancyRegistratio
         }
     }
 
-    public PregnancyRegistrationFormUtil(Fragment fragment, Context context, Visit visit, Household household, PregnancyRegistration pregToEdit, FormUtilListener<PregnancyRegistration> listener){
-        super(fragment, context, FormUtil.getPregnancyRegistrationForm(context), pregToEdit, listener);
+    public PregnancyRegistrationFormUtil(Fragment fragment, Context context, Visit visit, Household household, PregnancyRegistration pregToEdit, FormUtilities odkFormUtilities, FormUtilListener<PregnancyRegistration> listener){
+        super(fragment, context, FormUtil.getPregnancyRegistrationForm(context), pregToEdit, odkFormUtilities, listener);
 
         this.household = household;
         this.visit = visit;

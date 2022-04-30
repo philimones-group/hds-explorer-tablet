@@ -30,20 +30,20 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import io.objectbox.Box;
 import io.objectbox.query.QueryBuilder;
+import mz.betainteractive.odk.FormUtilities;
 import mz.betainteractive.utilities.StringUtil;
 
 public class VisitFormUtil extends FormUtil<Visit> {
 
     private Box<Household> boxHouseholds;
     private Box<Visit> boxVisits;
-    private Box<CoreCollectedData> boxCoreCollectedData;
 
     private Household household;
     private Member respondentMember;
     private boolean newHouseholdCreated;
 
-    public VisitFormUtil(Fragment fragment, Context context, Household household, boolean newHouseholdCreated, FormUtilListener<Visit> listener){
-        super(fragment, context, FormUtil.getVisitForm(context), listener);
+    public VisitFormUtil(Fragment fragment, Context context, Household household, boolean newHouseholdCreated, FormUtilities odkFormUtilities, FormUtilListener<Visit> listener){
+        super(fragment, context, FormUtil.getVisitForm(context), odkFormUtilities, listener);
 
         this.household = household;
         this.newHouseholdCreated = newHouseholdCreated;
@@ -52,8 +52,8 @@ public class VisitFormUtil extends FormUtil<Visit> {
         initialize();
     }
 
-    public VisitFormUtil(Fragment fragment, Context context, Household household, Visit visit, FormUtilListener<Visit> listener){
-        super(fragment, context, FormUtil.getVisitForm(context), visit, listener);
+    public VisitFormUtil(Fragment fragment, Context context, Household household, Visit visit, FormUtilities odkFormUtilities, FormUtilListener<Visit> listener){
+        super(fragment, context, FormUtil.getVisitForm(context), visit, odkFormUtilities, listener);
 
         this.household = household;
 
@@ -61,8 +61,8 @@ public class VisitFormUtil extends FormUtil<Visit> {
         initialize();
     }
 
-    public VisitFormUtil(AppCompatActivity activity, Context context, Household household, boolean newHouseholdCreated, FormUtilListener<Visit> listener){
-        super(activity, context, FormUtil.getVisitForm(context), listener);
+    public VisitFormUtil(AppCompatActivity activity, Context context, Household household, boolean newHouseholdCreated, FormUtilities odkFormUtilities, FormUtilListener<Visit> listener){
+        super(activity, context, FormUtil.getVisitForm(context), odkFormUtilities, listener);
 
         this.household = household;
         this.newHouseholdCreated = newHouseholdCreated;
@@ -71,8 +71,8 @@ public class VisitFormUtil extends FormUtil<Visit> {
         initialize();
     }
 
-    public VisitFormUtil(AppCompatActivity activity, Context context, Household household, Visit visit, FormUtilListener<Visit> listener){
-        super(activity, context, FormUtil.getVisitForm(context), visit, listener);
+    public VisitFormUtil(AppCompatActivity activity, Context context, Household household, Visit visit, FormUtilities odkFormUtilities, FormUtilListener<Visit> listener){
+        super(activity, context, FormUtil.getVisitForm(context), visit, odkFormUtilities, listener);
 
         this.household = household;
 

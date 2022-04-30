@@ -44,6 +44,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager2.widget.ViewPager2;
 import io.objectbox.Box;
 import io.objectbox.query.QueryBuilder;
+import mz.betainteractive.odk.FormUtilities;
 import mz.betainteractive.utilities.StringUtil;
 
 public class HouseholdDetailsActivity extends AppCompatActivity implements HouseholdDetailsListener {
@@ -96,6 +97,8 @@ public class HouseholdDetailsActivity extends AppCompatActivity implements House
 
     private HouseholdDetailsMode hdetailsMode;
     private boolean loadNewHousehold = false;
+
+    private FormUtilities odkFormUtilities;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -199,6 +202,8 @@ public class HouseholdDetailsActivity extends AppCompatActivity implements House
     }
 
     private void initialize() {
+
+        this.odkFormUtilities = new FormUtilities(this, null);
 
         hhDetailsName = (TextView) findViewById(R.id.hhDetailsName);
         hhDetailsCode = (TextView) findViewById(R.id.hhDetailsCode);
@@ -524,7 +529,7 @@ public class HouseholdDetailsActivity extends AppCompatActivity implements House
 
         if (lastVisit != null && lastVisit.recentlyCreated) {
 
-            VisitFormUtil visitFormUtil = new VisitFormUtil(this, this, this.household, lastVisit, new FormUtilListener<Visit>() {
+            VisitFormUtil visitFormUtil = new VisitFormUtil(this, this, this.household, lastVisit, this.odkFormUtilities, new FormUtilListener<Visit>() {
                 @Override
                 public void onNewEntityCreated(Visit entity) { }
 
@@ -547,7 +552,7 @@ public class HouseholdDetailsActivity extends AppCompatActivity implements House
     /* Household Form */
     private void loadNewHouseholdForm(){
 
-        HouseholdFormUtil householdForm = new HouseholdFormUtil(this, this, this.region, new FormUtilListener<Household>() {
+        HouseholdFormUtil householdForm = new HouseholdFormUtil(this, this, this.region, this.odkFormUtilities, new FormUtilListener<Household>() {
             @Override
             public void onNewEntityCreated(Household household) {
                 HouseholdDetailsActivity.this.household = household;
@@ -572,7 +577,7 @@ public class HouseholdDetailsActivity extends AppCompatActivity implements House
     /* Visit Form */
     private void loadNewVisitForm(boolean newHouseholdCreated){
 
-        VisitFormUtil visitFormUtil = new VisitFormUtil(this, this, this.household, newHouseholdCreated, new FormUtilListener<Visit>() {
+        VisitFormUtil visitFormUtil = new VisitFormUtil(this, this, this.household, newHouseholdCreated, this.odkFormUtilities, new FormUtilListener<Visit>() {
             @Override
             public void onNewEntityCreated(Visit entity) {
                 HouseholdDetailsActivity.this.visit = entity;

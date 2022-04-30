@@ -44,6 +44,7 @@ import java.util.Date;
 
 import io.objectbox.Box;
 import io.objectbox.query.QueryBuilder;
+import mz.betainteractive.odk.FormUtilities;
 import mz.betainteractive.utilities.GeneralUtil;
 import mz.betainteractive.utilities.StringUtil;
 
@@ -67,8 +68,8 @@ public class ExternalInMigrationFormUtil extends FormUtil<Member> {
     private int minimunFatherAge;
     private int minimunMotherAge;
 
-    public ExternalInMigrationFormUtil(Fragment fragment, Context context, Visit visit, Household household, FormUtilListener<Member> listener){
-        super(fragment, context, FormUtil.getExternalInMigrationForm(context), listener);
+    public ExternalInMigrationFormUtil(Fragment fragment, Context context, Visit visit, Household household, FormUtilities odkFormUtilities, FormUtilListener<Member> listener){
+        super(fragment, context, FormUtil.getExternalInMigrationForm(context), odkFormUtilities, listener);
 
         //Log.d("enu-household", ""+household);
 
@@ -79,8 +80,8 @@ public class ExternalInMigrationFormUtil extends FormUtil<Member> {
         initialize();
     }
 
-    public ExternalInMigrationFormUtil(Fragment fragment, Context context, Visit visit, Household household, Member memberToEdit, FormUtilListener<Member> listener){
-        super(fragment, context, FormUtil.getExternalInMigrationForm(context), memberToEdit, listener);
+    public ExternalInMigrationFormUtil(Fragment fragment, Context context, Visit visit, Household household, Member memberToEdit, FormUtilities odkFormUtilities, FormUtilListener<Member> listener){
+        super(fragment, context, FormUtil.getExternalInMigrationForm(context), memberToEdit, odkFormUtilities, listener);
 
         this.household = household;
         this.visit = visit;

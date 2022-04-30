@@ -39,6 +39,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import io.objectbox.Box;
 import io.objectbox.query.QueryBuilder;
+import mz.betainteractive.odk.FormUtilities;
 import mz.betainteractive.utilities.GeneralUtil;
 import mz.betainteractive.utilities.StringUtil;
 
@@ -60,8 +61,8 @@ public class MemberEnumerationFormUtil extends FormUtil<Member> {
     private int minimunFatherAge;
     private int minimunMotherAge;
 
-    public MemberEnumerationFormUtil(Fragment fragment, Context context, Visit visit, Household household, FormUtilListener<Member> listener){
-        super(fragment, context, FormUtil.getMemberEnuForm(context), listener);
+    public MemberEnumerationFormUtil(Fragment fragment, Context context, Visit visit, Household household, FormUtilities odkFormUtilities, FormUtilListener<Member> listener){
+        super(fragment, context, FormUtil.getMemberEnuForm(context), odkFormUtilities, listener);
 
         //Log.d("enu-household", ""+household);
 
@@ -72,8 +73,8 @@ public class MemberEnumerationFormUtil extends FormUtil<Member> {
         initialize();
     }
 
-    public MemberEnumerationFormUtil(Fragment fragment, Context context, Visit visit, Household household, Member memberToEdit, FormUtilListener<Member> listener){
-        super(fragment, context, FormUtil.getMemberEnuForm(context), memberToEdit, listener);
+    public MemberEnumerationFormUtil(Fragment fragment, Context context, Visit visit, Household household, Member memberToEdit, FormUtilities odkFormUtilities, FormUtilListener<Member> listener){
+        super(fragment, context, FormUtil.getMemberEnuForm(context), memberToEdit, odkFormUtilities, listener);
 
         this.household = household;
         this.visit = visit;

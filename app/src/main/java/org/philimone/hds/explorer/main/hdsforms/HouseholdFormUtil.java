@@ -25,16 +25,16 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import io.objectbox.Box;
 import io.objectbox.query.QueryBuilder;
+import mz.betainteractive.odk.FormUtilities;
 import mz.betainteractive.utilities.StringUtil;
 
 public class HouseholdFormUtil extends FormUtil<Household> {
 
     private Box<Household> boxHouseholds;
-    private Box<CoreCollectedData> boxCoreCollectedData;
     private Region region;
 
-    public HouseholdFormUtil(Fragment fragment, Context context, Region region, FormUtilListener<Household> listener){
-        super(fragment, context, FormUtil.getHouseholdForm(context), listener);
+    public HouseholdFormUtil(Fragment fragment, Context context, Region region, FormUtilities odkFormUtilities, FormUtilListener<Household> listener){
+        super(fragment, context, FormUtil.getHouseholdForm(context), odkFormUtilities, listener);
 
         this.region = region;
 
@@ -42,8 +42,8 @@ public class HouseholdFormUtil extends FormUtil<Household> {
         initialize();
     }
 
-    public HouseholdFormUtil(AppCompatActivity activity, Context context, Region region, FormUtilListener<Household> listener){
-        super(activity, context, FormUtil.getHouseholdForm(context), listener);
+    public HouseholdFormUtil(AppCompatActivity activity, Context context, Region region, FormUtilities odkFormUtilities, FormUtilListener<Household> listener){
+        super(activity, context, FormUtil.getHouseholdForm(context), odkFormUtilities, listener);
 
         this.region = region;
 

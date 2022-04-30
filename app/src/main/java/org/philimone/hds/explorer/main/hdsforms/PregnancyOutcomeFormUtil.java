@@ -4,7 +4,6 @@ import android.content.Context;
 import android.util.Log;
 
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 
 import org.philimone.hds.explorer.R;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
@@ -53,6 +52,7 @@ import java.util.stream.Collectors;
 
 import io.objectbox.Box;
 import io.objectbox.query.QueryBuilder;
+import mz.betainteractive.odk.FormUtilities;
 import mz.betainteractive.utilities.GeneralUtil;
 import mz.betainteractive.utilities.StringUtil;
 
@@ -76,8 +76,8 @@ public class PregnancyOutcomeFormUtil extends FormUtil<PregnancyOutcome> {
     private int minimunFatherAge;
     private int minimunMotherAge;
 
-    public PregnancyOutcomeFormUtil(Fragment fragment, Context context, Visit visit, Household household, Member mother, FormUtilListener<PregnancyOutcome> listener){
-        super(fragment, context, FormUtil.getPregnancyOutcomeForm(context), listener);
+    public PregnancyOutcomeFormUtil(Fragment fragment, Context context, Visit visit, Household household, Member mother, FormUtilities odkFormUtilities, FormUtilListener<PregnancyOutcome> listener){
+        super(fragment, context, FormUtil.getPregnancyOutcomeForm(context), odkFormUtilities, listener);
 
         //Log.d("enu-household", ""+household);
 
@@ -89,8 +89,8 @@ public class PregnancyOutcomeFormUtil extends FormUtil<PregnancyOutcome> {
         initialize();
     }
 
-    public PregnancyOutcomeFormUtil(Fragment fragment, Context context, Visit visit, Household household, PregnancyOutcome pregToEdit, FormUtilListener<PregnancyOutcome> listener){
-        super(fragment, context, FormUtil.getPregnancyOutcomeForm(context), pregToEdit, listener);
+    public PregnancyOutcomeFormUtil(Fragment fragment, Context context, Visit visit, Household household, PregnancyOutcome pregToEdit, FormUtilities odkFormUtilities, FormUtilListener<PregnancyOutcome> listener){
+        super(fragment, context, FormUtil.getPregnancyOutcomeForm(context), pregToEdit, odkFormUtilities, listener);
 
         this.household = household;
         this.visit = visit;
@@ -637,7 +637,7 @@ public class PregnancyOutcomeFormUtil extends FormUtil<PregnancyOutcome> {
     }
 
     private void createPregnancyRegistration() {
-        new PregnancyRegistrationFormUtil(this.fragment, this.context, this.visit, this.household, this.mother, PregnancyStatus.DELIVERED, new FormUtilListener<PregnancyRegistration>() {
+        new PregnancyRegistrationFormUtil(this.fragment, this.context, this.visit, this.household, this.mother, PregnancyStatus.DELIVERED, this.odkFormUtilities, new FormUtilListener<PregnancyRegistration>() {
             @Override
             public void onNewEntityCreated(PregnancyRegistration entity) {
                 pregnancyRegistration = entity;

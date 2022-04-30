@@ -49,6 +49,7 @@ import java.util.stream.Collectors;
 
 import io.objectbox.Box;
 import io.objectbox.query.QueryBuilder;
+import mz.betainteractive.odk.FormUtilities;
 import mz.betainteractive.utilities.GeneralUtil;
 import mz.betainteractive.utilities.StringUtil;
 
@@ -75,8 +76,8 @@ public class DeathFormUtil extends FormUtil<Death> {
     private List<Member> householdResidents;
     private int minimunHeadAge;
 
-    public DeathFormUtil(Fragment fragment, Context context, Visit visit, Household household, Member member, FormUtilListener<Death> listener){
-        super(fragment, context, FormUtil.getDeathForm(context), listener);
+    public DeathFormUtil(Fragment fragment, Context context, Visit visit, Household household, Member member, FormUtilities odkFormUtilities, FormUtilListener<Death> listener){
+        super(fragment, context, FormUtil.getDeathForm(context), odkFormUtilities, listener);
 
         //Log.d("enu-household", ""+household);
 
@@ -88,8 +89,8 @@ public class DeathFormUtil extends FormUtil<Death> {
         initialize();
     }
 
-    public DeathFormUtil(Fragment fragment, Context context, Visit visit, Household household, Death deathToEdit, FormUtilListener<Death> listener){
-        super(fragment, context, FormUtil.getDeathForm(context), deathToEdit, listener);
+    public DeathFormUtil(Fragment fragment, Context context, Visit visit, Household household, Death deathToEdit, FormUtilities odkFormUtilities, FormUtilListener<Death> listener){
+        super(fragment, context, FormUtil.getDeathForm(context), deathToEdit, odkFormUtilities, listener);
 
         this.household = household;
         this.visit = visit;

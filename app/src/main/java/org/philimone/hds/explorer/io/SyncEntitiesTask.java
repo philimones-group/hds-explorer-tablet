@@ -583,7 +583,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 					processModulesParams(parser);
 				} else if (name.equalsIgnoreCase("forms")) {
 					processFormsParams(parser);
-				} else if (name.equalsIgnoreCase("coreformsexts")) {
+				} else if (name.equalsIgnoreCase("coreformexts")) {
 					processCoreFormsExtParams(parser);
 				} else if (name.equalsIgnoreCase("datasets")) {
 					processDatasetsParams(parser);
@@ -3239,9 +3239,9 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 	private Map<SyncEntity, SyncStatus> getAllSyncReportStatus(){
 		Map<SyncEntity, SyncStatus> statuses = new HashMap<>();
 
-		this.boxSyncReports.getAll().forEach( syncReport -> {
+		for (SyncReport syncReport : this.boxSyncReports.getAll()) {
 			statuses.put(syncReport.getReportId(), syncReport.getStatus());
-		});
+		}
 
 		return statuses;
 	}

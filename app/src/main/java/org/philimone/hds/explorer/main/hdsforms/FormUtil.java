@@ -216,7 +216,7 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
 
                 if (formExtension.required) {
 
-                    String message = this.context.getString(R.string.form_util_extension_collect_optional_lbl, getFormName());
+                    String message = this.context.getString(R.string.form_util_extension_collect_required_msg_lbl, getFormName());
                     DialogFactory.createMessageInfo(this.context, title, message, clickedButton -> {
                         //COLLECT EXTENSION FORM
                         openOdkForm(odkFilledForm);
@@ -251,7 +251,7 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
 
         for (String key : formExtension.columnsMapping.keySet()){
             String value = formExtension.columnsMapping.get(key);
-
+            Log.d("mapkv", key+":"+value);
             if (key.contains(".")){ //is repeat group variable - maps to load-repeat or constant
 
                 if (value.startsWith("#")){ //from collected values
@@ -304,7 +304,7 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
                     value = value.replace("#", "");
 
                     ColumnValue columnValue = collectedValues.get(value);
-
+                    Log.d("columnvalue", "get "+value+" is "+(columnValue==null ? "null" : columnValue.getValue()));
                     if (columnValue != null) {
                         filledForm.put(key, columnValue.getValue());
                     }
@@ -326,12 +326,14 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
 
     private CollectedData getCollectedData(FilledForm filledForm){
 
-        CollectedData cData = this.boxCollectedData.query().equal(CollectedData_.formId, filledForm.getFormName(), QueryBuilder.StringOrder.CASE_SENSITIVE)
+        List<CollectedData> cData = this.boxCollectedData.query().equal(CollectedData_.formId, filledForm.getFormName(), QueryBuilder.StringOrder.CASE_SENSITIVE)
                 .and().equal(CollectedData_.collectedId, this.collectedData.collectedId, QueryBuilder.StringOrder.CASE_SENSITIVE)
                 .filter((c) -> StringUtil.containsAny(c.formModules, this.user.getSelectedModules())) //filter by module
-                .build().findFirst();
+                .build().find();
 
-        return cData;
+        if (cData != null && cData.size()>0) return cData.get(0);
+
+        return null;
     }
 
     private void openOdkForm(FilledForm filledForm) {
@@ -387,6 +389,7 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
             odkCollectedData.collectedId = this.collectedData.collectedId;
 
             this.boxCollectedData.put(odkCollectedData);
+
             Log.d("inserting", "new collected data");
         }else{ //update
             odkCollectedData.setFormId(lastLoadedForm.getFormName());
@@ -407,6 +410,11 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
             this.boxCollectedData.put(odkCollectedData);
             Log.d("updating", "new extension collected data");
         }
+
+        //save corecollecteddata
+        this.collectedData.extensionCollected = true;
+        this.collectedData.extensionCollectedUri = odkCollectedData.formUri;
+        this.boxCoreCollectedData.put(collectedData);
 
         this.onFinishedExtensionCollection();
     }
@@ -457,6 +465,11 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
             Log.d("updating", "new ext collected data");
         }
 
+        //save corecollecteddata
+        this.collectedData.extensionCollected = true;
+        this.collectedData.extensionCollectedUri = odkCollectedData.formUri;
+        this.boxCoreCollectedData.put(collectedData);
+
         this.onFinishedExtensionCollection();
     }
 
@@ -464,6 +477,11 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
     public void onDeleteForm(Uri contentUri) {
 
         this.boxCollectedData.query().equal(CollectedData_.formUri, contentUri.toString(), QueryBuilder.StringOrder.CASE_SENSITIVE).build().remove(); //delete where formUri=contentUri
+
+        //save corecollecteddata
+        this.collectedData.extensionCollected = false;
+        this.collectedData.extensionCollectedUri = null;
+        this.boxCoreCollectedData.put(collectedData);
 
         this.onFinishedExtensionCollection();
     }

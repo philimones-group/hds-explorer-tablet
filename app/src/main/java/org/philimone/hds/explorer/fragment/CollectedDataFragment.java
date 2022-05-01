@@ -196,13 +196,17 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
 
     private CollectedData getCollectedData(FormDataLoader formDataLoader){
 
-        CollectedData collectedData = this.boxCollectedData.query().equal(CollectedData_.formId, formDataLoader.getForm().getFormId(), QueryBuilder.StringOrder.CASE_SENSITIVE)
+        List<CollectedData> collectedData = this.boxCollectedData.query().equal(CollectedData_.formId, formDataLoader.getForm().getFormId(), QueryBuilder.StringOrder.CASE_SENSITIVE)
                                                                    .and().equal(CollectedData_.recordId, subject.getId())
                                                                    .and().equal(CollectedData_.recordEntity, subject.getTableName().code, QueryBuilder.StringOrder.CASE_SENSITIVE)
                                                                    .filter((c) -> StringUtil.containsAny(c.formModules, selectedModules)) //filter by module
-                                                                   .build().findFirst();
+                                                                   .build().find();
 
-        return collectedData;
+        if (collectedData != null && collectedData.size()>0){
+            return collectedData.get(0);
+        }
+
+        return null;
     }
 
     public void onCollectData(){

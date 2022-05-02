@@ -31,7 +31,7 @@ public class FilledForm {
 	private List<Member> residentMembers;
 	private List<Member> deadMembers;
 	private List<Member> outmigMembers;
-	private Map<String, Map<String, String>> mapRepeatGroup;
+	private Map<String, List<Map<String, String>>> mapRepeatGroup;
 
 	public FilledForm(String formName) {
         this.formName = formName;
@@ -57,9 +57,10 @@ public class FilledForm {
     public void put(String variable, Object value){
     	values.put(variable, value);
 
+    	/*
     	if (value instanceof Map){
     		mapRepeatGroup.put(variable, (Map<String, String>) value);
-		}
+		}*/
     }
 
 	public void putAll(Map<String, Object> mapValues){
@@ -68,25 +69,36 @@ public class FilledForm {
 		for (String key : mapValues.keySet()){
 			String value = mapValues.get(key)+"";
 
-			if (key.contains(".")){
+			if (key.contains(".")){ //mapped repeat inner values ("RepeatGroupName.variable")
+				//The repeat inner columns dont go to "values" map but to mapRepeat
 				Log.d("testttt", key+":"+value);
 				String[] spt = key.split("\\.");
-				key = spt[0];  //Repeat Group name
-				String var = spt[1]; //inside variable
+				String repeatGroupName = spt[0];  //Repeat Group name
+				String repeatGroupInnerColumn = spt[1]; //inside variable
 
-				Map<String, String> map = mapRepeatGroup.get(key); //map that contains inside_var and its value: Member.code
-				if (map == null){
-					map = new LinkedHashMap<>();
-					mapRepeatGroup.put(key, map);
+				List<Map<String, String>> mapList = mapRepeatGroup.get(repeatGroupName); //map that contains inside_var and its value: Member.code
+				mapList = (mapList==null) ? new ArrayList<>() : mapList; //create new if dont exists
+				//if list of maps is empty create new map and add, or get the default map
+				Map<String, String> map = (mapList.size()==0) ? new LinkedHashMap<>() : mapList.get(0); //default map - will only have one for repeat groups mapped from Members List
+
+				if (mapList.size() == 0){
+					mapList.add(map);
+					mapRepeatGroup.put(repeatGroupName, mapList);
 				}
-				map.put(var, value); //"var" - is odk repeat inside variable and "value" is the Subject.columnName
 
+				map.put(repeatGroupInnerColumn, value); //"innercolumn" - is odk repeat inside variable and "value" is the Subject.columnName
 
 			}else {
 				values.put(key, value);
 			}
 		}
 
+	}
+
+	public void putRepeatObjects(String repeatGroupName, List<Map<String, String>> mapObjectsList){
+		values.put(repeatGroupName, RepeatGroupType.MAPPED_VALUES.code);
+
+		mapRepeatGroup.put(repeatGroupName, mapObjectsList);
 	}
     
     public Object get(String variable){
@@ -143,29 +155,38 @@ public class FilledForm {
 		return mapRepeatGroup.containsKey(variableName);
 	}
 
+	public RepeatGroupType getRepeatGroupType(String variableName){
+		if (isRepeatGroup(variableName)){
+			String value = (String) values.get(variableName);
+			return RepeatGroupType.getFrom(value);
+		}
+
+		return null;
+	}
+
 	public boolean isMemberRepeatGroup(String variableName){
-		String value = values.get(variableName)+"";
-		return TYPE_RESIDENT_MEMBERS.equals(value) || TYPE_DEAD_MEMBERS.equals(value) || TYPE_OUTMIGRATED_MEMBERS.equals(value) ||  TYPE_ALL_MEMBERS.equals(value);
+		RepeatGroupType type = getRepeatGroupType(variableName);
+		return type==RepeatGroupType.RESIDENT_MEMBERS || type==RepeatGroupType.DEAD_MEMBERS || type==RepeatGroupType.OUTMIGRATED_MEMBERS ||  type==RepeatGroupType.ALL_MEMBERS;
 	}
 
 	public boolean isResidentMemberRepeatGroup(String variableName){
-		String value = values.get(variableName)+"";
-		return TYPE_RESIDENT_MEMBERS.equals(value);
+		RepeatGroupType type = getRepeatGroupType(variableName);
+		return type==RepeatGroupType.RESIDENT_MEMBERS;
 	}
 
 	public boolean isDeadMembersRepeatGroup(String variableName){
-		String value = values.get(variableName)+"";
-		return TYPE_DEAD_MEMBERS.equals(value);
+		RepeatGroupType type = getRepeatGroupType(variableName);
+		return type==RepeatGroupType.DEAD_MEMBERS;
 	}
 
 	public boolean isOutMigMembersRepeatGroup(String variableName){
-		String value = values.get(variableName)+"";
-		return TYPE_OUTMIGRATED_MEMBERS.equals(value);
+		RepeatGroupType type = getRepeatGroupType(variableName);
+		return type==RepeatGroupType.OUTMIGRATED_MEMBERS;
 	}
 
 	public boolean isAllMembersRepeatGroup(String variableName){
-		String value = values.get(variableName)+"";
-		return TYPE_ALL_MEMBERS.equals(value);
+		RepeatGroupType type = getRepeatGroupType(variableName);
+		return type==RepeatGroupType.ALL_MEMBERS;
 	}
 
 	public List<Member> getHouseholdMembers(){
@@ -184,7 +205,7 @@ public class FilledForm {
 		return outmigMembers;
 	}
 
-	public Map<String, String> getRepeatGroupMapping(String repeatGroup){
+	public List<Map<String, String>> getRepeatGroupMapping(String repeatGroup){
 		return this.mapRepeatGroup.get(repeatGroup);
 	}
 

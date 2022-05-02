@@ -27,6 +27,7 @@ import mz.betainteractive.odk.FormsProviderAPI;
 import mz.betainteractive.odk.InstanceProviderAPI;
 import mz.betainteractive.odk.listener.OdkFormLoadListener;
 import mz.betainteractive.odk.model.FilledForm;
+import mz.betainteractive.odk.model.RepeatGroupType;
 
 import org.jdom2.JDOMException;
 import org.jdom2.input.SAXBuilder;
@@ -146,10 +147,7 @@ public class OdkGeneratedFormLoadTask extends AsyncTask<Void, Void, Boolean> {
 
         Log.d("loading forms", "form_id=" + jrFormId + ",ver=" + formVersion + ", path=" + formFilePath);
 
-
         //request permission for reading device id
-
-
 
         if (openingSavedUri) {
 
@@ -168,7 +166,6 @@ public class OdkGeneratedFormLoadTask extends AsyncTask<Void, Void, Boolean> {
                 //file doesnt exists
                 return false;
             }
-
 
             return odkUri != null;
 
@@ -290,7 +287,7 @@ public class OdkGeneratedFormLoadTask extends AsyncTask<Void, Void, Boolean> {
                 if (params.contains(name)) {
                     NodeList nodeRepeatChilds = null;
 
-                    if (filledForm.isMemberRepeatGroup(name)) { //is a repeat group with auto-filled members
+                    if (filledForm.isRepeatGroup(name)) { //is a repeat group with auto-filled members
                         nodeRepeatChilds = n.getChildNodes();
 
                         /*
@@ -303,7 +300,6 @@ public class OdkGeneratedFormLoadTask extends AsyncTask<Void, Void, Boolean> {
                          */
                     }
 
-
                     //checking special repeat groups
                     if (filledForm.isAllMembersRepeatGroup(name)) {
                         //map all members using <name></name>
@@ -314,6 +310,9 @@ public class OdkGeneratedFormLoadTask extends AsyncTask<Void, Void, Boolean> {
                         createMembers(sbuilder, name, nodeRepeatChilds, filledForm.getRepeatGroupMapping(name), filledForm.getDeadMembers());
                     } else if (filledForm.isOutMigMembersRepeatGroup(name)) {
                         createMembers(sbuilder, name, nodeRepeatChilds, filledForm.getRepeatGroupMapping(name), filledForm.getOutmigMembers());
+                    } else if (filledForm.getRepeatGroupType(name)== RepeatGroupType.MAPPED_VALUES) {
+                        List<Map<String, String>> mapList = filledForm.getRepeatGroupMapping(name);
+                        createRepeatElements(sbuilder, name, nodeRepeatChilds, mapList);
                     } else {
                         //its a normal variable (not a repeat group)
                         Object value = filledForm.get(name);
@@ -357,12 +356,14 @@ public class OdkGeneratedFormLoadTask extends AsyncTask<Void, Void, Boolean> {
      * @param sbuilder
      * @param repeatGroupName
      * @param nodeRepeatChilds
-     * @param repeatGroupMapping contains mapping to Member columns only - variableName:Member.columnName
+     * @param repeatGroupMappingList contains mapping to Member columns only - variableName:Member.columnName
      * @param members
      */
-    private void createMembers(StringBuilder sbuilder, String repeatGroupName, NodeList nodeRepeatChilds, Map<String, String> repeatGroupMapping, List<Member> members) {
+    private void createMembers(StringBuilder sbuilder, String repeatGroupName, NodeList nodeRepeatChilds, List<Map<String, String>> repeatGroupMappingList, List<Member> members) {
 
         if (nodeRepeatChilds == null) return;
+
+        Map<String, String> repeatGroupMapping = repeatGroupMappingList.get(0);
 
         for (Member m : members) {
             sbuilder.append("<" + repeatGroupName + ">" + "\r\n");
@@ -417,6 +418,70 @@ public class OdkGeneratedFormLoadTask extends AsyncTask<Void, Void, Boolean> {
                     else {
                         sbuilder.append("<" + name + ">" + "\r\n"); //Its a group within
                         createMemberProcessChilds(n, sbuilder, repeatGroupMapping, member);
+                        sbuilder.append("</" + name + ">" + "\r\n"); //Closing the group
+                    }
+                }
+            }
+        }
+    }
+
+    private void createRepeatElements(StringBuilder sbuilder, String repeatGroupName, NodeList nodeRepeatChilds, List<Map<String, String>> repeatGroupMappingList) {
+
+        if (nodeRepeatChilds == null) return;
+
+        //Map<String, String> repeatGroupMapping = repeatGroupMappingList.get(0);
+
+        for (Map<String, String> repeatGroupMapping : repeatGroupMappingList) {
+
+            sbuilder.append("<" + repeatGroupName + ">" + "\r\n");
+
+            for (int i = 0; i < nodeRepeatChilds.getLength(); i++) {
+                Node n = nodeRepeatChilds.item(i);
+                String name = n.getNodeName();
+                //Log.d("inner-node"+i, ""+name);
+                if (n.getNodeType() == Node.ELEMENT_NODE) {
+                    if (repeatGroupMapping.containsKey(name)) {
+                        String value = repeatGroupMapping.get(name);
+
+                        sbuilder.append("<" + name + ">" + value + "</" + name + ">" + "\r\n"); //map value for mapped variables
+                    } else {
+                        if (!n.hasChildNodes())
+                            sbuilder.append("<" + name + " />" + "\r\n"); //without mapping defined
+                            //n.getNodeValue(); //not doing anything, didnt want to break the  if
+                        else {
+                            sbuilder.append("<" + name + ">" + "\r\n"); //Its a group within
+                            createRepeatElementsProcessChilds(n, sbuilder, repeatGroupMapping);
+                            sbuilder.append("</" + name + ">" + "\r\n"); //Closing the group
+                        }
+                    }
+                }
+            }
+
+            sbuilder.append("</" + repeatGroupName + ">" + "\r\n");
+        }
+    }
+
+    private void createRepeatElementsProcessChilds(Node node, StringBuilder sbuilder, Map<String, String> repeatGroupMapping) {
+        NodeList childElements = node.getChildNodes();
+
+        List<String> params = filledForm.getVariables();
+        //Log.d("executing-pnc",""+params);
+        for (int i = 0; i < childElements.getLength(); i++) {
+            Node n = childElements.item(i);
+            String name = n.getNodeName();
+            //Log.d("inner-node2-FW"+i, ""+name);
+            if (n.getNodeType() == Node.ELEMENT_NODE) {
+                if (repeatGroupMapping.containsKey(name)) {
+                    String value = repeatGroupMapping.get(name);
+
+                    sbuilder.append("<" + name + ">" + value + "</" + name + ">" + "\r\n"); //map value for mapped variables
+                } else {
+                    if (!n.hasChildNodes())
+                        sbuilder.append("<" + name + " />" + "\r\n"); //without mapping defined
+                        //n.getNodeValue(); //not doing anything, didnt want to break the  if
+                    else {
+                        sbuilder.append("<" + name + ">" + "\r\n"); //Its a group within
+                        createRepeatElementsProcessChilds(n, sbuilder, repeatGroupMapping);
                         sbuilder.append("</" + name + ">" + "\r\n"); //Closing the group
                     }
                 }

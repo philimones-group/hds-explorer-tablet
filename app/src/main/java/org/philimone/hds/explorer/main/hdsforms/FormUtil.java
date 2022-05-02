@@ -290,8 +290,10 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
                                 //map the inner method and its value
                                 String hdsRepeatInnerValue = repeatColumnValue.get(hdsRepeatInnerColumn, repeatIndex).getValue();
                                 mapRepeatItem.put(odkRepeatInnerColumn, hdsRepeatInnerValue);
-
                             }
+
+                            //save on filled form to be load to odk
+                            filledForm.putRepeatObjects(odkRepeatGroup, repeatGroupLists);
                         }
                     } catch (Exception ex) {
                         ex.printStackTrace();
@@ -316,6 +318,7 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
         }
 
         //load the repeats to filledforms
+        //repeatGroupVar -> List<Objects with many attributes>
 
         return filledForm;
     }

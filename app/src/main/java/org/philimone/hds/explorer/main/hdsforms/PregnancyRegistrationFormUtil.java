@@ -38,8 +38,7 @@ public class PregnancyRegistrationFormUtil extends FormUtil<PregnancyRegistratio
 
     private Box<Member> boxMembers;
     private Box<PregnancyRegistration> boxPregnancyRegistrations;
-    private Box<CoreCollectedData> boxCoreCollectedData;
-
+    
     private Household household;
     private Visit visit;
     private Member mother;

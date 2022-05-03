@@ -46,8 +46,7 @@ public class OutmigrationFormUtil extends FormUtil<Outmigration> {
     private Box<Residency> boxResidencies;
     private Box<HeadRelationship> boxHeadRelationships;
     private Box<Outmigration> boxOutmigrations;
-    private Box<CoreCollectedData> boxCoreCollectedData;
-    protected Box<Death> boxDeaths;
+        protected Box<Death> boxDeaths;
 
     private Household household;
     private Visit visit;

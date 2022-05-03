@@ -54,8 +54,7 @@ public class ExternalInMigrationFormUtil extends FormUtil<Member> {
     private Box<Member> boxMembers;
     private Box<Residency> boxResidencies;
     private Box<HeadRelationship> boxHeadRelationships;
-    private Box<CoreCollectedData> boxCoreCollectedData;
-    private Box<Death> boxDeaths;
+        private Box<Death> boxDeaths;
 
     private Household household;
     private Visit visit;

@@ -63,8 +63,7 @@ public class PregnancyOutcomeFormUtil extends FormUtil<PregnancyOutcome> {
     private Box<PregnancyOutcome> boxPregnancyOutcomes;
     private Box<HeadRelationship> boxHeadRelationships;
     private Box<Residency> boxResidencies;
-    private Box<CoreCollectedData> boxCoreCollectedData;
-
+    
     private Household household;
     private Visit visit;
     private Member mother;

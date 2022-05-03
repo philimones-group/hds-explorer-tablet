@@ -27,7 +27,7 @@ import java.util.Map;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
+
 import io.objectbox.Box;
 import io.objectbox.query.QueryBuilder;
 import mz.betainteractive.odk.FormUtilities;
@@ -338,9 +338,14 @@ public class VisitFormUtil extends FormUtil<Visit> {
         }
     }
 
-    public static void UpdateEndTimestamp(Context context, String xmlSavedFormPath) {
+    public static void updateEndTimestamp(Context context, String xmlSavedFormPath) {
         HForm form = getVisitForm(context);
-        FormFragment.UpdateEndTimestamp(form, xmlSavedFormPath);
+        FormFragment.updateEndTimestamp(form, xmlSavedFormPath);
+    }
+
+    public static void markAllAsNonVisited(Context context, String xmlSavedFormPath, String nonVisitedList) {
+        HForm form = getVisitForm(context);
+        FormFragment.updateColumnOnXML(form, xmlSavedFormPath, "nonVisitedMembers", nonVisitedList);
     }
 
 }

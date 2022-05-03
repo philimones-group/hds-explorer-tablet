@@ -34,8 +34,7 @@ public class IncompleteVisitFormUtil extends FormUtil<IncompleteVisit> {
     private Box<Member> boxMembers;
     private Box<Death> boxDeaths;
     private Box<IncompleteVisit> boxIncompleteVisits;
-    private Box<CoreCollectedData> boxCoreCollectedData;
-
+    
     private Visit visit;
     private Member member;
     private IncompleteVisit currentIncompleteVisit;

@@ -44,8 +44,7 @@ public class MaritalRelationshipFormUtil extends FormUtil<MaritalRelationship> {
     private Box<Member> boxMembers;
     private Box<Death> boxDeaths;
     private Box<MaritalRelationship> boxMaritalRelationships;
-    private Box<CoreCollectedData> boxCoreCollectedData;
-
+    
     private Visit visit;
     private Member spouseA;
     private Member spouseB;

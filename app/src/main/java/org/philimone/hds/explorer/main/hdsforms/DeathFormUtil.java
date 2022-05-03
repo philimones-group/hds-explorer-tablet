@@ -60,8 +60,7 @@ public class DeathFormUtil extends FormUtil<Death> {
     private Box<HeadRelationship> boxHeadRelationships;
     private Box<Residency> boxResidencies;
     private Box<MaritalRelationship> boxMaritalRelationships;
-    private Box<CoreCollectedData> boxCoreCollectedData;
-
+    
     private Household household;
     private Visit visit;
     private Member member;

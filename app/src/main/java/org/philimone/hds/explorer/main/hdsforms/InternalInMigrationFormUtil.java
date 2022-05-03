@@ -57,8 +57,7 @@ public class InternalInMigrationFormUtil extends FormUtil<Inmigration> {
     private Box<HeadRelationship> boxHeadRelationships;
     private Box<Inmigration> boxInmigrations;
     private Box<Outmigration> boxOutmigrations;
-    private Box<CoreCollectedData> boxCoreCollectedData;
-    protected Box<Death> boxDeaths;
+        protected Box<Death> boxDeaths;
 
     private Household household;
     private Visit visit;

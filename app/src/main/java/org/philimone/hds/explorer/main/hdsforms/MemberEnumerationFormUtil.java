@@ -49,7 +49,6 @@ public class MemberEnumerationFormUtil extends FormUtil<Member> {
     private Box<Member> boxMembers;
     private Box<Residency> boxResidencies;
     private Box<HeadRelationship> boxHeadRelationships;
-    private Box<CoreCollectedData> boxCoreCollectedData;
 
     private Household household;
     private Visit visit;

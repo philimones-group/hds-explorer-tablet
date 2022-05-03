@@ -1,11 +1,15 @@
 package org.philimone.hds.explorer.model;
 
+import org.philimone.hds.explorer.model.converters.StringCollectionConverter;
 import org.philimone.hds.explorer.model.converters.VisitLocationItemConverter;
 import org.philimone.hds.explorer.model.converters.VisitReasonConverter;
 import org.philimone.hds.explorer.model.enums.VisitLocationItem;
 import org.philimone.hds.explorer.model.enums.VisitReason;
 
 import java.util.Date;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
 
 import io.objectbox.annotation.Convert;
 import io.objectbox.annotation.Entity;
@@ -53,12 +57,19 @@ public class Visit implements CoreEntity {
     public Double gpsLatitude;
     public Double gpsLongitude;
 
+    @Convert(converter = StringCollectionConverter.class, dbType = String.class)
+    public Set<String> nonVisitedMembers;
+
     @Unique
     public String collectedId;
 
     public boolean recentlyCreated;
 
     public String recentlyCreatedUri;
+
+    public Visit(){
+        this.nonVisitedMembers = new LinkedHashSet<>();
+    }
 
     @Override
     public long getId() {

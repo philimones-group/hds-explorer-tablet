@@ -1810,7 +1810,7 @@
     },
     {
       "id": "23:4611124115189785343",
-      "lastPropertyId": "22:3641773736184406289",
+      "lastPropertyId": "23:8795576327303333700",
       "name": "CoreCollectedData",
       "properties": [
         {
@@ -1908,6 +1908,13 @@
           "type": 11,
           "flags": 520,
           "relationTarget": "CoreFormExtension"
+        },
+        {
+          "id": "23:8795576327303333700",
+          "name": "collectedId",
+          "indexId": "97:5729219827015890841",
+          "type": 9,
+          "flags": 2048
         }
       ],
       "relations": []
@@ -2058,7 +2065,7 @@
     }
   ],
   "lastEntityId": "26:1585784821968195154",
-  "lastIndexId": "96:5550492903331625789",
+  "lastIndexId": "97:5729219827015890841",
   "lastRelationId": "0:0",
   "lastSequenceId": "0:0",
   "modelVersion": 5,

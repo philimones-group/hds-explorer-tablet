@@ -284,7 +284,7 @@
     <string name="household_visit_bt_collect_lbl">Collect\nOther Forms</string>
     <string name="household_visit_not_finished_title_lbl">Visit not Finished</string>
     <string name="household_visit_not_finished_msg_lbl">Not all the Members were visited during this Visit\nPlease collect the (Visit Member not Possible) Form\nFor the following Members:\n(%1$s)</string>
-
+    <string name="household_visit_not_finished_msg_ask_lbl">Not all the Members were visited during this Visit,\nMembers: (%1$s)\nCollect the (Visit Member not Possible) Form or mark all as non-visited.\n\nDo you want to mark all these members as non-visited?</string>
     <string name="region_details_code_lbl">Code:</string>
     <string name="region_details_parent_lbl">Parent Region:</string>
 

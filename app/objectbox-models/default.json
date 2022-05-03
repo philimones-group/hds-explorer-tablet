@@ -1451,7 +1451,7 @@
     },
     {
       "id": "19:1493713431233179094",
-      "lastPropertyId": "18:7424686783516794243",
+      "lastPropertyId": "19:6837984206923714506",
       "name": "Visit",
       "properties": [
         {
@@ -1552,6 +1552,11 @@
           "indexId": "94:4134862433521015725",
           "type": 9,
           "flags": 2080
+        },
+        {
+          "id": "19:6837984206923714506",
+          "name": "nonVisitedMembers",
+          "type": 9
         }
       ],
       "relations": []

@@ -127,6 +127,7 @@ public class CoreCollectedExpandableAdapter extends BaseExpandableListAdapter im
         button.setVisibility(View.GONE);
         chkProcessed.setVisibility(View.GONE);
         txtItem3.setVisibility(formExtension==null ? View.GONE : View.VISIBLE);
+        txtItem4.setVisibility(formExtension==null ? View.GONE : View.VISIBLE);
 
         String createdDate = cd.createdDate==null ? "" : StringUtil.format(cd.createdDate, "yyyy-MM-dd HH:mm:ss");
         String updatedDate = cd.updatedDate==null ? "" : StringUtil.format(cd.updatedDate, "yyyy-MM-dd HH:mm:ss");
@@ -138,18 +139,24 @@ public class CoreCollectedExpandableAdapter extends BaseExpandableListAdapter im
         txtItem2.setText(createdDate);
 
         if (formExtension != null) {
-            String message = "";
 
-            if (cd.extensionCollected) {
-                message = mContext.getString(R.string.core_form_group_item_extension_collected_lbl);
-            } else if(formExtension.required){
-                message = mContext.getString(R.string.core_form_group_item_extension_not_collected_lbl);
+            if (formExtension.enabled){
+                String message = "";
+
+                if (cd.extensionCollected) {
+                    message = mContext.getString(R.string.core_form_group_item_extension_collected_lbl);
+                } else if(formExtension.required){
+                    message = mContext.getString(R.string.core_form_group_item_extension_not_collected_lbl);
+                } else {
+                    message = mContext.getString(R.string.core_form_group_item_extension_not_required_lbl);
+                }
+
+                txtItem3.setText(mContext.getString(R.string.core_form_group_item_extension_lbl));
+                txtItem4.setText(message);
             } else {
-                message = mContext.getString(R.string.core_form_group_item_extension_not_required_lbl);
+                txtItem3.setVisibility(View.GONE);
+                txtItem4.setVisibility(View.GONE);
             }
-
-            txtItem3.setText(mContext.getString(R.string.core_form_group_item_extension_lbl));
-            txtItem4.setText(message);
         }
 
 

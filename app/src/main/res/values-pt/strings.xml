@@ -187,7 +187,7 @@
     <string name="member_list_gps_not_available_lbl">As cooredenadas GPS da casa não estão disponíveis</string>
     <string name="member_list_member_gps_not_available_lbl">As cooredenadas GPS da casa do membro selecionado não estão disponíveis</string>
     <string name="member_list_household_not_found_lbl">A casa do membro selecionado não foi encontrada no sistema</string>
-    <string name="member_list_bt_show_household_lbl">Ver Detalhes da Casa</string>
+    <string name="member_list_bt_show_household_lbl">Ver Detalhes da Casa</string>Nem todos membros foram visitados nesta visita
     <string name="member_list_bt_show_gps_housemembers_lbl">Mostrar Mapa GPS</string>
     <string name="member_list_bt_show_houses_lbl">Mostrar Mapa GPS das casas</string>
     <string name="member_list_bt_show_closest_houses_lbl">Mapa de Casas prox.</string>
@@ -282,8 +282,9 @@
     <string name="household_visit_bt_changehoh_lbl">Mudança de\nChefe</string>
     <string name="household_visit_bt_incomplete_lbl">Visita \nIncompleta</string>
     <string name="household_visit_bt_collect_lbl">Colher Dados</string>
-    <string name="household_visit_not_finished_title_lbl">Visit not Finished</string>
-    <string name="household_visit_not_finished_msg_lbl">Not all the Members were visited during this Visit\nPlease collect the (Visit Member not Possible) Form\nFor the following Members\n(%1$s)</string>
+    <string name="household_visit_not_finished_title_lbl">Visita não terminada</string>
+    <string name="household_visit_not_finished_msg_lbl">Nem todos membros foram visitados nesta visita\nPor favor colecte o formulario (Visita Incompleta) para os membros a seguir:\n(%1$s)</string>
+    <string name="household_visit_not_finished_msg_ask_lbl">Nem todos membros foram visitados nesta visita,\nMembros: (%1$s)\nPode colectar o formulario visita incompleta ou marcar todos como não visitados.\n\nDeseja marcar todos estes membros como não visitados?</string>
 
     <string name="region_details_code_lbl">Código:</string>
     <string name="region_details_parent_lbl">Região:</string>

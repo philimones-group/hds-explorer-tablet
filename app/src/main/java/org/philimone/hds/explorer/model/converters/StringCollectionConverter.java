@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -28,7 +29,7 @@ public class StringCollectionConverter implements PropertyConverter<Set<String>,
     }
 
     public static Set<String> getCollectionFrom(String databaseValue) {
-        Set<String> list = new HashSet<>();
+        Set<String> list = new LinkedHashSet<>();
 
         if (!StringUtil.isBlank(databaseValue)) {
             list.addAll(Arrays.asList(databaseValue.split(",")));

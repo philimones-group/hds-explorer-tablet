@@ -499,21 +499,45 @@ public class HouseholdDetailsActivity extends AppCompatActivity implements House
         //finsih the visit in visit fragment
         if (householdVisitFragment != null)  {
             List<Member> notVisited = householdVisitFragment.getNonVisitedMembers();
+            List<Member> toremove = new ArrayList<>();
+            String nonVisitedAsText = "";
+            List<String> nonVisitedCodesList = new ArrayList<>();
+
+            for (Member member : notVisited) {
+                nonVisitedAsText += nonVisitedAsText.isEmpty() ? member.code : ", "+member.code;
+                nonVisitedCodesList.add(member.code);
+
+                if (visit.nonVisitedMembers.contains(member.code)){
+                    toremove.add(member);
+                }
+            }
+
+            //remove all marked as non visited
+            notVisited.removeAll(toremove);
 
             //Not all of the individuals were visited
             if (notVisited.size()>0) {
-                String list = "";
-                for (Member member : notVisited){
-                    list += list.isEmpty() ? member.code : ", "+member.code;
-                }
 
-                DialogFactory.createMessageInfo(this, getString(R.string.household_visit_not_finished_title_lbl), getString(R.string.household_visit_not_finished_msg_lbl, list)).show();
+                final String finalList = nonVisitedAsText;
+
+                DialogFactory.createMessageYN(this, getString(R.string.household_visit_not_finished_title_lbl), getString(R.string.household_visit_not_finished_msg_ask_lbl, nonVisitedAsText), new DialogFactory.OnYesNoClickListener() {
+                    @Override
+                    public void onYesClicked() {
+                        markAllAsNonVisited(visit, nonVisitedCodesList, finalList);
+                    }
+
+                    @Override
+                    public void onNoClicked() {
+                        //just dont do nothing
+                    }
+                }).show();
+
                 return;
             }
             //Log.d("ending visit", "me");
 
             //close visit - update endtimestamp
-            VisitFormUtil.UpdateEndTimestamp(this, this.visit.getRecentlyCreatedUri());
+            VisitFormUtil.updateEndTimestamp(this, this.visit.getRecentlyCreatedUri());
 
             //finish visit mode
             this.visit = null;
@@ -521,6 +545,14 @@ public class HouseholdDetailsActivity extends AppCompatActivity implements House
         }
 
 
+    }
+
+    private void markAllAsNonVisited(Visit visit, List<String> nonVisitedMembersCodeList, String nonVisitedMembersAsText) {
+
+        visit.nonVisitedMembers.addAll(nonVisitedMembersCodeList);
+        this.boxVisits.put(visit);
+
+        VisitFormUtil.markAllAsNonVisited(this, this.visit.getRecentlyCreatedUri(), nonVisitedMembersAsText);
     }
 
     private void openPreviousVisit() {

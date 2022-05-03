@@ -1213,14 +1213,6 @@
           "relationTarget": "PregnancyOutcome"
         },
         {
-          "id": "7:9133458198237476583",
-          "name": "childId",
-          "indexId": "38:7596246704268911865",
-          "type": 11,
-          "flags": 520,
-          "relationTarget": "Member"
-        },
-        {
           "id": "8:4339828814283676446",
           "name": "childHeadRelationshipId",
           "indexId": "39:1561595666871032662",
@@ -1451,7 +1443,7 @@
     },
     {
       "id": "19:1493713431233179094",
-      "lastPropertyId": "18:7424686783516794243",
+      "lastPropertyId": "19:6837984206923714506",
       "name": "Visit",
       "properties": [
         {
@@ -1552,6 +1544,11 @@
           "indexId": "94:4134862433521015725",
           "type": 9,
           "flags": 2080
+        },
+        {
+          "id": "19:6837984206923714506",
+          "name": "nonVisitedMembers",
+          "type": 9
         }
       ],
       "relations": []
@@ -2072,7 +2069,8 @@
   "modelVersionParserMinimum": 5,
   "retiredEntityUids": [],
   "retiredIndexUids": [
-    5573130217942321738
+    5573130217942321738,
+    7596246704268911865
   ],
   "retiredPropertyUids": [
     3370616002337645491,
@@ -2086,7 +2084,8 @@
     5090352727449866246,
     3640540046021557891,
     5201936680176878572,
-    6589275873550146565
+    6589275873550146565,
+    9133458198237476583
   ],
   "retiredRelationUids": [],
   "version": 1

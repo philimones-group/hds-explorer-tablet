@@ -23,9 +23,9 @@ public class PregnancyOutcome implements CoreEntity {
     @Unique
     public String code;
 
-    public ToOne<Member> mother;
+    //public ToOne<Member> mother;
 
-    public ToOne<Member> father;
+    //public ToOne<Member> father;
 
     @Index
     public String motherCode;

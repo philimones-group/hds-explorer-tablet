@@ -202,6 +202,7 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
     }
 
     protected void collectExtensionForm(CollectedDataMap collectedValues){
+        //Log.d("collecting", "extension"+collectedValues.get(HForm.COLUMN_ID));
         if (this.collectedData != null) {
             CoreFormExtension formExtension = getFormExtension(collectedData.formEntity);
 
@@ -238,10 +239,10 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
                     }).show();
                 }
             } else {
-                this.onFinishedExtensionCollection();
+                onFinishedExtensionCollection();
             }
         } else {
-            this.onFinishedExtensionCollection();
+            onFinishedExtensionCollection();
         }
     }
 
@@ -259,21 +260,24 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
                     //LOAD TO A REPEAT GROUP FROM VARIABLES OR CONSTANTS IS NOT SUPPORTED YET
                     assert 1==0;
 
-                } else if (value.startsWith("$load:")){ //load collected repeat values
+                } else if (value.startsWith("$")){ //load collected repeat values
 
-                    //repeatGroupName.variableName -> $load:childs.outcomeType
+                    //repeatGroupName.variableName -> $childs.outcomeType
                     try {
-                        value = value.replace("$load:", "");
+                        value = value.replace("$", "");
                         int iKeyPoint = key.indexOf(".");
                         int iValPoint = value.indexOf(".");
                         String odkRepeatGroup = key.substring(0, iKeyPoint);
                         String odkRepeatInnerColumn = key.substring(iKeyPoint + 1);
                         String hdsRepeatGroup = value.substring(0, iValPoint);
                         String hdsRepeatInnerColumn = value.substring(iValPoint + 1);
-
+                        //Log.d("test", hdsRepeatGroup+":"+hdsRepeatInnerColumn);
                         if (odkRepeatGroup != null) {
                             List<Map<String, String>> repeatGroupLists = repeatGroups.get(odkRepeatGroup);
-                            repeatGroupLists = (repeatGroupLists == null) ? new ArrayList<>() : repeatGroupLists;
+                            if (repeatGroupLists == null) {
+                                repeatGroupLists = new ArrayList<>();
+                                repeatGroups.put(odkRepeatGroup, repeatGroupLists);
+                            }
 
                             //Read Values
                             RepeatColumnValue repeatColumnValue = collectedValues.getRepeatColumn(hdsRepeatGroup);
@@ -290,6 +294,8 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
                                 //map the inner method and its value
                                 String hdsRepeatInnerValue = repeatColumnValue.get(hdsRepeatInnerColumn, repeatIndex).getValue();
                                 mapRepeatItem.put(odkRepeatInnerColumn, hdsRepeatInnerValue);
+
+                                //Log.d("mapkv-"+repeatIndex+"-"+odkRepeatInnerColumn, hdsRepeatInnerValue);
                             }
 
                             //save on filled form to be load to odk
@@ -392,7 +398,7 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
 
             this.boxCollectedData.put(odkCollectedData);
 
-            Log.d("inserting", "new collected data");
+            //Log.d("inserting", "new collected data");
         }else{ //update
             odkCollectedData.setFormId(formId);
             odkCollectedData.setFormUri(contentUri.toString());
@@ -418,7 +424,7 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
         this.collectedData.extensionCollectedUri = odkCollectedData.formUri;
         this.boxCoreCollectedData.put(collectedData);
 
-        this.onFinishedExtensionCollection();
+        onFinishedExtensionCollection();
     }
 
     @Override
@@ -448,7 +454,7 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
             odkCollectedData.collectedId = this.collectedData.collectedId;
 
             this.boxCollectedData.put(odkCollectedData);
-            Log.d("inserting", "new ext collected data");
+            //Log.d("inserting", "new ext collected data");
         }else{ //update
             odkCollectedData.setFormId(formId);
             odkCollectedData.setFormUri(contentUri.toString());
@@ -464,7 +470,7 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
             odkCollectedData.collectedId = this.collectedData.collectedId;
 
             this.boxCollectedData.put(odkCollectedData);
-            Log.d("updating", "new ext collected data");
+            //Log.d("updating", "new ext collected data");
         }
 
         //save corecollecteddata
@@ -472,7 +478,7 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
         this.collectedData.extensionCollectedUri = odkCollectedData.formUri;
         this.boxCoreCollectedData.put(collectedData);
 
-        this.onFinishedExtensionCollection();
+        onFinishedExtensionCollection();
     }
 
     @Override
@@ -485,7 +491,7 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
         this.collectedData.extensionCollectedUri = null;
         this.boxCoreCollectedData.put(collectedData);
 
-        this.onFinishedExtensionCollection();
+        onFinishedExtensionCollection();
     }
 
     @Override

@@ -75,7 +75,7 @@ public class PregnancyOutcomeFormUtil extends FormUtil<PregnancyOutcome> {
     private int minimunFatherAge;
     private int minimunMotherAge;
 
-    public PregnancyOutcomeFormUtil(Fragment fragment, Context context, Visit visit, Household household, Member mother, FormUtilities odkFormUtilities, FormUtilListener<PregnancyOutcome> listener){
+    public PregnancyOutcomeFormUtil(Fragment fragment, Context context, Visit visit, Household household, Member mother, PregnancyRegistration pregnancyRegistration, boolean recentlyCreatedForOutcome, FormUtilities odkFormUtilities, FormUtilListener<PregnancyOutcome> listener){
         super(fragment, context, FormUtil.getPregnancyOutcomeForm(context), odkFormUtilities, listener);
 
         //Log.d("enu-household", ""+household);
@@ -83,6 +83,8 @@ public class PregnancyOutcomeFormUtil extends FormUtil<PregnancyOutcome> {
         this.household = household;
         this.mother = mother;
         this.visit = visit;
+        this.pregnancyRegistration = pregnancyRegistration;
+        this.pregnancyRegistrationCreated = recentlyCreatedForOutcome;
 
         initBoxes();
         initialize();
@@ -444,8 +446,8 @@ public class PregnancyOutcomeFormUtil extends FormUtil<PregnancyOutcome> {
         pregnancyOutcome.visit.setTarget(visit);
         pregnancyOutcome.motherCode = mother.code;
         pregnancyOutcome.fatherCode = father.code;
-        pregnancyOutcome.mother.setTarget(mother);
-        pregnancyOutcome.father.setTarget(father);
+        //pregnancyOutcome.mother.setTarget(mother);
+        //pregnancyOutcome.father.setTarget(father);
         pregnancyOutcome.numberOfOutcomes = numberOfOutcomes;
         //pregnancyOutcome.numberOfLivebirths = 0;
         pregnancyOutcome.outcomeDate = outcomeDate;
@@ -501,7 +503,7 @@ public class PregnancyOutcomeFormUtil extends FormUtil<PregnancyOutcome> {
                 pregnancyChild.outcome.setTarget(pregnancyOutcome);
                 pregnancyChild.outcomeType = type;
                 pregnancyChild.childCode = childCode;
-                pregnancyChild.child.setTarget(childMember);
+                //pregnancyChild.child.setTarget(childMember);
                 pregnancyChild.childOrdinalPosition = childOrdPos;
                 pregnancyChild.childHeadRelationshipType = headRelationshipType;
                 pregnancyChild.childHeadRelationship.setTarget(childHeadRelationship);
@@ -560,10 +562,10 @@ public class PregnancyOutcomeFormUtil extends FormUtil<PregnancyOutcome> {
         member.dob = pregnancyOutcome.outcomeDate;
         member.age = 0;
         member.ageAtDeath = 0;
-        member.motherCode = pregnancyOutcome.mother.getTarget().code;
-        member.motherName = pregnancyOutcome.mother.getTarget().name;
-        member.fatherCode = pregnancyOutcome.father.getTarget().code;
-        member.fatherName = pregnancyOutcome.father.getTarget().name;
+        member.motherCode = mother.code;
+        member.motherName = mother.name;
+        member.fatherCode = father.code;
+        member.fatherName = father.name;
         member.maritalStatus = MaritalStatus.SINGLE; //always single
         //member.spouseCode = null;
         //member.spouseName = null;
@@ -608,56 +610,19 @@ public class PregnancyOutcomeFormUtil extends FormUtil<PregnancyOutcome> {
 
     @Override
     public void collect() {
-
+        Log.d("calling", "collect - pregout");
         //Limit by Age
         if (GeneralUtil.getAge(this.mother.dob, new Date()) < this.minimunMotherAge) {
             DialogFactory.createMessageInfo(this.context, R.string.core_entity_pregnancy_out_lbl, R.string.pregnancy_registration_mother_age_err_lbl).show();
             return;
         }
 
-        this.pregnancyRegistration = getLastPregnancyRegistration(this.mother);
-
-        if (pregnancyRegistration == null || (pregnancyRegistration != null && pregnancyRegistration.status != PregnancyStatus.PREGNANT)){
-            //create new pregnancy in resume mode
-            //there is no previous collected pregnancy registration for this outcome,\n a new pregnancy registration will be created with status as DELIVERED, THEN YOU WILL CONTINUE THE REGISTRATION
-
-            DialogFactory.createMessageInfo(context, R.string.pregnancy_outcome_nroutcomes_title_lbl, R.string.pregnancy_outcome_create_pregreg_info_lbl, new DialogFactory.OnClickListener() {
-                @Override
-                public void onClicked(DialogFactory.Buttons clickedButton) {
-                    createPregnancyRegistration();
-                }
-            }).show();
-
-        } else {
-            //1. get the father
-            checkFatherDialog();
-        }
-
-    }
-
-    private void createPregnancyRegistration() {
-        new PregnancyRegistrationFormUtil(this.fragment, this.context, this.visit, this.household, this.mother, PregnancyStatus.DELIVERED, this.odkFormUtilities, new FormUtilListener<PregnancyRegistration>() {
-            @Override
-            public void onNewEntityCreated(PregnancyRegistration entity) {
-                pregnancyRegistration = entity;
-                pregnancyRegistrationCreated = true;
-                checkFatherDialog();
-            }
-
-            @Override
-            public void onEntityEdited(PregnancyRegistration entity) {
-
-            }
-
-            @Override
-            public void onFormCancelled() {
-
-            }
-        }).collect();
+        //1. get the father
+        checkFatherDialog();
     }
 
     private void checkFatherDialog(){
-
+        Log.d("started ", "pregnancy outcome - check father");
         DialogFactory.createMessageYN(this.context, R.string.pregnancy_outcome_child_father_select_lbl, R.string.new_member_dialog_father_exists_lbl, new DialogFactory.OnYesNoClickListener() {
             @Override
             public void onYesClicked() {
@@ -734,14 +699,6 @@ public class PregnancyOutcomeFormUtil extends FormUtil<PregnancyOutcome> {
                 deleteCreatedPregnancy();
             }
         }).show();
-    }
-
-    private PregnancyRegistration getLastPregnancyRegistration(Member motherMember){
-        //def pregnancies = PregnancyRegistration.executeQuery("select p from PregnancyRegistration p where p.mother.code=? order by p.recordedDate desc", [motherCode], [offset:0, max:1])
-        PregnancyRegistration pregnancyRegistration = this.boxPregnancyRegistrations.query(PregnancyRegistration_.motherCode.equal(motherMember.code))
-                                                                                    .orderDesc(PregnancyRegistration_.recordedDate).build().findFirst();
-
-        return pregnancyRegistration;
     }
 
     private void deleteCreatedPregnancy() {

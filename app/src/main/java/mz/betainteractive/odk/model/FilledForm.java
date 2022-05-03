@@ -1,5 +1,7 @@
 package mz.betainteractive.odk.model;
 
+import static mz.betainteractive.odk.model.RepeatGroupType.RESIDENT_MEMBERS;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -166,12 +168,12 @@ public class FilledForm {
 
 	public boolean isMemberRepeatGroup(String variableName){
 		RepeatGroupType type = getRepeatGroupType(variableName);
-		return type==RepeatGroupType.RESIDENT_MEMBERS || type==RepeatGroupType.DEAD_MEMBERS || type==RepeatGroupType.OUTMIGRATED_MEMBERS ||  type==RepeatGroupType.ALL_MEMBERS;
+		return type== RESIDENT_MEMBERS || type==RepeatGroupType.DEAD_MEMBERS || type==RepeatGroupType.OUTMIGRATED_MEMBERS ||  type==RepeatGroupType.ALL_MEMBERS;
 	}
 
 	public boolean isResidentMemberRepeatGroup(String variableName){
 		RepeatGroupType type = getRepeatGroupType(variableName);
-		return type==RepeatGroupType.RESIDENT_MEMBERS;
+		return type== RESIDENT_MEMBERS;
 	}
 
 	public boolean isDeadMembersRepeatGroup(String variableName){
@@ -209,16 +211,17 @@ public class FilledForm {
 		return this.mapRepeatGroup.get(repeatGroup);
 	}
 
-	public int getMembersCount(String variableName){
+	public int getRepeatGroupCount(String variableName){
 		final String value = values.get(variableName)+"";
+		RepeatGroupType type = RepeatGroupType.getFrom(value);
 
-		switch (value) {
-			case TYPE_RESIDENT_MEMBERS : return getResidentMembers().size();
-			case TYPE_DEAD_MEMBERS : return getDeadMembers().size();
-			case TYPE_OUTMIGRATED_MEMBERS : return getOutmigMembers().size();
-			case TYPE_ALL_MEMBERS : return getHouseholdMembers().size();
+		switch (type) {
+			case RESIDENT_MEMBERS : return getResidentMembers().size();
+			case DEAD_MEMBERS : return getDeadMembers().size();
+			case OUTMIGRATED_MEMBERS : return getOutmigMembers().size();
+			case ALL_MEMBERS : return getHouseholdMembers().size();
+			case MAPPED_VALUES: return mapRepeatGroup.get(variableName).size();
+			default: return 0;
 		}
-
-		return 0;
 	}
 }

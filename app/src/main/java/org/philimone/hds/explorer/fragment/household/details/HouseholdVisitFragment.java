@@ -47,12 +47,15 @@ import org.philimone.hds.explorer.model.Member_;
 import org.philimone.hds.explorer.model.Outmigration;
 import org.philimone.hds.explorer.model.PregnancyOutcome;
 import org.philimone.hds.explorer.model.PregnancyRegistration;
+import org.philimone.hds.explorer.model.PregnancyRegistration_;
 import org.philimone.hds.explorer.model.User;
 import org.philimone.hds.explorer.model.Visit;
 import org.philimone.hds.explorer.model.enums.CoreFormEntity;
 import org.philimone.hds.explorer.model.enums.Gender;
+import org.philimone.hds.explorer.model.enums.PregnancyStatus;
 import org.philimone.hds.explorer.model.enums.SubjectEntity;
 import org.philimone.hds.explorer.model.enums.temporal.ResidencyEndType;
+import org.philimone.hds.explorer.widget.DialogFactory;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -89,6 +92,7 @@ public class HouseholdVisitFragment extends Fragment {
     private Box<Form> boxForms;
     private Box<CollectedData> boxCollectedData;
     private Box<CoreCollectedData> boxCoreCollectedData;
+    private Box<PregnancyRegistration> boxPregnancyRegistrations;
 
     private HouseholdDetailsListener householdDetailsListener;
 
@@ -162,6 +166,7 @@ public class HouseholdVisitFragment extends Fragment {
         this.boxForms = ObjectBoxDatabase.get().boxFor(Form.class);
         //this.boxRegions = ObjectBoxDatabase.get().boxFor(Region.class);
         this.boxMembers = ObjectBoxDatabase.get().boxFor(Member.class);
+        this.boxPregnancyRegistrations = ObjectBoxDatabase.get().boxFor(PregnancyRegistration.class);
     }
     
     private void initialize(View view) {
@@ -582,7 +587,45 @@ public class HouseholdVisitFragment extends Fragment {
     private void onPregnancyOutcomeClicked() {
         Log.d("on-pregoutcome", ""+this.selectedMember);
 
-        new PregnancyOutcomeFormUtil(this, this.getContext(), this.visit, this.household, this.selectedMember, this.odkFormUtilities, new FormUtilListener<PregnancyOutcome>() {
+        PregnancyRegistration pregnancyRegistration = getLastPregnancyRegistration(this.selectedMember);
+
+        if (pregnancyRegistration == null || (pregnancyRegistration != null && pregnancyRegistration.status != PregnancyStatus.PREGNANT)){
+            //create new pregnancy with status delivered in resume mode
+            //there is no previous collected pregnancy registration for this outcome,\n a new pregnancy registration will be created with status as DELIVERED, THEN YOU WILL CONTINUE THE REGISTRATION
+
+            DialogFactory.createMessageInfo(this.getContext(), R.string.pregnancy_outcome_nroutcomes_title_lbl, R.string.pregnancy_outcome_create_pregreg_info_lbl, new DialogFactory.OnClickListener() {
+                @Override
+                public void onClicked(DialogFactory.Buttons clickedButton) {
+                    createPregnancyRegistrationForOutcome();
+                }
+            }).show();
+        } else {
+            openPregnancyOutcomeForm(pregnancyRegistration, false);
+        }
+    }
+
+    private void createPregnancyRegistrationForOutcome() {
+        Log.d("started ", "pregnancy outcome - preg registration");
+        new PregnancyRegistrationFormUtil(this, this.getContext(), this.visit, this.household, this.selectedMember, PregnancyStatus.DELIVERED, this.odkFormUtilities, new FormUtilListener<PregnancyRegistration>() {
+            @Override
+            public void onNewEntityCreated(PregnancyRegistration entity) {
+                openPregnancyOutcomeForm(entity, true);
+            }
+
+            @Override
+            public void onEntityEdited(PregnancyRegistration entity) {
+
+            }
+
+            @Override
+            public void onFormCancelled() {
+
+            }
+        }).collect();
+    }
+
+    private void openPregnancyOutcomeForm(PregnancyRegistration pregnancyRegistration, boolean createdForOutcome){
+        new PregnancyOutcomeFormUtil(this, this.getContext(), this.visit, this.household, this.selectedMember, pregnancyRegistration, createdForOutcome, this.odkFormUtilities, new FormUtilListener<PregnancyOutcome>() {
             @Override
             public void onNewEntityCreated(PregnancyOutcome pregnancyOutcome) {
                 loadDataToListViews();
@@ -598,6 +641,14 @@ public class HouseholdVisitFragment extends Fragment {
 
             }
         }).collect();
+    }
+
+    private PregnancyRegistration getLastPregnancyRegistration(Member motherMember){
+        //def pregnancies = PregnancyRegistration.executeQuery("select p from PregnancyRegistration p where p.mother.code=? order by p.recordedDate desc", [motherCode], [offset:0, max:1])
+        PregnancyRegistration pregnancyRegistration = this.boxPregnancyRegistrations.query(PregnancyRegistration_.motherCode.equal(motherMember.code))
+                .orderDesc(PregnancyRegistration_.code).build().findFirst();
+
+        return pregnancyRegistration;
     }
 
     private void onDeathClicked() {

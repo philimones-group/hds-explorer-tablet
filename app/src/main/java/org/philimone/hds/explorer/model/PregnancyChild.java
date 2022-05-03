@@ -26,7 +26,7 @@ public class PregnancyChild implements CoreEntity {
     @Convert(converter = PregnancyOutcomeTypeConverter.class, dbType = String.class)
     public PregnancyOutcomeType outcomeType;
 
-    public ToOne<Member> child;
+    //public ToOne<Member> child;
 
     @Index
     public String childCode;

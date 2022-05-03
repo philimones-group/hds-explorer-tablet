@@ -320,7 +320,7 @@ public class PregnancyRegistrationFormUtil extends FormUtil<PregnancyRegistratio
 
         //Limit by Age
         if (GeneralUtil.getAge(this.mother.dob, new Date()) < this.minimunMotherAge) {
-            DialogFactory.createMessageInfo(this.context, R.string.core_entity_pregnancy_out_lbl, R.string.pregnancy_registration_mother_age_err_lbl).show();
+            DialogFactory.createMessageInfo(this.context, R.string.core_entity_pregnancy_reg_lbl, R.string.pregnancy_registration_mother_age_err_lbl).show();
             return;
         }
 

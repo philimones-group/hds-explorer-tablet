@@ -1,5 +1,7 @@
 package org.philimone.hds.explorer.model.converters;
 
+import android.util.Log;
+
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -43,7 +45,7 @@ public class MapStringConverter implements PropertyConverter<Map<String, String>
             for (String entry : entries){
                 String[] keyValue = entry.split(":");
                 if (keyValue.length == 2){
-                    map.put(keyValue[1], keyValue[0]); //mapping unique items (odk variables) as Key, the values a the domain column names (TableName.columnName)
+                    map.put(keyValue[0], keyValue[1]); //mapping unique items (odk variables) as Key, the values a the domain column names (TableName.columnName)
                 }
             }
         }

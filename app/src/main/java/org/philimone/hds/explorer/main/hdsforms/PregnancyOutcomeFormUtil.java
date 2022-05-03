@@ -658,7 +658,7 @@ public class PregnancyOutcomeFormUtil extends FormUtil<PregnancyOutcome> {
 
     private void checkFatherDialog(){
 
-        DialogFactory.createMessageYN(this.context, R.string.new_member_dialog_father_select_lbl, R.string.new_member_dialog_father_exists_lbl, new DialogFactory.OnYesNoClickListener() {
+        DialogFactory.createMessageYN(this.context, R.string.pregnancy_outcome_child_father_select_lbl, R.string.new_member_dialog_father_exists_lbl, new DialogFactory.OnYesNoClickListener() {
             @Override
             public void onYesClicked() {
                 openFatherFilterDialog();

@@ -434,13 +434,14 @@
     <string name="pregnancy_outcome_previous_pending_lbl">Esta mãe se encontra com uma gravidez pendente registada no sistema, é necessário primeiro fazer registo do Resultado da gravidez anterior para poder registar uma nova.</string>
     <string name="pregnancy_outcome_nroutcomes_title_lbl">Resultado da gravidez</string>
     <string name="pregnancy_outcome_nroutcomes_lbl">O número de bebês nascidos</string>
-    <string name="pregnancy_outcome_create_pregreg_info_lbl">Não existe registo de gravidez,\nUm novo registo de gravidez será criado com o estado [já deu parto],\nDe seguida prossiga com o registro do resultado da gravidez</string>
+    <string name="pregnancy_outcome_create_pregreg_info_lbl">Não existe registo de gravidez,\nUm novo registo de gravidez será criado com o estado [já deu parto],\n\nDe seguida prossiga com o registro do resultado da gravidez</string>
     <string name="pregnancy_outcome_member_code_err_lbl">O código do bebê está incorrecto!</string>
     <string name="pregnancy_outcome_member_code_household_err_lbl">O código do bebê introduzido não reflecte a casa selecionada!</string>
     <string name="pregnancy_outcome_member_code_exists_lbl">O código do bebê introduzido ja existe!</string>
     <string name="pregnancy_outcome_member_name_empty_lbl">O nome do bebê não pode estar vazio</string>
     <string name="pregnancy_outcome_member_gender_empty_lbl">O sexo do bebê não pode estar vazio</string>
     <string name="pregnancy_outcome_member_head_relattype_empty_lbl">A relação do bebê com o chefe de agregado não pode estar vazio</string>
+    <string name="pregnancy_outcome_child_father_select_lbl">Selecione o Pai do bebê?</string>
     
     <!-- death registration -->
     <string name="death_visit_code_empty_lbl">O código da visita não pode estar vazio</string>

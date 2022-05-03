@@ -318,6 +318,7 @@ public class VisitFormUtil extends FormUtil<Visit> {
             }
         });
 
+        filterDialog.setCancelable(true);
         filterDialog.setFilterHouseCode(this.household.code);
         filterDialog.setFilterStatus(MemberFilterDialog.StatusFilter.RESIDENT, true);
         filterDialog.show();

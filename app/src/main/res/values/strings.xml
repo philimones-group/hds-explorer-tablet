@@ -434,13 +434,15 @@
     <string name="pregnancy_outcome_previous_pending_lbl">The Mother specified already has a pending Pregnancy Registration,\nYou must first register the Pregnancy Outcome to register new Pregnancy.</string>
     <string name="pregnancy_outcome_nroutcomes_title_lbl">Pregnancy Outcome</string>
     <string name="pregnancy_outcome_nroutcomes_lbl">Number of outcomes</string>
-    <string name="pregnancy_outcome_create_pregreg_info_lbl">There is no previous collected pregnancy registration for this outcome,\nA new pregnancy registration will be created with status [Delivered],\nThen you can continue the outcome registration</string>
+    <string name="pregnancy_outcome_create_pregreg_info_lbl">There is no previous collected pregnancy registration for this outcome,\nA new pregnancy registration will be created with status [Delivered],\n\nThen you can continue the outcome registration</string>
     <string name="pregnancy_outcome_member_code_err_lbl">The format of the Child Code is incorrect</string>
     <string name="pregnancy_outcome_member_code_household_err_lbl">The Child code doesnt reflect the selected household</string>
     <string name="pregnancy_outcome_member_code_exists_lbl">The Child Code already exists</string>
     <string name="pregnancy_outcome_member_name_empty_lbl">The Name of the Child cannot be empty</string>
     <string name="pregnancy_outcome_member_gender_empty_lbl">The Sex of the Child cannot be empty</string>
     <string name="pregnancy_outcome_member_head_relattype_empty_lbl">The Child Head Relationship Type cannot be empty</string>
+    <string name="pregnancy_outcome_child_father_select_lbl">Select the father of the Child?</string>
+
     <!-- death registration -->
     <string name="death_visit_code_empty_lbl">The Visit Code cannot be empty</string>
     <string name="death_member_code_empty_lbl">The Member Code cannot be empty</string>

@@ -329,10 +329,9 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
 
     private CollectedData getCollectedData(FilledForm filledForm){
 
-        List<CollectedData> cData = this.boxCollectedData.query().equal(CollectedData_.formId, filledForm.getFormName(), QueryBuilder.StringOrder.CASE_SENSITIVE)
-                .and().equal(CollectedData_.collectedId, this.collectedData.collectedId, QueryBuilder.StringOrder.CASE_SENSITIVE)
-                .filter((c) -> StringUtil.containsAny(c.formModules, this.user.getSelectedModules())) //filter by module
-                .build().find();
+        List<CollectedData> cData = this.boxCollectedData.query(
+                CollectedData_.formId.equal(filledForm.getFormName()).and(CollectedData_.collectedId.equal(this.collectedData.collectedId))
+        ).filter((c) -> StringUtil.containsAny(c.formModules, this.user.getSelectedModules())).build().find();
 
         if (cData != null && cData.size()>0) return cData.get(0);
 
@@ -366,7 +365,7 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
     }
 
     @Override
-    public void onFormFinalized(Uri contentUri, File xmlFile, String metaInstanceName, Date lastUpdatedDate) {
+    public void onFormFinalized(Uri contentUri, String formId, File xmlFile, String metaInstanceName, Date lastUpdatedDate) {
         Log.d("ext form finalized"," "+contentUri+", "+xmlFile);
 
         //search existing record
@@ -375,7 +374,7 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
 
         if (odkCollectedData == null){ //insert
             odkCollectedData = new CollectedData();
-            odkCollectedData.setFormId(lastLoadedForm.getFormName());
+            odkCollectedData.setFormId(formId);
             odkCollectedData.setFormUri(contentUri.toString());
             odkCollectedData.setFormXmlPath(xmlFile.toString());
             odkCollectedData.setFormInstanceName(metaInstanceName);
@@ -395,7 +394,7 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
 
             Log.d("inserting", "new collected data");
         }else{ //update
-            odkCollectedData.setFormId(lastLoadedForm.getFormName());
+            odkCollectedData.setFormId(formId);
             odkCollectedData.setFormUri(contentUri.toString());
             odkCollectedData.setFormXmlPath(xmlFile.toString());
             odkCollectedData.setFormInstanceName(metaInstanceName);
@@ -423,7 +422,7 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
     }
 
     @Override
-    public void onFormUnFinalized(Uri contentUri, File xmlFile, String metaInstanceName, Date lastUpdatedDate) {
+    public void onFormUnFinalized(Uri contentUri, String formId, File xmlFile, String metaInstanceName, Date lastUpdatedDate) {
         Log.d("ext form unfinalized"," "+contentUri);
 
         //search existing record
@@ -432,7 +431,7 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
 
         if (odkCollectedData == null){ //insert
             odkCollectedData = new CollectedData();
-            odkCollectedData.setFormId(lastLoadedForm.getFormName());
+            odkCollectedData.setFormId(formId);
             odkCollectedData.setFormUri(contentUri.toString());
             odkCollectedData.setFormXmlPath("");
             odkCollectedData.setFormInstanceName(metaInstanceName);
@@ -451,7 +450,7 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
             this.boxCollectedData.put(odkCollectedData);
             Log.d("inserting", "new ext collected data");
         }else{ //update
-            odkCollectedData.setFormId(lastLoadedForm.getFormName());
+            odkCollectedData.setFormId(formId);
             odkCollectedData.setFormUri(contentUri.toString());
             odkCollectedData.setFormXmlPath("");
             odkCollectedData.setFormInstanceName(metaInstanceName);

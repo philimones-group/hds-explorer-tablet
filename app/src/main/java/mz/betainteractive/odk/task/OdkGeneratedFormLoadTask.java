@@ -6,22 +6,16 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
-import java.util.concurrent.TimeUnit;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.core.app.ActivityCompat;
-import androidx.fragment.app.FragmentActivity;
 import mz.betainteractive.odk.FormUtilities;
 import mz.betainteractive.odk.FormsProviderAPI;
 import mz.betainteractive.odk.InstanceProviderAPI;
@@ -32,28 +26,20 @@ import mz.betainteractive.odk.model.RepeatGroupType;
 import org.jdom2.JDOMException;
 import org.jdom2.input.SAXBuilder;
 import org.philimone.hds.explorer.model.Member;
-import org.philimone.hds.forms.main.FormFragment;
-import org.philimone.hds.forms.widget.dialog.DialogFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import android.Manifest;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
-import android.net.wifi.WifiInfo;
-import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.os.Environment;
-import android.provider.Settings;
 //import android.support.v4.app.ActivityCompat;
-import android.telephony.TelephonyManager;
 import android.util.Log;
 
 
@@ -290,14 +276,14 @@ public class OdkGeneratedFormLoadTask extends AsyncTask<Void, Void, Boolean> {
                     if (filledForm.isRepeatGroup(name)) { //is a repeat group with auto-filled members
                         nodeRepeatChilds = n.getChildNodes();
 
-                        /*
-                        int count = filledForm.getMembersCount(name);
+
+                        int count = filledForm.getRepeatGroupCount(name);
                         //Log.d("sdd", "count="+count);
                         if (count > 0){
                             //Map the default variable "repeatGroupName[Count]"
                             sbuilder.append("<"+name+"_count>" + count + "</"+name+"_count>" + "\r\n");
                         }
-                         */
+
                     }
 
                     //checking special repeat groups
@@ -521,7 +507,7 @@ public class OdkGeneratedFormLoadTask extends AsyncTask<Void, Void, Boolean> {
             String repeat = nodeRepeatCountVar.replace("_count", "");
 
             if (filledForm.isMemberRepeatGroup(repeat)) {
-                return filledForm.getMembersCount(repeat);
+                return filledForm.getRepeatGroupCount(repeat);
             }
         }
 

@@ -10,9 +10,9 @@ import java.util.Date;
  */
 public interface OdkFormResultListener {
 
-    public void onFormFinalized(Uri contentUri, File xmlFile, String metaInstanceName, Date lastUpdatedDate);
+    public void onFormFinalized(Uri contentUri, String formId, File xmlFile, String metaInstanceName, Date lastUpdatedDate);
 
-    public void onFormUnFinalized(Uri contentUri, File xmlFile, String metaInstanceName, Date lastUpdatedDate);
+    public void onFormUnFinalized(Uri contentUri, String formId, File xmlFile, String metaInstanceName, Date lastUpdatedDate);
 
     public void onDeleteForm(Uri contentUri);
 

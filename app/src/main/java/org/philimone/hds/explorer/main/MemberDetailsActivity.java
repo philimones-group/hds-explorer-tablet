@@ -482,7 +482,7 @@ public class MemberDetailsActivity extends AppCompatActivity implements OdkFormR
     }
 
     @Override
-    public void onFormFinalized(Uri contentUri, File xmlFile, String metaInstanceName, Date lastUpdatedDate) {
+    public void onFormFinalized(Uri contentUri, String formId, File xmlFile, String metaInstanceName, Date lastUpdatedDate) {
         Log.d("form finalized"," "+contentUri+", "+xmlFile);
 
         //save Collected data
@@ -540,7 +540,7 @@ public class MemberDetailsActivity extends AppCompatActivity implements OdkFormR
     }
 
     @Override
-    public void onFormUnFinalized(Uri contentUri, File xmlFile, String metaInstanceName, Date lastUpdatedDate) {
+    public void onFormUnFinalized(Uri contentUri, String formId, File xmlFile, String metaInstanceName, Date lastUpdatedDate) {
         Log.d("form unfinalized"," "+contentUri);
 
         //save Collected data

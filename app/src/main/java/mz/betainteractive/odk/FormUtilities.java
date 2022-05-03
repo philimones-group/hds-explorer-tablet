@@ -55,6 +55,8 @@ public class FormUtilities {
     private String metaInstanceName;
     private Date lastUpdatedDate;
 
+    private String formId;
+
     private String deviceId;
     private ActivityResultLauncher<String> requestPermission;
     private ActivityResultLauncher<Intent> odkResultLauncher;
@@ -131,6 +133,7 @@ public class FormUtilities {
     }
 
 	public void loadForm(final FilledForm filledForm) {
+        this.formId = filledForm.getFormName();
 
 		this.currentLoadTask = new OdkGeneratedFormLoadTask(this, filledForm, new OdkFormLoadListener() {
             public void onOdkFormLoadSuccess(Uri contentUri) {
@@ -153,7 +156,8 @@ public class FormUtilities {
     }
 
     public void loadForm(FilledForm filledForm, String contentUriAsString, final OdkFormResultListener listener){
-        this.contentUri = Uri.parse(contentUriAsString);
+        this.formId = filledForm.getFormName();
+	    this.contentUri = Uri.parse(contentUriAsString);
         this.metaInstanceName = "";
         this.lastUpdatedDate = null;
 
@@ -269,7 +273,7 @@ public class FormUtilities {
                 saveUnfinalizedFile();
 
                 if (formResultListener != null) {
-                    formResultListener.onFormUnFinalized(contentUri, new File(xmlFilePath), metaInstanceName, lastUpdatedDate);
+                    formResultListener.onFormUnFinalized(contentUri, formId, new File(xmlFilePath), metaInstanceName, lastUpdatedDate);
                 }
             }
         });
@@ -408,7 +412,7 @@ public class FormUtilities {
 
                 //pass contentUri and filepath to a listener - onFormFinalized, onFormUnfinalized
                 if (formResultListener != null) {
-                    formResultListener.onFormFinalized(contentUri, new File(xmlFilePath), metaInstanceName, lastUpdatedDate);
+                    formResultListener.onFormFinalized(contentUri, formId, new File(xmlFilePath), metaInstanceName, lastUpdatedDate);
                 }
             } else {
                 createUnfinishedFormDialog();

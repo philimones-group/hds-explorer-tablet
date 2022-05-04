@@ -280,6 +280,8 @@ public class HouseholdVisitFragment extends Fragment {
         if (adapter != null){
             adapter.setSelectedIndex(-1);
         }
+
+        this.selectedMember = null;
     }
 
     private void setHouseholdMode() {
@@ -382,6 +384,10 @@ public class HouseholdVisitFragment extends Fragment {
     private void loadDataToListViews(){
         loadMembersToList();
         loadCollectedEventsToList();
+
+        if (this.selectedMember != null) { //was selected
+            selectMember(selectedMember);
+        }
     }
 
     private long countCollectedForms(Member member) {

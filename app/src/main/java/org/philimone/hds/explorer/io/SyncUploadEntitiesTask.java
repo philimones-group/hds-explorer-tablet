@@ -5,6 +5,7 @@ import android.os.AsyncTask;
 import android.util.Base64;
 import android.util.Log;
 
+import org.apache.commons.io.FileUtils;
 import org.philimone.hds.explorer.model.CoreCollectedData;
 import org.philimone.hds.explorer.model.enums.CoreFormEntity;
 
@@ -16,9 +17,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.Scanner;
 
 public class SyncUploadEntitiesTask extends AsyncTask<Void, Integer, UploadResponse> {
     private static final String API_PATH = "/api/import";
@@ -81,11 +79,11 @@ public class SyncUploadEntitiesTask extends AsyncTask<Void, Integer, UploadRespo
         String url = baseurl + API_PATH;
 
         switch (formEntity) {
-
+            //case REGION:                 return url + "/regions";
             case HOUSEHOLD:              return url + "/households";
             case MEMBER_ENU:             return url + "/memberenus";
-            case HEAD_RELATIONSHIP:      return url + "/households";
-            case MARITAL_RELATIONSHIP:   return url + "/headrelationships";
+            case HEAD_RELATIONSHIP:      return url + "/headrelationships";
+            case MARITAL_RELATIONSHIP:   return url + "/maritalrelationships";
             case INMIGRATION:            return url + "/inmigrations";
             case EXTERNAL_INMIGRATION:   return url + "/externalinmigrations";
             case OUTMIGRATION:           return url + "/outmigrations";
@@ -105,7 +103,7 @@ public class SyncUploadEntitiesTask extends AsyncTask<Void, Integer, UploadRespo
 
         if ( new File(collectedData.formFilename).exists()){
             try {
-                byte[] data = Files.readAllBytes(Paths.get(collectedData.formFilename));
+                byte[] data = FileUtils.readFileToByteArray(new File(collectedData.formFilename));
                 return data;
             } catch (IOException e) {
                 e.printStackTrace();

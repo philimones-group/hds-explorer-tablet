@@ -451,7 +451,7 @@ public class HouseholdVisitFragment extends Fragment {
             public void onNewEntityCreated(Member member) {
                 selectedMember = member;
                 loadDataToListViews();
-                selectMember(member);
+                //selectMember(member);
             }
 
             @Override
@@ -502,7 +502,7 @@ public class HouseholdVisitFragment extends Fragment {
             public void onNewEntityCreated(Member member) {
                 selectedMember = member;
                 loadDataToListViews();
-                selectMember(member);
+                //selectMember(member);
             }
 
             @Override
@@ -527,7 +527,7 @@ public class HouseholdVisitFragment extends Fragment {
             public void onNewEntityCreated(Inmigration inmigration) {
                 selectedMember = boxMembers.query().equal(Member_.code, inmigration.memberCode, QueryBuilder.StringOrder.CASE_SENSITIVE).build().findFirst();
                 loadDataToListViews();
-                selectMember(selectedMember);
+                //selectMember(selectedMember);
             }
 
             @Override
@@ -550,6 +550,7 @@ public class HouseholdVisitFragment extends Fragment {
         OutmigrationFormUtil formUtil = new OutmigrationFormUtil(this, this.getContext(), this.visit, this.household, this.selectedMember, this.odkFormUtilities, new FormUtilListener<Outmigration>() {
             @Override
             public void onNewEntityCreated(Outmigration outmigration) {
+                selectedMember = null;
                 loadDataToListViews();
             }
 
@@ -663,6 +664,7 @@ public class HouseholdVisitFragment extends Fragment {
         DeathFormUtil formUtil = new DeathFormUtil(this, this.getContext(), this.visit, this.household, this.selectedMember, this.odkFormUtilities, new FormUtilListener<Death>() {
             @Override
             public void onNewEntityCreated(Death death) {
+                selectedMember = null;
                 loadDataToListViews();
             }
 

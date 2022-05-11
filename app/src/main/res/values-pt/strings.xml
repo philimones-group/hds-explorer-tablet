@@ -158,6 +158,10 @@
     <string name="error_field_required">Este campo é obrigatório</string>
     <string name="warning_lbl">Aviso!</string>
 
+    <!-- Rounds -->
+    <string name="round_does_not_exists_lbl">Não sera possivel continuar, nenhuma ronda foi criada no sistema.\nTente registar uma nova Ronda no servidor</string>
+    <string name="round_household_details_does_not_exists_lbl">Não existem rondas configuradas no sistema.\nNão sera possivel colher visitas do DSS</string>
+
     <!-- Strings related to Member Filter -->
     <string name="member_filter_search_lbl"><u>Pesquisa de Membros</u></string>
     <string name="member_filter_list_lbl"><u>Lista de membros encontrados</u></string>

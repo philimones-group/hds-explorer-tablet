@@ -45,8 +45,11 @@ import org.philimone.hds.explorer.model.Household;
 import org.philimone.hds.explorer.model.Household_;
 import org.philimone.hds.explorer.model.Module;
 import org.philimone.hds.explorer.model.Region;
+import org.philimone.hds.explorer.model.Round;
+import org.philimone.hds.explorer.model.Round_;
 import org.philimone.hds.explorer.model.User;
 import org.philimone.hds.explorer.settings.RequestCodes;
+import org.philimone.hds.explorer.widget.DialogFactory;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -107,6 +110,7 @@ public class HouseholdFilterFragment extends Fragment implements RegionExpandabl
     private Box<ApplicationParam> boxAppParams;
     private Box<Region> boxRegions;
     private Box<Household> boxHouseholds;
+    private Box<Round> boxRounds;
     private Box<Form> boxForms;
 
     private RegionExpandableListAdapter regionAdapter;
@@ -154,6 +158,7 @@ public class HouseholdFilterFragment extends Fragment implements RegionExpandabl
         this.boxAppParams = ObjectBoxDatabase.get().boxFor(ApplicationParam.class);
         this.boxRegions = ObjectBoxDatabase.get().boxFor(Region.class);
         this.boxHouseholds = ObjectBoxDatabase.get().boxFor(Household.class);
+        this.boxRounds = ObjectBoxDatabase.get().boxFor(Round.class);
         this.boxForms = ObjectBoxDatabase.get().boxFor(Form.class);
     }
 
@@ -300,6 +305,14 @@ public class HouseholdFilterFragment extends Fragment implements RegionExpandabl
     }
 
     private void onAddNewHouseholdClicked() {
+
+        boolean roundsExists = this.boxRounds.query().order(Round_.roundNumber, QueryBuilder.DESCENDING).build().count()>0;
+
+        if (!roundsExists) {
+            DialogFactory.createMessageInfo(this.mContext, R.string.error_lbl, R.string.round_does_not_exists_lbl).show();
+            return;
+        }
+
         //Call HouseholdDetailsActivity in mode NEW_HOUSEHOLD
         //Receive the recent created Household, put the code on search after it
 

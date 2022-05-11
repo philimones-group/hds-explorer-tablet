@@ -158,6 +158,10 @@
     <string name="error_field_required">This field is required</string>
     <string name="warning_lbl">Warning</string>
 
+    <!-- Rounds -->
+    <string name="round_does_not_exists_lbl">Cant proceed, there is no DSS Rounds defined in the system.\nTry creating a new Round in the server app</string>
+    <string name="round_household_details_does_not_exists_lbl">There is no DSS Rounds configured in the system.\nDSS Visits wont be possible to collect</string>
+
     <!-- Strings related to Member Filter -->
     <string name="member_filter_search_lbl"><u>Search Member by Filter</u></string>
     <string name="member_filter_list_lbl"><u>List of Members Found</u></string>

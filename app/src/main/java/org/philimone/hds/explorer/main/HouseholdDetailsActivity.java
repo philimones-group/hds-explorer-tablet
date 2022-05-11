@@ -31,6 +31,8 @@ import org.philimone.hds.explorer.model.Household;
 import org.philimone.hds.explorer.model.Member;
 import org.philimone.hds.explorer.model.Region;
 import org.philimone.hds.explorer.model.Region_;
+import org.philimone.hds.explorer.model.Round;
+import org.philimone.hds.explorer.model.Round_;
 import org.philimone.hds.explorer.model.User;
 import org.philimone.hds.explorer.model.Visit;
 import org.philimone.hds.explorer.model.Visit_;
@@ -90,8 +92,11 @@ public class HouseholdDetailsActivity extends AppCompatActivity implements House
     private Box<ApplicationParam> boxAppParams;
     private Box<Region> boxRegions;
     private Box<Household> boxHouseholds;
+    private Box<Round> boxRounds;
     private Box<Visit> boxVisits;
     private Box<CoreCollectedData> boxCoreCollectedData;
+
+    private Round currentRound;
 
     private Integer requestCode;
 
@@ -116,12 +121,23 @@ public class HouseholdDetailsActivity extends AppCompatActivity implements House
     protected void onPostResume() {
         super.onPostResume();
 
+        boolean roundExists = currentRound != null;
+
+        if (!roundExists && this.loadNewHousehold) {
+            DialogFactory.createMessageInfo(this, R.string.error_lbl, R.string.round_does_not_exists_lbl).show();
+            return;
+        }
+
         //if its the first time - load HForm Household
         if (this.loadNewHousehold==true){
             createNewHousehold();
         }
 
         this.loadNewHousehold = false; //on other resumes will not load new household
+
+        if (!roundExists){
+            DialogFactory.createMessageInfo(this, R.string.info_lbl, R.string.round_household_details_does_not_exists_lbl).show();
+        }
     }
 
     @Override
@@ -185,6 +201,7 @@ public class HouseholdDetailsActivity extends AppCompatActivity implements House
         this.boxRegions = ObjectBoxDatabase.get().boxFor(Region.class);
         this.boxVisits = ObjectBoxDatabase.get().boxFor(Visit.class);
         this.boxHouseholds = ObjectBoxDatabase.get().boxFor(Household.class);
+        this.boxRounds = ObjectBoxDatabase.get().boxFor(Round.class);
         this.boxCoreCollectedData = ObjectBoxDatabase.get().boxFor(CoreCollectedData.class);
     }
 
@@ -204,6 +221,8 @@ public class HouseholdDetailsActivity extends AppCompatActivity implements House
     private void initialize() {
 
         this.odkFormUtilities = new FormUtilities(this, null);
+
+        currentRound = this.boxRounds.query().order(Round_.roundNumber, QueryBuilder.DESCENDING).build().findFirst();
 
         hhDetailsName = (TextView) findViewById(R.id.hhDetailsName);
         hhDetailsCode = (TextView) findViewById(R.id.hhDetailsCode);
@@ -409,10 +428,11 @@ public class HouseholdDetailsActivity extends AppCompatActivity implements House
     private void setHouseholdMode(){
         this.hdetailsMode = HouseholdDetailsMode.NORMAL_MODE;
         boolean recentlyCreatedVisit = hasRecentlyCreatedVisit();
+        boolean roundExists = currentRound != null;
 
-        btHouseDetailsCreateVisit.setEnabled(true);
+        btHouseDetailsCreateVisit.setEnabled(roundExists && true);
         btHouseDetailsFinishVisit.setEnabled(false);
-        btHouseDetailsOpenVisit.setEnabled(recentlyCreatedVisit);
+        btHouseDetailsOpenVisit.setEnabled(roundExists && recentlyCreatedVisit);
 
         btHouseDetailsCreateVisit.setVisibility(View.VISIBLE);
         btHouseDetailsFinishVisit.setVisibility(View.GONE);
@@ -427,9 +447,10 @@ public class HouseholdDetailsActivity extends AppCompatActivity implements House
 
     private void setVisitMode(){
         this.hdetailsMode = HouseholdDetailsMode.VISIT_MODE;
+        boolean roundExists = currentRound != null;
 
         btHouseDetailsCreateVisit.setEnabled(false);
-        btHouseDetailsFinishVisit.setEnabled(true);
+        btHouseDetailsFinishVisit.setEnabled(roundExists && true);
         btHouseDetailsOpenVisit.setEnabled(false);
 
         btHouseDetailsCreateVisit.setVisibility(View.GONE);
@@ -453,9 +474,10 @@ public class HouseholdDetailsActivity extends AppCompatActivity implements House
     private void setNewHouseholdMode(){
         this.hdetailsMode = HouseholdDetailsMode.NEW_HOUSEHOLD_MODE;
         this.loadNewHousehold = true;
+        boolean roundExists = currentRound != null;
 
         btHouseDetailsCreateVisit.setEnabled(false);
-        btHouseDetailsFinishVisit.setEnabled(true);
+        btHouseDetailsFinishVisit.setEnabled(roundExists && true);
         btHouseDetailsOpenVisit.setEnabled(false);
 
         btHouseDetailsCreateVisit.setVisibility(View.GONE);

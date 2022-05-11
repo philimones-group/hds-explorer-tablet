@@ -68,6 +68,8 @@ dependencies {
 
     implementation group: 'org.mindrot', name: 'jbcrypt', version: '0.4'
 
+    implementation 'commons-io:commons-io:2.11.0'
+
     //to enable java 8 new features on android < 24
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.1.5'
 

@@ -33,6 +33,7 @@ public class MemberArrayAdapter  extends ArrayAdapter<Member> {
     private boolean ignoreHeadOfHousehold = false;
     private boolean showHouseholdAndCode = false;
     private boolean showHouseholdHead = true;
+    private boolean showGender = false;
     private MemberIcon memberIcon;
 
     public enum MemberIcon {NORMAL_MEMBER_ICON, NORMAL_HEAD_ICON, NORMAL_SECHEAD_ICON, NORMAL_MEMBER_NEW_ICON, NORMAL_HEAD_NEW_ICON}
@@ -150,6 +151,14 @@ public class MemberArrayAdapter  extends ArrayAdapter<Member> {
         this.showHouseholdHead = showHouseholdHead;
     }
 
+    public boolean isShowGender() {
+        return showGender;
+    }
+
+    public void setShowGender(boolean showGender) {
+        this.showGender = showGender;
+    }
+
     public void setMemberIcon(MemberIcon memberIcon) {
         this.memberIcon = memberIcon;
     }
@@ -185,17 +194,24 @@ public class MemberArrayAdapter  extends ArrayAdapter<Member> {
         Member mb = members.get(position);
 
         String endType = "";
+        String extraCode = "";
         switch (mb.endType){
-            case DEATH: endType = "- DTH"; break;
-            case EXTERNAL_OUTMIGRATION: endType = "- EXT"; break;
+            case DEATH: endType = " - DTH"; break;
+            case EXTERNAL_OUTMIGRATION: endType = " - EXT"; break;
+        }
+
+        extraCode += endType;
+
+        if (showGender) {
+            extraCode += (extraCode.isEmpty() ? "  " : " - ") + mContext.getString(R.string.member_details_gender_lbl)+" "+mb.gender.code;
         }
 
         txtName.setText(mb.getName());
-        txtCode.setText(mb.getCode()+endType);
+        txtCode.setText(mb.getCode()+extraCode);
 
 
         if (showHouseholdAndCode){
-            txtCode.setText(mb.getHouseholdName() +" -> "+mb.getCode());
+            txtCode.setText(mb.getHouseholdName() +" -> "+mb.getCode()+endType);
         }
 
         if (chkVBprocessed != null && checkableMembers != null){
@@ -217,9 +233,10 @@ public class MemberArrayAdapter  extends ArrayAdapter<Member> {
             txtExtra.setText(extras.get(position));
         }
 
-        if (!ignoreHeadOfHousehold){
+        if (ignoreHeadOfHousehold==false){
             if (mb.isHouseholdHead()){
                 //txtName.setTypeface(null, Typeface.BOLD);
+                //memberIcon = MemberIcon.NORMAL_HEAD_ICON;
                 iconView.setImageResource(R.mipmap.nui_member_red_filled_icon);
             }
 

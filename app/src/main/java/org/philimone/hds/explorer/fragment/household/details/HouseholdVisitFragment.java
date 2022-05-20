@@ -344,6 +344,7 @@ public class HouseholdVisitFragment extends Fragment {
 
         MemberArrayAdapter adapter = new MemberArrayAdapter(this.getContext(), R.layout.household_visit_member_item, members);
         adapter.setShowHouseholdHead(false);
+        adapter.setShowGender(true);
         this.lvHouseholdMembers.setAdapter(adapter);
     }
 

@@ -375,7 +375,7 @@ public class Member implements CoreEntity, FormSubject, Serializable {
     }
 
     public boolean isHouseholdHead() {
-        return isHouseholdHead;
+        return headRelationshipType==HeadRelationshipType.HEAD_OF_HOUSEHOLD;
     }
 
     public void setHouseholdHead(boolean householdHead) {

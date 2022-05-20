@@ -408,11 +408,12 @@ public class HouseholdDetailsActivity extends AppCompatActivity implements House
 
     private void onCollectDataClicked(){
 
-        this.householdDetailsTabViewPager.setCurrentItem(1, true);
+        this.householdDetailsTabLayout.getTabAt(2).select();
+        //this.householdDetailsTabViewPager.setCurrentItem(2, true);
 
         //Go to HouseholdFormsFragment and call this action
-        //this.collectedDataFragment.onCollectData();
-
+        CollectedDataFragment collectedDataFragment = this.fragmentAdapter.getFragmentCollected();
+        collectedDataFragment.onCollectData();
     }
 
     private boolean hasRecentlyCreatedVisit() {

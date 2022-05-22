@@ -1,62 +1,49 @@
 package org.philimone.hds.explorer.main;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import org.philimone.hds.explorer.R;
-import org.philimone.hds.explorer.adapter.CollectedDataArrayAdapter;
-import org.philimone.hds.explorer.adapter.model.CollectedDataItem;
 import org.philimone.hds.explorer.data.FormDataLoader;
 import org.philimone.hds.explorer.database.Bootstrap;
-import org.philimone.hds.explorer.database.ObjectBoxDatabase;
-import org.philimone.hds.explorer.model.CollectedData;
-import org.philimone.hds.explorer.model.CollectedData_;
+import org.philimone.hds.explorer.fragment.CollectedDataFragment;
+import org.philimone.hds.explorer.fragment.ExternalDatasetsFragment;
+import org.philimone.hds.explorer.fragment.member.details.MemberDetailsFragment;
+import org.philimone.hds.explorer.fragment.member.details.adapter.MemberDetailsFragmentAdapter;
 import org.philimone.hds.explorer.model.Form;
 import org.philimone.hds.explorer.model.Household;
 import org.philimone.hds.explorer.model.Member;
-import org.philimone.hds.explorer.model.Member_;
 import org.philimone.hds.explorer.model.User;
-import org.philimone.hds.explorer.model.enums.temporal.ResidencyEndType;
 import org.philimone.hds.explorer.settings.RequestCodes;
-import org.philimone.hds.explorer.widget.DialogFactory;
-import org.philimone.hds.explorer.widget.FormSelectorDialog;
 
-import java.io.File;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import androidx.appcompat.app.AppCompatActivity;
-import io.objectbox.Box;
-import io.objectbox.query.QueryBuilder;
-import mz.betainteractive.odk.FormUtilities;
-import mz.betainteractive.odk.listener.OdkFormResultListener;
-import mz.betainteractive.odk.model.FilledForm;
+import androidx.viewpager2.widget.ViewPager2;
+
+import com.google.android.material.tabs.TabLayout;
+
 import mz.betainteractive.utilities.StringUtil;
 
-public class MemberDetailsActivity extends AppCompatActivity implements OdkFormResultListener {
+public class MemberDetailsActivity extends AppCompatActivity {
+
+    private TabLayout memberDetailsTabLayout;
+    private ViewPager2 memberDetailsTabViewPager;
+    private RelativeLayout mainPanelTabsLayout;
 
     private TextView mbDetailsName;
     private TextView mbDetailsCode;
     private TextView mbDetailsGender;
     private TextView mbDetailsAge;
     private TextView mbDetailsDob;
-    private TextView mbDetailsHouseNo;
-    private TextView mbDetailsEndType;
-    private TextView mbDetailsEndDate;
-    private TextView mbDetailsFather;
-    private TextView mbDetailsMother;
-    private TextView mbDetailsSpouse;
-    private ListView lvCollectedForms;
     private Button btMemDetailsCollectData;
     private Button btMemDetailsBack;
     private ImageView iconView;
@@ -70,19 +57,12 @@ public class MemberDetailsActivity extends AppCompatActivity implements OdkFormR
     private Member member;
     private boolean isNewTempMember;
     private List<FormDataLoader> formDataLoaders = new ArrayList<>();
-    private FormDataLoader lastLoadedForm;
 
-    private List<Member> allHouseholdMembers = new ArrayList<>();
+    private MemberDetailsFragmentAdapter fragmentAdapter;
 
     private User loggedUser;
 
-    private FormUtilities formUtilities;
-
     private int requestCode;
-
-    private Box<CollectedData> boxCollectedData;
-    private Box<Form> boxForms;
-    private Box<Member> boxMembers;
 
     //public static final int REQUEST_CODE_ADD_NEW_MEMBER = 10; /* Member Requests will be from 10 to 19 */
     //public static final int REQUEST_CODE_EDIT_NEW_MEMBER = 11;
@@ -100,10 +80,9 @@ public class MemberDetailsActivity extends AppCompatActivity implements OdkFormR
 
         readFormDataLoader();
 
-        formUtilities = new FormUtilities(this, this);
-
         initBoxes();
         initialize();
+        initFragments();
     }
 
     @Override
@@ -147,9 +126,9 @@ public class MemberDetailsActivity extends AppCompatActivity implements OdkFormR
     }
 
     private void initBoxes() {
-        this.boxCollectedData = ObjectBoxDatabase.get().boxFor(CollectedData.class);
-        this.boxForms = ObjectBoxDatabase.get().boxFor(Form.class);
-        this.boxMembers = ObjectBoxDatabase.get().boxFor(Member.class);
+        //this.boxCollectedData = ObjectBoxDatabase.get().boxFor(CollectedData.class);
+        //this.boxForms = ObjectBoxDatabase.get().boxFor(Form.class);
+        //this.boxMembers = ObjectBoxDatabase.get().boxFor(Member.class);
     }
 
     private void initialize() {
@@ -158,16 +137,12 @@ public class MemberDetailsActivity extends AppCompatActivity implements OdkFormR
         mbDetailsGender = (TextView) findViewById(R.id.mbDetailsGender);
         mbDetailsAge = (TextView) findViewById(R.id.mbDetailsAge);
         mbDetailsDob = (TextView) findViewById(R.id.mbDetailsDob);
-        mbDetailsHouseNo = (TextView) findViewById(R.id.mbDetailsHouseName);
-        mbDetailsEndType = (TextView) findViewById(R.id.mbDetailsEndType);
-        mbDetailsEndDate = (TextView) findViewById(R.id.mbDetailsEndDate);
-        mbDetailsFather = (TextView) findViewById(R.id.mbDetailsFather);
-        mbDetailsMother = (TextView) findViewById(R.id.mbDetailsMother);
-        mbDetailsSpouse = (TextView) findViewById(R.id.mbDetailsSpouse);
-        lvCollectedForms = (ListView) findViewById(R.id.lvCollectedForms);
         btMemDetailsCollectData = (Button) findViewById(R.id.btMemDetailsCollectData);
         btMemDetailsBack = (Button) findViewById(R.id.btMemDetailsBack);
         iconView = (ImageView) findViewById(R.id.iconView);
+        memberDetailsTabLayout = findViewById(R.id.memberDetailsTabLayout);
+        memberDetailsTabViewPager = findViewById(R.id.memberDetailsTabViewPager);
+        mainPanelTabsLayout = findViewById(R.id.mainPanelTabsLayout);
 
         mbDetailsLayoutSc = (LinearLayout) findViewById(R.id.mbDetailsLayoutSc);
         mbDetailsStudyCodeLabel = (TextView) findViewById(R.id.mbDetailsStudyCodeLabel);
@@ -188,10 +163,20 @@ public class MemberDetailsActivity extends AppCompatActivity implements OdkFormR
             }
         });
 
-        lvCollectedForms.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        memberDetailsTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                onCollectedDataItemClicked(position);
+            public void onTabSelected(TabLayout.Tab tab) {
+                memberDetailsTabViewPager.setCurrentItem(tab.getPosition());
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
             }
         });
 
@@ -235,18 +220,44 @@ public class MemberDetailsActivity extends AppCompatActivity implements OdkFormR
         }
     }
 
+    private void initFragments() {
+
+        if (member != null && fragmentAdapter == null) {
+            fragmentAdapter = new MemberDetailsFragmentAdapter(this.getSupportFragmentManager(), this.getLifecycle(), member, loggedUser, formDataLoaders);
+            memberDetailsTabViewPager.setAdapter(fragmentAdapter);
+            //this will create all fragments
+            memberDetailsTabViewPager.setOffscreenPageLimit(3);
+        }
+
+
+    }
+
+    private void reloadFragmentsData(){
+        if (fragmentAdapter != null) {
+            MemberDetailsFragment membersFragment = this.fragmentAdapter.getFragmentMemberDetails();
+            ExternalDatasetsFragment datasetsFragment = this.fragmentAdapter.getFragmentDatasets();
+            CollectedDataFragment collectedDataFragment = this.fragmentAdapter.getFragmentCollected();
+
+            if (membersFragment != null) {
+                membersFragment.refreshMemberData();
+            }
+
+            if (datasetsFragment != null) {
+                //datasetsFragment.
+            }
+
+            if (collectedDataFragment != null) {
+                collectedDataFragment.reloadCollectedData();
+            }
+        }
+    }
+
     private void clearMemberData(){
         mbDetailsName.setText("");
         mbDetailsCode.setText("");
         mbDetailsGender.setText("");
         mbDetailsAge.setText("");
         mbDetailsDob.setText("");
-        mbDetailsHouseNo.setText("");
-        mbDetailsEndType.setText("");
-        mbDetailsEndDate.setText("");
-        mbDetailsFather.setText("");
-        mbDetailsMother.setText("");
-        mbDetailsSpouse.setText("");
 
         if (studyCodeValue != null){
             mbDetailsLayoutSc.setVisibility(View.VISIBLE);
@@ -265,12 +276,6 @@ public class MemberDetailsActivity extends AppCompatActivity implements OdkFormR
         mbDetailsGender.setText(member.getGender().getId());
         mbDetailsAge.setText(member.getAge()+"");
         mbDetailsDob.setText(StringUtil.formatYMD(member.dob));
-        mbDetailsHouseNo.setText(member.getHouseholdName());
-        mbDetailsEndType.setText(getEndTypeMsg(member));
-        mbDetailsEndDate.setText(getEndDateMsg(member));
-        mbDetailsFather.setText(getParentName(member.getFatherName()));
-        mbDetailsMother.setText(getParentName(member.getMotherName()));
-        mbDetailsSpouse.setText(getSpouseName(member.getSpouseName()));
 
         if (member.isHouseholdHead()){
             iconView.setImageResource(R.mipmap.nui_member_red_filled_icon);
@@ -291,339 +296,21 @@ public class MemberDetailsActivity extends AppCompatActivity implements OdkFormR
         }
 
         showCollectedData();
-        retrieveAllHouseholdMembers();
 
     }
 
-    private void retrieveAllHouseholdMembers(){
-        List<Member> members = this.boxMembers.query().equal(Member_.householdCode, this.member.getHouseholdCode(), QueryBuilder.StringOrder.CASE_SENSITIVE).build().find();
-
-        this.allHouseholdMembers.clear();
-        this.allHouseholdMembers.addAll(members);
-    }
-
-    private void onCollectedDataItemClicked(int position) {
-        CollectedDataArrayAdapter adapter = (CollectedDataArrayAdapter) this.lvCollectedForms.getAdapter();
-        CollectedDataItem dataItem = adapter.getItem(position);
-
-        CollectedData collectedData = dataItem.getCollectedData();
-        FormDataLoader formDataLoader = getFormDataLoader(collectedData);
-
-        openOdkForm(formDataLoader, collectedData);
-    }
-
-    /*
-     * Show the data collected for the selected individual - but only shows data that belongs to Forms that the user can view (FormDataLoader)
-     * With this if we selected a follow_up list member we will view only the forms of that individual
-     */
     private void showCollectedData() {
-        //this.showProgress(true);
 
-        List<CollectedData> list = this.boxCollectedData.query().equal(CollectedData_.recordId, member.getId()).and().equal(CollectedData_.recordEntity, member.getTableName().code, QueryBuilder.StringOrder.CASE_SENSITIVE).build().find();
-        List<Form> forms = this.boxForms.getAll();
-        List<CollectedDataItem> cdl = new ArrayList<>();
-
-        for (CollectedData cd : list){
-            if (hasFormDataLoadersContains(cd.getFormId())){
-                Form form = getFormById(forms, cd.getFormId());
-                cdl.add(new CollectedDataItem(member, form, cd));
-            }
-        }
-
-        CollectedDataArrayAdapter adapter = new CollectedDataArrayAdapter(this, cdl);
-        this.lvCollectedForms.setAdapter(adapter);
-    }
-
-    private Form getFormById(List<Form> forms, String formId){
-        for (Form f : forms){
-            if (f.getFormId().equals(formId)) return f;
-        }
-
-        return null;
-    }
-
-    private boolean hasFormDataLoadersContains(String formId){
-        for (FormDataLoader fdl : formDataLoaders){
-            if (fdl.getForm().getFormId().equals(formId)){
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private String getEndTypeMsg(Member member){
-        if (member.getEndType() == ResidencyEndType.NOT_APPLICABLE) return getString(R.string.member_details_endtype_na_lbl);
-        if (member.getEndType() == ResidencyEndType.EXTERNAL_OUTMIGRATION) return getString(R.string.member_details_endtype_ext_lbl);
-        if (member.getEndType() == ResidencyEndType.DEATH) return getString(R.string.member_details_endtype_dth_lbl);
-
-        return member.getEndType().getId();
-    }
-
-    private String getEndDateMsg(Member member){
-        Date date = member.getEndDate();
-        if (member.getEndType() == ResidencyEndType.NOT_APPLICABLE) {
-            date = member.getStartDate();
-        }
-
-        return StringUtil.formatYMD(date);
-    }
-
-    private String getParentName(String name){
-        if (name.equals("Unknown") || name.equals("member.unknown.label")){
-            return getString(R.string.member_details_unknown_lbl);
-        }else {
-            return name;
-        }
-    }
-
-    private String getSpouseName(String name){
-        if (name == null || name.isEmpty()){
-            return "";
-        }
-        if (name.equals("Unknown") || name.equals("member.unknown.label")){
-            return getString(R.string.member_details_unknown_lbl);
-        }else {
-            return name;
-        }
     }
 
     private void onCollectDataClicked(){
 
-        if (formDataLoaders != null && formDataLoaders.size() > 0){
+        this.memberDetailsTabLayout.getTabAt(2).select();
+        //this.householdDetailsTabViewPager.setCurrentItem(2, true);
 
-            if (formDataLoaders.size()==1){
-                //open directly the form
-                openOdkForm(formDataLoaders.get(0));
-            }else {
-                //load list dialog and choice the form
-                buildFormSelectorDialog(formDataLoaders);
-            }
-        }
-    }
-
-    private FormDataLoader getFormDataLoader(CollectedData collectedData){
-
-        for (FormDataLoader dl : this.formDataLoaders){
-            if (dl.getForm().getFormId().equals(collectedData.getFormId())){
-                return dl;
-            }
-        }
-
-        return null;
-    }
-
-    private CollectedData getCollectedData(FormDataLoader formDataLoader){
-
-        CollectedData collectedData = this.boxCollectedData.query().equal(CollectedData_.formId, formDataLoader.getForm().getFormId(), QueryBuilder.StringOrder.CASE_SENSITIVE)
-                                                           .and().equal(CollectedData_.recordId, member.getId())
-                                                           .and().equal(CollectedData_.recordEntity, member.getTableName().code, QueryBuilder.StringOrder.CASE_SENSITIVE).build().findFirst();
-
-        return collectedData;
-    }
-
-    private void openOdkForm(FormDataLoader formDataLoader) {
-
-        CollectedData collectedData = getCollectedData(formDataLoader);
-
-        this.lastLoadedForm = formDataLoader;
-
-        Form form = formDataLoader.getForm();
-
-        //reload timestamp constants
-        formDataLoader.reloadTimestampConstants();
-
-        FilledForm filledForm = new FilledForm(form.getFormId());
-        filledForm.putAll(formDataLoader.getValues());
-        filledForm.setHouseholdMembers(allHouseholdMembers);
-
-        if (collectedData == null || form.isMultiCollPerSession()){
-            formUtilities.loadForm(filledForm);
-        }else{
-            formUtilities.loadForm(filledForm, collectedData.getFormUri(), this);
-        }
-
-    }
-
-    private void openOdkForm(FormDataLoader formDataLoader, CollectedData collectedData) {
-
-        this.lastLoadedForm = formDataLoader;
-
-        Form form = formDataLoader.getForm();
-
-        //reload timestamp constants
-        formDataLoader.reloadTimestampConstants();
-
-        FilledForm filledForm = new FilledForm(form.getFormId());
-        filledForm.putAll(formDataLoader.getValues());
-        filledForm.setHouseholdMembers(allHouseholdMembers);
-
-        if (collectedData == null){
-            formUtilities.loadForm(filledForm);
-        }else{
-            formUtilities.loadForm(filledForm, collectedData.getFormUri(), this);
-        }
-
-    }
-
-    private void buildFormSelectorDialog(List<FormDataLoader> loaders) {
-
-        FormSelectorDialog.createDialog(getSupportFragmentManager(), loaders, new FormSelectorDialog.OnFormSelectedListener() {
-            @Override
-            public void onFormSelected(FormDataLoader formDataLoader) {
-                openOdkForm(formDataLoader);
-            }
-
-            @Override
-            public void onCancelClicked() {
-
-            }
-        }).show();
-
-    }
-
-    @Override
-    public void onFormFinalized(Uri contentUri, String formId, File xmlFile, String metaInstanceName, Date lastUpdatedDate) {
-        Log.d("form finalized"," "+contentUri+", "+xmlFile);
-
-        //save Collected data
-        //update or insert
-        //Save Member and Update the object member
-        if (member.getId()==0){
-            long id = this.boxMembers.put(member);
-            member.setId(id);
-        }
-
-        //search existing record
-        CollectedData collectedData = this.boxCollectedData.query().equal(CollectedData_.formUri, contentUri.toString(), QueryBuilder.StringOrder.CASE_SENSITIVE)
-                .and().equal(CollectedData_.recordId, member.getId())
-                .and().equal(CollectedData_.recordEntity, member.getTableName().code, QueryBuilder.StringOrder.CASE_SENSITIVE).build().findFirst();
-
-
-        if (collectedData == null){ //insert
-            collectedData = new CollectedData();
-            collectedData.setFormId(lastLoadedForm.getForm().getFormId());
-            collectedData.setFormUri(contentUri.toString());
-            collectedData.setFormXmlPath(xmlFile.toString());
-            collectedData.setFormInstanceName(metaInstanceName);
-            collectedData.setFormLastUpdatedDate(lastUpdatedDate);
-
-            collectedData.setFormModules(lastLoadedForm.getForm().getModules());
-            collectedData.setCollectedBy(loggedUser.getUsername());
-            collectedData.setUpdatedBy("");
-            collectedData.setSupervisedBy("");
-
-            collectedData.setRecordId(member.getId());
-            collectedData.setRecordEntity(member.getTableName());
-
-            this.boxCollectedData.put(collectedData);
-            Log.d("inserting", "new collected data");
-        }else{ //update
-            collectedData.setFormId(lastLoadedForm.getForm().getFormId());
-            collectedData.setFormUri(contentUri.toString());
-            collectedData.setFormXmlPath(xmlFile.toString());
-            collectedData.setFormInstanceName(metaInstanceName);
-            collectedData.setFormLastUpdatedDate(lastUpdatedDate);
-
-            //collectedData.setFormModule(lastLoadedForm.getForm().getModules());
-            //collectedData.setCollectedBy(loggedUser.getUsername());
-            collectedData.setUpdatedBy(loggedUser.getUsername());
-            //collectedData.setSupervisedBy("");
-
-            collectedData.setRecordId(member.getId());
-            collectedData.setRecordEntity(member.getTableName());
-
-            this.boxCollectedData.put(collectedData);
-            Log.d("updating", "new collected data");
-        }
-
-        showCollectedData();
-    }
-
-    @Override
-    public void onFormUnFinalized(Uri contentUri, String formId, File xmlFile, String metaInstanceName, Date lastUpdatedDate) {
-        Log.d("form unfinalized"," "+contentUri);
-
-        //save Collected data
-        //update or insert
-        //Save Member and Update the object member
-        if (member.getId()==0){
-            long id = this.boxMembers.put(member);
-            member.setId(id);
-        }
-
-        //search existing record
-        CollectedData collectedData = this.boxCollectedData.query().equal(CollectedData_.formUri, contentUri.toString(), QueryBuilder.StringOrder.CASE_SENSITIVE)
-                                                           .and().equal(CollectedData_.recordId, member.getId())
-                                                           .and().equal(CollectedData_.recordEntity, member.getTableName().code, QueryBuilder.StringOrder.CASE_SENSITIVE).build().findFirst();
-
-        if (collectedData == null){ //insert
-            collectedData = new CollectedData();
-            collectedData.setFormId(lastLoadedForm.getForm().getFormId());
-            collectedData.setFormUri(contentUri.toString());
-            collectedData.setFormXmlPath("");
-            collectedData.setFormInstanceName(metaInstanceName);
-            collectedData.setFormLastUpdatedDate(lastUpdatedDate);
-
-            collectedData.setFormModules(lastLoadedForm.getForm().getModules());
-            collectedData.setCollectedBy(loggedUser.getUsername());
-            collectedData.setUpdatedBy("");
-            collectedData.setSupervisedBy("");
-
-            collectedData.setRecordId(member.getId());
-            collectedData.setRecordEntity(member.getTableName());
-
-            this.boxCollectedData.put(collectedData);
-            Log.d("inserting", "new collected data");
-        }else{ //update
-            collectedData.setFormId(lastLoadedForm.getForm().getFormId());
-            collectedData.setFormUri(contentUri.toString());
-            collectedData.setFormXmlPath("");
-            collectedData.setFormInstanceName(metaInstanceName);
-            collectedData.setFormLastUpdatedDate(lastUpdatedDate);
-
-            //collectedData.setFormModule(lastLoadedForm.getForm().getModules());
-            //collectedData.setCollectedBy(loggedUser.getUsername());
-            collectedData.setUpdatedBy(loggedUser.getUsername());
-            //collectedData.setSupervisedBy("");
-
-            collectedData.setRecordId(member.getId());
-            collectedData.setRecordEntity(member.getTableName());
-
-            this.boxCollectedData.put(collectedData);
-            Log.d("updating", "new collected data");
-        }
-
-        showCollectedData();
-
-    }
-
-    @Override
-    public void onDeleteForm(Uri contentUri) {
-
-        this.boxCollectedData.query().equal(CollectedData_.formUri, contentUri.toString(), QueryBuilder.StringOrder.CASE_SENSITIVE).build().remove(); //delete where formUri=contentUri
-
-        showCollectedData();
-    }
-
-    @Override
-    public void onFormNotFound(final Uri contenUri) {
-        buildDeleteSavedFormDialog(contenUri);
-    }
-
-    private void buildDeleteSavedFormDialog(final Uri contenUri){
-
-        DialogFactory.createMessageYN(this, R.string.member_details_dialog_del_saved_form_title_lbl, R.string.member_details_dialog_del_saved_form_msg_lbl, new DialogFactory.OnYesNoClickListener() {
-            @Override
-            public void onYesClicked() {
-                onDeleteForm(contenUri);
-            }
-
-            @Override
-            public void onNoClicked() {
-
-            }
-        }).show();
-
+        //Go to HouseholdFormsFragment and call this action
+        CollectedDataFragment collectedDataFragment = this.fragmentAdapter.getFragmentCollected();
+        collectedDataFragment.onCollectData();
     }
 
 }

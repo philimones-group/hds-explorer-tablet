@@ -4,9 +4,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import org.philimone.hds.explorer.R;
@@ -16,6 +15,10 @@ import org.philimone.hds.explorer.data.FormDataLoader;
 import org.philimone.hds.explorer.database.Bootstrap;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
 import org.philimone.hds.explorer.database.Queries;
+import org.philimone.hds.explorer.fragment.CollectedDataFragment;
+import org.philimone.hds.explorer.fragment.ExternalDatasetsFragment;
+import org.philimone.hds.explorer.fragment.region.details.RegionChildsFragment;
+import org.philimone.hds.explorer.fragment.region.details.adapter.RegionDetailsFragmentAdapter;
 import org.philimone.hds.explorer.model.ApplicationParam;
 import org.philimone.hds.explorer.model.CollectedData;
 import org.philimone.hds.explorer.model.CollectedData_;
@@ -33,35 +36,40 @@ import java.util.ArrayList;
 import java.util.List;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.viewpager2.widget.ViewPager2;
+
+import com.google.android.material.tabs.TabLayout;
+
 import io.objectbox.Box;
 import io.objectbox.query.QueryBuilder;
 import mz.betainteractive.odk.FormUtilities;
 import mz.betainteractive.odk.listener.OdkFormResultListener;
 import mz.betainteractive.odk.model.FilledForm;
 
-public class RegionDetailsActivity extends AppCompatActivity implements OdkFormResultListener {
+public class RegionDetailsActivity extends AppCompatActivity {
+
+    private TabLayout regionDetailsTabLayout;
+    private ViewPager2 regionDetailsTabViewPager;
+    private RelativeLayout mainPanelTabsLayout;
+
+    private RegionDetailsFragmentAdapter fragmentAdapter;
 
     private TextView txtRdHieararchyName;
     private TextView txtRdRegionName;
     private TextView txtRdRegionCode;
     private TextView txtRdParent;
-    private ListView lvCollectedForms;
+
     private Button btRegionDetailsCollectData;
     private Button btRegionDetailsBack;
 
     private Region region;
     private List<FormDataLoader> formDataLoaders = new ArrayList<>();
-    private FormDataLoader lastLoadedForm;
 
     private User loggedUser;
-
-    private FormUtilities formUtilities;
 
     private int activityRequestCode;
 
     private Box<ApplicationParam> boxAppParams;
-    private Box<CollectedData> boxCollectedData;
-    private Box<Form> boxForms;
     private Box<Region> boxRegions;
 
     @Override
@@ -77,9 +85,8 @@ public class RegionDetailsActivity extends AppCompatActivity implements OdkFormR
 
         readFormDataLoader();
 
-        formUtilities = new FormUtilities(this, this);
-
         initialize();
+        initFragments();
     }
 
     public void setRegion(Region region){
@@ -88,8 +95,6 @@ public class RegionDetailsActivity extends AppCompatActivity implements OdkFormR
 
     private void initBoxes() {
         this.boxAppParams = ObjectBoxDatabase.get().boxFor(ApplicationParam.class);
-        this.boxCollectedData = ObjectBoxDatabase.get().boxFor(CollectedData.class);
-        this.boxForms = ObjectBoxDatabase.get().boxFor(Form.class);
         this.boxRegions = ObjectBoxDatabase.get().boxFor(Region.class);
     }
 
@@ -98,8 +103,10 @@ public class RegionDetailsActivity extends AppCompatActivity implements OdkFormR
         txtRdRegionName = (TextView) findViewById(R.id.txtRdRegionName);
         txtRdRegionCode = (TextView) findViewById(R.id.txtRdRegionCode);
         txtRdParent = (TextView) findViewById(R.id.txtRdParent);
+        regionDetailsTabLayout = findViewById(R.id.regionDetailsTabLayout);
+        regionDetailsTabViewPager = findViewById(R.id.regionDetailsTabViewPager);
+        mainPanelTabsLayout = findViewById(R.id.mainPanelTabsLayout);
 
-        lvCollectedForms = (ListView) findViewById(R.id.lvCollectedForms);
         btRegionDetailsCollectData = (Button) findViewById(R.id.btRegionDetailsCollectData);
         btRegionDetailsBack = (Button) findViewById(R.id.btRegionDetailsBack);
 
@@ -117,14 +124,24 @@ public class RegionDetailsActivity extends AppCompatActivity implements OdkFormR
             }
         });
 
-        lvCollectedForms.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        regionDetailsTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                onCollectedDataItemClicked(position);
+            public void onTabSelected(TabLayout.Tab tab) {
+                regionDetailsTabViewPager.setCurrentItem(tab.getPosition());
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
             }
         });
 
-        setHouseholdData();
+        setRegionData();
 
         enableButtonsByFormLoaders();
         enableButtonsByIntentData();
@@ -145,7 +162,7 @@ public class RegionDetailsActivity extends AppCompatActivity implements OdkFormR
         }
     }
 
-    private void setHouseholdData(){
+    private void setRegionData(){
         String hierarchyName = getHierarchyName(region);
         Region parent = getRegion(region.getParent());
 
@@ -153,8 +170,6 @@ public class RegionDetailsActivity extends AppCompatActivity implements OdkFormR
         txtRdRegionName.setText(region.getName());
         txtRdRegionCode.setText(region.getCode());
         txtRdParent.setText(parent.getName());
-
-        showCollectedData();
     }
 
     private Region getRegion(String code){
@@ -174,36 +189,34 @@ public class RegionDetailsActivity extends AppCompatActivity implements OdkFormR
         return "";
     }
 
-    /*
-     * Show the data collected for the selected individual - but only shows data that belongs to Forms that the user can view (FormDataLoader)
-     * With this if we selected a follow_up list household we will view only the forms of that individual
-     */
-    private void showCollectedData() {
-        //this.showProgress(true);
+    private void initFragments() {
 
-        List<CollectedData> list = this.boxCollectedData.query().equal(CollectedData_.recordId, region.getId()).and().equal(CollectedData_.recordEntity, region.getTableName().code, QueryBuilder.StringOrder.CASE_SENSITIVE).build().find();
-        List<Form> forms = this.boxForms.getAll();
-        List<CollectedDataItem> cdl = new ArrayList<>();
-
-        for (CollectedData cd : list){
-            if (hasFormDataLoadersContains(cd.getFormId())){
-                Form form = getFormById(forms, cd.getFormId());
-                cdl.add(new CollectedDataItem(region, form, cd));
-            }
+        if (region != null && fragmentAdapter == null) {
+            fragmentAdapter = new RegionDetailsFragmentAdapter(this.getSupportFragmentManager(), this.getLifecycle(), region, loggedUser, formDataLoaders);
+            regionDetailsTabViewPager.setAdapter(fragmentAdapter);
+            //this will create all fragments
+            regionDetailsTabViewPager.setOffscreenPageLimit(3);
         }
-
-        CollectedDataArrayAdapter adapter = new CollectedDataArrayAdapter(this, cdl);
-        this.lvCollectedForms.setAdapter(adapter);
     }
 
-    private void onCollectedDataItemClicked(int position) {
-        CollectedDataArrayAdapter adapter = (CollectedDataArrayAdapter) this.lvCollectedForms.getAdapter();
-        CollectedDataItem dataItem = adapter.getItem(position);
+    private void reloadFragmentsData(){
+        if (fragmentAdapter != null) {
+            RegionChildsFragment childsFragment = this.fragmentAdapter.getFragmentRegionChilds();
+            ExternalDatasetsFragment datasetsFragment = this.fragmentAdapter.getFragmentDatasets();
+            CollectedDataFragment collectedDataFragment = this.fragmentAdapter.getFragmentCollected();
 
-        CollectedData collectedData = dataItem.getCollectedData();
-        FormDataLoader formDataLoader = getFormDataLoader(collectedData);
+            if (childsFragment != null) {
+                childsFragment.reloadRegions();
+            }
 
-        openOdkForm(formDataLoader, collectedData);
+            if (datasetsFragment != null) {
+                //datasetsFragment.
+            }
+
+            if (collectedDataFragment != null) {
+                collectedDataFragment.reloadCollectedData();
+            }
+        }
     }
 
     private boolean isVisibleForm(Form form){
@@ -229,253 +242,13 @@ public class RegionDetailsActivity extends AppCompatActivity implements OdkFormR
         }
     }
 
-    private Form getFormById(List<Form> forms, String formId){
-        for (Form f : forms){
-            if (f.getFormId().equals(formId)) return f;
-        }
-
-        return null;
-    }
-
-    private boolean hasFormDataLoadersContains(String formId){
-        for (FormDataLoader fdl : formDataLoaders){
-            if (fdl.getForm().getFormId().equals(formId)){
-                return true;
-            }
-        }
-        return false;
-    }
-
     private void onCollectDataClicked(){
+        this.regionDetailsTabLayout.getTabAt(2).select();
+        //this.householdDetailsTabViewPager.setCurrentItem(2, true);
 
-        if (formDataLoaders != null && formDataLoaders.size() > 0){
-
-            if (formDataLoaders.size()==1){
-                //open directly the form
-                openOdkForm(formDataLoaders.get(0));
-            }else {
-                //load list dialog and choice the form
-                buildFormSelectorDialog(formDataLoaders);
-            }
-        }
-    }
-
-    private FormDataLoader getFormDataLoader(CollectedData collectedData){
-
-        for (FormDataLoader dl : this.formDataLoaders){
-            if (dl.getForm().getFormId().equals(collectedData.getFormId())){
-                return dl;
-            }
-        }
-
-        return null;
-    }
-
-    private CollectedData getCollectedData(FormDataLoader formDataLoader){
-
-        CollectedData collectedData = this.boxCollectedData.query().equal(CollectedData_.formId, formDataLoader.getForm().getFormId(), QueryBuilder.StringOrder.CASE_SENSITIVE)
-                                                                   .and().equal(CollectedData_.recordId, region.getId())
-                                                                   .and().equal(CollectedData_.recordEntity, region.getTableName().code, QueryBuilder.StringOrder.CASE_SENSITIVE).build().findFirst();
-
-        return collectedData;
-    }
-
-    private void openOdkForm(FormDataLoader formDataLoader) {
-
-        CollectedData collectedData = getCollectedData(formDataLoader);
-
-        this.lastLoadedForm = formDataLoader;
-
-        Form form = formDataLoader.getForm();
-
-        //reload timestamp constants
-        formDataLoader.reloadTimestampConstants();
-
-        FilledForm filledForm = new FilledForm(form.getFormId());
-        filledForm.putAll(formDataLoader.getValues());
-
-        if (collectedData == null || form.isMultiCollPerSession()){
-            formUtilities.loadForm(filledForm);
-        }else{
-            formUtilities.loadForm(filledForm, collectedData.getFormUri(), this);
-        }
-
-    }
-
-    private void openOdkForm(FormDataLoader formDataLoader, CollectedData collectedData) {
-
-        this.lastLoadedForm = formDataLoader;
-
-        Form form = formDataLoader.getForm();
-
-        //reload timestamp constants
-        formDataLoader.reloadTimestampConstants();
-
-        FilledForm filledForm = new FilledForm(form.getFormId());
-        filledForm.putAll(formDataLoader.getValues());
-
-        if (collectedData == null){
-            formUtilities.loadForm(filledForm);
-        }else{
-            formUtilities.loadForm(filledForm, collectedData.getFormUri(), this);
-        }
-
-    }
-
-    private void buildFormSelectorDialog(List<FormDataLoader> loaders) {
-
-        FormSelectorDialog.createDialog(this.getSupportFragmentManager(), loaders, new FormSelectorDialog.OnFormSelectedListener() {
-            @Override
-            public void onFormSelected(FormDataLoader formDataLoader) {
-                openOdkForm(formDataLoader);
-            }
-
-            @Override
-            public void onCancelClicked() {
-
-            }
-        }).show();
-    }
-
-    @Override
-    public void onFormFinalized(Uri contentUri, String formId, File xmlFile, String metaInstanceName, Date lastUpdatedDate) {
-        Log.d("form finalized"," "+contentUri+", "+xmlFile);
-
-        //save Collected data
-        //Save region and Update the object household
-        if (region.getId()==0){
-            long id = this.boxRegions.put(region);
-            region.setId(id);
-        }
-        //search existing record
-        CollectedData collectedData = this.boxCollectedData.query().equal(CollectedData_.formUri, contentUri.toString(), QueryBuilder.StringOrder.CASE_SENSITIVE)
-                .and().equal(CollectedData_.recordId, region.getId())
-                .and().equal(CollectedData_.recordEntity, region.getTableName().code, QueryBuilder.StringOrder.CASE_SENSITIVE).build().findFirst();
-
-
-        if (collectedData == null){ //insert
-            collectedData = new CollectedData();
-            collectedData.setFormId(lastLoadedForm.getForm().getFormId());
-            collectedData.setFormUri(contentUri.toString());
-            collectedData.setFormXmlPath(xmlFile.toString());
-            collectedData.setFormInstanceName(metaInstanceName);
-            collectedData.setFormLastUpdatedDate(lastUpdatedDate);
-
-            collectedData.setFormModules(lastLoadedForm.getForm().getModules());
-            collectedData.setCollectedBy(loggedUser.getUsername());
-            collectedData.setUpdatedBy("");
-            collectedData.setSupervisedBy("");
-
-            collectedData.setRecordId(region.getId());
-            collectedData.setRecordEntity(region.getTableName());
-
-            this.boxCollectedData.put(collectedData);
-
-            Log.d("inserting", "new collected data");
-        }else{ //update
-            collectedData.setFormId(lastLoadedForm.getForm().getFormId());
-            collectedData.setFormUri(contentUri.toString());
-            collectedData.setFormXmlPath(xmlFile.toString());
-            collectedData.setFormInstanceName(metaInstanceName);
-            collectedData.setFormLastUpdatedDate(lastUpdatedDate);
-
-            //collectedData.setFormModule(lastLoadedForm.getForm().getModules());
-            //collectedData.setCollectedBy(loggedUser.getUsername());
-            collectedData.setUpdatedBy(loggedUser.getUsername());
-            //collectedData.setSupervisedBy("");
-
-            collectedData.setRecordId(region.getId());
-            collectedData.setRecordEntity(region.getTableName());
-
-            this.boxCollectedData.put(collectedData);
-            Log.d("updating", "new collected data");
-        }
-
-        showCollectedData();
-    }
-
-    @Override
-    public void onFormUnFinalized(Uri contentUri, String formId, File xmlFile, String metaInstanceName, Date lastUpdatedDate) {
-        Log.d("form unfinalized"," "+contentUri);
-
-        //Save Collected data
-
-        //Save region and Update the object household
-        if (region.getId()==0){
-            long id = this.boxRegions.put(region);
-            region.setId(id);
-        }
-
-        //search existing record
-        CollectedData collectedData = this.boxCollectedData.query().equal(CollectedData_.formUri, contentUri.toString(), QueryBuilder.StringOrder.CASE_SENSITIVE)
-                .and().equal(CollectedData_.recordId, region.getId())
-                .and().equal(CollectedData_.recordEntity, region.getTableName().code, QueryBuilder.StringOrder.CASE_SENSITIVE).build().findFirst();
-
-        if (collectedData == null){ //insert
-            collectedData = new CollectedData();
-            collectedData.setFormId(lastLoadedForm.getForm().getFormId());
-            collectedData.setFormUri(contentUri.toString());
-            collectedData.setFormXmlPath("");
-            collectedData.setFormInstanceName(metaInstanceName);
-            collectedData.setFormLastUpdatedDate(lastUpdatedDate);
-
-            collectedData.setFormModules(lastLoadedForm.getForm().getModules());
-            collectedData.setCollectedBy(loggedUser.getUsername());
-            collectedData.setUpdatedBy("");
-            collectedData.setSupervisedBy("");
-
-            collectedData.setRecordId(region.getId());
-            collectedData.setRecordEntity(region.getTableName());
-
-            this.boxCollectedData.put(collectedData);
-            Log.d("inserting", "new collected data");
-        }else{ //update
-            collectedData.setFormId(lastLoadedForm.getForm().getFormId());
-            collectedData.setFormUri(contentUri.toString());
-            collectedData.setFormXmlPath("");
-            collectedData.setFormInstanceName(metaInstanceName);
-            collectedData.setFormLastUpdatedDate(lastUpdatedDate);
-
-            //collectedData.setFormModule(lastLoadedForm.getForm().getModules());
-            //collectedData.setCollectedBy(loggedUser.getUsername());
-            collectedData.setUpdatedBy(loggedUser.getUsername());
-            //collectedData.setSupervisedBy("");
-
-            collectedData.setRecordId(region.getId());
-            collectedData.setRecordEntity(region.getTableName());
-
-            this.boxCollectedData.put(collectedData);
-            Log.d("updating", "new collected data");
-        }
-
-        showCollectedData();
-    }
-
-    @Override
-    public void onDeleteForm(Uri contentUri) {
-        this.boxCollectedData.query().equal(CollectedData_.formUri, contentUri.toString(), QueryBuilder.StringOrder.CASE_SENSITIVE).build().remove(); //delete where formUri=contentUri
-
-        showCollectedData();
-    }
-
-    @Override
-    public void onFormNotFound(final Uri contenUri) {
-        buildDeleteSavedFormDialog(contenUri);
-    }
-
-    private void buildDeleteSavedFormDialog(final Uri contenUri){
-
-        DialogFactory.createMessageYN(this, R.string.household_details_dialog_del_saved_form_title_lbl, R.string.household_details_dialog_del_saved_form_msg_lbl, new DialogFactory.OnYesNoClickListener() {
-            @Override
-            public void onYesClicked() {
-                onDeleteForm(contenUri);
-            }
-
-            @Override
-            public void onNoClicked() {
-
-            }
-        }).show();
+        //Go to HouseholdFormsFragment and call this action
+        CollectedDataFragment collectedDataFragment = this.fragmentAdapter.getFragmentCollected();
+        collectedDataFragment.onCollectData();
     }
 
 

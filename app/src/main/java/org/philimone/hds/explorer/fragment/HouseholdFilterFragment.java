@@ -432,7 +432,7 @@ public class HouseholdFilterFragment extends Fragment implements RegionExpandabl
                     if (region.getLevel().equals(lastRegionLevel)) {
 
                         //filter according to the selected user modules
-                        Log.d("test-"+lastRegionLevel, region.name+", contains "+StringUtil.containsAny(region.modules, smodules)+", rmodules="+region.modules+", smodules="+smodules);
+                        //Log.d("test-"+lastRegionLevel, region.name+", contains "+StringUtil.containsAny(region.modules, smodules)+", rmodules="+region.modules+", smodules="+smodules);
                         if (StringUtil.containsAny(region.modules, smodules)) {
                             list.add(region);
                         }
@@ -453,14 +453,27 @@ public class HouseholdFilterFragment extends Fragment implements RegionExpandabl
         this.expListRegions.setAdapter(regionAdapter);
     }
 
+    private int getHierarchyNumber(String hierarchyName) {
+        if (StringUtil.isBlank(hierarchyName)) return 0;
+
+        try {
+            return Integer.parseInt(hierarchyName.replace("hierarchy", ""));
+        }catch (Exception ex) {
+            ex.printStackTrace();
+            return 0;
+        }
+    }
+
     private void loadHieararchyItems(){
 
         List<ApplicationParam> params = boxAppParams.query().startsWith(ApplicationParam_.name, "hierarchy", QueryBuilder.StringOrder.CASE_SENSITIVE).build().find(); //COLUMN_NAME+" like 'hierarchy%'"
 
         for (ApplicationParam param : params){
 
-            if (!param.getValue().isEmpty() && param.getName().compareTo(lastRegionLevel) > 0){
-                lastRegionLevel = param.getName();
+            if (!param.getValue().isEmpty()) {
+                if (getHierarchyNumber(param.getName()) > getHierarchyNumber(lastRegionLevel)) {
+                    lastRegionLevel = param.getName();
+                }
             }
 
             if (param.getName().equalsIgnoreCase(Region.HIERARCHY_1)){

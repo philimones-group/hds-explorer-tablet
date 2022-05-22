@@ -52,7 +52,7 @@ public class FormDataLoader implements Serializable {
         this.values = new LinkedHashMap<>();
 
         if (generalCSVRows == null){
-            Log.d("initiating gnv-rows", "init status");
+            //Log.d("initiating gnv-rows", "init status");
             generalCSVRows = new LinkedHashMap<>();
         }
     }
@@ -559,16 +559,16 @@ public class FormDataLoader implements Serializable {
 
             valueRow = getRowFromCSVFile(dataSet, linkValue);
 
-            Log.d("Key1: " +csvRowKey, "reading dataset: "+dataSet.getName()+ ", "+valueRow);
+            //Log.d("Key1: " +csvRowKey, "reading dataset: "+dataSet.getName()+ ", "+valueRow);
 
 
             this.generalCSVRows.put(csvRowKey, valueRow);
 
         } else {
             if (valueRow == null){
-                Log.d("Key2: "+csvRowKey, "not reading data because it was not found before");
+                //Log.d("Key2: "+csvRowKey, "not reading data because it was not found before");
             } else {
-                Log.d("Key2: "+csvRowKey, "get data from saved row");
+                //Log.d("Key2: "+csvRowKey, "get data from saved row");
             }
 
         }
@@ -669,7 +669,7 @@ public class FormDataLoader implements Serializable {
         int i=0;
         for (Form form : forms){
 
-            Log.d("forms", ""+user.getModules() +" - " + form.getModules() );
+            //Log.d("forms", ""+user.getModules() +" - " + form.getModules() );
             if (StringUtil.containsAny(user.modules, form.modules)){ //if the user has access to module specified on Form
 
                 FormDataLoader loader = new FormDataLoader(form);

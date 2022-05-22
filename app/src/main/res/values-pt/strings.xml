@@ -226,6 +226,9 @@
     <string name="member_list_newmem_gender_err1_lbl">Por favor selecione somente um dos sexos!</string>
     <string name="member_list_newmem_gender_err2_lbl">Por favor selecione um dos sexos!</string>
 
+    <string name="member_details_tab_details_list_lbl">Detalhes do Membro</string>
+    <string name="member_details_tab_collected_forms_lbl">Formulários Colhidos</string>
+    <string name="member_details_tab_datasets_lbl">Outros detalhes</string>
     <string name="member_details_title_lbl">Detalhes do Membro</string>
     <string name="member_details_name_lbl">Nome</string>
     <string name="member_details_code_lbl">Código</string>
@@ -290,6 +293,9 @@
     <string name="household_visit_not_finished_msg_lbl">Nem todos membros foram visitados nesta visita\nPor favor colecte o formulario (Visita Incompleta) para os membros a seguir:\n(%1$s)</string>
     <string name="household_visit_not_finished_msg_ask_lbl">Nem todos membros foram visitados nesta visita,\nMembros: (%1$s)\nPode colectar o formulario visita incompleta ou marcar todos como não visitados.\n\nDeseja marcar todos estes membros como não visitados?</string>
 
+    <string name="region_details_tab_details_list_lbl">Lista de sub-regiões</string>
+    <string name="region_details_tab_collected_forms_lbl">Formulários Colhidos</string>
+    <string name="region_details_tab_datasets_lbl">Outros detalhes</string>
     <string name="region_details_code_lbl">Código:</string>
     <string name="region_details_parent_lbl">Região:</string>
 

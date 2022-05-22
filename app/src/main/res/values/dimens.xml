@@ -117,6 +117,8 @@
     <dimen name="household_visit_button_icon_height">50px</dimen>
     <dimen name="household_visit_middle_button_margin_left">25dp</dimen>
     <dimen name="household_visit_middle_button_margin_right">25dp</dimen>
+    <dimen name="household_visit_middle_button_margin_left_land">5dp</dimen>
+    <dimen name="household_visit_middle_button_margin_right_land">5dp</dimen>
 
     <dimen name="extdataset_item_text_1_size">16sp</dimen>
     <dimen name="extdataset_item_text_2_size">16sp</dimen>

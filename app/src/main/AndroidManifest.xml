@@ -45,16 +45,16 @@
 
         </activity>
         <activity android:name=".main.sync.SyncPanelActivity" android:windowSoftInputMode="stateHidden|adjustPan" />
-        <activity android:name=".main.SurveyActivity" android:windowSoftInputMode="stateHidden|adjustPan" />
-        <activity android:name=".main.SurveyHouseholdsActivity" android:windowSoftInputMode="stateHidden|adjustPan" />
-        <activity android:name=".main.SurveyMembersActivity" android:windowSoftInputMode="stateHidden|adjustPan" />
-        <activity android:name=".main.HouseholdDetailsActivity" android:windowSoftInputMode="stateHidden|adjustResize" />
-        <activity android:name=".main.MemberDetailsActivity" android:windowSoftInputMode="stateHidden|adjustPan" />
+        <activity android:name=".main.SurveyActivity" android:windowSoftInputMode="stateHidden|adjustPan" android:configChanges="orientation|screenSize"/>
+        <activity android:name=".main.SurveyHouseholdsActivity" android:windowSoftInputMode="stateHidden|adjustPan" android:configChanges="orientation|screenSize"/>
+        <activity android:name=".main.SurveyMembersActivity" android:windowSoftInputMode="stateHidden|adjustPan" android:configChanges="orientation|screenSize" />
+        <activity android:name=".main.HouseholdDetailsActivity" android:windowSoftInputMode="stateHidden|adjustResize" android:configChanges="orientation|screenSize" />
+        <activity android:name=".main.MemberDetailsActivity" android:windowSoftInputMode="stateHidden|adjustPan" android:configChanges="orientation|screenSize" />
         <activity android:name=".main.GpsSearchedListActivity" android:windowSoftInputMode="stateHidden|adjustPan" />
-        <activity android:name=".main.TrackingListActivity" android:windowSoftInputMode="stateHidden|adjustPan" />
-        <activity android:name=".main.TrackingListDetailsActivity" android:windowSoftInputMode="stateHidden|adjustPan"/>
+        <activity android:name=".main.TrackingListActivity" android:windowSoftInputMode="stateHidden|adjustPan" android:configChanges="orientation|screenSize" />
+        <activity android:name=".main.TrackingListDetailsActivity" android:windowSoftInputMode="stateHidden|adjustPan" android:configChanges="orientation|screenSize"/>
         <activity android:name=".main.SettingsActivity" android:theme="@style/SettingsScreen" android:windowSoftInputMode="stateHidden|adjustPan"/>
-        <activity android:name=".main.RegionDetailsActivity" android:windowSoftInputMode="stateHidden|adjustPan" />
+        <activity android:name=".main.RegionDetailsActivity" android:windowSoftInputMode="stateHidden|adjustPan" android:configChanges="orientation|screenSize" />
     </application>
 
 </manifest>

@@ -27,6 +27,8 @@ public class Region implements FormSubject, Serializable {
     public static String HIERARCHY_6 = "hierarchy6";
     public static String HIERARCHY_7 = "hierarchy7";
     public static String HIERARCHY_8 = "hierarchy8";
+    public static String HIERARCHY_9 = "hierarchy9";
+    public static String HIERARCHY_10 = "hierarchy10";
 
     @Id
     public long id;

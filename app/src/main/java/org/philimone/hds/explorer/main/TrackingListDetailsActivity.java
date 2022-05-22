@@ -329,15 +329,15 @@ public class TrackingListDetailsActivity extends AppCompatActivity implements Ba
 
             if (tm.isRegionSubject()){
                 codesRegions.add(tm.getSubjectCode());
-                Log.d("r-code-", ""+tm.getSubjectCode());
+                //Log.d("r-code-", ""+tm.getSubjectCode());
             }
             if (tm.isHouseholdSubject()){
                 codesHouseholds.add(tm.getSubjectCode());
-                Log.d("h-code-", ""+tm.getSubjectCode());
+                //Log.d("h-code-", ""+tm.getSubjectCode());
             }
             if (tm.isMemberSubject()){
                 codesMembers.add(tm.getSubjectCode());
-                Log.d("code-", ""+tm.getSubjectCode());
+                //Log.d("code-", ""+tm.getSubjectCode());
             }
 
         }
@@ -346,11 +346,11 @@ public class TrackingListDetailsActivity extends AppCompatActivity implements Ba
         List<Household> households = getHouseholds(codesHouseholds);
         List<Member> members = getMembers(codesMembers);
 
-        Log.d("listTml", ""+listTml.size());
-        Log.d("listCollectedData", ""+listCollectedData.size());
-        Log.d("regions", ""+regions.size());
-        Log.d("households", ""+households.size());
-        Log.d("members", ""+members.size());
+        //Log.d("listTml", ""+listTml.size());
+        //Log.d("listCollectedData", ""+listCollectedData.size());
+        //Log.d("regions", ""+regions.size());
+        //Log.d("households", ""+households.size());
+        //Log.d("members", ""+members.size());
 
         ArrayList<TrackingSubListItem> groupItems = new ArrayList<>();
         HashMap<TrackingSubListItem, ArrayList<TrackingSubjectItem>> trackingCollection = new LinkedHashMap<>();
@@ -378,11 +378,16 @@ public class TrackingListDetailsActivity extends AppCompatActivity implements Ba
                 listSubjects = new ArrayList<>();
 
                 groupItems.add(tsi);
-                listSubjects.add(subjectItem);
+
+                if (!subjectItem.isSubjectNull()){
+                    listSubjects.add(subjectItem);
+                }
 
                 trackingCollection.put(tsi, listSubjects);
             }else{
-                listSubjects.add(subjectItem);
+                if (!subjectItem.isSubjectNull()){
+                    listSubjects.add(subjectItem);
+                }
             }
         }
 
@@ -458,9 +463,9 @@ public class TrackingListDetailsActivity extends AppCompatActivity implements Ba
             }
         }
 
-        Log.d("region", ""+region);
-        Log.d("household", ""+household);
-        Log.d("member", ""+member);
+        //Log.d("region", ""+region);
+        //Log.d("household", ""+household);
+        //Log.d("member", ""+member);
 
         long tableId = (region!=null) ? region.getId() : ( (household!=null) ? household.getId() : ((member!=null) ? member.getId() : 0) );
 

@@ -70,8 +70,6 @@ public class SurveyMembersActivity extends AppCompatActivity implements MemberFi
     }
 
     private void initialize() {
-        this.memberListFragment.setButtonEnabled(hasMemberBoundForms(), MemberListFragment.Buttons.NEW_MEMBER_COLLECT);
-
         this.memberFilterFragment.setBarcodeScannerListener(this);
 
         this.loadingDialog = new LoadingDialog(this);

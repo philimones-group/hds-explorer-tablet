@@ -73,6 +73,10 @@ public class TrackingSubjectItem implements Serializable {
         return subjectType.equalsIgnoreCase(TYPE_MEMBER);
     }
 
+    public boolean isSubjectNull(){
+        return region==null && household==null && member == null;
+    }
+
     public TrackingSubListItem getListItem() {
         return listItem;
     }

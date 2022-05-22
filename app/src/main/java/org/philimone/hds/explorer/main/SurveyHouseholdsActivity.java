@@ -40,7 +40,6 @@ import io.objectbox.query.QueryBuilder;
 import mz.betainteractive.utilities.StringUtil;
 
 import static org.philimone.hds.explorer.fragment.MemberListFragment.Buttons.MEMBERS_MAP;
-import static org.philimone.hds.explorer.fragment.MemberListFragment.Buttons.NEW_MEMBER_COLLECT;
 
 public class SurveyHouseholdsActivity extends AppCompatActivity implements HouseholdFilterFragment.Listener, MemberActionListener, BarcodeScannerActivity.InvokerClickListener {
 
@@ -84,14 +83,12 @@ public class SurveyHouseholdsActivity extends AppCompatActivity implements House
     }
 
     private void initialize() {
-        this.memberListFragment.setButtonEnabled(hasMemberBoundForms(), NEW_MEMBER_COLLECT);
 
         this.memberListFragment.setHouseholdHeaderVisibility(true);
         this.memberListFragment.setCensusMode(censusMode);
         this.householdFilterFragment.setCensusMode(censusMode);
 
         if (censusMode){
-            this.memberListFragment.setButtonVisibilityGone(MEMBERS_MAP, NEW_MEMBER_COLLECT);
 
         } else{
             this.memberListFragment.setButtonVisibilityGone(MEMBERS_MAP);

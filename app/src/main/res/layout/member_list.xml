@@ -128,16 +128,6 @@
                 android:elevation="5dp"/>
 
             <Button
-                android:id="@+id/btMemListNewTempMember"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
-                android:textSize="@dimen/member_list_button_textsize"
-                android:text="@string/member_list_bt_new_member_collect_lbl"
-                android:background="@drawable/nui_btnd_rone_gflat"
-                android:elevation="5dp"/>
-
-            <Button
                 android:id="@+id/btMemListShowCollectedData"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

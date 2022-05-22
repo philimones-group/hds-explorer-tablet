@@ -136,7 +136,7 @@ public class ChangeHeadFormUtil extends FormUtil<Member> {
         for (Residency residency : residencies) {
             if (!oldHeadMember.code.equals(residency.memberCode)) { //its not the old member
                 residentMembersExOldHead.add(residency.memberCode);
-                Log.d("member", ""+residency.memberCode);
+                //Log.d("member", ""+residency.memberCode);
             }
         }
 

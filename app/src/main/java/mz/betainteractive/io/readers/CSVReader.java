@@ -22,6 +22,7 @@ public class CSVReader {
     private String DELIMITER = ";";
     private Map<String, Integer> mapFields  = new LinkedHashMap<String, Integer>();
     private List<String> fields = new ArrayList<>();
+    private List<String> fieldLabels = new ArrayList<>();
     private boolean hasHeader = false;
     private String currentLine = null;
     private boolean reading = false;
@@ -128,9 +129,20 @@ public class CSVReader {
 
         for (int i = 0; i < fields.length; i++) {
             String field = fields[i];
-            field = removeQuotes(field);
-            mapFields.put(field, i);
-            this.fields.add(field);
+            //Log.d("map field", ""+field);
+
+            if (field.contains(":")) { //contains field label
+                String[] spt = field.split(":");
+                String fieldname = spt[0];
+                String fieldlabel = removeQuotes(spt[1]);
+                mapFields.put(fieldname, i);
+                this.fields.add(fieldname);
+                this.fieldLabels.add(fieldlabel);
+            } else {
+                field = removeQuotes(field);
+                mapFields.put(field, i);
+                this.fields.add(field);
+            }
         }
     }
 
@@ -206,7 +218,7 @@ public class CSVReader {
         //Consider quotes
         String regex_delimiter = DELIMITER+"(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)";
 
-        //System.out.println("Line: "+line);
+        System.out.println("Line: "+line);
 
         if (currentLineNumber == 1 && hasHeader) {
             String[] fields = line.split(regex_delimiter);
@@ -333,7 +345,6 @@ public class CSVReader {
             //String value = null;
             //String[] values = row.split(DELIMITER);
 
-
             try {
                 return row[index]; //value = removeQuotes(row[index]);
             } catch (Exception ex) {
@@ -341,6 +352,19 @@ public class CSVReader {
 
 
             return null;//value;
+        }
+
+        public String getFieldLabel(String fieldName) {
+            int index = mapFields.get(fieldName);
+            return getFieldLabel(index);
+        }
+
+        public String getFieldLabel(int index) {
+            if (fieldLabels.size()>0 && index >= 0 && index < fieldLabels.size()){
+                return fieldLabels.get(index);
+            }
+
+            return "";
         }
 
         public boolean contains(String text){

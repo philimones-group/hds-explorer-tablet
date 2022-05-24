@@ -148,17 +148,29 @@ public class ExternalDatasetsFragment extends Fragment {
         this.columnsDataList.setVisibility(View.VISIBLE);
     }
 
+    Dataset emptyDataset(){
+        Dataset dataset = new Dataset();
+
+        dataset.label = "";
+
+        return dataset;
+    }
+
     private void loadDatasetsListToSpinner(){
         this.selectedDataset = null;
 
         List<String> selectedModules = new ArrayList<>(currentUser.getSelectedModules());
-
+/*
         List<Dataset> datasets = this.boxDatasets.query().equal(Dataset_.tableName, this.subject.getTableName().code, QueryBuilder.StringOrder.CASE_SENSITIVE)
                                                          .filter((d) -> StringUtil.containsAny(d.modules, selectedModules))  //filter by module
-                                                         .build().find();
+                                                         .build().find();*/
+
+        List<Dataset> datasets = this.boxDatasets.query().equal(Dataset_.tableName, this.subject.getTableName().code, QueryBuilder.StringOrder.CASE_SENSITIVE).build().find();
+
+        datasets.add(0, emptyDataset());
 
         if (datasets != null && datasets.size() > 0) {
-            Log.d("datasets", ""+datasets.size());
+            //Log.d("datasets", ""+datasets.size());
             ArrayAdapter<Dataset> adapter = new ArrayAdapter<>(this.getContext(), R.layout.external_datasets_spinner_item, R.id.txtDatasetItem, datasets);
             datasetsSpinner.setAdapter(adapter);
             //datasetsSpinner.setSelection(0);
@@ -168,7 +180,8 @@ public class ExternalDatasetsFragment extends Fragment {
     private void loadDatasetToList(Dataset dataset) {
         this.selectedDataset = dataset;
 
-        if (selectedDataset != null) {
+        //Log.d("dataset", ""+selectedDataset.name);
+        if (selectedDataset != null && dataset.datasetId != null) {
             showLoading();
             List<DatasetValue> values = getDatasetValues(selectedDataset);
 
@@ -195,7 +208,7 @@ public class ExternalDatasetsFragment extends Fragment {
         String linkValue = subject.getValueByName(tableColumnName);
         CSVReader.CSVRow valueRow = getRowFromCSVFile(dataset, linkValue);
 
-        Log.d("found row", ""+valueRow+", linkValue: "+linkValue);
+        //Log.d("found row", ""+valueRow+", linkValue: "+linkValue);
 
         if (valueRow == null){
             return null;
@@ -207,18 +220,31 @@ public class ExternalDatasetsFragment extends Fragment {
         for (int i = 0; i < fields.size() ; i++) {
             DatasetValue dt = new DatasetValue();
             dt.columnName = fields.get(i);
-            dt.columnLabel = dataset.getLabels().get(i);
+
+            int labelsListSize = dataset.getLabels().size();
+            if (labelsListSize>0 && i>=0 && i < labelsListSize) {
+                dt.columnLabel = dataset.getLabels().get(i);
+            }
+
+            if (StringUtil.isBlank(dt.columnLabel) && !StringUtil.isBlank(valueRow.getFieldLabel(i))){
+                dt.columnLabel = valueRow.getFieldLabel(i);
+            }
+
+            if (StringUtil.isBlank(dt.columnLabel)){
+                dt.columnLabel = dt.columnName;
+            }
+
             dt.columnValue = valueRow.getField(dt.columnName);
             list.add(dt);
 
-            Log.d("datasetvalue"+(i+1), ""+dt.columnLabel);
+            //Log.d("datasetvalue"+(i+1), ""+dt.columnLabel);
         }
 
         return list;
     }
 
     private CSVReader.CSVRow getRowFromCSVFile(Dataset dataset, String linkValue) {
-        //Log.d("zip", "processing zip file, linkValue="+linkValue);
+        Log.d("zip", "processing zip file, linkValue="+dataset.getFilename());
 
         if (linkValue == null || linkValue == "") return null;  //dont need to read the csv without need
 
@@ -232,10 +258,10 @@ public class ExternalDatasetsFragment extends Fragment {
                 //processXMLDocument(zin);
 
                 CSVReader csvReader = new CSVReader(zin, true, ",");
-                //Log.d("fields", csvReader.getFieldNames()+", "+csvReader.getMapFields()+", "+dataSet.getKeyColumn());
+                Log.d("fields", csvReader.getFieldNames()+", "+csvReader.getMapFields()+", "+dataset.getKeyColumn());
                 for (CSVReader.CSVRow row : csvReader.getRows()){
                     String csvKeyCol = row.getField(dataset.getKeyColumn());
-                    //Log.d("keyColValue", ""+csvKeyCol+" == "+linkValue);
+                    Log.d("keyColValue", ""+csvKeyCol+" == "+linkValue);
                     if (csvKeyCol!=null && csvKeyCol.equals(linkValue)){
                         return row; //break the loop
                     }
@@ -274,7 +300,7 @@ public class ExternalDatasetsFragment extends Fragment {
         @Override
         public DatasetValueViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.external_datasets_item1, parent, false);
-            Log.d("create-viewholder", ""+view);
+            //Log.d("create-viewholder", ""+view);
             return new DatasetValueViewHolder(view);
         }
 
@@ -303,7 +329,7 @@ public class ExternalDatasetsFragment extends Fragment {
             TextView txtLabel = mainView.findViewById(R.id.txtItem1);
             TextView txtValue = mainView.findViewById(R.id.txtItem2);
 
-            Log.d("updating-viewholder", ""+datasetValue.columnLabel);
+            //Log.d("updating-viewholder", ""+datasetValue.columnLabel);
 
             txtLabel.setText(datasetValue.columnLabel);
             txtValue.setText(datasetValue.columnValue);

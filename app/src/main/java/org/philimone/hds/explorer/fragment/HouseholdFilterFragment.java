@@ -45,6 +45,7 @@ import org.philimone.hds.explorer.model.Household;
 import org.philimone.hds.explorer.model.Household_;
 import org.philimone.hds.explorer.model.Module;
 import org.philimone.hds.explorer.model.Region;
+import org.philimone.hds.explorer.model.Region_;
 import org.philimone.hds.explorer.model.Round;
 import org.philimone.hds.explorer.model.Round_;
 import org.philimone.hds.explorer.model.User;
@@ -413,7 +414,7 @@ public class HouseholdFilterFragment extends Fragment implements RegionExpandabl
         List<String> smodules = new ArrayList<>(loggedUser.getSelectedModules());
 
         List<ApplicationParam> params = boxAppParams.query().startsWith(ApplicationParam_.name, "hierarchy", QueryBuilder.StringOrder.CASE_SENSITIVE).build().find(); //COLUMN_NAME+" like 'hierarchy%'"
-        List<Region> regions = this.boxRegions.getAll(); //query().filter((r) -> StringUtil.containsAny(r.modules, smodules)).build().find(); //filter by modules
+        List<Region> regions = this.boxRegions.query().order(Region_.name).build().find();  //query().filter((r) -> StringUtil.containsAny(r.modules, smodules)).build().find(); //filter by modules
 
 
         ArrayList<HierarchyItem> hierarchies = new ArrayList<>();

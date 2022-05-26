@@ -19,6 +19,7 @@ import org.philimone.hds.explorer.model.Dataset_;
 import org.philimone.hds.explorer.model.FormSubject;
 import org.philimone.hds.explorer.model.Module;
 import org.philimone.hds.explorer.model.User;
+import org.philimone.hds.explorer.widget.RecyclerListView;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -33,6 +34,7 @@ import java.util.zip.ZipInputStream;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import io.objectbox.Box;
@@ -48,7 +50,7 @@ import mz.betainteractive.utilities.StringUtil;
 public class ExternalDatasetsFragment extends Fragment {
 
     private Spinner datasetsSpinner;
-    private RecyclerView columnsDataList;
+    private RecyclerListView columnsDataList;
     private TextView mainListTextView;
     private ProgressBar mainListProgressBar;
 
@@ -127,7 +129,21 @@ public class ExternalDatasetsFragment extends Fragment {
 
         this.columnsDataList.setLayoutManager(new LinearLayoutManager(this.getContext()));
 
+        this.columnsDataList.setItemAnimator(new DefaultItemAnimator());
+
         loadDatasetsListToSpinner();
+
+        this.columnsDataList.setOnItemClickListener(new RecyclerListView.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position, long id) {
+                Log.d("select", ""+position);
+            }
+
+            @Override
+            public void onItemLongClick(View view, int position, long id) {
+                Log.d("long-select", ""+position);
+            }
+        });
     }
 
     private void showLoading(){

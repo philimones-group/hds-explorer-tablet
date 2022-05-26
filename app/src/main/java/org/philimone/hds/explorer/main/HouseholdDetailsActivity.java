@@ -10,6 +10,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.tabs.TabLayoutMediator;
 
 import org.philimone.hds.explorer.R;
 import org.philimone.hds.explorer.data.FormDataLoader;
@@ -272,23 +273,6 @@ public class HouseholdDetailsActivity extends AppCompatActivity implements House
             onOpenVisitClicked();
         });
 
-        householdDetailsTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                householdDetailsTabViewPager.setCurrentItem(tab.getPosition());
-            }
-
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
-
-            }
-
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-
-            }
-        });
-
         initializeButtons();
     }
 
@@ -303,10 +287,19 @@ public class HouseholdDetailsActivity extends AppCompatActivity implements House
         //list.add(collectedDataFragment);
 
         if (household != null && fragmentAdapter == null) {
-            fragmentAdapter = new HouseholdDetailsFragmentAdapter(this.getSupportFragmentManager(), this.getLifecycle(), household, loggedUser, formDataLoaders);
+            List<String> tabTitles = new ArrayList<>();
+            tabTitles.add(getString(R.string.household_details_tab_members_list_lbl));
+            tabTitles.add(getString(R.string.household_details_tab_datasets_lbl));
+            tabTitles.add(getString(R.string.household_details_tab_collected_forms_lbl));
+
+            fragmentAdapter = new HouseholdDetailsFragmentAdapter(this.getSupportFragmentManager(), this.getLifecycle(), household, loggedUser, formDataLoaders, tabTitles);
             householdDetailsTabViewPager.setAdapter(fragmentAdapter);
             //this will create all fragments
             householdDetailsTabViewPager.setOffscreenPageLimit(3);
+
+            new TabLayoutMediator(householdDetailsTabLayout, householdDetailsTabViewPager, (tab, position) -> {
+                tab.setText(fragmentAdapter.getTitle(position));
+            }).attach();
         }
 
 

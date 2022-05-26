@@ -60,7 +60,7 @@
         <item name="android:textColor">@color/nui_button_textcolor</item>
     </style>
 
-    <style name="customTabLayout" parent="Widget.MaterialComponents.TabLayout">
+    <style name="customTabLayout" parent="Widget.Design.TabLayout">
         <item name="tabTextAppearance">@style/customTextAppearance</item>
     </style>
 
@@ -72,7 +72,7 @@
         <item name="android:singleLine">true</item>
     </style>
 
-    <style name="customSyncTabLayout" parent="Widget.MaterialComponents.TabLayout">
+    <style name="customSyncTabLayout" parent="Widget.Design.TabLayout">
         <item name="tabTextAppearance">@style/customSyncTextAppearance</item>
     </style>
 

@@ -142,10 +142,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginBottom="40dp"
-                android:paddingStart="15dp"
-                android:paddingEnd="15dp"
                 android:background="@drawable/nui_lists_rone_border"
-                />
+                android:paddingStart="15dp"
+                android:paddingEnd="15dp" />
 
             <Button
                 android:id="@+id/btTrackListBack"

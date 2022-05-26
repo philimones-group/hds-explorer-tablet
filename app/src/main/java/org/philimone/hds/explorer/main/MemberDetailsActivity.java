@@ -30,6 +30,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.tabs.TabLayoutMediator;
 
 import mz.betainteractive.utilities.StringUtil;
 
@@ -163,23 +164,6 @@ public class MemberDetailsActivity extends AppCompatActivity {
             }
         });
 
-        memberDetailsTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                memberDetailsTabViewPager.setCurrentItem(tab.getPosition());
-            }
-
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
-
-            }
-
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-
-            }
-        });
-
         isNewTempMember = member!=null && member.getId()==0;
 
         clearMemberData();
@@ -223,10 +207,19 @@ public class MemberDetailsActivity extends AppCompatActivity {
     private void initFragments() {
 
         if (member != null && fragmentAdapter == null) {
-            fragmentAdapter = new MemberDetailsFragmentAdapter(this.getSupportFragmentManager(), this.getLifecycle(), member, loggedUser, formDataLoaders);
+            List<String> tabTitles = new ArrayList<>();
+            tabTitles.add(getString(R.string.member_details_tab_details_list_lbl));
+            tabTitles.add(getString(R.string.member_details_tab_datasets_lbl));
+            tabTitles.add(getString(R.string.member_details_tab_collected_forms_lbl));
+
+            fragmentAdapter = new MemberDetailsFragmentAdapter(this.getSupportFragmentManager(), this.getLifecycle(), member, loggedUser, formDataLoaders, tabTitles);
             memberDetailsTabViewPager.setAdapter(fragmentAdapter);
             //this will create all fragments
             memberDetailsTabViewPager.setOffscreenPageLimit(3);
+
+            new TabLayoutMediator(memberDetailsTabLayout, memberDetailsTabViewPager, (tab, position) -> {
+                tab.setText(fragmentAdapter.getTitle(position));
+            }).attach();
         }
 
 

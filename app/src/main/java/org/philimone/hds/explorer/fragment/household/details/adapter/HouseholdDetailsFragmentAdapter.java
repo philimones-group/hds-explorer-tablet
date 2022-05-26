@@ -1,5 +1,6 @@
 package org.philimone.hds.explorer.fragment.household.details.adapter;
 
+import org.philimone.hds.explorer.R;
 import org.philimone.hds.explorer.data.FormDataLoader;
 import org.philimone.hds.explorer.fragment.CollectedDataFragment;
 import org.philimone.hds.explorer.fragment.ExternalDatasetsFragment;
@@ -18,6 +19,7 @@ import androidx.viewpager2.adapter.FragmentStateAdapter;
 
 public class HouseholdDetailsFragmentAdapter extends FragmentStateAdapter {
 
+    private List<String> tabTitles = new ArrayList<>();
     private final List<Fragment> fragments = new ArrayList<>();
     private HouseholdMembersFragment fragMembers;
     private CollectedDataFragment fragCollected;
@@ -26,12 +28,12 @@ public class HouseholdDetailsFragmentAdapter extends FragmentStateAdapter {
     private User user;
     private List<FormDataLoader> formDataLoaders;
 
-    public HouseholdDetailsFragmentAdapter(@NonNull FragmentManager fragmentManager, @NonNull Lifecycle lifecycle, Household household, User user, List<FormDataLoader> formDataLoaders) {
+    public HouseholdDetailsFragmentAdapter(@NonNull FragmentManager fragmentManager, @NonNull Lifecycle lifecycle, Household household, User user, List<FormDataLoader> formDataLoaders, List<String> titles) {
         super(fragmentManager, lifecycle);
         this.household = household;
         this.user = user;
         this.formDataLoaders = formDataLoaders;
-
+        this.tabTitles.addAll(titles);
     }
 
     @NonNull
@@ -45,6 +47,10 @@ public class HouseholdDetailsFragmentAdapter extends FragmentStateAdapter {
             default: return null;
         }
 
+    }
+
+    public String getTitle(int position) {
+        return this.tabTitles.get(position);
     }
 
     @Override

@@ -35,10 +35,12 @@ import java.util.Date;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.tabs.TabLayoutMediator;
 
 import io.objectbox.Box;
 import io.objectbox.query.QueryBuilder;
@@ -124,23 +126,6 @@ public class RegionDetailsActivity extends AppCompatActivity {
             }
         });
 
-        regionDetailsTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                regionDetailsTabViewPager.setCurrentItem(tab.getPosition());
-            }
-
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
-
-            }
-
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-
-            }
-        });
-
         setRegionData();
 
         enableButtonsByFormLoaders();
@@ -192,11 +177,22 @@ public class RegionDetailsActivity extends AppCompatActivity {
     private void initFragments() {
 
         if (region != null && fragmentAdapter == null) {
-            fragmentAdapter = new RegionDetailsFragmentAdapter(this.getSupportFragmentManager(), this.getLifecycle(), region, loggedUser, formDataLoaders);
+            List<String> tabTitles = new ArrayList<>();
+            tabTitles.add(getString(R.string.region_details_tab_details_list_lbl));
+            tabTitles.add(getString(R.string.region_details_tab_datasets_lbl));
+            tabTitles.add(getString(R.string.region_details_tab_collected_forms_lbl));
+
+            fragmentAdapter = new RegionDetailsFragmentAdapter(this.getSupportFragmentManager(), this.getLifecycle(), region, loggedUser, formDataLoaders, tabTitles);
             regionDetailsTabViewPager.setAdapter(fragmentAdapter);
             //this will create all fragments
             regionDetailsTabViewPager.setOffscreenPageLimit(3);
+
+            new TabLayoutMediator(regionDetailsTabLayout, regionDetailsTabViewPager, (tab, position) -> {
+                tab.setText(fragmentAdapter.getTitle(position));
+            }).attach();
         }
+
+
     }
 
     private void reloadFragmentsData(){

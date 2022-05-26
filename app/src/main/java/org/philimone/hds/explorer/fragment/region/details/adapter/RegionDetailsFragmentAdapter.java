@@ -6,6 +6,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Lifecycle;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
+import org.philimone.hds.explorer.R;
 import org.philimone.hds.explorer.data.FormDataLoader;
 import org.philimone.hds.explorer.fragment.CollectedDataFragment;
 import org.philimone.hds.explorer.fragment.ExternalDatasetsFragment;
@@ -19,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class RegionDetailsFragmentAdapter extends FragmentStateAdapter {
-
+    private List<String> tabTitles = new ArrayList<>();
     private final List<Fragment> fragments = new ArrayList<>();
     private RegionChildsFragment fragRegionChilds;
     private CollectedDataFragment fragCollected;
@@ -28,11 +29,12 @@ public class RegionDetailsFragmentAdapter extends FragmentStateAdapter {
     private User user;
     private List<FormDataLoader> formDataLoaders;
 
-    public RegionDetailsFragmentAdapter(@NonNull FragmentManager fragmentManager, @NonNull Lifecycle lifecycle, Region region, User user, List<FormDataLoader> formDataLoaders) {
+    public RegionDetailsFragmentAdapter(@NonNull FragmentManager fragmentManager, @NonNull Lifecycle lifecycle, Region region, User user, List<FormDataLoader> formDataLoaders, List<String> titles) {
         super(fragmentManager, lifecycle);
         this.region = region;
         this.user = user;
         this.formDataLoaders = formDataLoaders;
+        this.tabTitles.addAll(titles);
     }
 
     @NonNull
@@ -46,6 +48,10 @@ public class RegionDetailsFragmentAdapter extends FragmentStateAdapter {
             default: return null;
         }
 
+    }
+
+    public String getTitle(int position) {
+        return this.tabTitles.get(position);
     }
 
     @Override

@@ -9,19 +9,18 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ExpandableListView;
 import android.widget.TextView;
 
 import org.philimone.hds.explorer.R;
-import org.philimone.hds.explorer.adapter.TrackingExpandableListAdapter;
 import org.philimone.hds.explorer.adapter.model.TrackingSubListItem;
 import org.philimone.hds.explorer.adapter.model.TrackingSubjectItem;
+import org.philimone.hds.explorer.adapter.trackinglist.TrackingGroupItem;
+import org.philimone.hds.explorer.adapter.trackinglist.TrackingListExpandableAdapter;
 import org.philimone.hds.explorer.data.FormDataLoader;
 import org.philimone.hds.explorer.database.Bootstrap;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
 import org.philimone.hds.explorer.database.Queries;
 import org.philimone.hds.explorer.model.CollectedData;
-import org.philimone.hds.explorer.model.CollectedData_;
 import org.philimone.hds.explorer.model.Dataset;
 import org.philimone.hds.explorer.model.Form;
 import org.philimone.hds.explorer.model.Household;
@@ -36,6 +35,7 @@ import org.philimone.hds.explorer.model.followup.TrackingSubjectList;
 import org.philimone.hds.explorer.model.followup.TrackingSubjectList_;
 import org.philimone.hds.explorer.settings.RequestCodes;
 import org.philimone.hds.explorer.widget.LoadingDialog;
+import org.philimone.hds.explorer.widget.RecyclerListView;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -52,10 +52,10 @@ public class TrackingListDetailsActivity extends AppCompatActivity implements Ba
     private TextView txtTrackListTitle;
     private TextView txtTrackListDetails;
     private EditText txtTrackListFilter;
-    private ExpandableListView elvTrackingLists;
+    private RecyclerListView elvTrackingLists;
     private Button btTrackListBack;
 
-    private TrackingExpandableListAdapter adapter;
+    private TrackingListExpandableAdapter adapter;
     private TrackingList trackingList;
     private User loggedUser;
 
@@ -119,15 +119,19 @@ public class TrackingListDetailsActivity extends AppCompatActivity implements Ba
         this.txtTrackListTitle = (TextView) findViewById(R.id.txtTrackListTitle);
         this.txtTrackListDetails = (TextView) findViewById(R.id.txtTrackListDetails);
         this.txtTrackListFilter = (EditText) findViewById(R.id.txtTrackListFilter);
-        this.elvTrackingLists = (ExpandableListView) findViewById(R.id.elvTrackingLists);
+        this.elvTrackingLists = findViewById(R.id.elvTrackingLists);
         this.btTrackListBack = (Button) findViewById(R.id.btTrackListBack);
         this.viewLoadingList = findViewById(R.id.viewListProgressBar);
 
-        this.elvTrackingLists.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
+        this.elvTrackingLists.addOnItemClickListener(new RecyclerListView.OnItemClickListener() {
             @Override
-            public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
-                onSubjectItemClicked(groupPosition, childPosition);
-                return true;
+            public void onItemClick(View view, int position, long id) {
+                onSubjectItemClicked(position);
+            }
+
+            @Override
+            public void onItemLongClick(View view, int position, long id) {
+
             }
         });
 
@@ -189,7 +193,7 @@ public class TrackingListDetailsActivity extends AppCompatActivity implements Ba
         txtTrackListDetails.setText(trackingList.getCode());
     }
 
-    private void setTrackingListAdapter(TrackingExpandableListAdapter mAdapter){
+    private void setTrackingListAdapter(TrackingListExpandableAdapter mAdapter){
         this.adapter = mAdapter;
         elvTrackingLists.setAdapter(this.adapter);
 
@@ -201,9 +205,8 @@ public class TrackingListDetailsActivity extends AppCompatActivity implements Ba
     }
 
     private void expandAllGroups(){
-        if (adapter != null)
-        for ( int i = 0; i < adapter.getGroupCount(); i++ ){
-            elvTrackingLists.expandGroup(i);
+        if (adapter != null) {
+            adapter.expandAll();
         }
     }
 
@@ -221,13 +224,18 @@ public class TrackingListDetailsActivity extends AppCompatActivity implements Ba
         }
     }
 
-    private void onSubjectItemClicked(int groupPosition, int childPosition) {
-        TrackingSubjectItem subjectItem = (TrackingSubjectItem) adapter.getChild(groupPosition, childPosition);
+    private void onSubjectItemClicked(int itemPosition) {
 
-        OnSubjectSelectedTask task = new OnSubjectSelectedTask(subjectItem);
-        task.execute();
+        TrackingGroupItem listItem = adapter.getItem(itemPosition);
 
-        showLoadingDialog(getString(R.string.loading_dialog_member_details_lbl), true);
+        if (listItem.isChildItem()) {
+            TrackingSubjectItem subjectItem = listItem.getChildItem();
+
+            OnSubjectSelectedTask task = new OnSubjectSelectedTask(subjectItem);
+            task.execute();
+
+            showLoadingDialog(getString(R.string.loading_dialog_member_details_lbl), true);
+        }
 
     }
 
@@ -303,19 +311,8 @@ public class TrackingListDetailsActivity extends AppCompatActivity implements Ba
         return list;
     }
 
-    /*
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode== RC_MEMBER_DETAILS_TRACKINGLIST){
-
-        }
-    }
-    */
-
     //reading tracking list
-    private TrackingExpandableListAdapter readTrackingSubjectLists(TrackingList trackingList){
+    private TrackingListExpandableAdapter readTrackingSubjectLists(TrackingList trackingList){
 
         List<TrackingSubjectList> listTml = this.boxTrackingSubjects.query().equal(TrackingSubjectList_.trackingId, trackingList.getId()).build().find();
         List<CollectedData> listCollectedData = Queries.getCollectedDataBy(this.boxCollectedData, trackingList.modules);
@@ -353,7 +350,7 @@ public class TrackingListDetailsActivity extends AppCompatActivity implements Ba
         //Log.d("members", ""+members.size());
 
         ArrayList<TrackingSubListItem> groupItems = new ArrayList<>();
-        HashMap<TrackingSubListItem, ArrayList<TrackingSubjectItem>> trackingCollection = new LinkedHashMap<>();
+        HashMap<TrackingSubListItem, List<TrackingSubjectItem>> trackingCollection = new LinkedHashMap<>();
 
         //I need member/region/household, collectedData
         for (org.philimone.hds.explorer.model.followup.TrackingSubjectList item : listTml){
@@ -372,7 +369,7 @@ public class TrackingListDetailsActivity extends AppCompatActivity implements Ba
             }
 
 
-            ArrayList<TrackingSubjectItem> listSubjects = trackingCollection.get(tsi);
+            List<TrackingSubjectItem> listSubjects = trackingCollection.get(tsi);
 
             if (listSubjects == null){
                 listSubjects = new ArrayList<>();
@@ -393,7 +390,7 @@ public class TrackingListDetailsActivity extends AppCompatActivity implements Ba
 
         //db.close();
 
-        TrackingExpandableListAdapter adapter = new TrackingExpandableListAdapter(this, groupItems, trackingCollection);
+        TrackingListExpandableAdapter adapter = new TrackingListExpandableAdapter(this.elvTrackingLists, trackingCollection);
         return adapter;
     }
 
@@ -430,7 +427,6 @@ public class TrackingListDetailsActivity extends AppCompatActivity implements Ba
 
     private TrackingSubjectItem getSubjectItem(List<Region> regions, List<Household> households, List<Member> members, List<CollectedData> collectedDataList, org.philimone.hds.explorer.model.followup.TrackingSubjectList item, TrackingSubListItem subListItem) {
         TrackingSubjectItem tSubject = new TrackingSubjectItem();
-
 
         Region region = null;
         Household household = null;
@@ -513,10 +509,8 @@ public class TrackingListDetailsActivity extends AppCompatActivity implements Ba
 
     private void filterSubjectsByCode(String code){
         if (code != null){
-
             adapter.filterSubjects(code);
-            adapter.notifyDataSetChanged();
-            this.elvTrackingLists.invalidateViews();
+            //this.elvTrackingLists.invalidate();
         }
     }
 
@@ -582,7 +576,7 @@ public class TrackingListDetailsActivity extends AppCompatActivity implements Ba
         }
     }
 
-    class TrackingSubjectListSearchTask extends AsyncTask<Void, Void, TrackingExpandableListAdapter> {
+    class TrackingSubjectListSearchTask extends AsyncTask<Void, Void, TrackingListExpandableAdapter> {
 
         private TrackingList trackingList;
 
@@ -591,17 +585,17 @@ public class TrackingListDetailsActivity extends AppCompatActivity implements Ba
         }
 
         @Override
-        protected TrackingExpandableListAdapter doInBackground(Void... params) {
+        protected TrackingListExpandableAdapter doInBackground(Void... params) {
             return readTrackingSubjectLists(trackingList);
         }
 
         @Override
-        protected void onPostExecute(TrackingExpandableListAdapter mAdapter) {
+        protected void onPostExecute(TrackingListExpandableAdapter mAdapter) {
             saveCompletionOfList(mAdapter);
             setTrackingListAdapter(mAdapter);
         }
 
-        private void saveCompletionOfList(TrackingExpandableListAdapter adapter) {
+        private void saveCompletionOfList(TrackingListExpandableAdapter adapter) {
             int c = adapter.getCompletionOfTrackingList();
 
             trackingList.setCompletionRate(c/100D);

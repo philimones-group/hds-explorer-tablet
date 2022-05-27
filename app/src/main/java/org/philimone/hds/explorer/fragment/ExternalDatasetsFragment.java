@@ -17,7 +17,6 @@ import org.philimone.hds.explorer.database.ObjectBoxDatabase;
 import org.philimone.hds.explorer.model.Dataset;
 import org.philimone.hds.explorer.model.Dataset_;
 import org.philimone.hds.explorer.model.FormSubject;
-import org.philimone.hds.explorer.model.Module;
 import org.philimone.hds.explorer.model.User;
 import org.philimone.hds.explorer.widget.RecyclerListView;
 
@@ -27,7 +26,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -133,7 +131,7 @@ public class ExternalDatasetsFragment extends Fragment {
 
         loadDatasetsListToSpinner();
 
-        this.columnsDataList.setOnItemClickListener(new RecyclerListView.OnItemClickListener() {
+        this.columnsDataList.addOnItemClickListener(new RecyclerListView.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position, long id) {
                 Log.d("select", ""+position);

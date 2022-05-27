@@ -39,26 +39,9 @@ public class TrackingListArrayAdapter extends ArrayAdapter {
         this.currentUser = Bootstrap.getCurrentUser();
     }
 
-    public TrackingListArrayAdapter(Context context, TrackingList[] objects){
-        super(context, R.layout.tracking_list_item, objects);
-
-        this.trackingLists = new ArrayList<>();
-        this.originalLists = new ArrayList<>();
-        for (TrackingList tl : objects) {
-            this.trackingLists.add(tl);
-            this.originalLists.add(tl);
-        }
-        this.mContext = context;
-        this.currentUser = Bootstrap.getCurrentUser();
-    }
-
     @Override
     public int getCount() {
         return this.trackingLists.size();
-    }
-
-    public List<TrackingList> getTrackingLists(){
-        return this.trackingLists;
     }
 
     @Override

@@ -15,6 +15,7 @@ public class TrackingSubListItem implements Serializable {
     private TrackingList trackingList;
     private String title;
     private List<String> forms;
+    private boolean collapsed = true;
 
     public TrackingSubListItem(){
         this.forms = new ArrayList<>();
@@ -26,6 +27,30 @@ public class TrackingSubListItem implements Serializable {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public boolean isCollapsed() {
+        return collapsed;
+    }
+
+    public boolean isExpanded() {
+        return !collapsed;
+    }
+
+    public void collapse(){
+        this.collapsed = true;
+    }
+
+    public void expand(){
+        this.collapsed = false;
+    }
+
+    public void toggleCollapseExpand(){
+        if (collapsed) {
+            expand();
+        } else {
+            collapse();
+        }
     }
 
     public TrackingList getTrackingList() {

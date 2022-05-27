@@ -4,6 +4,7 @@
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="2dp"
+    android:background="?android:attr/selectableItemBackground"
     android:orientation="horizontal" >
 
     <ImageView
@@ -11,7 +12,7 @@
         android:layout_width="50dp"
         android:layout_height="60dp"
         android:layout_gravity="left|center"
-        android:layout_marginLeft="5dp"
+        android:layout_marginLeft="10dp"
         android:layout_marginRight="5dp"
         android:src="@mipmap/nui_region_red_icon" />
 

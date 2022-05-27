@@ -3,6 +3,7 @@ package org.philimone.hds.explorer.widget;
 import android.content.Context;
 import android.os.Build;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 
@@ -15,9 +16,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import org.philimone.hds.explorer.R;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class RecyclerListView extends RecyclerView {
 
-    private OnItemClickListener onItemClickListener;
+    private List<OnItemClickListener> onItemClickListeners = new ArrayList<>();
 
     public RecyclerListView(@NonNull Context context) {
         super(context);
@@ -41,18 +45,19 @@ public class RecyclerListView extends RecyclerView {
             @Override
             public void onChildViewAttachedToWindow(@NonNull View view) {
 
-                if (onItemClickListener == null){
+                if (onItemClickListeners.size() == 0){
                     return;
                 }
 
                 view.setOnClickListener(v -> {
                     ViewHolder holder = getChildViewHolder(v);
-                    onItemClickListener.onItemClick(v, holder.getAdapterPosition(), v.getId());
+                    Log.d("click rec", ""+v);
+                    fireOnItemClick(v, holder.getAdapterPosition(), v.getId());
                 });
 
                 view.setOnLongClickListener(v -> {
                     ViewHolder holder = getChildViewHolder(v);
-                    onItemClickListener.onItemLongClick(v, holder.getAdapterPosition(), v.getId());
+                    fireOnItemLongClick(v, holder.getAdapterPosition(), v.getId());
                     return true;
                 });
             }
@@ -71,12 +76,28 @@ public class RecyclerListView extends RecyclerView {
         this.addItemDecoration(divider);
     }
 
-    public OnItemClickListener getOnItemClickListener() {
-        return onItemClickListener;
+    public List<OnItemClickListener> getOnItemClickListeners() {
+        return onItemClickListeners;
     }
 
-    public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
-        this.onItemClickListener = onItemClickListener;
+    public void addOnItemClickListener(OnItemClickListener onItemClickListener) {
+        this.onItemClickListeners.add(onItemClickListener);
+    }
+
+    public void fireOnItemClick(View view, int position, long id) {
+        if (onItemClickListeners.size() > 0) {
+            for (OnItemClickListener listener : this.onItemClickListeners) {
+                listener.onItemClick(view, position, id);
+            }
+        }
+    }
+
+    public void fireOnItemLongClick(View view, int position, long id) {
+        if (onItemClickListeners.size() > 0) {
+            for (OnItemClickListener listener : this.onItemClickListeners) {
+                listener.onItemLongClick(view, position, id);
+            }
+        }
     }
 
     public interface OnItemClickListener {

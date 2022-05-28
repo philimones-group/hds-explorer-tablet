@@ -1,31 +1,25 @@
 package org.philimone.hds.explorer.main;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import org.philimone.hds.explorer.R;
 
-import org.philimone.hds.explorer.adapter.TrackingListArrayAdapter;
+import org.philimone.hds.explorer.adapter.trackinglist.TrackingListAdapter;
 import org.philimone.hds.explorer.database.Bootstrap;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
-import org.philimone.hds.explorer.model.Module;
 import org.philimone.hds.explorer.model.User;
-import org.philimone.hds.explorer.model.converters.StringCollectionConverter;
 import org.philimone.hds.explorer.model.followup.TrackingList;
-import org.philimone.hds.explorer.settings.RequestCodes;
+import org.philimone.hds.explorer.widget.RecyclerListView;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import androidx.appcompat.app.AppCompatActivity;
 import io.objectbox.Box;
@@ -36,7 +30,7 @@ public class TrackingListActivity extends AppCompatActivity {
     private User loggedUser;
     private TextView txtTrackListModule;
     private EditText txtTrackListFilter;
-    private ListView lvTrackingList;
+    private RecyclerListView lvTrackingList;
     private Button btTrackListUpdate;
     private Button btTrackListBack;
 
@@ -69,7 +63,7 @@ public class TrackingListActivity extends AppCompatActivity {
 
         this.txtTrackListModule = (TextView) findViewById(R.id.txtTrackListModule);
         this.txtTrackListFilter = (EditText) findViewById(R.id.txtTrackListFilter);
-        this.lvTrackingList = (ListView) findViewById(R.id.lvTrackingList);
+        this.lvTrackingList = findViewById(R.id.lvTrackingList);
         this.btTrackListUpdate = (Button) findViewById(R.id.btTrackListUpdate);
         this.btTrackListBack = (Button) findViewById(R.id.btTrackListBack);
         this.viewLoadingList = findViewById(R.id.viewListProgressBar);
@@ -88,10 +82,15 @@ public class TrackingListActivity extends AppCompatActivity {
             }
         });
 
-        this.lvTrackingList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        this.lvTrackingList.addOnItemClickListener(new RecyclerListView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            public void onItemClick(View view, int position, long id) {
                 onTrackingListClicked(position);
+            }
+
+            @Override
+            public void onItemLongClick(View view, int position, long id) {
+
             }
         });
 
@@ -135,7 +134,7 @@ public class TrackingListActivity extends AppCompatActivity {
 
     private void onTrackingListClicked(int position) {
 
-        TrackingListArrayAdapter adapter = (TrackingListArrayAdapter) this.lvTrackingList.getAdapter();
+        TrackingListAdapter adapter = (TrackingListAdapter) this.lvTrackingList.getAdapter();
         TrackingList trackingList = adapter.getItem(position);
 
         Intent intent = new Intent(this, TrackingListDetailsActivity.class);
@@ -147,7 +146,7 @@ public class TrackingListActivity extends AppCompatActivity {
     private void filterSubjectsByCode(String code){
         if (code != null){
 
-            TrackingListArrayAdapter adapter = (TrackingListArrayAdapter) this.lvTrackingList.getAdapter();
+            TrackingListAdapter adapter = (TrackingListAdapter) this.lvTrackingList.getAdapter();
             adapter.filterSubjects(code);
             adapter.notifyDataSetChanged();
             //this.elvTrackingLists.invalidateViews();
@@ -157,7 +156,7 @@ public class TrackingListActivity extends AppCompatActivity {
     private void showTrackingLists() {
         ArrayList<TrackingList> trackingLists = getTrackingLists();
         //Log.d("tlistsssx", ""+trackingLists.size());
-        TrackingListArrayAdapter adapter = new TrackingListArrayAdapter(this, trackingLists);
+        TrackingListAdapter adapter = new TrackingListAdapter(this, trackingLists);
 
         this.lvTrackingList.setAdapter(adapter);
 

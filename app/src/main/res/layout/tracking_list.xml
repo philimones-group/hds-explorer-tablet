@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:background="@color/white"
     tools:context="org.philimone.hds.explorer.main.TrackingListActivity">
@@ -137,8 +138,9 @@
 
             </RelativeLayout>
 
-            <ListView
+            <org.philimone.hds.explorer.widget.RecyclerListView
                 android:id="@+id/lvTrackingList"
+                app:layoutManager="LinearLayoutManager"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginBottom="40dp"

@@ -2,6 +2,7 @@ package org.philimone.hds.explorer.adapter.trackinglist;
 
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -43,10 +44,14 @@ public class TrackingListExpandableViewHolder extends RecyclerView.ViewHolder {
         TextView txtTitle = mainView.findViewById(R.id.txtTrackSubListTitle);
         TextView txtExtras = mainView.findViewById(R.id.txtTrackSubListExtras);
         CirclePercentageBar pBar = mainView.findViewById(R.id.pbarTrackListItem);
+        ImageView iconCollapsed = mainView.findViewById(R.id.iconCollapsed);
+        ImageView iconExpanded = mainView.findViewById(R.id.iconExpanded);
 
         TrackingSubListItem listItem = exListItem.getGroupItem();
         int n = exListItem.getChilds().size();
 
+        iconCollapsed.setVisibility(listItem.isCollapsed() ? View.VISIBLE : View.GONE);
+        iconExpanded.setVisibility(listItem.isExpanded() ? View.VISIBLE : View.GONE);
         txtTitle.setText(listItem.getTitle());
         txtExtras.setText(n + " Subjects");
         pBar.setPercentageValue(getCompletionOfList(exListItem.getChilds()));

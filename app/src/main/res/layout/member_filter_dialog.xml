@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -9,6 +10,7 @@
 
     <!-- Dialog Header -->
     <LinearLayout
+        android:id="@+id/dialogHeaderLayout"
         android:layout_width="match_parent"
         android:layout_height="57dp"
         android:background="@drawable/nui_dialog_border_thin"
@@ -49,17 +51,20 @@
 
     </LinearLayout>
 
+    <!-- Main -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="10dp">
+        android:layout_height="wrap_content"
+        android:layout_below="@id/dialogHeaderLayout"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal">
 
         <!-- Filter -->
         <LinearLayout
             android:id="@+id/memberFilterLayout"
-            android:layout_weight="1"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:orientation="horizontal">
 
             <LinearLayout
@@ -85,10 +90,10 @@
                         android:layout_marginTop="15dp"
                         android:layout_marginBottom="40dp"
                         android:text="@string/member_filter_search_lbl"
+                        android:textColor="@color/nui_color_text_red"
                         android:textSize="@dimen/member_filter_titlesize"
                         android:textStyle="bold"
-                        android:textColor="@color/nui_color_text_red"
-                        android:visibility="gone"/>
+                        android:visibility="gone" />
 
                     <!-- Name -->
                     <LinearLayout
@@ -102,18 +107,18 @@
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="@dimen/member_filter_textlabel_margin_left"
                             android:text="@string/member_filter_name_lbl"
-                            android:textSize="@dimen/member_filter_textsize"
                             android:textColor="@color/nui_color_text_red"
-                            android:textStyle="bold"/>
+                            android:textSize="@dimen/member_filter_textsize"
+                            android:textStyle="bold" />
 
                         <EditText
                             android:id="@+id/txtMemFilterName"
                             android:layout_width="match_parent"
                             android:layout_height="@dimen/member_filter_textbox_size"
-                            android:gravity="center_vertical"
-                            android:paddingLeft="20dp"
                             android:background="@drawable/nui_txtbox_rone_wbevel"
+                            android:gravity="center_vertical"
                             android:hint="@string/member_filter_name_hint"
+                            android:paddingLeft="20dp"
                             android:textSize="@dimen/member_filter_textsize" />
                     </LinearLayout>
 
@@ -129,18 +134,18 @@
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="@dimen/member_filter_textlabel_margin_left"
                             android:text="@string/member_filter_code_lbl"
-                            android:textSize="@dimen/member_filter_textsize"
                             android:textColor="@color/nui_color_text_red"
+                            android:textSize="@dimen/member_filter_textsize"
                             android:textStyle="bold" />
 
                         <EditText
                             android:id="@+id/txtMemFilterCode"
                             android:layout_width="match_parent"
                             android:layout_height="@dimen/member_filter_textbox_size"
-                            android:paddingLeft="20dp"
-                            android:gravity="center_vertical"
                             android:background="@drawable/nui_txtbox_rone_wbevel"
+                            android:gravity="center_vertical"
                             android:hint="@string/member_filter_code_hint"
+                            android:paddingLeft="20dp"
                             android:textSize="@dimen/member_filter_textsize" />
                     </LinearLayout>
 
@@ -156,18 +161,18 @@
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="@dimen/member_filter_textlabel_margin_left"
                             android:text="@string/member_filter_curr_housename_lbl"
-                            android:textSize="@dimen/member_filter_textsize"
                             android:textColor="@color/nui_color_text_red"
+                            android:textSize="@dimen/member_filter_textsize"
                             android:textStyle="bold" />
 
                         <EditText
                             android:id="@+id/txtMemFilterCurrHousecode"
                             android:layout_width="match_parent"
                             android:layout_height="@dimen/member_filter_textbox_size"
-                            android:paddingLeft="20dp"
-                            android:gravity="center_vertical"
                             android:background="@drawable/nui_txtbox_rone_wbevel"
+                            android:gravity="center_vertical"
                             android:hint="@string/member_filter_curr_housename_hint"
+                            android:paddingLeft="20dp"
                             android:textSize="@dimen/member_filter_textsize" />
                     </LinearLayout>
 
@@ -183,8 +188,8 @@
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="@dimen/member_filter_textlabel_margin_left"
                             android:text="@string/member_filter_gender_lbl"
-                            android:textSize="@dimen/member_filter_textsize"
                             android:textColor="@color/nui_color_text_red"
+                            android:textSize="@dimen/member_filter_textsize"
                             android:textStyle="bold" />
 
                         <LinearLayout
@@ -200,18 +205,18 @@
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center_vertical"
                                 android:text="@string/member_filter_gender_female_lbl"
-                                android:textSize="@dimen/member_filter_checkbox_textsize"
-                                android:textColor="@color/nui_color_text_darkgray"/>
+                                android:textColor="@color/nui_color_text_darkgray"
+                                android:textSize="@dimen/member_filter_checkbox_textsize" />
 
                             <CheckBox
                                 android:id="@+id/chkMemFilterGMale"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center_vertical"
-                                android:text="@string/member_filter_gender_male_lbl"
                                 android:layout_marginLeft="20dp"
-                                android:textSize="@dimen/member_filter_checkbox_textsize"
-                                android:textColor="@color/nui_color_text_darkgray"/>
+                                android:text="@string/member_filter_gender_male_lbl"
+                                android:textColor="@color/nui_color_text_darkgray"
+                                android:textSize="@dimen/member_filter_checkbox_textsize" />
 
 
                         </LinearLayout>
@@ -230,8 +235,8 @@
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="@dimen/member_filter_textlabel_margin_left"
                             android:text="@string/member_filter_age_details_lbl"
-                            android:textSize="@dimen/member_filter_textsize"
                             android:textColor="@color/nui_color_text_red"
+                            android:textSize="@dimen/member_filter_textsize"
                             android:textStyle="bold" />
 
 
@@ -239,8 +244,8 @@
                             android:id="@+id/layout_mf_age"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:gravity="center"
                             android:background="@drawable/nui_lists_rone_border"
+                            android:gravity="center"
                             android:orientation="horizontal">
 
                             <TextView
@@ -248,32 +253,32 @@
                                 android:layout_height="match_parent"
                                 android:gravity="center"
                                 android:text="@string/member_filter_age_min_lbl"
-                                android:textSize="@dimen/member_filter_textsize"
-                                android:textColor="@color/nui_color_text_darkgray"/>
+                                android:textColor="@color/nui_color_text_darkgray"
+                                android:textSize="@dimen/member_filter_textsize" />
 
                             <org.philimone.hds.explorer.widget.NumberPicker
-                                android:layout_width="wrap_content"
-                                android:layout_height="80dp"
-                                min_value="0"
-                                max_value="140"
+                                android:id="@+id/nbpMemFilterMinAge"
                                 default_value="0"
-                                android:id="@+id/nbpMemFilterMinAge" />
+                                max_value="140"
+                                min_value="0"
+                                android:layout_width="wrap_content"
+                                android:layout_height="80dp" />
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="match_parent"
                                 android:gravity="center"
                                 android:text="@string/member_filter_age_max_lbl"
-                                android:textSize="@dimen/member_filter_textsize"
-                                android:textColor="@color/nui_color_text_darkgray" />
+                                android:textColor="@color/nui_color_text_darkgray"
+                                android:textSize="@dimen/member_filter_textsize" />
 
                             <org.philimone.hds.explorer.widget.NumberPicker
-                                android:layout_width="wrap_content"
-                                android:layout_height="80dp"
-                                min_value="0"
-                                max_value="140"
+                                android:id="@+id/nbpMemFilterMaxAge"
                                 default_value="120"
-                                android:id="@+id/nbpMemFilterMaxAge" />
+                                max_value="140"
+                                min_value="0"
+                                android:layout_width="wrap_content"
+                                android:layout_height="80dp" />
 
                         </LinearLayout>
 
@@ -290,9 +295,9 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="@dimen/member_filter_textlabel_margin_left"
-                            android:textSize="@dimen/member_filter_textsize"
-                            android:textColor="@color/nui_color_text_red"
                             android:text="@string/member_filter_current_status_lbl"
+                            android:textColor="@color/nui_color_text_red"
+                            android:textSize="@dimen/member_filter_textsize"
                             android:textStyle="bold" />
 
                         <LinearLayout
@@ -306,8 +311,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="50dp"
                                 android:background="@drawable/nui_spinner_rone_wbevel"
-                                android:spinnerMode="dialog"
-                                />
+                                android:spinnerMode="dialog" />
 
                         </LinearLayout>
 
@@ -331,20 +335,20 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="left"
                         android:layout_weight="1"
-                        android:textSize="@dimen/member_filter_button_textsize"
+                        android:background="@drawable/nui_btnd_rone_gflat"
                         android:text="@string/member_filter_clear_lbl"
-                        android:background="@drawable/nui_btnd_rone_gflat"/>
+                        android:textSize="@dimen/member_filter_button_textsize" />
 
                     <Button
                         android:id="@+id/btMemFilterSearch"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="right"
-                        android:layout_weight="1"
                         android:layout_marginTop="5dp"
-                        android:textSize="@dimen/member_filter_button_textsize"
+                        android:layout_weight="1"
+                        android:background="@drawable/nui_btnd_rone_gflat"
                         android:text="@string/member_filter_search_btn_lbl"
-                        android:background="@drawable/nui_btnd_rone_gflat"/>
+                        android:textSize="@dimen/member_filter_button_textsize" />
 
                 </LinearLayout>
 
@@ -353,30 +357,30 @@
         </LinearLayout>
 
         <!-- List -->
-        <FrameLayout
+        <LinearLayout
             android:id="@+id/memberListLayout"
-            android:layout_weight="1"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:paddingBottom="5dp"
+            android:layout_weight="1"
+            android:orientation="vertical"
             android:paddingTop="5dp"
-            android:paddingRight="5dp">
+            android:paddingRight="5dp"
+            android:paddingBottom="5dp">
 
-            <ListView
+            <org.philimone.hds.explorer.widget.RecyclerListView
+                android:id="@+id/lvMembersList"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
+                android:background="@drawable/nui_list_rborder_panel"
                 android:paddingTop="10dp"
                 android:paddingBottom="10dp"
-                android:background="@drawable/nui_list_rborder_panel"
-                android:id="@+id/lvMembersList"
-                />
+                app:layout_constraintHeight_default="spread" />
 
             <RelativeLayout
                 android:id="@+id/progressBarLayout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
                 android:paddingTop="10dp"
                 android:paddingBottom="10dp"
                 android:visibility="gone">
@@ -386,13 +390,12 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
-                    android:layout_centerVertical="true"
-                    />
+                    android:layout_centerVertical="true" />
 
             </RelativeLayout>
 
-        </FrameLayout>
+        </LinearLayout>
 
     </LinearLayout>
 
-</LinearLayout>
+</RelativeLayout>

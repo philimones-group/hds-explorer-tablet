@@ -3,6 +3,7 @@
     android:id="@+id/MainLinearLayout"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
+    android:background="?android:attr/selectableItemBackground"
     android:orientation="horizontal" >
 
     <ImageView

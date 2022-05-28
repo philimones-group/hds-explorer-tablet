@@ -1,19 +1,18 @@
 package org.philimone.hds.explorer.adapter;
 
 import android.content.Context;
-import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.CheckBox;
-import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
+import androidx.annotation.LayoutRes;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
 import org.philimone.hds.explorer.R;
-import org.philimone.hds.explorer.adapter.model.HierarchyItem;
-import org.philimone.hds.explorer.model.Household;
 import org.philimone.hds.explorer.model.Region;
 
 import java.util.ArrayList;
@@ -22,13 +21,14 @@ import java.util.List;
 /**
  * Created by paul on 6/6/16.
  */
-public class RegionArrayAdapter extends ArrayAdapter<Region> {
+public class RegionAdapter extends RecyclerView.Adapter<RegionAdapter.RegionViewHolder> {
     private List<Region> regions;
     private List<Boolean> checkableRegions;
     private List<Boolean> supervisedRegions;
     private List<String> extras;
     private Context mContext;
-    private int layoutResId;
+    private @LayoutRes
+    int layoutResId;
     private int selectedIndex = -1;
 
     /**
@@ -36,9 +36,7 @@ public class RegionArrayAdapter extends ArrayAdapter<Region> {
      * @param context
      * @param objects
      */
-    public RegionArrayAdapter(Context context, List<Region> objects){
-        super(context, R.layout.region_details_child_item, objects);
-
+    public RegionAdapter(Context context, List<Region> objects){
         this.regions = new ArrayList<>();
         this.regions.addAll(objects);
         this.mContext = context;
@@ -51,9 +49,7 @@ public class RegionArrayAdapter extends ArrayAdapter<Region> {
      * @param objects
      * @param checks
      */
-    public RegionArrayAdapter(Context context, List<Region> objects, List<Boolean> checks){
-        super(context, R.layout.region_details_child_item, objects);
-
+    public RegionAdapter(Context context, List<Region> objects, List<Boolean> checks){
         this.regions = new ArrayList<>();
         this.regions.addAll(objects);
 
@@ -73,7 +69,7 @@ public class RegionArrayAdapter extends ArrayAdapter<Region> {
      * @param checks
      * @param supervisionList
      */
-    public RegionArrayAdapter(Context context, List<Region> objects, List<Boolean> checks, List<Boolean> supervisionList){
+    public RegionAdapter(Context context, List<Region> objects, List<Boolean> checks, List<Boolean> supervisionList){
         this(context, objects, checks);
 
         if (supervisionList != null){
@@ -88,9 +84,7 @@ public class RegionArrayAdapter extends ArrayAdapter<Region> {
      * @param objects
      * @param extras
      */
-    public RegionArrayAdapter(Context context, List<Region> objects, ArrayList<String> extras){
-        super(context, R.layout.region_details_child_item, objects);
-
+    public RegionAdapter(Context context, List<Region> objects, ArrayList<String> extras){
         this.regions = new ArrayList<>();
         this.regions.addAll(objects);
 
@@ -112,28 +106,46 @@ public class RegionArrayAdapter extends ArrayAdapter<Region> {
         return this.regions;
     }
 
-    @Override
     public Region getItem(int position) {
         return regions.get(position);
     }
 
+    @NonNull
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public RegionViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-
         View rowView = inflater.inflate(layoutResId, parent, false);
+        return new RegionViewHolder(rowView);
+    }
 
-        TextView txtChildRegionName = (TextView) rowView.findViewById(R.id.txtChildRegionName);
-        TextView txtChildRegionCode = (TextView) rowView.findViewById(R.id.txtChildRegionCode);
-        RadioButton chkRegionSelected = (RadioButton) rowView.findViewById(R.id.chkRegionSelected);
+    @Override
+    public void onBindViewHolder(@NonNull RegionViewHolder holder, int position) {
+        Region region = getItem(position);
+        holder.setValues(region);
+    }
 
-        Region region = this.regions.get(position);
+    @Override
+    public int getItemCount() {
+        return this.regions.size();
+    }
 
+    class RegionViewHolder extends RecyclerView.ViewHolder {
+        private ViewGroup rowView;
 
-        txtChildRegionName.setText(region.getName());
-        txtChildRegionCode.setText(region.getCode() );
-        chkRegionSelected.setChecked(region.isSelected());
+        public RegionViewHolder(@NonNull View itemView) {
+            super(itemView);
 
-        return rowView;
+            this.rowView = (ViewGroup) itemView;
+        }
+
+        public void setValues(Region region) {
+            TextView txtChildRegionName = rowView.findViewById(R.id.txtChildRegionName);
+            TextView txtChildRegionCode = rowView.findViewById(R.id.txtChildRegionCode);
+            RadioButton chkRegionSelected = rowView.findViewById(R.id.chkRegionSelected);
+
+            txtChildRegionName.setText(region.getName());
+            txtChildRegionCode.setText(region.getCode() );
+            chkRegionSelected.setChecked(region.isSelected());
+        }
     }
 }

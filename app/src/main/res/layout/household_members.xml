@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".fragment.household.details.HouseholdMembersFragment">
 
     <!-- List of Members -->
@@ -33,7 +34,8 @@
             android:background="@drawable/nui_list_rborder_panel"
             android:orientation="vertical">
 
-            <ListView
+            <org.philimone.hds.explorer.widget.RecyclerListView
+                app:layoutManager="LinearLayoutManager"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:paddingStart="18dp"

@@ -19,7 +19,7 @@ import android.widget.Switch;
 import android.widget.TextView;
 
 import org.philimone.hds.explorer.R;
-import org.philimone.hds.explorer.adapter.CoreCollectedDataArrayAdapter;
+import org.philimone.hds.explorer.adapter.CoreCollectedDataAdapter;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
 import org.philimone.hds.explorer.io.SyncUploadEntitiesTask;
 import org.philimone.hds.explorer.io.UploadEntityReport;
@@ -28,6 +28,7 @@ import org.philimone.hds.explorer.io.UploadResponse;
 import org.philimone.hds.explorer.model.CoreCollectedData;
 import org.philimone.hds.explorer.model.CoreCollectedData_;
 import org.philimone.hds.explorer.widget.DialogFactory;
+import org.philimone.hds.explorer.widget.RecyclerListView;
 import org.philimone.hds.explorer.widget.UploadResultDialog;
 
 import java.util.ArrayList;
@@ -40,7 +41,7 @@ import java.util.List;
  * Use the {@link SyncUploadPanelFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class SyncUploadPanelFragment extends Fragment implements SyncUploadEntitiesTask.Listener, CoreCollectedDataArrayAdapter.OnItemActionListener {
+public class SyncUploadPanelFragment extends Fragment implements SyncUploadEntitiesTask.Listener, CoreCollectedDataAdapter.OnItemActionListener {
 
     private String username;
     private String password;
@@ -48,7 +49,7 @@ public class SyncUploadPanelFragment extends Fragment implements SyncUploadEntit
     private boolean connectedToServer;
 
     private Button btUploadAllData;
-    private ListView collectedDataListView;
+    private RecyclerListView collectedDataListView;
     private ProgressBar syncProgressBar;
     private TextView syncProgressText;
     private TextView syncProgressMessage;
@@ -128,10 +129,18 @@ public class SyncUploadPanelFragment extends Fragment implements SyncUploadEntit
             onUploadAllButtonClicked();
         });
 
-        this.collectedDataListView.setOnItemClickListener((parent, view1, position, id) -> {
-            CoreCollectedDataArrayAdapter adapter = (CoreCollectedDataArrayAdapter) collectedDataListView.getAdapter();
-            //check or uncheck
-            adapter.setCheckedOrUnchecked(position);
+        this.collectedDataListView.addOnItemClickListener(new RecyclerListView.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position, long id) {
+                CoreCollectedDataAdapter adapter = (CoreCollectedDataAdapter) collectedDataListView.getAdapter();
+                //check or uncheck
+                adapter.setCheckedOrUnchecked(position);
+            }
+
+            @Override
+            public void onItemLongClick(View view, int position, long id) {
+
+            }
         });
 
         this.chkSelectAll.setOnCheckedChangeListener((buttonView, isChecked) -> {
@@ -174,7 +183,7 @@ public class SyncUploadPanelFragment extends Fragment implements SyncUploadEntit
     }
 
     private void selectAll(boolean isChecked){
-        CoreCollectedDataArrayAdapter adapter = (CoreCollectedDataArrayAdapter) collectedDataListView.getAdapter();
+        CoreCollectedDataAdapter adapter = (CoreCollectedDataAdapter) collectedDataListView.getAdapter();
         if (adapter != null) {
             adapter.setAllChecked(isChecked);
         }
@@ -221,7 +230,7 @@ public class SyncUploadPanelFragment extends Fragment implements SyncUploadEntit
 
 
         List<CoreCollectedData> dataList = builder.order(CoreCollectedData_.createdDate).build().find();
-        CoreCollectedDataArrayAdapter adapter = new CoreCollectedDataArrayAdapter(this.getContext(), dataList, this);
+        CoreCollectedDataAdapter adapter = new CoreCollectedDataAdapter(this.getContext(), dataList, this);
 
         this.collectedDataListView.setAdapter(adapter);
     }
@@ -249,10 +258,10 @@ public class SyncUploadPanelFragment extends Fragment implements SyncUploadEntit
             return;
         }
 
-        CoreCollectedDataArrayAdapter adapter = (CoreCollectedDataArrayAdapter) collectedDataListView.getAdapter();
+        CoreCollectedDataAdapter adapter = (CoreCollectedDataAdapter) collectedDataListView.getAdapter();
         int total = adapter.getSelectedCollectedData().size();
 
-        this.syncProgressBar.setMin(0);
+        this.syncProgressBar.setProgress(0); //this.syncProgressBar.setMin(0);
         this.syncProgressBar.setMax(total);
 
         Log.d("selected", ""+adapter.getSelectedCollectedData().size());
@@ -261,7 +270,8 @@ public class SyncUploadPanelFragment extends Fragment implements SyncUploadEntit
             uploadCollectedData(collectedData);
         }
 
-        collectedDataListView.invalidateViews();
+        adapter.notifyDataSetChanged();
+        //collectedDataListView.invalidate();
     }
 
     private void uploadCollectedData(CoreCollectedData coreCollectedData){

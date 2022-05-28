@@ -9,8 +9,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import org.philimone.hds.explorer.R;
-import org.philimone.hds.explorer.adapter.CollectedDataArrayAdapter;
-import org.philimone.hds.explorer.adapter.model.CollectedDataItem;
 import org.philimone.hds.explorer.data.FormDataLoader;
 import org.philimone.hds.explorer.database.Bootstrap;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
@@ -20,22 +18,15 @@ import org.philimone.hds.explorer.fragment.ExternalDatasetsFragment;
 import org.philimone.hds.explorer.fragment.region.details.RegionChildsFragment;
 import org.philimone.hds.explorer.fragment.region.details.adapter.RegionDetailsFragmentAdapter;
 import org.philimone.hds.explorer.model.ApplicationParam;
-import org.philimone.hds.explorer.model.CollectedData;
-import org.philimone.hds.explorer.model.CollectedData_;
 import org.philimone.hds.explorer.model.Form;
 import org.philimone.hds.explorer.model.Region;
 import org.philimone.hds.explorer.model.Region_;
 import org.philimone.hds.explorer.model.User;
 import org.philimone.hds.explorer.settings.RequestCodes;
-import org.philimone.hds.explorer.widget.DialogFactory;
-import org.philimone.hds.explorer.widget.FormSelectorDialog;
 
-import java.io.File;
-import java.util.Date;
 import java.util.ArrayList;
 import java.util.List;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager2.widget.ViewPager2;
 
@@ -44,9 +35,6 @@ import com.google.android.material.tabs.TabLayoutMediator;
 
 import io.objectbox.Box;
 import io.objectbox.query.QueryBuilder;
-import mz.betainteractive.odk.FormUtilities;
-import mz.betainteractive.odk.listener.OdkFormResultListener;
-import mz.betainteractive.odk.model.FilledForm;
 
 public class RegionDetailsActivity extends AppCompatActivity {
 

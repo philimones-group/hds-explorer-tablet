@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     tools:context=".fragment.household.details.HouseholdVisitFragment">
 
@@ -30,8 +31,9 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1" >
 
-                <ListView
+                <org.philimone.hds.explorer.widget.RecyclerListView
                     android:id="@+id/lvHouseholdMembers"
+                    app:layoutManager="LinearLayoutManager"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:paddingStart="18dp"

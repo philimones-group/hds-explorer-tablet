@@ -2,6 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="org.philimone.hds.explorer.fragment.HouseholdFilterFragment">
 
     <LinearLayout
@@ -48,8 +49,7 @@
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:background="@drawable/nui_region_lists_panel">
-                    </View>
+                        android:background="@drawable/nui_region_lists_panel"></View>
 
                 </RelativeLayout>
 
@@ -417,8 +417,9 @@
 
                     </RelativeLayout>
 
-                    <ListView
+                    <org.philimone.hds.explorer.widget.RecyclerListView
                         android:id="@+id/hfHousesList"
+                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:paddingStart="18dp"

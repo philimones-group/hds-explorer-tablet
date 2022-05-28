@@ -29,7 +29,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import org.philimone.hds.explorer.R;
-import org.philimone.hds.explorer.adapter.HouseholdArrayAdapter;
+import org.philimone.hds.explorer.adapter.HouseholdAdapter;
 import org.philimone.hds.explorer.adapter.RegionExpandableListAdapter;
 import org.philimone.hds.explorer.adapter.model.HierarchyItem;
 import org.philimone.hds.explorer.data.FormDataLoader;
@@ -51,6 +51,7 @@ import org.philimone.hds.explorer.model.Round_;
 import org.philimone.hds.explorer.model.User;
 import org.philimone.hds.explorer.settings.RequestCodes;
 import org.philimone.hds.explorer.widget.DialogFactory;
+import org.philimone.hds.explorer.widget.RecyclerListView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -70,7 +71,7 @@ public class HouseholdFilterFragment extends Fragment implements RegionExpandabl
 
     private Context mContext;
     private EditText txtHouseFilterCode;
-    private ListView hfHousesList;
+    private RecyclerListView hfHousesList;
     private Button btHouseFilterAddNewHousehold;
     private Button btHouseFilterShowRegion;
     private Button btHouseFilterSearch;
@@ -171,7 +172,7 @@ public class HouseholdFilterFragment extends Fragment implements RegionExpandabl
         }
 
         this.txtHouseFilterCode = (EditText) view.findViewById(R.id.txtHouseFilterCode);
-        this.hfHousesList = (ListView) view.findViewById(R.id.hfHousesList);
+        this.hfHousesList = view.findViewById(R.id.hfHousesList);
         this.btHouseFilterAddNewHousehold = (Button) view.findViewById(R.id.btHouseFilterAddNewHousehold);
         this.btHouseFilterSearch = (Button) view.findViewById(R.id.btHouseFilterSearch);
         this.hfViewProgressBar = (RelativeLayout) view.findViewById(R.id.hfViewProgressBar);
@@ -253,16 +254,21 @@ public class HouseholdFilterFragment extends Fragment implements RegionExpandabl
             });
         }
 
-        this.hfHousesList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        this.hfHousesList.addOnItemClickListener(new RecyclerListView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                HouseholdArrayAdapter adapter = (HouseholdArrayAdapter) hfHousesList.getAdapter();
+            public void onItemClick(View view, int position, long id) {
+                HouseholdAdapter adapter = (HouseholdAdapter) hfHousesList.getAdapter();
                 Household household = adapter.getItem(position);
                 adapter.setSelectedIndex(position);
 
                 if (listener != null && household != null){
                     onHouseholdClicked(household);
                 }
+            }
+
+            @Override
+            public void onItemLongClick(View view, int position, long id) {
+
             }
         });
 
@@ -629,7 +635,7 @@ public class HouseholdFilterFragment extends Fragment implements RegionExpandabl
         return false;
     }
 
-    public HouseholdArrayAdapter loadHouseholdsByFilters(String houseCode) {
+    public HouseholdAdapter loadHouseholdsByFilters(String houseCode) {
         //open loader
         //search
         List<String> smodules = new ArrayList<>(loggedUser.getSelectedModules());
@@ -638,7 +644,7 @@ public class HouseholdFilterFragment extends Fragment implements RegionExpandabl
                                                                .filter((h)->StringUtil.containsAny(h.modules, smodules))
                                                                .build().find();
 
-        HouseholdArrayAdapter currentAdapter = new HouseholdArrayAdapter(this.getActivity(), households);
+        HouseholdAdapter currentAdapter = new HouseholdAdapter(this.getActivity(), households);
 
         return currentAdapter;
     }
@@ -654,7 +660,7 @@ public class HouseholdFilterFragment extends Fragment implements RegionExpandabl
         hfHousesList.setVisibility(show ? View.GONE : View.VISIBLE);
     }    
 
-    class HouseholdSearchTask extends AsyncTask<Void, Void, HouseholdArrayAdapter> {
+    class HouseholdSearchTask extends AsyncTask<Void, Void, HouseholdAdapter> {
         private String code;
         private String houseName;
 
@@ -664,17 +670,17 @@ public class HouseholdFilterFragment extends Fragment implements RegionExpandabl
         }
 
         @Override
-        protected HouseholdArrayAdapter doInBackground(Void... params) {
+        protected HouseholdAdapter doInBackground(Void... params) {
             return loadHouseholdsByFilters(code);
         }
 
         @Override
-        protected void onPostExecute(HouseholdArrayAdapter adapter) {
+        protected void onPostExecute(HouseholdAdapter adapter) {
             HouseholdFilterFragment.this.household = household;
             hfHousesList.setAdapter(adapter);
             //showProgress(false);
 
-            if (adapter.isEmpty()){
+            if (adapter.getItemCount()==0){
                 showHouseholdNotFoundMessage(code);
             }
         }

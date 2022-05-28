@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 
 import org.philimone.hds.explorer.R;
-import org.philimone.hds.explorer.adapter.CollectedDataArrayAdapter;
+import org.philimone.hds.explorer.adapter.CollectedDataAdapter;
 import org.philimone.hds.explorer.adapter.model.CollectedDataItem;
 import org.philimone.hds.explorer.data.FormDataLoader;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
@@ -21,6 +21,7 @@ import org.philimone.hds.explorer.model.Module;
 import org.philimone.hds.explorer.model.User;
 import org.philimone.hds.explorer.widget.DialogFactory;
 import org.philimone.hds.explorer.widget.FormSelectorDialog;
+import org.philimone.hds.explorer.widget.RecyclerListView;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -46,7 +47,7 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
 
     private enum SubjectMode { REGION, HOUSEHOLD, MEMBER };
 
-    private ListView lvCollectedForms;
+    private RecyclerListView lvCollectedForms;
 
     private FormSubject subject;
     private User loggedUser;
@@ -116,7 +117,17 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
 
         lvCollectedForms = view.findViewById(R.id.lvCollectedForms);
 
-        lvCollectedForms.setOnItemClickListener((parent, view1, position, id) -> onCollectedDataItemClicked(position));
+        lvCollectedForms.addOnItemClickListener(new RecyclerListView.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position, long id) {
+                onCollectedDataItemClicked(position);
+            }
+
+            @Override
+            public void onItemLongClick(View view, int position, long id) {
+
+            }
+        });
 
         this.showCollectedData();
     }
@@ -139,7 +150,7 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
             }
         }
 
-        CollectedDataArrayAdapter adapter = new CollectedDataArrayAdapter(this.getContext(), cdl);
+        CollectedDataAdapter adapter = new CollectedDataAdapter(this.getContext(), cdl);
         this.lvCollectedForms.setAdapter(adapter);
     }
 
@@ -148,7 +159,7 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
     }
 
     private void onCollectedDataItemClicked(int position) {
-        CollectedDataArrayAdapter adapter = (CollectedDataArrayAdapter) this.lvCollectedForms.getAdapter();
+        CollectedDataAdapter adapter = (CollectedDataAdapter) this.lvCollectedForms.getAdapter();
         CollectedDataItem dataItem = adapter.getItem(position);
 
         CollectedData collectedData = dataItem.getCollectedData();

@@ -7,6 +7,9 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
 import org.philimone.hds.explorer.R;
 import org.philimone.hds.explorer.data.FormDataLoader;
 
@@ -16,21 +19,17 @@ import java.util.List;
 /**
  * Created by paul on 8/10/16.
  */
-public class FormLoaderAdapter extends ArrayAdapter {
+public class FormLoaderAdapter extends RecyclerView.Adapter<FormLoaderAdapter.FormLoaderViewHolder> {
     private List<FormDataLoader> dataLoaders;
     private Context mContext;
 
     public FormLoaderAdapter(Context context, List<FormDataLoader> objects){
-        super(context, R.layout.form_item, objects);
-
         this.dataLoaders = new ArrayList<>();
         this.dataLoaders.addAll(objects);
         this.mContext = context;
     }
 
     public FormLoaderAdapter(Context context, FormDataLoader[] objects){
-        super(context, R.layout.form_item, objects);
-
         this.dataLoaders = new ArrayList<>();
         for (FormDataLoader fdl : objects) this.dataLoaders.add(fdl);
         this.mContext = context;
@@ -40,25 +39,42 @@ public class FormLoaderAdapter extends ArrayAdapter {
         return this.dataLoaders;
     }
 
-    @Override
     public FormDataLoader getItem(int position) {
         return dataLoaders.get(position);
     }
 
+    @NonNull
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public FormLoaderViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-
         View rowView = inflater.inflate(R.layout.form_item, parent, false);
+        return new FormLoaderViewHolder(rowView);
+    }
 
-        TextView txtName = (TextView) rowView.findViewById(R.id.txtFormItemName);
+    @Override
+    public void onBindViewHolder(@NonNull FormLoaderViewHolder holder, int position) {
+        FormDataLoader fd = getItem(position);
+        holder.setValues(fd);
+    }
 
-        FormDataLoader fd = dataLoaders.get(position);
+    @Override
+    public int getItemCount() {
+        return this.dataLoaders.size();
+    }
 
-        String processed = "0";
+    class FormLoaderViewHolder extends RecyclerView.ViewHolder {
 
-        txtName.setText(fd.getForm().getFormName());
+        private ViewGroup rowView;
 
-        return rowView;
+        public FormLoaderViewHolder(@NonNull View itemView) {
+            super(itemView);
+            this.rowView = (ViewGroup) itemView;
+        }
+
+        public void setValues(FormDataLoader fd) {
+            TextView txtName = (TextView) rowView.findViewById(R.id.txtFormItemName);
+            String processed = "0";
+            txtName.setText(fd.getForm().getFormName());
+        }
     }
 }

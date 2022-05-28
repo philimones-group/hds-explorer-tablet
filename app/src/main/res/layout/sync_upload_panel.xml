@@ -37,8 +37,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
-    <ListView
+    <org.philimone.hds.explorer.widget.RecyclerListView
         android:id="@+id/collectedDataListView"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1"

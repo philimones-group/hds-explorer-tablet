@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     tools:context="org.philimone.hds.explorer.main.GpsSearchedListActivity">
 
@@ -159,8 +160,9 @@
             android:layout_marginRight="10dp"
             android:orientation="vertical">
 
-            <ListView
+            <org.philimone.hds.explorer.widget.RecyclerListView
                 android:id="@+id/lvGpsSearchedList"
+                app:layoutManager="LinearLayoutManager"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:padding="15dp"

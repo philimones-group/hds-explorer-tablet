@@ -14,16 +14,13 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import org.philimone.hds.explorer.R;
-import org.philimone.hds.explorer.adapter.HouseholdArrayAdapter;
-import org.philimone.hds.explorer.adapter.MemberArrayAdapter;
-import org.philimone.hds.explorer.adapter.RegionArrayAdapter;
+import org.philimone.hds.explorer.adapter.HouseholdAdapter;
+import org.philimone.hds.explorer.adapter.RegionAdapter;
 import org.philimone.hds.explorer.data.FormDataLoader;
 import org.philimone.hds.explorer.data.FormFilter;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
 import org.philimone.hds.explorer.main.HouseholdDetailsActivity;
-import org.philimone.hds.explorer.main.MemberDetailsActivity;
 import org.philimone.hds.explorer.main.RegionDetailsActivity;
-import org.philimone.hds.explorer.main.SurveyHouseholdsActivity;
 import org.philimone.hds.explorer.model.ApplicationParam;
 import org.philimone.hds.explorer.model.ApplicationParam_;
 import org.philimone.hds.explorer.model.Dataset;
@@ -31,12 +28,11 @@ import org.philimone.hds.explorer.model.Form;
 import org.philimone.hds.explorer.model.Household;
 import org.philimone.hds.explorer.model.Household_;
 import org.philimone.hds.explorer.model.Member;
-import org.philimone.hds.explorer.model.Member_;
 import org.philimone.hds.explorer.model.Region;
 import org.philimone.hds.explorer.model.Region_;
 import org.philimone.hds.explorer.model.User;
-import org.philimone.hds.explorer.model.enums.temporal.ResidencyEndType;
 import org.philimone.hds.explorer.widget.LoadingDialog;
+import org.philimone.hds.explorer.widget.RecyclerListView;
 
 import java.util.List;
 
@@ -51,7 +47,7 @@ import mz.betainteractive.utilities.StringUtil;
  */
 public class RegionChildsFragment extends Fragment {
 
-    private ListView lvRegionChilds;
+    private RecyclerListView lvRegionChilds;
     private LoadingDialog loadingDialog;
 
     private Region region;
@@ -108,7 +104,17 @@ public class RegionChildsFragment extends Fragment {
     private void initialize(View view) {
         lvRegionChilds = view.findViewById(R.id.lvRegionChilds);
 
-        lvRegionChilds.setOnItemClickListener((parent, view1, position, id) -> onChildClicked(position));
+        lvRegionChilds.addOnItemClickListener(new RecyclerListView.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position, long id) {
+                onChildClicked(position);
+            }
+
+            @Override
+            public void onItemLongClick(View view, int position, long id) {
+
+            }
+        });
 
         this.loadingDialog = new LoadingDialog(this.getContext());
 
@@ -129,18 +135,17 @@ public class RegionChildsFragment extends Fragment {
 
     private void onChildClicked(int position) {
 
-        if (this.lvRegionChilds.getAdapter() instanceof HouseholdArrayAdapter) {
-            HouseholdArrayAdapter adapter = (HouseholdArrayAdapter) this.lvRegionChilds.getAdapter();
+        if (this.lvRegionChilds.getAdapter() instanceof HouseholdAdapter) {
+            HouseholdAdapter adapter = (HouseholdAdapter) this.lvRegionChilds.getAdapter();
             Household household = adapter.getItem(position);
 
             openHouseholdDetails(household);
-        } else if (this.lvRegionChilds.getAdapter() instanceof RegionArrayAdapter) {
-            RegionArrayAdapter adapter = (RegionArrayAdapter) this.lvRegionChilds.getAdapter();
+        } else if (this.lvRegionChilds.getAdapter() instanceof RegionAdapter) {
+            RegionAdapter adapter = (RegionAdapter) this.lvRegionChilds.getAdapter();
             Region region = adapter.getItem(position);
 
             openRegionDetails(region);
         }
-
     }
 
     public Region getRegion() {
@@ -189,12 +194,12 @@ public class RegionChildsFragment extends Fragment {
         if (isLatestRegionLevel) {
             //get existing households and create an adapter
             List<Household> households = this.boxHouseholds.query(Household_.region.equal(region.getCode())).build().find();
-            HouseholdArrayAdapter adapter = new HouseholdArrayAdapter(this.getContext(), households);
+            HouseholdAdapter adapter = new HouseholdAdapter(this.getContext(), households);
             this.lvRegionChilds.setAdapter(adapter);
         } else {
             //get exisiting child regions and create adapter
             List<Region> regions = this.boxRegions.query(Region_.parent.equal(region.getCode())).build().find();
-            RegionArrayAdapter adapter = new RegionArrayAdapter(this.getContext(), regions);
+            RegionAdapter adapter = new RegionAdapter(this.getContext(), regions);
             this.lvRegionChilds.setAdapter(adapter);
         }
 

@@ -12,19 +12,22 @@ import com.mapswithme.maps.api.MWMPoint;
 import com.mapswithme.maps.api.MapsWithMeApi;
 
 import org.philimone.hds.explorer.R;
-import org.philimone.hds.explorer.adapter.HouseholdArrayAdapter;
-import org.philimone.hds.explorer.adapter.MemberArrayAdapter;
+import org.philimone.hds.explorer.adapter.HouseholdAdapter;
+import org.philimone.hds.explorer.adapter.MemberAdapter;
 import org.philimone.hds.explorer.data.FormDataLoader;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
 import org.philimone.hds.explorer.database.Queries;
 import org.philimone.hds.explorer.model.Household;
 import org.philimone.hds.explorer.model.Member;
+import org.philimone.hds.explorer.widget.RecyclerListView;
 import org.philimone.hds.explorer.widget.member_details.Distance;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.RecyclerView;
+
 import io.objectbox.Box;
 import mz.betainteractive.utilities.math.GpsDistanceCalculator;
 
@@ -34,7 +37,7 @@ public class GpsSearchedListActivity extends AppCompatActivity {
     private Button btGpsListShowMap;
     private Button btGpsOrigListShowMap;
     private Button btGpsListBack;
-    private ListView lvGpsSearchedList;
+    private RecyclerListView lvGpsSearchedList;
     private TextView txtHouseholdName;
     private TextView txtDistanceName;
     private TextView txtResults;
@@ -100,7 +103,7 @@ public class GpsSearchedListActivity extends AppCompatActivity {
         this.btGpsListShowMap = (Button) findViewById(R.id.btGpsListShowMap);
         this.btGpsOrigListShowMap = (Button) findViewById(R.id.btGpsOrigListShowMap);
         this.btGpsListBack = (Button) findViewById(R.id.btGpsListBack);
-        this.lvGpsSearchedList = (ListView) findViewById(R.id.lvGpsSearchedList);
+        this.lvGpsSearchedList = findViewById(R.id.lvGpsSearchedList);
 
         this.btGpsListBack.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -143,7 +146,7 @@ public class GpsSearchedListActivity extends AppCompatActivity {
     }
 
     private void onMemberClicked(int position) {
-        MemberArrayAdapter adapter = (MemberArrayAdapter) this.lvGpsSearchedList.getAdapter();
+        MemberAdapter adapter = (MemberAdapter) this.lvGpsSearchedList.getAdapter();
         Member member = adapter.getItem(position);
         Household household = getHousehold(member);
 
@@ -217,7 +220,7 @@ public class GpsSearchedListActivity extends AppCompatActivity {
             extras.add(xtra);
         }
 
-        MemberArrayAdapter adapter = new MemberArrayAdapter(this, this.members, extras);
+        MemberAdapter adapter = new MemberAdapter(this, this.members, extras);
         adapter.setShowHouseholdAndCode(true);
         adapter.setSelectedIndex(0);
         setAdapter(adapter);
@@ -245,14 +248,14 @@ public class GpsSearchedListActivity extends AppCompatActivity {
             extras.add(xtra);
         }
 
-        HouseholdArrayAdapter adapter = new HouseholdArrayAdapter(this, this.households, extras);
+        HouseholdAdapter adapter = new HouseholdAdapter(this, this.households, extras);
         setAdapter(adapter);
     }
 
-    public void setAdapter(ArrayAdapter adapter) {
+    public void setAdapter(RecyclerView.Adapter adapter) {
         this.lvGpsSearchedList.setAdapter(adapter);
         //if is empty
-        boolean value =  (adapter == null || adapter.isEmpty());
+        boolean value =  (adapter == null || adapter.getItemCount()==0);
 
         //disable buttons
         this.btGpsListShowMap.setEnabled(!value);

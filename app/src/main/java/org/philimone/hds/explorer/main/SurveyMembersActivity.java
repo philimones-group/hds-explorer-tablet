@@ -6,7 +6,7 @@ import android.os.Bundle;
 import android.util.Log;
 
 import org.philimone.hds.explorer.R;
-import org.philimone.hds.explorer.adapter.MemberArrayAdapter;
+import org.philimone.hds.explorer.adapter.MemberAdapter;
 import org.philimone.hds.explorer.data.FormDataLoader;
 import org.philimone.hds.explorer.data.FormFilter;
 import org.philimone.hds.explorer.database.Bootstrap;
@@ -224,7 +224,7 @@ public class SurveyMembersActivity extends AppCompatActivity implements MemberFi
         }
     }
 
-    class MemberSearchTask extends AsyncTask<Void, Void, MemberArrayAdapter> {
+    class MemberSearchTask extends AsyncTask<Void, Void, MemberAdapter> {
         private String name;
         private String code;
         private String gender;
@@ -248,12 +248,12 @@ public class SurveyMembersActivity extends AppCompatActivity implements MemberFi
         }
 
         @Override
-        protected MemberArrayAdapter doInBackground(Void... params) {
+        protected MemberAdapter doInBackground(Void... params) {
             return memberListFragment.loadMembersByFilters(null, name, code, houseNr, gender, minAge, maxAge, dead, outmigrated, resident);
         }
 
         @Override
-        protected void onPostExecute(MemberArrayAdapter adapter) {
+        protected void onPostExecute(MemberAdapter adapter) {
             memberListFragment.setMemberAdapter(adapter);
             memberListFragment.showProgress(false);
 

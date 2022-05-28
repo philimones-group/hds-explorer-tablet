@@ -17,7 +17,7 @@ import android.widget.ListView;
 
 import org.philimone.hds.explorer.R;
 import org.philimone.hds.explorer.adapter.CoreCollectedExpandableAdapter;
-import org.philimone.hds.explorer.adapter.MemberArrayAdapter;
+import org.philimone.hds.explorer.adapter.MemberAdapter;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
 import org.philimone.hds.explorer.listeners.HouseholdDetailsListener;
 import org.philimone.hds.explorer.main.hdsforms.ChangeHeadFormUtil;
@@ -56,6 +56,7 @@ import org.philimone.hds.explorer.model.enums.PregnancyStatus;
 import org.philimone.hds.explorer.model.enums.SubjectEntity;
 import org.philimone.hds.explorer.model.enums.temporal.ResidencyEndType;
 import org.philimone.hds.explorer.widget.DialogFactory;
+import org.philimone.hds.explorer.widget.RecyclerListView;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -68,7 +69,7 @@ import java.util.List;
  */
 public class HouseholdVisitFragment extends Fragment {
 
-    private ListView lvHouseholdMembers;
+    private RecyclerListView lvHouseholdMembers;
     private ExpandableListView elvVisitCollected;
     private Button btClearMember;
     private Button btnVisitMemberEnu;
@@ -185,11 +186,16 @@ public class HouseholdVisitFragment extends Fragment {
         this.btnVisitMemberIncomplete = view.findViewById(R.id.btnVisitMemberIncomplete);
         this.btnVisitChangeHead = view.findViewById(R.id.btnVisitChangeHead);
 
-        this.lvHouseholdMembers.setOnItemClickListener((parent, view1, position, id) -> onMembersClick(position));
+        this.lvHouseholdMembers.addOnItemClickListener(new RecyclerListView.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position, long id) {
+                onMembersClick(position);
+            }
 
-        this.lvHouseholdMembers.setOnItemLongClickListener((parent, view12, position, id) -> {
-            onMembersLongClick(position);
-            return true;
+            @Override
+            public void onItemLongClick(View view, int position, long id) {
+                onMembersLongClick(position);
+            }
         });
 
         this.btClearMember.setOnClickListener( v -> {
@@ -241,14 +247,14 @@ public class HouseholdVisitFragment extends Fragment {
     private void selectMember(Member member){
 
         int index = getMembersAdapter().indexOf(member);
-        Log.d("new-members", "size="+getMembersAdapter().getCount()+", index="+index);
+        Log.d("new-members", "size="+getMembersAdapter().getItemCount()+", index="+index);
         onMembersClick(index);
     }
 
     private void onMembersClick(int position) {
         //select one member and highlight
 
-        MemberArrayAdapter adapter = getMembersAdapter();
+        MemberAdapter adapter = getMembersAdapter();
         adapter.setSelectedIndex(position);
 
         this.selectedMember = adapter.getItem(position);
@@ -259,23 +265,26 @@ public class HouseholdVisitFragment extends Fragment {
 
     private void onMembersLongClick(int position) {
         //select one and show MemberDetails without Highlight
-        MemberArrayAdapter adapter = getMembersAdapter();
-        Member member = adapter.getItem(position);
+        MemberAdapter adapter = getMembersAdapter();
+        if (adapter != null) {
+            Member member = adapter.getItem(position);
 
-        //TODO DO IT LATER
+            //TODO DO IT LATER
+        }
+
     }
 
-    private MemberArrayAdapter getMembersAdapter(){
+    private MemberAdapter getMembersAdapter(){
         if (this.lvHouseholdMembers.getAdapter()==null) return null;
 
-        return (MemberArrayAdapter) this.lvHouseholdMembers.getAdapter();
+        return (MemberAdapter) this.lvHouseholdMembers.getAdapter();
     }
 
     private void clearMemberSelection(){
 
         btClearMember.setVisibility(View.GONE);
 
-        MemberArrayAdapter adapter = getMembersAdapter();
+        MemberAdapter adapter = getMembersAdapter();
 
         if (adapter != null){
             adapter.setSelectedIndex(-1);
@@ -342,7 +351,7 @@ public class HouseholdVisitFragment extends Fragment {
                                                       .equal(Member_.endType, ResidencyEndType.NOT_APPLICABLE.code, QueryBuilder.StringOrder.CASE_SENSITIVE)
                                                       .build().find();
 
-        MemberArrayAdapter adapter = new MemberArrayAdapter(this.getContext(), R.layout.household_visit_member_item, members);
+        MemberAdapter adapter = new MemberAdapter(this.getContext(), R.layout.household_visit_member_item, members);
         adapter.setShowHouseholdHead(false);
         adapter.setShowGender(true);
         this.lvHouseholdMembers.setAdapter(adapter);

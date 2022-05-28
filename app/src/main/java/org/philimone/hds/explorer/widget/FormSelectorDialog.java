@@ -24,7 +24,7 @@ public class FormSelectorDialog extends DialogFragment {
 
     private FragmentManager fragmentManager;
 
-    private ListView lvFormsList;
+    private RecyclerListView lvFormsList;
     private Button btDialogBack;
 
 
@@ -65,7 +65,7 @@ public class FormSelectorDialog extends DialogFragment {
     }
 
     private void initialize(View view){
-        this.lvFormsList = (ListView) view.findViewById(R.id.lvFormsList);
+        this.lvFormsList = view.findViewById(R.id.lvFormsList);
         this.btDialogBack = (Button) view.findViewById(R.id.btDialogBack);
 
 
@@ -80,11 +80,16 @@ public class FormSelectorDialog extends DialogFragment {
 
 
         if (this.lvFormsList != null){
-            this.lvFormsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            this.lvFormsList.addOnItemClickListener(new RecyclerListView.OnItemClickListener() {
                 @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                public void onItemClick(View view, int position, long id) {
                     FormDataLoader formDataLoader = adapter.getItem(position);
                     onSelectedForm(formDataLoader);
+                }
+
+                @Override
+                public void onItemLongClick(View view, int position, long id) {
+
                 }
             });
         }

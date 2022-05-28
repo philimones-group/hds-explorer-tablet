@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".fragment.CollectedDataFragment">
 
     <!-- TODO: Update blank fragment layout -->
@@ -26,7 +27,8 @@
             android:textColor="@color/nui_color_text_red"
             android:visibility="gone"/>
 
-        <ListView
+        <org.philimone.hds.explorer.widget.RecyclerListView
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:paddingStart="18dp"

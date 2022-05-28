@@ -17,12 +17,13 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import org.philimone.hds.explorer.R;
-import org.philimone.hds.explorer.adapter.MemberArrayAdapter;
+import org.philimone.hds.explorer.adapter.MemberAdapter;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
 import org.philimone.hds.explorer.model.Member;
 import org.philimone.hds.explorer.model.Member_;
 import org.philimone.hds.explorer.model.enums.temporal.ResidencyEndType;
 import org.philimone.hds.explorer.widget.NumberPicker;
+import org.philimone.hds.explorer.widget.RecyclerListView;
 
 import java.util.List;
 
@@ -49,7 +50,7 @@ public class MemberFilterDialog extends DialogFragment {
     private NumberPicker nbpMemFilterMinAge;
     private NumberPicker nbpMemFilterMaxAge;
     private Spinner spnMemFilterStatus;
-    private ListView lvMembersList;
+    private RecyclerListView lvMembersList;
     private Button btMemFilterClear;
     private Button btMemFilterSearch;
 
@@ -147,7 +148,7 @@ public class MemberFilterDialog extends DialogFragment {
         this.nbpMemFilterMaxAge = (NumberPicker) view.findViewById(R.id.nbpMemFilterMaxAge);
         this.spnMemFilterStatus = (Spinner) view.findViewById(R.id.spnMemFilterStatus);
         this.progressBarLayout = view.findViewById(R.id.progressBarLayout);
-        this.lvMembersList = (ListView) view.findViewById(R.id.lvMembersList);
+        this.lvMembersList = view.findViewById(R.id.lvMembersList);
         this.btMemFilterClear = (Button) view.findViewById(R.id.btMemFilterClear);
         this.btMemFilterSearch = (Button) view.findViewById(R.id.btMemFilterSearch);
 
@@ -178,13 +179,18 @@ public class MemberFilterDialog extends DialogFragment {
             onSearch();
         }
 
-        this.lvMembersList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        this.lvMembersList.addOnItemClickListener(new RecyclerListView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                MemberArrayAdapter adapter = (MemberArrayAdapter) lvMembersList.getAdapter();
+            public void onItemClick(View view, int position, long id) {
+                MemberAdapter adapter = (MemberAdapter) lvMembersList.getAdapter();
                 Member member = adapter.getItem(position);
 
                 onMemberClicked(member);
+            }
+
+            @Override
+            public void onItemLongClick(View view, int position, long id) {
+
             }
         });
 
@@ -368,7 +374,7 @@ public class MemberFilterDialog extends DialogFragment {
         }
     }
                             //Household household, String name, String code, String householdCode, String gender, Integer minAge, Integer maxAge, Boolean isDead, Boolean hasOutmigrated, Boolean liveResident
-    private MemberArrayAdapter loadMembersByFilters(String name, String code, String householdCode, String gender, Integer minAge, Integer maxAge, Boolean isDead, Boolean hasOutmigrated, Boolean liveResident) {
+    private MemberAdapter loadMembersByFilters(String name, String code, String householdCode, String gender, Integer minAge, Integer maxAge, Boolean isDead, Boolean hasOutmigrated, Boolean liveResident) {
 
         ResidencyEndType endType = null;
 
@@ -507,7 +513,7 @@ public class MemberFilterDialog extends DialogFragment {
 
         List<Member> members = builder.build().find();
 
-        MemberArrayAdapter currentAdapter = new MemberArrayAdapter(this.getActivity(), members);
+        MemberAdapter currentAdapter = new MemberAdapter(this.getActivity(), members);
 
         return currentAdapter;
     }
@@ -529,7 +535,7 @@ public class MemberFilterDialog extends DialogFragment {
         }
     }
 
-    class MemberSearchTask extends AsyncTask<Void, Void, MemberArrayAdapter> {
+    class MemberSearchTask extends AsyncTask<Void, Void, MemberAdapter> {
         private String name;
         private String code;
         private String houseNumber;
@@ -553,12 +559,12 @@ public class MemberFilterDialog extends DialogFragment {
         }
 
         @Override
-        protected MemberArrayAdapter doInBackground(Void... params) {
+        protected MemberAdapter doInBackground(Void... params) {
             return loadMembersByFilters(name, code, houseNumber, gender, minAge, maxAge, isDead, hasOutmigrated, liveResident);
         }
 
         @Override
-        protected void onPostExecute(MemberArrayAdapter adapter) {
+        protected void onPostExecute(MemberAdapter adapter) {
             lvMembersList.setAdapter(adapter);
             showProgress(false);
         }

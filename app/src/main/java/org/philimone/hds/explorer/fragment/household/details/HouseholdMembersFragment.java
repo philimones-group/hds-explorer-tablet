@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 
 import org.philimone.hds.explorer.R;
-import org.philimone.hds.explorer.adapter.MemberArrayAdapter;
+import org.philimone.hds.explorer.adapter.MemberAdapter;
 import org.philimone.hds.explorer.data.FormDataLoader;
 import org.philimone.hds.explorer.data.FormFilter;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
@@ -25,6 +25,7 @@ import org.philimone.hds.explorer.model.Region_;
 import org.philimone.hds.explorer.model.User;
 import org.philimone.hds.explorer.model.enums.temporal.ResidencyEndType;
 import org.philimone.hds.explorer.widget.LoadingDialog;
+import org.philimone.hds.explorer.widget.RecyclerListView;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -44,7 +45,7 @@ import mz.betainteractive.utilities.StringUtil;
  */
 public class HouseholdMembersFragment extends Fragment {
 
-    private ListView lvHouseholdMembers;
+    private RecyclerListView lvHouseholdMembers;
     private LoadingDialog loadingDialog;
 
     private Household household;
@@ -97,7 +98,17 @@ public class HouseholdMembersFragment extends Fragment {
     private void initialize(View view) {
         lvHouseholdMembers = view.findViewById(R.id.lvHouseholdMembers);
 
-        lvHouseholdMembers.setOnItemClickListener((parent, view1, position, id) -> onMemberClicked(position));
+        lvHouseholdMembers.addOnItemClickListener(new RecyclerListView.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position, long id) {
+                onMemberClicked(position);
+            }
+
+            @Override
+            public void onItemLongClick(View view, int position, long id) {
+
+            }
+        });
 
         this.loadingDialog = new LoadingDialog(this.getContext());
 
@@ -115,7 +126,7 @@ public class HouseholdMembersFragment extends Fragment {
     }
 
     private void onMemberClicked(int position) {
-        MemberArrayAdapter adapter = (MemberArrayAdapter) this.lvHouseholdMembers.getAdapter();
+        MemberAdapter adapter = (MemberAdapter) this.lvHouseholdMembers.getAdapter();
         Member member = adapter.getItem(position);
 
         MemberSelectedTask task = new MemberSelectedTask(member, household);
@@ -144,7 +155,7 @@ public class HouseholdMembersFragment extends Fragment {
                                                       .equal(Member_.endType, ResidencyEndType.NOT_APPLICABLE.code, QueryBuilder.StringOrder.CASE_SENSITIVE)
                                                       .build().find();
 
-        MemberArrayAdapter adapter = new MemberArrayAdapter(this.getContext(), members);
+        MemberAdapter adapter = new MemberAdapter(this.getContext(), members);
         this.lvHouseholdMembers.setAdapter(adapter);
     }
 

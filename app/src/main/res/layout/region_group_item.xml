@@ -5,6 +5,7 @@
     android:layout_height="wrap_content"
     android:layout_marginBottom="2dp"
     android:layoutDirection="ltr"
+    android:background="?android:attr/selectableItemBackground"
     android:orientation="horizontal" >
 
     <ImageView

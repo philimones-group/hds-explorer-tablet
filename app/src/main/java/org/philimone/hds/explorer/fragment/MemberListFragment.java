@@ -19,7 +19,7 @@ import com.mapswithme.maps.api.MWMPoint;
 import com.mapswithme.maps.api.MapsWithMeApi;
 
 import org.philimone.hds.explorer.R;
-import org.philimone.hds.explorer.adapter.MemberArrayAdapter;
+import org.philimone.hds.explorer.adapter.MemberAdapter;
 import org.philimone.hds.explorer.database.Bootstrap;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
 import org.philimone.hds.explorer.database.Queries;
@@ -37,6 +37,7 @@ import org.philimone.hds.explorer.model.Region_;
 import org.philimone.hds.explorer.model.User;
 import org.philimone.hds.explorer.model.enums.temporal.ResidencyEndType;
 import org.philimone.hds.explorer.widget.DialogFactory;
+import org.philimone.hds.explorer.widget.RecyclerListView;
 import org.philimone.hds.explorer.widget.member_details.Distance;
 import org.philimone.hds.explorer.widget.member_details.GpsNearBySelectorDialog;
 import org.philimone.hds.explorer.widget.member_details.MemberFormDialog;
@@ -58,7 +59,7 @@ import mz.betainteractive.utilities.TextFilters;
  */
 public class MemberListFragment extends Fragment {
 
-    private ListView lvMembersList;
+    private RecyclerListView lvMembersList;
     private LinearLayout listButtons;
     private LinearLayout memberListHouseHeader;
     private TextView mbHouseDetailsNumber;
@@ -165,7 +166,7 @@ public class MemberListFragment extends Fragment {
             this.memberActionListener = (MemberActionListener) getActivity();
         }
 
-        this.lvMembersList = (ListView) view.findViewById(R.id.lvMembersList);
+        this.lvMembersList = view.findViewById(R.id.lvMembersList);
         this.btMemListShowHousehold = (Button) view.findViewById(R.id.btMemListShowHousehold);
         this.btMemListShowMmbMap = (Button) view.findViewById(R.id.btMemListShowMmbMap);
         this.btMemListShowCollectedData = (Button) view.findViewById(R.id.btMemListShowCollectedData);
@@ -200,18 +201,15 @@ public class MemberListFragment extends Fragment {
             }
         });
 
-        this.lvMembersList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        this.lvMembersList.addOnItemClickListener(new RecyclerListView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            public void onItemClick(View view, int position, long id) {
                 onMemberClicked(position);
             }
-        });
 
-        this.lvMembersList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+            public void onItemLongClick(View view, int position, long id) {
                 onMemberLongClicked(position);
-                return true;
             }
         });
 
@@ -460,7 +458,7 @@ public class MemberListFragment extends Fragment {
     }
 
     private void showMembersMap() {
-        MemberArrayAdapter adapter = (MemberArrayAdapter) this.lvMembersList.getAdapter();
+        MemberAdapter adapter = (MemberAdapter) this.lvMembersList.getAdapter();
 
         if (adapter==null || adapter.isEmpty()){
             DialogFactory.createMessageInfo(this.getActivity(), R.string.map_gps_not_available_title_lbl, R.string.member_list_no_members_lbl).show();
@@ -560,10 +558,10 @@ public class MemberListFragment extends Fragment {
         mapMembers.clear();
 
         //put on list
-        MemberArrayAdapter adapter = new MemberArrayAdapter(this.getActivity(), members, extras);
+        MemberAdapter adapter = new MemberAdapter(this.getActivity(), members, extras);
         adapter.setShowHouseholdAndCode(true);
         adapter.setIgnoreHeadOfHousehold(false);
-        adapter.setMemberIcon(MemberArrayAdapter.MemberIcon.NORMAL_HEAD_ICON);
+        adapter.setMemberIcon(MemberAdapter.MemberIcon.NORMAL_HEAD_ICON);
         this.lvMembersList.setAdapter(adapter);
 
 
@@ -571,14 +569,14 @@ public class MemberListFragment extends Fragment {
     }
 
     private void onMemberLongClicked(int position) {
-        MemberArrayAdapter adapter = (MemberArrayAdapter) this.lvMembersList.getAdapter();
+        MemberAdapter adapter = (MemberAdapter) this.lvMembersList.getAdapter();
 
         adapter.setSelectedIndex(position);
         this.btMemListShowHousehold.setEnabled(true);
     }
 
     private void onMemberClicked(int position) {
-        MemberArrayAdapter adapter = (MemberArrayAdapter) this.lvMembersList.getAdapter();
+        MemberAdapter adapter = (MemberAdapter) this.lvMembersList.getAdapter();
         Member member = adapter.getItem(position);
         Household household = getHousehold(member);
         Region region = getRegion(household);
@@ -638,12 +636,12 @@ public class MemberListFragment extends Fragment {
     }
 
     private Member getSelectedMember(){
-        MemberArrayAdapter adapter = (MemberArrayAdapter) this.lvMembersList.getAdapter();
+        MemberAdapter adapter = (MemberAdapter) this.lvMembersList.getAdapter();
         Member member = adapter.getSelectedMember();
         return member;
     }
 
-    public MemberArrayAdapter loadMembersByFilters(Household household, String name, String code, String householdCode, String gender, Integer minAge, Integer maxAge, Boolean isDead, Boolean hasOutmigrated, Boolean liveResident) {
+    public MemberAdapter loadMembersByFilters(Household household, String name, String code, String householdCode, String gender, Integer minAge, Integer maxAge, Boolean isDead, Boolean hasOutmigrated, Boolean liveResident) {
         //open loader
         this.currentHousehold = household;
 
@@ -789,7 +787,7 @@ public class MemberListFragment extends Fragment {
 
         List<Member> members = builder.filter((member) -> StringUtil.containsAny(member.modules, smodules)).build().find(); //filters user search by module
 
-        MemberArrayAdapter currentAdapter = new MemberArrayAdapter(this.getActivity(), members);
+        MemberAdapter currentAdapter = new MemberAdapter(this.getActivity(), members);
 
         return currentAdapter;
 
@@ -800,7 +798,7 @@ public class MemberListFragment extends Fragment {
         lvMembersList.setVisibility(show ? View.GONE : View.VISIBLE);
     }
 
-    public void setMemberAdapter(MemberArrayAdapter memberAdapter) {
+    public void setMemberAdapter(MemberAdapter memberAdapter) {
         this.lvMembersList.setAdapter(memberAdapter);
         //if is empty
         boolean value =  (memberAdapter == null || memberAdapter.isEmpty());
@@ -814,9 +812,9 @@ public class MemberListFragment extends Fragment {
 
     }
 
-    public MemberArrayAdapter getMemberAdapter(){
-        if (lvMembersList.getAdapter() instanceof MemberArrayAdapter){
-            return (MemberArrayAdapter) lvMembersList.getAdapter();
+    public MemberAdapter getMemberAdapter(){
+        if (lvMembersList.getAdapter() instanceof MemberAdapter){
+            return (MemberAdapter) lvMembersList.getAdapter();
         }
 
         return null;

@@ -3,10 +3,11 @@ package org.philimone.hds.explorer.main;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.ListView;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.mapswithme.maps.api.MWMPoint;
 import com.mapswithme.maps.api.MapsWithMeApi;
@@ -14,7 +15,6 @@ import com.mapswithme.maps.api.MapsWithMeApi;
 import org.philimone.hds.explorer.R;
 import org.philimone.hds.explorer.adapter.HouseholdAdapter;
 import org.philimone.hds.explorer.adapter.MemberAdapter;
-import org.philimone.hds.explorer.data.FormDataLoader;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
 import org.philimone.hds.explorer.database.Queries;
 import org.philimone.hds.explorer.model.Household;
@@ -25,14 +25,10 @@ import org.philimone.hds.explorer.widget.member_details.Distance;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.RecyclerView;
-
 import io.objectbox.Box;
 import mz.betainteractive.utilities.math.GpsDistanceCalculator;
 
 public class GpsSearchedListActivity extends AppCompatActivity {
-
 
     private Button btGpsListShowMap;
     private Button btGpsOrigListShowMap;
@@ -52,8 +48,6 @@ public class GpsSearchedListActivity extends AppCompatActivity {
     private boolean isMemberMap;
     private boolean showOriginalMap;
 
-    private FormDataLoader[] formDataLoaders;
-
     private Box<Household> boxHouseholds;
 
     @Override
@@ -70,8 +64,6 @@ public class GpsSearchedListActivity extends AppCompatActivity {
     }
 
     private void initialize() {
-
-        readFormDataLoaders();
 
         Object[] obj_points = (Object[]) getIntent().getExtras().get("points");
         Object[] obj_points_bak = (Object[]) getIntent().getExtras().get("points_original");
@@ -134,17 +126,6 @@ public class GpsSearchedListActivity extends AppCompatActivity {
         loadData();
     }
 
-    private void readFormDataLoaders(){
-
-        Object[] objs = (Object[]) getIntent().getExtras().get("dataloaders");
-        this.formDataLoaders = new FormDataLoader[objs.length];
-
-        for (int i=0; i < objs.length; i++){
-            FormDataLoader formDataLoader = (FormDataLoader) objs[i];
-            this.formDataLoaders[i] = formDataLoader;
-        }
-    }
-
     private void onMemberClicked(int position) {
         MemberAdapter adapter = (MemberAdapter) this.lvGpsSearchedList.getAdapter();
         Member member = adapter.getItem(position);
@@ -154,7 +135,6 @@ public class GpsSearchedListActivity extends AppCompatActivity {
 
         Intent intent = new Intent(this, MemberDetailsActivity.class);
         intent.putExtra("member", member);
-        intent.putExtra("dataloaders", formDataLoaders);
 
         startActivity(intent);
     }

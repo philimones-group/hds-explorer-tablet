@@ -84,6 +84,7 @@ public class MemberDetailsActivity extends AppCompatActivity {
         initBoxes();
         initialize();
         initFragments();
+        enableButtonsByFormLoaders();
     }
 
     @Override
@@ -92,6 +93,10 @@ public class MemberDetailsActivity extends AppCompatActivity {
     }
 
     private void readFormDataLoader(){
+
+        if (!getIntent().getExtras().containsKey("dataloaders")){
+            return;
+        }
 
         Object[] objs = (Object[]) getIntent().getExtras().get("dataloaders");
 
@@ -168,10 +173,6 @@ public class MemberDetailsActivity extends AppCompatActivity {
 
         clearMemberData();
         setMemberData();
-
-        enableButtonsByFormLoaders();
-        enableButtonsByIntentData();
-
     }
 
     @Override
@@ -190,18 +191,8 @@ public class MemberDetailsActivity extends AppCompatActivity {
     }
 
     private void enableButtonsByFormLoaders() {
-        boolean hasForms = this.formDataLoaders.size()>0;
+        boolean hasForms = this.fragmentAdapter.getFragmentCollected().getFormDataLoaders().size()>0;
         this.btMemDetailsCollectData.setEnabled(hasForms);
-    }
-
-    private void enableButtonsByIntentData() {
-        Object item = getIntent().getExtras().get("enable-collect-data");
-
-        Boolean enaColData = (item==null) ? null : (boolean)item;
-
-        if (enaColData != null){
-            this.btMemDetailsCollectData.setEnabled(enaColData.booleanValue());
-        }
     }
 
     private void initFragments() {
@@ -212,7 +203,9 @@ public class MemberDetailsActivity extends AppCompatActivity {
             tabTitles.add(getString(R.string.member_details_tab_datasets_lbl));
             tabTitles.add(getString(R.string.member_details_tab_collected_forms_lbl));
 
-            fragmentAdapter = new MemberDetailsFragmentAdapter(this.getSupportFragmentManager(), this.getLifecycle(), member, loggedUser, formDataLoaders, tabTitles);
+            boolean isTracking = requestCode == RequestCodes.MEMBER_DETAILS_FROM_TRACKING_LIST_DETAILS;
+
+            fragmentAdapter = new MemberDetailsFragmentAdapter(this.getSupportFragmentManager(), this.getLifecycle(), member, loggedUser, isTracking ? formDataLoaders : null, tabTitles);
             memberDetailsTabViewPager.setAdapter(fragmentAdapter);
             //this will create all fragments
             memberDetailsTabViewPager.setOffscreenPageLimit(3);

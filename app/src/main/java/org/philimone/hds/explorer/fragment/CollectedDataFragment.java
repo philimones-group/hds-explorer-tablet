@@ -1,26 +1,38 @@
 package org.philimone.hds.explorer.fragment;
 
+import android.content.Intent;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
 
 import org.philimone.hds.explorer.R;
 import org.philimone.hds.explorer.adapter.CollectedDataAdapter;
 import org.philimone.hds.explorer.adapter.model.CollectedDataItem;
 import org.philimone.hds.explorer.data.FormDataLoader;
+import org.philimone.hds.explorer.data.FormFilter;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
+import org.philimone.hds.explorer.main.RegionDetailsActivity;
+import org.philimone.hds.explorer.main.SurveyHouseholdsActivity;
 import org.philimone.hds.explorer.model.CollectedData;
 import org.philimone.hds.explorer.model.CollectedData_;
+import org.philimone.hds.explorer.model.Dataset;
+import org.philimone.hds.explorer.model.Dataset_;
 import org.philimone.hds.explorer.model.Form;
 import org.philimone.hds.explorer.model.FormSubject;
+import org.philimone.hds.explorer.model.Household;
+import org.philimone.hds.explorer.model.Household_;
+import org.philimone.hds.explorer.model.Member;
 import org.philimone.hds.explorer.model.Module;
+import org.philimone.hds.explorer.model.Region;
+import org.philimone.hds.explorer.model.Region_;
 import org.philimone.hds.explorer.model.User;
 import org.philimone.hds.explorer.widget.DialogFactory;
 import org.philimone.hds.explorer.widget.FormSelectorDialog;
+import org.philimone.hds.explorer.widget.LoadingDialog;
 import org.philimone.hds.explorer.widget.RecyclerListView;
 
 import java.io.File;
@@ -48,6 +60,7 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
     private enum SubjectMode { REGION, HOUSEHOLD, MEMBER };
 
     private RecyclerListView lvCollectedForms;
+    private LoadingDialog loadingDialog;
 
     private FormSubject subject;
     private User loggedUser;
@@ -57,8 +70,11 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
     private FormUtilities formUtilities;
 
     private Box<CollectedData> boxCollectedData;
+    private Box<Household> boxHouseholds;
+    private Box<Region> boxRegions;
     private Box<Form> boxForms;
     private Box<Module> boxModules;
+    private Box<Dataset> boxDatasets;
 
     private SubjectMode subjectMode;
 
@@ -66,6 +82,7 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
 
     public CollectedDataFragment() {
         // Required empty public constructor
+        initBoxes();
     }
 
     /**
@@ -74,11 +91,25 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
      *
      * @return A new instance of fragment HouseholdFormsFragment.
      */
-    public static CollectedDataFragment newInstance(FormSubject subject, User user, List<FormDataLoader> formDataLoaders) {
+    public static CollectedDataFragment newInstance(FormSubject subject, User user) {
         CollectedDataFragment fragment = new CollectedDataFragment();
         fragment.subject = subject;
         fragment.loggedUser = user;
-        fragment.formDataLoaders.addAll(formDataLoaders);
+        fragment.initializeDataloaders();
+        return fragment;
+    }
+
+    public static CollectedDataFragment newInstance(FormSubject subject, User user, List<FormDataLoader> dataLoaders){
+        CollectedDataFragment fragment = new CollectedDataFragment();
+        fragment.subject = subject;
+        fragment.loggedUser = user;
+
+        if (dataLoaders == null) {
+            fragment.initializeDataloaders();
+        } else {
+            fragment.formDataLoaders.addAll(dataLoaders);
+        }
+
         return fragment;
     }
 
@@ -87,8 +118,6 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
         super.onCreate(savedInstanceState);
 
         formUtilities = new FormUtilities(this, this);
-
-        initBoxes();
     }
 
     @Override
@@ -108,10 +137,122 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
     private void initBoxes() {
         this.boxCollectedData = ObjectBoxDatabase.get().boxFor(CollectedData.class);
         this.boxForms = ObjectBoxDatabase.get().boxFor(Form.class);
+        this.boxRegions = ObjectBoxDatabase.get().boxFor(Region.class);
+        this.boxHouseholds = ObjectBoxDatabase.get().boxFor(Household.class);
         this.boxModules = ObjectBoxDatabase.get().boxFor(Module.class);
+        this.boxDatasets = ObjectBoxDatabase.get().boxFor(Dataset.class);
+    }
+
+    private void initializeDataloaders() {
+        //get all visible forms for this subject
+        Region region = null;
+        Household household = null;
+        Member member = null;
+        User user = loggedUser;
+
+        if (subject instanceof Region){
+            region = (Region) subject;
+
+            this.formDataLoaders = getFormLoaders(FormFilter.REGION);
+            //loadFormValues(this.formDataLoaders, null, null, region);
+        }
+
+        if (subject instanceof Household){
+            household = (Household) subject;
+
+            region = this.boxRegions.query(Region_.code.equal(household.region)).build().findFirst();
+            this.formDataLoaders = getFormLoaders(FormFilter.HOUSEHOLD);
+            //loadFormValues(this.formDataLoaders, household, null, region);
+        }
+
+        if (subject instanceof Member){
+            member = (Member) subject;
+            household = this.boxHouseholds.query(Household_.code.equal(member.householdCode)).build().findFirst();;
+            region = this.boxRegions.query(Region_.code.equal(household.region)).build().findFirst();
+
+            this.formDataLoaders = getFormLoaders(FormFilter.HOUSEHOLD_HEAD, FormFilter.MEMBER);
+            //loadFormValues(this.formDataLoaders, household, null, region);
+        }
+
+    }
+
+    private void loadMappingDataValues(FormDataLoader formDataLoader) {
+        //get all visible forms for this subject
+        Region region = null;
+        Household household = null;
+        Member member = null;
+        User user = loggedUser;
+
+        if (subject instanceof Region){
+            region = (Region) subject;
+            loadFormValues(formDataLoader, null, null, region);
+        }
+
+        if (subject instanceof Household){
+            household = (Household) subject;
+            region = this.boxRegions.query(Region_.code.equal(household.region)).build().findFirst();
+
+            loadFormValues(formDataLoader, household, null, region);
+        }
+
+        if (subject instanceof Member){
+            member = (Member) subject;
+            household = this.boxHouseholds.query(Household_.code.equal(member.householdCode)).build().findFirst();;
+            region = this.boxRegions.query(Region_.code.equal(household.region)).build().findFirst();
+
+            loadFormValues(formDataLoader, household, member, region);
+        }
+
+    }
+
+    public List<FormDataLoader> getFormDataLoaders() {
+        return formDataLoaders;
+    }
+
+    private List<FormDataLoader> getFormLoaders(FormFilter... filters) {
+        return FormDataLoader.getFormLoadersList(boxForms, loggedUser, filters);
+    }
+
+    private void loadFormValues(FormDataLoader loader, Household household, Member member, Region region){
+        if (household != null){
+            loader.loadHouseholdValues(household);
+        }
+        if (member != null){
+            loader.loadMemberValues(member);
+        }
+        if (loggedUser != null){
+            loader.loadUserValues(loggedUser);
+        }
+        if (region != null){
+            loader.loadRegionValues(region);
+        }
+
+        loader.loadConstantValues();
+        loader.loadSpecialConstantValues(household, member, loggedUser, region, null);
+
+        //Load variables on datasets
+
+        String[] mappedDatasets = loader.getPossibleDatasetNames().toArray(new String[0]);
+        Log.d("dload-finished", "start - "+loader.getForm().formId+", mapped datasets = "+mappedDatasets.length);
+
+        if (mappedDatasets.length > 0) {
+            List<Dataset> datasets = this.boxDatasets.query(Dataset_.name.oneOf(mappedDatasets)).build().find();
+
+            if (datasets.size()>0) {
+                for (Dataset dataset : datasets){
+                    Log.d("hasMappedVariables", ""+dataset.getName());
+                    loader.loadDataSetValues(dataset, household, member, loggedUser, region);
+                }
+            }
+
+        }
+
+        Log.d("dload-finished", "true");
     }
 
     private void initialize(View view) {
+
+        this.loadingDialog = new LoadingDialog(this.getContext());
 
         selectedModules.addAll(loggedUser.getSelectedModules());
 
@@ -165,7 +306,7 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
         CollectedData collectedData = dataItem.getCollectedData();
         FormDataLoader formDataLoader = getFormDataLoader(collectedData);
 
-        openOdkForm(formDataLoader, collectedData);
+        reOpenOdkForm(formDataLoader, collectedData);
     }
 
     private Form getFormById(List<Form> forms, String formId){
@@ -249,49 +390,17 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
         }).show();
     }
 
-
     //<editor-fold desc="ODK Form Utility methods">
     private void openOdkForm(FormDataLoader formDataLoader) {
-
-        CollectedData collectedData = getCollectedData(formDataLoader);
-
-        this.lastLoadedForm = formDataLoader;
-
-        Form form = formDataLoader.getForm();
-
-        //reload timestamp constants
-        formDataLoader.reloadTimestampConstants();
-
-        FilledForm filledForm = new FilledForm(form.getFormId());
-        filledForm.putAll(formDataLoader.getValues());
-        //filledForm.setHouseholdMembers(getMemberOnListAdapter());
-
-        if (collectedData == null || form.isMultiCollPerSession()){
-            formUtilities.loadForm(filledForm);
-        }else{
-            formUtilities.loadForm(filledForm, collectedData.getFormUri(), this);
-        }
-
+        OpenODKFormTask task = new OpenODKFormTask(formDataLoader);
+        task.execute();
+        showLoadingDialog(getString(R.string.loading_dialog_odk_load_lbl), true);
     }
 
-    private void openOdkForm(FormDataLoader formDataLoader, CollectedData collectedData) {
-
-        this.lastLoadedForm = formDataLoader;
-
-        Form form = formDataLoader.getForm();
-
-        //reload timestamp constants
-        formDataLoader.reloadTimestampConstants();
-
-        FilledForm filledForm = new FilledForm(form.getFormId());
-        filledForm.putAll(formDataLoader.getValues());
-
-        if (collectedData == null){
-            formUtilities.loadForm(filledForm);
-        }else{
-            formUtilities.loadForm(filledForm, collectedData.getFormUri(), this);
-        }
-
+    private void reOpenOdkForm(FormDataLoader formDataLoader, CollectedData collectedData) {
+        ReOpenODKFormTask task = new ReOpenODKFormTask(formDataLoader, collectedData);
+        task.execute();
+        showLoadingDialog(getString(R.string.loading_dialog_odk_reload_lbl), true);
     }
 
     @Override
@@ -424,4 +533,101 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
     }
     //</editor-fold>
 
+    private void showLoadingDialog(String msg, boolean show){
+        if (show) {
+            this.loadingDialog.setMessage(msg);
+            this.loadingDialog.show();
+        } else {
+            this.loadingDialog.hide();
+        }
+    }
+
+    class OpenODKFormTask extends AsyncTask<Void, Void, XResult> {
+        private FormDataLoader formDataLoader;
+
+        public OpenODKFormTask(FormDataLoader formDataLoader) {
+            this.formDataLoader = formDataLoader;
+        }
+
+        @Override
+        protected XResult doInBackground(Void... voids) {
+
+            CollectedData collectedData = getCollectedData(formDataLoader);
+
+            loadMappingDataValues(formDataLoader);
+            //reload timestamp constants
+            formDataLoader.reloadTimestampConstants();
+
+            Form form = formDataLoader.getForm();
+            FilledForm filledForm = new FilledForm(form.getFormId());
+            filledForm.putAll(formDataLoader.getValues());
+            //filledForm.setHouseholdMembers(getMemberOnListAdapter());
+
+            return new XResult(form, filledForm, collectedData);
+        }
+
+        @Override
+        protected void onPostExecute(XResult result) {
+
+            showLoadingDialog(null, false);
+
+            lastLoadedForm = formDataLoader;
+
+            if (result.collectedData == null || result.form.isMultiCollPerSession()){
+                formUtilities.loadForm(result.filledForm);
+            }else{
+                formUtilities.loadForm(result.filledForm, result.collectedData.getFormUri(), CollectedDataFragment.this);
+            }
+        }
+
+
+    }
+
+    class ReOpenODKFormTask extends AsyncTask<Void, Void, XResult> {
+        private FormDataLoader formDataLoader;
+        private CollectedData collectedData;
+
+        public ReOpenODKFormTask(FormDataLoader formDataLoader, CollectedData collectedData) {
+            this.formDataLoader = formDataLoader;
+            this.collectedData = collectedData;
+        }
+
+        @Override
+        protected XResult doInBackground(Void... voids) {
+            //reload timestamp constants
+            this.formDataLoader.reloadTimestampConstants();
+
+            Form form = this.formDataLoader.getForm();
+            FilledForm filledForm = new FilledForm(form.getFormId());
+            filledForm.putAll(this.formDataLoader.getValues());
+
+            return new XResult(form, filledForm, this.collectedData);
+        }
+
+        @Override
+        protected void onPostExecute(XResult result) {
+
+            showLoadingDialog(null, false);
+
+            lastLoadedForm = formDataLoader;
+
+            if (collectedData == null){
+                formUtilities.loadForm(result.filledForm);
+            }else{
+                formUtilities.loadForm(result.filledForm, result.collectedData.getFormUri(), CollectedDataFragment.this);
+            }
+        }
+    }
+
+    class XResult {
+        Form form;
+        CollectedData collectedData;
+        FilledForm filledForm;
+
+        public XResult(Form form, FilledForm filledForm, CollectedData collectedData) {
+            this.form = form;
+            this.collectedData = collectedData;
+            this.filledForm = filledForm;
+        }
+    }
 }

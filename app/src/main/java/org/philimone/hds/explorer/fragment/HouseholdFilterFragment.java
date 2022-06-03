@@ -1,11 +1,6 @@
 package org.philimone.hds.explorer.fragment;
 
 
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
-import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.fragment.app.Fragment;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -18,22 +13,22 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.fragment.app.Fragment;
 
 import org.philimone.hds.explorer.R;
 import org.philimone.hds.explorer.adapter.HouseholdAdapter;
 import org.philimone.hds.explorer.adapter.RegionExpandableListAdapter;
 import org.philimone.hds.explorer.adapter.model.HierarchyItem;
-import org.philimone.hds.explorer.data.FormDataLoader;
-import org.philimone.hds.explorer.data.FormFilter;
 import org.philimone.hds.explorer.database.Bootstrap;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
 import org.philimone.hds.explorer.main.BarcodeScannerActivity;
@@ -43,7 +38,6 @@ import org.philimone.hds.explorer.model.ApplicationParam_;
 import org.philimone.hds.explorer.model.Form;
 import org.philimone.hds.explorer.model.Household;
 import org.philimone.hds.explorer.model.Household_;
-import org.philimone.hds.explorer.model.Module;
 import org.philimone.hds.explorer.model.Region;
 import org.philimone.hds.explorer.model.Region_;
 import org.philimone.hds.explorer.model.Round;
@@ -56,9 +50,7 @@ import org.philimone.hds.explorer.widget.RecyclerListView;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.stream.Collectors;
 
-import androidx.activity.result.ActivityResultLauncher;
 import io.objectbox.Box;
 import io.objectbox.query.QueryBuilder;
 import mz.betainteractive.utilities.StringUtil;
@@ -323,12 +315,10 @@ public class HouseholdFilterFragment extends Fragment implements RegionExpandabl
         //Call HouseholdDetailsActivity in mode NEW_HOUSEHOLD
         //Receive the recent created Household, put the code on search after it
 
-        FormDataLoader[] dataLoaders = FormDataLoader.getFormLoaders(this.boxForms, this.loggedUser, FormFilter.HOUSEHOLD);
-
         Intent intent = new Intent(this.getContext(), HouseholdDetailsActivity.class);
         intent.putExtra("region", currentRegion);
         intent.putExtra("request_code", RequestCodes.HOUSEHOLD_DETAILS_FROM_HFILTER_NEW_HOUSEHOLD);
-        intent.putExtra("dataloaders", dataLoaders);
+        //intent.putExtra("dataloaders", dataLoaders);
 
         addNewHouseholdLauncher.launch(intent);
     }
@@ -356,11 +346,11 @@ public class HouseholdFilterFragment extends Fragment implements RegionExpandabl
 
         boolean lastLevel = region.getLevel().equals(lastRegionLevel);
 
+        this.btHouseFilterShowRegion.setEnabled(true);
         btHouseFilterSearch.setEnabled(lastLevel);
         btHouseFilterAddNewHousehold.setEnabled(lastLevel);
-        //btHouseFilterShowRegion.setEnabled(lastLevel); - uncomment this in the future
 
-        listener.onSelectedRegion(region);
+        //listener.onSelectedRegion(region);
     }
 
     public void setBarcodeScannerListener(BarcodeScannerActivity.InvokerClickListener listener){
@@ -612,27 +602,6 @@ public class HouseholdFilterFragment extends Fragment implements RegionExpandabl
         //showProgress(true);
         HouseholdSearchTask task = new HouseholdSearchTask(householdCode, null);
         task.execute();
-    }
-
-    private boolean isLastRegionLevel(){
-        if (currentRegion==null) return false;
-
-        return currentRegion.getLevel().equals(lastRegionLevel);
-    }
-
-    public void checkSupportForRegionForms(FormDataLoader[] formDataLoaders) {
-        this.btHouseFilterShowRegion.setEnabled(hasAssociatedRegionForms(formDataLoaders));
-    }
-
-    private boolean hasAssociatedRegionForms(FormDataLoader[] formDataLoaders){
-        for (FormDataLoader fdl : formDataLoaders){
-            Form form = fdl.getForm();
-
-            if (form.getRegionLevel().equals(currentRegion.getLevel())){
-                return true;
-            }
-        }
-        return false;
     }
 
     public HouseholdAdapter loadHouseholdsByFilters(String houseCode) {

@@ -3,16 +3,16 @@ package org.philimone.hds.explorer.fragment.household.details;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 
 import org.philimone.hds.explorer.R;
 import org.philimone.hds.explorer.adapter.MemberAdapter;
-import org.philimone.hds.explorer.data.FormDataLoader;
-import org.philimone.hds.explorer.data.FormFilter;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
 import org.philimone.hds.explorer.main.MemberDetailsActivity;
 import org.philimone.hds.explorer.model.Dataset;
@@ -27,16 +27,10 @@ import org.philimone.hds.explorer.model.enums.temporal.ResidencyEndType;
 import org.philimone.hds.explorer.widget.LoadingDialog;
 import org.philimone.hds.explorer.widget.RecyclerListView;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 import io.objectbox.Box;
 import io.objectbox.query.QueryBuilder;
-import mz.betainteractive.utilities.StringUtil;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -172,56 +166,10 @@ public class HouseholdMembersFragment extends Fragment {
         this.showHouseholdMembers();
     }
 
-    /*
-    * Loaders
-    */
-    FormDataLoader[] getFormLoaders(org.philimone.hds.explorer.data.FormFilter... filters) {
-        return FormDataLoader.getFormLoaders(boxForms, loggedUser, filters);
-    }
-
-    private void loadFormValues(FormDataLoader[] loaders, Household household, Member member, Region region){
-        for (FormDataLoader loader : loaders){
-            loadFormValues(loader, household, member, region);
-        }
-    }
-
-    private void loadFormValues(FormDataLoader loader, Household household, Member member, Region region){
-        if (household != null){
-            loader.loadHouseholdValues(household);
-        }
-        if (member != null){
-            loader.loadMemberValues(member);
-        }
-        if (loggedUser != null){
-            loader.loadUserValues(loggedUser);
-        }
-        if (region != null){
-            loader.loadRegionValues(region);
-        }
-
-        loader.loadConstantValues();
-        loader.loadSpecialConstantValues(household, member, loggedUser, region, null);
-
-        //Load variables on datasets
-        for (Dataset dataSet : getDataSets()){
-            Log.d("has-mapped-datasets", dataSet.getName()+", "+loader.hasMappedDatasetVariable(dataSet));
-            if (loader.hasMappedDatasetVariable(dataSet)){
-                Log.d("hasMappedVariables", ""+dataSet.getName());
-                loader.loadDataSetValues(dataSet, household, member, loggedUser, region);
-            }
-        }
-    }
-
-    private List<Dataset> getDataSets(){
-        List<Dataset> list = this.boxDatasets.getAll();
-        return list;
-    }
-
     class MemberSelectedTask  extends AsyncTask<Void, Void, Void> {
         private Household household;
         private Member member;
         private Region region;
-        private FormDataLoader[] dataLoaders;
 
         public MemberSelectedTask(Member member, Household household) {
             this.household = household;
@@ -232,10 +180,7 @@ public class HouseholdMembersFragment extends Fragment {
         @Override
         protected Void doInBackground(Void... voids) {
 
-            this.region = getRegion(household.getCode());
-
-            dataLoaders = getFormLoaders(FormFilter.HOUSEHOLD_HEAD, FormFilter.MEMBER);
-            loadFormValues(dataLoaders, household, member, region);
+            this.region = getRegion(household.region);
 
             return null;
         }
@@ -245,7 +190,7 @@ public class HouseholdMembersFragment extends Fragment {
 
             Intent intent = new Intent(getActivity(), MemberDetailsActivity.class);
             intent.putExtra("member", this.member);
-            intent.putExtra("dataloaders", dataLoaders);
+            //intent.putExtra("dataloaders", dataLoaders);
 
             showLoadingDialog(null, false);
 

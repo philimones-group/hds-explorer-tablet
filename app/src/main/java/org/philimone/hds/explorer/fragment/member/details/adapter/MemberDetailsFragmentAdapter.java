@@ -1,16 +1,16 @@
 package org.philimone.hds.explorer.fragment.member.details.adapter;
 
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Lifecycle;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
-import org.philimone.hds.explorer.R;
 import org.philimone.hds.explorer.data.FormDataLoader;
 import org.philimone.hds.explorer.fragment.CollectedDataFragment;
 import org.philimone.hds.explorer.fragment.ExternalDatasetsFragment;
-import org.philimone.hds.explorer.fragment.household.details.HouseholdMembersFragment;
 import org.philimone.hds.explorer.fragment.member.details.MemberDetailsFragment;
 import org.philimone.hds.explorer.model.Member;
 import org.philimone.hds.explorer.model.User;
@@ -35,16 +35,20 @@ public class MemberDetailsFragmentAdapter extends FragmentStateAdapter {
         this.user = user;
         this.formDataLoaders = formDataLoaders;
         this.tabTitles.addAll(titles);
+
+        this.fragMemberDetails = MemberDetailsFragment.newInstance(this.member, this.user);
+        this.fragDatasets = ExternalDatasetsFragment.newInstance(this.member);
+        this.fragCollected = CollectedDataFragment.newInstance(this.member, this.user, this.formDataLoaders);
     }
 
     @NonNull
     @Override
     public Fragment createFragment(int position) {
-
+        Log.d("createfrag", ""+position);
         switch (position) {
-            case 0: this.fragMemberDetails = MemberDetailsFragment.newInstance(this.member, this.user); return this.fragMemberDetails;
-            case 1: this.fragDatasets = ExternalDatasetsFragment.newInstance(this.member); return this.fragDatasets;
-            case 2: this.fragCollected = CollectedDataFragment.newInstance(this.member, this.user, this.formDataLoaders); return this.fragCollected;
+            case 0: return this.fragMemberDetails;
+            case 1: return this.fragDatasets;
+            case 2: return this.fragCollected;
             default: return null;
         }
 

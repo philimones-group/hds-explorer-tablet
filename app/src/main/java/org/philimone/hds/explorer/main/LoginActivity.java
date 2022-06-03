@@ -19,10 +19,11 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import org.mindrot.jbcrypt.BCrypt;
 import org.philimone.hds.explorer.BuildConfig;
 import org.philimone.hds.explorer.R;
-import org.philimone.hds.explorer.data.FormDataLoader;
 import org.philimone.hds.explorer.database.Bootstrap;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
 import org.philimone.hds.explorer.database.Queries;
@@ -33,15 +34,12 @@ import org.philimone.hds.explorer.model.Module;
 import org.philimone.hds.explorer.model.User;
 import org.philimone.hds.explorer.model.User_;
 import org.philimone.hds.explorer.widget.DialogFactory;
-import org.philimone.hds.explorer.widget.FormSelectorDialog;
 
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.Collection;
 import java.util.List;
 import java.util.Scanner;
 
-import androidx.appcompat.app.AppCompatActivity;
 import io.objectbox.Box;
 import io.objectbox.query.QueryBuilder;
 

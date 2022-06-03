@@ -489,6 +489,8 @@
     <string name="loading_dialog_member_details_lbl">Loading Member Details...</string>
     <string name="loading_dialog_household_details_lbl">Loading Household Details...</string>
     <string name="loading_dialog_region_details_lbl">Loading Region Details...</string>
+    <string name="loading_dialog_odk_load_lbl">Loading ODK Form...</string>
+    <string name="loading_dialog_odk_reload_lbl">Reloading ODK Form...</string>
 
     <!-- GPS Maps -->
     <string name="map_gps_not_available_title_lbl">Cannot view GPS Map</string>

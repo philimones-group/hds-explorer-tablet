@@ -34,6 +34,10 @@ public class HouseholdDetailsFragmentAdapter extends FragmentStateAdapter {
         this.user = user;
         this.formDataLoaders = formDataLoaders;
         this.tabTitles.addAll(titles);
+
+        this.fragMembers = HouseholdMembersFragment.newInstance(this.household, this.user);
+        this.fragDatasets = ExternalDatasetsFragment.newInstance(this.household);
+        this.fragCollected = CollectedDataFragment.newInstance(this.household, this.user, this.formDataLoaders);
     }
 
     @NonNull
@@ -41,9 +45,9 @@ public class HouseholdDetailsFragmentAdapter extends FragmentStateAdapter {
     public Fragment createFragment(int position) {
 
         switch (position) {
-            case 0: this.fragMembers = HouseholdMembersFragment.newInstance(this.household, this.user); return this.fragMembers;
-            case 1: this.fragDatasets = ExternalDatasetsFragment.newInstance(this.household); return this.fragDatasets;
-            case 2: this.fragCollected = CollectedDataFragment.newInstance(this.household, this.user, this.formDataLoaders); return this.fragCollected;
+            case 0: return this.fragMembers;
+            case 1: return this.fragDatasets;
+            case 2: return this.fragCollected;
             default: return null;
         }
 

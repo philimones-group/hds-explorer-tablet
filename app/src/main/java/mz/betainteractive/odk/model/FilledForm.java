@@ -71,9 +71,11 @@ public class FilledForm {
 		for (String key : mapValues.keySet()){
 			String value = mapValues.get(key)+"";
 
+			Log.d("map", "key="+key+", value="+value);
+
 			if (key.contains(".")){ //mapped repeat inner values ("RepeatGroupName.variable")
 				//The repeat inner columns dont go to "values" map but to mapRepeat
-				Log.d("testttt", key+":"+value);
+				//Log.d("testttt", key+":"+value);
 				String[] spt = key.split("\\.");
 				String repeatGroupName = spt[0];  //Repeat Group name
 				String repeatGroupInnerColumn = spt[1]; //inside variable

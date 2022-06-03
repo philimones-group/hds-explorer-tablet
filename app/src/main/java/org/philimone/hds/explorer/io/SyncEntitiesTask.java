@@ -1005,7 +1005,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 			parser.nextTag(); //process formMap
 			if (!isEmptyTag("formMap", parser)) {
 				parser.next();
-				Map<String, String> map = new MapStringConverter().convertToEntityProperty(parser.getText());
+				Map<String, String> map = convertFormMapTextToMap(parser.getText());
 				table.setFormMap(map);
 				//Log.d(count+"-formMap", "value="+ parser.getText());
 				parser.nextTag(); //process </formMap>
@@ -3221,6 +3221,22 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 		publishProgress(count);
 
 		updateSyncReport(SyncEntity.DEATHS, new Date(), SyncStatus.STATUS_SYNCED);
+	}
+
+	private Map<String,String> convertFormMapTextToMap(String formMapText) {
+		Map<String,String> formMap = new HashMap<>();
+		if (formMapText != null && !formMapText.isEmpty()){
+
+			String[] entries = formMapText.split(";");
+			for (String entry : entries){
+				String[] keyValue = entry.split(":");
+				if (keyValue.length == 2){
+					formMap.put(keyValue[1], keyValue[0]); //mapping unique items (odk variables) as Key, the values a the domain column names (TableName.columnName)
+				}
+			}
+		}
+
+		return formMap;
 	}
 
 	//database.query(SyncReport.class, DatabaseHelper.SyncReport.COLUMN_REPORT_ID+"=?", new String[]{}, null, null, null);

@@ -11,6 +11,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import org.philimone.hds.explorer.R;
 import org.philimone.hds.explorer.adapter.model.TrackingSubListItem;
 import org.philimone.hds.explorer.adapter.model.TrackingSubjectItem;
@@ -43,7 +45,6 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-import androidx.appcompat.app.AppCompatActivity;
 import io.objectbox.Box;
 import io.objectbox.query.QueryBuilder;
 
@@ -271,44 +272,6 @@ public class TrackingListDetailsActivity extends AppCompatActivity implements Ba
         FormDataLoader[] aList = new FormDataLoader[list.size()];
 
         return list.toArray(aList);
-    }
-
-    private void loadFormValues(FormDataLoader loader, Household household, Member member, Region region, TrackingSubjectItem subjectItem){
-        if (household != null){
-            loader.loadHouseholdValues(household);
-        }
-        if (member != null){
-            loader.loadMemberValues(member);
-        }
-        if (loggedUser != null){
-            loader.loadUserValues(loggedUser);
-        }
-        if (region != null){
-            loader.loadRegionValues(region);
-        }
-
-        loader.loadConstantValues();
-        loader.loadSpecialConstantValues(household, member, loggedUser, region, subjectItem);
-
-        //Load variables on datasets
-        for (Dataset dataSet : getDataSets()){
-            if (loader.hasMappedDatasetVariable(dataSet)){
-                //Log.d("hasMappedVariables", ""+dataSet.getName());
-                loader.loadDataSetValues(dataSet, household, member, loggedUser, region);
-            }
-        }
-    }
-
-    private void loadFormValues(FormDataLoader[] loaders, Household household, Member member, Region region, TrackingSubjectItem subjectItem){
-        for (FormDataLoader loader : loaders){
-            loadFormValues(loader, household, member, region, subjectItem);
-        }
-    }
-
-    private List<Dataset> getDataSets(){
-        List<Dataset> list = this.boxDatasets.getAll();
-
-        return list;
     }
 
     //reading tracking list
@@ -637,8 +600,6 @@ public class TrackingListDetailsActivity extends AppCompatActivity implements Ba
                 this.household = getHousehold(subjectItem.getMember());
                 this.region = getRegion(household);
             }
-
-            loadFormValues(dataLoaders, household, member, region, subjectItem);
 
             return null;
         }

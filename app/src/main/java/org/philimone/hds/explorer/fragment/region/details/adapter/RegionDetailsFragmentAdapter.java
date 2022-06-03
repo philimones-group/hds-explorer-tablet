@@ -6,13 +6,10 @@ import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Lifecycle;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
-import org.philimone.hds.explorer.R;
 import org.philimone.hds.explorer.data.FormDataLoader;
 import org.philimone.hds.explorer.fragment.CollectedDataFragment;
 import org.philimone.hds.explorer.fragment.ExternalDatasetsFragment;
-import org.philimone.hds.explorer.fragment.member.details.MemberDetailsFragment;
 import org.philimone.hds.explorer.fragment.region.details.RegionChildsFragment;
-import org.philimone.hds.explorer.model.Member;
 import org.philimone.hds.explorer.model.Region;
 import org.philimone.hds.explorer.model.User;
 
@@ -35,6 +32,10 @@ public class RegionDetailsFragmentAdapter extends FragmentStateAdapter {
         this.user = user;
         this.formDataLoaders = formDataLoaders;
         this.tabTitles.addAll(titles);
+
+        this.fragRegionChilds = RegionChildsFragment.newInstance(this.region, this.user);
+        this.fragDatasets = ExternalDatasetsFragment.newInstance(this.region);
+        this.fragCollected = CollectedDataFragment.newInstance(this.region, this.user, this.formDataLoaders);
     }
 
     @NonNull
@@ -42,9 +43,9 @@ public class RegionDetailsFragmentAdapter extends FragmentStateAdapter {
     public Fragment createFragment(int position) {
 
         switch (position) {
-            case 0: this.fragRegionChilds = RegionChildsFragment.newInstance(this.region, this.user); return this.fragRegionChilds;
-            case 1: this.fragDatasets = ExternalDatasetsFragment.newInstance(this.region); return this.fragDatasets;
-            case 2: this.fragCollected = CollectedDataFragment.newInstance(this.region, this.user, this.formDataLoaders); return this.fragCollected;
+            case 0: return this.fragRegionChilds;
+            case 1: return this.fragDatasets;
+            case 2: return this.fragCollected;
             default: return null;
         }
 

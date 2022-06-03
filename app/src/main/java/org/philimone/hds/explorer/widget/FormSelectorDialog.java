@@ -1,15 +1,15 @@
 package org.philimone.hds.explorer.widget;
 
-import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.FragmentManager;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.ListView;
+
+import androidx.annotation.Nullable;
+import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.FragmentManager;
 
 import org.philimone.hds.explorer.R;
 import org.philimone.hds.explorer.adapter.FormLoaderAdapter;
@@ -17,8 +17,6 @@ import org.philimone.hds.explorer.data.FormDataLoader;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import androidx.annotation.Nullable;
 
 public class FormSelectorDialog extends DialogFragment {
 

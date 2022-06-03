@@ -77,6 +77,7 @@ public class RegionDetailsActivity extends AppCompatActivity {
 
         initialize();
         initFragments();
+        enableButtonsByFormLoaders();
     }
 
     public void setRegion(Region region){
@@ -116,23 +117,11 @@ public class RegionDetailsActivity extends AppCompatActivity {
 
         setRegionData();
 
-        enableButtonsByFormLoaders();
-        enableButtonsByIntentData();
     }
 
     private void enableButtonsByFormLoaders() {
         boolean hasForms = this.formDataLoaders.size()>0;
         this.btRegionDetailsCollectData.setEnabled(hasForms);
-    }
-
-    private void enableButtonsByIntentData() {
-        Object item = getIntent().getExtras().get("enable-collect-data");
-
-        Boolean enaColData = (item==null) ? null : (boolean)item;
-
-        if (enaColData != null){
-            this.btRegionDetailsCollectData.setEnabled(enaColData.booleanValue());
-        }
     }
 
     private void setRegionData(){
@@ -170,7 +159,9 @@ public class RegionDetailsActivity extends AppCompatActivity {
             tabTitles.add(getString(R.string.region_details_tab_datasets_lbl));
             tabTitles.add(getString(R.string.region_details_tab_collected_forms_lbl));
 
-            fragmentAdapter = new RegionDetailsFragmentAdapter(this.getSupportFragmentManager(), this.getLifecycle(), region, loggedUser, formDataLoaders, tabTitles);
+            boolean isTracking = activityRequestCode == RequestCodes.REGION_DETAILS_FROM_TRACKING_LIST_DETAILS;
+
+            fragmentAdapter = new RegionDetailsFragmentAdapter(this.getSupportFragmentManager(), this.getLifecycle(), region, loggedUser, (isTracking) ? formDataLoaders : null, tabTitles);
             regionDetailsTabViewPager.setAdapter(fragmentAdapter);
             //this will create all fragments
             regionDetailsTabViewPager.setOffscreenPageLimit(3);
@@ -214,6 +205,10 @@ public class RegionDetailsActivity extends AppCompatActivity {
     }
 
     private void readFormDataLoader(){
+
+        if (!getIntent().getExtras().containsKey("dataloaders")){
+            return;
+        }
 
         Object[] objs = (Object[]) getIntent().getExtras().get("dataloaders");
 

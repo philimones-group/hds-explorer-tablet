@@ -5,6 +5,7 @@ import android.util.Log;
 import org.philimone.hds.explorer.adapter.model.TrackingSubjectItem;
 import org.philimone.hds.explorer.model.Dataset;
 import org.philimone.hds.explorer.model.Form;
+import org.philimone.hds.explorer.model.Form_;
 import org.philimone.hds.explorer.model.Household;
 import org.philimone.hds.explorer.model.Member;
 import org.philimone.hds.explorer.model.Region;
@@ -18,9 +19,11 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -94,6 +97,21 @@ public class FormDataLoader implements Serializable {
         return false;
     }
 
+    public Set<String> getPossibleDatasetNames() {
+        Set<String> list = new HashSet<>();
+
+        for (String mapValue : form.getFormMap().values()){
+            if (mapValue.contains(".") && !mapValue.startsWith(regionPrefix) && !mapValue.startsWith(householdPrefix) && !mapValue.startsWith(memberPrefix) && !mapValue.startsWith(userPrefix) && !mapValue.startsWith(constPrefix) && !mapValue.startsWith(specialConstPrefix)) {
+                //possible dataset
+                String dt = mapValue.substring(0, mapValue.indexOf("."));
+                //Log.d("dt",""+dt);
+                list.add(dt);
+            }
+        }
+
+        return list;
+    }
+
     public void loadHouseholdValues(Household household){
         Map<String, String> map = form.getFormMap();
         for (String key : map.keySet()){
@@ -135,7 +153,7 @@ public class FormDataLoader implements Serializable {
                 }
 
                 this.values.put(odkVariable, value);
-                //Log.d("h-odk auto-loadable", odkVariable + ", " + value);
+                Log.d("h-odk auto-loadable", odkVariable + ", " + value);
             }
         }
     }
@@ -551,7 +569,6 @@ public class FormDataLoader implements Serializable {
 
         String csvRowKey = dataSet.getName()+"->"+tableName+tableColumnName+"="+linkValue;
 
-
         boolean vrExists = this.generalCSVRows.containsKey(csvRowKey);
         valueRow = this.generalCSVRows.get(csvRowKey);
 
@@ -663,13 +680,14 @@ public class FormDataLoader implements Serializable {
 
         List<FormFilter> listFilters = Arrays.asList(filters);
 
-        List<Form> forms = boxForms.getAll(); //get all forms
+        List<Form> forms = boxForms.query().order(Form_.formName).build().find(); //get all forms
         List<FormDataLoader> list = new ArrayList<>();
 
         int i=0;
         for (Form form : forms){
 
             //Log.d("forms", ""+user.getModules() +" - " + form.getModules() );
+            //Log.d("forms-map", "" + form.formMap );
             if (StringUtil.containsAny(user.modules, form.modules)){ //if the user has access to module specified on Form
 
                 FormDataLoader loader = new FormDataLoader(form);
@@ -700,5 +718,47 @@ public class FormDataLoader implements Serializable {
         FormDataLoader[] aList = new FormDataLoader[list.size()];
 
         return list.toArray(aList);
+    }
+
+    public static List<FormDataLoader> getFormLoadersList(Box<Form> boxForms, User user, FormFilter... filters){
+
+        List<FormFilter> listFilters = Arrays.asList(filters);
+
+        List<Form> forms = boxForms.query().order(Form_.formName).build().find(); //get all forms
+        List<FormDataLoader> list = new ArrayList<>();
+
+        int i=0;
+        for (Form form : forms){
+
+            //Log.d("forms", ""+user.getModules() +" - " + form.getModules() );
+            //Log.d("forms-map", "" + form.formMap );
+            if (StringUtil.containsAny(user.modules, form.modules)){ //if the user has access to module specified on Form
+
+                FormDataLoader loader = new FormDataLoader(form);
+
+                if (form.isFollowUpForm() && listFilters.contains(FormFilter.FOLLOW_UP)){
+                    list.add(loader);
+                    continue;
+                }
+                if (form.isRegionForm() && listFilters.contains(FormFilter.REGION)){
+                    list.add(loader);
+                    continue;
+                }
+                if (form.isHouseholdForm() && listFilters.contains(FormFilter.HOUSEHOLD)){
+                    list.add(loader);
+                    continue;
+                }
+                if (form.isHouseholdHeadForm() && listFilters.contains(FormFilter.HOUSEHOLD_HEAD)){
+                    list.add(loader);
+                    continue;
+                }
+                if (form.isMemberForm() && listFilters.contains(FormFilter.MEMBER)){
+                    list.add(loader);
+                    continue;
+                }
+            }
+        }
+
+        return list;
     }
 }

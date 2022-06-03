@@ -208,6 +208,10 @@ public class HouseholdDetailsActivity extends AppCompatActivity implements House
 
     private void readFormDataLoader(){
 
+        if (!getIntent().getExtras().containsKey("dataloaders")){
+            return;
+        }
+
         Object[] objs = (Object[]) getIntent().getExtras().get("dataloaders");
 
         for (int i=0; i < objs.length; i++){
@@ -273,7 +277,6 @@ public class HouseholdDetailsActivity extends AppCompatActivity implements House
             onOpenVisitClicked();
         });
 
-        initializeButtons();
     }
 
     private void initFragments() {
@@ -292,7 +295,9 @@ public class HouseholdDetailsActivity extends AppCompatActivity implements House
             tabTitles.add(getString(R.string.household_details_tab_datasets_lbl));
             tabTitles.add(getString(R.string.household_details_tab_collected_forms_lbl));
 
-            fragmentAdapter = new HouseholdDetailsFragmentAdapter(this.getSupportFragmentManager(), this.getLifecycle(), household, loggedUser, formDataLoaders, tabTitles);
+            boolean isTracking = requestCode == RequestCodes.HOUSEHOLD_DETAILS_FROM_TRACKING_LIST_DETAILS;
+
+            fragmentAdapter = new HouseholdDetailsFragmentAdapter(this.getSupportFragmentManager(), this.getLifecycle(), household, loggedUser, isTracking ? formDataLoaders : null, tabTitles);
             householdDetailsTabViewPager.setAdapter(fragmentAdapter);
             //this will create all fragments
             householdDetailsTabViewPager.setOffscreenPageLimit(3);
@@ -320,15 +325,7 @@ public class HouseholdDetailsActivity extends AppCompatActivity implements House
     }
 
     private void initializeButtons() {
-        Object item = getIntent().getExtras().get("enable-collect-data");
-
-        Boolean enaColData = (item==null) ? null : (boolean)item;
-
-        if (enaColData != null){
-            this.btHouseDetailsCollectData.setEnabled(enaColData.booleanValue());
-        }
-
-        boolean hasForms = this.formDataLoaders.size()>0;
+        boolean hasForms = this.fragmentAdapter.getFragmentCollected().getFormDataLoaders().size()>0;;
         this.btHouseDetailsCollectData.setEnabled(hasForms);
     }
 
@@ -437,6 +434,7 @@ public class HouseholdDetailsActivity extends AppCompatActivity implements House
 
         displayHouseholdDetails();
         initFragments();
+        initializeButtons();
     }
 
     private void setVisitMode(){
@@ -498,6 +496,7 @@ public class HouseholdDetailsActivity extends AppCompatActivity implements House
 
         displayHouseholdDetails();
         initFragments();
+        initializeButtons();
     }
 
     private void createNewHousehold(){

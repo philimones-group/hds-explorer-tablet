@@ -1,14 +1,16 @@
 package org.philimone.hds.explorer.main;
 
+import static org.philimone.hds.explorer.fragment.MemberListFragment.Buttons.MEMBERS_MAP;
+
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import org.philimone.hds.explorer.R;
 import org.philimone.hds.explorer.adapter.MemberAdapter;
-import org.philimone.hds.explorer.data.FormDataLoader;
-import org.philimone.hds.explorer.data.FormFilter;
 import org.philimone.hds.explorer.database.Bootstrap;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
 import org.philimone.hds.explorer.database.Queries;
@@ -26,20 +28,11 @@ import org.philimone.hds.explorer.model.User;
 import org.philimone.hds.explorer.settings.RequestCodes;
 import org.philimone.hds.explorer.widget.LoadingDialog;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
-import androidx.appcompat.app.AppCompatActivity;
 import io.objectbox.Box;
 import io.objectbox.query.QueryBuilder;
-import mz.betainteractive.utilities.StringUtil;
-
-import static org.philimone.hds.explorer.fragment.MemberListFragment.Buttons.MEMBERS_MAP;
 
 public class SurveyHouseholdsActivity extends AppCompatActivity implements HouseholdFilterFragment.Listener, MemberActionListener, BarcodeScannerActivity.InvokerClickListener {
 
@@ -110,8 +103,7 @@ public class SurveyHouseholdsActivity extends AppCompatActivity implements House
 
     @Override
     public void onSelectedRegion(Region region) {
-        FormDataLoader[] dataLoaders = getFormLoaders(FormFilter.REGION);
-        this.householdFilterFragment.checkSupportForRegionForms(dataLoaders); //remove this limitation in future when we create Household/Region Datasets Tab
+
     }
 
     @Override
@@ -155,100 +147,6 @@ public class SurveyHouseholdsActivity extends AppCompatActivity implements House
         Log.d("res listener size", ""+barcodeResultListeners.size());
 
         startActivityForResult(intent, RequestCodes.SCAN_BARCODE);
-    }
-
-    FormDataLoader[] getFormLoaders(FormFilter... filters) {
-        return FormDataLoader.getFormLoaders(boxForms, loggedUser, filters);
-    }
-
-    private List<FormFilter> toList(FormFilter... filters){
-        List<FormFilter> list = new ArrayList<>();
-        for (FormFilter f : filters){
-            list.add(f);
-        }
-        return list;
-    }
-
-    private boolean hasMemberBoundForms(){
-        for (FormDataLoader fdls : getFormLoaders(FormFilter.HOUSEHOLD_HEAD, FormFilter.MEMBER)){
-            if (fdls.getForm().isMemberForm()){
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private boolean hasHouseholdBoundForms(){
-        for (FormDataLoader fdls : getFormLoaders(FormFilter.HOUSEHOLD)){
-            if (fdls.getForm().isHouseholdForm()){
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private boolean hasRegionBoundForms(){
-        for (FormDataLoader fdls : getFormLoaders(FormFilter.REGION)){
-            if (fdls.getForm().isRegionForm()){
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private void loadFormValues(FormDataLoader loader, Household household, Member member, Region region){
-        if (household != null){
-            loader.loadHouseholdValues(household);
-        }
-        if (member != null){
-            loader.loadMemberValues(member);
-        }
-        if (loggedUser != null){
-            loader.loadUserValues(loggedUser);
-        }
-        if (region != null){
-            loader.loadRegionValues(region);
-        }
-
-        loader.loadConstantValues();
-        loader.loadSpecialConstantValues(household, member, loggedUser, region, null);
-
-        //Load variables on datasets
-        for (Dataset dataSet : getDataSets()){
-            //Log.d("has-mapped-datasets", dataSet.getName()+", "+loader.hasMappedDatasetVariable(dataSet));
-            if (loader.hasMappedDatasetVariable(dataSet)){
-                //Log.d("hasMappedVariables", ""+dataSet.getName());
-                loader.loadDataSetValues(dataSet, household, member, loggedUser, region);
-            }
-        }
-    }
-
-    private Set<Dataset> getLoadableDatasets(FormDataLoader[] loaders){
-        Set<Dataset> list = new HashSet<>();
-        List<Dataset> datasets = getDataSets();
-
-        for (FormDataLoader loader : loaders)
-        for (Dataset dataSet : datasets){
-            if (loader.hasMappedDatasetVariable(dataSet)){
-                list.add(dataSet);
-            }
-        }
-        return list;
-    }
-
-    private void loadFormValues(FormDataLoader[] loaders, Household household, Member member, Region region){
-
-        //get loadable datasets - to prevent reading unnecessary data
-        //Set<DataSet> dataSets = getLoadableDatasets(loaders);
-
-        for (FormDataLoader loader : loaders){
-            loadFormValues(loader, household, member, region);
-        }
-    }
-
-    private List<Dataset> getDataSets(){
-        List<Dataset> list = this.boxDatasets.getAll();
-        return list;
     }
 
     private Household getHousehold(String code){
@@ -351,7 +249,6 @@ public class SurveyHouseholdsActivity extends AppCompatActivity implements House
         private Household household;
         private Member member;
         private Region region;
-        private FormDataLoader[] dataLoaders;
 
         public OnMemberSelectedTask(Household household, Member member, Region region) {
             this.household = household;
@@ -361,10 +258,6 @@ public class SurveyHouseholdsActivity extends AppCompatActivity implements House
 
         @Override
         protected Void doInBackground(Void... voids) {
-
-            dataLoaders = getFormLoaders(FormFilter.HOUSEHOLD_HEAD, FormFilter.MEMBER);
-            loadFormValues(dataLoaders, household, member, region);
-
             return null;
         }
 
@@ -373,7 +266,7 @@ public class SurveyHouseholdsActivity extends AppCompatActivity implements House
 
             Intent intent = new Intent(SurveyHouseholdsActivity.this, MemberDetailsActivity.class);
             intent.putExtra("member", this.member);
-            intent.putExtra("dataloaders", dataLoaders);
+            //intent.putExtra("dataloaders", dataLoaders);
 
             showLoadingDialog(null, false);
 
@@ -385,7 +278,6 @@ public class SurveyHouseholdsActivity extends AppCompatActivity implements House
         private Household household;
         private Member member;
         private Region region;
-        private FormDataLoader[] dataLoaders;
 
         public ShowHouseholdTask(Household household, Member member, Region region) {
             this.household = household;
@@ -395,10 +287,6 @@ public class SurveyHouseholdsActivity extends AppCompatActivity implements House
 
         @Override
         protected Void doInBackground(Void... voids) {
-
-            this.dataLoaders = getFormLoaders(FormFilter.HOUSEHOLD);
-            loadFormValues(dataLoaders, household, member, region);
-
             return null;
         }
 
@@ -407,7 +295,7 @@ public class SurveyHouseholdsActivity extends AppCompatActivity implements House
 
             Intent intent = new Intent(SurveyHouseholdsActivity.this, HouseholdDetailsActivity.class);
             intent.putExtra("household", household);
-            intent.putExtra("dataloaders", dataLoaders);
+            //intent.putExtra("dataloaders", dataLoaders);
 
             showLoadingDialog(null, false);
 
@@ -417,7 +305,6 @@ public class SurveyHouseholdsActivity extends AppCompatActivity implements House
 
     class ShowRegionTask extends AsyncTask<Void, Void, Void> {
         private Region region;
-        private FormDataLoader[] dataLoaders;
 
         public ShowRegionTask(Region region) {
             this.region = region;
@@ -425,10 +312,6 @@ public class SurveyHouseholdsActivity extends AppCompatActivity implements House
 
         @Override
         protected Void doInBackground(Void... voids) {
-
-            this.dataLoaders = getFormLoaders(FormFilter.REGION);
-            loadFormValues(dataLoaders, null, null, region);
-
             return null;
         }
 
@@ -439,7 +322,7 @@ public class SurveyHouseholdsActivity extends AppCompatActivity implements House
 
             Intent intent = new Intent(SurveyHouseholdsActivity.this, RegionDetailsActivity.class);
             intent.putExtra("region", region);
-            intent.putExtra("dataloaders", dataLoaders);
+            //intent.putExtra("dataloaders", dataLoaders);
 
             startActivity(intent);
         }

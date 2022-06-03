@@ -218,7 +218,7 @@ public class CSVReader {
         //Consider quotes
         String regex_delimiter = DELIMITER+"(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)";
 
-        System.out.println("Line: "+line);
+        //System.out.println("Line: "+line);
 
         if (currentLineNumber == 1 && hasHeader) {
             String[] fields = line.split(regex_delimiter);

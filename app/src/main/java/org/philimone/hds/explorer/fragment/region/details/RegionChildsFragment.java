@@ -3,11 +3,9 @@ package org.philimone.hds.explorer.fragment.region.details;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -16,8 +14,6 @@ import androidx.fragment.app.Fragment;
 import org.philimone.hds.explorer.R;
 import org.philimone.hds.explorer.adapter.HouseholdAdapter;
 import org.philimone.hds.explorer.adapter.RegionAdapter;
-import org.philimone.hds.explorer.data.FormDataLoader;
-import org.philimone.hds.explorer.data.FormFilter;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
 import org.philimone.hds.explorer.main.HouseholdDetailsActivity;
 import org.philimone.hds.explorer.main.RegionDetailsActivity;
@@ -218,51 +214,6 @@ public class RegionChildsFragment extends Fragment {
         this.showRegionChilds();
     }
 
-    /*
-    * Loaders
-    */
-    FormDataLoader[] getFormLoaders(FormFilter... filters) {
-        return FormDataLoader.getFormLoaders(boxForms, loggedUser, filters);
-    }
-
-    private void loadFormValues(FormDataLoader[] loaders, Household household, Member member, Region region){
-        for (FormDataLoader loader : loaders){
-            loadFormValues(loader, household, member, region);
-        }
-    }
-
-    private void loadFormValues(FormDataLoader loader, Household household, Member member, Region region){
-        if (household != null){
-            loader.loadHouseholdValues(household);
-        }
-        if (member != null){
-            loader.loadMemberValues(member);
-        }
-        if (loggedUser != null){
-            loader.loadUserValues(loggedUser);
-        }
-        if (region != null){
-            loader.loadRegionValues(region);
-        }
-
-        loader.loadConstantValues();
-        loader.loadSpecialConstantValues(household, member, loggedUser, region, null);
-
-        //Load variables on datasets
-        for (Dataset dataSet : getDataSets()){
-            Log.d("has-mapped-datasets", dataSet.getName()+", "+loader.hasMappedDatasetVariable(dataSet));
-            if (loader.hasMappedDatasetVariable(dataSet)){
-                Log.d("hasMappedVariables", ""+dataSet.getName());
-                loader.loadDataSetValues(dataSet, household, member, loggedUser, region);
-            }
-        }
-    }
-
-    private List<Dataset> getDataSets(){
-        List<Dataset> list = this.boxDatasets.getAll();
-        return list;
-    }
-
     private void openHouseholdDetails(Household household) {
         ShowHouseholdTask task = new ShowHouseholdTask(household, null, null);
         task.execute();
@@ -281,7 +232,6 @@ public class RegionChildsFragment extends Fragment {
         private Household household;
         private Member member;
         private Region region;
-        private FormDataLoader[] dataLoaders;
 
         public ShowHouseholdTask(Household household, Member member, Region region) {
             this.household = household;
@@ -291,10 +241,6 @@ public class RegionChildsFragment extends Fragment {
 
         @Override
         protected Void doInBackground(Void... voids) {
-
-            this.dataLoaders = getFormLoaders(FormFilter.HOUSEHOLD);
-            loadFormValues(dataLoaders, household, member, region);
-
             return null;
         }
 
@@ -303,7 +249,6 @@ public class RegionChildsFragment extends Fragment {
 
             Intent intent = new Intent(RegionChildsFragment.this.getContext(), HouseholdDetailsActivity.class);
             intent.putExtra("household", household);
-            intent.putExtra("dataloaders", dataLoaders);
 
             showLoadingDialog(null, false);
 
@@ -313,7 +258,6 @@ public class RegionChildsFragment extends Fragment {
 
     class ShowRegionTask extends AsyncTask<Void, Void, Void> {
         private Region region;
-        private FormDataLoader[] dataLoaders;
 
         public ShowRegionTask(Region region) {
             this.region = region;
@@ -321,10 +265,6 @@ public class RegionChildsFragment extends Fragment {
 
         @Override
         protected Void doInBackground(Void... voids) {
-
-            this.dataLoaders = getFormLoaders(FormFilter.REGION);
-            loadFormValues(dataLoaders, null, null, region);
-
             return null;
         }
 
@@ -335,7 +275,6 @@ public class RegionChildsFragment extends Fragment {
 
             Intent intent = new Intent(RegionChildsFragment.this.getContext(), RegionDetailsActivity.class);
             intent.putExtra("region", region);
-            intent.putExtra("dataloaders", dataLoaders);
 
             startActivity(intent);
         }

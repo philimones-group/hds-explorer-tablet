@@ -5,10 +5,10 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import org.philimone.hds.explorer.R;
 import org.philimone.hds.explorer.adapter.MemberAdapter;
-import org.philimone.hds.explorer.data.FormDataLoader;
-import org.philimone.hds.explorer.data.FormFilter;
 import org.philimone.hds.explorer.database.Bootstrap;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
 import org.philimone.hds.explorer.database.Queries;
@@ -24,15 +24,10 @@ import org.philimone.hds.explorer.model.User;
 import org.philimone.hds.explorer.settings.RequestCodes;
 import org.philimone.hds.explorer.widget.LoadingDialog;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import androidx.appcompat.app.AppCompatActivity;
 import io.objectbox.Box;
-import mz.betainteractive.utilities.StringUtil;
 
 public class SurveyMembersActivity extends AppCompatActivity implements MemberFilterFragment.Listener, MemberActionListener, BarcodeScannerActivity.InvokerClickListener {
 
@@ -148,73 +143,6 @@ public class SurveyMembersActivity extends AppCompatActivity implements MemberFi
         return household;
     }
 
-    FormDataLoader[] getFormLoaders(FormFilter... filters) {
-        return FormDataLoader.getFormLoaders(boxForms, loggedUser, filters);
-    }
-
-    private List<FormFilter> toList(FormFilter... filters){
-        List<FormFilter> list = new ArrayList<>();
-        for (FormFilter f : filters){
-            list.add(f);
-        }
-        return list;
-    }
-
-    private boolean hasMemberBoundForms(){
-        for (FormDataLoader fdls : getFormLoaders(FormFilter.HOUSEHOLD_HEAD, FormFilter.MEMBER)){
-            if (fdls.getForm().isMemberForm()){
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private boolean hasHouseholdBoundForms(){
-        for (FormDataLoader fdls : getFormLoaders(FormFilter.HOUSEHOLD)){
-            if (fdls.getForm().isHouseholdForm()){
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private void loadFormValues(FormDataLoader loader, Household household, Member member, Region region){
-        if (household != null){
-            loader.loadHouseholdValues(household);
-        }
-        if (member != null){
-            loader.loadMemberValues(member);
-        }
-        if (loggedUser != null){
-            loader.loadUserValues(loggedUser);
-        }
-        if (region != null){
-            loader.loadRegionValues(region);
-        }
-
-        loader.loadConstantValues();
-        loader.loadSpecialConstantValues(household, member, loggedUser, region, null);
-
-        //Load variables on datasets
-        for (Dataset dataSet : getDataSets()){
-            if (loader.hasMappedDatasetVariable(dataSet)){
-                //Log.d("hasMappedVariables", ""+dataSet.getName());
-                loader.loadDataSetValues(dataSet, household, member, loggedUser, region);
-            }
-        }
-    }
-
-    private void loadFormValues(FormDataLoader[] loaders, Household household, Member member, Region region){
-        for (FormDataLoader loader : loaders){
-            loadFormValues(loader, household, member, region);
-        }
-    }
-
-    private List<Dataset> getDataSets(){
-        List<Dataset> list = this.boxDatasets.getAll();
-        return list;
-    }
-
     private void showLoadingDialog(String msg, boolean show){
         if (show) {
             this.loadingDialog.setMessage(msg);
@@ -267,7 +195,6 @@ public class SurveyMembersActivity extends AppCompatActivity implements MemberFi
         private Household household;
         private Member member;
         private Region region;
-        private FormDataLoader[] dataLoaders;
 
         public OnMemberSelectedTask(Household household, Member member, Region region) {
             this.household = household;
@@ -277,10 +204,6 @@ public class SurveyMembersActivity extends AppCompatActivity implements MemberFi
 
         @Override
         protected Void doInBackground(Void... voids) {
-
-            dataLoaders = getFormLoaders(FormFilter.HOUSEHOLD_HEAD, FormFilter.MEMBER);
-            loadFormValues(dataLoaders, household, member, region);
-
             return null;
         }
 
@@ -289,7 +212,7 @@ public class SurveyMembersActivity extends AppCompatActivity implements MemberFi
 
             Intent intent = new Intent(SurveyMembersActivity.this, MemberDetailsActivity.class);
             intent.putExtra("member", this.member);
-            intent.putExtra("dataloaders", dataLoaders);
+            //intent.putExtra("dataloaders", dataLoaders);
 
             showLoadingDialog(null, false);
 
@@ -301,7 +224,6 @@ public class SurveyMembersActivity extends AppCompatActivity implements MemberFi
         private Household household;
         private Member member;
         private Region region;
-        private FormDataLoader[] dataLoaders;
 
         public ShowHouseholdTask(Household household, Member member, Region region) {
             this.household = household;
@@ -311,10 +233,6 @@ public class SurveyMembersActivity extends AppCompatActivity implements MemberFi
 
         @Override
         protected Void doInBackground(Void... voids) {
-
-            this.dataLoaders = getFormLoaders(FormFilter.HOUSEHOLD);
-            loadFormValues(dataLoaders, household, member, region);
-
             return null;
         }
 
@@ -323,7 +241,7 @@ public class SurveyMembersActivity extends AppCompatActivity implements MemberFi
 
             Intent intent = new Intent(SurveyMembersActivity.this, HouseholdDetailsActivity.class);
             intent.putExtra("household", household);
-            intent.putExtra("dataloaders", dataLoaders);
+            //intent.putExtra("dataloaders", dataLoaders);
 
             showLoadingDialog(null, false);
 

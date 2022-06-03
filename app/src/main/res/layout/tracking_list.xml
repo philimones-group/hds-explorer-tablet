@@ -140,13 +140,13 @@
 
             <org.philimone.hds.explorer.widget.RecyclerListView
                 android:id="@+id/lvTrackingList"
-                app:layoutManager="LinearLayoutManager"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginBottom="40dp"
                 android:background="@drawable/nui_lists_rone_border"
                 android:paddingStart="15dp"
-                android:paddingEnd="15dp" />
+                android:paddingEnd="15dp"
+                app:layoutManager="LinearLayoutManager" />
 
             <Button
                 android:id="@+id/btTrackListBack"

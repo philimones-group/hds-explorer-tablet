@@ -24,9 +24,9 @@
 
     <item
         android:left="15dp"
-        android:top="5dp"
-        android:bottom="5dp">
-        <bitmap android:src="@mipmap/nui_search_icon" android:gravity="left" />
+        android:top="10dp"
+        android:bottom="10dp">
+        <bitmap android:src="@mipmap/nui_search_icon_2" android:gravity="left" />
     </item>
 
 </layer-list>

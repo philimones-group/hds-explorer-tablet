@@ -39,6 +39,32 @@
 
     </LinearLayout>
 
+    <!-- search -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp"
+        android:layout_marginBottom="-15dp"
+        android:orientation="vertical"
+        android:background="@drawable/nui_lgray_background">
+
+        <EditText
+            android:id="@+id/txtFilterName"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/member_filter_textbox_size"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="5dp"
+            android:paddingStart="60dp"
+            android:paddingEnd="20dp"
+            android:background="@drawable/nui_txtbox_rone_wb_search"
+            android:gravity="center_vertical"
+            android:hint="@string/loading_dialog_filter_name_hint_lbl"
+            android:paddingLeft="10dp"
+            android:textSize="@dimen/member_filter_textsize" />
+
+    </LinearLayout>
+
     <!-- Form List -->
     <RelativeLayout
         android:layout_width="match_parent"
@@ -49,7 +75,6 @@
 
         <org.philimone.hds.explorer.widget.RecyclerListView
             android:id="@+id/lvFormsList"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginLeft="10dp"
@@ -59,7 +84,8 @@
             android:paddingStart="10dp"
             android:paddingTop="10dp"
             android:paddingEnd="10dp"
-            android:paddingBottom="10dp" />
+            android:paddingBottom="10dp"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
         <Button
             android:id="@+id/btDialogBack"

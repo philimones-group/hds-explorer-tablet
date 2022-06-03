@@ -1,11 +1,14 @@
 package org.philimone.hds.explorer.widget;
 
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.EditText;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
@@ -13,6 +16,7 @@ import androidx.fragment.app.FragmentManager;
 
 import org.philimone.hds.explorer.R;
 import org.philimone.hds.explorer.adapter.FormLoaderAdapter;
+import org.philimone.hds.explorer.adapter.trackinglist.TrackingListAdapter;
 import org.philimone.hds.explorer.data.FormDataLoader;
 
 import java.util.ArrayList;
@@ -22,6 +26,7 @@ public class FormSelectorDialog extends DialogFragment {
 
     private FragmentManager fragmentManager;
 
+    private EditText txtFilterName;
     private RecyclerListView lvFormsList;
     private Button btDialogBack;
 
@@ -63,6 +68,7 @@ public class FormSelectorDialog extends DialogFragment {
     }
 
     private void initialize(View view){
+        this.txtFilterName = view.findViewById(R.id.txtFilterName);
         this.lvFormsList = view.findViewById(R.id.lvFormsList);
         this.btDialogBack = (Button) view.findViewById(R.id.btDialogBack);
 
@@ -75,6 +81,19 @@ public class FormSelectorDialog extends DialogFragment {
                 }
             });
 
+        if (this.txtFilterName != null)
+            this.txtFilterName.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {}
+
+                @Override
+                public void afterTextChanged(Editable s) {
+                    filterFormsByCode(s.toString());
+                }
+            });
 
 
         if (this.lvFormsList != null){
@@ -95,6 +114,13 @@ public class FormSelectorDialog extends DialogFragment {
         this.adapter = new FormLoaderAdapter(getActivity(), this.formsList);
         this.lvFormsList.setAdapter(this.adapter);
 
+    }
+
+    private void filterFormsByCode(String name) {
+        if (name != null){
+            FormLoaderAdapter adapter = (FormLoaderAdapter) this.lvFormsList.getAdapter();
+            adapter.filterForms(name);
+        }
     }
 
     private void onBackCicked(){

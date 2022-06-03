@@ -490,6 +490,7 @@
     <string name="loading_dialog_region_details_lbl">Carregando Detalhes da Região...</string>
     <string name="loading_dialog_odk_load_lbl">Carregando Formulário ODK...</string>
     <string name="loading_dialog_odk_reload_lbl">Recarregando Formulário ODK...</string>
+    <string name="loading_dialog_filter_name_hint_lbl">Insira o nome do formulário</string>
 
     <!-- GPS Maps -->
     <string name="map_gps_not_available_title_lbl">Não será possivel visualizar o mapa</string>

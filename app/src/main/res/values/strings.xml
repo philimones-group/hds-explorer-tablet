@@ -491,6 +491,7 @@
     <string name="loading_dialog_region_details_lbl">Loading Region Details...</string>
     <string name="loading_dialog_odk_load_lbl">Loading ODK Form...</string>
     <string name="loading_dialog_odk_reload_lbl">Reloading ODK Form...</string>
+    <string name="loading_dialog_filter_name_hint_lbl">Insert Form Name here</string>
 
     <!-- GPS Maps -->
     <string name="map_gps_not_available_title_lbl">Cannot view GPS Map</string>

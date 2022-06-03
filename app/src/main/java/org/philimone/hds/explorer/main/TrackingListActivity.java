@@ -148,7 +148,7 @@ public class TrackingListActivity extends AppCompatActivity {
 
             TrackingListAdapter adapter = (TrackingListAdapter) this.lvTrackingList.getAdapter();
             adapter.filterSubjects(code);
-            adapter.notifyDataSetChanged();
+            //adapter.notifyDataSetChanged();
             //this.elvTrackingLists.invalidateViews();
         }
     }

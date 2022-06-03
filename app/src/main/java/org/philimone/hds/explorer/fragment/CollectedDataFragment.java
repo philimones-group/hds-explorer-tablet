@@ -561,6 +561,7 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
             Form form = formDataLoader.getForm();
             FilledForm filledForm = new FilledForm(form.getFormId());
             filledForm.putAll(formDataLoader.getValues());
+            filledForm.updateUnknownMember(getContext());
             //filledForm.setHouseholdMembers(getMemberOnListAdapter());
 
             return new XResult(form, filledForm, collectedData);
@@ -600,6 +601,7 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
             Form form = this.formDataLoader.getForm();
             FilledForm filledForm = new FilledForm(form.getFormId());
             filledForm.putAll(this.formDataLoader.getValues());
+            filledForm.updateUnknownMember(getContext());
 
             return new XResult(form, filledForm, this.collectedData);
         }

@@ -9,8 +9,10 @@ import java.util.List;
 import java.util.Map;
 
 import android.content.ContentValues;
+import android.content.Context;
 import android.util.Log;
 
+import org.philimone.hds.explorer.R;
 import org.philimone.hds.explorer.model.Member;
 import org.philimone.hds.explorer.model.enums.temporal.ResidencyEndType;
 
@@ -108,6 +110,24 @@ public class FilledForm {
     public Object get(String variable){
     	return values.get(variable);
     }
+
+	public void updateUnknownMember(Context context) {
+		for (String key : this.values.keySet()) {
+			String value = this.values.get(key).toString();
+
+			value = getParentName(context, value);
+
+			this.values.put(key, value);
+		}
+	}
+
+	private String getParentName(Context context, String name){
+		if (name.equals("Unknown") || name.equals("member.unknown.label")){
+			return context.getString(R.string.member_details_unknown_lbl);
+		}else {
+			return name;
+		}
+	}
 
 	public String getFormName() {
 		return formName;

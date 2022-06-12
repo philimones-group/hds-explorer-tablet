@@ -38,13 +38,13 @@
 
                 <org.philimone.hds.explorer.widget.RecyclerListView
                     android:id="@+id/lvHouseholdMembers"
-                    app:layoutManager="LinearLayoutManager"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:paddingStart="18dp"
                     android:paddingTop="15dp"
                     android:paddingEnd="18dp"
-                    android:paddingBottom="15dp" />
+                    android:paddingBottom="15dp"
+                    app:layoutManager="LinearLayoutManager" />
 
                 <Button
                     android:id="@+id/btClearMember"

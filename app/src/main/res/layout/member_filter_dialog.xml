@@ -367,32 +367,89 @@
             android:paddingRight="5dp"
             android:paddingBottom="5dp">
 
-            <org.philimone.hds.explorer.widget.RecyclerListView
-                android:id="@+id/lvMembersList"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@drawable/nui_list_rborder_panel"
-                android:paddingTop="10dp"
-                android:paddingBottom="10dp"
-                app:layout_constraintHeight_default="spread" />
+                android:layout_weight="1"
+                android:orientation="vertical">
 
-            <RelativeLayout
-                android:id="@+id/progressBarLayout"
+                <org.philimone.hds.explorer.widget.RecyclerListView
+                    android:id="@+id/lvMembersList"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/nui_list_rborder_panel"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="10dp"
+                    app:layout_constraintHeight_default="spread" />
+
+                <RelativeLayout
+                    android:id="@+id/progressBarLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="10dp"
+                    android:visibility="gone">
+
+                    <ProgressBar
+                        style="?android:attr/progressBarStyleLarge"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:layout_centerVertical="true" />
+
+                </RelativeLayout>
+
+            </LinearLayout>
+
+
+            <!-- Buttons -->
+            <LinearLayout
+                android:id="@+id/viewListButtons"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:paddingTop="10dp"
-                android:paddingBottom="10dp"
-                android:visibility="gone">
+                android:layout_height="wrap_content"
+                android:layout_weight="0"
+                android:gravity="center|bottom"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:orientation="vertical">
 
-                <ProgressBar
-                    style="?android:attr/progressBarStyleLarge"
-                    android:layout_width="wrap_content"
+                <Button
+                    android:id="@+id/mfdButton1"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_centerHorizontal="true"
-                    android:layout_centerVertical="true" />
+                    android:layout_marginBottom="5dp"
+                    android:textSize="@dimen/member_list_button_textsize"
+                    android:text="Button #1"
+                    android:background="@drawable/nui_btnd_rone_g2flat"
+                    android:elevation="5dp"
+                    android:visibility="gone"/>
 
-            </RelativeLayout>
+                <Button
+                    android:id="@+id/mfdButton2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dp"
+                    android:textSize="@dimen/member_list_button_textsize"
+                    android:text="Button #2"
+                    android:background="@drawable/nui_btnd_rone_g2flat"
+                    android:elevation="5dp"
+                    android:visibility="gone"/>
+
+                <Button
+                    android:id="@+id/mfdButton3"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dp"
+                    android:textSize="@dimen/member_list_button_textsize"
+                    android:text="Button #2"
+                    android:background="@drawable/nui_btnd_rone_g2flat"
+                    android:elevation="5dp"
+                    android:visibility="gone"/>
+
+            </LinearLayout>
 
         </LinearLayout>
 

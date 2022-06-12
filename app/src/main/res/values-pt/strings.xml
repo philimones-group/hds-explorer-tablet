@@ -331,6 +331,8 @@
 
     <!-- New Visit -->
     <string name="new_visit_select_respondent_lbl">Selecione o respondente</string>
+    <string name="new_visit_respondent_not_reg_lbl">Respondente não registado</string>
+    <string name="new_visit_respondent_not_reg_continue_lbl">O respondente ainda não esta registado no sistema.\nPor favor, prossiga para o formulário de Visita e depois registe o novo membro que sera o respondente!</string>
     <string name="new_visit_code_err_lbl">O código da visita está incorrecto!</string>
     <string name="new_visit_code_household_err_lbl">O código da visita introduzido não reflecte a casa selecionada!</string>
     <string name="new_visit_code_exists_lbl">O código da visita introduzido ja existe!</string>
@@ -520,7 +522,7 @@
     <!-- Follow-up List - Tracking Lists -->
     <string name="trackinglist_bt_update_lbl">Atualizar listas de seguimento</string>
     <string name="trackinglist_bt_back_lbl">Voltar</string>
-    <string name="trackinglist_title_lbl">Listas de seguimento de: </string>
+    <string name="trackinglist_title_lbl">Listas de seguimento</string>
     <string name="trackinglist_module_lbl">Módulo</string>
     <string name="trackinglist_modules_lbl">Módulos:</string>
     <string name="trackinglist_filter_code_hint_lbl">Codigo ou Nome da Casa/Membro/Região</string>

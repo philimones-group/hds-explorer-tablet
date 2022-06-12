@@ -2,6 +2,7 @@ package org.philimone.hds.explorer.main.hdsforms;
 
 import android.content.Context;
 import android.util.Log;
+import android.view.View;
 
 import org.philimone.hds.explorer.R;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
@@ -15,6 +16,7 @@ import org.philimone.hds.explorer.model.Visit_;
 import org.philimone.hds.explorer.model.enums.CoreFormEntity;
 import org.philimone.hds.explorer.model.enums.VisitLocationItem;
 import org.philimone.hds.explorer.model.enums.VisitReason;
+import org.philimone.hds.explorer.widget.DialogFactory;
 import org.philimone.hds.forms.main.FormFragment;
 import org.philimone.hds.forms.model.CollectedDataMap;
 import org.philimone.hds.forms.model.ColumnValue;
@@ -23,6 +25,7 @@ import org.philimone.hds.forms.model.ValidationResult;
 import org.philimone.hds.forms.model.XmlFormResult;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -41,6 +44,7 @@ public class VisitFormUtil extends FormUtil<Visit> {
     private Household household;
     private Member respondentMember;
     private boolean newHouseholdCreated;
+    private boolean respondentNotRegistered = false;
 
     public VisitFormUtil(Fragment fragment, Context context, Household household, boolean newHouseholdCreated, FormUtilities odkFormUtilities, FormUtilListener<Visit> listener){
         super(fragment, context, FormUtil.getVisitForm(context), odkFormUtilities, listener);
@@ -257,8 +261,8 @@ public class VisitFormUtil extends FormUtil<Visit> {
             collectedData.formUuid = result.getFormUuid();
             collectedData.formFilename = result.getFilename();
             collectedData.createdDate = new Date();
-        collectedData.collectedId = collectedValues.get(HForm.COLUMN_ID).getValue();
-        collectedData.extension.setTarget(this.getFormExtension(collectedData.formEntity));
+            collectedData.collectedId = collectedValues.get(HForm.COLUMN_ID).getValue();
+            collectedData.extension.setTarget(this.getFormExtension(collectedData.formEntity));
 
             boxCoreCollectedData.put(collectedData);
 
@@ -274,10 +278,14 @@ public class VisitFormUtil extends FormUtil<Visit> {
     protected void onFinishedExtensionCollection() {
         Visit visit = this.entity;
         if (listener != null) {
+            Map<String,Object> data = new HashMap<>();
+
+            data.put("respondentNotRegistered", new Boolean(respondentNotRegistered));
+
             if (currentMode == Mode.CREATE) {
-                listener.onNewEntityCreated(visit);
+                listener.onNewEntityCreated(visit, data);
             } else if (currentMode == Mode.EDIT) {
-                listener.onEntityEdited(visit);
+                listener.onEntityEdited(visit, data);
             }
         }
     }
@@ -318,10 +326,29 @@ public class VisitFormUtil extends FormUtil<Visit> {
             }
         });
 
+        filterDialog.enableButton(MemberFilterDialog.Buttons.BUTTON_1, R.string.new_visit_respondent_not_reg_lbl, new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //respondent not yet registered - set as unknown
+                onRespondentNotYetRegistered();
+            }
+        });
+
         filterDialog.setCancelable(true);
         filterDialog.setFilterHouseCode(this.household.code);
         filterDialog.setFilterStatus(MemberFilterDialog.StatusFilter.RESIDENT, true);
+        filterDialog.setStartSearchOnShow(true);
         filterDialog.show();
+
+    }
+
+    private void onRespondentNotYetRegistered() {
+        this.respondentMember = Member.getUnknownIndividual();
+        this.respondentNotRegistered = true;
+
+        DialogFactory.createMessageInfo(this.context, R.string.new_visit_respondent_not_reg_lbl, R.string.new_visit_respondent_not_reg_continue_lbl, clickedButton -> {
+            executeCollectForm();
+        }).show();
     }
 
     private void updateNewHouseholdCoreCollectedData(Visit visit) {
@@ -344,9 +371,16 @@ public class VisitFormUtil extends FormUtil<Visit> {
         FormFragment.updateEndTimestamp(form, xmlSavedFormPath);
     }
 
+    public static void updateRespondent(Context context, String xmlSavedFormPath, Member respondentMember) {
+        HForm form = getVisitForm(context);
+        FormFragment.updateColumnOnXML(form, xmlSavedFormPath, "respondentCode", respondentMember.code);
+    }
+
     public static void markAllAsNonVisited(Context context, String xmlSavedFormPath, String nonVisitedList) {
         HForm form = getVisitForm(context);
         FormFragment.updateColumnOnXML(form, xmlSavedFormPath, "nonVisitedMembers", nonVisitedList);
     }
+
+
 
 }

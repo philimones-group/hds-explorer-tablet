@@ -1,6 +1,9 @@
 package org.philimone.hds.explorer.fragment;
 
+import androidx.annotation.StringRes;
 import androidx.fragment.app.DialogFragment;
+
+import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -25,7 +28,10 @@ import org.philimone.hds.explorer.model.enums.temporal.ResidencyEndType;
 import org.philimone.hds.explorer.widget.NumberPicker;
 import org.philimone.hds.explorer.widget.RecyclerListView;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.FragmentManager;
@@ -53,6 +59,9 @@ public class MemberFilterDialog extends DialogFragment {
     private RecyclerListView lvMembersList;
     private Button btMemFilterClear;
     private Button btMemFilterSearch;
+    private Button mfdButton1;
+    private Button mfdButton2;
+    private Button mfdButton3;
 
     private boolean genderMaleOnly;
     private boolean genderFemaleOnly;
@@ -69,6 +78,8 @@ public class MemberFilterDialog extends DialogFragment {
     private boolean filterStatusExclusive;
     private String filterExcludeHousehold;
     private String filterExcludeMember;
+
+    private Map<Buttons, CustomButton> enabledButtons = new HashMap<>();
 
     private boolean startSearchOnShow;
 
@@ -151,6 +162,10 @@ public class MemberFilterDialog extends DialogFragment {
         this.lvMembersList = view.findViewById(R.id.lvMembersList);
         this.btMemFilterClear = (Button) view.findViewById(R.id.btMemFilterClear);
         this.btMemFilterSearch = (Button) view.findViewById(R.id.btMemFilterSearch);
+        this.mfdButton1 = view.findViewById(R.id.mfdButton1);
+        this.mfdButton2 = view.findViewById(R.id.mfdButton2);
+        this.mfdButton3 = view.findViewById(R.id.mfdButton3);
+
 
         this.btMemFilterClear.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -220,13 +235,49 @@ public class MemberFilterDialog extends DialogFragment {
             nbpMemFilterMaxAge.setEnabled(!filterMaxAgeExclusive);
         }
 
+        this.mfdButton1.setOnClickListener(v -> onCustomButtonClick(Buttons.BUTTON_1, v));
+        this.mfdButton2.setOnClickListener(v -> onCustomButtonClick(Buttons.BUTTON_2, v));
+        this.mfdButton3.setOnClickListener(v -> onCustomButtonClick(Buttons.BUTTON_3, v));
+
         if (title != null){
             this.txtDialogTitle.setText(title);
         }
 
+        initializeButtons();
+
         initializeSpinners();
 
         updateFilterStatus();
+    }
+
+    private void onCustomButtonClick(Buttons button, View v) {
+        dismiss();
+
+        CustomButton customButton = enabledButtons.get(button);
+        if (customButton != null && customButton.onClickListener != null){
+            customButton.onClickListener.onClick(v);
+        }
+    }
+
+    private void initializeButtons() {
+        for (Map.Entry<Buttons, CustomButton> entry : enabledButtons.entrySet()) {
+            CustomButton bt = entry.getValue();
+            Button button = null;
+
+            if (bt.buttonType==Buttons.BUTTON_1) button = mfdButton1;
+            if (bt.buttonType==Buttons.BUTTON_2) button = mfdButton2;
+            if (bt.buttonType==Buttons.BUTTON_3) button = mfdButton3;
+
+            if (button != null){
+                button.setText(bt.label);
+                button.setVisibility(View.VISIBLE);
+                //button.setOnClickListener(bt.onClickListener); - dont set
+            }
+        }
+    }
+
+    public void enableButton(Buttons button, @StringRes int labelId, View.OnClickListener listener){
+        this.enabledButtons.put(button, new CustomButton(labelId, button, listener));
     }
 
     @Override
@@ -395,21 +446,21 @@ public class MemberFilterDialog extends DialogFragment {
             String text = filter.getFilterText();
             switch (filter.getFilterType()) {
                 case STARTSWITH:
-                    builder.startsWith(Member_.name, text, QueryBuilder.StringOrder.CASE_SENSITIVE);
+                    builder.startsWith(Member_.name, text, QueryBuilder.StringOrder.CASE_INSENSITIVE);
                     break;
                 case ENDSWITH:
-                    builder.endsWith(Member_.name, text, QueryBuilder.StringOrder.CASE_SENSITIVE);
+                    builder.endsWith(Member_.name, text, QueryBuilder.StringOrder.CASE_INSENSITIVE);
                     break;
                 case CONTAINS:
-                    builder.contains(Member_.name, text, QueryBuilder.StringOrder.CASE_SENSITIVE);
+                    builder.contains(Member_.name, text, QueryBuilder.StringOrder.CASE_INSENSITIVE);
                     break;
                 case MULTIPLE_CONTAINS:
                     for (String t : filter.getFilterTexts()) {
-                        builder.contains(Member_.name, t, QueryBuilder.StringOrder.CASE_SENSITIVE);
+                        builder.contains(Member_.name, t, QueryBuilder.StringOrder.CASE_INSENSITIVE);
                     }                    
                     break;
                 case NONE:
-                    builder.equal(Member_.name, text, QueryBuilder.StringOrder.CASE_SENSITIVE);
+                    builder.equal(Member_.name, text, QueryBuilder.StringOrder.CASE_INSENSITIVE);
                     break;
                 case EMPTY:
                     break;
@@ -422,22 +473,22 @@ public class MemberFilterDialog extends DialogFragment {
             String text = filter.getFilterText();
             switch (filter.getFilterType()) {
                 case STARTSWITH:
-                    builder.startsWith(Member_.code, text, QueryBuilder.StringOrder.CASE_SENSITIVE);
+                    builder.startsWith(Member_.code, text, QueryBuilder.StringOrder.CASE_INSENSITIVE);
                     break;
                 case ENDSWITH:
-                    builder.endsWith(Member_.code, text, QueryBuilder.StringOrder.CASE_SENSITIVE);
+                    builder.endsWith(Member_.code, text, QueryBuilder.StringOrder.CASE_INSENSITIVE);
                     Log.d("running-code", "endswith="+text);
                     break;
                 case CONTAINS:
-                    builder.contains(Member_.code, text, QueryBuilder.StringOrder.CASE_SENSITIVE);
+                    builder.contains(Member_.code, text, QueryBuilder.StringOrder.CASE_INSENSITIVE);
                     break;
                 case MULTIPLE_CONTAINS:
                     for (String t : filter.getFilterTexts()) {
-                        builder.contains(Member_.code, t, QueryBuilder.StringOrder.CASE_SENSITIVE);
+                        builder.contains(Member_.code, t, QueryBuilder.StringOrder.CASE_INSENSITIVE);
                     }
                     break;
                 case NONE:
-                    builder.equal(Member_.code, text, QueryBuilder.StringOrder.CASE_SENSITIVE);
+                    builder.equal(Member_.code, text, QueryBuilder.StringOrder.CASE_INSENSITIVE);
                     break;
                 case EMPTY:
                     break;
@@ -449,21 +500,26 @@ public class MemberFilterDialog extends DialogFragment {
             String text = filter.getFilterText();
             switch (filter.getFilterType()) {
                 case STARTSWITH:
-                    builder.startsWith(Member_.householdCode, text, QueryBuilder.StringOrder.CASE_SENSITIVE);
+                    builder.startsWith(Member_.householdCode, text, QueryBuilder.StringOrder.CASE_INSENSITIVE)
+                            .or().startsWith(Member_.householdName, text, QueryBuilder.StringOrder.CASE_INSENSITIVE);
                     break;
                 case ENDSWITH:
-                    builder.endsWith(Member_.householdCode, text, QueryBuilder.StringOrder.CASE_SENSITIVE);
+                    builder.endsWith(Member_.householdCode, text, QueryBuilder.StringOrder.CASE_INSENSITIVE)
+                            .or().endsWith(Member_.householdName, text, QueryBuilder.StringOrder.CASE_INSENSITIVE)  ;
                     break;
                 case CONTAINS:
-                    builder.contains(Member_.householdCode, text, QueryBuilder.StringOrder.CASE_SENSITIVE);
+                    builder.contains(Member_.householdCode, text, QueryBuilder.StringOrder.CASE_INSENSITIVE)
+                            .or().contains(Member_.householdName, text, QueryBuilder.StringOrder.CASE_INSENSITIVE);
                     break;
                 case MULTIPLE_CONTAINS:
                     for (String t : filter.getFilterTexts()) {
-                        builder.contains(Member_.householdCode, t, QueryBuilder.StringOrder.CASE_SENSITIVE);
+                        builder.contains(Member_.householdCode, t, QueryBuilder.StringOrder.CASE_INSENSITIVE)
+                                .or().contains(Member_.householdName, t, QueryBuilder.StringOrder.CASE_INSENSITIVE);
                     }
                     break;
                 case NONE:
-                    builder.equal(Member_.householdCode, text, QueryBuilder.StringOrder.CASE_SENSITIVE);
+                    builder.equal(Member_.householdCode, text, QueryBuilder.StringOrder.CASE_INSENSITIVE)
+                            .or().equal(Member_.householdName, text, QueryBuilder.StringOrder.CASE_INSENSITIVE);
                     break;
                 case EMPTY:
                     break;
@@ -574,6 +630,22 @@ public class MemberFilterDialog extends DialogFragment {
         void onSelectedMember(Member member);
 
         void onCanceled();
+    }
+
+    public enum Buttons {
+        BUTTON_1, BUTTON_2, BUTTON_3
+    }
+
+    class CustomButton {
+        @StringRes int label;
+        Buttons buttonType;
+        View.OnClickListener onClickListener;
+
+        public CustomButton(@StringRes int label, Buttons buttonType, View.OnClickListener onClickListener) {
+            this.label = label;
+            this.buttonType = buttonType;
+            this.onClickListener = onClickListener;
+        }
     }
 
 }

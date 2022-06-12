@@ -41,6 +41,7 @@ import org.philimone.hds.explorer.settings.RequestCodes;
 import org.philimone.hds.explorer.widget.DialogFactory;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -104,6 +105,7 @@ public class HouseholdDetailsActivity extends AppCompatActivity implements House
 
     private HouseholdDetailsMode hdetailsMode;
     private boolean loadNewHousehold = false;
+    private Map<String,Object> visitExtraData = new HashMap<>();
 
     private FormUtilities odkFormUtilities;
 
@@ -458,7 +460,7 @@ public class HouseholdDetailsActivity extends AppCompatActivity implements House
         //load visit fragment
         Log.d("setvisitmode", "visitFragment="+householdVisitFragment+", household="+household);
         if (this.householdVisitFragment != null) {
-            this.householdVisitFragment.load(household, visit, loggedUser);
+            this.householdVisitFragment.load(household, visit, loggedUser, visitExtraData);
         }
 
         Log.d("visit code", ""+visit.code);
@@ -573,7 +575,7 @@ public class HouseholdDetailsActivity extends AppCompatActivity implements House
 
     private void openPreviousVisit() {
         //get the recently created visit
-        Visit lastVisit = this.boxVisits.query().equal(Visit_.householdCode, household.code, QueryBuilder.StringOrder.CASE_SENSITIVE).order(Visit_.visitDate, QueryBuilder.DESCENDING).build().findFirst();
+        Visit lastVisit = this.boxVisits.query().equal(Visit_.householdCode, household.code, QueryBuilder.StringOrder.CASE_SENSITIVE).orderDesc(Visit_.visitDate).orderDesc(Visit_.code).build().findFirst();
 
         if (lastVisit != null && lastVisit.recentlyCreated) {
 
@@ -629,6 +631,7 @@ public class HouseholdDetailsActivity extends AppCompatActivity implements House
             @Override
             public void onNewEntityCreated(Visit entity, Map<String, Object> data) {
                 HouseholdDetailsActivity.this.visit = entity;
+                visitExtraData.putAll(data);
                 setVisitMode();
             }
 

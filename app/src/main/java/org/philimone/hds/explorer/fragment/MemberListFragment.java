@@ -678,21 +678,21 @@ public class MemberListFragment extends Fragment {
             String text = filter.getFilterText();
             switch (filter.getFilterType()) {
                 case STARTSWITH:
-                    builder.startsWith(Member_.name, text, QueryBuilder.StringOrder.CASE_SENSITIVE);
+                    builder.startsWith(Member_.name, text, QueryBuilder.StringOrder.CASE_INSENSITIVE);
                     break;
                 case ENDSWITH:
-                    builder.endsWith(Member_.name, text, QueryBuilder.StringOrder.CASE_SENSITIVE);
+                    builder.endsWith(Member_.name, text, QueryBuilder.StringOrder.CASE_INSENSITIVE);
                     break;
                 case CONTAINS:
-                    builder.contains(Member_.name, text, QueryBuilder.StringOrder.CASE_SENSITIVE);
+                    builder.contains(Member_.name, text, QueryBuilder.StringOrder.CASE_INSENSITIVE);
                     break;
                 case MULTIPLE_CONTAINS:
                     for (String t : filter.getFilterTexts()) {
-                        builder.contains(Member_.name, t, QueryBuilder.StringOrder.CASE_SENSITIVE);
+                        builder.contains(Member_.name, t, QueryBuilder.StringOrder.CASE_INSENSITIVE);
                     }
                     break;
                 case NONE:
-                    builder.equal(Member_.name, text, QueryBuilder.StringOrder.CASE_SENSITIVE);
+                    builder.equal(Member_.name, text, QueryBuilder.StringOrder.CASE_INSENSITIVE);
                     break;
                 case EMPTY:
                     break;
@@ -705,21 +705,21 @@ public class MemberListFragment extends Fragment {
             String text = filter.getFilterText();
             switch (filter.getFilterType()) {
                 case STARTSWITH:
-                    builder.startsWith(Member_.code, text, QueryBuilder.StringOrder.CASE_SENSITIVE);
+                    builder.startsWith(Member_.code, text, QueryBuilder.StringOrder.CASE_INSENSITIVE);
                     break;
                 case ENDSWITH:
-                    builder.endsWith(Member_.code, text, QueryBuilder.StringOrder.CASE_SENSITIVE);
+                    builder.endsWith(Member_.code, text, QueryBuilder.StringOrder.CASE_INSENSITIVE);
                     break;
                 case CONTAINS:
-                    builder.contains(Member_.code, text, QueryBuilder.StringOrder.CASE_SENSITIVE);
+                    builder.contains(Member_.code, text, QueryBuilder.StringOrder.CASE_INSENSITIVE);
                     break;
                 case MULTIPLE_CONTAINS:
                     for (String t : filter.getFilterTexts()) {
-                        builder.contains(Member_.code, t, QueryBuilder.StringOrder.CASE_SENSITIVE);
+                        builder.contains(Member_.code, t, QueryBuilder.StringOrder.CASE_INSENSITIVE);
                     }
                     break;
                 case NONE:
-                    builder.equal(Member_.code, text, QueryBuilder.StringOrder.CASE_SENSITIVE);
+                    builder.equal(Member_.code, text, QueryBuilder.StringOrder.CASE_INSENSITIVE);
                     break;
                 case EMPTY:
                     break;
@@ -731,21 +731,26 @@ public class MemberListFragment extends Fragment {
             String text = filter.getFilterText();
             switch (filter.getFilterType()) {
                 case STARTSWITH:
-                    builder.startsWith(Member_.householdCode, text, QueryBuilder.StringOrder.CASE_SENSITIVE);
+                    builder.startsWith(Member_.householdCode, text, QueryBuilder.StringOrder.CASE_INSENSITIVE)
+                           .or().startsWith(Member_.householdName, text, QueryBuilder.StringOrder.CASE_INSENSITIVE);
                     break;
                 case ENDSWITH:
-                    builder.endsWith(Member_.householdCode, text, QueryBuilder.StringOrder.CASE_SENSITIVE);
+                    builder.endsWith(Member_.householdCode, text, QueryBuilder.StringOrder.CASE_INSENSITIVE)
+                           .or().endsWith(Member_.householdName, text, QueryBuilder.StringOrder.CASE_INSENSITIVE)  ;
                     break;
                 case CONTAINS:
-                    builder.contains(Member_.householdCode, text, QueryBuilder.StringOrder.CASE_SENSITIVE);
+                    builder.contains(Member_.householdCode, text, QueryBuilder.StringOrder.CASE_INSENSITIVE)
+                           .or().contains(Member_.householdName, text, QueryBuilder.StringOrder.CASE_INSENSITIVE);
                     break;
                 case MULTIPLE_CONTAINS:
                     for (String t : filter.getFilterTexts()) {
-                        builder.contains(Member_.householdCode, t, QueryBuilder.StringOrder.CASE_SENSITIVE);
+                        builder.contains(Member_.householdCode, t, QueryBuilder.StringOrder.CASE_INSENSITIVE)
+                               .or().contains(Member_.householdName, t, QueryBuilder.StringOrder.CASE_INSENSITIVE);
                     }
                     break;
                 case NONE:
-                    builder.equal(Member_.householdCode, text, QueryBuilder.StringOrder.CASE_SENSITIVE);
+                    builder.equal(Member_.householdCode, text, QueryBuilder.StringOrder.CASE_INSENSITIVE)
+                           .or().equal(Member_.householdName, text, QueryBuilder.StringOrder.CASE_INSENSITIVE);
                     break;
                 case EMPTY:
                     break;

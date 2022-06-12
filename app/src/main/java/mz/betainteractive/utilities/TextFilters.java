@@ -27,8 +27,8 @@ public class TextFilters {
             return;
         }
 
-        if (!text.contains(wildcard)) {
-            filterType = Filter.STARTSWITH;
+        if (!text.contains(wildcard)) { //no wildcard - the default
+            filterType = Filter.CONTAINS;
             filterText = text;
         } else {
 

@@ -31,6 +31,7 @@ import org.philimone.hds.explorer.main.hdsforms.IncompleteVisitFormUtil;
 import org.philimone.hds.explorer.main.hdsforms.OutmigrationFormUtil;
 import org.philimone.hds.explorer.main.hdsforms.PregnancyOutcomeFormUtil;
 import org.philimone.hds.explorer.main.hdsforms.PregnancyRegistrationFormUtil;
+import org.philimone.hds.explorer.main.hdsforms.VisitFormUtil;
 import org.philimone.hds.explorer.model.CollectedData;
 import org.philimone.hds.explorer.model.CollectedData_;
 import org.philimone.hds.explorer.model.CoreCollectedData;
@@ -59,6 +60,7 @@ import org.philimone.hds.explorer.widget.DialogFactory;
 import org.philimone.hds.explorer.widget.RecyclerListView;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -89,7 +91,9 @@ public class HouseholdVisitFragment extends Fragment {
     private Visit visit;
     private Member selectedMember;
     private User loggedUser;
+    private Map<String, Object> visitExtraData = new HashMap<>();
 
+    private Box<Visit> boxVisits;
     private Box<Member> boxMembers;
     private Box<Form> boxForms;
     private Box<CollectedData> boxCollectedData;
@@ -101,8 +105,10 @@ public class HouseholdVisitFragment extends Fragment {
     private FormUtilities odkFormUtilities;
     
     private VisitEventsMode currentEventMode = VisitEventsMode.HOUSEHOLD_EVENTS;
+
+    private boolean respondentNotRegistered = false;
     
-    private enum VisitEventsMode { HOUSEHOLD_EVENTS, MEMBER_EVENTS}
+    private enum VisitEventsMode { HOUSEHOLD_EVENTS, MEMBER_EVENTS, RESPONDENT_NOT_REG_EVENTS}
 
     public HouseholdVisitFragment(){
         initBoxes();
@@ -119,7 +125,7 @@ public class HouseholdVisitFragment extends Fragment {
      *
      * @return A new instance of fragment HouseholdVisitFragment.
      */
-    public static HouseholdVisitFragment newInstance(Household household, Visit visit, User user, HouseholdDetailsListener listener) {
+    public static HouseholdVisitFragment newInstance(Household household, Visit visit, User user, HouseholdDetailsListener listener, Map<String, Object> visitData) {
         HouseholdVisitFragment fragment = new HouseholdVisitFragment(listener);
         fragment.household = household;
         fragment.visit = visit;
@@ -128,12 +134,28 @@ public class HouseholdVisitFragment extends Fragment {
         return fragment;
     }
 
-    public void load(Household household, Visit visit, User user){
+    public void load(Household household, Visit visit, User user, Map<String, Object> data){
         this.household = household;
         this.visit = visit;
         this.loggedUser = user;
 
+        if (data != null) {
+            this.visitExtraData.putAll(data);
+        }
+
         loadDataToListViews();
+
+
+        if (data.get("respondentNotRegistered") != null) {
+            Boolean notRegistered = (Boolean) data.get("respondentNotRegistered");
+
+            if (notRegistered){
+                this.respondentNotRegistered = true;
+                setRespondentNotRegVisitMode();
+                return;
+            }
+        }
+
         setHouseholdMode();
     }
 
@@ -167,6 +189,7 @@ public class HouseholdVisitFragment extends Fragment {
         this.boxCoreCollectedData = ObjectBoxDatabase.get().boxFor(CoreCollectedData.class);
         this.boxForms = ObjectBoxDatabase.get().boxFor(Form.class);
         //this.boxRegions = ObjectBoxDatabase.get().boxFor(Region.class);
+        this.boxVisits = ObjectBoxDatabase.get().boxFor(Visit.class);
         this.boxMembers = ObjectBoxDatabase.get().boxFor(Member.class);
         this.boxPregnancyRegistrations = ObjectBoxDatabase.get().boxFor(PregnancyRegistration.class);
     }
@@ -313,6 +336,37 @@ public class HouseholdVisitFragment extends Fragment {
         this.btnVisitMemberIncomplete.setEnabled(false);
         this.btnVisitMemberEnu.setVisibility(View.VISIBLE);
         this.btnVisitMemberIncomplete.setVisibility(View.GONE);
+
+        setMainListsSelectable(true);
+    }
+
+    private void setRespondentNotRegVisitMode(){
+        //is household mode
+
+        this.currentEventMode = VisitEventsMode.RESPONDENT_NOT_REG_EVENTS;
+
+        clearMemberSelection();
+
+        this.btnVisitMemberEnu.setEnabled(true);
+        this.btnVisitBirthReg.setEnabled(false);
+        this.btnVisitPregnancyReg.setEnabled(false);
+        this.btnVisitExtInmigration.setEnabled(true);
+        this.btnVisitIntInmigration.setEnabled(true);
+        this.btnVisitOutmigration.setEnabled(false);
+        this.btnVisitDeath.setEnabled(false);
+        this.btnVisitMaritalRelationship.setEnabled(false);
+        this.btnVisitExtraForm.setEnabled(false); //we need to analyse better this
+
+        this.btnVisitChangeHead.setEnabled(false);
+        this.btnVisitPregnancyReg.setVisibility(View.GONE);
+        this.btnVisitChangeHead.setVisibility(View.VISIBLE);
+
+        this.btnVisitMemberIncomplete.setEnabled(false);
+        this.btnVisitMemberEnu.setVisibility(View.VISIBLE);
+        this.btnVisitMemberIncomplete.setVisibility(View.GONE);
+
+        //disable item selection
+        setMainListsSelectable(false);
     }
     
     private void setMemberMode() {
@@ -337,6 +391,8 @@ public class HouseholdVisitFragment extends Fragment {
         this.btnVisitMemberIncomplete.setEnabled(notVisited);
         this.btnVisitMemberEnu.setVisibility(View.GONE);
         this.btnVisitMemberIncomplete.setVisibility(View.VISIBLE);
+
+        setMainListsSelectable(true);
     }
 
     private void loadMembersToList() {
@@ -398,6 +454,12 @@ public class HouseholdVisitFragment extends Fragment {
         }
     }
 
+    private void setMainListsSelectable(boolean itemselectable) {
+        lvHouseholdMembers.setItemsSelectable(itemselectable);
+        elvVisitCollected.setClickable(itemselectable);
+        elvVisitCollected.setFocusable(itemselectable);
+    }
+
     private long countCollectedForms(Member member) {
         /*long count1 = this.boxCoreCollectedData.query()
                 .equal(CoreCollectedData_.visitId, visit.id)
@@ -417,6 +479,18 @@ public class HouseholdVisitFragment extends Fragment {
 
         //any form collected for this member
         return count1 + count2;
+    }
+
+    private void updateRespondentAfterNewMember(Member member) {
+        if (respondentNotRegistered) {
+            Log.d("notreg","true");
+            respondentNotRegistered = false;
+
+            visit.respondentCode = member.code;
+            this.boxVisits.put(visit);
+
+            VisitFormUtil.updateRespondent(this.getContext(), this.visit.getRecentlyCreatedUri(), member);
+        }
     }
 
     //region Events Execution
@@ -460,6 +534,7 @@ public class HouseholdVisitFragment extends Fragment {
                 selectedMember = member;
                 loadDataToListViews();
                 //selectMember(member);
+                updateRespondentAfterNewMember(member);
             }
 
             @Override
@@ -511,6 +586,7 @@ public class HouseholdVisitFragment extends Fragment {
                 selectedMember = member;
                 loadDataToListViews();
                 //selectMember(member);
+                updateRespondentAfterNewMember(member);
             }
 
             @Override
@@ -536,6 +612,7 @@ public class HouseholdVisitFragment extends Fragment {
                 selectedMember = boxMembers.query().equal(Member_.code, inmigration.memberCode, QueryBuilder.StringOrder.CASE_SENSITIVE).build().findFirst();
                 loadDataToListViews();
                 //selectMember(selectedMember);
+                updateRespondentAfterNewMember(selectedMember);
             }
 
             @Override

@@ -331,6 +331,8 @@
 
     <!-- New Visit -->
     <string name="new_visit_select_respondent_lbl">Select Interviewee</string>
+    <string name="new_visit_respondent_not_reg_lbl">Respondent not yet registered</string>
+    <string name="new_visit_respondent_not_reg_continue_lbl">The respodent is not yet registered in the system.\nPlease continue to fill the Visit Form Registration after that register the new Member that will become the respondent!</string>
     <string name="new_visit_code_err_lbl">The format of the Visit Code is incorrect</string>
     <string name="new_visit_code_household_err_lbl">The Visit code doesnt reflect the selected household</string>
     <string name="new_visit_code_exists_lbl">The Visit Code already exists</string>

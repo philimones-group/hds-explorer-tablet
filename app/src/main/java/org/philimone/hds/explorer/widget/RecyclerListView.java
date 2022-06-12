@@ -22,6 +22,7 @@ import java.util.List;
 public class RecyclerListView extends RecyclerView {
 
     private List<OnItemClickListener> onItemClickListeners = new ArrayList<>();
+    private boolean itemsSelectable = true;
 
     public RecyclerListView(@NonNull Context context) {
         super(context);
@@ -45,7 +46,7 @@ public class RecyclerListView extends RecyclerView {
             @Override
             public void onChildViewAttachedToWindow(@NonNull View view) {
 
-                if (onItemClickListeners.size() == 0){
+                if (onItemClickListeners.size() == 0 || itemsSelectable == false){
                     return;
                 }
 
@@ -67,6 +68,10 @@ public class RecyclerListView extends RecyclerView {
 
             }
         });
+    }
+
+    public void setItemsSelectable(boolean selectable) {
+        this.itemsSelectable = selectable;
     }
 
     private void setDivider() {

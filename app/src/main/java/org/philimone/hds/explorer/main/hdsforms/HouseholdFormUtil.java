@@ -18,6 +18,7 @@ import org.philimone.hds.forms.model.ValidationResult;
 import org.philimone.hds.forms.model.XmlFormResult;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -183,7 +184,7 @@ public class HouseholdFormUtil extends FormUtil<Household> {
     @Override
     protected void onFinishedExtensionCollection() {
         if (listener != null) {
-            listener.onNewEntityCreated(this.entity);
+            listener.onNewEntityCreated(this.entity, new HashMap<>());
         }
     }
 

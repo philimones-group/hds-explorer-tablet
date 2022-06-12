@@ -32,6 +32,7 @@ import org.philimone.hds.forms.model.ValidationResult;
 import org.philimone.hds.forms.model.XmlFormResult;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
 import io.objectbox.Box;
@@ -294,7 +295,7 @@ public class OutmigrationFormUtil extends FormUtil<Outmigration> {
     @Override
     protected void onFinishedExtensionCollection() {
         if (listener != null) {
-            listener.onNewEntityCreated(this.entity);
+            listener.onNewEntityCreated(this.entity, new HashMap<>());
         }
     }
 

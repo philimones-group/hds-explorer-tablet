@@ -29,6 +29,7 @@ import org.philimone.hds.forms.model.ValidationResult;
 import org.philimone.hds.forms.model.XmlFormResult;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
 import androidx.fragment.app.Fragment;
@@ -390,7 +391,7 @@ public class MaritalRelationshipFormUtil extends FormUtil<MaritalRelationship> {
     @Override
     protected void onFinishedExtensionCollection() {
         if (listener != null) {
-            listener.onNewEntityCreated(this.entity);
+            listener.onNewEntityCreated(this.entity, new HashMap<>());
         }
     }
 

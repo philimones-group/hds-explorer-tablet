@@ -41,6 +41,7 @@ import org.philimone.hds.forms.model.XmlFormResult;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -420,7 +421,7 @@ public class ChangeHeadFormUtil extends FormUtil<Member> {
     @Override
     protected void onFinishedExtensionCollection() {
         if (listener != null) {
-            listener.onNewEntityCreated(newHeadMember);
+            listener.onNewEntityCreated(newHeadMember, new HashMap<>());
         }
     }
 

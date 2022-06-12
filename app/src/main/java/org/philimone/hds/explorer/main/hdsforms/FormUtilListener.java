@@ -1,9 +1,11 @@
 package org.philimone.hds.explorer.main.hdsforms;
 
-public interface FormUtilListener<T> {
-    void onNewEntityCreated(T entity);
+import java.util.Map;
 
-    void onEntityEdited(T entity);
+public interface FormUtilListener<T> {
+    void onNewEntityCreated(T entity, Map<String, Object> data);
+
+    void onEntityEdited(T entity, Map<String, Object> data);
 
     void onFormCancelled();
 }

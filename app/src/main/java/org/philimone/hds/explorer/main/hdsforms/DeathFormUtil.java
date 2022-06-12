@@ -43,6 +43,7 @@ import org.philimone.hds.forms.model.XmlFormResult;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -501,7 +502,7 @@ public class DeathFormUtil extends FormUtil<Death> {
     @Override
     protected void onFinishedExtensionCollection() {
         if (listener != null) {
-            listener.onNewEntityCreated(entity);
+            listener.onNewEntityCreated(entity, new HashMap<>());
         }
     }
 

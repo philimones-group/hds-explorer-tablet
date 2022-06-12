@@ -27,6 +27,7 @@ import org.philimone.hds.forms.model.ValidationResult;
 import org.philimone.hds.forms.model.XmlFormResult;
 
 import java.util.Date;
+import java.util.HashMap;
 
 import io.objectbox.Box;
 import io.objectbox.query.QueryBuilder;
@@ -299,7 +300,7 @@ public class PregnancyRegistrationFormUtil extends FormUtil<PregnancyRegistratio
     @Override
     protected void onFinishedExtensionCollection() {
         if (listener != null) {
-            listener.onNewEntityCreated(this.entity);
+            listener.onNewEntityCreated(this.entity, new HashMap<>());
         }
     }
 

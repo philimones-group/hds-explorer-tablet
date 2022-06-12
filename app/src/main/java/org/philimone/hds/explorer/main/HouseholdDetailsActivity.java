@@ -42,6 +42,7 @@ import org.philimone.hds.explorer.widget.DialogFactory;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager2.widget.ViewPager2;
@@ -578,10 +579,10 @@ public class HouseholdDetailsActivity extends AppCompatActivity implements House
 
             VisitFormUtil visitFormUtil = new VisitFormUtil(this, this, this.household, lastVisit, this.odkFormUtilities, new FormUtilListener<Visit>() {
                 @Override
-                public void onNewEntityCreated(Visit entity) { }
+                public void onNewEntityCreated(Visit entity, Map<String, Object> data) { }
 
                 @Override
-                public void onEntityEdited(Visit entity) {
+                public void onEntityEdited(Visit entity, Map<String, Object> data) {
                     HouseholdDetailsActivity.this.visit = entity;
                     setVisitMode();
                 }
@@ -601,13 +602,13 @@ public class HouseholdDetailsActivity extends AppCompatActivity implements House
 
         HouseholdFormUtil householdForm = new HouseholdFormUtil(this, this, this.region, this.odkFormUtilities, new FormUtilListener<Household>() {
             @Override
-            public void onNewEntityCreated(Household household) {
+            public void onNewEntityCreated(Household household, Map<String, Object> data) {
                 HouseholdDetailsActivity.this.household = household;
                 loadNewVisitForm(true);
             }
 
             @Override
-            public void onEntityEdited(Household household) {
+            public void onEntityEdited(Household household, Map<String, Object> data) {
 
             }
 
@@ -626,13 +627,13 @@ public class HouseholdDetailsActivity extends AppCompatActivity implements House
 
         VisitFormUtil visitFormUtil = new VisitFormUtil(this, this, this.household, newHouseholdCreated, this.odkFormUtilities, new FormUtilListener<Visit>() {
             @Override
-            public void onNewEntityCreated(Visit entity) {
+            public void onNewEntityCreated(Visit entity, Map<String, Object> data) {
                 HouseholdDetailsActivity.this.visit = entity;
                 setVisitMode();
             }
 
             @Override
-            public void onEntityEdited(Visit entity) {
+            public void onEntityEdited(Visit entity, Map<String, Object> data) {
 
             }
 

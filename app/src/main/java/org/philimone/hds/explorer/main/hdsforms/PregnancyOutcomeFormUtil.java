@@ -46,6 +46,7 @@ import org.philimone.hds.forms.model.XmlFormResult;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -541,7 +542,7 @@ public class PregnancyOutcomeFormUtil extends FormUtil<PregnancyOutcome> {
     @Override
     protected void onFinishedExtensionCollection() {
         if (listener != null) {
-            listener.onNewEntityCreated(this.entity);
+            listener.onNewEntityCreated(this.entity, new HashMap<>());
         }
     }
 

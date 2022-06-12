@@ -61,6 +61,7 @@ import org.philimone.hds.explorer.widget.RecyclerListView;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -267,11 +268,8 @@ public class HouseholdVisitFragment extends Fragment {
         //select one and show MemberDetails without Highlight
         MemberAdapter adapter = getMembersAdapter();
         if (adapter != null) {
-            Member member = adapter.getItem(position);
-
-            //TODO DO IT LATER
+            //Member member = adapter.getItem(position);
         }
-
     }
 
     private MemberAdapter getMembersAdapter(){
@@ -434,12 +432,12 @@ public class HouseholdVisitFragment extends Fragment {
 
         IncompleteVisitFormUtil formUtil = new IncompleteVisitFormUtil(this, this.getContext(), this.visit, this.selectedMember, this.odkFormUtilities, new FormUtilListener<IncompleteVisit>() {
             @Override
-            public void onNewEntityCreated(IncompleteVisit entity) {
+            public void onNewEntityCreated(IncompleteVisit entity, Map<String, Object> data) {
                 loadDataToListViews();
             }
 
             @Override
-            public void onEntityEdited(IncompleteVisit entity) {
+            public void onEntityEdited(IncompleteVisit entity, Map<String, Object> data) {
                 loadDataToListViews();
             }
 
@@ -458,14 +456,14 @@ public class HouseholdVisitFragment extends Fragment {
 
         MemberEnumerationFormUtil formUtil = new MemberEnumerationFormUtil(this, this.getContext(), this.visit, this.household, this.odkFormUtilities, new FormUtilListener<Member>() {
             @Override
-            public void onNewEntityCreated(Member member) {
+            public void onNewEntityCreated(Member member, Map<String, Object> data) {
                 selectedMember = member;
                 loadDataToListViews();
                 //selectMember(member);
             }
 
             @Override
-            public void onEntityEdited(Member member) {
+            public void onEntityEdited(Member member, Map<String, Object> data) {
 
             }
 
@@ -486,12 +484,12 @@ public class HouseholdVisitFragment extends Fragment {
 
         MaritalRelationshipFormUtil formUtil = new MaritalRelationshipFormUtil(this, this.getContext(), this.visit, this.selectedMember, this.odkFormUtilities, new FormUtilListener<MaritalRelationship>() {
             @Override
-            public void onNewEntityCreated(MaritalRelationship maritalRelationship) {
+            public void onNewEntityCreated(MaritalRelationship maritalRelationship, Map<String, Object> data) {
                 loadDataToListViews();
             }
 
             @Override
-            public void onEntityEdited(MaritalRelationship maritalRelationship) {
+            public void onEntityEdited(MaritalRelationship maritalRelationship, Map<String, Object> data) {
 
             }
 
@@ -509,14 +507,14 @@ public class HouseholdVisitFragment extends Fragment {
 
         ExternalInMigrationFormUtil formUtil = new ExternalInMigrationFormUtil(this, this.getContext(), this.visit, this.household, this.odkFormUtilities, new FormUtilListener<Member>() {
             @Override
-            public void onNewEntityCreated(Member member) {
+            public void onNewEntityCreated(Member member, Map<String, Object> data) {
                 selectedMember = member;
                 loadDataToListViews();
                 //selectMember(member);
             }
 
             @Override
-            public void onEntityEdited(Member member) {
+            public void onEntityEdited(Member member, Map<String, Object> data) {
 
             }
 
@@ -534,14 +532,14 @@ public class HouseholdVisitFragment extends Fragment {
 
         InternalInMigrationFormUtil formUtil = new InternalInMigrationFormUtil(this, this.getContext(), this.visit, this.household, this.odkFormUtilities, new FormUtilListener<Inmigration>() {
             @Override
-            public void onNewEntityCreated(Inmigration inmigration) {
+            public void onNewEntityCreated(Inmigration inmigration, Map<String, Object> data) {
                 selectedMember = boxMembers.query().equal(Member_.code, inmigration.memberCode, QueryBuilder.StringOrder.CASE_SENSITIVE).build().findFirst();
                 loadDataToListViews();
                 //selectMember(selectedMember);
             }
 
             @Override
-            public void onEntityEdited(Inmigration inmigration) {
+            public void onEntityEdited(Inmigration inmigration, Map<String, Object> data) {
 
             }
 
@@ -559,13 +557,13 @@ public class HouseholdVisitFragment extends Fragment {
 
         OutmigrationFormUtil formUtil = new OutmigrationFormUtil(this, this.getContext(), this.visit, this.household, this.selectedMember, this.odkFormUtilities, new FormUtilListener<Outmigration>() {
             @Override
-            public void onNewEntityCreated(Outmigration outmigration) {
+            public void onNewEntityCreated(Outmigration outmigration, Map<String, Object> data) {
                 selectedMember = null;
                 loadDataToListViews();
             }
 
             @Override
-            public void onEntityEdited(Outmigration outmigration) {
+            public void onEntityEdited(Outmigration outmigration, Map<String, Object> data) {
 
             }
 
@@ -583,12 +581,12 @@ public class HouseholdVisitFragment extends Fragment {
 
         PregnancyRegistrationFormUtil formUtil = new PregnancyRegistrationFormUtil(this, this.getContext(), this.visit, this.household, this.selectedMember, this.odkFormUtilities, new FormUtilListener<PregnancyRegistration>() {
             @Override
-            public void onNewEntityCreated(PregnancyRegistration pregnancyRegistration) {
+            public void onNewEntityCreated(PregnancyRegistration pregnancyRegistration, Map<String, Object> data) {
                 loadDataToListViews();
             }
 
             @Override
-            public void onEntityEdited(PregnancyRegistration pregnancyRegistration) {
+            public void onEntityEdited(PregnancyRegistration pregnancyRegistration, Map<String, Object> data) {
 
             }
 
@@ -625,12 +623,12 @@ public class HouseholdVisitFragment extends Fragment {
         Log.d("started ", "pregnancy outcome - preg registration");
         new PregnancyRegistrationFormUtil(this, this.getContext(), this.visit, this.household, this.selectedMember, PregnancyStatus.DELIVERED, this.odkFormUtilities, new FormUtilListener<PregnancyRegistration>() {
             @Override
-            public void onNewEntityCreated(PregnancyRegistration entity) {
+            public void onNewEntityCreated(PregnancyRegistration entity, Map<String, Object> data) {
                 openPregnancyOutcomeForm(entity, true);
             }
 
             @Override
-            public void onEntityEdited(PregnancyRegistration entity) {
+            public void onEntityEdited(PregnancyRegistration entity, Map<String, Object> data) {
 
             }
 
@@ -644,12 +642,12 @@ public class HouseholdVisitFragment extends Fragment {
     private void openPregnancyOutcomeForm(PregnancyRegistration pregnancyRegistration, boolean createdForOutcome){
         new PregnancyOutcomeFormUtil(this, this.getContext(), this.visit, this.household, this.selectedMember, pregnancyRegistration, createdForOutcome, this.odkFormUtilities, new FormUtilListener<PregnancyOutcome>() {
             @Override
-            public void onNewEntityCreated(PregnancyOutcome pregnancyOutcome) {
+            public void onNewEntityCreated(PregnancyOutcome pregnancyOutcome, Map<String, Object> data) {
                 loadDataToListViews();
             }
 
             @Override
-            public void onEntityEdited(PregnancyOutcome pregnancyOutcome) {
+            public void onEntityEdited(PregnancyOutcome pregnancyOutcome, Map<String, Object> data) {
 
             }
 
@@ -673,13 +671,13 @@ public class HouseholdVisitFragment extends Fragment {
 
         DeathFormUtil formUtil = new DeathFormUtil(this, this.getContext(), this.visit, this.household, this.selectedMember, this.odkFormUtilities, new FormUtilListener<Death>() {
             @Override
-            public void onNewEntityCreated(Death death) {
+            public void onNewEntityCreated(Death death, Map<String, Object> data) {
                 selectedMember = null;
                 loadDataToListViews();
             }
 
             @Override
-            public void onEntityEdited(Death death) {
+            public void onEntityEdited(Death death, Map<String, Object> data) {
 
             }
 
@@ -697,7 +695,7 @@ public class HouseholdVisitFragment extends Fragment {
 
         ChangeHeadFormUtil formUtil = new ChangeHeadFormUtil(this, this.getContext(), this.visit, this.household, this.odkFormUtilities, new FormUtilListener<Member>() {
             @Override
-            public void onNewEntityCreated(Member newHeadMember) {
+            public void onNewEntityCreated(Member newHeadMember, Map<String, Object> data) {
                 loadDataToListViews();
 
                 if (householdDetailsListener != null) {
@@ -706,7 +704,7 @@ public class HouseholdVisitFragment extends Fragment {
             }
 
             @Override
-            public void onEntityEdited(Member newHeadMember) {
+            public void onEntityEdited(Member newHeadMember, Map<String, Object> data) {
 
             }
 

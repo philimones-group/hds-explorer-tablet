@@ -14,11 +14,9 @@ public class TrackingSubListItem implements Serializable {
     private int id;
     private TrackingList trackingList;
     private String title;
-    private List<String> forms;
     private boolean collapsed = true;
 
     public TrackingSubListItem(){
-        this.forms = new ArrayList<>();
     }
 
     public int getId() {
@@ -67,18 +65,6 @@ public class TrackingSubListItem implements Serializable {
 
     public void setTitle(String title) {
         this.title = title;
-    }
-
-    public List<String> getForms() {
-        return forms;
-    }
-
-    public void setForms(List<String> forms) {
-        this.forms.addAll(forms);
-    }
-
-    public void setForms(String[] forms) {
-        this.forms.addAll(Arrays.asList(forms));
     }
 
     @Override

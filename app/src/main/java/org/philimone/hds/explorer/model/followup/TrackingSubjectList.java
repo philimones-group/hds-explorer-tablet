@@ -28,7 +28,8 @@ public class TrackingSubjectList implements Serializable {
     public String subjectType;
     @Index
     public String subjectForms;
-    public int subjectVisit;
+    public String subjectVisitCode;
+    public String subjectVisitUuid;
     public Double completionRate;
 
     public long getId() {
@@ -99,12 +100,20 @@ public class TrackingSubjectList implements Serializable {
         return subjectType.equalsIgnoreCase(TYPE_MEMBER);
     }
 
-    public int getSubjectVisit() {
-        return subjectVisit;
+    public String getSubjectVisitCode() {
+        return subjectVisitCode;
     }
 
-    public void setSubjectVisit(int subjectVisit) {
-        this.subjectVisit = subjectVisit;
+    public void setSubjectVisitCode(String subjectVisitCode) {
+        this.subjectVisitCode = subjectVisitCode;
+    }
+
+    public String getSubjectVisitUuid() {
+        return subjectVisitUuid;
+    }
+
+    public void setSubjectVisitUuid(String subjectVisitUuid) {
+        this.subjectVisitUuid = subjectVisitUuid;
     }
 
     public String getSubjectForms() {

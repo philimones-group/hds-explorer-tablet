@@ -441,7 +441,7 @@ public class TrackingListDetailsActivity extends AppCompatActivity implements Ba
         tSubject.setMember(member);
         tSubject.setListItem(subListItem);
         tSubject.setSubjectType(item.getSubjectType());
-        tSubject.setVisitNumber(item.getSubjectVisit());
+        tSubject.setVisitCode(item.getSubjectVisitCode());
         tSubject.addForms(forms);
         tSubject.addCollectedData(listCollected);
 
@@ -454,7 +454,6 @@ public class TrackingListDetailsActivity extends AppCompatActivity implements Ba
         tsi.setId(trackingSubjectList.getListId());
         tsi.setTrackingList(trackingList);
         tsi.setTitle(trackingSubjectList.getTitle());
-        tsi.setForms(trackingSubjectList.getForms().split(","));
 
         return tsi;
     }
@@ -465,7 +464,6 @@ public class TrackingListDetailsActivity extends AppCompatActivity implements Ba
         tsi.setId(trackingMemberList.getListId());
         tsi.setTrackingList(trackingList);
         tsi.setTitle(trackingMemberList.getTitle());
-        tsi.setForms(trackingMemberList.getForms().split(","));
 
         return tsi;
     }

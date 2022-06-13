@@ -1389,7 +1389,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 				//read list tag
 				String listId = null;
 				String listTitle = null;
-				String listForms = null;
+				//String listForms = null;
 
 				if (isEndTag("list", parser) || isEmptyTag("list", parser)){
 					parser.nextTag();
@@ -1402,7 +1402,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 
 					listId = parser.getAttributeValue("", "id");
 					listTitle = parser.getAttributeValue("", "title");
-					listForms = parser.getAttributeValue("", "forms");
+					//listForms = parser.getAttributeValue("", "forms");
 
 				}
 
@@ -1419,22 +1419,24 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 						String mCode = parser.getAttributeValue("", "code");
 						String mType = parser.getAttributeValue("", "type");
 						String mForms = parser.getAttributeValue("", "forms");
-						String mVisit = parser.getAttributeValue("", "visit");
+						String mVisitCode = parser.getAttributeValue("", "visit_code");
+						String mVisitUuid = parser.getAttributeValue("", "visit_uuid");
 
 						//save track member list to database
 						org.philimone.hds.explorer.model.followup.TrackingSubjectList tml = new org.philimone.hds.explorer.model.followup.TrackingSubjectList();
 						tml.setListId(Integer.parseInt(listId));
 						tml.setTrackingId(trackingId);
 						tml.setTitle(listTitle);
-						tml.setForms(listForms==null ? "" : listForms);
+						//tml.setForms(listForms==null ? "" : listForms);
 						tml.setSubjectCode(mCode);
 						tml.setSubjectType(mType);
 						tml.setSubjectForms(mForms);
 						tml.setCompletionRate(0D);
 
-						if (mVisit != null && !mVisit.isEmpty()){
-							tml.setSubjectVisit(Integer.parseInt(mVisit));
-						}
+
+						tml.setSubjectVisitCode(mVisitCode);
+						tml.setSubjectVisitUuid(mVisitUuid);
+
 
 						//this.boxTrackingSubjects.put(tml);
 						valuesTs.add(tml);

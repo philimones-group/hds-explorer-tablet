@@ -20,7 +20,8 @@ public class TrackingSubjectItem implements Serializable {
     private Member member;
     private TrackingSubListItem listItem;
     private String subjectType;
-    private int visitNumber;
+    private String visitCode;
+    private String visitUuid;
     private List<String> forms;
     private List<CollectedData> collectedForms;
 
@@ -93,12 +94,20 @@ public class TrackingSubjectItem implements Serializable {
         this.subjectType = subjectType;
     }
 
-    public int getVisitNumber() {
-        return visitNumber;
+    public String getVisitCode() {
+        return visitCode;
     }
 
-    public void setVisitNumber(int visitNumber) {
-        this.visitNumber = visitNumber;
+    public void setVisitCode(String visitCode) {
+        this.visitCode = visitCode;
+    }
+
+    public String getVisitUuid() {
+        return visitUuid;
+    }
+
+    public void setVisitUuid(String visitUuid) {
+        this.visitUuid = visitUuid;
     }
 
     public List<String> getForms() {

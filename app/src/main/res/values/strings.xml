@@ -22,6 +22,7 @@
     <string name="bt_disable_lbl">Disable</string>
     <string name="info_lbl">Info</string>
     <string name="error_lbl">Error</string>
+    <string name="updated_successfully_lbl">Updated Successfully</string>
 
     <!-- Strings related to ODK -->
     <string name="odk_couldnt_open_xform_lbl">Couldnt open the ODK Form</string>
@@ -123,6 +124,9 @@
     <string name="core_entity_changehoh_lbl">Change Head of Household</string>
     <string name="core_entity_member_not_visited_lbl">Member Not Visited Form</string>
     <string name="core_entity_visit_lbl">Visit Registration</string>
+    <string name="core_entity_edit_region_lbl">Edit Region</string>
+    <string name="core_entity_edit_household_lbl">Edit Household</string>
+    <string name="core_entity_edit_member_lbl">Edit Member</string>
     <string name="core_entity_collected_date_lbl">Collected Date:</string>
     <string name="core_entity_updated_date_lbl">Updated Date:</string>
     <string name="core_entity_uploaded_date_lbl">Uploaded Date:</string>
@@ -229,6 +233,7 @@
     <string name="member_details_tab_details_list_lbl">Member Details</string>
     <string name="member_details_tab_collected_forms_lbl">Collected Forms</string>
     <string name="member_details_tab_datasets_lbl">Extra Details</string>
+    <string name="member_details_tab_edit_lbl">Edit Details</string>
     <string name="member_details_title_lbl">Member Details</string>
     <string name="member_details_name_lbl">Name</string>
     <string name="member_details_code_lbl">Code</string>
@@ -255,13 +260,17 @@
     <string name="member_details_endtype_dth_lbl">Died</string>
     <string name="member_details_name_unknown_lbl">Unknown Name</string>
     <string name="member_details_member_enddate_lbl">Status Date</string>
-
     <string name="member_details_dialog_del_saved_form_title_lbl">Delete saved info</string>
     <string name="member_details_dialog_del_saved_form_msg_lbl">The associated ODK Form wasnt found, the system will delete the saved information in order to keep collecting data\nDo you want to execute this operation?</string>
+
+    <string name="region_details_edit_cant_update_new_record">Cannot edit/update this Region data because it was recently created.\nTo perform any change you must do it in the Household Form</string>
+
+    <string name="member_details_edit_cant_update_new_record">Cannot edit/update this Member data because it was recently created.\nTo perform any change you must do it in the Household Form</string>
 
     <string name="household_details_tab_members_list_lbl">Members List</string>
     <string name="household_details_tab_collected_forms_lbl">Collected Forms</string>
     <string name="household_details_tab_datasets_lbl">Extra Details</string>
+    <string name="household_details_tab_edit_lbl">Edit Details</string>
     <string name="household_details_tab_visit_lbl">Current Visit</string>
     <string name="household_details_head_name_lbl">Head:</string>
     <string name="household_details_head_code_lbl">Code:</string>
@@ -270,6 +279,8 @@
     <string name="household_details_dialog_del_saved_form_title_lbl">Delete saved info</string>
     <string name="household_details_dialog_del_saved_form_msg_lbl">The associated ODK Form wasnt found, the system will delete the saved information in order to keep collecting data\nDo you want to execute this operation?</string>
     <string name="household_details_forms_selector_lbl">Select an Form</string>
+
+    <string name="household_details_edit_cant_update_new_record">Cannot edit/update this Household data because it was recently created.\nTo perform any change you must do it in the Household Form</string>
 
     <string name="household_details_bt_create_visit_lbl">Create Visit</string>
     <string name="household_details_bt_finish_visit_lbl">Finish Visit</string>
@@ -293,9 +304,16 @@
     <string name="household_visit_not_finished_msg_lbl">Not all the Members were visited during this Visit\nPlease collect the (Visit Member not Possible) Form\nFor the following Members:\n(%1$s)</string>
     <string name="household_visit_not_finished_msg_ask_lbl">Not all the Members were visited during this Visit,\nMembers: (%1$s)\nCollect the (Visit Member not Possible) Form or mark all as non-visited.\n\nDo you want to mark all these members as non-visited?</string>
 
+    <string name="gps_title_lbl">GPS Location</string>
+    <string name="gps_permissions_error">You must grant Location permissions to be able to use the GPS feature</string>
+    <string name="gps_loading_lbl">Loading GPS Location</string>
+    <string name="gps_loading_error">Couldnt provide GPS Location</string>
+    <string name="gps_no_provider_available_error">Providers are disabled. To be able to continue, enable Network or Location provider</string>
+
     <string name="region_details_tab_details_list_lbl">Region Childs List</string>
     <string name="region_details_tab_collected_forms_lbl">Collected Forms</string>
     <string name="region_details_tab_datasets_lbl">Extra Details</string>
+    <string name="region_details_tab_edit_lbl">Edit Details</string>
     <string name="region_details_code_lbl">Code:</string>
     <string name="region_details_parent_lbl">Parent Region:</string>
 

@@ -1,6 +1,7 @@
 package org.philimone.hds.explorer.adapter;
 
 import android.content.Context;
+import android.graphics.Paint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import org.philimone.hds.explorer.R;
 import org.philimone.hds.explorer.model.CoreCollectedData;
+import org.philimone.hds.explorer.model.enums.CoreFormRecordType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -180,6 +182,11 @@ public class CoreCollectedDataAdapter extends RecyclerView.Adapter<CoreCollected
             txtItem3.setText(mContext.getString(R.string.core_entity_collected_date_lbl)+createdDate+", " + mContext.getString(R.string.core_entity_uploaded_date_lbl)+uploadedDate);
             chkProcessed.setChecked(checked);
             button.setEnabled(cd.uploadedWithError);
+
+            if (cd.recordType == CoreFormRecordType.UPDATE_RECORD) {
+                //DO SOMETHING DIFFERENT WITH EDIT/UPDATES
+                txtItem2.setPaintFlags(txtItem2.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+            }
 
             chkProcessed.setVisibility(checkable ? View.INVISIBLE : View.VISIBLE);
 

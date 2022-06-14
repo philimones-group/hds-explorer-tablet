@@ -191,7 +191,7 @@ public class SyncUploadPanelFragment extends Fragment implements SyncUploadEntit
 
     public void loadCollectedData() {
 
-        QueryBuilder<CoreCollectedData> builder = this.boxCoreCollectedData.query();
+        QueryBuilder<CoreCollectedData> builder = this.boxCoreCollectedData.query(); //for NEW_RECORDS / CORE_FORM Collection
 
         boolean uploaded = schUploaded.isChecked();
         boolean notuploaded = schNotUploaded.isChecked();
@@ -229,7 +229,7 @@ public class SyncUploadPanelFragment extends Fragment implements SyncUploadEntit
 
 
 
-        List<CoreCollectedData> dataList = builder.order(CoreCollectedData_.createdDate).build().find();
+        List<CoreCollectedData> dataList = builder.order(CoreCollectedData_.recordType).order(CoreCollectedData_.createdDate).build().find(); //order by recordType,createDate - first the new records than edit records
         CoreCollectedDataAdapter adapter = new CoreCollectedDataAdapter(this.getContext(), dataList, this);
 
         this.collectedDataListView.setAdapter(adapter);

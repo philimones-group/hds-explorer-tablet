@@ -4,6 +4,7 @@ import org.philimone.hds.explorer.R;
 import org.philimone.hds.explorer.data.FormDataLoader;
 import org.philimone.hds.explorer.fragment.CollectedDataFragment;
 import org.philimone.hds.explorer.fragment.ExternalDatasetsFragment;
+import org.philimone.hds.explorer.fragment.household.details.HouseholdEditFragment;
 import org.philimone.hds.explorer.fragment.household.details.HouseholdMembersFragment;
 import org.philimone.hds.explorer.model.Household;
 import org.philimone.hds.explorer.model.User;
@@ -24,6 +25,7 @@ public class HouseholdDetailsFragmentAdapter extends FragmentStateAdapter {
     private HouseholdMembersFragment fragMembers;
     private CollectedDataFragment fragCollected;
     private ExternalDatasetsFragment fragDatasets;
+    private HouseholdEditFragment fragEdit;
     private Household household;
     private User user;
     private List<FormDataLoader> formDataLoaders;
@@ -38,6 +40,7 @@ public class HouseholdDetailsFragmentAdapter extends FragmentStateAdapter {
         this.fragMembers = HouseholdMembersFragment.newInstance(this.household, this.user);
         this.fragDatasets = ExternalDatasetsFragment.newInstance(this.household);
         this.fragCollected = CollectedDataFragment.newInstance(this.household, this.user, this.formDataLoaders);
+        this.fragEdit = HouseholdEditFragment.newInstance(this.household, this.user);
     }
 
     @NonNull
@@ -48,9 +51,14 @@ public class HouseholdDetailsFragmentAdapter extends FragmentStateAdapter {
             case 0: return this.fragMembers;
             case 1: return this.fragDatasets;
             case 2: return this.fragCollected;
+            case 3: return this.fragEdit;
             default: return null;
         }
 
+    }
+
+    public void setFragmentEditListener(HouseholdEditFragment.EditListener listener) {
+        this.fragEdit.setEditListener(listener);
     }
 
     public String getTitle(int position) {
@@ -59,7 +67,7 @@ public class HouseholdDetailsFragmentAdapter extends FragmentStateAdapter {
 
     @Override
     public int getItemCount() {
-        return 3;
+        return 4;
     }
 
     @Override
@@ -82,5 +90,9 @@ public class HouseholdDetailsFragmentAdapter extends FragmentStateAdapter {
 
     public ExternalDatasetsFragment getFragmentDatasets() {
         return fragDatasets;
+    }
+
+    public HouseholdEditFragment getFragmentEdit() {
+        return fragEdit;
     }
 }

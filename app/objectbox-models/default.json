@@ -1796,7 +1796,7 @@
     },
     {
       "id": "23:4611124115189785343",
-      "lastPropertyId": "23:8795576327303333700",
+      "lastPropertyId": "24:9049047085137235743",
       "name": "CoreCollectedData",
       "properties": [
         {
@@ -1901,6 +1901,11 @@
           "indexId": "97:5729219827015890841",
           "type": 9,
           "flags": 2048
+        },
+        {
+          "id": "24:9049047085137235743",
+          "name": "recordType",
+          "type": 9
         }
       ],
       "relations": []

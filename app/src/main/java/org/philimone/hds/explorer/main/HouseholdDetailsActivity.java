@@ -18,6 +18,7 @@ import org.philimone.hds.explorer.database.Bootstrap;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
 import org.philimone.hds.explorer.database.Queries;
 import org.philimone.hds.explorer.fragment.CollectedDataFragment;
+import org.philimone.hds.explorer.fragment.household.details.HouseholdEditFragment;
 import org.philimone.hds.explorer.fragment.household.details.HouseholdMembersFragment;
 import org.philimone.hds.explorer.fragment.household.details.HouseholdVisitFragment;
 import org.philimone.hds.explorer.fragment.household.details.adapter.HouseholdDetailsFragmentAdapter;
@@ -297,13 +298,22 @@ public class HouseholdDetailsActivity extends AppCompatActivity implements House
             tabTitles.add(getString(R.string.household_details_tab_members_list_lbl));
             tabTitles.add(getString(R.string.household_details_tab_datasets_lbl));
             tabTitles.add(getString(R.string.household_details_tab_collected_forms_lbl));
+            tabTitles.add(getString(R.string.household_details_tab_edit_lbl));
 
             boolean isTracking = requestCode == RequestCodes.HOUSEHOLD_DETAILS_FROM_TRACKING_LIST_DETAILS;
 
             fragmentAdapter = new HouseholdDetailsFragmentAdapter(this.getSupportFragmentManager(), this.getLifecycle(), household, loggedUser, isTracking ? formDataLoaders : null, tabTitles);
+            fragmentAdapter.setFragmentEditListener(new HouseholdEditFragment.EditListener() {
+                @Override
+                public void onUpdate() {
+                    displayHouseholdDetails();
+                }
+            });
+
+
             householdDetailsTabViewPager.setAdapter(fragmentAdapter);
             //this will create all fragments
-            householdDetailsTabViewPager.setOffscreenPageLimit(3);
+            householdDetailsTabViewPager.setOffscreenPageLimit(4);
 
             new TabLayoutMediator(householdDetailsTabLayout, householdDetailsTabViewPager, (tab, position) -> {
                 tab.setText(fragmentAdapter.getTitle(position));
@@ -335,6 +345,9 @@ public class HouseholdDetailsActivity extends AppCompatActivity implements House
     private void displayHouseholdDetails(){
 
         if (household == null) return;
+
+        //reload
+        household = this.boxHouseholds.get(household.id);
 
         Region region = this.boxRegions.query().equal(Region_.code, household.region, QueryBuilder.StringOrder.CASE_SENSITIVE).build().findFirst();
         Visit lastVisit = this.boxVisits.query().equal(Visit_.householdCode, household.code, QueryBuilder.StringOrder.CASE_SENSITIVE).order(Visit_.visitDate, QueryBuilder.DESCENDING).build().findFirst();

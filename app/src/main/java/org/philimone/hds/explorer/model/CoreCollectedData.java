@@ -1,7 +1,9 @@
 package org.philimone.hds.explorer.model;
 
 import org.philimone.hds.explorer.model.converters.CoreFormEntityConverter;
+import org.philimone.hds.explorer.model.converters.CoreFormRecordTypeConverter;
 import org.philimone.hds.explorer.model.enums.CoreFormEntity;
+import org.philimone.hds.explorer.model.enums.CoreFormRecordType;
 
 import java.util.Date;
 
@@ -20,6 +22,9 @@ public class CoreCollectedData {
 
     @Convert(converter = CoreFormEntityConverter.class, dbType = String.class)
     public CoreFormEntity formEntity;
+
+    @Convert(converter = CoreFormRecordTypeConverter.class, dbType = String.class)
+    public CoreFormRecordType recordType = CoreFormRecordType.NEW_RECORD;
 
     public long visitId;
 

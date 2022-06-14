@@ -326,7 +326,8 @@ public class DeathFormUtil extends FormUtil<Death> {
             return new ValidationResult(colDeathDate, message);
         }
 
-        if (isHouseholdHead && StringUtil.isBlank(newHeadCode)){
+        boolean isAlone = isTheOnlyHouseholdMember(memberCode, household.code);
+        if (isHouseholdHead && !isAlone && StringUtil.isBlank(newHeadCode)){
             String message = this.context.getString(R.string.death_new_head_code_empty_lbl);
             return new ValidationResult(colNewHeadCode, message);
         }
@@ -347,6 +348,17 @@ public class DeathFormUtil extends FormUtil<Death> {
         */
 
         return ValidationResult.noErrors();
+    }
+
+    private boolean isTheOnlyHouseholdMember(String memberCode, String householdCode){
+
+        List<Residency> houseResidents = boxResidencies.query(Residency_.householdCode.equal(householdCode).and(Residency_.endType.equal(ResidencyEndType.NOT_APPLICABLE.code))).orderDesc(Residency_.startDate).build().find();
+
+        if (houseResidents.size()==1 && !StringUtil.isBlank(memberCode) && memberCode.equals(houseResidents.get(0).memberCode)) {
+            return true; //the only one living in the household
+        }
+
+        return false;
     }
 
     @Override

@@ -4,6 +4,7 @@ import android.widget.DatePicker;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -134,5 +135,9 @@ public class GeneralUtil {
         Calendar c2 = getCalendar(date2);
 
         return c1.get(Calendar.YEAR)==c2.get(Calendar.YEAR) && c1.get(Calendar.MONTH)==c2.get(Calendar.MONTH) && c1.get(Calendar.DAY_OF_MONTH)==c2.get(Calendar.DAY_OF_MONTH);
+    }
+
+    public static String generateUUID(){
+        return UUID.randomUUID().toString().replaceAll("-", "");
     }
 }

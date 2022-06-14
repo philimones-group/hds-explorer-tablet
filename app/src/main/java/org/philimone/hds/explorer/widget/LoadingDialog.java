@@ -4,6 +4,8 @@ import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
+import androidx.annotation.StringRes;
+
 import android.view.Window;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -41,6 +43,12 @@ public class LoadingDialog extends Dialog {
 
     public String getMessage(){
         return message;
+    }
+
+    public void setMessage(@StringRes int messageId){
+        if (txtLoadingMessage != null){
+            txtLoadingMessage.setText(messageId);
+        }
     }
 
     public void setMessage(String message){

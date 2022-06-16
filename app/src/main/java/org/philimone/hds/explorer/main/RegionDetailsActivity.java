@@ -15,7 +15,9 @@ import org.philimone.hds.explorer.database.ObjectBoxDatabase;
 import org.philimone.hds.explorer.database.Queries;
 import org.philimone.hds.explorer.fragment.CollectedDataFragment;
 import org.philimone.hds.explorer.fragment.ExternalDatasetsFragment;
+import org.philimone.hds.explorer.fragment.household.details.HouseholdEditFragment;
 import org.philimone.hds.explorer.fragment.region.details.RegionChildsFragment;
+import org.philimone.hds.explorer.fragment.region.details.RegionEditFragment;
 import org.philimone.hds.explorer.fragment.region.details.adapter.RegionDetailsFragmentAdapter;
 import org.philimone.hds.explorer.model.ApplicationParam;
 import org.philimone.hds.explorer.model.Form;
@@ -125,6 +127,9 @@ public class RegionDetailsActivity extends AppCompatActivity {
     }
 
     private void setRegionData(){
+
+        this.region = this.boxRegions.get(region.id);
+
         String hierarchyName = getHierarchyName(region);
         Region parent = getRegion(region.getParent());
 
@@ -158,13 +163,22 @@ public class RegionDetailsActivity extends AppCompatActivity {
             tabTitles.add(getString(R.string.region_details_tab_details_list_lbl));
             tabTitles.add(getString(R.string.region_details_tab_datasets_lbl));
             tabTitles.add(getString(R.string.region_details_tab_collected_forms_lbl));
+            tabTitles.add(getString(R.string.region_details_tab_edit_lbl));
 
             boolean isTracking = activityRequestCode == RequestCodes.REGION_DETAILS_FROM_TRACKING_LIST_DETAILS;
 
             fragmentAdapter = new RegionDetailsFragmentAdapter(this.getSupportFragmentManager(), this.getLifecycle(), region, loggedUser, (isTracking) ? formDataLoaders : null, tabTitles);
+            fragmentAdapter.setFragmentEditListener(new RegionEditFragment.EditListener() {
+                @Override
+                public void onUpdate() {
+                    setRegionData();
+                    reloadFragmentsData();
+                }
+            });
+
             regionDetailsTabViewPager.setAdapter(fragmentAdapter);
             //this will create all fragments
-            regionDetailsTabViewPager.setOffscreenPageLimit(3);
+            regionDetailsTabViewPager.setOffscreenPageLimit(4);
 
             new TabLayoutMediator(regionDetailsTabLayout, regionDetailsTabViewPager, (tab, position) -> {
                 tab.setText(fragmentAdapter.getTitle(position));

@@ -263,8 +263,25 @@
     <string name="member_details_dialog_del_saved_form_title_lbl">Apagar informação salva</string>
     <string name="member_details_dialog_del_saved_form_msg_lbl">O formulário ODK salvo não foi encontrado, a informação salva será apagada para permitir colheita de novos formulários\nDeseja prosseguir com a execução deste processo?</string>
 
-    <string name="member_details_edit_cant_update_new_record">Não sera possivel atualizar este Membro porque foi criado recentemente.\nPara atualiza-lo pode faze-lo no Formulário que usou para registar este Membro</string>
+    <string name="member_details_edit_member_name_lbl">Nome</string>
+    <string name="member_details_edit_member_dob_lbl">Data de Nascimento</string>
+    <string name="member_details_edit_member_father_lbl">Pai</string>
+    <string name="member_details_edit_member_mother_lbl">Mãe</string>
+    <string name="member_details_edit_member_parent_code_lbl">Código:</string>
+    <string name="member_details_edit_member_parent_name_lbl">Nome:</string>
+    <string name="member_details_edit_mother_select_lbl">Alterar a Mãe do membro?</string>
+    <string name="member_details_edit_father_select_lbl">Alterar o Pai do membro?</string>
+    <string name="member_details_edit_father_unknown_lbl">Definir como Pai Desconhecido</string>
+    <string name="member_details_edit_mother_unknown_lbl">Definir como Mãe Desconhecida</string>
+    <string name="member_details_edit_button_change_lbl">Alterar</string>
+    <string name="member_details_edit_button_update_details_lbl">Alterar Detalhes</string>
+    <string name="member_details_edit_cant_update_new_record">Não será possivel atualizar este Membro porque foi criado recentemente.\nPara atualiza-lo pode faze-lo no Formulário que usou para registar este Membro</string>
+    <string name="member_details_edit_father_sex_cant_change_lbl">Não será possivel alterar o sexo, porque o membro já é Pai de outros membros no sistema.\nAltere primeiro o Pai dos membros relacionados</string>
+    <string name="member_details_edit_mother_sex_cant_change_lbl">Não será possivel alterar o sexo, porque o membro já é Mãe de outros membros no sistema.\nAltere primeiro o Mãe dos membros relacionados</string>
+    <string name="member_details_edit_dob_bir_warning_lbl">Este membro foi registrado atraves dum Registo de Nascimento.\nPortanto a data em que começou a residir na casa é a mesma que a data de nascimento!\n\nTem certeza que deseja alterar a data de nascimento (isto afectara o reg. de nascimento)?</string>
 
+    <string name="region_details_edit_region_name_lbl">Nome da Região</string>
+    <string name="region_details_edit_button_update_details_lbl">Alterar Detalhes</string>
     <string name="region_details_edit_cant_update_new_record">Não sera possivel atualizar esta Região porque foi criado recentemente.\nPara atualiza-lo pode faze-lo no Formulário de Registo do novo Agregado</string>
 
     <string name="household_details_tab_members_list_lbl">Lista de Membros</string>
@@ -280,6 +297,14 @@
     <string name="household_details_dialog_del_saved_form_msg_lbl">O formulário ODK salvo não foi encontrado, a informação salva será apagada para permitir colheita de novos formulários\nDeseja prosseguir com a execução deste processo?</string>
     <string name="household_details_forms_selector_lbl">Selecionar um Formulário</string>
 
+    <string name="household_details_edit_household_name_lbl">Nomde do Agregado</string>
+    <string name="household_details_edit_gps_lbl">Coordenadas GPS</string>
+    <string name="household_details_edit_button_gps_lbl">Obter GPS</string>
+    <string name="household_details_edit_gps_lat_lbl">Latitude:</string>
+    <string name="household_details_edit_gps_lon_lbl">Longitude:</string>
+    <string name="household_details_edit_gps_alt_lbl">Altitude:</string>
+    <string name="household_details_edit_gps_acc_lbl">Precisão:</string>
+    <string name="household_details_edit_button_update_details_lbl">Alterar Detalhes</string>
     <string name="household_details_edit_cant_update_new_record">Não sera possivel atualizar esta Casa/Agregado porque foi criado recentemente.\nPara atualiza-lo pode faze-lo no Formulário de Registo do novo Agregado</string>
 
     <string name="household_details_bt_create_visit_lbl">Iniciar Visita</string>

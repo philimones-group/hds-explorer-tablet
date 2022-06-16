@@ -186,6 +186,8 @@ public class CoreCollectedDataAdapter extends RecyclerView.Adapter<CoreCollected
             if (cd.recordType == CoreFormRecordType.UPDATE_RECORD) {
                 //DO SOMETHING DIFFERENT WITH EDIT/UPDATES
                 txtItem2.setPaintFlags(txtItem2.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+            } else {
+                txtItem2.setPaintFlags(Paint.ANTI_ALIAS_FLAG);
             }
 
             chkProcessed.setVisibility(checkable ? View.INVISIBLE : View.VISIBLE);

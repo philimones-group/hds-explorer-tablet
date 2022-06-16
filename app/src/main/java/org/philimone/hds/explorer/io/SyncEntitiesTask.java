@@ -60,6 +60,7 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -357,7 +358,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 					case MEMBERS:
 						this.boxMembers.removeAll();
 						this.boxCollectedData.removeAll();
-						this.boxCoreCollectedData.removeAll();
+						deleteAllCoreCollectedData();
 						//remove related to members
 						boxDeaths.removeAll();
 						boxIncompleteVisits.removeAll();
@@ -413,6 +414,21 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 		}
 
 		return new ExecutionReport(this.mContext.getString(R.string.sync_successfully_lbl));
+	}
+
+	private void deleteAllCoreCollectedData() {
+
+		for (CoreCollectedData cdata : this.boxCoreCollectedData.getAll()) {
+			if (cdata.uploaded) {
+				try {
+					new File(cdata.formFilename).delete();
+				} catch (Exception ex) {
+					Log.d("deletion-failed", ""+ex.getLocalizedMessage());
+				}
+			}
+		}
+
+		this.boxCoreCollectedData.removeAll();
 	}
 
 	private void executeOnSyncStarted(SyncEntity entity, SyncState state){

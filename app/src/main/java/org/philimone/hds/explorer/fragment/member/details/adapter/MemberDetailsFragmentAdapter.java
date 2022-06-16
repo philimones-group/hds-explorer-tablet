@@ -11,7 +11,10 @@ import androidx.viewpager2.adapter.FragmentStateAdapter;
 import org.philimone.hds.explorer.data.FormDataLoader;
 import org.philimone.hds.explorer.fragment.CollectedDataFragment;
 import org.philimone.hds.explorer.fragment.ExternalDatasetsFragment;
+import org.philimone.hds.explorer.fragment.household.details.HouseholdEditFragment;
 import org.philimone.hds.explorer.fragment.member.details.MemberDetailsFragment;
+import org.philimone.hds.explorer.fragment.member.details.MemberEditFragment;
+import org.philimone.hds.explorer.model.Household;
 import org.philimone.hds.explorer.model.Member;
 import org.philimone.hds.explorer.model.User;
 
@@ -25,12 +28,15 @@ public class MemberDetailsFragmentAdapter extends FragmentStateAdapter {
     private MemberDetailsFragment fragMemberDetails;
     private CollectedDataFragment fragCollected;
     private ExternalDatasetsFragment fragDatasets;
+    private MemberEditFragment fragEdit;
+    private Household household;
     private Member member;
     private User user;
     private List<FormDataLoader> formDataLoaders;
 
-    public MemberDetailsFragmentAdapter(@NonNull FragmentManager fragmentManager, @NonNull Lifecycle lifecycle, Member member, User user, List<FormDataLoader> formDataLoaders, List<String> titles) {
+    public MemberDetailsFragmentAdapter(@NonNull FragmentManager fragmentManager, @NonNull Lifecycle lifecycle, Household household, Member member, User user, List<FormDataLoader> formDataLoaders, List<String> titles) {
         super(fragmentManager, lifecycle);
+        this.household = household;
         this.member = member;
         this.user = user;
         this.formDataLoaders = formDataLoaders;
@@ -39,6 +45,7 @@ public class MemberDetailsFragmentAdapter extends FragmentStateAdapter {
         this.fragMemberDetails = MemberDetailsFragment.newInstance(this.member, this.user);
         this.fragDatasets = ExternalDatasetsFragment.newInstance(this.member);
         this.fragCollected = CollectedDataFragment.newInstance(this.member, this.user, this.formDataLoaders);
+        this.fragEdit = MemberEditFragment.newInstance(fragmentManager, this.household, this.member, this.user);
     }
 
     @NonNull
@@ -49,9 +56,14 @@ public class MemberDetailsFragmentAdapter extends FragmentStateAdapter {
             case 0: return this.fragMemberDetails;
             case 1: return this.fragDatasets;
             case 2: return this.fragCollected;
+            case 3: return this.fragEdit;
             default: return null;
         }
 
+    }
+
+    public void setFragmentEditListener(MemberEditFragment.EditListener listener) {
+        this.fragEdit.setEditListener(listener);
     }
 
     public String getTitle(int position) {
@@ -60,7 +72,7 @@ public class MemberDetailsFragmentAdapter extends FragmentStateAdapter {
 
     @Override
     public int getItemCount() {
-        return 3;
+        return 4;
     }
 
     @Override

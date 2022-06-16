@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".fragment.region.details.RegionEditFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- form -->
+        <LinearLayout
+            android:id="@+id/layout_md_xdata"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="20dp"
+            android:paddingStart="30dp"
+            android:paddingEnd="30dp"
+            android:background="@drawable/nui_list_rborder_panel"
+            android:orientation="vertical">
+
+            <!-- Name Textbox -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="45dp"
+                android:layout_marginBottom="45dp"
+                android:orientation="vertical"
+                android:fitsSystemWindows="true">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/column_margin_top"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginBottom="5dp"
+                        android:layout_gravity="center|left"
+                        android:gravity="left|center_horizontal"
+                        android:text="@string/region_details_edit_region_name_lbl"
+                        android:textStyle="bold"
+                        android:textColor="@color/nui_color_text_darkgray"
+                        android:textSize="@dimen/member_details_info_gender_layout_txtsize" />
+
+                </LinearLayout>
+
+                <EditText
+                    android:id="@+id/txtEditName"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:text="Matola City"
+                    android:textSize="@dimen/member_details_info_gender_layout_txtsize"
+                    android:textColor="@color/black"
+                    android:paddingStart="20dp"
+                    android:background="@drawable/nui_txtbox_rone_wbevel"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <!-- buttons -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="40dp"
+            android:layout_marginBottom="10dp"
+            android:orientation="vertical">
+
+            <Button
+                android:id="@+id/btEditUpdateDetails"
+                android:layout_width="350dp"
+                android:layout_height="@dimen/member_details_bt_height"
+                android:layout_marginLeft="10dp"
+                android:layout_gravity="center"
+                android:textSize="@dimen/member_details_buttons_textsize"
+                android:textStyle="bold"
+                android:text="@string/region_details_edit_button_update_details_lbl"
+                android:background="@drawable/nui_btnd_rone_dgbevel"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</FrameLayout>

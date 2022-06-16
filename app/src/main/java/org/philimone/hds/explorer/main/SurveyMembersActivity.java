@@ -211,6 +211,7 @@ public class SurveyMembersActivity extends AppCompatActivity implements MemberFi
         protected void onPostExecute(Void result) {
 
             Intent intent = new Intent(SurveyMembersActivity.this, MemberDetailsActivity.class);
+            intent.putExtra("household", this.household);
             intent.putExtra("member", this.member);
             //intent.putExtra("dataloaders", dataLoaders);
 

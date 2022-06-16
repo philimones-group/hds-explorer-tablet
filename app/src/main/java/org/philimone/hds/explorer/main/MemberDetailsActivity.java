@@ -13,10 +13,13 @@ import android.widget.TextView;
 import org.philimone.hds.explorer.R;
 import org.philimone.hds.explorer.data.FormDataLoader;
 import org.philimone.hds.explorer.database.Bootstrap;
+import org.philimone.hds.explorer.database.ObjectBoxDatabase;
 import org.philimone.hds.explorer.fragment.CollectedDataFragment;
 import org.philimone.hds.explorer.fragment.ExternalDatasetsFragment;
 import org.philimone.hds.explorer.fragment.member.details.MemberDetailsFragment;
+import org.philimone.hds.explorer.fragment.member.details.MemberEditFragment;
 import org.philimone.hds.explorer.fragment.member.details.adapter.MemberDetailsFragmentAdapter;
+import org.philimone.hds.explorer.fragment.region.details.RegionEditFragment;
 import org.philimone.hds.explorer.model.Form;
 import org.philimone.hds.explorer.model.Household;
 import org.philimone.hds.explorer.model.Member;
@@ -32,6 +35,7 @@ import androidx.viewpager2.widget.ViewPager2;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
+import io.objectbox.Box;
 import mz.betainteractive.utilities.StringUtil;
 
 public class MemberDetailsActivity extends AppCompatActivity {
@@ -58,6 +62,8 @@ public class MemberDetailsActivity extends AppCompatActivity {
     private Member member;
     private boolean isNewTempMember;
     private List<FormDataLoader> formDataLoaders = new ArrayList<>();
+
+    private Box<Member> boxMembers;
 
     private MemberDetailsFragmentAdapter fragmentAdapter;
 
@@ -134,7 +140,7 @@ public class MemberDetailsActivity extends AppCompatActivity {
     private void initBoxes() {
         //this.boxCollectedData = ObjectBoxDatabase.get().boxFor(CollectedData.class);
         //this.boxForms = ObjectBoxDatabase.get().boxFor(Form.class);
-        //this.boxMembers = ObjectBoxDatabase.get().boxFor(Member.class);
+        this.boxMembers = ObjectBoxDatabase.get().boxFor(Member.class);
     }
 
     private void initialize() {
@@ -202,13 +208,22 @@ public class MemberDetailsActivity extends AppCompatActivity {
             tabTitles.add(getString(R.string.member_details_tab_details_list_lbl));
             tabTitles.add(getString(R.string.member_details_tab_datasets_lbl));
             tabTitles.add(getString(R.string.member_details_tab_collected_forms_lbl));
+            tabTitles.add(getString(R.string.member_details_tab_edit_lbl));
 
             boolean isTracking = requestCode == RequestCodes.MEMBER_DETAILS_FROM_TRACKING_LIST_DETAILS;
 
-            fragmentAdapter = new MemberDetailsFragmentAdapter(this.getSupportFragmentManager(), this.getLifecycle(), member, loggedUser, isTracking ? formDataLoaders : null, tabTitles);
+            fragmentAdapter = new MemberDetailsFragmentAdapter(this.getSupportFragmentManager(), this.getLifecycle(), household, member, loggedUser, isTracking ? formDataLoaders : null, tabTitles);
             memberDetailsTabViewPager.setAdapter(fragmentAdapter);
+            fragmentAdapter.setFragmentEditListener(new MemberEditFragment.EditListener() {
+                @Override
+                public void onUpdate() {
+                    setMemberData();
+                    reloadFragmentsData();
+                }
+            });
+
             //this will create all fragments
-            memberDetailsTabViewPager.setOffscreenPageLimit(3);
+            memberDetailsTabViewPager.setOffscreenPageLimit(4);
 
             new TabLayoutMediator(memberDetailsTabLayout, memberDetailsTabViewPager, (tab, position) -> {
                 tab.setText(fragmentAdapter.getTitle(position));
@@ -257,6 +272,9 @@ public class MemberDetailsActivity extends AppCompatActivity {
     }
 
     private void setMemberData(){
+
+        this.member = this.boxMembers.get(member.id);
+
         mbDetailsName.setText(member.getName());
         mbDetailsCode.setText(member.getCode());
         mbDetailsGender.setText(member.getGender().getId());

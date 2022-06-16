@@ -189,6 +189,7 @@ public class HouseholdMembersFragment extends Fragment {
         protected void onPostExecute(Void result) {
 
             Intent intent = new Intent(getActivity(), MemberDetailsActivity.class);
+            intent.putExtra("household", this.household);
             intent.putExtra("member", this.member);
             //intent.putExtra("dataloaders", dataLoaders);
 

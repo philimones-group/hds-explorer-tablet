@@ -241,14 +241,17 @@ public class HouseholdEditFragment extends Fragment implements LocationListener 
 
         //create xml mapped columns
         Map<String,String> mapXml = new LinkedHashMap<>();
-        mapXml.put("code", this.household.code);
-        mapXml.put("name", this.txtEditName.getText().toString());
+        mapXml.put("householdCode", this.household.code);
+        mapXml.put("householdName", this.txtEditName.getText().toString());
         if (gpsLocationResult != null) {
-            mapXml.put("gpsLatitude", this.household.gpsLatitude+"");
-            mapXml.put("gpsLongitude", this.household.gpsLongitude+"");
-            mapXml.put("gpsAltitude", this.household.gpsAltitude+"");
-            mapXml.put("gpsAccuracy", this.household.gpsAccuracy+"");
+            mapXml.put("gpsLat", this.household.gpsLatitude+"");
+            mapXml.put("gpsLon", this.household.gpsLongitude+"");
+            mapXml.put("gpsAlt", this.household.gpsAltitude+"");
+            mapXml.put("gpsAcc", this.household.gpsAccuracy+"");
         }
+        mapXml.put("collectedBy", this.loggedUser.username);
+        mapXml.put("collectedDate", StringUtil.format(new Date(), "yyyy-MM-dd HH:mm:ss.SSS"));
+
 
         //generate xml and create/overwrite a file
         String xml = XmlCreator.generateXml(CoreFormEntity.EDITED_HOUSEHOLD.code, mapXml);
@@ -268,6 +271,7 @@ public class HouseholdEditFragment extends Fragment implements LocationListener 
         collectedData.formFilename = filename;
         collectedData.createdDate = new Date();
         collectedData.collectedId = household.collectedId;
+        collectedData.uploaded = false;
 
         this.boxCoreCollectedData.put(collectedData);
 
@@ -301,9 +305,7 @@ public class HouseholdEditFragment extends Fragment implements LocationListener 
             output.close();
 
             return true;
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 

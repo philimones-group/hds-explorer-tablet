@@ -265,6 +265,7 @@ public class SurveyHouseholdsActivity extends AppCompatActivity implements House
         protected void onPostExecute(Void result) {
 
             Intent intent = new Intent(SurveyHouseholdsActivity.this, MemberDetailsActivity.class);
+            intent.putExtra("household", this.household);
             intent.putExtra("member", this.member);
             //intent.putExtra("dataloaders", dataLoaders);
 

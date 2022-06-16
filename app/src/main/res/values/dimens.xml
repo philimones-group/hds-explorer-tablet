@@ -51,6 +51,13 @@
     <dimen name="member_details_info_other_layout_txtsize">13sp</dimen>
     <dimen name="member_details_info_gender_layout_txtsize">18sp</dimen>
 
+    <dimen name="member_details_edit_grouplabel_txtsize">16sp</dimen>
+    <dimen name="member_details_edit_textbox_txtsize">16sp</dimen>
+    <dimen name="member_details_edit_textview_txtsize">16sp</dimen>
+    <dimen name="member_details_edit_textview_small_txtsize">14sp</dimen>
+    <dimen name="member_details_edit_button_change_txtsize">16sp</dimen>
+    <dimen name="member_details_edit_button_update_txtsize">16sp</dimen>
+
     <dimen name="household_details_info_textsize">18sp</dimen>
 
     <dimen name="household_filter_buttons">60dp</dimen>

@@ -84,6 +84,26 @@ public class VisitFormUtil extends FormUtil<Visit> {
         initialize();
     }
 
+    public static VisitFormUtil newInstance(Mode openMode, AppCompatActivity activity, Context context, Household household, boolean newHouseholdCreated, Visit visit, FormUtilities odkFormUtilities, FormUtilListener<Visit> listener){
+        if (openMode == Mode.CREATE) {
+            new VisitFormUtil(activity, context, household, newHouseholdCreated, odkFormUtilities, listener);
+        } else if (openMode == Mode.EDIT) {
+            new VisitFormUtil(activity, context, household, visit, odkFormUtilities, listener);
+        }
+
+        return null;
+    }
+
+    public static VisitFormUtil newInstance(Mode openMode, Fragment fragment, Context context, Household household, boolean newHouseholdCreated, Visit visit, FormUtilities odkFormUtilities, FormUtilListener<Visit> listener){
+        if (openMode == Mode.CREATE) {
+            new VisitFormUtil(fragment, context, household, newHouseholdCreated, odkFormUtilities, listener);
+        } else if (openMode == Mode.EDIT) {
+            new VisitFormUtil(fragment, context, household, visit, odkFormUtilities, listener);
+        }
+
+        return null;
+    }
+
     @Override
     protected void initBoxes() {
         super.initBoxes();

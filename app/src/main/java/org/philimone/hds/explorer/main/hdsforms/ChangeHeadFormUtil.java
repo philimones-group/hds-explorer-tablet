@@ -4,7 +4,6 @@ import android.content.Context;
 import android.util.Log;
 
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 
 import org.philimone.hds.explorer.R;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
@@ -13,12 +12,9 @@ import org.philimone.hds.explorer.fragment.MemberFilterDialog;
 import org.philimone.hds.explorer.model.ApplicationParam;
 import org.philimone.hds.explorer.model.ApplicationParam_;
 import org.philimone.hds.explorer.model.CoreCollectedData;
-import org.philimone.hds.explorer.model.Death;
-import org.philimone.hds.explorer.model.Death_;
 import org.philimone.hds.explorer.model.HeadRelationship;
 import org.philimone.hds.explorer.model.HeadRelationship_;
 import org.philimone.hds.explorer.model.Household;
-import org.philimone.hds.explorer.model.MaritalRelationship;
 import org.philimone.hds.explorer.model.Member;
 import org.philimone.hds.explorer.model.Member_;
 import org.philimone.hds.explorer.model.Residency;
@@ -26,8 +22,6 @@ import org.philimone.hds.explorer.model.Residency_;
 import org.philimone.hds.explorer.model.Visit;
 import org.philimone.hds.explorer.model.enums.CoreFormEntity;
 import org.philimone.hds.explorer.model.enums.HeadRelationshipType;
-import org.philimone.hds.explorer.model.enums.MaritalEndStatus;
-import org.philimone.hds.explorer.model.enums.MaritalStatus;
 import org.philimone.hds.explorer.model.enums.temporal.HeadRelationshipEndType;
 import org.philimone.hds.explorer.model.enums.temporal.HeadRelationshipStartType;
 import org.philimone.hds.explorer.model.enums.temporal.ResidencyEndType;
@@ -52,7 +46,7 @@ import mz.betainteractive.odk.FormUtilities;
 import mz.betainteractive.utilities.GeneralUtil;
 import mz.betainteractive.utilities.StringUtil;
 
-public class ChangeHeadFormUtil extends FormUtil<Member> {
+public class ChangeHeadFormUtil extends FormUtil<HeadRelationship> {
 
     private Box<Member> boxMembers;
     private Box<Residency> boxResidencies;
@@ -68,7 +62,7 @@ public class ChangeHeadFormUtil extends FormUtil<Member> {
     private List<Member> householdResidents;
     private int minimunHeadAge;
 
-    public ChangeHeadFormUtil(Fragment fragment, Context context, Visit visit, Household household, FormUtilities odkFormUtilities, FormUtilListener<Member> listener){
+    public ChangeHeadFormUtil(Fragment fragment, Context context, Visit visit, Household household, FormUtilities odkFormUtilities, FormUtilListener<HeadRelationship> listener){
         super(fragment, context, FormUtil.getChangeHeadForm(context), odkFormUtilities, listener);
 
         //Log.d("enu-household", ""+household);
@@ -80,14 +74,24 @@ public class ChangeHeadFormUtil extends FormUtil<Member> {
         initialize();
     }
 
-    public ChangeHeadFormUtil(Fragment fragment, Context context, Visit visit, Household household, Member newHeadMember, FormUtilities odkFormUtilities, FormUtilListener<Member> listener){
-        super(fragment, context, FormUtil.getChangeHeadForm(context), newHeadMember, odkFormUtilities, listener);
+    public ChangeHeadFormUtil(Fragment fragment, Context context, Visit visit, Household household, HeadRelationship headRelationshipToEdit, FormUtilities odkFormUtilities, FormUtilListener<HeadRelationship> listener){
+        super(fragment, context, FormUtil.getChangeHeadForm(context), headRelationshipToEdit, odkFormUtilities, listener);
 
         this.household = household;
         this.visit = visit;
 
         initBoxes();
         initialize();
+    }
+
+    public static ChangeHeadFormUtil newInstance(Mode openMode, Fragment fragment, Context context, Visit visit, Household household, HeadRelationship headRelationshipToEdit, FormUtilities odkFormUtilities, FormUtilListener<HeadRelationship> listener){
+        if (openMode == Mode.CREATE) {
+            new ChangeHeadFormUtil(fragment, context, visit, household, odkFormUtilities, listener);
+        } else if (openMode == Mode.EDIT) {
+            new ChangeHeadFormUtil(fragment, context, visit, household, headRelationshipToEdit, odkFormUtilities, listener);
+        }
+
+        return null;
     }
 
     @Override
@@ -362,6 +366,8 @@ public class ChangeHeadFormUtil extends FormUtil<Member> {
         newHeadRelationship.startDate = GeneralUtil.getDateAdd(eventDate, 1);
         newHeadRelationship.endType = HeadRelationshipEndType.NOT_APPLICABLE;
         newHeadRelationship.endDate = null;
+        newHeadRelationship.recentlyCreated = true;
+        newHeadRelationship.recentlyCreatedUri = result.getFilename();
         this.boxHeadRelationships.put(newHeadRelationship);
 
         this.household.headCode = newHeadMember.code;
@@ -414,6 +420,7 @@ public class ChangeHeadFormUtil extends FormUtil<Member> {
         collectedData.extension.setTarget(this.getFormExtension(collectedData.formEntity));
         this.boxCoreCollectedData.put(collectedData);
 
+        this.entity = newHeadRelationship;
         this.collectExtensionForm(collectedValues);
 
     }
@@ -421,7 +428,7 @@ public class ChangeHeadFormUtil extends FormUtil<Member> {
     @Override
     protected void onFinishedExtensionCollection() {
         if (listener != null) {
-            listener.onNewEntityCreated(newHeadMember, new HashMap<>());
+            listener.onNewEntityCreated(this.entity, new HashMap<>());
         }
     }
 

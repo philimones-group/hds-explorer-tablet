@@ -3,6 +3,8 @@ package org.philimone.hds.explorer.main.hdsforms;
 import android.content.Context;
 import android.util.Log;
 
+import androidx.fragment.app.Fragment;
+
 import org.philimone.hds.explorer.R;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
 import org.philimone.hds.explorer.fragment.MemberFilterDialog;
@@ -34,10 +36,7 @@ import org.philimone.hds.forms.model.XmlFormResult;
 
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Map;
 
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import io.objectbox.Box;
 import io.objectbox.query.QueryBuilder;
 import mz.betainteractive.odk.FormUtilities;
@@ -84,6 +83,17 @@ public class MemberEnumerationFormUtil extends FormUtil<Member> {
 
         this.father = boxMembers.query().equal(Member_.code, memberToEdit.fatherCode, QueryBuilder.StringOrder.CASE_SENSITIVE).build().findFirst();
         this.mother = boxMembers.query().equal(Member_.code, memberToEdit.motherCode, QueryBuilder.StringOrder.CASE_SENSITIVE).build().findFirst();
+    }
+
+    public static MemberEnumerationFormUtil newInstance(Mode openMode, Fragment fragment, Context context, Visit visit, Household household, Member memberToEdit, FormUtilities odkFormUtilities, FormUtilListener<Member> listener) {
+
+        if (openMode == Mode.CREATE) {
+            return new MemberEnumerationFormUtil(fragment, context, visit, household, odkFormUtilities, listener);
+        } else if (openMode == Mode.EDIT) {
+            return new MemberEnumerationFormUtil(fragment, context, visit, household, memberToEdit, odkFormUtilities, listener);
+        }
+
+        return null;
     }
 
     @Override

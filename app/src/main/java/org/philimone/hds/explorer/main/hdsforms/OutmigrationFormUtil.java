@@ -4,7 +4,6 @@ import android.content.Context;
 import android.util.Log;
 
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 
 import org.philimone.hds.explorer.R;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
@@ -14,8 +13,8 @@ import org.philimone.hds.explorer.model.Death;
 import org.philimone.hds.explorer.model.HeadRelationship;
 import org.philimone.hds.explorer.model.HeadRelationship_;
 import org.philimone.hds.explorer.model.Household;
-import org.philimone.hds.explorer.model.Outmigration;
 import org.philimone.hds.explorer.model.Member;
+import org.philimone.hds.explorer.model.Outmigration;
 import org.philimone.hds.explorer.model.Residency;
 import org.philimone.hds.explorer.model.Residency_;
 import org.philimone.hds.explorer.model.Visit;
@@ -34,7 +33,6 @@ import org.philimone.hds.forms.model.XmlFormResult;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import io.objectbox.Box;
 import io.objectbox.query.QueryBuilder;
@@ -77,6 +75,16 @@ public class OutmigrationFormUtil extends FormUtil<Outmigration> {
 
         initBoxes();
         initialize();
+    }
+
+    public static OutmigrationFormUtil newInstance(Mode openMode, Fragment fragment, Context context, Visit visit, Household household, Member member, Outmigration outmigToEdit, FormUtilities odkFormUtilities, FormUtilListener<Outmigration> listener){
+        if (openMode == Mode.CREATE) {
+            new OutmigrationFormUtil(fragment, context, visit, household, member, odkFormUtilities, listener);
+        } else if (openMode == Mode.EDIT) {
+            new OutmigrationFormUtil(fragment, context, visit, household, outmigToEdit, odkFormUtilities, listener);
+        }
+
+        return null;
     }
 
     @Override

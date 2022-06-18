@@ -17,7 +17,7 @@ import io.objectbox.annotation.Unique;
 import io.objectbox.relation.ToOne;
 
 @Entity
-public class HeadRelationship {
+public class HeadRelationship implements CoreEntity {
 
     @Id
     public long id;
@@ -51,7 +51,6 @@ public class HeadRelationship {
 
     public Date endDate;
 
-    /*
     public boolean recentlyCreated;
 
     public String recentlyCreatedUri;
@@ -63,7 +62,7 @@ public class HeadRelationship {
 
     @Override
     public String getCollectedId() {
-        return collectedId;
+        return "NA";
     }
 
     @Override
@@ -75,5 +74,5 @@ public class HeadRelationship {
     public String getRecentlyCreatedUri() {
         return this.recentlyCreatedUri;
     }
-    */
+
 }

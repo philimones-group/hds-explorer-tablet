@@ -13,17 +13,19 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ExpandableListView;
-import android.widget.ListView;
 
 import org.philimone.hds.explorer.R;
 import org.philimone.hds.explorer.adapter.CoreCollectedExpandableAdapter;
 import org.philimone.hds.explorer.adapter.MemberAdapter;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
 import org.philimone.hds.explorer.listeners.HouseholdDetailsListener;
+import org.philimone.hds.explorer.main.HouseholdDetailsActivity;
 import org.philimone.hds.explorer.main.hdsforms.ChangeHeadFormUtil;
 import org.philimone.hds.explorer.main.hdsforms.DeathFormUtil;
 import org.philimone.hds.explorer.main.hdsforms.ExternalInMigrationFormUtil;
+import org.philimone.hds.explorer.main.hdsforms.FormUtil;
 import org.philimone.hds.explorer.main.hdsforms.FormUtilListener;
+import org.philimone.hds.explorer.main.hdsforms.HouseholdFormUtil;
 import org.philimone.hds.explorer.main.hdsforms.InternalInMigrationFormUtil;
 import org.philimone.hds.explorer.main.hdsforms.MaritalRelationshipFormUtil;
 import org.philimone.hds.explorer.main.hdsforms.MemberEnumerationFormUtil;
@@ -93,12 +95,19 @@ public class HouseholdVisitFragment extends Fragment {
     private User loggedUser;
     private Map<String, Object> visitExtraData = new HashMap<>();
 
+    private Box<Household> boxHouseholds;
     private Box<Visit> boxVisits;
     private Box<Member> boxMembers;
-    private Box<Form> boxForms;
+    private Box<MaritalRelationship> boxMaritalRelationships;
+    private Box<Inmigration> boxInmigrations;
+    private Box<Outmigration> boxOutmigrations;
+    private Box<PregnancyRegistration> boxPregnancyRegistrations;
+    private Box<PregnancyOutcome> boxPregnancyOutcomes;
+    private Box<Death> boxDeaths;
+    private Box<HeadRelationship> boxHeadRelationships;
+    private Box<IncompleteVisit> boxIncompleteVisits;
     private Box<CollectedData> boxCollectedData;
     private Box<CoreCollectedData> boxCoreCollectedData;
-    private Box<PregnancyRegistration> boxPregnancyRegistrations;
 
     private HouseholdDetailsListener householdDetailsListener;
 
@@ -184,16 +193,23 @@ public class HouseholdVisitFragment extends Fragment {
     }
 
     private void initBoxes() {
-        //this.boxAppParams = ObjectBoxDatabase.get().boxFor(ApplicationParam.class);
         this.boxCollectedData = ObjectBoxDatabase.get().boxFor(CollectedData.class);
         this.boxCoreCollectedData = ObjectBoxDatabase.get().boxFor(CoreCollectedData.class);
-        this.boxForms = ObjectBoxDatabase.get().boxFor(Form.class);
-        //this.boxRegions = ObjectBoxDatabase.get().boxFor(Region.class);
+        this.boxHouseholds = ObjectBoxDatabase.get().boxFor(Household.class);
         this.boxVisits = ObjectBoxDatabase.get().boxFor(Visit.class);
         this.boxMembers = ObjectBoxDatabase.get().boxFor(Member.class);
+        this.boxMaritalRelationships = ObjectBoxDatabase.get().boxFor(MaritalRelationship.class);
+        this.boxInmigrations = ObjectBoxDatabase.get().boxFor(Inmigration.class);
+        this.boxInmigrations = ObjectBoxDatabase.get().boxFor(Inmigration.class);
+        this.boxOutmigrations = ObjectBoxDatabase.get().boxFor(Outmigration.class);
         this.boxPregnancyRegistrations = ObjectBoxDatabase.get().boxFor(PregnancyRegistration.class);
+        this.boxPregnancyOutcomes = ObjectBoxDatabase.get().boxFor(PregnancyOutcome.class);
+        this.boxDeaths = ObjectBoxDatabase.get().boxFor(Death.class);
+        this.boxHeadRelationships = ObjectBoxDatabase.get().boxFor(HeadRelationship.class);
+        this.boxMembers = ObjectBoxDatabase.get().boxFor(Member.class);
+        this.boxIncompleteVisits = ObjectBoxDatabase.get().boxFor(IncompleteVisit.class);
     }
-    
+
     private void initialize(View view) {
         this.lvHouseholdMembers = view.findViewById(R.id.lvHouseholdMembers);
         this.elvVisitCollected = view.findViewById(R.id.elvVisitCollected);
@@ -222,48 +238,61 @@ public class HouseholdVisitFragment extends Fragment {
             }
         });
 
+        this.elvVisitCollected.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
+            @Override
+            public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
+                CoreCollectedExpandableAdapter adapter = (CoreCollectedExpandableAdapter) parent.getAdapter();
+
+                CoreCollectedData coreCollectedData = (CoreCollectedData) adapter.getChild(groupPosition, childPosition);
+
+                onSelectedToEdit(coreCollectedData);
+
+                return true;
+            }
+        });
+
         this.btClearMember.setOnClickListener( v -> {
             onClearMemberClicked();
         });
 
         this.btnVisitMemberIncomplete.setOnClickListener(v -> {
-            onIncompleteVisitClicked();
+            onIncompleteVisitClicked(null);
         });
 
         this.btnVisitMemberEnu.setOnClickListener(v -> {
-            onEnumerationClicked();
+            onEnumerationClicked(null);
         });
 
         this.btnVisitMaritalRelationship.setOnClickListener( v -> {
-            onMaritalClicked();
+            onMaritalClicked(null);
         });
 
         this.btnVisitExtInmigration.setOnClickListener(v -> {
-            onExtInMigrationClicked();
+            onExtInMigrationClicked(null);
         });
 
         this.btnVisitIntInmigration.setOnClickListener(v -> {
-            onIntInmigrationClicked();
+            onIntInmigrationClicked(null);
         });
 
         this.btnVisitOutmigration.setOnClickListener(v -> {
-            onOutmigrationClicked();
+            onOutmigrationClicked(null);
         });
 
         this.btnVisitPregnancyReg.setOnClickListener(v -> {
-            onPregnancyRegistrationClicked();
+            onPregnancyRegistrationClicked(null);
         });
 
         this.btnVisitBirthReg.setOnClickListener(v -> {
-            onPregnancyOutcomeClicked();
+            onPregnancyOutcomeClicked(null);
         });
 
         this.btnVisitDeath.setOnClickListener(v -> {
-            onDeathClicked();
+            onDeathClicked(null);
         });
 
         this.btnVisitChangeHead.setOnClickListener(v -> {
-            onChangeHeadClicked();
+            onChangeHeadClicked(null);
         });
 
     }
@@ -494,17 +523,109 @@ public class HouseholdVisitFragment extends Fragment {
     }
 
     //region Events Execution
+    private void onSelectedToEdit(CoreCollectedData coreCollectedData) {
+        switch (coreCollectedData.formEntity) {
+            case HOUSEHOLD:
+                Household household = this.boxHouseholds.get(coreCollectedData.formEntityId);
+                onEditHousehold(household);
+                break;
+            case VISIT:
+                Visit visit = this.boxVisits.get(coreCollectedData.formEntityId);
+                onEditVisit(visit);
+                break;
+            case MEMBER_ENU:
+                Member member = this.boxMembers.get(coreCollectedData.formEntityId);
+                onEnumerationClicked(member);
+                break;
+            case MARITAL_RELATIONSHIP:
+                MaritalRelationship mrelationship = this.boxMaritalRelationships.get(coreCollectedData.formEntityId);
+                onMaritalClicked(mrelationship);
+                break;
+            case INMIGRATION:
+                Inmigration inmigration = this.boxInmigrations.get(coreCollectedData.formEntityId);
+                onIntInmigrationClicked(inmigration);
+                break;
+            case EXTERNAL_INMIGRATION:
+                Inmigration extinmigration = this.boxInmigrations.get(coreCollectedData.formEntityId);
+                onExtInMigrationClicked(extinmigration);
+                break;
+            case OUTMIGRATION:
+                Outmigration outmigration = this.boxOutmigrations.get(coreCollectedData.formEntityId);
+                onOutmigrationClicked(outmigration);
+                break;
+            case PREGNANCY_REGISTRATION:
+                PregnancyRegistration pregnancy_registration = this.boxPregnancyRegistrations.get(coreCollectedData.formEntityId);
+                onPregnancyRegistrationClicked(pregnancy_registration);
+                break;
+            case PREGNANCY_OUTCOME:
+                PregnancyOutcome pregnancy_outcome = this.boxPregnancyOutcomes.get(coreCollectedData.formEntityId);
+                onPregnancyOutcomeClicked(pregnancy_outcome);
+                break;
+            case DEATH:
+                Death death = this.boxDeaths.get(coreCollectedData.formEntityId);
+                onDeathClicked(death);
+                break;
+            case CHANGE_HOUSEHOLD_HEAD:
+                HeadRelationship cghead = this.boxHeadRelationships.get(coreCollectedData.formEntityId);
+                onChangeHeadClicked(cghead);
+                break;
+            case INCOMPLETE_VISIT:
+                IncompleteVisit incvisit = this.boxIncompleteVisits.get(coreCollectedData.formEntityId);
+                onIncompleteVisitClicked(incvisit);
+                break;
+        }
+    }
+
+    private void onEditHousehold(Household household) {
+        HouseholdFormUtil.newInstance(FormUtil.Mode.EDIT, this, this.getContext(), null, household, this.odkFormUtilities, new FormUtilListener<Household>() {
+            @Override
+            public void onNewEntityCreated(Household entity, Map<String, Object> data) { }
+
+            @Override
+            public void onEntityEdited(Household entity, Map<String, Object> data) {
+
+            }
+
+            @Override
+            public void onFormCancelled() {
+
+            }
+        }).collect();
+    }
+
+    private void onEditVisit(Visit visit) {
+        VisitFormUtil formUtil = new VisitFormUtil(this, this.getContext(), this.household, visit, this.odkFormUtilities, new FormUtilListener<Visit>() {
+            @Override
+            public void onNewEntityCreated(Visit entity, Map<String, Object> data) { }
+
+            @Override
+            public void onEntityEdited(Visit entity, Map<String, Object> data) {
+                loadDataToListViews();
+
+                if (householdDetailsListener != null) {
+                    householdDetailsListener.updateHouseholdDetails();
+                }
+            }
+
+            @Override
+            public void onFormCancelled() { }
+        });
+
+        formUtil.collect();
+    }
 
     private void onClearMemberClicked() {
         setHouseholdMode();
     }
 
-    private void onIncompleteVisitClicked() {
+    private void onIncompleteVisitClicked(IncompleteVisit incompleteVisit) {
         //get current selected member
         //this.selectedMember
         Log.d("on-incomplete-clicked", ""+this.selectedMember);
 
-        IncompleteVisitFormUtil formUtil = new IncompleteVisitFormUtil(this, this.getContext(), this.visit, this.selectedMember, this.odkFormUtilities, new FormUtilListener<IncompleteVisit>() {
+        FormUtil.Mode mode = incompleteVisit == null ? FormUtil.Mode.CREATE : FormUtil.Mode.EDIT;
+
+        IncompleteVisitFormUtil formUtil = IncompleteVisitFormUtil.newInstance(mode,this, this.getContext(), this.visit, this.selectedMember, incompleteVisit, this.odkFormUtilities, new FormUtilListener<IncompleteVisit>() {
             @Override
             public void onNewEntityCreated(IncompleteVisit entity, Map<String, Object> data) {
                 loadDataToListViews();
@@ -524,11 +645,13 @@ public class HouseholdVisitFragment extends Fragment {
         formUtil.collect();
     }
 
-    private void onEnumerationClicked() {
+    private void onEnumerationClicked(Member member) {
 
         Log.d("on-enum-click-household", ""+this.household);
 
-        MemberEnumerationFormUtil formUtil = new MemberEnumerationFormUtil(this, this.getContext(), this.visit, this.household, this.odkFormUtilities, new FormUtilListener<Member>() {
+        FormUtil.Mode mode = member == null ? FormUtil.Mode.CREATE : FormUtil.Mode.EDIT;
+
+        MemberEnumerationFormUtil formUtil = MemberEnumerationFormUtil.newInstance(mode, this, this.getContext(), this.visit, this.household, member, this.odkFormUtilities, new FormUtilListener<Member>() {
             @Override
             public void onNewEntityCreated(Member member, Map<String, Object> data) {
                 selectedMember = member;
@@ -551,13 +674,12 @@ public class HouseholdVisitFragment extends Fragment {
         formUtil.collect();
     }
 
-    private void onMaritalClicked() {
-        //get current selected member
-        //this.selectedMember
-
+    private void onMaritalClicked(MaritalRelationship maritalRelationship) {        
         Log.d("on-marital-clicked", ""+this.selectedMember);
 
-        MaritalRelationshipFormUtil formUtil = new MaritalRelationshipFormUtil(this, this.getContext(), this.visit, this.selectedMember, this.odkFormUtilities, new FormUtilListener<MaritalRelationship>() {
+        FormUtil.Mode mode = maritalRelationship == null ? FormUtil.Mode.CREATE : FormUtil.Mode.EDIT;
+
+        MaritalRelationshipFormUtil formUtil = MaritalRelationshipFormUtil.newInstance(mode, this, this.getContext(), this.visit, this.selectedMember, maritalRelationship, this.odkFormUtilities, new FormUtilListener<MaritalRelationship>() {
             @Override
             public void onNewEntityCreated(MaritalRelationship maritalRelationship, Map<String, Object> data) {
                 loadDataToListViews();
@@ -577,20 +699,24 @@ public class HouseholdVisitFragment extends Fragment {
         formUtil.collect();
     }
 
-    private void onExtInMigrationClicked() {
+    private void onExtInMigrationClicked(Inmigration inmigration) {
         Log.d("on-extinmigration", ""+this.household);
 
-        ExternalInMigrationFormUtil formUtil = new ExternalInMigrationFormUtil(this, this.getContext(), this.visit, this.household, this.odkFormUtilities, new FormUtilListener<Member>() {
+        FormUtil.Mode mode = inmigration == null ? FormUtil.Mode.CREATE : FormUtil.Mode.EDIT;
+
+        ExternalInMigrationFormUtil formUtil = ExternalInMigrationFormUtil.newInstance(mode, this, this.getContext(), this.visit, this.household, inmigration, this.odkFormUtilities, new FormUtilListener<Inmigration>() {
             @Override
-            public void onNewEntityCreated(Member member, Map<String, Object> data) {
+            public void onNewEntityCreated(Inmigration inmigration, Map<String, Object> data) {
+                Member member = boxMembers.query(Member_.code.equal(inmigration.memberCode)).build().findFirst();
                 selectedMember = member;
                 loadDataToListViews();
                 //selectMember(member);
+
                 updateRespondentAfterNewMember(member);
             }
 
             @Override
-            public void onEntityEdited(Member member, Map<String, Object> data) {
+            public void onEntityEdited(Inmigration inmigration, Map<String, Object> data) {
 
             }
 
@@ -603,10 +729,12 @@ public class HouseholdVisitFragment extends Fragment {
         formUtil.collect();
     }
 
-    private void onIntInmigrationClicked() {
+    private void onIntInmigrationClicked(Inmigration inmigration) {
         Log.d("on-int-tinmigration", ""+this.household);
 
-        InternalInMigrationFormUtil formUtil = new InternalInMigrationFormUtil(this, this.getContext(), this.visit, this.household, this.odkFormUtilities, new FormUtilListener<Inmigration>() {
+        FormUtil.Mode mode = inmigration == null ? FormUtil.Mode.CREATE : FormUtil.Mode.EDIT;
+        
+        InternalInMigrationFormUtil formUtil = InternalInMigrationFormUtil.newInstance(mode, this, this.getContext(), this.visit, this.household, inmigration, this.odkFormUtilities, new FormUtilListener<Inmigration>() {
             @Override
             public void onNewEntityCreated(Inmigration inmigration, Map<String, Object> data) {
                 selectedMember = boxMembers.query().equal(Member_.code, inmigration.memberCode, QueryBuilder.StringOrder.CASE_SENSITIVE).build().findFirst();
@@ -629,10 +757,12 @@ public class HouseholdVisitFragment extends Fragment {
         formUtil.collect();
     }
 
-    private void onOutmigrationClicked() {
+    private void onOutmigrationClicked(Outmigration outmigration) {
         Log.d("on-outmigration", ""+this.selectedMember);
 
-        OutmigrationFormUtil formUtil = new OutmigrationFormUtil(this, this.getContext(), this.visit, this.household, this.selectedMember, this.odkFormUtilities, new FormUtilListener<Outmigration>() {
+        FormUtil.Mode mode = outmigration == null ? FormUtil.Mode.CREATE : FormUtil.Mode.EDIT;
+
+        OutmigrationFormUtil formUtil = OutmigrationFormUtil.newInstance(mode, this, this.getContext(), this.visit, this.household, this.selectedMember, outmigration, this.odkFormUtilities, new FormUtilListener<Outmigration>() {
             @Override
             public void onNewEntityCreated(Outmigration outmigration, Map<String, Object> data) {
                 selectedMember = null;
@@ -653,10 +783,12 @@ public class HouseholdVisitFragment extends Fragment {
         formUtil.collect();
     }
 
-    private void onPregnancyRegistrationClicked() {
+    private void onPregnancyRegistrationClicked(PregnancyRegistration pregnancyRegistration) {
         Log.d("on-pregregistration", ""+this.selectedMember);
 
-        PregnancyRegistrationFormUtil formUtil = new PregnancyRegistrationFormUtil(this, this.getContext(), this.visit, this.household, this.selectedMember, this.odkFormUtilities, new FormUtilListener<PregnancyRegistration>() {
+        FormUtil.Mode mode = pregnancyRegistration == null ? FormUtil.Mode.CREATE : FormUtil.Mode.EDIT;
+
+        PregnancyRegistrationFormUtil formUtil = PregnancyRegistrationFormUtil.newInstance(mode, this, this.getContext(), this.visit, this.household, this.selectedMember, pregnancyRegistration, this.odkFormUtilities, new FormUtilListener<PregnancyRegistration>() {
             @Override
             public void onNewEntityCreated(PregnancyRegistration pregnancyRegistration, Map<String, Object> data) {
                 loadDataToListViews();
@@ -676,24 +808,36 @@ public class HouseholdVisitFragment extends Fragment {
         formUtil.collect();
     }
 
-    private void onPregnancyOutcomeClicked() {
+    private void onPregnancyOutcomeClicked(PregnancyOutcome pregnancyOutcome) {
         Log.d("on-pregoutcome", ""+this.selectedMember);
 
-        PregnancyRegistration pregnancyRegistration = getLastPregnancyRegistration(this.selectedMember);
+        FormUtil.Mode mode = null;
+        
+        if (pregnancyOutcome == null) {
+            mode = FormUtil.Mode.CREATE;
 
-        if (pregnancyRegistration == null || (pregnancyRegistration != null && pregnancyRegistration.status != PregnancyStatus.PREGNANT)){
-            //create new pregnancy with status delivered in resume mode
-            //there is no previous collected pregnancy registration for this outcome,\n a new pregnancy registration will be created with status as DELIVERED, THEN YOU WILL CONTINUE THE REGISTRATION
+            PregnancyRegistration pregnancyRegistration = getLastPregnancyRegistration(this.selectedMember);
 
-            DialogFactory.createMessageInfo(this.getContext(), R.string.pregnancy_outcome_nroutcomes_title_lbl, R.string.pregnancy_outcome_create_pregreg_info_lbl, new DialogFactory.OnClickListener() {
-                @Override
-                public void onClicked(DialogFactory.Buttons clickedButton) {
-                    createPregnancyRegistrationForOutcome();
-                }
-            }).show();
+            if (pregnancyRegistration == null || (pregnancyRegistration != null && pregnancyRegistration.status != PregnancyStatus.PREGNANT)){
+                //create new pregnancy with status delivered in resume mode
+                //there is no previous collected pregnancy registration for this outcome,\n a new pregnancy registration will be created with status as DELIVERED, THEN YOU WILL CONTINUE THE REGISTRATION
+
+                DialogFactory.createMessageInfo(this.getContext(), R.string.pregnancy_outcome_nroutcomes_title_lbl, R.string.pregnancy_outcome_create_pregreg_info_lbl, new DialogFactory.OnClickListener() {
+                    @Override
+                    public void onClicked(DialogFactory.Buttons clickedButton) {
+                        createPregnancyRegistrationForOutcome();
+                    }
+                }).show();
+            } else {
+                openPregnancyOutcomeForm(pregnancyRegistration, false);
+            }
+            
         } else {
-            openPregnancyOutcomeForm(pregnancyRegistration, false);
+            mode = FormUtil.Mode.EDIT;
+            openPregnancyOutcomeForEdit(pregnancyOutcome);
         }
+        
+        
     }
 
     private void createPregnancyRegistrationForOutcome() {
@@ -717,6 +861,7 @@ public class HouseholdVisitFragment extends Fragment {
     }
 
     private void openPregnancyOutcomeForm(PregnancyRegistration pregnancyRegistration, boolean createdForOutcome){
+                
         new PregnancyOutcomeFormUtil(this, this.getContext(), this.visit, this.household, this.selectedMember, pregnancyRegistration, createdForOutcome, this.odkFormUtilities, new FormUtilListener<PregnancyOutcome>() {
             @Override
             public void onNewEntityCreated(PregnancyOutcome pregnancyOutcome, Map<String, Object> data) {
@@ -735,6 +880,25 @@ public class HouseholdVisitFragment extends Fragment {
         }).collect();
     }
 
+    private void openPregnancyOutcomeForEdit(PregnancyOutcome pregnancyOutcome){
+
+        //FOR EDITING
+        new PregnancyOutcomeFormUtil(this, this.getContext(), this.visit, this.household, pregnancyOutcome, this.odkFormUtilities, new FormUtilListener<PregnancyOutcome>() {
+            @Override
+            public void onNewEntityCreated(PregnancyOutcome pregnancyOutcome, Map<String, Object> data) { }
+
+            @Override
+            public void onEntityEdited(PregnancyOutcome pregnancyOutcome, Map<String, Object> data) {
+                loadDataToListViews();
+            }
+
+            @Override
+            public void onFormCancelled() {
+
+            }
+        }).collect();
+    }
+    
     private PregnancyRegistration getLastPregnancyRegistration(Member motherMember){
         //def pregnancies = PregnancyRegistration.executeQuery("select p from PregnancyRegistration p where p.mother.code=? order by p.recordedDate desc", [motherCode], [offset:0, max:1])
         PregnancyRegistration pregnancyRegistration = this.boxPregnancyRegistrations.query(PregnancyRegistration_.motherCode.equal(motherMember.code))
@@ -743,10 +907,12 @@ public class HouseholdVisitFragment extends Fragment {
         return pregnancyRegistration;
     }
 
-    private void onDeathClicked() {
+    private void onDeathClicked(Death death) {
         Log.d("on-death", ""+this.selectedMember);
 
-        DeathFormUtil formUtil = new DeathFormUtil(this, this.getContext(), this.visit, this.household, this.selectedMember, this.odkFormUtilities, new FormUtilListener<Death>() {
+        FormUtil.Mode mode = death == null ? FormUtil.Mode.CREATE : FormUtil.Mode.EDIT;
+
+        DeathFormUtil formUtil = DeathFormUtil.newInstance(mode, this, this.getContext(), this.visit, this.household, this.selectedMember, death, this.odkFormUtilities, new FormUtilListener<Death>() {
             @Override
             public void onNewEntityCreated(Death death, Map<String, Object> data) {
                 selectedMember = null;
@@ -767,12 +933,14 @@ public class HouseholdVisitFragment extends Fragment {
         formUtil.collect();
     }
 
-    private void onChangeHeadClicked() {
+    private void onChangeHeadClicked(HeadRelationship headRelationship) {
         Log.d("on-changehead", ""+this.household.code);
 
-        ChangeHeadFormUtil formUtil = new ChangeHeadFormUtil(this, this.getContext(), this.visit, this.household, this.odkFormUtilities, new FormUtilListener<Member>() {
+        FormUtil.Mode mode = headRelationship == null ? FormUtil.Mode.CREATE : FormUtil.Mode.EDIT;
+        
+        ChangeHeadFormUtil formUtil = ChangeHeadFormUtil.newInstance(mode, this, this.getContext(), this.visit, this.household, headRelationship, this.odkFormUtilities, new FormUtilListener<HeadRelationship>() {
             @Override
-            public void onNewEntityCreated(Member newHeadMember, Map<String, Object> data) {
+            public void onNewEntityCreated(HeadRelationship headRelationship, Map<String, Object> data) {
                 loadDataToListViews();
 
                 if (householdDetailsListener != null) {
@@ -781,7 +949,7 @@ public class HouseholdVisitFragment extends Fragment {
             }
 
             @Override
-            public void onEntityEdited(Member newHeadMember, Map<String, Object> data) {
+            public void onEntityEdited(HeadRelationship headRelationship, Map<String, Object> data) {
 
             }
 

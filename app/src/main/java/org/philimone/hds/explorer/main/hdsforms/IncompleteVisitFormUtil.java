@@ -4,7 +4,6 @@ import android.content.Context;
 import android.util.Log;
 
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 
 import org.philimone.hds.explorer.R;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
@@ -24,7 +23,6 @@ import org.philimone.hds.forms.model.XmlFormResult;
 
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Map;
 
 import io.objectbox.Box;
 import mz.betainteractive.odk.FormUtilities;
@@ -60,6 +58,16 @@ public class IncompleteVisitFormUtil extends FormUtil<IncompleteVisit> {
 
         this.currentIncompleteVisit = incompleteVisitToEdit;
         this.member = incompleteVisitToEdit.member.getTarget();
+    }
+
+    public static IncompleteVisitFormUtil newInstance(Mode openMode, Fragment fragment, Context context, Visit visit, Member member, IncompleteVisit incompleteVisitToEdit, FormUtilities odkFormUtilities, FormUtilListener<IncompleteVisit> listener) {
+        if (openMode == Mode.CREATE) {
+            return new IncompleteVisitFormUtil(fragment, context, visit, member, odkFormUtilities, listener);
+        } else if (openMode == Mode.EDIT) {
+            return new IncompleteVisitFormUtil(fragment, context, visit, incompleteVisitToEdit, odkFormUtilities, listener);
+        }
+
+        return null;
     }
 
     @Override

@@ -4,7 +4,6 @@ import android.content.Context;
 import android.util.Log;
 
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 
 import org.philimone.hds.explorer.R;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
@@ -22,11 +21,9 @@ import org.philimone.hds.explorer.model.Member;
 import org.philimone.hds.explorer.model.Outmigration;
 import org.philimone.hds.explorer.model.Residency;
 import org.philimone.hds.explorer.model.Residency_;
-import org.philimone.hds.explorer.model.Round;
 import org.philimone.hds.explorer.model.Visit;
 import org.philimone.hds.explorer.model.enums.CoreFormEntity;
 import org.philimone.hds.explorer.model.enums.HeadRelationshipType;
-import org.philimone.hds.explorer.model.enums.temporal.ExternalInMigrationType;
 import org.philimone.hds.explorer.model.enums.temporal.HeadRelationshipEndType;
 import org.philimone.hds.explorer.model.enums.temporal.HeadRelationshipStartType;
 import org.philimone.hds.explorer.model.enums.temporal.InMigrationType;
@@ -42,7 +39,6 @@ import org.philimone.hds.forms.model.XmlFormResult;
 
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Map;
 
 import io.objectbox.Box;
 import io.objectbox.query.QueryBuilder;
@@ -88,6 +84,16 @@ public class InternalInMigrationFormUtil extends FormUtil<Inmigration> {
 
         initBoxes();
         initialize();
+    }
+
+    public static InternalInMigrationFormUtil newInstance(Mode openMode, Fragment fragment, Context context, Visit visit, Household household, Inmigration inmigToEdit, FormUtilities odkFormUtilities, FormUtilListener<Inmigration> listener){
+        if (openMode == Mode.CREATE) {
+            new InternalInMigrationFormUtil(fragment, context, visit, household, odkFormUtilities, listener);
+        } else if (openMode == Mode.EDIT) {
+            new InternalInMigrationFormUtil(fragment, context, visit, household, inmigToEdit, odkFormUtilities, listener);
+        }
+
+        return null;
     }
 
     @Override

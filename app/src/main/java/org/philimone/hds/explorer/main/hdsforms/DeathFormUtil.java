@@ -4,7 +4,6 @@ import android.content.Context;
 import android.util.Log;
 
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 
 import org.philimone.hds.explorer.R;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
@@ -13,6 +12,7 @@ import org.philimone.hds.explorer.fragment.MemberFilterDialog;
 import org.philimone.hds.explorer.model.ApplicationParam;
 import org.philimone.hds.explorer.model.ApplicationParam_;
 import org.philimone.hds.explorer.model.CoreCollectedData;
+import org.philimone.hds.explorer.model.Death;
 import org.philimone.hds.explorer.model.Death_;
 import org.philimone.hds.explorer.model.HeadRelationship;
 import org.philimone.hds.explorer.model.HeadRelationship_;
@@ -20,7 +20,6 @@ import org.philimone.hds.explorer.model.Household;
 import org.philimone.hds.explorer.model.MaritalRelationship;
 import org.philimone.hds.explorer.model.MaritalRelationship_;
 import org.philimone.hds.explorer.model.Member;
-import org.philimone.hds.explorer.model.Death;
 import org.philimone.hds.explorer.model.Member_;
 import org.philimone.hds.explorer.model.Residency;
 import org.philimone.hds.explorer.model.Residency_;
@@ -33,7 +32,6 @@ import org.philimone.hds.explorer.model.enums.temporal.HeadRelationshipEndType;
 import org.philimone.hds.explorer.model.enums.temporal.HeadRelationshipStartType;
 import org.philimone.hds.explorer.model.enums.temporal.ResidencyEndType;
 import org.philimone.hds.forms.model.CollectedDataMap;
-import org.philimone.hds.forms.model.Column;
 import org.philimone.hds.forms.model.ColumnValue;
 import org.philimone.hds.forms.model.HForm;
 import org.philimone.hds.forms.model.RepeatColumnValue;
@@ -97,6 +95,16 @@ public class DeathFormUtil extends FormUtil<Death> {
 
         initBoxes();
         initialize();
+    }
+
+    public static DeathFormUtil newInstance(Mode openMode, Fragment fragment, Context context, Visit visit, Household household, Member member, Death deathToEdit, FormUtilities odkFormUtilities, FormUtilListener<Death> listener){
+        if (openMode == Mode.CREATE) {
+            new DeathFormUtil(fragment, context, visit, household, member, odkFormUtilities, listener);
+        } else if (openMode == Mode.EDIT) {
+            new DeathFormUtil(fragment, context, visit, household, deathToEdit, odkFormUtilities, listener);
+        }
+
+        return null;
     }
 
     @Override

@@ -50,7 +50,7 @@ import mz.betainteractive.utilities.StringUtil;
 
 public abstract class FormUtil<T extends CoreEntity> implements FormCollectionListener, OdkFormResultListener {
 
-    protected enum Mode { CREATE, EDIT }
+    public enum Mode { CREATE, EDIT }
 
     protected AppCompatActivity activity;
     protected Fragment fragment;

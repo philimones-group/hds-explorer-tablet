@@ -20,7 +20,6 @@ import org.philimone.hds.explorer.model.PregnancyChild;
 import org.philimone.hds.explorer.model.PregnancyOutcome;
 import org.philimone.hds.explorer.model.PregnancyOutcome_;
 import org.philimone.hds.explorer.model.PregnancyRegistration;
-import org.philimone.hds.explorer.model.PregnancyRegistration_;
 import org.philimone.hds.explorer.model.Residency;
 import org.philimone.hds.explorer.model.Visit;
 import org.philimone.hds.explorer.model.converters.StringCollectionConverter;
@@ -99,6 +98,16 @@ public class PregnancyOutcomeFormUtil extends FormUtil<PregnancyOutcome> {
 
         initBoxes();
         initialize();
+    }
+
+    public static PregnancyOutcomeFormUtil newInstance(Mode openMode, Fragment fragment, Context context, Visit visit, Household household, Member mother, PregnancyRegistration pregnancyRegistration, boolean recentlyCreatedForOutcome, PregnancyOutcome pregToEdit, FormUtilities odkFormUtilities, FormUtilListener<PregnancyOutcome> listener){
+        if (openMode == Mode.CREATE) {
+            new PregnancyOutcomeFormUtil(fragment, context, visit, household, mother, pregnancyRegistration, recentlyCreatedForOutcome, odkFormUtilities, listener);
+        } else if (openMode == Mode.EDIT) {
+            new PregnancyOutcomeFormUtil(fragment, context, visit, household, pregToEdit, odkFormUtilities, listener);
+        }
+
+        return null;
     }
 
     @Override

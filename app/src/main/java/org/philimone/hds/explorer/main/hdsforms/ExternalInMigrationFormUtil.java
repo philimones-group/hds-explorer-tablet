@@ -4,7 +4,6 @@ import android.content.Context;
 import android.util.Log;
 
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 
 import org.philimone.hds.explorer.R;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
@@ -17,6 +16,7 @@ import org.philimone.hds.explorer.model.Death;
 import org.philimone.hds.explorer.model.HeadRelationship;
 import org.philimone.hds.explorer.model.HeadRelationship_;
 import org.philimone.hds.explorer.model.Household;
+import org.philimone.hds.explorer.model.Inmigration;
 import org.philimone.hds.explorer.model.Member;
 import org.philimone.hds.explorer.model.Member_;
 import org.philimone.hds.explorer.model.Residency;
@@ -49,13 +49,14 @@ import mz.betainteractive.odk.FormUtilities;
 import mz.betainteractive.utilities.GeneralUtil;
 import mz.betainteractive.utilities.StringUtil;
 
-public class ExternalInMigrationFormUtil extends FormUtil<Member> {
+public class ExternalInMigrationFormUtil extends FormUtil<Inmigration> {
 
     private Box<Household> boxHouseholds;
     private Box<Member> boxMembers;
+    private Box<Inmigration> boxInmigrations;
     private Box<Residency> boxResidencies;
     private Box<HeadRelationship> boxHeadRelationships;
-        private Box<Death> boxDeaths;
+    private Box<Death> boxDeaths;
 
     private Household household;
     private Visit visit;
@@ -68,7 +69,7 @@ public class ExternalInMigrationFormUtil extends FormUtil<Member> {
     private int minimunFatherAge;
     private int minimunMotherAge;
 
-    public ExternalInMigrationFormUtil(Fragment fragment, Context context, Visit visit, Household household, FormUtilities odkFormUtilities, FormUtilListener<Member> listener){
+    public ExternalInMigrationFormUtil(Fragment fragment, Context context, Visit visit, Household household, FormUtilities odkFormUtilities, FormUtilListener<Inmigration> listener){
         super(fragment, context, FormUtil.getExternalInMigrationForm(context), odkFormUtilities, listener);
 
         //Log.d("enu-household", ""+household);
@@ -80,8 +81,8 @@ public class ExternalInMigrationFormUtil extends FormUtil<Member> {
         initialize();
     }
 
-    public ExternalInMigrationFormUtil(Fragment fragment, Context context, Visit visit, Household household, Member memberToEdit, FormUtilities odkFormUtilities, FormUtilListener<Member> listener){
-        super(fragment, context, FormUtil.getExternalInMigrationForm(context), memberToEdit, odkFormUtilities, listener);
+    public ExternalInMigrationFormUtil(Fragment fragment, Context context, Visit visit, Household household, Inmigration inmigToEdit, FormUtilities odkFormUtilities, FormUtilListener<Inmigration> listener){
+        super(fragment, context, FormUtil.getExternalInMigrationForm(context), inmigToEdit, odkFormUtilities, listener);
 
         this.household = household;
         this.visit = visit;
@@ -89,8 +90,19 @@ public class ExternalInMigrationFormUtil extends FormUtil<Member> {
         initBoxes();
         initialize();
 
+        Member memberToEdit = this.boxMembers.query(Member_.code.equal(inmigToEdit.memberCode)).build().findFirst();
         this.father = boxMembers.query().equal(Member_.code, memberToEdit.fatherCode, QueryBuilder.StringOrder.CASE_SENSITIVE).build().findFirst();
         this.mother = boxMembers.query().equal(Member_.code, memberToEdit.motherCode, QueryBuilder.StringOrder.CASE_SENSITIVE).build().findFirst();
+    }
+
+    public static ExternalInMigrationFormUtil newInstance(Mode openMode, Fragment fragment, Context context, Visit visit, Household household, Inmigration inmigToEdit, FormUtilities odkFormUtilities, FormUtilListener<Inmigration> listener){
+        if (openMode == Mode.CREATE) {
+            new ExternalInMigrationFormUtil(fragment, context, visit, household, odkFormUtilities, listener);
+        } else if (openMode == Mode.EDIT) {
+            new ExternalInMigrationFormUtil(fragment, context, visit, household, inmigToEdit, odkFormUtilities, listener);
+        }
+
+        return null;
     }
 
     @Override
@@ -99,6 +111,7 @@ public class ExternalInMigrationFormUtil extends FormUtil<Member> {
 
         this.boxHouseholds = ObjectBoxDatabase.get().boxFor(Household.class);
         this.boxMembers = ObjectBoxDatabase.get().boxFor(Member.class);
+        this.boxInmigrations = ObjectBoxDatabase.get().boxFor(Inmigration.class);
         this.boxResidencies = ObjectBoxDatabase.get().boxFor(Residency.class);
         this.boxHeadRelationships = ObjectBoxDatabase.get().boxFor(HeadRelationship.class);
 
@@ -366,6 +379,8 @@ public class ExternalInMigrationFormUtil extends FormUtil<Member> {
         String originOther = colOriginOther.getValue();
         String destinationCode = colDestinationCode.getValue();
         Date migrationDate = colMigrationDate.getDateValue();
+        String migrationReason = colMigrationReason.getValue();
+        String migrationReasonOther = colMigrationReasonOther.getValue();
 
         //create member, residency, headrelationship, inmigration
 
@@ -436,8 +451,23 @@ public class ExternalInMigrationFormUtil extends FormUtil<Member> {
         headRelationship.endType = HeadRelationshipEndType.NOT_APPLICABLE;
         headRelationship.endDate = null;
 
+        Inmigration inmigration = new Inmigration();
+        inmigration.visitCode = visitCode;
+        inmigration.memberCode = memberCode;
+        inmigration.type = migrationType;
+        inmigration.extMigType = null;
+        inmigration.originCode = originCode;
+        inmigration.destinationCode = this.household.code;
+        inmigration.migrationDate = migrationDate;
+        inmigration.migrationReason = migrationReasonOther != null ?  migrationReasonOther : migrationReason;
+        inmigration.collectedId = collectedValues.get(HForm.COLUMN_ID).getValue();
+        inmigration.recentlyCreated = true;
+        inmigration.recentlyCreatedUri = result.getFilename();
+
+
         //save data
         boxMembers.put(member);
+        boxInmigrations.put(inmigration);
         boxResidencies.put(residency);
         boxHeadRelationships.put(headRelationship);
 
@@ -445,8 +475,8 @@ public class ExternalInMigrationFormUtil extends FormUtil<Member> {
         collectedData = new CoreCollectedData();
         collectedData.visitId = visit.id;
         collectedData.formEntity = CoreFormEntity.EXTERNAL_INMIGRATION;
-        collectedData.formEntityId = member.id;
-        collectedData.formEntityCode = member.code;
+        collectedData.formEntityId = inmigration.id;
+        collectedData.formEntityCode = inmigration.memberCode;
         collectedData.formEntityName = member.name;
         collectedData.formUuid = result.getFormUuid();
         collectedData.formFilename = result.getFilename();
@@ -462,7 +492,7 @@ public class ExternalInMigrationFormUtil extends FormUtil<Member> {
             boxHouseholds.put(household);
         }
 
-        this.entity = member;
+        this.entity = inmigration;
         this.collectExtensionForm(collectedValues);
 
     }

@@ -3,6 +3,8 @@ package org.philimone.hds.explorer.main.hdsforms;
 import android.content.Context;
 import android.util.Log;
 
+import androidx.fragment.app.Fragment;
+
 import org.philimone.hds.explorer.R;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
 import org.philimone.hds.explorer.database.Queries;
@@ -30,10 +32,7 @@ import org.philimone.hds.forms.model.XmlFormResult;
 
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Map;
 
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import io.objectbox.Box;
 import io.objectbox.query.QueryBuilder;
 import mz.betainteractive.odk.FormUtilities;
@@ -73,6 +72,16 @@ public class MaritalRelationshipFormUtil extends FormUtil<MaritalRelationship> {
 
         this.spouseA = boxMembers.query().equal(Member_.code, relationshipToEdit.memberA_code, QueryBuilder.StringOrder.CASE_SENSITIVE).build().findFirst();
         this.spouseB = boxMembers.query().equal(Member_.code, relationshipToEdit.memberB_code, QueryBuilder.StringOrder.CASE_SENSITIVE).build().findFirst();
+    }
+
+    public static MaritalRelationshipFormUtil newInstance(Mode openMode, Fragment fragment, Context context, Visit visit, Member spouseA, MaritalRelationship relationshipToEdit, FormUtilities odkFormUtilities, FormUtilListener<MaritalRelationship> listener){
+        if (openMode == Mode.CREATE) {
+            new MaritalRelationshipFormUtil(fragment, context, visit, spouseA, odkFormUtilities, listener);
+        } else if (openMode == Mode.EDIT) {
+            new MaritalRelationshipFormUtil(fragment, context, visit, relationshipToEdit, odkFormUtilities, listener);
+        }
+
+        return null;
     }
 
     @Override

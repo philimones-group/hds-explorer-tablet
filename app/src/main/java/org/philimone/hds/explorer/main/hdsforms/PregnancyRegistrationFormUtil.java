@@ -4,7 +4,6 @@ import android.content.Context;
 import android.util.Log;
 
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 
 import org.philimone.hds.explorer.R;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
@@ -87,6 +86,16 @@ public class PregnancyRegistrationFormUtil extends FormUtil<PregnancyRegistratio
 
         initBoxes();
         initialize();
+    }
+
+    public static PregnancyRegistrationFormUtil newInstance(Mode openMode, Fragment fragment, Context context, Visit visit, Household household, Member member, PregnancyRegistration pregToEdit, FormUtilities odkFormUtilities, FormUtilListener<PregnancyRegistration> listener){
+        if (openMode == Mode.CREATE) {
+            new PregnancyRegistrationFormUtil(fragment, context, visit, household, member, odkFormUtilities, listener);
+        } else if (openMode == Mode.EDIT) {
+            new PregnancyRegistrationFormUtil(fragment, context, visit, household, pregToEdit, odkFormUtilities, listener);
+        }
+
+        return null;
     }
 
     @Override

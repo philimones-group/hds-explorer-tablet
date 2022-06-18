@@ -6,9 +6,13 @@ import android.util.Log;
 import org.philimone.hds.explorer.R;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
 import org.philimone.hds.explorer.model.CoreCollectedData;
+import org.philimone.hds.explorer.model.Death;
 import org.philimone.hds.explorer.model.Household;
 import org.philimone.hds.explorer.model.Household_;
+import org.philimone.hds.explorer.model.Member;
 import org.philimone.hds.explorer.model.Region;
+import org.philimone.hds.explorer.model.Region_;
+import org.philimone.hds.explorer.model.Visit;
 import org.philimone.hds.explorer.model.converters.StringCollectionConverter;
 import org.philimone.hds.explorer.model.enums.CoreFormEntity;
 import org.philimone.hds.forms.model.CollectedDataMap;
@@ -32,7 +36,9 @@ import mz.betainteractive.utilities.StringUtil;
 public class HouseholdFormUtil extends FormUtil<Household> {
 
     private Box<Household> boxHouseholds;
+    private Box<Region> boxRegions;
     private Region region;
+    private Household currentHousehold;
 
     public HouseholdFormUtil(Fragment fragment, Context context, Region region, FormUtilities odkFormUtilities, FormUtilListener<Household> listener){
         super(fragment, context, FormUtil.getHouseholdForm(context), odkFormUtilities, listener);
@@ -43,6 +49,17 @@ public class HouseholdFormUtil extends FormUtil<Household> {
         initialize();
     }
 
+    public HouseholdFormUtil(Fragment fragment, Context context, Household householdToEdit, FormUtilities odkFormUtilities, FormUtilListener<Household> listener){
+        super(fragment, context, FormUtil.getHouseholdForm(context), householdToEdit, odkFormUtilities, listener);
+
+        initBoxes();
+
+        this.currentHousehold = householdToEdit;
+        this.region = this.boxRegions.query(Region_.code.equal(householdToEdit.region)).build().findFirst();
+
+        initialize();
+    }
+
     public HouseholdFormUtil(AppCompatActivity activity, Context context, Region region, FormUtilities odkFormUtilities, FormUtilListener<Household> listener){
         super(activity, context, FormUtil.getHouseholdForm(context), odkFormUtilities, listener);
 
@@ -50,6 +67,27 @@ public class HouseholdFormUtil extends FormUtil<Household> {
 
         initBoxes();
         initialize();
+    }
+
+    public HouseholdFormUtil(AppCompatActivity activity, Context context, Household householdToEdit, FormUtilities odkFormUtilities, FormUtilListener<Household> listener){
+        super(activity, context, FormUtil.getHouseholdForm(context), householdToEdit, odkFormUtilities, listener);
+
+        initBoxes();
+
+        this.currentHousehold = householdToEdit;
+        this.region = this.boxRegions.query(Region_.code.equal(householdToEdit.region)).build().findFirst();
+
+        initialize();
+    }
+
+    public static HouseholdFormUtil newInstance(Mode openMode, Fragment fragment, Context context, Region region, Household householdToEdit, FormUtilities odkFormUtilities, FormUtilListener<Household> listener){
+        if (openMode == Mode.CREATE) {
+            new HouseholdFormUtil(fragment, context, region, odkFormUtilities, listener);
+        } else if (openMode == Mode.EDIT) {
+            new HouseholdFormUtil(fragment, context, householdToEdit, odkFormUtilities, listener);
+        }
+
+        return null;
     }
 
     @Override

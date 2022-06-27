@@ -169,6 +169,8 @@ public class SyncPanelItemFragment extends Fragment implements View.OnClickListe
 
     private void onSyncButtonClicked() {
         //gone to sync and visible stop
+        cleanProgress();
+
         this.syncButton.setVisibility(View.GONE);
         this.syncStopButton.setVisibility(View.VISIBLE);
 
@@ -202,6 +204,7 @@ public class SyncPanelItemFragment extends Fragment implements View.OnClickListe
         int s = (int)size;
 
         Log.d("sync-started", syncEntity.name()+", size="+size+", s="+s);
+        //cleanProgress();
         this.syncProgressBar.setMax(s);
         //setSyncedDate("");
     }
@@ -235,8 +238,12 @@ public class SyncPanelItemFragment extends Fragment implements View.OnClickListe
         this.syncProgressMessage.setText(result);
         //Find a way to show the reports
 
+        if (!hasError) { //set 100%
+            syncProgressBar.setMax(100);
+            onSyncProgressUpdate(syncProgressBar.getMax(), result);
+        }
+
         //Make sync button visible
-        //gone to sync and visible stop
         //this.syncStopButton.setVisibility(View.GONE);
         this.syncButton.setVisibility(View.VISIBLE);
 

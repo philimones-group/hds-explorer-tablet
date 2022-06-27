@@ -1,6 +1,9 @@
 package org.philimone.hds.explorer.database;
 
+import android.content.Context;
+import android.os.Build;
 import android.os.Environment;
+import android.os.storage.StorageManager;
 import android.util.Log;
 
 import org.philimone.hds.explorer.model.ApplicationParam;
@@ -37,7 +40,10 @@ public class Bootstrap {
     private Box<ApplicationParam> boxAppParams;
     private Box<SyncReport> boxSyncReports;
 
-    public Bootstrap(){
+    private Context mContext;
+
+    public Bootstrap(Context context){
+        this.mContext = context;
         initBoxes();
     }
 
@@ -49,7 +55,7 @@ public class Bootstrap {
     public void init(){
         insertSyncReports();
         insertParams();
-        initializePaths();
+        initializePaths(this.mContext);
     }
 
     private void insertParams(){
@@ -72,7 +78,7 @@ public class Bootstrap {
         newReports.add(new SyncReport(SyncEntity.FORMS, null, SyncStatus.STATUS_NOT_SYNCED, "Sync. Forms"));
         newReports.add(new SyncReport(SyncEntity.CORE_FORMS_EXT, null, SyncStatus.STATUS_NOT_SYNCED, "Sync. Core Forms Ext."));
         newReports.add(new SyncReport(SyncEntity.DATASETS, null, SyncStatus.STATUS_NOT_SYNCED, "Sync. Datasets"));
-        newReports.add(new SyncReport(SyncEntity.DATASETS_CSV_FILES, null, SyncStatus.STATUS_NOT_SYNCED, "Sync. Datasets"));
+        newReports.add(new SyncReport(SyncEntity.DATASETS_CSV_FILES, null, SyncStatus.STATUS_NOT_SYNCED, "Sync. Datasets Files"));
         newReports.add(new SyncReport(SyncEntity.USERS, null, SyncStatus.STATUS_NOT_SYNCED, "Sync. Users"));
         newReports.add(new SyncReport(SyncEntity.TRACKING_LISTS, null, SyncStatus.STATUS_NOT_SYNCED, "Sync. Tracking Lists"));
         newReports.add(new SyncReport(SyncEntity.ROUNDS, null, SyncStatus.STATUS_NOT_SYNCED, "Sync. Rounds"));
@@ -97,8 +103,21 @@ public class Bootstrap {
 
     }
 
-    private static void initializePaths(){
-        File root = Environment.getExternalStorageDirectory();
+    private static void initializePaths(Context context){
+
+        File root = null;
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            StorageManager storageManager = (StorageManager) context.getSystemService(Context.STORAGE_SERVICE);
+            if(storageManager == null) {
+                root = Environment.getExternalStorageDirectory(); //you can replace it with the Environment.getExternalStorageDirectory().getAbsolutePath()
+            } else {
+                root = storageManager.getPrimaryStorageVolume().getDirectory();
+            }
+        } else {
+            root = Environment.getExternalStorageDirectory();
+        }
+
         absoluteBasePath = root.getAbsolutePath() + APP_BASE_PATH;
         absoluteFormsPath = root.getAbsolutePath() + APP_FORMS_PATH;
         absoluteInstancesPath = root.getAbsolutePath() + APP_INSTANCES_PATH;
@@ -115,40 +134,40 @@ public class Bootstrap {
         Log.d("app-dirs", "baseDir-created="+createdBaseDir+", formsDir-created="+createdFormsDir+", instancesDir-created="+createdInstancesDir);
     }
 
-    public static String getBasePath(){
+    public static String getBasePath(Context context){
         if (!new File(absoluteBasePath).exists()){
-            initializePaths(); //try to initialize path
+            initializePaths(context); //try to initialize path
         }
 
         return absoluteBasePath;
     }
 
-    public static String getFormsPath(){
+    public static String getFormsPath(Context context){
         if (!new File(absoluteFormsPath).exists()){
-            initializePaths(); //try to initialize path
+            initializePaths(context); //try to initialize path
         }
 
         return absoluteFormsPath;
     }
 
-    public static String getInstancesPath(){
+    public static String getInstancesPath(Context context){
         if (!new File(absoluteInstancesPath).exists()){
-            initializePaths(); //try to initialize path
+            initializePaths(context); //try to initialize path
         }
 
         return absoluteInstancesPath;
     }
 
-    public static File getBasePathFile(String filename) {
-        return new File(getBasePath() + filename);
+    public static File getBasePathFile(String filename, Context context) {
+        return new File(getBasePath(context) + filename);
     }
 
-    public static File getFormsPathFile(String filename) {
-        return new File(getFormsPath() + filename);
+    public static File getFormsPathFile(String filename, Context context) {
+        return new File(getFormsPath(context) + filename);
     }
 
-    public static File getInstancesPathFile(String filename) {
-        return new File(getInstancesPath() + filename);
+    public static File getInstancesPathFile(String filename, Context context) {
+        return new File(getInstancesPath(context) + filename);
     }
 
     public static User getCurrentUser(){

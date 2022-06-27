@@ -518,7 +518,7 @@ public class MemberEditFragment extends Fragment {
 
     private String generateXmlFilename(CoreFormEntity entity, String code) {
         String dateTmsp = StringUtil.format(new Date(), "yyyy-MM-dd_HH_mm_ss");
-        return Bootstrap.getInstancesPath() + entity.code + "_" + code + "_" + dateTmsp + ".xml";
+        return Bootstrap.getInstancesPath(this.getContext()) + entity.code + "_" + code + "_" + dateTmsp + ".xml";
     }
 
     private boolean createXmlFile(String filename, String xmlContent) {

@@ -16,7 +16,7 @@ public class ApplicationInit extends Application {
     private void initDatabases() {
         ObjectBoxDatabase.init(this);
 
-        Bootstrap bootstrap = new Bootstrap();
+        Bootstrap bootstrap = new Bootstrap(this);
         bootstrap.init();
     }
 

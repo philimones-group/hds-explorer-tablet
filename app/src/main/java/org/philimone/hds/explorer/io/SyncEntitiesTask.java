@@ -458,6 +458,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 			processUrl(url, name, dataSet);
 		}
 
+		updateSyncReport(SyncEntity.DATASETS_CSV_FILES, new Date(), SyncStatus.STATUS_SYNCED);
 	}
 
 	/**
@@ -640,7 +641,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 
 		InputStream content = response.getInputStream();
 
-		FileOutputStream fout = new FileOutputStream(Bootstrap.getBasePath() + response.getFileName());
+		FileOutputStream fout = new FileOutputStream(Bootstrap.getBasePath(this.mContext) + response.getFileName());
 		byte[] buffer = new byte[10*1024];
 		int len = 0;
 		long total = 0;
@@ -661,7 +662,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 		fout.close();
 		content.close();
 
-		FileInputStream fin = new FileInputStream(Bootstrap.getBasePath() + response.getFileName());
+		FileInputStream fin = new FileInputStream(Bootstrap.getBasePath(this.mContext) + response.getFileName());
 
 		return fin;
 	}
@@ -3281,7 +3282,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 	}
 
 	private void updateDataset(Dataset dataSet, DownloadResponse response){
-		String filename = Bootstrap.getBasePath() + response.getFileName();
+		String filename = Bootstrap.getBasePath(this.mContext) + response.getFileName();
 
 		dataSet.setFilename(filename);
 		this.boxDatasets.put(dataSet);

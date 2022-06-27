@@ -13,6 +13,7 @@ import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
 import org.philimone.hds.explorer.R;
+import org.philimone.hds.explorer.adapter.model.TrackingSubjectItem;
 import org.philimone.hds.explorer.data.FormDataLoader;
 import org.philimone.hds.explorer.database.Bootstrap;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
@@ -181,7 +182,8 @@ public class HouseholdDetailsActivity extends AppCompatActivity implements House
         try {
             readFormDataLoader();
         } catch (Exception ex){
-            ex.printStackTrace();
+            Log.d("dataloaders", "failed to read them - "+ex.getMessage());
+            //ex.printStackTrace();
         }
 
     }

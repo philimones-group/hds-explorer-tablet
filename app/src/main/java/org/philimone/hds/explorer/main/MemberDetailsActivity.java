@@ -11,6 +11,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import org.philimone.hds.explorer.R;
+import org.philimone.hds.explorer.adapter.model.TrackingSubjectItem;
 import org.philimone.hds.explorer.data.FormDataLoader;
 import org.philimone.hds.explorer.database.Bootstrap;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
@@ -80,10 +81,8 @@ public class MemberDetailsActivity extends AppCompatActivity {
         setContentView(R.layout.member_details);
 
         this.loggedUser = Bootstrap.getCurrentUser();
-        this.household = (Household) getIntent().getExtras().get("household");
-        this.member = (Member) getIntent().getExtras().get("member");
-        this.studyCodeValue = getIntent().getExtras().getString("member_studycode");
-        this.requestCode = getIntent().getExtras().getInt("request_code");
+
+        readIntentData();
 
         readFormDataLoader();
 
@@ -98,20 +97,31 @@ public class MemberDetailsActivity extends AppCompatActivity {
         super.onPostResume();
     }
 
+    private void readIntentData() {
+        this.household = (Household) getIntent().getExtras().get("household");
+        this.member = (Member) getIntent().getExtras().get("member");
+        this.studyCodeValue = getIntent().getExtras().getString("member_studycode");
+        this.requestCode = getIntent().getExtras().getInt("request_code");
+    }
+
     private void readFormDataLoader(){
 
         if (!getIntent().getExtras().containsKey("dataloaders")){
             return;
         }
 
-        Object[] objs = (Object[]) getIntent().getExtras().get("dataloaders");
+        try {
+            Object[] objs = (Object[]) getIntent().getExtras().get("dataloaders");
 
-        for (int i=0; i < objs.length; i++){
-            FormDataLoader formDataLoader = (FormDataLoader) objs[i];
-            Log.d("tag", ""+formDataLoader.getForm().getFormId());
-            if (isMemberVisualizableForm(formDataLoader.getForm())){
-                this.formDataLoaders.add(formDataLoader);
+            for (int i = 0; i < objs.length; i++) {
+                FormDataLoader formDataLoader = (FormDataLoader) objs[i];
+                Log.d("tag", "" + formDataLoader.getForm().getFormId());
+                if (isMemberVisualizableForm(formDataLoader.getForm())) {
+                    this.formDataLoaders.add(formDataLoader);
+                }
             }
+        }catch (Exception ex) {
+            Log.d("dataloaders", "failed to read them - "+ex.getMessage());
         }
     }
 

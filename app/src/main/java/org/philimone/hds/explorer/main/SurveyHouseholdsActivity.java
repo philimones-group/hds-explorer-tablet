@@ -267,7 +267,6 @@ public class SurveyHouseholdsActivity extends AppCompatActivity implements House
             Intent intent = new Intent(SurveyHouseholdsActivity.this, MemberDetailsActivity.class);
             intent.putExtra("household", this.household);
             intent.putExtra("member", this.member);
-            //intent.putExtra("dataloaders", dataLoaders);
 
             showLoadingDialog(null, false);
 
@@ -296,7 +295,6 @@ public class SurveyHouseholdsActivity extends AppCompatActivity implements House
 
             Intent intent = new Intent(SurveyHouseholdsActivity.this, HouseholdDetailsActivity.class);
             intent.putExtra("household", household);
-            //intent.putExtra("dataloaders", dataLoaders);
 
             showLoadingDialog(null, false);
 
@@ -323,7 +321,6 @@ public class SurveyHouseholdsActivity extends AppCompatActivity implements House
 
             Intent intent = new Intent(SurveyHouseholdsActivity.this, RegionDetailsActivity.class);
             intent.putExtra("region", region);
-            //intent.putExtra("dataloaders", dataLoaders);
 
             startActivity(intent);
         }

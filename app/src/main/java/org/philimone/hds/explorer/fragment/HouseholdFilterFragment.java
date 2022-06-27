@@ -318,7 +318,6 @@ public class HouseholdFilterFragment extends Fragment implements RegionExpandabl
         Intent intent = new Intent(this.getContext(), HouseholdDetailsActivity.class);
         intent.putExtra("region", currentRegion);
         intent.putExtra("request_code", RequestCodes.HOUSEHOLD_DETAILS_FROM_HFILTER_NEW_HOUSEHOLD);
-        //intent.putExtra("dataloaders", dataLoaders);
 
         addNewHouseholdLauncher.launch(intent);
     }

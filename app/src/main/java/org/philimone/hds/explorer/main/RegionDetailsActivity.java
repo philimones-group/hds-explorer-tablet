@@ -9,6 +9,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import org.philimone.hds.explorer.R;
+import org.philimone.hds.explorer.adapter.model.TrackingSubjectItem;
 import org.philimone.hds.explorer.data.FormDataLoader;
 import org.philimone.hds.explorer.database.Bootstrap;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
@@ -70,8 +71,9 @@ public class RegionDetailsActivity extends AppCompatActivity {
         setContentView(R.layout.region_details);
 
         this.loggedUser = Bootstrap.getCurrentUser();
-        this.region = (Region) getIntent().getExtras().get("region");
-        this.activityRequestCode = getIntent().getExtras().getInt("request_code");
+
+        readIntentData();
+
 
         initBoxes();
 
@@ -80,6 +82,11 @@ public class RegionDetailsActivity extends AppCompatActivity {
         initialize();
         initFragments();
         enableButtonsByFormLoaders();
+    }
+
+    private void readIntentData() {
+        this.region = (Region) getIntent().getExtras().get("region");
+        this.activityRequestCode = getIntent().getExtras().getInt("request_code");
     }
 
     public void setRegion(Region region){
@@ -224,15 +231,20 @@ public class RegionDetailsActivity extends AppCompatActivity {
             return;
         }
 
-        Object[] objs = (Object[]) getIntent().getExtras().get("dataloaders");
+        try {
+            Object[] objs = (Object[]) getIntent().getExtras().get("dataloaders");
 
-        for (int i=0; i < objs.length; i++){
-            FormDataLoader formDataLoader = (FormDataLoader) objs[i];
-            //Log.d("tag", ""+formDataLoader.getForm().getFormId());
-            if (formDataLoader.getForm().isRegionForm() && formDataLoader.getForm().getRegionLevel().equals(region.getLevel()) && isVisibleForm(formDataLoader.getForm())){
-                this.formDataLoaders.add(formDataLoader);
+            for (int i=0; i < objs.length; i++){
+                FormDataLoader formDataLoader = (FormDataLoader) objs[i];
+                //Log.d("tag", ""+formDataLoader.getForm().getFormId());
+                if (formDataLoader.getForm().isRegionForm() && formDataLoader.getForm().getRegionLevel().equals(region.getLevel()) && isVisibleForm(formDataLoader.getForm())){
+                    this.formDataLoaders.add(formDataLoader);
+                }
             }
+        } catch (Exception ex) {
+            Log.d("dataloaders", "failed to read them - "+ex.getMessage());
         }
+
     }
 
     private void onCollectDataClicked(){

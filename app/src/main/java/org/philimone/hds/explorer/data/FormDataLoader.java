@@ -39,6 +39,7 @@ public class FormDataLoader implements Serializable {
     private final String memberPrefix = "Member.";
     private final String userPrefix = "User.";
     private final String regionPrefix = "Region.";
+    private final String trackingListPrefix = "FollowUp-List.";
     private final String constPrefix = "#.";
     private final String specialConstPrefix = "$.";
 
@@ -47,6 +48,7 @@ public class FormDataLoader implements Serializable {
     private final String choiceFormatPrefix = "Choices[";
 
     private Form form;
+    private TrackingSubjectItem trackingSubjectItem;
     private Map<String, Object> values;
 
     private Map<String, CSVReader.CSVRow> generalCSVRows;
@@ -63,6 +65,11 @@ public class FormDataLoader implements Serializable {
     public FormDataLoader(Form form){
         this();
         this.form = form;
+    }
+
+    public FormDataLoader(Form form, TrackingSubjectItem subjectItem){
+        this(form);
+        this.trackingSubjectItem = subjectItem;
     }
 
     public Form getForm() {
@@ -121,34 +128,26 @@ public class FormDataLoader implements Serializable {
             if (mapValue.startsWith(householdPrefix)) {
                 String internalVariableName = mapValue.replace(householdPrefix, "");
                 String odkVariable = key;
-                String value = null;
-                ExtrasVariable extrasVariable = tryParseExtrasVariable(internalVariableName);
-
-                if (extrasVariable == null){
-                    value = household.getValueByName(internalVariableName);
-                }else {
-                    internalVariableName = extrasVariable.columnName;
-                    String commaValue = household.getValueByName(internalVariableName);
-                    String[] values = commaValue.split(",");
-                    value = (extrasVariable.arrayIndex >= values.length) ? null : values[extrasVariable.arrayIndex];
-                }
+                String value = household.getValueByName(internalVariableName);
 
                 if (value == null) value = "";
 
                 //get variable format from odkVariable eg. variableName->format => patientName->yes,no
                 //Log.d("odkvar", ""+odkVariable);
-                String[] splt = odkVariable.split("->");
-                odkVariable = splt[0]; //variableName
-                String format = splt[1];      //format of the value
-                if (!format.equalsIgnoreCase("None")){
-                    if (format.startsWith(boolFormatPrefix)){
-                        value = getBooleanFormattedValue(format, value);
-                    }
-                    if (format.startsWith(choiceFormatPrefix)){
-                        value = getChoicesFormattedValue(format, value);
-                    }
-                    if (format.startsWith(dateFormatPrefix)){
-                        value = getDateFormattedValue(format, value);
+                if (odkVariable.contains("->")) {
+                    String[] splt = odkVariable.split("->");
+                    odkVariable = splt[0]; //variableName
+                    String format = splt[1];      //format of the value
+                    if (!format.equalsIgnoreCase("None")) {
+                        if (format.startsWith(boolFormatPrefix)) {
+                            value = getBooleanFormattedValue(format, value);
+                        }
+                        if (format.startsWith(choiceFormatPrefix)) {
+                            value = getChoicesFormattedValue(format, value);
+                        }
+                        if (format.startsWith(dateFormatPrefix)) {
+                            value = getDateFormattedValue(format, value);
+                        }
                     }
                 }
 
@@ -167,33 +166,25 @@ public class FormDataLoader implements Serializable {
             if (mapValue.startsWith(memberPrefix)) {
                 String internalVariableName = mapValue.replace(memberPrefix, "");
                 String odkVariable = key;
-                String value = null;
-                ExtrasVariable extrasVariable = tryParseExtrasVariable(internalVariableName);
-
-                if (extrasVariable == null){
-                    value = member.getValueByName(internalVariableName);
-                }else {
-                    internalVariableName = extrasVariable.columnName;
-                    String commaValue = member.getValueByName(internalVariableName);
-                    String[] values = commaValue.split(",");
-                    value = (extrasVariable.arrayIndex >= values.length) ? null : values[extrasVariable.arrayIndex];
-                }
+                String value = member.getValueByName(internalVariableName);
 
                 if (value == null) value = "";
 
                 //get variable format from odkVariable eg. variableName->format => patientName->yes,no
-                String[] splt = odkVariable.split("->");
-                odkVariable = splt[0]; //variableName
-                String format = splt[1];      //format of the value
-                if (!format.equalsIgnoreCase("None")){
-                    if (format.startsWith(boolFormatPrefix)){
-                        value = getBooleanFormattedValue(format, value);
-                    }
-                    if (format.startsWith(choiceFormatPrefix)){
-                        value = getChoicesFormattedValue(format, value);
-                    }
-                    if (format.startsWith(dateFormatPrefix)){
-                        value = getDateFormattedValue(format, value);
+                if (odkVariable.contains("->")) {
+                    String[] splt = odkVariable.split("->");
+                    odkVariable = splt[0]; //variableName
+                    String format = splt[1];      //format of the value
+                    if (!format.equalsIgnoreCase("None")) {
+                        if (format.startsWith(boolFormatPrefix)) {
+                            value = getBooleanFormattedValue(format, value);
+                        }
+                        if (format.startsWith(choiceFormatPrefix)) {
+                            value = getChoicesFormattedValue(format, value);
+                        }
+                        if (format.startsWith(dateFormatPrefix)) {
+                            value = getDateFormattedValue(format, value);
+                        }
                     }
                 }
 
@@ -212,33 +203,25 @@ public class FormDataLoader implements Serializable {
             if (mapValue.startsWith(userPrefix)) {
                 String internalVariableName = mapValue.replace(userPrefix, "");
                 String odkVariable = key;
-                String value = null;
-                ExtrasVariable extrasVariable = tryParseExtrasVariable(internalVariableName);
-
-                if (extrasVariable == null){
-                    value = user.getValueByName(internalVariableName);
-                }else {
-                    internalVariableName = extrasVariable.columnName;
-                    String commaValue = user.getValueByName(internalVariableName);
-                    String[] values = commaValue.split(",");
-                    value = (extrasVariable.arrayIndex >= values.length) ? null : values[extrasVariable.arrayIndex];
-                }
+                String value = user.getValueByName(internalVariableName);
 
                 if (value == null) value = "";
 
                 //get variable format from odkVariable eg. variableName->format => patientName->yes,no
-                String[] splt = odkVariable.split("->");
-                odkVariable = splt[0]; //variableName
-                String format = splt[1];      //format of the value
-                if (!format.equalsIgnoreCase("None")){
-                    if (format.startsWith(boolFormatPrefix)){
-                        value = getBooleanFormattedValue(format, value);
-                    }
-                    if (format.startsWith(choiceFormatPrefix)){
-                        value = getChoicesFormattedValue(format, value);
-                    }
-                    if (format.startsWith(dateFormatPrefix)){
-                        value = getDateFormattedValue(format, value);
+                if (odkVariable.contains("->")) {
+                    String[] splt = odkVariable.split("->");
+                    odkVariable = splt[0]; //variableName
+                    String format = splt[1];      //format of the value
+                    if (!format.equalsIgnoreCase("None")) {
+                        if (format.startsWith(boolFormatPrefix)) {
+                            value = getBooleanFormattedValue(format, value);
+                        }
+                        if (format.startsWith(choiceFormatPrefix)) {
+                            value = getChoicesFormattedValue(format, value);
+                        }
+                        if (format.startsWith(dateFormatPrefix)) {
+                            value = getDateFormattedValue(format, value);
+                        }
                     }
                 }
 
@@ -257,38 +240,71 @@ public class FormDataLoader implements Serializable {
             if (mapValue.startsWith(regionPrefix)) {
                 String internalVariableName = mapValue.replace(regionPrefix, "");
                 String odkVariable = key;
-                String value = null;
-                ExtrasVariable extrasVariable = tryParseExtrasVariable(internalVariableName);
-
-                if (extrasVariable == null){
-                    value = region.getValueByName(internalVariableName);
-                }else {
-                    internalVariableName = extrasVariable.columnName;
-                    String commaValue = region.getValueByName(internalVariableName);
-                    String[] values = commaValue.split(",");
-                    value = (extrasVariable.arrayIndex >= values.length) ? null : values[extrasVariable.arrayIndex];
-                }
+                String value = region.getValueByName(internalVariableName);
 
                 if (value == null) value = "";
 
                 //get variable format from odkVariable eg. variableName->format => patientName->yes,no
-                String[] splt = odkVariable.split("->");
-                odkVariable = splt[0]; //variableName
-                String format = splt[1];      //format of the value
-                if (!format.equalsIgnoreCase("None")){
-                    if (format.startsWith(boolFormatPrefix)){
-                        value = getBooleanFormattedValue(format, value);
-                    }
-                    if (format.startsWith(choiceFormatPrefix)){
-                        value = getChoicesFormattedValue(format, value);
-                    }
-                    if (format.startsWith(dateFormatPrefix)){
-                        value = getDateFormattedValue(format, value);
+                if (odkVariable.contains("->")) {
+                    String[] splt = odkVariable.split("->");
+                    odkVariable = splt[0]; //variableName
+                    String format = splt[1];      //format of the value
+                    if (!format.equalsIgnoreCase("None")) {
+                        if (format.startsWith(boolFormatPrefix)) {
+                            value = getBooleanFormattedValue(format, value);
+                        }
+                        if (format.startsWith(choiceFormatPrefix)) {
+                            value = getChoicesFormattedValue(format, value);
+                        }
+                        if (format.startsWith(dateFormatPrefix)) {
+                            value = getDateFormattedValue(format, value);
+                        }
                     }
                 }
 
                 this.values.put(odkVariable, value);
                 //Log.d("r-odk auto-loadable", odkVariable + ", " + value);
+            }
+        }
+    }
+
+    public void loadTrackingListValues(){
+        if (this.trackingSubjectItem != null) {
+            Map<String, String> map = form.getFormMap();
+            for (String key : map.keySet()){
+                //key   - odkVariable
+                //value - domain column name
+                String mapValue = map.get(key); //Domain ColumnName that we will get its content
+                if (mapValue.startsWith(trackingListPrefix)) {
+                    String internalVariableName = mapValue.replace(trackingListPrefix, "");
+                    String odkVariable = key;
+                    String value = ""; //member.getValueByName(internalVariableName);
+
+                    if (key.equals("subject_visit_code")) value = this.trackingSubjectItem.getVisitCode();
+
+                    if (key.equals("subject_visit_uuid")) value = this.trackingSubjectItem.getVisitUuid();
+
+                    //get variable format from odkVariable eg. variableName->format => patientName->yes,no
+                    if (odkVariable.contains("->")) {
+                        String[] splt = odkVariable.split("->");
+                        odkVariable = splt[0]; //variableName
+                        String format = splt[1];      //format of the value
+                        if (!format.equalsIgnoreCase("None")) {
+                            if (format.startsWith(boolFormatPrefix)) {
+                                value = getBooleanFormattedValue(format, value);
+                            }
+                            if (format.startsWith(choiceFormatPrefix)) {
+                                value = getChoicesFormattedValue(format, value);
+                            }
+                            if (format.startsWith(dateFormatPrefix)) {
+                                value = getDateFormattedValue(format, value);
+                            }
+                        }
+                    }
+
+                    this.values.put(odkVariable, value);
+                    Log.d("trl-odk auto-loadable", odkVariable + ", " + value);
+                }
             }
         }
     }
@@ -303,32 +319,25 @@ public class FormDataLoader implements Serializable {
             if (mapValue.startsWith(constPrefix)) {
                 String internalVariableName = mapValue.replace(constPrefix, "");
                 String odkVariable = key;
-                String value = null;
-                ExtrasVariable extrasVariable = tryParseExtrasVariable(internalVariableName);
-
-                if (extrasVariable == null){
-                    value = internalVariableName; //user.getValueByName(internalVariableName);
-                }else {
-                    internalVariableName = extrasVariable.columnName;
-                    String commaValue = internalVariableName; //user.getValueByName(internalVariableName);
-                    value = commaValue.split(",")[extrasVariable.arrayIndex];
-                }
+                String value = internalVariableName; //user.getValueByName(internalVariableName);
 
                 if (value == null) value = "";
 
                 //get variable format from odkVariable eg. variableName->format => patientName->yes,no
-                String[] splt = odkVariable.split("->");
-                odkVariable = splt[0]; //variableName
-                String format = splt[1];      //format of the value
-                if (!format.equalsIgnoreCase("None")){
-                    if (format.startsWith(boolFormatPrefix)){
-                        value = getBooleanFormattedValue(format, value);
-                    }
-                    if (format.startsWith(choiceFormatPrefix)){
-                        value = getChoicesFormattedValue(format, value);
-                    }
-                    if (format.startsWith(dateFormatPrefix)){
-                        value = getDateFormattedValue(format, value);
+                if (odkVariable.contains("->")) {
+                    String[] splt = odkVariable.split("->");
+                    odkVariable = splt[0]; //variableName
+                    String format = splt[1];      //format of the value
+                    if (!format.equalsIgnoreCase("None")) {
+                        if (format.startsWith(boolFormatPrefix)) {
+                            value = getBooleanFormattedValue(format, value);
+                        }
+                        if (format.startsWith(choiceFormatPrefix)) {
+                            value = getChoicesFormattedValue(format, value);
+                        }
+                        if (format.startsWith(dateFormatPrefix)) {
+                            value = getDateFormattedValue(format, value);
+                        }
                     }
                 }
 
@@ -349,12 +358,7 @@ public class FormDataLoader implements Serializable {
             if (mapValue.startsWith(specialConstPrefix)) {
                 final String internalVariableName = mapValue.replace(specialConstPrefix, "");
                 String odkVariable = key;
-                String value = null;
-                ExtrasVariable extrasVariable = tryParseExtrasVariable(internalVariableName);
-
-                if (extrasVariable == null){
-                    value = internalVariableName; //user.getValueByName(internalVariableName);
-                }
+                String value = internalVariableName; //user.getValueByName(internalVariableName);
 
                 if (value == null) value = "";
 
@@ -367,27 +371,27 @@ public class FormDataLoader implements Serializable {
                     value = StringUtil.format(new Date(), "yyyy-MM-dd HH:mm:ss");
                 }
 
-
-
                 //get variable format from odkVariable eg. variableName->format => patientName->yes,no
-                String[] splt = odkVariable.split("->");
-                odkVariable = splt[0]; //variableName
-                String format = splt[1];      //format of the value
-                if (!format.equalsIgnoreCase("None")){
-                    if (format.startsWith(boolFormatPrefix)){
-                        value = getBooleanFormattedValue(format, value);
-                    }
-                    if (format.startsWith(choiceFormatPrefix)){
-                        value = getChoicesFormattedValue(format, value);
-                    }
-                    if (format.startsWith(dateFormatPrefix)){
-
-                        if (internalVariableName.equals("Timestamp")) {
-                            value = getDateFormattedValue("yyyy-MM-dd HH:mm:ss", format, value);
-                        } else {
-                            value = getDateFormattedValue(format, value);
+                if (odkVariable.contains("->")) {
+                    String[] splt = odkVariable.split("->");
+                    odkVariable = splt[0]; //variableName
+                    String format = splt[1];      //format of the value
+                    if (!format.equalsIgnoreCase("None")) {
+                        if (format.startsWith(boolFormatPrefix)) {
+                            value = getBooleanFormattedValue(format, value);
                         }
+                        if (format.startsWith(choiceFormatPrefix)) {
+                            value = getChoicesFormattedValue(format, value);
+                        }
+                        if (format.startsWith(dateFormatPrefix)) {
 
+                            if (internalVariableName.equals("Timestamp")) {
+                                value = getDateFormattedValue("yyyy-MM-dd HH:mm:ss", format, value);
+                            } else {
+                                value = getDateFormattedValue(format, value);
+                            }
+
+                        }
                     }
                 }
 

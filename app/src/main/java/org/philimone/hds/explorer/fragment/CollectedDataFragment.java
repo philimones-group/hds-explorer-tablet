@@ -91,13 +91,13 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
      *
      * @return A new instance of fragment HouseholdFormsFragment.
      */
-    public static CollectedDataFragment newInstance(FormSubject subject, User user) {
+    /*public static CollectedDataFragment newInstance(FormSubject subject, User user) {
         CollectedDataFragment fragment = new CollectedDataFragment();
         fragment.subject = subject;
         fragment.loggedUser = user;
         fragment.initializeDataloaders();
         return fragment;
-    }
+    }*/
 
     public static CollectedDataFragment newInstance(FormSubject subject, User user, List<FormDataLoader> dataLoaders){
         CollectedDataFragment fragment = new CollectedDataFragment();
@@ -226,6 +226,8 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
         if (region != null){
             loader.loadRegionValues(region);
         }
+
+        loader.loadTrackingListValues();
 
         loader.loadConstantValues();
         loader.loadSpecialConstantValues(household, member, loggedUser, region, null);

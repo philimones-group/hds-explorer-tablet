@@ -213,7 +213,6 @@ public class SurveyMembersActivity extends AppCompatActivity implements MemberFi
             Intent intent = new Intent(SurveyMembersActivity.this, MemberDetailsActivity.class);
             intent.putExtra("household", this.household);
             intent.putExtra("member", this.member);
-            //intent.putExtra("dataloaders", dataLoaders);
 
             showLoadingDialog(null, false);
 
@@ -242,7 +241,6 @@ public class SurveyMembersActivity extends AppCompatActivity implements MemberFi
 
             Intent intent = new Intent(SurveyMembersActivity.this, HouseholdDetailsActivity.class);
             intent.putExtra("household", household);
-            //intent.putExtra("dataloaders", dataLoaders);
 
             showLoadingDialog(null, false);
 

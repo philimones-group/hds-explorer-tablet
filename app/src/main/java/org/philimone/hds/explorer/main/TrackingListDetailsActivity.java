@@ -264,7 +264,7 @@ public class TrackingListDetailsActivity extends AppCompatActivity implements Ba
         int i=0;
         for (Form form : forms){
             if (subjectItem.getForms().contains(form.getFormId())){ //Create formloader for only the forms that the subjectItem has to collect
-                FormDataLoader loader = new FormDataLoader(form);
+                FormDataLoader loader = new FormDataLoader(form, subjectItem);
                 list.add(loader);
             }
         }

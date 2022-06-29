@@ -1544,7 +1544,7 @@
     },
     {
       "id": "20:2389375802542346440",
-      "lastPropertyId": "11:6589275873550146565",
+      "lastPropertyId": "13:8298253492602728574",
       "name": "HeadRelationship",
       "properties": [
         {
@@ -1604,6 +1604,16 @@
           "id": "9:4108610534254225622",
           "name": "endDate",
           "type": 10
+        },
+        {
+          "id": "12:5947887877420704736",
+          "name": "recentlyCreated",
+          "type": 1
+        },
+        {
+          "id": "13:8298253492602728574",
+          "name": "recentlyCreatedUri",
+          "type": 9
         }
       ],
       "relations": []
@@ -1796,7 +1806,7 @@
     },
     {
       "id": "23:4611124115189785343",
-      "lastPropertyId": "23:8795576327303333700",
+      "lastPropertyId": "24:9049047085137235743",
       "name": "CoreCollectedData",
       "properties": [
         {
@@ -1901,6 +1911,11 @@
           "indexId": "97:5729219827015890841",
           "type": 9,
           "flags": 2048
+        },
+        {
+          "id": "24:9049047085137235743",
+          "name": "recordType",
+          "type": 9
         }
       ],
       "relations": []
@@ -2048,10 +2063,46 @@
         }
       ],
       "relations": []
+    },
+    {
+      "id": "27:3552757355833103195",
+      "lastPropertyId": "5:8010684090760696059",
+      "name": "SavedEntityState",
+      "properties": [
+        {
+          "id": "1:6308454313760809871",
+          "name": "id",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:3349601725358663484",
+          "name": "processType",
+          "type": 9
+        },
+        {
+          "id": "3:4842291533003925010",
+          "name": "collectedId",
+          "indexId": "98:7191503264782110489",
+          "type": 6,
+          "flags": 40
+        },
+        {
+          "id": "4:4765199101587545136",
+          "name": "objectKey",
+          "type": 9
+        },
+        {
+          "id": "5:8010684090760696059",
+          "name": "objectGsonValue",
+          "type": 9
+        }
+      ],
+      "relations": []
     }
   ],
-  "lastEntityId": "26:1585784821968195154",
-  "lastIndexId": "97:5729219827015890841",
+  "lastEntityId": "27:3552757355833103195",
+  "lastIndexId": "98:7191503264782110489",
   "lastRelationId": "0:0",
   "lastSequenceId": "0:0",
   "modelVersion": 5,

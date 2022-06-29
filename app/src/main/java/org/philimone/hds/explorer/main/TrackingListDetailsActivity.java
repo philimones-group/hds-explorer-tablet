@@ -441,7 +441,8 @@ public class TrackingListDetailsActivity extends AppCompatActivity implements Ba
         tSubject.setMember(member);
         tSubject.setListItem(subListItem);
         tSubject.setSubjectType(item.getSubjectType());
-        tSubject.setVisitCode(item.getSubjectVisitCode());
+        tSubject.setVisitCode(item.subjectVisitCode);
+        tSubject.setVisitUuid(item.subjectVisitUuid);
         tSubject.addForms(forms);
         tSubject.addCollectedData(listCollected);
 

@@ -115,7 +115,7 @@ public class MemberDetailsActivity extends AppCompatActivity {
 
             for (int i = 0; i < objs.length; i++) {
                 FormDataLoader formDataLoader = (FormDataLoader) objs[i];
-                Log.d("tag", "" + formDataLoader.getForm().getFormId());
+                //Log.d("tag", "" + formDataLoader.getForm().getFormId());
                 if (isMemberVisualizableForm(formDataLoader.getForm())) {
                     this.formDataLoaders.add(formDataLoader);
                 }

@@ -70,6 +70,8 @@ public class FormDataLoader implements Serializable {
     public FormDataLoader(Form form, TrackingSubjectItem subjectItem){
         this(form);
         this.trackingSubjectItem = subjectItem;
+
+        Log.d("settingstr", "subj: "+subjectItem);
     }
 
     public Form getForm() {
@@ -269,20 +271,24 @@ public class FormDataLoader implements Serializable {
     }
 
     public void loadTrackingListValues(){
+        Log.d("reading dl", trackingSubjectItem+" FormDL");
         if (this.trackingSubjectItem != null) {
             Map<String, String> map = form.getFormMap();
             for (String key : map.keySet()){
                 //key   - odkVariable
                 //value - domain column name
                 String mapValue = map.get(key); //Domain ColumnName that we will get its content
+
+                Log.d("all vars", key+":"+mapValue+", vcode="+trackingSubjectItem.getVisitCode()+", vuuid="+trackingSubjectItem.getVisitUuid());
+
                 if (mapValue.startsWith(trackingListPrefix)) {
                     String internalVariableName = mapValue.replace(trackingListPrefix, "");
                     String odkVariable = key;
                     String value = ""; //member.getValueByName(internalVariableName);
 
-                    if (key.equals("subject_visit_code")) value = this.trackingSubjectItem.getVisitCode();
+                    if (internalVariableName.equals("subject_visit_code")) value = this.trackingSubjectItem.getVisitCode();
 
-                    if (key.equals("subject_visit_uuid")) value = this.trackingSubjectItem.getVisitUuid();
+                    if (internalVariableName.equals("subject_visit_uuid")) value = this.trackingSubjectItem.getVisitUuid();
 
                     //get variable format from odkVariable eg. variableName->format => patientName->yes,no
                     if (odkVariable.contains("->")) {
@@ -611,29 +617,9 @@ public class FormDataLoader implements Serializable {
 
                 if (value == null) value = "";
 
-                //get variable format from odkVariable eg. variableName->format => patientName->yes,no
-                //Log.d("xxx-odkvar", ""+odkVariable);
-                String[] splt = odkVariable.split("->");
-                odkVariable = splt[0]; //variableName
-                String format = splt[1];      //format of the value
-
-                if (!format.equalsIgnoreCase("None")){
-                    if (format.startsWith(boolFormatPrefix)){
-                        value = getBooleanFormattedValue(format, value);
-                    }
-                    if (format.startsWith(choiceFormatPrefix)){
-                        value = getChoicesFormattedValue(format, value);
-                    }
-                    if (format.startsWith(dateFormatPrefix)){
-                        value = getDateFormattedValue(format, value);
-                    }
-                }
-
                 this.values.put(odkVariable, value);
                 //Log.d("xxx-odk auto-loadable", odkVariable + ", " + value);
             }
-
-
         }
 
     }

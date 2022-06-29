@@ -56,6 +56,7 @@ import org.philimone.hds.explorer.model.enums.temporal.ResidencyEndType;
 import org.philimone.hds.explorer.model.enums.temporal.ResidencyStartType;
 import org.philimone.hds.explorer.model.followup.TrackingList;
 import org.philimone.hds.explorer.model.followup.TrackingSubjectList;
+import org.philimone.hds.explorer.model.oldstate.SavedEntityState;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
@@ -139,6 +140,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 	private Box<Outmigration> boxOutmigrations;
 	private Box<PregnancyChild> boxPregnancyChilds;
 	private Box<PregnancyOutcome> boxPregnancyOuts;
+	private Box<SavedEntityState> boxSavedEntityStates;
 
 	private boolean canceled;
 
@@ -184,6 +186,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 		this.boxOutmigrations = ObjectBoxDatabase.get().boxFor(Outmigration.class);
 		this.boxPregnancyChilds = ObjectBoxDatabase.get().boxFor(PregnancyChild.class);
 		this.boxPregnancyOuts = ObjectBoxDatabase.get().boxFor(PregnancyOutcome.class);
+		this.boxSavedEntityStates = ObjectBoxDatabase.get().boxFor(SavedEntityState.class);
 	}
 
 	public void setSyncDatabaseListener(SyncEntitiesListener listener){
@@ -352,13 +355,13 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 						break;
 					case HOUSEHOLDS:
 						this.boxHouseholds.removeAll();
-						this.boxCoreCollectedData.removeAll();
 						processUrl(baseurl + API_PATH + "/households/zip", "households.zip");
 						break;
 					case MEMBERS:
 						this.boxMembers.removeAll();
 						this.boxCollectedData.removeAll();
 						deleteAllCoreCollectedData();
+						this.boxSavedEntityStates.removeAll();
 						//remove related to members
 						boxDeaths.removeAll();
 						boxIncompleteVisits.removeAll();
@@ -1024,7 +1027,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 				parser.next();
 				Map<String, String> map = convertFormMapTextToMap(parser.getText());
 				table.setFormMap(map);
-				//Log.d(count+"-formMap", "value="+ parser.getText());
+				Log.d(count+"-formMap", "value="+ parser.getText());
 				parser.nextTag(); //process </formMap>
 			}else{
 				table.setFormMap(new LinkedHashMap<>());
@@ -1060,11 +1063,11 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 			parser.next();
 
 			//Log.d("form ", ""+table.getFormId());
-
+			boxForms.put(table);
 			values.add(table);
 		}
 
-		boxForms.put(values);
+
 		savedValues.put(entity, count); //publish progress is a bit slow - its not reporting well the numbers
 		publishProgress(count);
 

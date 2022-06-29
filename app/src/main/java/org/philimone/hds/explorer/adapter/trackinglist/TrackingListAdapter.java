@@ -156,7 +156,7 @@ public class TrackingListAdapter extends RecyclerView.Adapter<TrackingListAdapte
             int completion = (int) (trackingList.getCompletionRate()*100);  // df.format(trackingList.getCompletionRate()*100D) + "%";
 
             txtTitle.setText(trackingList.getName() + ":  " + trackingList.getTitle());
-            txtDetails.setText(trackingList.getDetails());
+            txtDetails.setText(trackingList.getCode()+" - "+trackingList.getDetails());
             txtModule.setText(mContext.getString(R.string.trackinglist_module_lbl) + ": " + currentUser.getModulesNamesAsText(trackingList.modules));
 
             pBar.setPercentageValue(completion);

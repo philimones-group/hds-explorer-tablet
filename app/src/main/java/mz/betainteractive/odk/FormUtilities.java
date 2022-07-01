@@ -309,39 +309,43 @@ public class FormUtilities {
     }
 
     public String getDeviceId() {
-        TelephonyManager mTelephonyManager = (TelephonyManager) mContext.getSystemService(Context.TELEPHONY_SERVICE);
-
-        if (ActivityCompat.checkSelfPermission(this.mContext, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
-            return null;
+        if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+            return "";
         }
 
-        String deviceId = mTelephonyManager.getImei();
-        String orDeviceId;
+        TelephonyManager mTelephonyManager = (TelephonyManager) getContext().getSystemService(Context.TELEPHONY_SERVICE);
+
+        String deviceId = null;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
+            deviceId = Settings.Secure.getString(getContext().getContentResolver(), Settings.Secure.ANDROID_ID);
+        } else if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            deviceId = mTelephonyManager.getImei();
+        }
+        String orDeviceId = "";
 
         if (deviceId != null ) {
             if ((deviceId.contains("*") || deviceId.contains("000000000000000"))) {
-                deviceId = Settings.Secure.getString(mContext.getContentResolver(), Settings.Secure.ANDROID_ID);
+                deviceId = Settings.Secure.getString(getContext().getContentResolver(), Settings.Secure.ANDROID_ID);
                 orDeviceId = Settings.Secure.ANDROID_ID + ":" + deviceId;
             } else {
                 orDeviceId = "imei:" + deviceId;
             }
-        }
-        if ( deviceId == null ) {
+        } else {
             // no SIM -- WiFi only
             // Retrieve WiFiManager
-            WifiManager wifi = (WifiManager) mContext.getSystemService(Context.WIFI_SERVICE);
+            WifiManager wifi = (WifiManager) getContext().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
 
             // Get WiFi status
             WifiInfo info = wifi.getConnectionInfo();
 
-            if ( info != null ) {
+            if (info != null) {
                 deviceId = info.getMacAddress();
                 orDeviceId = "mac:" + deviceId;
             }
         }
         // if it is still null, use ANDROID_ID
-        if ( deviceId == null ) {
-            deviceId = Settings.Secure.getString(mContext.getContentResolver(), Settings.Secure.ANDROID_ID);
+        if (deviceId == null) {
+            deviceId = Settings.Secure.getString(getContext().getContentResolver(), Settings.Secure.ANDROID_ID);
             orDeviceId = Settings.Secure.ANDROID_ID + ":" + deviceId;
 
             //sbuilder.append("<deviceId>"+ orDeviceId +"</deviceId>" + "\r\n");

@@ -25,6 +25,7 @@ import mz.betainteractive.odk.model.RepeatGroupType;
 
 import org.jdom2.JDOMException;
 import org.jdom2.input.SAXBuilder;
+import org.philimone.hds.explorer.database.Bootstrap;
 import org.philimone.hds.explorer.model.Member;
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
@@ -61,6 +62,8 @@ public class OdkGeneratedFormLoadTask extends AsyncTask<Void, Void, Boolean> {
     private Uri odkUri;
     private FilledForm filledForm;
     private boolean openingSavedUri;
+    private boolean usingNewOdkStorage = false;
+    private File odkProjectInstancesPath = null;
     private Context mContext;
 
     private OdkGeneratedFormLoadTask(FormUtilities formUtilities) {
@@ -98,6 +101,7 @@ public class OdkGeneratedFormLoadTask extends AsyncTask<Void, Void, Boolean> {
 
         /* finding odk form on odk database */
         String jrFormId = null;
+        String jrFormName = null;
         String formFilePath = null;
         String formVersion = null;
         String savedFormFilePath = openingSavedUri ? getXmlFilePath(odkUri) : null;
@@ -108,8 +112,9 @@ public class OdkGeneratedFormLoadTask extends AsyncTask<Void, Void, Boolean> {
 
             if (cursor.moveToNext()) {
                 jrFormId = cursor.getString(0);
-                formFilePath = cursor.getString(1);
-                formVersion = cursor.getString(2);
+                jrFormName = cursor.getString(1);
+                formFilePath = cursor.getString(2);
+                formVersion = cursor.getString(3);
             }
 
             cursor.close();
@@ -129,7 +134,54 @@ public class OdkGeneratedFormLoadTask extends AsyncTask<Void, Void, Boolean> {
             return false; //file not found
         }
 
+
+        boolean isNewOdkStorage = !new File(formFilePath).exists() && !formFilePath.startsWith("/");
+        Log.d("odk with projects", isNewOdkStorage+"");
+
+        if (isNewOdkStorage) {
+            //the absolute file path is not found -> try to find using ODK Collect App base Path
+            String odkBasePath = Bootstrap.getOdkBasePath(mContext);
+            File odkDir = new File(odkBasePath);
+            File formFile = null;
+
+            if (odkDir.exists()) {
+                for (File projectSubDir : odkDir.listFiles()) {
+                    if (projectSubDir.isDirectory()) { //files/projects/ssad11-ss-1${ODK_PROJECT}plda5da-dadasd
+                        File formsDir = new File(projectSubDir.getAbsolutePath() + File.separator + "forms");
+                        File instancesDir = new File(projectSubDir.getAbsolutePath() + File.separator + "instances");
+
+                        Log.d("found odk-sub-dir", ""+formsDir.toString());
+
+                        if (formsDir.exists() && formsDir.isDirectory()) {
+                            for (File ffile : formsDir.listFiles()) {
+                                if (ffile.isFile() && ffile.getName().equalsIgnoreCase(formFilePath)) {
+                                    formFile = ffile;
+                                    odkProjectInstancesPath = instancesDir;
+                                    break;
+                                }
+                            }
+                        }
+
+                        if (formFile != null) break;
+                    }
+                }
+            } else {
+                Log.d("odk base path", "not found = "+odkBasePath);
+            }
+
+            Log.d("correct-odk-file", "for=" + formFilePath + ", found="+(formFile));
+
+            if (formFile != null) {
+                formFilePath = formFile.getAbsolutePath();
+                usingNewOdkStorage = true;
+            }
+
+        }
+
         /* ends here - finding odk form on odk database */
+
+
+
 
         Log.d("loading forms", "form_id=" + jrFormId + ",ver=" + formVersion + ", path=" + formFilePath);
 
@@ -160,7 +212,7 @@ public class OdkGeneratedFormLoadTask extends AsyncTask<Void, Void, Boolean> {
             //**** Open a New ODK Form ****//
 
             String xml = processNewXml(jrFormId, formVersion, formFilePath);
-            File targetFile = saveFile(xml, jrFormId);
+            File targetFile = saveFile(xml, jrFormName);
             boolean writeFile = false;
             //Log.d("xml", xml);
             if (targetFile != null) {
@@ -218,7 +270,7 @@ public class OdkGeneratedFormLoadTask extends AsyncTask<Void, Void, Boolean> {
 
     private Cursor getCursorForFormsProvider(String name) {
         return resolver.query(FormsProviderAPI.FormsColumns.CONTENT_URI, new String[]{
-                        FormsProviderAPI.FormsColumns.JR_FORM_ID, FormsProviderAPI.FormsColumns.FORM_FILE_PATH, FormsProviderAPI.FormsColumns.JR_VERSION},
+                        FormsProviderAPI.FormsColumns.JR_FORM_ID, FormsProviderAPI.FormsColumns.DISPLAY_NAME, FormsProviderAPI.FormsColumns.FORM_FILE_PATH, FormsProviderAPI.FormsColumns.JR_VERSION},
                 FormsProviderAPI.FormsColumns.JR_FORM_ID + " like ?", new String[]{name + "%"}, null);
     }
 
@@ -719,34 +771,45 @@ public class OdkGeneratedFormLoadTask extends AsyncTask<Void, Void, Boolean> {
         df.setTimeZone(TimeZone.getDefault());
         String date = df.format(new Date());
 
-        File root = Environment.getExternalStorageDirectory();
-        String destinationPath = root.getAbsolutePath() + File.separator + "odk" + File.separator + "instances"+ File.separator + jrFormId + "_" + date;
-        /*String destinationPath = root.getAbsolutePath() + File.separator + "Android" + File.separator + "data"
-                + File.separator + FORMS_PATH + File.separator + "files"+ File.separator + jrFormId + date;*/
+        String dirName = jrFormId + "_" + date;
+        String fileName =  jrFormId + "_" + date + ".xml";
 
+        File root = null;
+        String destinationPath = null;
+
+        if (usingNewOdkStorage) {
+            root = odkProjectInstancesPath;
+            destinationPath = root.getAbsolutePath() + File.separator + dirName + File.separator;
+        } else {
+
+            root = Bootstrap.getRootFolder(mContext);
+            destinationPath = root.getAbsolutePath() + File.separator + "odk" + File.separator + "instances"+ File.separator + dirName + File.separator;
+            /*destinationPath = root.getAbsolutePath() + File.separator + "Android" + File.separator + "data" + File.separator + FORMS_PATH + File.separator + "files"+ File.separator + jrFormId + date;*/
+        }
 
         File baseDir = new File(destinationPath);
-                
+        File targetFile = new File(destinationPath + fileName);
+
         if (!baseDir.exists()) {
             boolean created = baseDir.mkdirs();
             if (!created) {
                 return null;
             }
         }
-       
-        destinationPath += File.separator + jrFormId + "_" + date + ".xml";
 
-        File targetFile = new File(destinationPath);
         if (!targetFile.exists()) {
             try {
                 FileWriter writer = new FileWriter(targetFile);
                 writer.write(xml);
                 writer.close();
+
+                return targetFile;
             } catch (IOException e) {
                 return null;
             }
         }
-        return targetFile;
+
+        return null;
     }
 
     private boolean writeContent(File targetFile, String displayName, String formId, String formVersion) {

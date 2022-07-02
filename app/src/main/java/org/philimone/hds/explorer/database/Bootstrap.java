@@ -33,6 +33,10 @@ public class Bootstrap {
     private static final String APP_FORMS_PATH = APP_BASE_PATH + "forms" + File.separator;
     private static final String APP_INSTANCES_PATH = APP_BASE_PATH + "instances" + File.separator;
 
+    private static final String ODK_APP_PATH = "org.odk.collect.android";
+    private static final String ODK_APP_BASE_PATH = File.separator + "Android" + File.separator + "data" + File.separator + ODK_APP_PATH + File.separator + "files"+ File.separator + "projects" + File.separator;
+
+
     private static String absoluteBasePath;
     private static String absoluteFormsPath;
     private static String absoluteInstancesPath;
@@ -56,6 +60,16 @@ public class Bootstrap {
         insertSyncReports();
         insertParams();
         initializePaths(this.mContext);
+        fixDatasets();
+        runTests();
+    }
+
+    private void runTests() {
+
+    }
+
+    private void fixDatasets() {
+        
     }
 
     private void insertParams(){
@@ -103,8 +117,7 @@ public class Bootstrap {
 
     }
 
-    private static void initializePaths(Context context){
-
+    public static File getRootFolder(Context context) {
         File root = null;
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
@@ -117,6 +130,13 @@ public class Bootstrap {
         } else {
             root = Environment.getExternalStorageDirectory();
         }
+
+        return root;
+    }
+
+    private static void initializePaths(Context context){
+
+        File root = getRootFolder(context);
 
         absoluteBasePath = root.getAbsolutePath() + APP_BASE_PATH;
         absoluteFormsPath = root.getAbsolutePath() + APP_FORMS_PATH;
@@ -156,6 +176,11 @@ public class Bootstrap {
         }
 
         return absoluteInstancesPath;
+    }
+
+    public static String getOdkBasePath(Context context) {
+        File root = getRootFolder(context);
+        return root.getAbsolutePath() + ODK_APP_BASE_PATH;
     }
 
     public static File getBasePathFile(String filename, Context context) {

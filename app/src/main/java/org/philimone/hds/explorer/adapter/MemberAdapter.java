@@ -2,6 +2,7 @@ package org.philimone.hds.explorer.adapter;
 
 import android.content.Context;
 import android.graphics.Typeface;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,13 +30,13 @@ public class MemberAdapter extends RecyclerView.Adapter<MemberAdapter.MemberView
     private Context mContext;
     private @LayoutRes int layoutResourceId;
     private int selectedIndex = -1;
-    private boolean ignoreHeadOfHousehold = false;
+    private boolean showHouseholdHeadIcon = true;
     private boolean showHouseholdAndCode = false;
-    private boolean showHouseholdHead = true;
+    private boolean showExtraDetails = false;
     private boolean showGender = false;
     private MemberIcon memberIcon;
 
-    public enum MemberIcon {NORMAL_MEMBER_ICON, NORMAL_HEAD_ICON, NORMAL_SECHEAD_ICON, NORMAL_MEMBER_NEW_ICON, NORMAL_HEAD_NEW_ICON}
+    public enum MemberIcon {NORMAL_MEMBER_ICON, NORMAL_MEMBER_CHECKED_ICON, NORMAL_HEAD_ICON, NORMAL_SECHEAD_ICON, NORMAL_MEMBER_NEW_ICON, NORMAL_HEAD_NEW_ICON}
 
     /**
      * Adapter of a List View Item for members (name and code are displayed)
@@ -107,7 +108,7 @@ public class MemberAdapter extends RecyclerView.Adapter<MemberAdapter.MemberView
             this.extras.addAll(extras);
         }
 
-        this.ignoreHeadOfHousehold = true;
+        this.showHouseholdHeadIcon = true;
 
         this.mContext = context;
         this.layoutResourceId = R.layout.member_item_xtra;
@@ -162,12 +163,12 @@ public class MemberAdapter extends RecyclerView.Adapter<MemberAdapter.MemberView
         this.showHouseholdAndCode = showHouseholdAndCode;
     }
 
-    public void setIgnoreHeadOfHousehold(boolean ignoreHeadOfHousehold) {
-        this.ignoreHeadOfHousehold = ignoreHeadOfHousehold;
+    public void setShowHouseholdHeadIcon(boolean showHouseholdHeadIcon) {
+        this.showHouseholdHeadIcon = showHouseholdHeadIcon;
     }
 
-    public void setShowHouseholdHead(boolean showHouseholdHead) {
-        this.showHouseholdHead = showHouseholdHead;
+    public void setShowExtraDetails(boolean showExtraDetails) {
+        this.showExtraDetails = showExtraDetails;
     }
 
     public boolean isShowGender() {
@@ -230,6 +231,7 @@ public class MemberAdapter extends RecyclerView.Adapter<MemberAdapter.MemberView
             txtName.setText(mb.getName());
             txtCode.setText(mb.getCode()+extraCode);
 
+            memberIcon = MemberIcon.NORMAL_MEMBER_ICON;
 
             if (showHouseholdAndCode){
                 txtCode.setText(mb.getHouseholdName() +" -> "+mb.getCode()+endType);
@@ -242,7 +244,8 @@ public class MemberAdapter extends RecyclerView.Adapter<MemberAdapter.MemberView
             if (supervisedMembers != null && position < supervisedMembers.size()){
                 if (supervisedMembers.get(position)==true){
                     //txtName.setTypeface(null, Typeface.BOLD);
-                    iconView.setImageResource(R.mipmap.nui_member_red_chk_icon);
+                    //iconView.setImageResource(R.mipmap.nui_member_red_chk_icon);
+                    memberIcon = MemberIcon.NORMAL_MEMBER_CHECKED_ICON;
                 }
             }
 
@@ -254,30 +257,36 @@ public class MemberAdapter extends RecyclerView.Adapter<MemberAdapter.MemberView
                 txtExtra.setText(extras.get(position));
             }
 
-            if (ignoreHeadOfHousehold==false){
+            if (showHouseholdHeadIcon){
                 if (mb.isHouseholdHead()){
                     //txtName.setTypeface(null, Typeface.BOLD);
-                    //memberIcon = MemberIcon.NORMAL_HEAD_ICON;
-                    iconView.setImageResource(R.mipmap.nui_member_red_filled_icon);
+                    //iconView.setImageResource(R.mipmap.nui_member_red_filled_icon);
+                    memberIcon = MemberIcon.NORMAL_HEAD_ICON;
+                } else if (mb.isSecHouseholdHead()){
+                    //txtName.setTypeface(null, Typeface.BOLD);
+                    //iconView.setImageResource(R.mipmap.nui_member_red_filled_two_icon);
+                    memberIcon = MemberIcon.NORMAL_SECHEAD_ICON;
+                } else {
+                    //iconView.setImageResource(R.mipmap.nui_member_red_icon);
+                    memberIcon = MemberIcon.NORMAL_MEMBER_ICON;
                 }
 
-                if (mb.isSecHouseholdHead()){
-                    //txtName.setTypeface(null, Typeface.BOLD);
-                    iconView.setImageResource(R.mipmap.nui_member_red_filled_two_icon);
-                }
             }
 
             if (mb.isRecentlyCreated()){
-                iconView.setImageResource(R.mipmap.nui_member_red_new_icon);
+                //iconView.setImageResource(R.mipmap.nui_member_red_new_icon);
+                memberIcon = MemberIcon.NORMAL_MEMBER_NEW_ICON;
 
                 if (mb.isHouseholdHead() || mb.isSecHouseholdHead()){
-                    iconView.setImageResource(R.mipmap.nui_member_red_filled_new_icon);
+                    //iconView.setImageResource(R.mipmap.nui_member_red_filled_new_icon);
+                    memberIcon = MemberIcon.NORMAL_HEAD_NEW_ICON;
                 }
             }
 
             if (memberIcon != null){
                 switch (memberIcon){
                     case NORMAL_MEMBER_ICON:iconView.setImageResource(R.mipmap.nui_member_red_icon); break;
+                    case NORMAL_MEMBER_CHECKED_ICON:iconView.setImageResource(R.mipmap.nui_member_red_chk_icon); break;
                     case NORMAL_HEAD_ICON:iconView.setImageResource(R.mipmap.nui_member_red_filled_icon); break;
                     case NORMAL_SECHEAD_ICON:iconView.setImageResource(R.mipmap.nui_member_red_filled_two_icon); break;
                     case NORMAL_MEMBER_NEW_ICON:iconView.setImageResource(R.mipmap.nui_member_red_new_icon); break;
@@ -312,7 +321,7 @@ public class MemberAdapter extends RecyclerView.Adapter<MemberAdapter.MemberView
                 if (txtExtra!=null) txtExtra.setTextColor(colorA);
             }
 
-            txtExtra.setVisibility(showHouseholdHead ? View.VISIBLE : View.GONE);
+            txtExtra.setVisibility(showExtraDetails ? View.VISIBLE : View.GONE);
         }
     }
 }

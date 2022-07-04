@@ -82,9 +82,9 @@ public class HouseholdFormUtil extends FormUtil<Household> {
 
     public static HouseholdFormUtil newInstance(Mode openMode, Fragment fragment, Context context, Region region, Household householdToEdit, FormUtilities odkFormUtilities, FormUtilListener<Household> listener){
         if (openMode == Mode.CREATE) {
-            new HouseholdFormUtil(fragment, context, region, odkFormUtilities, listener);
+            return new HouseholdFormUtil(fragment, context, region, odkFormUtilities, listener);
         } else if (openMode == Mode.EDIT) {
-            new HouseholdFormUtil(fragment, context, householdToEdit, odkFormUtilities, listener);
+            return new HouseholdFormUtil(fragment, context, householdToEdit, odkFormUtilities, listener);
         }
 
         return null;
@@ -94,6 +94,7 @@ public class HouseholdFormUtil extends FormUtil<Household> {
     protected void initBoxes() {
         super.initBoxes();
 
+        this.boxRegions = ObjectBoxDatabase.get().boxFor(Region.class);
         this.boxHouseholds = ObjectBoxDatabase.get().boxFor(Household.class);
 
     }
@@ -138,7 +139,7 @@ public class HouseholdFormUtil extends FormUtil<Household> {
         }
 
         //check if household with code exists
-        if (boxHouseholds.query().equal(Household_.code, household_code, QueryBuilder.StringOrder.CASE_SENSITIVE).build().findFirst() != null){
+        if (currentMode==Mode.CREATE && boxHouseholds.query().equal(Household_.code, household_code, QueryBuilder.StringOrder.CASE_SENSITIVE).build().findFirst() != null){
             String message = this.context.getString(R.string.new_household_code_exists_lbl);
             //DialogFactory.createMessageInfo(HouseholdDetailsActivity.this, R.string.info_lbl, R.string.new_household_code_exists_lbl).show();
             return new ValidationResult(columnHouseholdCode, message);
@@ -159,11 +160,15 @@ public class HouseholdFormUtil extends FormUtil<Household> {
         Log.d("resultxml", result.getXmlResult());
 
         if (currentMode == Mode.EDIT) {
-            System.out.println("Editing Household Not implemented yet");
-            assert 1==0;
+            onModeEdit(collectedValues, result);
+        } else if (currentMode == Mode.CREATE) {
+            onModeCreate(collectedValues, result);
         }
 
-        //saveNewHousehold();
+    }
+
+    private void onModeCreate(CollectedDataMap collectedValues, XmlFormResult result) {
+
         ColumnValue colRegionCode = collectedValues.get("regionCode");
         ColumnValue colRegionName = collectedValues.get("regionName");
         ColumnValue colHouseholdCode = collectedValues.get("householdCode");
@@ -216,13 +221,64 @@ public class HouseholdFormUtil extends FormUtil<Household> {
 
         this.entity = household;
         collectExtensionForm(collectedValues);
+    }
 
+    private void onModeEdit(CollectedDataMap collectedValues, XmlFormResult result) {
+        //saveNewHousehold();
+        ColumnValue colRegionCode = collectedValues.get("regionCode");
+        ColumnValue colRegionName = collectedValues.get("regionName");
+        ColumnValue colHouseholdCode = collectedValues.get("householdCode");
+        ColumnValue colHouseholdName = collectedValues.get("householdName");
+        ColumnValue colHeadCode = collectedValues.get("headCode");
+        ColumnValue colHeadName = collectedValues.get("headName");
+        ColumnValue colCollBy = collectedValues.get("collectedBy");
+        ColumnValue colCollDate = collectedValues.get("collectedDate");
+        ColumnValue colModules = collectedValues.get("modules");
+
+        ColumnValue colGps = collectedValues.get("gps");
+        Map<String, Double> gpsValues = colGps.getGpsValues();
+        Double gpsLat = gpsValues.get("gpsLat");
+        Double gpsLon = gpsValues.get("gpsLon");
+        Double gpsAlt = gpsValues.get("gpsAlt");
+        Double gpsAcc = gpsValues.get("gpsAcc");
+
+
+        Household household = this.entity;
+        household.region = colRegionCode.getValue();
+        household.code = colHouseholdCode.getValue();
+        household.name = colHouseholdName.getValue();
+        household.headCode = colHeadCode.getValue();
+        household.headName = colHeadName.getValue();
+        household.gpsLatitude = gpsLat;
+        household.gpsLongitude = gpsLon;
+        household.gpsAltitude = gpsAlt;
+        household.gpsAccuracy = gpsAcc;
+        household.updateGpsCalculations();
+        //household.collectedId = collectedValues.get(HForm.COLUMN_ID).getValue();
+        //household.recentlyCreated = true;
+        //household.recentlyCreatedUri = result.getFilename();
+        //household.modules.addAll(StringCollectionConverter.getCollectionFrom(colModules.getValue()));
+
+        boxHouseholds.put(household);
+
+        //collectedData was read when creating an Edit FormUtil
+        collectedData.formEntityName = household.name;
+        collectedData.updatedDate = new Date();
+        boxCoreCollectedData.put(collectedData);
+
+        //collectExtensionForm(collectedValues);
+
+        onFinishedExtensionCollection();
     }
 
     @Override
     protected void onFinishedExtensionCollection() {
         if (listener != null) {
-            listener.onNewEntityCreated(this.entity, new HashMap<>());
+            if (currentMode == Mode.CREATE) {
+                listener.onNewEntityCreated(this.entity, new HashMap<>());
+            } else if (currentMode == Mode.EDIT) {
+                listener.onEntityEdited(this.entity, new HashMap<>());
+            }
         }
     }
 

@@ -51,6 +51,9 @@ public class HeadRelationship implements CoreEntity {
 
     public Date endDate;
 
+    @Unique
+    public String collectedId;
+
     public boolean recentlyCreated;
 
     public String recentlyCreatedUri;
@@ -62,7 +65,7 @@ public class HeadRelationship implements CoreEntity {
 
     @Override
     public String getCollectedId() {
-        return "NA";
+        return this.collectedId;
     }
 
     @Override

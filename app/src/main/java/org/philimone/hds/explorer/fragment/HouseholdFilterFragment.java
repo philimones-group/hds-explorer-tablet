@@ -209,7 +209,7 @@ public class HouseholdFilterFragment extends Fragment implements RegionExpandabl
 
             @Override
             public void afterTextChanged(Editable s) {
-                if (s.length()>2){
+                if (s.length()>2 || s.toString().startsWith("#")){
                     searchHouses(s.toString());
                 }
             }
@@ -607,10 +607,17 @@ public class HouseholdFilterFragment extends Fragment implements RegionExpandabl
         //open loader
         //search
         List<String> smodules = new ArrayList<>(loggedUser.getSelectedModules());
+        List<Household> households = new ArrayList<>();
 
-        List<Household> households = this.boxHouseholds.query().startsWith(Household_.code, houseCode, QueryBuilder.StringOrder.CASE_SENSITIVE).orderDesc(Household_.code) //query by modules
-                                                               .filter((h)->StringUtil.containsAny(h.modules, smodules))
-                                                               .build().find();
+        if (houseCode.equalsIgnoreCase("#") || houseCode.equalsIgnoreCase("#new")) {
+            households = this.boxHouseholds.query(Household_.recentlyCreated.equal(true)).build().find();
+        } else {
+            households = this.boxHouseholds.query(Household_.code.startsWith(houseCode).or(Household_.name.contains(houseCode)))
+                    .orderDesc(Household_.code) //query by modules
+                    .filter((h)->StringUtil.containsAny(h.modules, smodules))
+                    .build().find();
+        }
+
 
         HouseholdAdapter currentAdapter = new HouseholdAdapter(this.getActivity(), households);
 

@@ -12,6 +12,7 @@ import org.philimone.hds.explorer.model.ApplicationParam_;
 import org.philimone.hds.explorer.model.CoreCollectedData;
 import org.philimone.hds.explorer.model.Household;
 import org.philimone.hds.explorer.model.Member;
+import org.philimone.hds.explorer.model.Member_;
 import org.philimone.hds.explorer.model.PregnancyRegistration;
 import org.philimone.hds.explorer.model.PregnancyRegistration_;
 import org.philimone.hds.explorer.model.Visit;
@@ -86,13 +87,15 @@ public class PregnancyRegistrationFormUtil extends FormUtil<PregnancyRegistratio
 
         initBoxes();
         initialize();
+
+        this.mother = this.boxMembers.query(Member_.code.equal(pregToEdit.motherCode)).build().findFirst();
     }
 
     public static PregnancyRegistrationFormUtil newInstance(Mode openMode, Fragment fragment, Context context, Visit visit, Household household, Member member, PregnancyRegistration pregToEdit, FormUtilities odkFormUtilities, FormUtilListener<PregnancyRegistration> listener){
         if (openMode == Mode.CREATE) {
-            new PregnancyRegistrationFormUtil(fragment, context, visit, household, member, odkFormUtilities, listener);
+            return new PregnancyRegistrationFormUtil(fragment, context, visit, household, member, odkFormUtilities, listener);
         } else if (openMode == Mode.EDIT) {
-            new PregnancyRegistrationFormUtil(fragment, context, visit, household, pregToEdit, odkFormUtilities, listener);
+            return new PregnancyRegistrationFormUtil(fragment, context, visit, household, pregToEdit, odkFormUtilities, listener);
         }
 
         return null;
@@ -179,7 +182,7 @@ public class PregnancyRegistrationFormUtil extends FormUtil<PregnancyRegistratio
         }
 
         //code is duplicate
-        if (boxPregnancyRegistrations.query().equal(PregnancyRegistration_.code, code, QueryBuilder.StringOrder.CASE_SENSITIVE).build().count() > 0){
+        if (currentMode == Mode.CREATE && boxPregnancyRegistrations.query().equal(PregnancyRegistration_.code, code, QueryBuilder.StringOrder.CASE_SENSITIVE).build().count() > 0){
             String message = this.context.getString(R.string.pregnancy_registration_code_exists_lbl);
             return new ValidationResult(colCode, message);
         }
@@ -211,10 +214,12 @@ public class PregnancyRegistrationFormUtil extends FormUtil<PregnancyRegistratio
             return new ValidationResult(colEddDate, message);
         }
 
-        PregnancyRegistration pregReg = getLastPregnancyRegistration(this.mother);
-        if (pregReg != null && pregReg.status == PregnancyStatus.PREGNANT){
-            String message = this.context.getString(R.string.pregnancy_registration_previous_pending_lbl);
-            return new ValidationResult(colCode, message);
+        if (currentMode == Mode.CREATE) {
+            PregnancyRegistration pregReg = getLastPregnancyRegistration(this.mother);
+            if (pregReg != null && pregReg.status == PregnancyStatus.PREGNANT) {
+                String message = this.context.getString(R.string.pregnancy_registration_previous_pending_lbl);
+                return new ValidationResult(colCode, message);
+            }
         }
 
 
@@ -227,11 +232,14 @@ public class PregnancyRegistrationFormUtil extends FormUtil<PregnancyRegistratio
         Log.d("resultxml", result.getXmlResult());
 
         if (currentMode == Mode.EDIT) {
-            System.out.println("Editing PregnancyRegistration Not implemented yet");
-            assert 1==0;
+            onModeEdit(collectedValues, result);
+        } else if (currentMode == Mode.CREATE) {
+            onModeCreate(collectedValues, result);
         }
 
+    }
 
+    private void onModeCreate(CollectedDataMap collectedValues, XmlFormResult result) {
         ColumnValue colVisitCode = collectedValues.get("visitCode");
         ColumnValue colCode = collectedValues.get("code");
         ColumnValue colMotherCode = collectedValues.get("motherCode"); //check if code is valid + check duplicate + member belongs to household
@@ -291,7 +299,7 @@ public class PregnancyRegistrationFormUtil extends FormUtil<PregnancyRegistratio
         collectedData = new CoreCollectedData();
         collectedData.visitId = visit.id;
         collectedData.formEntity = CoreFormEntity.PREGNANCY_REGISTRATION;
-        collectedData.formEntityId = mother.id;
+        collectedData.formEntityId = pregnancy.id;
         collectedData.formEntityCode = mother.code;
         collectedData.formEntityName = mother.name;
         collectedData.formUuid = result.getFormUuid();
@@ -303,13 +311,81 @@ public class PregnancyRegistrationFormUtil extends FormUtil<PregnancyRegistratio
 
         this.entity = pregnancy;
         this.collectExtensionForm(collectedValues);
+    }
 
+    private void onModeEdit(CollectedDataMap collectedValues, XmlFormResult result) {
+
+        ColumnValue colVisitCode = collectedValues.get("visitCode");
+        ColumnValue colCode = collectedValues.get("code");
+        ColumnValue colMotherCode = collectedValues.get("motherCode"); //check if code is valid + check duplicate + member belongs to household
+        ColumnValue colMotherName = collectedValues.get("motherName"); //not blank
+        ColumnValue colRecordedDate = collectedValues.get("recordedDate"); //not null cannot be in the future nor before dob
+        ColumnValue colStatus = collectedValues.get("status");
+        ColumnValue colEddKnown = collectedValues.get("eddKnown");
+        ColumnValue colHasPrenatalRecord = collectedValues.get("hasPrenatalRecord");
+        ColumnValue colEddDate = collectedValues.get("eddDate"); //not null, cannot be before dob+12
+        ColumnValue colEddType = collectedValues.get("eddType");
+        ColumnValue colPregMonths = collectedValues.get("pregMonths");
+        ColumnValue colLmpKnown = collectedValues.get("lmpKnown");
+        ColumnValue colLmpDate = collectedValues.get("lmpDate");
+        ColumnValue colExpectedDelDate = collectedValues.get("expectedDeliveryDate");
+        ColumnValue colCollectedBy = collectedValues.get("collectedBy");
+        ColumnValue colCollectedDate = collectedValues.get("collectedDate");
+        ColumnValue colModules = collectedValues.get("modules");
+
+        String visitCode = colVisitCode.getValue();
+        String code = colCode.getValue();
+        String motherCode = colMotherCode.getValue();
+        String motherName = colMotherName.getValue();
+        Date recordedDate = colRecordedDate.getDateValue();
+        PregnancyStatus status = PregnancyStatus.getFrom(colStatus.getValue());
+        Boolean hasPrenatalRecord = StringUtil.toBoolean(colHasPrenatalRecord.getValue());
+        Boolean eddKnown = StringUtil.toBoolean(colEddKnown.getValue());
+        Date eddDate = colEddDate.getDateValue();
+        EstimatedDateOfDeliveryType eddType = EstimatedDateOfDeliveryType.getFrom(colEddType.getValue());
+        Integer pregMonths = colPregMonths.getIntegerValue();
+        Boolean lmpKnown = StringUtil.toBoolean(colEddKnown.getValue());
+        Date lmpDate = colLmpDate.getDateValue();
+        Date expectedDeliveryDate = colExpectedDelDate.getDateValue();
+
+        //create pregnancy registration
+        //PregnancyRegistration
+        PregnancyRegistration pregnancy = this.entity;
+        pregnancy.visitCode = visitCode;
+        pregnancy.code = code;
+        pregnancy.motherCode = mother.code;
+        pregnancy.recordedDate = recordedDate;
+        pregnancy.pregMonths = pregMonths;
+        pregnancy.eddKnown = eddKnown;
+        pregnancy.hasPrenatalRecord = hasPrenatalRecord;
+        pregnancy.eddDate = eddDate;
+        pregnancy.eddType = eddType;
+        pregnancy.lmpKnown = lmpKnown;
+        pregnancy.lmpDate = lmpDate;
+        pregnancy.expectedDeliveryDate = expectedDeliveryDate;
+        //pregnancy.collectedId = collectedValues.get(HForm.COLUMN_ID).getValue();
+        //pregnancy.recentlyCreated = true;
+        //pregnancy.recentlyCreatedUri = result.getFilename();
+        this.boxPregnancyRegistrations.put(pregnancy);
+
+        //save core collected data
+        collectedData.visitId = visit.id;
+        collectedData.formEntityCode = mother.code;
+        collectedData.formEntityName = mother.name;
+        collectedData.updatedDate = new Date();
+        this.boxCoreCollectedData.put(collectedData);
+
+        onFinishedExtensionCollection();
     }
 
     @Override
     protected void onFinishedExtensionCollection() {
         if (listener != null) {
-            listener.onNewEntityCreated(this.entity, new HashMap<>());
+            if (currentMode == Mode.CREATE) {
+                listener.onNewEntityCreated(this.entity, new HashMap<>());
+            } else if (currentMode == Mode.EDIT) {
+                listener.onEntityEdited(this.entity, new HashMap<>());
+            }
         }
     }
 

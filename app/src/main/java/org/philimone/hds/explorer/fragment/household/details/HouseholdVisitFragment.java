@@ -19,7 +19,6 @@ import org.philimone.hds.explorer.adapter.CoreCollectedExpandableAdapter;
 import org.philimone.hds.explorer.adapter.MemberAdapter;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
 import org.philimone.hds.explorer.listeners.HouseholdDetailsListener;
-import org.philimone.hds.explorer.main.HouseholdDetailsActivity;
 import org.philimone.hds.explorer.main.hdsforms.ChangeHeadFormUtil;
 import org.philimone.hds.explorer.main.hdsforms.DeathFormUtil;
 import org.philimone.hds.explorer.main.hdsforms.ExternalInMigrationFormUtil;
@@ -39,7 +38,6 @@ import org.philimone.hds.explorer.model.CollectedData_;
 import org.philimone.hds.explorer.model.CoreCollectedData;
 import org.philimone.hds.explorer.model.CoreCollectedData_;
 import org.philimone.hds.explorer.model.Death;
-import org.philimone.hds.explorer.model.Form;
 import org.philimone.hds.explorer.model.HeadRelationship;
 import org.philimone.hds.explorer.model.Household;
 import org.philimone.hds.explorer.model.IncompleteVisit;
@@ -241,7 +239,7 @@ public class HouseholdVisitFragment extends Fragment {
         this.elvVisitCollected.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
             @Override
             public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
-                CoreCollectedExpandableAdapter adapter = (CoreCollectedExpandableAdapter) parent.getAdapter();
+                CoreCollectedExpandableAdapter adapter = (CoreCollectedExpandableAdapter) parent.getExpandableListAdapter();
 
                 CoreCollectedData coreCollectedData = (CoreCollectedData) adapter.getChild(groupPosition, childPosition);
 
@@ -435,7 +433,7 @@ public class HouseholdVisitFragment extends Fragment {
                                                       .build().find();
 
         MemberAdapter adapter = new MemberAdapter(this.getContext(), R.layout.household_visit_member_item, members);
-        adapter.setShowHouseholdHead(false);
+        //adapter.setShowExtraDetails(true);
         adapter.setShowGender(true);
         this.lvHouseholdMembers.setAdapter(adapter);
     }
@@ -494,7 +492,7 @@ public class HouseholdVisitFragment extends Fragment {
                 .equal(CoreCollectedData_.visitId, visit.id)
                 .equal(CoreCollectedData_.formEntityCode, member.code, QueryBuilder.StringOrder.CASE_SENSITIVE)
                 .contains(CoreCollectedData_.formEntityCodes, member.code, QueryBuilder.StringOrder.CASE_SENSITIVE)
-                .notEqual(CoreCollectedData_.formEntity, CoreFormEntity.VISIT.code, QueryBuilder.StringOrder.CASE_SENSITIVE).build().count(); //CHECK FOR VISITS (visit id is equal to member.id)
+   .notEqual(CoreCollectedData_.formEntity, CoreFormEntity.VISIT.code, QueryBuilder.StringOrder.CASE_SENSITIVE).build().count(); //CHECK FOR VISITS (visit id is equal to member.id)
         */
 
         long count1 = this.boxCoreCollectedData.query(
@@ -523,6 +521,12 @@ public class HouseholdVisitFragment extends Fragment {
     }
 
     //region Events Execution
+    private void updateHouseholdDetails(){
+        if (householdDetailsListener != null) {
+            householdDetailsListener.updateHouseholdDetails();
+        }
+    }
+
     private void onSelectedToEdit(CoreCollectedData coreCollectedData) {
         switch (coreCollectedData.formEntity) {
             case HOUSEHOLD:
@@ -583,7 +587,8 @@ public class HouseholdVisitFragment extends Fragment {
 
             @Override
             public void onEntityEdited(Household entity, Map<String, Object> data) {
-
+                loadDataToListViews();
+                updateHouseholdDetails();
             }
 
             @Override
@@ -601,10 +606,7 @@ public class HouseholdVisitFragment extends Fragment {
             @Override
             public void onEntityEdited(Visit entity, Map<String, Object> data) {
                 loadDataToListViews();
-
-                if (householdDetailsListener != null) {
-                    householdDetailsListener.updateHouseholdDetails();
-                }
+                updateHouseholdDetails();
             }
 
             @Override
@@ -658,11 +660,13 @@ public class HouseholdVisitFragment extends Fragment {
                 loadDataToListViews();
                 //selectMember(member);
                 updateRespondentAfterNewMember(member);
+                updateHouseholdDetails();
             }
 
             @Override
             public void onEntityEdited(Member member, Map<String, Object> data) {
-
+                loadDataToListViews();
+                updateHouseholdDetails();
             }
 
             @Override
@@ -675,7 +679,7 @@ public class HouseholdVisitFragment extends Fragment {
     }
 
     private void onMaritalClicked(MaritalRelationship maritalRelationship) {        
-        Log.d("on-marital-clicked", ""+this.selectedMember);
+        Log.d("on-marital-clicked", ""+maritalRelationship);
 
         FormUtil.Mode mode = maritalRelationship == null ? FormUtil.Mode.CREATE : FormUtil.Mode.EDIT;
 
@@ -687,7 +691,7 @@ public class HouseholdVisitFragment extends Fragment {
 
             @Override
             public void onEntityEdited(MaritalRelationship maritalRelationship, Map<String, Object> data) {
-
+                loadDataToListViews();
             }
 
             @Override
@@ -709,15 +713,16 @@ public class HouseholdVisitFragment extends Fragment {
             public void onNewEntityCreated(Inmigration inmigration, Map<String, Object> data) {
                 Member member = boxMembers.query(Member_.code.equal(inmigration.memberCode)).build().findFirst();
                 selectedMember = member;
-                loadDataToListViews();
-                //selectMember(member);
 
                 updateRespondentAfterNewMember(member);
+                loadDataToListViews();
+                updateHouseholdDetails();
             }
 
             @Override
             public void onEntityEdited(Inmigration inmigration, Map<String, Object> data) {
-
+                loadDataToListViews();
+                updateHouseholdDetails();
             }
 
             @Override
@@ -738,14 +743,16 @@ public class HouseholdVisitFragment extends Fragment {
             @Override
             public void onNewEntityCreated(Inmigration inmigration, Map<String, Object> data) {
                 selectedMember = boxMembers.query().equal(Member_.code, inmigration.memberCode, QueryBuilder.StringOrder.CASE_SENSITIVE).build().findFirst();
-                loadDataToListViews();
-                //selectMember(selectedMember);
+
                 updateRespondentAfterNewMember(selectedMember);
+                loadDataToListViews();
+                updateHouseholdDetails();
             }
 
             @Override
             public void onEntityEdited(Inmigration inmigration, Map<String, Object> data) {
-
+                loadDataToListViews();
+                updateHouseholdDetails();
             }
 
             @Override
@@ -767,11 +774,13 @@ public class HouseholdVisitFragment extends Fragment {
             public void onNewEntityCreated(Outmigration outmigration, Map<String, Object> data) {
                 selectedMember = null;
                 loadDataToListViews();
+                updateHouseholdDetails();
             }
 
             @Override
             public void onEntityEdited(Outmigration outmigration, Map<String, Object> data) {
-
+                loadDataToListViews();
+                updateHouseholdDetails();
             }
 
             @Override
@@ -792,11 +801,13 @@ public class HouseholdVisitFragment extends Fragment {
             @Override
             public void onNewEntityCreated(PregnancyRegistration pregnancyRegistration, Map<String, Object> data) {
                 loadDataToListViews();
+                updateHouseholdDetails();
             }
 
             @Override
             public void onEntityEdited(PregnancyRegistration pregnancyRegistration, Map<String, Object> data) {
-
+                loadDataToListViews();
+                updateHouseholdDetails();
             }
 
             @Override
@@ -850,7 +861,8 @@ public class HouseholdVisitFragment extends Fragment {
 
             @Override
             public void onEntityEdited(PregnancyRegistration entity, Map<String, Object> data) {
-
+                loadDataToListViews();
+                updateHouseholdDetails();
             }
 
             @Override
@@ -866,11 +878,13 @@ public class HouseholdVisitFragment extends Fragment {
             @Override
             public void onNewEntityCreated(PregnancyOutcome pregnancyOutcome, Map<String, Object> data) {
                 loadDataToListViews();
+                updateHouseholdDetails();
             }
 
             @Override
             public void onEntityEdited(PregnancyOutcome pregnancyOutcome, Map<String, Object> data) {
-
+                loadDataToListViews();
+                updateHouseholdDetails();
             }
 
             @Override
@@ -890,6 +904,7 @@ public class HouseholdVisitFragment extends Fragment {
             @Override
             public void onEntityEdited(PregnancyOutcome pregnancyOutcome, Map<String, Object> data) {
                 loadDataToListViews();
+                updateHouseholdDetails();
             }
 
             @Override
@@ -917,11 +932,13 @@ public class HouseholdVisitFragment extends Fragment {
             public void onNewEntityCreated(Death death, Map<String, Object> data) {
                 selectedMember = null;
                 loadDataToListViews();
+                updateHouseholdDetails();
             }
 
             @Override
             public void onEntityEdited(Death death, Map<String, Object> data) {
-
+                loadDataToListViews();
+                updateHouseholdDetails();
             }
 
             @Override
@@ -934,7 +951,7 @@ public class HouseholdVisitFragment extends Fragment {
     }
 
     private void onChangeHeadClicked(HeadRelationship headRelationship) {
-        Log.d("on-changehead", ""+this.household.code);
+        Log.d("on-changehead", ""+headRelationship);
 
         FormUtil.Mode mode = headRelationship == null ? FormUtil.Mode.CREATE : FormUtil.Mode.EDIT;
         
@@ -942,15 +959,13 @@ public class HouseholdVisitFragment extends Fragment {
             @Override
             public void onNewEntityCreated(HeadRelationship headRelationship, Map<String, Object> data) {
                 loadDataToListViews();
-
-                if (householdDetailsListener != null) {
-                    householdDetailsListener.updateHouseholdDetails();
-                }
+                updateHouseholdDetails();
             }
 
             @Override
             public void onEntityEdited(HeadRelationship headRelationship, Map<String, Object> data) {
-
+                loadDataToListViews();
+                updateHouseholdDetails();
             }
 
             @Override

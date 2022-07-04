@@ -11,6 +11,7 @@ import org.philimone.hds.explorer.model.CoreCollectedData;
 import org.philimone.hds.explorer.model.CoreCollectedData_;
 import org.philimone.hds.explorer.model.Household;
 import org.philimone.hds.explorer.model.Member;
+import org.philimone.hds.explorer.model.Member_;
 import org.philimone.hds.explorer.model.Visit;
 import org.philimone.hds.explorer.model.Visit_;
 import org.philimone.hds.explorer.model.enums.CoreFormEntity;
@@ -40,6 +41,7 @@ public class VisitFormUtil extends FormUtil<Visit> {
 
     private Box<Household> boxHouseholds;
     private Box<Visit> boxVisits;
+    private Box<Member> boxMembers;
 
     private Household household;
     private Member respondentMember;
@@ -86,9 +88,9 @@ public class VisitFormUtil extends FormUtil<Visit> {
 
     public static VisitFormUtil newInstance(Mode openMode, AppCompatActivity activity, Context context, Household household, boolean newHouseholdCreated, Visit visit, FormUtilities odkFormUtilities, FormUtilListener<Visit> listener){
         if (openMode == Mode.CREATE) {
-            new VisitFormUtil(activity, context, household, newHouseholdCreated, odkFormUtilities, listener);
+            return new VisitFormUtil(activity, context, household, newHouseholdCreated, odkFormUtilities, listener);
         } else if (openMode == Mode.EDIT) {
-            new VisitFormUtil(activity, context, household, visit, odkFormUtilities, listener);
+            return new VisitFormUtil(activity, context, household, visit, odkFormUtilities, listener);
         }
 
         return null;
@@ -96,9 +98,9 @@ public class VisitFormUtil extends FormUtil<Visit> {
 
     public static VisitFormUtil newInstance(Mode openMode, Fragment fragment, Context context, Household household, boolean newHouseholdCreated, Visit visit, FormUtilities odkFormUtilities, FormUtilListener<Visit> listener){
         if (openMode == Mode.CREATE) {
-            new VisitFormUtil(fragment, context, household, newHouseholdCreated, odkFormUtilities, listener);
+            return new VisitFormUtil(fragment, context, household, newHouseholdCreated, odkFormUtilities, listener);
         } else if (openMode == Mode.EDIT) {
-            new VisitFormUtil(fragment, context, household, visit, odkFormUtilities, listener);
+            return new VisitFormUtil(fragment, context, household, visit, odkFormUtilities, listener);
         }
 
         return null;
@@ -110,6 +112,7 @@ public class VisitFormUtil extends FormUtil<Visit> {
 
         this.boxHouseholds = ObjectBoxDatabase.get().boxFor(Household.class);
         this.boxVisits = ObjectBoxDatabase.get().boxFor(Visit.class);
+        this.boxMembers = ObjectBoxDatabase.get().boxFor(Member.class);
 
     }
 
@@ -287,10 +290,18 @@ public class VisitFormUtil extends FormUtil<Visit> {
             boxCoreCollectedData.put(collectedData);
 
             updateNewHouseholdCoreCollectedData(visit);
+        } else {
+            collectedData.updatedDate = new Date();
+            boxCoreCollectedData.put(collectedData);
         }
 
         this.entity = visit;
-        this.collectExtensionForm(collectedValues);
+
+        if (currentMode == Mode.CREATE) {
+            this.collectExtensionForm(collectedValues);
+        } else {
+            onFinishedExtensionCollection();
+        }
 
     }
 
@@ -326,8 +337,10 @@ public class VisitFormUtil extends FormUtil<Visit> {
     public void collect() {
 
         if (newHouseholdCreated || currentMode==Mode.EDIT) {
+            this.respondentMember = this.boxMembers.query(Member_.code.equal(this.entity.respondentCode)).build().findFirst();
+
             executeCollectForm();
-        } else {
+        } else if (currentMode == Mode.CREATE) {
             selectRespondent();
         }
     }

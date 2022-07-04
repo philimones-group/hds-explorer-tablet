@@ -11,16 +11,21 @@ import org.philimone.hds.explorer.fragment.MemberFilterDialog;
 import org.philimone.hds.explorer.model.ApplicationParam;
 import org.philimone.hds.explorer.model.ApplicationParam_;
 import org.philimone.hds.explorer.model.CoreCollectedData;
+import org.philimone.hds.explorer.model.Death;
+import org.philimone.hds.explorer.model.Death_;
 import org.philimone.hds.explorer.model.HeadRelationship;
 import org.philimone.hds.explorer.model.HeadRelationship_;
 import org.philimone.hds.explorer.model.Household;
 import org.philimone.hds.explorer.model.Member;
 import org.philimone.hds.explorer.model.Member_;
 import org.philimone.hds.explorer.model.PregnancyChild;
+import org.philimone.hds.explorer.model.PregnancyChild_;
 import org.philimone.hds.explorer.model.PregnancyOutcome;
 import org.philimone.hds.explorer.model.PregnancyOutcome_;
 import org.philimone.hds.explorer.model.PregnancyRegistration;
+import org.philimone.hds.explorer.model.PregnancyRegistration_;
 import org.philimone.hds.explorer.model.Residency;
+import org.philimone.hds.explorer.model.Residency_;
 import org.philimone.hds.explorer.model.Visit;
 import org.philimone.hds.explorer.model.converters.StringCollectionConverter;
 import org.philimone.hds.explorer.model.enums.BirthPlace;
@@ -61,8 +66,10 @@ public class PregnancyOutcomeFormUtil extends FormUtil<PregnancyOutcome> {
     private Box<Member> boxMembers;
     private Box<PregnancyRegistration> boxPregnancyRegistrations;
     private Box<PregnancyOutcome> boxPregnancyOutcomes;
+    private Box<PregnancyChild> boxPregnancyChilds;
     private Box<HeadRelationship> boxHeadRelationships;
     private Box<Residency> boxResidencies;
+    private Box<Death> boxDeaths;
     
     private Household household;
     private Visit visit;
@@ -98,13 +105,19 @@ public class PregnancyOutcomeFormUtil extends FormUtil<PregnancyOutcome> {
 
         initBoxes();
         initialize();
+
+        this.father = this.boxMembers.query(Member_.code.equal(pregToEdit.fatherCode)).build().findFirst();
+        this.mother = this.boxMembers.query(Member_.code.equal(pregToEdit.motherCode)).build().findFirst();
+        this.numberOfOutcomes = pregToEdit.numberOfOutcomes;
+
+        this.pregnancyRegistration = this.boxPregnancyRegistrations.query(PregnancyRegistration_.code.equal(pregToEdit.code)).build().findFirst();
     }
 
     public static PregnancyOutcomeFormUtil newInstance(Mode openMode, Fragment fragment, Context context, Visit visit, Household household, Member mother, PregnancyRegistration pregnancyRegistration, boolean recentlyCreatedForOutcome, PregnancyOutcome pregToEdit, FormUtilities odkFormUtilities, FormUtilListener<PregnancyOutcome> listener){
         if (openMode == Mode.CREATE) {
-            new PregnancyOutcomeFormUtil(fragment, context, visit, household, mother, pregnancyRegistration, recentlyCreatedForOutcome, odkFormUtilities, listener);
+            return new PregnancyOutcomeFormUtil(fragment, context, visit, household, mother, pregnancyRegistration, recentlyCreatedForOutcome, odkFormUtilities, listener);
         } else if (openMode == Mode.EDIT) {
-            new PregnancyOutcomeFormUtil(fragment, context, visit, household, pregToEdit, odkFormUtilities, listener);
+            return new PregnancyOutcomeFormUtil(fragment, context, visit, household, pregToEdit, odkFormUtilities, listener);
         }
 
         return null;
@@ -117,8 +130,10 @@ public class PregnancyOutcomeFormUtil extends FormUtil<PregnancyOutcome> {
         this.boxMembers = ObjectBoxDatabase.get().boxFor(Member.class);
         this.boxPregnancyRegistrations = ObjectBoxDatabase.get().boxFor(PregnancyRegistration.class);
         this.boxPregnancyOutcomes = ObjectBoxDatabase.get().boxFor(PregnancyOutcome.class);
+        this.boxPregnancyChilds = ObjectBoxDatabase.get().boxFor(PregnancyChild.class);
         this.boxHeadRelationships = ObjectBoxDatabase.get().boxFor(HeadRelationship.class);
         this.boxResidencies = ObjectBoxDatabase.get().boxFor(Residency.class);
+        this.boxDeaths = ObjectBoxDatabase.get().boxFor(Death.class);
 
     }
 
@@ -183,6 +198,7 @@ public class PregnancyOutcomeFormUtil extends FormUtil<PregnancyOutcome> {
 
             obj.put("childCode", code);
             obj.put("headRelationshipType", parentsAreHouseholdHead ? "SON" : ""); //Set the head if is one of them
+            obj.put("childOrdinalPosition", ""+(i+1));
         }
         Log.d("childs", childsRepObj.getList().size()+"");
         preloadedMap.put("childs", childsRepObj);
@@ -192,7 +208,8 @@ public class PregnancyOutcomeFormUtil extends FormUtil<PregnancyOutcome> {
 
     @Override
     protected void preloadUpdatedValues() {
-
+        preloadedMap.put("fatherCode", this.father.code);
+        preloadedMap.put("fatherName", this.father.name);
     }
 
     private boolean areFatherOrMotherHead(){
@@ -278,7 +295,7 @@ public class PregnancyOutcomeFormUtil extends FormUtil<PregnancyOutcome> {
         }
 
         //code is duplicate
-        if (boxPregnancyOutcomes.query().equal(PregnancyOutcome_.code, code, QueryBuilder.StringOrder.CASE_SENSITIVE).build().count() > 0){
+        if (currentMode == Mode.CREATE && boxPregnancyOutcomes.query().equal(PregnancyOutcome_.code, code, QueryBuilder.StringOrder.CASE_SENSITIVE).build().count() > 0){
             String message = this.context.getString(R.string.pregnancy_outcome_code_exists_lbl);
             return new ValidationResult(colCode, message);
         }
@@ -332,38 +349,43 @@ public class PregnancyOutcomeFormUtil extends FormUtil<PregnancyOutcome> {
                 return new ValidationResult(colOutcomeType, message);
             }
 
-            if (outcomeType == PregnancyOutcomeType.LIVEBIRTH) {
-                //check code
-                if (!codeGenerator.isMemberCodeValid(childCode)){
-                    String message = this.context.getString(R.string.pregnancy_outcome_member_code_err_lbl);
-                    return new ValidationResult(colChildCode, message);
-                }
 
-                if (!childCode.startsWith(household.code)){
-                    String message = this.context.getString(R.string.pregnancy_outcome_member_code_household_err_lbl);
-                    return new ValidationResult(colChildCode, message);
-                }
-
-                if (boxMembers.query().equal(Member_.code, childCode, QueryBuilder.StringOrder.CASE_SENSITIVE).build().findFirst() != null){
-                    String message = this.context.getString(R.string.pregnancy_outcome_member_code_exists_lbl);
-                    return new ValidationResult(colChildCode, message);
-                }
-
-                if (StringUtil.isBlank(childName)){
-                    String message = this.context.getString(R.string.pregnancy_outcome_member_name_empty_lbl);
-                    return new ValidationResult(colChildName, message);
-                }
-
-                if (childGender == null){
-                    String message = this.context.getString(R.string.pregnancy_outcome_member_gender_empty_lbl);
-                    return new ValidationResult(colChildGender, message);
-                }
-
-                if (headRelationshipType == null){
-                    String message = this.context.getString(R.string.pregnancy_outcome_member_head_relattype_empty_lbl);
-                    return new ValidationResult(colChildRelationship, message);
-                }
+            //check code
+            if (!codeGenerator.isMemberCodeValid(childCode)){
+                String message = this.context.getString(R.string.pregnancy_outcome_member_code_err_lbl);
+                return new ValidationResult(colChildCode, message);
             }
+
+            if (!childCode.startsWith(household.code)){
+                String message = this.context.getString(R.string.pregnancy_outcome_member_code_household_err_lbl);
+                return new ValidationResult(colChildCode, message);
+            }
+
+            if (currentMode == Mode.CREATE && boxMembers.query().equal(Member_.code, childCode, QueryBuilder.StringOrder.CASE_SENSITIVE).build().findFirst() != null){
+                String message = this.context.getString(R.string.pregnancy_outcome_member_code_exists_lbl);
+                return new ValidationResult(colChildCode, message);
+            }
+
+            if (StringUtil.isBlank(childName)){
+                String message = this.context.getString(R.string.pregnancy_outcome_member_name_empty_lbl);
+                return new ValidationResult(colChildName, message);
+            }
+
+            if (childGender == null){
+                String message = this.context.getString(R.string.pregnancy_outcome_member_gender_empty_lbl);
+                return new ValidationResult(colChildGender, message);
+            }
+
+            if (childGender == Gender.NOT_KNOWN && outcomeType == PregnancyOutcomeType.LIVEBIRTH) {
+                String message = this.context.getString(R.string.pregnancy_outcome_member_gender_invalid_lbr_lbl);
+                return new ValidationResult(colChildGender, message);
+            }
+
+            if (headRelationshipType == null){
+                String message = this.context.getString(R.string.pregnancy_outcome_member_head_relattype_empty_lbl);
+                return new ValidationResult(colChildRelationship, message);
+            }
+
         }
 
         return ValidationResult.noErrors();
@@ -375,10 +397,14 @@ public class PregnancyOutcomeFormUtil extends FormUtil<PregnancyOutcome> {
         Log.d("resultxml", result.getXmlResult());
 
         if (currentMode == Mode.EDIT) {
-            System.out.println("Editing PregnancyRegistration Not implemented yet");
-            assert 1==0;
+            onModeEdit(collectedValues, result);
+        } else if (currentMode == Mode.CREATE) {
+            onModeCreate(collectedValues, result);
         }
 
+    }
+
+    private void onModeCreate(CollectedDataMap collectedValues, XmlFormResult result) {
         ColumnValue colVisitCode = collectedValues.get("visitCode");
         ColumnValue colCode = collectedValues.get("code");
         ColumnValue colMotherCode = collectedValues.get("motherCode"); //check if code is valid + check duplicate + member belongs to household
@@ -471,55 +497,79 @@ public class PregnancyOutcomeFormUtil extends FormUtil<PregnancyOutcome> {
         int livebirths = 0;
         for (int i = 0; i < nrOfOutcomes; i++) {
             PregnancyOutcomeType type = PregnancyOutcomeType.getFrom(childOutcomeTypes.get(i));
-            if (type == PregnancyOutcomeType.LIVEBIRTH){
+            if (type == PregnancyOutcomeType.LIVEBIRTH) {
                 livebirths++;
-                String childCode = childCodes.get(i);
-                String childName = childNames.get(i);
-                Gender childGender = Gender.getFrom(childGenders.get(i));
-                Integer childOrdPos = childOrdPositions.get(i);
-                HeadRelationshipType headRelationshipType = HeadRelationshipType.getFrom(childRelationships.get(i));
+            }
 
-                //Member
-                Member childMember = createNewMember(pregnancyOutcome, childCode, childName, childGender, headRelationshipType, colModules.getValue());
+            String childCode = childCodes.get(i);
+            String childName = childNames.get(i);
+            Gender childGender = Gender.getFrom(childGenders.get(i));
+            Integer childOrdPos = childOrdPositions.get(i);
+            HeadRelationshipType headRelationshipType = HeadRelationshipType.getFrom(childRelationships.get(i));
+
+            //Member
+            Member childMember = createNewMember(pregnancyOutcome, childCode, childName, childGender, headRelationshipType, colModules.getValue());
+            this.boxMembers.put(childMember);
+
+            affectedMembers = addAffectedMembers(affectedMembers, childMember.code);
+            Log.d("affctd", ""+affectedMembers);
+
+            //Residency
+            Residency childResidency = new Residency();
+            childResidency.householdCode = household.code;
+            childResidency.memberCode = childCode;
+            childResidency.startType = ResidencyStartType.BIRTH;
+            childResidency.startDate = outcomeDate;
+            childResidency.endType = ResidencyEndType.NOT_APPLICABLE;
+            childResidency.endDate = null;
+            this.boxResidencies.put(childResidency);
+
+            //HeadRelationship
+            HeadRelationship childHeadRelationship = new HeadRelationship();
+            childHeadRelationship.householdCode = household.code;
+            childHeadRelationship.memberCode = childCode;
+            childHeadRelationship.relationshipType = headRelationshipType;
+            childHeadRelationship.startType = HeadRelationshipStartType.BIRTH;
+            childHeadRelationship.startDate = outcomeDate;
+            childHeadRelationship.endType = HeadRelationshipEndType.NOT_APPLICABLE;
+            childHeadRelationship.endDate = null;
+            this.boxHeadRelationships.put(childHeadRelationship);
+
+            //Child
+            PregnancyChild pregnancyChild = new PregnancyChild();
+            pregnancyChild.outcomeCode = pregnancyOutcome.code;
+            pregnancyChild.outcome.setTarget(pregnancyOutcome);
+            pregnancyChild.outcomeType = type;
+            pregnancyChild.childCode = childCode;
+            //pregnancyChild.child.setTarget(childMember);
+            pregnancyChild.childOrdinalPosition = childOrdPos;
+            pregnancyChild.childHeadRelationshipType = headRelationshipType;
+            pregnancyChild.childHeadRelationship.setTarget(childHeadRelationship);
+            pregnancyChild.recentlyCreated = true;
+
+            pregnancyOutcome.childs.add(pregnancyChild);
+
+            if (type != PregnancyOutcomeType.LIVEBIRTH) {
+                Death death = new Death();
+                death.visitCode = visitCode;
+                death.memberCode = childCode;
+                death.deathDate = outcomeDate;
+                death.deathCause = type.code;
+                death.deathPlace = null;
+                death.ageAtDeath = 0;
+                this.boxDeaths.put(death);
+
+                childMember.endType = ResidencyEndType.DEATH;
+                childMember.endDate = outcomeDate;
                 this.boxMembers.put(childMember);
 
-                affectedMembers = addAffectedMembers(affectedMembers, childMember.code);
-                Log.d("affctd", ""+affectedMembers);
-
-                //Residency
-                Residency childResidency = new Residency();
-                childResidency.householdCode = household.code;
-                childResidency.memberCode = childCode;
-                childResidency.startType = ResidencyStartType.BIRTH;
-                childResidency.startDate = outcomeDate;
-                childResidency.endType = ResidencyEndType.NOT_APPLICABLE;
-                childResidency.endDate = null;
+                childResidency.endType = ResidencyEndType.DEATH;
+                childResidency.endDate = outcomeDate;
                 this.boxResidencies.put(childResidency);
 
-                //HeadRelationship
-                HeadRelationship childHeadRelationship = new HeadRelationship();
-                childHeadRelationship.householdCode = household.code;
-                childHeadRelationship.memberCode = childCode;
-                childHeadRelationship.relationshipType = headRelationshipType;
-                childHeadRelationship.startType = HeadRelationshipStartType.BIRTH;
-                childHeadRelationship.startDate = outcomeDate;
-                childHeadRelationship.endType = HeadRelationshipEndType.NOT_APPLICABLE;
-                childHeadRelationship.endDate = null;
+                childHeadRelationship.endType = HeadRelationshipEndType.DEATH;
+                childHeadRelationship.endDate = outcomeDate;
                 this.boxHeadRelationships.put(childHeadRelationship);
-
-                //Child
-                PregnancyChild pregnancyChild = new PregnancyChild();
-                pregnancyChild.outcomeCode = pregnancyOutcome.code;
-                pregnancyChild.outcome.setTarget(pregnancyOutcome);
-                pregnancyChild.outcomeType = type;
-                pregnancyChild.childCode = childCode;
-                //pregnancyChild.child.setTarget(childMember);
-                pregnancyChild.childOrdinalPosition = childOrdPos;
-                pregnancyChild.childHeadRelationshipType = headRelationshipType;
-                pregnancyChild.childHeadRelationship.setTarget(childHeadRelationship);
-                pregnancyChild.recentlyCreated = true;
-
-                pregnancyOutcome.childs.add(pregnancyChild);
             }
         }
 
@@ -532,7 +582,7 @@ public class PregnancyOutcomeFormUtil extends FormUtil<PregnancyOutcome> {
         collectedData = new CoreCollectedData();
         collectedData.visitId = visit.id;
         collectedData.formEntity = CoreFormEntity.PREGNANCY_OUTCOME;
-        collectedData.formEntityId = mother.id;
+        collectedData.formEntityId = pregnancyOutcome.id;
         collectedData.formEntityCode = mother.code;
         collectedData.formEntityCodes = affectedMembers;
         collectedData.formEntityName = mother.name;
@@ -545,13 +595,203 @@ public class PregnancyOutcomeFormUtil extends FormUtil<PregnancyOutcome> {
 
         this.entity = pregnancyOutcome;
         this.collectExtensionForm(collectedValues);
+    }
 
+    private void onModeEdit(CollectedDataMap collectedValues, XmlFormResult result) {
+
+        ColumnValue colVisitCode = collectedValues.get("visitCode");
+        ColumnValue colCode = collectedValues.get("code");
+        ColumnValue colMotherCode = collectedValues.get("motherCode"); //check if code is valid + check duplicate + member belongs to household
+        ColumnValue colMotherName = collectedValues.get("motherName"); //not blank
+        ColumnValue colFatherCode = collectedValues.get("fatherCode"); //check if code is valid + check duplicate + member belongs to household
+        ColumnValue colFatherName = collectedValues.get("fatherName"); //not blank
+        ColumnValue colNrOfOutcomes = collectedValues.get("numberOfOutcomes");
+        ColumnValue colOutcomeDate = collectedValues.get("outcomeDate"); //not null cannot be in the future nor before dob
+        ColumnValue colBirthPlace = collectedValues.get("birthPlace");
+        ColumnValue colBirthPlaceOther = collectedValues.get("birthPlaceOther");
+
+        RepeatColumnValue repChilds = collectedValues.getRepeatColumn("childs");
+        List<ColumnValue> colOutcomeTypes = new ArrayList<>();
+        List<ColumnValue> colChildCodes = new ArrayList<>();
+        List<ColumnValue> colChildNames = new ArrayList<>();
+        List<ColumnValue> colChildGenders = new ArrayList<>();
+        List<ColumnValue> colChildOrdPositions = new ArrayList<>();
+        List<ColumnValue> colChildRelationships = new ArrayList<>();
+
+        if (repChilds != null) {
+            for (int i = 0; i < repChilds.getCount(); i++) {
+                ColumnValue colOutcomeType = repChilds.get("outcomeType", i);
+                ColumnValue colChildCode = repChilds.get("childCode", i);
+                ColumnValue colChildName = repChilds.get("childName", i);
+                ColumnValue colChildGender = repChilds.get("childGender", i);
+                ColumnValue colChildOrdPosition = repChilds.get("childOrdinalPosition", i);
+                ColumnValue colChildRelationship = repChilds.get("headRelationshipType", i);
+
+                colOutcomeTypes.add(colOutcomeType);
+                colChildCodes.add(colChildCode);
+                colChildNames.add(colChildName);
+                colChildGenders.add(colChildGender);
+                colChildOrdPositions.add(colChildOrdPosition);
+                colChildRelationships.add(colChildRelationship);
+            }
+        }
+
+        ColumnValue colCollectedBy = collectedValues.get("collectedBy");
+        ColumnValue colCollectedDate = collectedValues.get("collectedDate");
+        ColumnValue colModules = collectedValues.get("modules");
+
+        String visitCode = colVisitCode.getValue();
+        String code = colCode.getValue();
+        String motherCode = colMotherCode.getValue();
+        String motherName = colMotherName.getValue();
+        String fatherCode = colMotherCode.getValue();
+        String fatherName = colMotherName.getValue();
+        Integer nrOfOutcomes = colNrOfOutcomes.getIntegerValue();
+        Date outcomeDate = colOutcomeDate.getDateValue();
+        BirthPlace birthPlace = BirthPlace.getFrom(colBirthPlace.getValue());
+        String birthPlaceOther = colBirthPlaceOther.getValue();
+
+        List<String> childOutcomeTypes = colOutcomeTypes.stream().map(ColumnValue::getValue).collect(Collectors.toList());
+        List<String> childCodes = colChildCodes.stream().map(ColumnValue::getValue).collect(Collectors.toList());
+        List<String> childNames = colChildNames.stream().map(ColumnValue::getValue).collect(Collectors.toList());
+        List<String> childGenders = colChildGenders.stream().map(ColumnValue::getValue).collect(Collectors.toList());
+        List<Integer> childOrdPositions = colChildOrdPositions.stream().map(ColumnValue::getIntegerValue).collect(Collectors.toList());
+        List<String> childRelationships = colChildRelationships.stream().map(ColumnValue::getValue).collect(Collectors.toList());
+
+        String affectedMembers = null;
+
+        //close pregnancy registration with delivered
+        //create pregnancy outcome
+        //create pregnancy outcome child
+        //create child members
+        //create child members resisdencies
+        //create child members head relationships
+
+        //update again, but not needed
+        pregnancyRegistration.status = PregnancyStatus.DELIVERED;
+        this.boxPregnancyRegistrations.put(pregnancyRegistration);
+
+        PregnancyOutcome pregnancyOutcome = this.entity;
+        pregnancyOutcome.motherCode = mother.code;
+        pregnancyOutcome.fatherCode = father.code;
+        pregnancyOutcome.outcomeDate = outcomeDate;
+        pregnancyOutcome.birthPlace = birthPlace;
+        pregnancyOutcome.birthPlaceOther = birthPlaceOther;
+
+        //livebirths and childs
+        int livebirths = 0;
+        for (int i = 0; i < nrOfOutcomes; i++) {
+            PregnancyOutcomeType type = PregnancyOutcomeType.getFrom(childOutcomeTypes.get(i));
+            if (type == PregnancyOutcomeType.LIVEBIRTH){
+                livebirths++;
+            }
+            String childCode = childCodes.get(i);
+            String childName = childNames.get(i);
+            Gender childGender = Gender.getFrom(childGenders.get(i));
+            Integer childOrdPos = childOrdPositions.get(i);
+            HeadRelationshipType headRelationshipType = HeadRelationshipType.getFrom(childRelationships.get(i));
+
+            //Member
+            Member childMember = this.boxMembers.query(Member_.code.equal(childCode)).build().findFirst();
+            childMember.name = childName;
+            childMember.gender = childGender;
+            childMember.dob = pregnancyOutcome.outcomeDate;
+            childMember.motherCode = mother.code;
+            childMember.motherName = mother.name;
+            childMember.fatherCode = father.code;
+            childMember.fatherName = father.name;
+            childMember.startType = ResidencyStartType.BIRTH;
+            childMember.startDate = pregnancyOutcome.outcomeDate;
+            childMember.endType = ResidencyEndType.NOT_APPLICABLE;
+            childMember.endDate = null;
+            childMember.entryHousehold = household.code;
+            childMember.entryType = ResidencyStartType.BIRTH;
+            childMember.entryDate = pregnancyOutcome.outcomeDate;
+            childMember.headRelationshipType = headRelationshipType;
+            this.boxMembers.put(childMember);
+
+            affectedMembers = addAffectedMembers(affectedMembers, childMember.code);
+            Log.d("affctd", ""+affectedMembers);
+
+            //Residency - only one exists
+            Residency childResidency =  this.boxResidencies.query(Residency_.memberCode.equal(childCode)).build().findFirst();
+            childResidency.householdCode = household.code;
+            childResidency.memberCode = childCode;
+            childResidency.startType = ResidencyStartType.BIRTH;
+            childResidency.startDate = outcomeDate;
+            childResidency.endType = ResidencyEndType.NOT_APPLICABLE;
+            childResidency.endDate = null;
+            this.boxResidencies.put(childResidency);
+
+            //HeadRelationship
+            HeadRelationship childHeadRelationship = this.boxHeadRelationships.query(HeadRelationship_.memberCode.equal(childCode)).build().findFirst();
+            childHeadRelationship.householdCode = household.code;
+            childHeadRelationship.memberCode = childCode;
+            childHeadRelationship.relationshipType = headRelationshipType;
+            childHeadRelationship.startType = HeadRelationshipStartType.BIRTH;
+            childHeadRelationship.startDate = outcomeDate;
+            childHeadRelationship.endType = HeadRelationshipEndType.NOT_APPLICABLE;
+            childHeadRelationship.endDate = null;
+            this.boxHeadRelationships.put(childHeadRelationship);
+
+            //Child
+            PregnancyChild pregnancyChild = this.boxPregnancyChilds.query(PregnancyChild_.childCode.equal(childCode)).build().findFirst();
+            boolean wasDead = pregnancyChild.outcomeType != PregnancyOutcomeType.LIVEBIRTH;
+
+            pregnancyChild.outcomeType = type;
+            pregnancyChild.childCode = childCode;
+            pregnancyChild.childOrdinalPosition = childOrdPos;
+            pregnancyChild.childHeadRelationshipType = headRelationshipType;
+            pregnancyChild.childHeadRelationship.setTarget(childHeadRelationship);
+            pregnancyOutcome.childs.add(pregnancyChild);
+
+            //generate deaths
+            if (type != PregnancyOutcomeType.LIVEBIRTH) {
+                Death death = this.boxDeaths.query(Death_.memberCode.equal(childCode)).build().findFirst();
+
+                if (death == null) {
+                    death = new Death();
+                }
+
+                death.visitCode = visitCode;
+                death.memberCode = childCode;
+                death.deathDate = outcomeDate;
+                death.deathCause = type.code;
+                death.deathPlace = null;
+                death.ageAtDeath = 0;
+                this.boxDeaths.put(death);
+
+
+            } else if (wasDead) {
+                //delete the death
+                Death death = this.boxDeaths.query(Death_.memberCode.equal(childCode)).build().findFirst();
+                this.boxDeaths.remove(death);
+            }
+        }
+
+        pregnancyOutcome.numberOfLivebirths = livebirths;
+
+        this.boxPregnancyOutcomes.put(pregnancyOutcome);
+
+        //save core collected data
+        collectedData.visitId = visit.id;
+        collectedData.formEntityCode = mother.code;
+        collectedData.formEntityCodes = affectedMembers;
+        collectedData.formEntityName = mother.name;
+        collectedData.updatedDate = new Date();
+        this.boxCoreCollectedData.put(collectedData);
+
+        onFinishedExtensionCollection();
     }
 
     @Override
     protected void onFinishedExtensionCollection() {
         if (listener != null) {
-            listener.onNewEntityCreated(this.entity, new HashMap<>());
+            if (currentMode == Mode.CREATE) {
+                listener.onNewEntityCreated(this.entity, new HashMap<>());
+            } else if (currentMode == Mode.EDIT) {
+                listener.onEntityEdited(this.entity, new HashMap<>());
+            }
         }
     }
 
@@ -627,13 +867,18 @@ public class PregnancyOutcomeFormUtil extends FormUtil<PregnancyOutcome> {
             return;
         }
 
-        //1. get the father
-        checkFatherDialog();
+        if (currentMode == Mode.CREATE) {
+            //1. get the father
+            checkFatherDialog();
+        } else if (currentMode == Mode.EDIT) {
+            checkChangeFatherDialog();
+        }
+
     }
 
     private void checkFatherDialog(){
         Log.d("started ", "pregnancy outcome - check father");
-        DialogFactory.createMessageYN(this.context, R.string.pregnancy_outcome_child_father_select_lbl, R.string.new_member_dialog_father_exists_lbl, new DialogFactory.OnYesNoClickListener() {
+        DialogFactory.createMessageYN(this.context, R.string.pregnancy_outcome_child_father_select_lbl, R.string.pregnancy_outcome_child_father_exists_lbl, new DialogFactory.OnYesNoClickListener() {
             @Override
             public void onYesClicked() {
                 openFatherFilterDialog();
@@ -651,7 +896,7 @@ public class PregnancyOutcomeFormUtil extends FormUtil<PregnancyOutcome> {
 
     private void checkChangeFatherDialog(){
 
-        DialogFactory.createMessageYN(this.context, R.string.new_member_dialog_change_title_lbl, R.string.new_member_dialog_father_change_lbl, new DialogFactory.OnYesNoClickListener() {
+        DialogFactory.createMessageYN(this.context, R.string.pregnancy_outcome_child_father_change_title_lbl, R.string.pregnancy_outcome_child_father_change_lbl, new DialogFactory.OnYesNoClickListener() {
             @Override
             public void onYesClicked() {
                 openFatherFilterDialog();
@@ -660,7 +905,7 @@ public class PregnancyOutcomeFormUtil extends FormUtil<PregnancyOutcome> {
             @Override
             public void onNoClicked() {
                 //father remains unchanged
-                openNumberOfOutcomesDialog();
+                executeCollectForm();
             }
         }).show();
 
@@ -668,13 +913,18 @@ public class PregnancyOutcomeFormUtil extends FormUtil<PregnancyOutcome> {
 
     private void openFatherFilterDialog(){
 
-        MemberFilterDialog dialog = MemberFilterDialog.newInstance(this.fragmentManager, context.getString(R.string.new_member_dialog_father_select_lbl), true, new MemberFilterDialog.Listener() {
+        MemberFilterDialog dialog = MemberFilterDialog.newInstance(this.fragmentManager, context.getString(R.string.pregnancy_outcome_child_father_select_lbl), true, new MemberFilterDialog.Listener() {
             @Override
             public void onSelectedMember(Member member) {
                 Log.d("selected-father", ""+member.getCode());
 
                 father = member;
-                openNumberOfOutcomesDialog();
+
+                if (currentMode == Mode.CREATE) {
+                    openNumberOfOutcomesDialog();
+                } else if (currentMode == Mode.EDIT) {
+                    executeCollectForm();
+                }
             }
 
             @Override

@@ -150,6 +150,8 @@ public class HouseholdMembersFragment extends Fragment {
                                                       .build().find();
 
         MemberAdapter adapter = new MemberAdapter(this.getContext(), members);
+        adapter.setShowHouseholdHeadIcon(true);
+        //adapter.setShowExtraDetails(true);
         this.lvHouseholdMembers.setAdapter(adapter);
     }
 

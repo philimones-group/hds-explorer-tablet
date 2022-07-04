@@ -420,7 +420,9 @@
     <string name="relationship_type_question_lbl">Select the Marital Status?</string>
     <string name="relationship_type_select_btn_lbl">Select</string>
 
+    <string name="maritalrelationship_recently_created_error_lbl">There is a recently created Marital Relationship for this member.\n, A new one cannot be created, you can only edit the recently created Marital Relationship.\n(Use the collected list in the right panel to edit)</string>
     <string name="maritalrelationship_spouse_select_lbl">Select the spouse of the Member?</string>
+    <string name="maritalrelationship_spouse_select_update_lbl">Update the spouse of the Member?</string>
     <string name="maritalrelationship_spouse_exists_lbl">Does the Member has a spouse known and registered in the system?</string>
     <string name="maritalrelationship_spouse_change_lbl">Do you want to update the spouse of this Member?</string>
     <string name="maritalrelationship_spouse_type_change_lbl">Do you want to update the Marital Status of this Member?</string>
@@ -496,8 +498,12 @@
     <string name="pregnancy_outcome_member_code_exists_lbl">The Child Code already exists</string>
     <string name="pregnancy_outcome_member_name_empty_lbl">The Name of the Child cannot be empty</string>
     <string name="pregnancy_outcome_member_gender_empty_lbl">The Sex of the Child cannot be empty</string>
+    <string name="pregnancy_outcome_member_gender_invalid_lbr_lbl">The Sex of the Child cannot be unknown if it was a livebirth</string>
     <string name="pregnancy_outcome_member_head_relattype_empty_lbl">The Child Head Relationship Type cannot be empty</string>
     <string name="pregnancy_outcome_child_father_select_lbl">Select the father of the Child?</string>
+    <string name="pregnancy_outcome_child_father_change_title_lbl">Update Pregnancy Outcome Info?</string>
+    <string name="pregnancy_outcome_child_father_exists_lbl">Is the father of this child known and registered in the system?</string>
+    <string name="pregnancy_outcome_child_father_change_lbl">Do you want to update the father of this child?</string>
 
     <!-- death registration -->
     <string name="death_visit_code_empty_lbl">The Visit Code cannot be empty</string>
@@ -508,8 +514,13 @@
     <string name="death_deathdate_not_great_today_lbl">The date of death cannot be greater than today</string>
     <string name="death_new_head_code_empty_lbl">The New Head of Household code cannot be empty</string>
     <string name="death_new_head_select_lbl">Select the new Head of Household</string>
+    <string name="death_dialog_change_title_lbl">Update Death Info</string>
+    <string name="death_dialog_head_change_lbl">Do you want to update the new head of the household of the dead member?</string>
+
 
     <!-- change head registration -->
+    <string name="changehead_dialog_change_title_lbl">Update Change Head Info</string>
+    <string name="changehead_dialog_head_change_lbl">Do you want to update the new head of the household?</string>
     <string name="changehead_visit_code_empty_lbl">The Visit Code cannot be empty</string>
     <string name="changehead_oldhead_code_empty_lbl">The Old Head of Household Code cannot be empty</string>
     <string name="changehead_newhead_code_empty_lbl">The New Head of Household Code cannot be empty</string>
@@ -602,6 +613,7 @@
 
     <string name="default_gender_male">Male</string>
     <string name="default_gender_female">Female</string>
+    <string name="default_gender_na">Not Known</string>
 
     <string name="maritalStatus_single">Single</string>
     <string name="maritalStatus_married">Married</string>

@@ -5,6 +5,8 @@ import android.util.Log;
 
 import androidx.fragment.app.Fragment;
 
+import com.google.gson.Gson;
+
 import org.philimone.hds.explorer.R;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
 import org.philimone.hds.explorer.database.Queries;
@@ -18,6 +20,7 @@ import org.philimone.hds.explorer.model.HeadRelationship_;
 import org.philimone.hds.explorer.model.Household;
 import org.philimone.hds.explorer.model.Inmigration;
 import org.philimone.hds.explorer.model.Member;
+import org.philimone.hds.explorer.model.Member_;
 import org.philimone.hds.explorer.model.Outmigration;
 import org.philimone.hds.explorer.model.Residency;
 import org.philimone.hds.explorer.model.Residency_;
@@ -30,6 +33,8 @@ import org.philimone.hds.explorer.model.enums.temporal.InMigrationType;
 import org.philimone.hds.explorer.model.enums.temporal.OutMigrationType;
 import org.philimone.hds.explorer.model.enums.temporal.ResidencyEndType;
 import org.philimone.hds.explorer.model.enums.temporal.ResidencyStartType;
+import org.philimone.hds.explorer.model.oldstate.SavedEntityState;
+import org.philimone.hds.explorer.model.oldstate.SavedEntityState_;
 import org.philimone.hds.explorer.widget.DialogFactory;
 import org.philimone.hds.forms.model.CollectedDataMap;
 import org.philimone.hds.forms.model.ColumnValue;
@@ -39,6 +44,7 @@ import org.philimone.hds.forms.model.XmlFormResult;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Map;
 
 import io.objectbox.Box;
 import io.objectbox.query.QueryBuilder;
@@ -64,6 +70,11 @@ public class InternalInMigrationFormUtil extends FormUtil<Inmigration> {
     private boolean isFirstHouseholdMember;
     private int minimunHeadAge;
 
+    private Map<String, String> mapSavedStates = new HashMap<>();
+    private Residency savedResidency;
+    private HeadRelationship savedHeadRelationship;
+    private Outmigration savedOutmigration;
+
     public InternalInMigrationFormUtil(Fragment fragment, Context context, Visit visit, Household household, FormUtilities odkFormUtilities, FormUtilListener<Inmigration> listener){
         super(fragment, context, FormUtil.getInMigrationForm(context), odkFormUtilities, listener);
 
@@ -84,13 +95,15 @@ public class InternalInMigrationFormUtil extends FormUtil<Inmigration> {
 
         initBoxes();
         initialize();
+
+        readSavedEntityState();
     }
 
     public static InternalInMigrationFormUtil newInstance(Mode openMode, Fragment fragment, Context context, Visit visit, Household household, Inmigration inmigToEdit, FormUtilities odkFormUtilities, FormUtilListener<Inmigration> listener){
         if (openMode == Mode.CREATE) {
-            new InternalInMigrationFormUtil(fragment, context, visit, household, odkFormUtilities, listener);
+            return new InternalInMigrationFormUtil(fragment, context, visit, household, odkFormUtilities, listener);
         } else if (openMode == Mode.EDIT) {
-            new InternalInMigrationFormUtil(fragment, context, visit, household, inmigToEdit, odkFormUtilities, listener);
+            return new InternalInMigrationFormUtil(fragment, context, visit, household, inmigToEdit, odkFormUtilities, listener);
         }
 
         return null;
@@ -118,6 +131,34 @@ public class InternalInMigrationFormUtil extends FormUtil<Inmigration> {
 
         this.isFirstHouseholdMember = boxResidencies.query().equal(Residency_.householdCode, household.code, QueryBuilder.StringOrder.CASE_SENSITIVE).and().equal(Residency_.endType, ResidencyEndType.NOT_APPLICABLE.code, QueryBuilder.StringOrder.CASE_SENSITIVE).build().count()==0; //find any resident
         this.minimunHeadAge = retrieveMinimumHeadAge();
+    }
+
+    private void readSavedEntityState() {
+        SavedEntityState savedState = this.boxSavedEntityStates.query(SavedEntityState_.formEntity.equal(CoreFormEntity.INMIGRATION.code)
+                .and(SavedEntityState_.collectedId.equal(this.entity.id))
+                .and(SavedEntityState_.objectKey.equal("intimgFormUtilState"))).build().findFirst();
+
+        if (savedState != null) {
+            HashMap map = new Gson().fromJson(savedState.objectGsonValue, HashMap.class);
+            for (Object key : map.keySet()) {
+                mapSavedStates.put(key.toString(), map.get(key).toString());
+            }
+        }
+
+        String strResidencyId = mapSavedStates.get("residencyId");
+        String strHeadRelationshipId = mapSavedStates.get("headRelationshipId");
+        String strOutmigrationId = mapSavedStates.get("outmigrationId");
+
+        if (strResidencyId != null) {
+            this.savedResidency = this.boxResidencies.get(Long.parseLong(strResidencyId));
+        }
+        if (strHeadRelationshipId != null) {
+            this.savedHeadRelationship = this.boxHeadRelationships.get(Long.parseLong(strHeadRelationshipId));
+        }
+        if (strOutmigrationId != null) {
+            this.savedOutmigration = this.boxOutmigrations.get(Long.parseLong(strOutmigrationId));
+        }
+
     }
 
     @Override
@@ -254,11 +295,14 @@ public class InternalInMigrationFormUtil extends FormUtil<Inmigration> {
         Log.d("resultxml", result.getXmlResult());
 
         if (currentMode == Mode.EDIT) {
-            System.out.println("Editing InMigration Not implemented yet");
-            assert 1==0;
+            onModeEdit(collectedValues, result);
+        } else if (currentMode == Mode.CREATE) {
+            onModeCreate(collectedValues, result);
         }
 
+    }
 
+    private void onModeCreate(CollectedDataMap collectedValues, XmlFormResult result) {
         //saveNewHousehold();
         ColumnValue colVisitCode = collectedValues.get("visitCode");
         ColumnValue colMemberCode = collectedValues.get("memberCode"); //check if code is valid + check duplicate + member belongs to household
@@ -327,7 +371,7 @@ public class InternalInMigrationFormUtil extends FormUtil<Inmigration> {
         residency.endType = ResidencyEndType.NOT_APPLICABLE;
         residency.endDate = null;
         this.boxResidencies.put(residency);
-        
+
         //HeadRelationship - close
         selectedMemberHeadRelationship.endDate = GeneralUtil.getDateAdd(migrationDate, -1);
         selectedMemberHeadRelationship.endType = HeadRelationshipEndType.INTERNAL_OUTMIGRATION;
@@ -367,7 +411,7 @@ public class InternalInMigrationFormUtil extends FormUtil<Inmigration> {
         collectedData = new CoreCollectedData();
         collectedData.visitId = visit.id;
         collectedData.formEntity = CoreFormEntity.INMIGRATION;
-        collectedData.formEntityId = selectedMember.id;
+        collectedData.formEntityId = inmigration.id;
         collectedData.formEntityCode = selectedMember.code;
         collectedData.formEntityName = selectedMember.name;
         collectedData.formUuid = result.getFormUuid();
@@ -377,21 +421,135 @@ public class InternalInMigrationFormUtil extends FormUtil<Inmigration> {
         collectedData.extension.setTarget(this.getFormExtension(collectedData.formEntity));
         this.boxCoreCollectedData.put(collectedData);
 
-        if (isFirstHouseholdMember) { //head of household
+        if (selectedMember.isHouseholdHead()) { //head of household
             household.headCode = selectedMember.code;
             household.headName = selectedMember.name;
             boxHouseholds.put(household);
         }
 
+        //save state for editing
+        HashMap<String,String> saveStateMap = new HashMap<>();
+        saveStateMap.put("residencyId", residency.id+"");
+        saveStateMap.put("headRelationshipId", headRelationship.id+"");
+        saveStateMap.put("outmigrationId", outmigration.id+"");
+        SavedEntityState entityState = new SavedEntityState(CoreFormEntity.INMIGRATION, inmigration.id, "intimgFormUtilState", new Gson().toJson(saveStateMap));
+        this.boxSavedEntityStates.put(entityState);
+
         this.entity = inmigration;
         this.collectExtensionForm(collectedValues);
+    }
 
+    private void onModeEdit(CollectedDataMap collectedValues, XmlFormResult result) {
+
+        //saveNewHousehold();
+        ColumnValue colVisitCode = collectedValues.get("visitCode");
+        ColumnValue colMemberCode = collectedValues.get("memberCode"); //check if code is valid + check duplicate + member belongs to household
+        ColumnValue colMemberName = collectedValues.get("memberName"); //not blank
+        ColumnValue colHeadRelationshipType = collectedValues.get("headRelationshipType"); //not blank
+        ColumnValue colMigrationType = collectedValues.get("migrationType");
+        ColumnValue colOriginCode = collectedValues.get("originCode");
+        ColumnValue colDestinationCode = collectedValues.get("destinationCode");
+        ColumnValue colMigrationDate = collectedValues.get("migrationDate"); //not null cannot be in the future nor before dob
+        ColumnValue colMigrationReason = collectedValues.get("migrationReason");
+        ColumnValue colMigrationReasonOther = collectedValues.get("migrationReasonOther");
+
+        ColumnValue colCollectedBy = collectedValues.get("collectedBy");
+        ColumnValue colCollectedDate = collectedValues.get("collectedDate");
+        ColumnValue colModules = collectedValues.get("modules");
+
+        String visitCode = colVisitCode.getValue();
+        String memberCode = colMemberCode.getValue();
+        String memberName = colMemberName.getValue();
+        HeadRelationshipType headRelationshipType = HeadRelationshipType.getFrom(colHeadRelationshipType.getValue());
+        InMigrationType migrationType = InMigrationType.getFrom(colMigrationType.getValue());
+        String originCode = colOriginCode.getValue();
+        String destinationCode = colDestinationCode.getValue();
+        Date migrationDate = colMigrationDate.getDateValue();
+        String migrationReason = colMigrationReason.getValue();
+        String migrationReasonOther = colMigrationReasonOther.getValue();
+
+        //update member, create/update residency, headrelationship, create inmigration
+
+        Inmigration inmigration = this.entity;
+        inmigration.visitCode = visitCode;
+        inmigration.memberCode = memberCode;
+        inmigration.type = migrationType;
+        inmigration.extMigType = null;
+        inmigration.originCode = this.selectedMemberResidency.householdCode;
+        inmigration.destinationCode = this.household.code;
+        inmigration.migrationDate = migrationDate;
+        inmigration.migrationReason = migrationReasonOther != null ?  migrationReasonOther : migrationReason;
+        boxInmigrations.put(inmigration);
+
+        //Outmigration - update
+        Outmigration outmigration = savedOutmigration;
+        outmigration.migrationDate = GeneralUtil.getDateAdd(migrationDate, -1);
+        this.boxOutmigrations.put(outmigration);
+
+        //Residency - update close
+        selectedMemberResidency.endDate = GeneralUtil.getDateAdd(migrationDate, -1);
+        selectedMemberResidency.endType = ResidencyEndType.INTERNAL_OUTMIGRATION;
+        this.boxResidencies.put(selectedMemberResidency);
+
+        //Residency - update
+        Residency residency = savedResidency;
+        residency.householdCode = household.code;
+        residency.memberCode = memberCode;
+        residency.startType = ResidencyStartType.INTERNAL_INMIGRATION;
+        residency.startDate = migrationDate;
+        residency.endType = ResidencyEndType.NOT_APPLICABLE;
+        residency.endDate = null;
+        this.boxResidencies.put(residency);
+
+        //HeadRelationship - update close
+        selectedMemberHeadRelationship.endDate = GeneralUtil.getDateAdd(migrationDate, -1);
+        selectedMemberHeadRelationship.endType = HeadRelationshipEndType.INTERNAL_OUTMIGRATION;
+        this.boxHeadRelationships.put(selectedMemberHeadRelationship);
+
+        //HeadRelationship - update
+        HeadRelationship headRelationship = savedHeadRelationship;
+        headRelationship.householdCode = household.code;
+        headRelationship.memberCode = memberCode;
+        headRelationship.relationshipType = headRelationshipType;
+        headRelationship.startType = HeadRelationshipStartType.INTERNAL_INMIGRATION;
+        headRelationship.startDate = migrationDate;
+        headRelationship.endType = HeadRelationshipEndType.NOT_APPLICABLE;
+        headRelationship.endDate = null;
+        this.boxHeadRelationships.put(headRelationship);
+
+        //update member
+        selectedMember.householdCode = household.code;
+        selectedMember.householdName = household.name;
+        selectedMember.startType = ResidencyStartType.INTERNAL_INMIGRATION;
+        selectedMember.startDate = migrationDate;
+        selectedMember.endType = ResidencyEndType.NOT_APPLICABLE;
+        selectedMember.endDate = null;
+        selectedMember.headRelationshipType = headRelationshipType;
+        this.boxMembers.put(selectedMember);
+
+        //save core collected data
+        collectedData.formEntityCode = selectedMember.code;
+        collectedData.formEntityName = selectedMember.name;
+        collectedData.updatedDate = new Date();
+        this.boxCoreCollectedData.put(collectedData);
+
+        if (selectedMember.isHouseholdHead()) { //head of household
+            household.headCode = selectedMember.code;
+            household.headName = selectedMember.name;
+            boxHouseholds.put(household);
+        }
+
+        onFinishedExtensionCollection();
     }
 
     @Override
     protected void onFinishedExtensionCollection() {
         if (listener != null) {
-            listener.onNewEntityCreated(this.entity, new HashMap<>());
+            if (currentMode == Mode.CREATE) {
+                listener.onNewEntityCreated(this.entity, new HashMap<>());
+            } else if (currentMode == Mode.EDIT) {
+                listener.onEntityEdited(this.entity, new HashMap<>());
+            }
         }
     }
 
@@ -415,7 +573,8 @@ public class InternalInMigrationFormUtil extends FormUtil<Inmigration> {
         if (currentMode == Mode.CREATE) {
             openInMigratingMemberFilterDialog();
         } else if (currentMode == Mode.EDIT) {
-            executeCollectForm();
+            selectedMember = this.boxMembers.query(Member_.code.equal(this.entity.memberCode)).build().findFirst();
+            openInmigrationForm();
         }
 
     }

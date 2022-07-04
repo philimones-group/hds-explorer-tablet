@@ -5,6 +5,8 @@ import android.util.Log;
 
 import androidx.fragment.app.Fragment;
 
+import com.google.gson.Gson;
+
 import org.philimone.hds.explorer.R;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
 import org.philimone.hds.explorer.database.Queries;
@@ -31,6 +33,9 @@ import org.philimone.hds.explorer.model.enums.MaritalStatus;
 import org.philimone.hds.explorer.model.enums.temporal.HeadRelationshipEndType;
 import org.philimone.hds.explorer.model.enums.temporal.HeadRelationshipStartType;
 import org.philimone.hds.explorer.model.enums.temporal.ResidencyEndType;
+import org.philimone.hds.explorer.model.oldstate.SavedEntityState;
+import org.philimone.hds.explorer.model.oldstate.SavedEntityState_;
+import org.philimone.hds.explorer.widget.DialogFactory;
 import org.philimone.hds.forms.model.CollectedDataMap;
 import org.philimone.hds.forms.model.ColumnValue;
 import org.philimone.hds.forms.model.HForm;
@@ -54,6 +59,7 @@ import mz.betainteractive.utilities.StringUtil;
 
 public class DeathFormUtil extends FormUtil<Death> {
 
+    private Box<Household> boxHouseholds;
     private Box<Member> boxMembers;
     private Box<Death> boxDeaths;
     private Box<HeadRelationship> boxHeadRelationships;
@@ -65,11 +71,14 @@ public class DeathFormUtil extends FormUtil<Death> {
     private Member member;
     private Boolean isHouseholdHead = false;
     private Member newHeadMember;
+    private Member previousNewHeadMember;
+    private HeadRelationshipType previousNewHeadRelationshipType;
     private List<HeadRelationship> headMemberHeadRelationships;
     private Residency memberResidency;
     private HeadRelationship memberHeadRelationship;
     private MaritalRelationship memberMaritalRelationship;
     private Member spouseMember;
+    private Map<String, String> mapSavedStates = new HashMap<>();
 
     private List<Member> householdResidents;
     private int minimunHeadAge;
@@ -94,14 +103,17 @@ public class DeathFormUtil extends FormUtil<Death> {
         this.visit = visit;
 
         initBoxes();
+
+        this.member = this.boxMembers.query(Member_.code.equal(deathToEdit.memberCode)).build().findFirst();
+
         initialize();
     }
 
     public static DeathFormUtil newInstance(Mode openMode, Fragment fragment, Context context, Visit visit, Household household, Member member, Death deathToEdit, FormUtilities odkFormUtilities, FormUtilListener<Death> listener){
         if (openMode == Mode.CREATE) {
-            new DeathFormUtil(fragment, context, visit, household, member, odkFormUtilities, listener);
+            return new DeathFormUtil(fragment, context, visit, household, member, odkFormUtilities, listener);
         } else if (openMode == Mode.EDIT) {
-            new DeathFormUtil(fragment, context, visit, household, deathToEdit, odkFormUtilities, listener);
+            return new DeathFormUtil(fragment, context, visit, household, deathToEdit, odkFormUtilities, listener);
         }
 
         return null;
@@ -111,6 +123,7 @@ public class DeathFormUtil extends FormUtil<Death> {
     protected void initBoxes() {
         super.initBoxes();
 
+        this.boxHouseholds = ObjectBoxDatabase.get().boxFor(Household.class);
         this.boxMembers = ObjectBoxDatabase.get().boxFor(Member.class);
         this.boxDeaths = ObjectBoxDatabase.get().boxFor(Death.class);
         this.boxHeadRelationships = ObjectBoxDatabase.get().boxFor(HeadRelationship.class);
@@ -123,56 +136,115 @@ public class DeathFormUtil extends FormUtil<Death> {
     protected void initialize(){
         super.initialize();
 
-        this.isHouseholdHead = this.boxHeadRelationships.query(
-                HeadRelationship_.householdCode.equal(this.household.code)
-                .and(HeadRelationship_.memberCode.equal(this.member.code))
-                .and(HeadRelationship_.relationshipType.equal(HeadRelationshipType.HEAD_OF_HOUSEHOLD.code))
-                .and(HeadRelationship_.endType.equal(HeadRelationshipEndType.NOT_APPLICABLE.code)))
-                .orderDesc(HeadRelationship_.startDate)
-                .build().count()>0;
+        if (currentMode == Mode.CREATE) {
+            this.isHouseholdHead = this.boxHeadRelationships.query(
+                            HeadRelationship_.householdCode.equal(this.household.code)
+                                    .and(HeadRelationship_.memberCode.equal(this.member.code))
+                                    .and(HeadRelationship_.relationshipType.equal(HeadRelationshipType.HEAD_OF_HOUSEHOLD.code))
+                                    .and(HeadRelationship_.endType.equal(HeadRelationshipEndType.NOT_APPLICABLE.code)))
+                    .orderDesc(HeadRelationship_.startDate)
+                    .build().count()>0;
 
-        this.headMemberHeadRelationships = this.boxHeadRelationships.query(
-                                        HeadRelationship_.householdCode.equal(this.household.code)
-                                       .and(HeadRelationship_.headCode.equal(this.member.code))
-                                       .and(HeadRelationship_.endType.equal(HeadRelationshipEndType.NOT_APPLICABLE.code)))
-                                       .orderDesc(HeadRelationship_.startDate)
-                                       .build().find();
+            this.headMemberHeadRelationships = this.boxHeadRelationships.query(
+                            HeadRelationship_.householdCode.equal(this.household.code)
+                                    .and(HeadRelationship_.headCode.equal(this.member.code))
+                                    .and(HeadRelationship_.endType.equal(HeadRelationshipEndType.NOT_APPLICABLE.code)))
+                    .orderDesc(HeadRelationship_.startDate)
+                    .build().find();
 
-        //get current memberResidency
-        this.memberResidency = this.boxResidencies.query(
-                Residency_.householdCode.equal(this.household.code)
-                .and(Residency_.memberCode.equal(this.member.code))
-                .and(Residency_.endType.equal(ResidencyEndType.NOT_APPLICABLE.code)))
-                .orderDesc(Residency_.startDate)
-                .build().findFirst();
-        //get current memberHeadRelationship
-        this.memberHeadRelationship = this.boxHeadRelationships.query(
-                     HeadRelationship_.householdCode.equal(this.household.code)
-                .and(HeadRelationship_.memberCode.equal(this.member.code))
-                .and(HeadRelationship_.endType.equal(HeadRelationshipEndType.NOT_APPLICABLE.code)))
-                .orderDesc(HeadRelationship_.startDate)
-                .build().findFirst();
-        //get current MaritalRelationship
-        this.memberMaritalRelationship = this.boxMaritalRelationships.query(
-                     MaritalRelationship_.endStatus.equal(MaritalEndStatus.NOT_APPLICABLE.code)
-                .and(MaritalRelationship_.memberA_code.equal(this.member.code).or(MaritalRelationship_.memberB_code.equal(this.member.code))))
-                .orderDesc(MaritalRelationship_.startDate)
-                .build().findFirst();
+            //get current memberResidency
+            this.memberResidency = this.boxResidencies.query(
+                            Residency_.householdCode.equal(this.household.code)
+                                    .and(Residency_.memberCode.equal(this.member.code))
+                                    .and(Residency_.endType.equal(ResidencyEndType.NOT_APPLICABLE.code)))
+                    .orderDesc(Residency_.startDate)
+                    .build().findFirst();
+            //get current memberHeadRelationship
+            this.memberHeadRelationship = this.boxHeadRelationships.query(
+                            HeadRelationship_.householdCode.equal(this.household.code)
+                                    .and(HeadRelationship_.memberCode.equal(this.member.code))
+                                    .and(HeadRelationship_.endType.equal(HeadRelationshipEndType.NOT_APPLICABLE.code)))
+                    .orderDesc(HeadRelationship_.startDate)
+                    .build().findFirst();
+            //get current MaritalRelationship
+            this.memberMaritalRelationship = this.boxMaritalRelationships.query(
+                            MaritalRelationship_.endStatus.equal(MaritalEndStatus.NOT_APPLICABLE.code)
+                                    .and(MaritalRelationship_.memberA_code.equal(this.member.code).or(MaritalRelationship_.memberB_code.equal(this.member.code))))
+                    .orderDesc(MaritalRelationship_.startDate)
+                    .build().findFirst();
+        } else if (currentMode == Mode.EDIT) {
+
+            readSavedEntityState();
+
+            //reading isHouseholdHead, memberResidency, memberHeadRelationship, memberMaritalRelationship, headMemberHeadRelationships
+        }
+
+        this.minimunHeadAge = retrieveMinimumHeadAge();
+
         //get spouse
         if (this.memberMaritalRelationship != null) {
             String spouseCode = this.memberMaritalRelationship.memberA_code==member.code ? this.memberMaritalRelationship.memberB_code : this.memberMaritalRelationship.memberA_code;
             this.spouseMember = Queries.getMemberByCode(this.boxMembers, spouseCode);
         }
 
-        this.minimunHeadAge = retrieveMinimumHeadAge();
-
         if (isHouseholdHead) { //is death of head of household
-            this.householdResidents = getHouseholdResidentsExcDeadHead();
+            this.householdResidents = getHouseholdResidents();
         }
-
     }
 
-    private List<Member> getHouseholdResidentsExcDeadHead() {
+    private void readSavedEntityState() {
+        SavedEntityState savedState = this.boxSavedEntityStates.query(SavedEntityState_.formEntity.equal(CoreFormEntity.DEATH.code)
+                                                                        .and(SavedEntityState_.collectedId.equal(this.entity.id))
+                                                                        .and(SavedEntityState_.objectKey.equal("deathFormUtilState"))).build().findFirst();
+
+        if (savedState != null) {
+            HashMap map = new Gson().fromJson(savedState.objectGsonValue, HashMap.class);
+            for (Object key : map.keySet()) {
+                mapSavedStates.put(key.toString(), map.get(key).toString());
+            }
+        }
+
+
+        String newHeadCode = mapSavedStates.get("previousNewHeadCode");
+        String headRelationshipType = mapSavedStates.get("previousNewHeadRelationshipType");
+        String isHouseholdHeadVar = mapSavedStates.get("isHouseholdHead");
+        String memberResidencyId = mapSavedStates.get("memberResidency");
+        String memberHeadRelationshipId = mapSavedStates.get("memberHeadRelationship");
+        String memberMaritalRelationshipId = mapSavedStates.get("memberMaritalRelationship");
+        String headMemberRelationshipIdList = mapSavedStates.get("headMemberRelationshipIdList");
+
+        if (newHeadCode != null) {
+            this.previousNewHeadMember = this.boxMembers.query(Member_.code.equal(newHeadCode)).build().findFirst();
+        }
+        if (headRelationshipType != null) {
+            this.previousNewHeadRelationshipType = HeadRelationshipType.getFrom(headRelationshipType);
+        }
+        if (isHouseholdHeadVar != null) {
+            this.isHouseholdHead = Boolean.parseBoolean(isHouseholdHeadVar);
+        }
+        if (memberResidencyId != null) {
+            this.memberResidency = this.boxResidencies.get(Long.parseLong(memberResidencyId));
+        }
+        if (memberHeadRelationshipId != null) {
+            this.memberHeadRelationship = this.boxHeadRelationships.get(Long.parseLong(memberHeadRelationshipId));
+        }
+        if (memberMaritalRelationshipId != null) {
+            this.memberMaritalRelationship = this.boxMaritalRelationships.get(Long.parseLong(memberMaritalRelationshipId));
+        }
+        if (!StringUtil.isBlank(headMemberRelationshipIdList)) {
+            this.headMemberHeadRelationships = new ArrayList<>();
+            for (String strId : headMemberRelationshipIdList.split(",")) {
+                HeadRelationship headRelationship = this.boxHeadRelationships.get(Long.parseLong(strId));
+                this.headMemberHeadRelationships.add(headRelationship);
+            }
+        }
+    }
+
+    private boolean newHeadChanged(){
+        return (this.previousNewHeadMember != null && this.newHeadMember != null) && (previousNewHeadMember.id != newHeadMember.id);
+    }
+
+    private List<Member> getHouseholdResidents() {
 
         //order list with new head of household as the first id
 
@@ -182,15 +254,12 @@ public class DeathFormUtil extends FormUtil<Death> {
                 .build().find();
 
         //exclude old household code
-        List<String> residentMembersExDeadHead = new ArrayList<>();
+        List<String> residentMembers = new ArrayList<>();
         for (Residency residency : residencies) {
-            if (!member.code.equals(residency.memberCode)) { //its not the dead member
-                residentMembersExDeadHead.add(residency.memberCode);
-                //Log.d("member", ""+residency.memberCode);
-            }
+            residentMembers.add(residency.memberCode);
         }
 
-        List<Member> members = this.boxMembers.query(Member_.code.oneOf(residentMembersExDeadHead.toArray(new String[0]))).build().find();
+        List<Member> members = this.boxMembers.query(Member_.code.oneOf(residentMembers.toArray(new String[0]))).build().find();
 
         return members;
     }
@@ -246,7 +315,27 @@ public class DeathFormUtil extends FormUtil<Death> {
 
     @Override
     protected void preloadUpdatedValues() {
+        if (newHeadChanged()) {
 
+            if (this.householdResidents != null) {
+                reorderWithHeadAsFirst(this.householdResidents, newHeadMember);
+            }
+
+            preloadedMap.put("newHeadCode", this.newHeadMember.code);
+            preloadedMap.put("newHeadName", this.newHeadMember.name);
+
+            //Load Repeat Objects
+            RepeatObject newRelationshipsRepObj = new RepeatObject();
+            for (Member mb : householdResidents) {
+                Log.d("resident", ""+mb.code);
+                Map<String, String> obj = newRelationshipsRepObj.createNewObject();
+                obj.put("newMemberCode", mb.code);
+                obj.put("newMemberName", mb.name);
+                obj.put("newRelationshipType", this.newHeadMember.code.equals(mb.code) ? "HOH" : ""); //Set the head if is one of them
+            }
+            Log.d("relationships", newRelationshipsRepObj.getList().size()+"");
+            preloadedMap.put("newRelationships", newRelationshipsRepObj);
+        }
     }
 
     @Override
@@ -313,7 +402,7 @@ public class DeathFormUtil extends FormUtil<Death> {
             return new ValidationResult(colMemberCode, message);
         }
 
-        if (boxDeaths.query(Death_.memberCode.equal(memberCode)).build().count()>0){
+        if (currentMode==Mode.CREATE && boxDeaths.query(Death_.memberCode.equal(memberCode)).build().count()>0){
             String message = this.context.getString(R.string.death_member_code_exists_lbl);
             return new ValidationResult(colMemberCode, message);
         }
@@ -375,10 +464,178 @@ public class DeathFormUtil extends FormUtil<Death> {
         Log.d("resultxml", result.getXmlResult());
 
         if (currentMode == Mode.EDIT) {
-            System.out.println("Editing Death Not implemented yet");
-            assert 1==0;
+            onModeEdit(collectedValues, result);
+        } else if (currentMode == Mode.CREATE) {
+            onModeCreate(collectedValues, result);
+        }
+    }
+
+    private void onModeEdit(CollectedDataMap collectedValues, XmlFormResult result) {
+
+        ColumnValue colVisitCode = collectedValues.get("visitCode");
+        ColumnValue colMemberCode = collectedValues.get("memberCode"); //check if code is valid + check duplicate + member belongs to household
+        ColumnValue colMemberName = collectedValues.get("memberName"); //not blank
+        ColumnValue colDeathDate = collectedValues.get("deathDate"); //not null cannot be in the future nor before dob
+        ColumnValue colDeathCause = collectedValues.get("deathCause");
+        ColumnValue colDeathCauseOther = collectedValues.get("deathCauseOther");
+        ColumnValue colDeathPlace = collectedValues.get("deathPlace");
+        ColumnValue colDeathPlaceOther = collectedValues.get("deathPlaceOther"); //not null, cannot be before dob+12
+        ColumnValue colIsHouseholdHead = collectedValues.get("isHouseholdHead");
+        ColumnValue colNewHeadCode = collectedValues.get("newHeadCode");
+        ColumnValue colNewHeadName = collectedValues.get("newHeadName");
+
+        RepeatColumnValue repNewRelationships = collectedValues.getRepeatColumn("newRelationships");
+        List<ColumnValue> colNewMemberCodes = new ArrayList<>();
+        List<ColumnValue> colNewMemberNames = new ArrayList<>();
+        List<ColumnValue> colNewRelationships = new ArrayList<>();
+
+        if (repNewRelationships != null) {
+            for (int i = 0; i < repNewRelationships.getCount(); i++) {
+                ColumnValue colNewMemberCode = repNewRelationships.get("newMemberCode", i);
+                ColumnValue colNewMemberName = repNewRelationships.get("newMemberName", i);
+                ColumnValue colNewRelationship = repNewRelationships.get("newRelationshipType", i);
+
+                colNewMemberCodes.add(colNewMemberCode);
+                colNewMemberNames.add(colNewMemberName);
+                colNewRelationships.add(colNewRelationship);
+            }
         }
 
+        //ColumnValue colCollectedBy = collectedValues.get("collectedBy");
+        //ColumnValue colCollectedDate = collectedValues.get("collectedDate");
+        //ColumnValue colModules = collectedValues.get("modules");
+
+        String visitCode = colVisitCode.getValue();
+        String memberCode = colMemberCode.getValue();
+        String memberName = colMemberName.getValue();
+        Date deathDate = colDeathDate.getDateValue();
+        String deathCause = colDeathCause.getValue();
+        String deathCauseOther = colDeathCauseOther.getValue();
+        String deathPlace = colDeathPlace.getValue();
+        String deathPlaceOther = colDeathPlaceOther.getValue();
+        Boolean isHouseholdHead = StringUtil.toBoolean(colIsHouseholdHead.getValue());
+        String newHeadCode = colNewHeadCode.getValue();
+        String newHeadName = colNewHeadName.getValue();
+
+        List<String> newMemberCodes = colNewMemberCodes.stream().map(ColumnValue::getValue).collect(Collectors.toList());
+        List<String> newMemberNames = colNewMemberNames.stream().map(ColumnValue::getValue).collect(Collectors.toList());
+        List<String> newRelationships = colNewRelationships.stream().map(ColumnValue::getValue).collect(Collectors.toList());
+
+        String affectedMembers = null;
+
+        //Death
+        Death death = entity;
+        death.visitCode = visitCode;
+        death.memberCode = member.code;
+        death.deathDate = deathDate;
+        death.deathCause = deathCauseOther==null ? deathCause : deathCauseOther;
+        death.deathPlace = deathPlaceOther==null ? deathPlace : deathPlaceOther;
+        death.ageAtDeath = GeneralUtil.getAge(member.dob, deathDate);
+        //death.collectedId = collectedValues.get(HForm.COLUMN_ID).getValue();
+        //death.recentlyCreated = true;
+        //death.recentlyCreatedUri = result.getFilename();
+        this.boxDeaths.put(death);
+
+        //update member again
+        this.member.endType = ResidencyEndType.DEATH;
+        this.member.endDate = deathDate;
+        this.boxMembers.put(this.member);
+
+        //close memberResidency again
+        if (this.memberResidency != null){
+            this.memberResidency.endType = ResidencyEndType.DEATH;
+            this.memberResidency.endDate = deathDate;
+            this.boxResidencies.put(this.memberResidency);
+        }
+        //close memberHeadRelationship again
+        if (this.memberHeadRelationship != null){
+            this.memberHeadRelationship.endType = HeadRelationshipEndType.DEATH;
+            this.memberHeadRelationship.endDate = deathDate;
+            this.boxHeadRelationships.put(this.memberHeadRelationship);
+        }
+        //close memberMaritalRelationship again
+        if (this.memberMaritalRelationship != null){
+            this.memberMaritalRelationship.endStatus = MaritalEndStatus.WIDOWED;
+            this.memberMaritalRelationship.endDate = deathDate;
+            this.boxMaritalRelationships.put(this.memberMaritalRelationship);
+
+            this.member.maritalStatus = MaritalStatus.WIDOWED;
+            this.spouseMember.maritalStatus = MaritalStatus.WIDOWED;
+            this.boxMembers.put(this.member, this.spouseMember);
+
+            affectedMembers = addAffectedMembers(affectedMembers, this.spouseMember.code);
+        }
+        //close previous head relationships again
+        if (isHouseholdHead && headMemberHeadRelationships != null && headMemberHeadRelationships.size()>0){
+            for (HeadRelationship headRelationship : headMemberHeadRelationships) {
+                headRelationship.endType = HeadRelationshipEndType.DEATH_OF_HEAD_OF_HOUSEHOLD;
+                headRelationship.endDate = deathDate;
+                this.boxHeadRelationships.put(headRelationship);
+            }
+        }
+
+        //if the head was changed
+        if (isHouseholdHead && newHeadChanged()){
+
+            //delete previous data
+            String sidsList = mapSavedStates.get("newHeadRelationshipsList");
+
+            //deleting head relationships and update member
+            for (String sid : sidsList.split(",")) {
+                this.boxHeadRelationships.remove(Long.parseLong(sid));
+            }
+
+            previousNewHeadMember.headRelationshipType = previousNewHeadRelationshipType;
+            this.boxMembers.put(previousNewHeadMember);
+
+
+            //create new head relationships
+            //save the new head member previous headRelationshipType
+            HashMap<String,String> saveStateMap = new HashMap<>();
+            saveStateMap.put("newHeadCode", newHeadMember.code);
+            saveStateMap.put("headRelationshipType", newHeadMember.headRelationshipType.code);
+
+            this.household.headCode = newHeadMember.code;
+            this.household.headName = newHeadMember.name;
+            newHeadMember.headRelationshipType = HeadRelationshipType.HEAD_OF_HOUSEHOLD;
+            //--------------------
+            this.boxHouseholds.put(this.household);
+            this.boxMembers.put(newHeadMember);
+
+            for (int i = 0; i < colNewMemberCodes.size(); i++) {
+                HeadRelationship headRelationship = new HeadRelationship();
+                headRelationship.householdCode = household.code;
+                headRelationship.memberCode = newMemberCodes.get(i);
+                headRelationship.headCode = newHeadMember.code;
+                headRelationship.relationshipType = HeadRelationshipType.getFrom(newRelationships.get(i));
+                headRelationship.startType = HeadRelationshipStartType.NEW_HEAD_OF_HOUSEHOLD;
+                headRelationship.startDate = GeneralUtil.getDateAdd(deathDate, 1);
+                headRelationship.endType = HeadRelationshipEndType.NOT_APPLICABLE;
+                headRelationship.endDate = null;
+                this.boxHeadRelationships.put(headRelationship);
+
+                String newHeadIds = !saveStateMap.containsKey("newHeadRelationshipsList") ? headRelationship.id+"" : saveStateMap.get("newHeadRelationshipsList") + "," + headRelationship.id;
+                saveStateMap.put("newHeadRelationshipsList", newHeadIds);
+            }
+
+            //update the saved entity state
+            SavedEntityState entityState = this.boxSavedEntityStates.query(SavedEntityState_.formEntity.equal(CoreFormEntity.DEATH.code).and(SavedEntityState_.collectedId.equal(this.entity.id)).and(SavedEntityState_.objectKey.equal("deathFormUtilState"))).build().findFirst();
+            entityState.objectGsonValue = new Gson().toJson(saveStateMap);
+            this.boxSavedEntityStates.put(entityState);
+
+            affectedMembers = addAffectedMembers(affectedMembers, this.newHeadMember.code);
+        }
+
+        //save core collected data
+        collectedData.visitId = visit.id;
+        collectedData.formEntityCodes = affectedMembers; //new head code, spouse, head related individuals
+        collectedData.updatedDate = new Date();
+        this.boxCoreCollectedData.put(collectedData);
+
+        onFinishedExtensionCollection();
+    }
+
+    private void onModeCreate(CollectedDataMap collectedValues, XmlFormResult result) {
         ColumnValue colVisitCode = collectedValues.get("visitCode");
         ColumnValue colMemberCode = collectedValues.get("memberCode"); //check if code is valid + check duplicate + member belongs to household
         ColumnValue colMemberName = collectedValues.get("memberName"); //not blank
@@ -472,17 +729,37 @@ public class DeathFormUtil extends FormUtil<Death> {
             affectedMembers = addAffectedMembers(affectedMembers, this.spouseMember.code);
         }
         //close previous head relationships
-        if (headMemberHeadRelationships != null && headMemberHeadRelationships.size()>0){
+        String savedOldHeadRelationships = "";
+        if (isHouseholdHead && headMemberHeadRelationships != null && headMemberHeadRelationships.size()>0){
             for (HeadRelationship headRelationship : headMemberHeadRelationships) {
-                if (!this.memberHeadRelationship.equals(headRelationship)){
-                    headRelationship.endType = HeadRelationshipEndType.DEATH_OF_HEAD_OF_HOUSEHOLD;
-                    headRelationship.endDate = deathDate;
-                    this.boxHeadRelationships.put(headRelationship);
-                }
+                headRelationship.endType = HeadRelationshipEndType.DEATH_OF_HEAD_OF_HOUSEHOLD;
+                headRelationship.endDate = deathDate;
+                this.boxHeadRelationships.put(headRelationship);
+
+                savedOldHeadRelationships += (savedOldHeadRelationships.isEmpty() ? "" : ",") + headRelationship.id;
             }
         }
+
+        //save states
+        HashMap<String,String> saveStateMap = new HashMap<>();
+        saveStateMap.put("isHouseholdHead", isHouseholdHead+"");
+        saveStateMap.put("memberResidency", memberResidency == null ? "" : memberResidency.id+"");
+        saveStateMap.put("memberHeadRelationship", memberHeadRelationship == null ? "" : memberHeadRelationship.id+"");
+        saveStateMap.put("memberMaritalRelationship", memberMaritalRelationship == null ? "" : memberMaritalRelationship.id+"");
+        saveStateMap.put("headMemberRelationshipIdList", savedOldHeadRelationships);
+
         //create new head relationships
-        if (isHouseholdHead){
+        if (isHouseholdHead && newHeadMember != null){
+            saveStateMap.put("previousNewHeadCode", newHeadMember.code);
+            saveStateMap.put("previousNewHeadRelationshipType", newHeadMember.headRelationshipType.code);
+
+            this.household.headCode = newHeadMember.code;
+            this.household.headName = newHeadMember.name;
+            newHeadMember.headRelationshipType = HeadRelationshipType.HEAD_OF_HOUSEHOLD;
+            //--------------------
+            this.boxHouseholds.put(this.household);
+            this.boxMembers.put(newHeadMember);
+
             for (int i = 0; i < colNewMemberCodes.size(); i++) {
                 HeadRelationship headRelationship = new HeadRelationship();
                 headRelationship.householdCode = household.code;
@@ -494,16 +771,22 @@ public class DeathFormUtil extends FormUtil<Death> {
                 headRelationship.endType = HeadRelationshipEndType.NOT_APPLICABLE;
                 headRelationship.endDate = null;
                 this.boxHeadRelationships.put(headRelationship);
+
+                String newHeadIds = !saveStateMap.containsKey("newHeadRelationshipsList") ? headRelationship.id+"" : saveStateMap.get("newHeadRelationshipsList") + "," + headRelationship.id;
+                saveStateMap.put("newHeadRelationshipsList", newHeadIds);
             }
+            //save the list of ids of new head relationships
+            SavedEntityState entityState = new SavedEntityState(CoreFormEntity.DEATH, death.id, "deathFormUtilState", new Gson().toJson(saveStateMap));
+            this.boxSavedEntityStates.put(entityState);
+
             affectedMembers = addAffectedMembers(affectedMembers, this.newHeadMember.code);
         }
-
 
         //save core collected data
         collectedData = new CoreCollectedData();
         collectedData.visitId = visit.id;
         collectedData.formEntity = CoreFormEntity.DEATH;
-        collectedData.formEntityId = member.id;
+        collectedData.formEntityId = death.id;
         collectedData.formEntityCode = member.code;
         collectedData.formEntityCodes = affectedMembers; //new head code, spouse, head related individuals
         collectedData.formEntityName = member.name;
@@ -516,13 +799,16 @@ public class DeathFormUtil extends FormUtil<Death> {
 
         this.entity = death;
         this.collectExtensionForm(collectedValues);
-
     }
 
     @Override
     protected void onFinishedExtensionCollection() {
         if (listener != null) {
-            listener.onNewEntityCreated(entity, new HashMap<>());
+            if (currentMode == Mode.CREATE) {
+                listener.onNewEntityCreated(this.entity, new HashMap<>());
+            } else if (currentMode == Mode.EDIT) {
+                listener.onEntityEdited(this.entity, new HashMap<>());
+            }
         }
     }
 
@@ -550,12 +836,38 @@ public class DeathFormUtil extends FormUtil<Death> {
     @Override
     public void collect() {
 
-        if (isHouseholdHead) {
-            //death of head of household - search for new head of household
-            openNewHouseholdHeadFilterDialog();
-        } else {
-            executeCollectForm();
+        if (currentMode == Mode.CREATE) {
+            if (isHouseholdHead && !isTheOnlyHouseholdMember(member.code, household.code)) {
+                //death of head of household - search for new head of household
+                openNewHouseholdHeadFilterDialog();
+            } else {
+                executeCollectForm();
+            }
+        } else if (currentMode == Mode.EDIT) {
+            if (isHouseholdHead && !isTheOnlyHouseholdMember(member.code, household.code)) {
+                //ask if wants to change the head
+                checkChangeNewHouseholdHeadDialog();
+            } else {
+               executeCollectForm();
+            }
         }
+
+    }
+
+    private void checkChangeNewHouseholdHeadDialog(){
+
+        DialogFactory.createMessageYN(this.context, R.string.death_dialog_change_title_lbl, R.string.death_dialog_head_change_lbl, new DialogFactory.OnYesNoClickListener() {
+            @Override
+            public void onYesClicked() {
+                openNewHouseholdHeadFilterDialog();
+            }
+
+            @Override
+            public void onNoClicked() {
+                executeCollectForm();
+            }
+        }).show();
+
     }
 
     private void openNewHouseholdHeadFilterDialog(){

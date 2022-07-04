@@ -228,11 +228,13 @@ public class MemberFilterDialog extends DialogFragment {
         }
         if (filterMinAge != null){
             nbpMemFilterMinAge.setValue(filterMinAge);
-            nbpMemFilterMinAge.setEnabled(!filterMinAgeExclusive);
+            nbpMemFilterMinAge.setMinValue(filterMinAge);
+            //nbpMemFilterMinAge.setEnabled(!filterMinAgeExclusive);
         }
         if (filterMaxAge != null){
-            nbpMemFilterMinAge.setValue(filterMaxAge);
-            nbpMemFilterMaxAge.setEnabled(!filterMaxAgeExclusive);
+            nbpMemFilterMaxAge.setMaxValue(filterMaxAge);
+            nbpMemFilterMaxAge.setValue(filterMaxAge);
+            //nbpMemFilterMaxAge.setEnabled(!filterMaxAgeExclusive);
         }
 
         this.mfdButton1.setOnClickListener(v -> onCustomButtonClick(Buttons.BUTTON_1, v));

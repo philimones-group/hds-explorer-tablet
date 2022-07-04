@@ -97,12 +97,14 @@ public class IncompleteVisitFormUtil extends FormUtil<IncompleteVisit> {
 
     @Override
     protected void preloadUpdatedValues() {
+        /*
         preloadedMap.put("visitCode", this.visit.code);
         preloadedMap.put("householdCode", this.visit.householdCode);
         preloadedMap.put("memberCode", this.member.code);
         preloadedMap.put("memberName", this.member.name);
         preloadedMap.put("reason", this.currentIncompleteVisit!=null ? this.currentIncompleteVisit.reason.code : "");
         preloadedMap.put("reasonOther", this.currentIncompleteVisit!=null ? this.currentIncompleteVisit.reasonOther : "");
+        */
     }
 
     @Override
@@ -162,11 +164,14 @@ public class IncompleteVisitFormUtil extends FormUtil<IncompleteVisit> {
         Log.d("resultxml", result.getXmlResult());
 
         if (currentMode == Mode.EDIT) {
-            System.out.println("Editing Member Enumeration Not implemented yet");
-            assert 1==0;
+            onModeEdit(collectedValues, result);
+        } else if (currentMode == Mode.CREATE) {
+            onModeCreate(collectedValues, result);
         }
 
+    }
 
+    private void onModeCreate(CollectedDataMap collectedValues, XmlFormResult result) {
         ColumnValue colVisitCode = collectedValues.get("visitCode");
         ColumnValue colHouseholdCode = collectedValues.get("householdCode");
         ColumnValue colMemberCode = collectedValues.get("memberCode");
@@ -202,7 +207,7 @@ public class IncompleteVisitFormUtil extends FormUtil<IncompleteVisit> {
         collectedData = new CoreCollectedData();
         collectedData.visitId = visit.id;
         collectedData.formEntity = CoreFormEntity.INCOMPLETE_VISIT;
-        collectedData.formEntityId = member.id;
+        collectedData.formEntityId = incompleteVisit.id;
         collectedData.formEntityCode = member.code;
         collectedData.formEntityName = member.name;
         collectedData.formUuid = result.getFormUuid();
@@ -217,10 +222,47 @@ public class IncompleteVisitFormUtil extends FormUtil<IncompleteVisit> {
         this.collectExtensionForm(collectedValues);
     }
 
+    private void onModeEdit(CollectedDataMap collectedValues, XmlFormResult result) {
+        ColumnValue colVisitCode = collectedValues.get("visitCode");
+        ColumnValue colHouseholdCode = collectedValues.get("householdCode");
+        ColumnValue colMemberCode = collectedValues.get("memberCode");
+        ColumnValue colMemberName = collectedValues.get("memberName");
+        ColumnValue colReason = collectedValues.get("reason");
+        ColumnValue colReasonOther = collectedValues.get("reasonOther");
+        ColumnValue colCollectedBy = collectedValues.get("collectedBy");
+        ColumnValue colCollectedDate = collectedValues.get("collectedDate");
+
+
+        String visitCode = colVisitCode.getValue();
+        String householdCode = colHouseholdCode.getValue();
+        String memberCode = colMemberCode.getValue();
+        String memberName = colMemberName.getValue();
+        IncompleteVisitReason reason = IncompleteVisitReason.getFrom(colReason.getValue());
+        String reasonOther = colReasonOther.getValue();
+
+
+        IncompleteVisit incompleteVisit = this.entity;
+        incompleteVisit.reason = reason;
+        incompleteVisit.reasonOther = reason==IncompleteVisitReason.OTHER ? reasonOther : null;
+        boxIncompleteVisits.put(incompleteVisit);
+
+        //save core collected data
+        collectedData.formEntityCode = member.code;
+        collectedData.formEntityName = member.name;
+        collectedData.updatedDate = new Date();
+        boxCoreCollectedData.put(collectedData);
+
+        onFinishedExtensionCollection();
+    }
+
     @Override
     protected void onFinishedExtensionCollection() {
         if (listener != null) {
-            listener.onNewEntityCreated(this.entity, new HashMap<>());
+            if (currentMode == Mode.CREATE) {
+                listener.onNewEntityCreated(this.entity, new HashMap<>());
+            } else if (currentMode == Mode.EDIT) {
+                listener.onEntityEdited(this.entity, new HashMap<>());
+            }
         }
     }
 

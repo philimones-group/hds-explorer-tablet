@@ -2,6 +2,7 @@ package org.philimone.hds.explorer.adapter;
 
 import android.content.Context;
 import android.graphics.Typeface;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -179,6 +180,19 @@ public class HouseholdAdapter extends RecyclerView.Adapter<HouseholdAdapter.Hous
                 int colorB = ContextCompat.getColor(mContext, R.color.nui_lists_selected_item_color_2);
 
                 rowView.setBackgroundColor(colorB);
+                txtName.setTextColor(colorA);
+                txtCode.setTextColor(colorA);
+                if (txtHeadLabel!=null) txtHeadLabel.setTextColor(colorA);
+                if (txtHead!=null) txtHead.setTextColor(colorA);
+                if (txtExtra!=null) txtExtra.setTextColor(colorA);
+            } else {
+                TypedValue colorBvalue = new TypedValue();
+                mContext.getTheme().resolveAttribute(android.R.attr.selectableItemBackground, colorBvalue, true);
+
+                int colorA = mContext.getResources().getColor(R.color.nui_member_item_textcolor);
+                int colorB = colorBvalue.resourceId;
+
+                rowView.setBackgroundResource(colorB);
                 txtName.setTextColor(colorA);
                 txtCode.setTextColor(colorA);
                 if (txtHeadLabel!=null) txtHeadLabel.setTextColor(colorA);

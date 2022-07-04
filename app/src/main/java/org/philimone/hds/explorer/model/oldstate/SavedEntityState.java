@@ -17,7 +17,6 @@ public class SavedEntityState {
     @Convert(dbType = String.class, converter = CoreFormEntityConverter.class)
     public CoreFormEntity formEntity;
 
-    @Unique
     public long collectedId;
 
     public String objectKey;

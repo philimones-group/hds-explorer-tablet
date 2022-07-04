@@ -8,10 +8,8 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,7 +21,6 @@ import org.philimone.hds.explorer.adapter.MemberAdapter;
 import org.philimone.hds.explorer.database.Bootstrap;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
 import org.philimone.hds.explorer.database.Queries;
-import org.philimone.hds.explorer.listeners.ActionListener;
 import org.philimone.hds.explorer.listeners.MemberActionListener;
 import org.philimone.hds.explorer.model.CollectedData;
 import org.philimone.hds.explorer.model.CollectedData_;
@@ -31,7 +28,6 @@ import org.philimone.hds.explorer.model.Form;
 import org.philimone.hds.explorer.model.Household;
 import org.philimone.hds.explorer.model.Member;
 import org.philimone.hds.explorer.model.Member_;
-import org.philimone.hds.explorer.model.Module;
 import org.philimone.hds.explorer.model.Region;
 import org.philimone.hds.explorer.model.Region_;
 import org.philimone.hds.explorer.model.User;
@@ -46,7 +42,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import io.objectbox.Box;
 import io.objectbox.query.QueryBuilder;
@@ -560,8 +555,8 @@ public class MemberListFragment extends Fragment {
         //put on list
         MemberAdapter adapter = new MemberAdapter(this.getActivity(), members, extras);
         adapter.setShowHouseholdAndCode(true);
-        adapter.setIgnoreHeadOfHousehold(false);
-        adapter.setMemberIcon(MemberAdapter.MemberIcon.NORMAL_HEAD_ICON);
+        adapter.setShowHouseholdHeadIcon(true);
+        //adapter.setMemberIcon(MemberAdapter.MemberIcon.NORMAL_HEAD_ICON);
         this.lvMembersList.setAdapter(adapter);
 
 
@@ -793,6 +788,8 @@ public class MemberListFragment extends Fragment {
         List<Member> members = builder.filter((member) -> StringUtil.containsAny(member.modules, smodules)).build().find(); //filters user search by module
 
         MemberAdapter currentAdapter = new MemberAdapter(this.getActivity(), members);
+        currentAdapter.setShowHouseholdHeadIcon(true);
+        currentAdapter.setShowExtraDetails(true);
 
         return currentAdapter;
 

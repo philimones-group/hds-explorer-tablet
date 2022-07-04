@@ -419,7 +419,9 @@
     <string name="relationship_type_question_lbl">Escolha o Estado Civil?</string>
     <string name="relationship_type_select_btn_lbl">Selecionar</string>
 
+    <string name="maritalrelationship_recently_created_error_lbl">Já existe um registo de estado civil recentemente criado para este membro.\n, Um novo registo não pode ser criado apenas pode editar o existente.\n(Para editar/alterar use a lista a direita do painel)</string>
     <string name="maritalrelationship_spouse_select_lbl">Selecione o conjugue deste Membro?</string>
+    <string name="maritalrelationship_spouse_select_update_lbl">Atualização do conjugue deste Membro?</string>
     <string name="maritalrelationship_spouse_exists_lbl">O Membro se encontra numa relação conjugal e seu conjugue esta registado no sistema?</string>
     <string name="maritalrelationship_spouse_change_lbl">Deseja atualizar/alterar o conjugue deste Membro?</string>
     <string name="maritalrelationship_spouse_type_change_lbl">Deseja atualizar/alterar o Estado Civil deste Membro?</string>
@@ -495,8 +497,12 @@
     <string name="pregnancy_outcome_member_code_exists_lbl">O código do bebê introduzido ja existe!</string>
     <string name="pregnancy_outcome_member_name_empty_lbl">O nome do bebê não pode estar vazio</string>
     <string name="pregnancy_outcome_member_gender_empty_lbl">O sexo do bebê não pode estar vazio</string>
+    <string name="pregnancy_outcome_member_gender_invalid_lbr_lbl">O sexo do bebê não pode ser desconhecido quando o tipo de resultado da gravidez é nascido vivo</string>
     <string name="pregnancy_outcome_member_head_relattype_empty_lbl">A relação do bebê com o chefe de agregado não pode estar vazio</string>
     <string name="pregnancy_outcome_child_father_select_lbl">Selecione o Pai do bebê?</string>
+    <string name="pregnancy_outcome_child_father_change_title_lbl">Atualização do resultado de gravidez?</string>
+    <string name="pregnancy_outcome_child_father_exists_lbl">O Pai do bebê é conhecido e esta registado no sistema?</string>
+    <string name="pregnancy_outcome_child_father_change_lbl">Deseja atualizar/alterar o Pai do bebê?</string>
     
     <!-- death registration -->
     <string name="death_visit_code_empty_lbl">O código da visita não pode estar vazio</string>
@@ -507,8 +513,12 @@
     <string name="death_deathdate_not_great_today_lbl">A data da morte não pode ser maior que a data de hoje</string>
     <string name="death_new_head_code_empty_lbl">O código do novo chefe de agregado não pode estar vazio</string>
     <string name="death_new_head_select_lbl">Selecione o novo chefe do agregado</string>
+    <string name="death_dialog_change_title_lbl">Atualização de dados</string>
+    <string name="death_dialog_head_change_lbl">Deseja atualizar/alterar o novo chefe do agregado do membro que faleceu?</string>
 
     <!-- changehead registration -->
+    <string name="changehead_dialog_change_title_lbl">Atualização de dados</string>
+    <string name="changehead_dialog_head_change_lbl">Deseja atualizar/alterar o novo chefe do agregado?</string>
     <string name="changehead_visit_code_empty_lbl">O código da visita não pode estar vazio</string>
     <string name="changehead_oldhead_code_empty_lbl">O código do antigo chefe do agregado não pode estar vazio</string>
     <string name="changehead_newhead_code_empty_lbl">O código do novo chefe do agregado não pode estar vazio</string>
@@ -601,6 +611,7 @@
 
     <string name="default_gender_male">Masculino</string>
     <string name="default_gender_female">Feminino</string>
+    <string name="default_gender_na">Desconhecido</string>
 
     <string name="maritalStatus_single">Solteiro</string>
     <string name="maritalStatus_married">Casado(a)</string>

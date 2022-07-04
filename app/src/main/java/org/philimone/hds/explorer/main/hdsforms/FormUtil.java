@@ -12,6 +12,7 @@ import org.philimone.hds.explorer.model.ApplicationParam;
 import org.philimone.hds.explorer.model.CollectedData;
 import org.philimone.hds.explorer.model.CollectedData_;
 import org.philimone.hds.explorer.model.CoreCollectedData;
+import org.philimone.hds.explorer.model.CoreCollectedData_;
 import org.philimone.hds.explorer.model.CoreEntity;
 import org.philimone.hds.explorer.model.CoreFormExtension;
 import org.philimone.hds.explorer.model.CoreFormExtension_;
@@ -19,6 +20,7 @@ import org.philimone.hds.explorer.model.Round;
 import org.philimone.hds.explorer.model.Round_;
 import org.philimone.hds.explorer.model.User;
 import org.philimone.hds.explorer.model.enums.CoreFormEntity;
+import org.philimone.hds.explorer.model.oldstate.SavedEntityState;
 import org.philimone.hds.explorer.settings.generator.CodeGeneratorService;
 import org.philimone.hds.explorer.widget.DialogFactory;
 import org.philimone.hds.forms.listeners.FormCollectionListener;
@@ -73,6 +75,7 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
     protected Box<CoreCollectedData> boxCoreCollectedData;
     protected Box<CoreFormExtension> boxCoreFormExtension;
     protected Box<CollectedData> boxCollectedData;
+    protected Box<SavedEntityState> boxSavedEntityStates;
 
     protected FormUtilities odkFormUtilities;
     private FilledForm lastLoadedForm;
@@ -120,6 +123,9 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
         this.odkFormUtilities.setOdkFormResultListener(this);
 
         this.listener = listener;
+
+        initBoxes();
+        readCollectedDataForEdit();
     }
 
     protected FormUtil(AppCompatActivity activity, Context context, HForm hform, FormUtilities odkFormUtilities, FormUtilListener<T> listener){
@@ -157,14 +163,40 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
         this.odkFormUtilities.setOdkFormResultListener(this);
 
         this.listener = listener;
+
+        initBoxes();
+        readCollectedDataForEdit();
+    }
+
+    private void readCollectedDataForEdit() {
+        this.collectedData = this.boxCoreCollectedData.query(CoreCollectedData_.formEntityId.equal(this.entity.getId()).and(CoreCollectedData_.collectedId.equal(this.entity.getCollectedId()))).build().findFirst();
+        Log.d("found-collected", ""+this.collectedData);
     }
 
     protected void initBoxes(){
-        this.boxAppParams = ObjectBoxDatabase.get().boxFor(ApplicationParam.class);
-        this.boxRounds = ObjectBoxDatabase.get().boxFor(Round.class);
-        this.boxCoreCollectedData = ObjectBoxDatabase.get().boxFor(CoreCollectedData.class);
-        this.boxCoreFormExtension = ObjectBoxDatabase.get().boxFor(CoreFormExtension.class);
-        this.boxCollectedData = ObjectBoxDatabase.get().boxFor(CollectedData.class);
+        if (this.boxAppParams == null) {
+            this.boxAppParams = ObjectBoxDatabase.get().boxFor(ApplicationParam.class);
+        }
+
+        if (this.boxRounds == null) {
+            this.boxRounds = ObjectBoxDatabase.get().boxFor(Round.class);
+        }
+
+        if (this.boxCoreCollectedData == null) {
+            this.boxCoreCollectedData = ObjectBoxDatabase.get().boxFor(CoreCollectedData.class);
+        }
+
+        if (this.boxCoreFormExtension == null) {
+            this.boxCoreFormExtension = ObjectBoxDatabase.get().boxFor(CoreFormExtension.class);
+        }
+
+        if (this.boxCollectedData == null) {
+            this.boxCollectedData = ObjectBoxDatabase.get().boxFor(CollectedData.class);
+        }
+
+        if (this.boxSavedEntityStates == null) {
+            this.boxSavedEntityStates = ObjectBoxDatabase.get().boxFor(SavedEntityState.class);
+        }
     }
 
     protected void initialize() {
@@ -185,13 +217,13 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
     protected void executeCollectForm() {
         if (currentMode == Mode.CREATE) {
             preloadValues();
-            FormFragment form = FormFragment.newInstance(this.fragmentManager, this.form, Bootstrap.getInstancesPath(), user.username, preloadedMap, postExecution, backgroundMode, resumeMode, this);
+            FormFragment form = FormFragment.newInstance(this.fragmentManager, this.form, Bootstrap.getInstancesPath(context), user.username, preloadedMap, postExecution, backgroundMode, resumeMode, this);
             form.startCollecting();
         }
 
         if (currentMode == Mode.EDIT) {
             preloadUpdatedValues();
-            FormFragment form = FormFragment.newInstance(this.fragmentManager, this.form, Bootstrap.getInstancesPath(), user.username, this.entity.getRecentlyCreatedUri(), preloadedMap, postExecution, false, true, this);
+            FormFragment form = FormFragment.newInstance(this.fragmentManager, this.form, Bootstrap.getInstancesPath(context), user.username, this.entity.getRecentlyCreatedUri(), preloadedMap, postExecution, false, true, this);
             form.startCollecting();
         }
     }

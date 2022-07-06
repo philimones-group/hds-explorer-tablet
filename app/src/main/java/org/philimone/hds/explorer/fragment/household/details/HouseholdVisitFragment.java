@@ -43,6 +43,7 @@ import org.philimone.hds.explorer.model.Household;
 import org.philimone.hds.explorer.model.IncompleteVisit;
 import org.philimone.hds.explorer.model.Inmigration;
 import org.philimone.hds.explorer.model.MaritalRelationship;
+import org.philimone.hds.explorer.model.MaritalRelationship_;
 import org.philimone.hds.explorer.model.Member;
 import org.philimone.hds.explorer.model.Member_;
 import org.philimone.hds.explorer.model.Outmigration;
@@ -364,6 +365,13 @@ public class HouseholdVisitFragment extends Fragment {
         this.btnVisitMemberEnu.setVisibility(View.VISIBLE);
         this.btnVisitMemberIncomplete.setVisibility(View.GONE);
 
+        //disable buttons if already collected and ready to edit
+        //ChangeHead - must be collected one per visit
+        CoreCollectedData ccdataChangeHead = this.boxCoreCollectedData.query(CoreCollectedData_.visitId.equal(visit.id).and(CoreCollectedData_.formEntity.equal(CoreFormEntity.CHANGE_HOUSEHOLD_HEAD.code))).build().findFirst();
+        btnVisitChangeHead.setEnabled(ccdataChangeHead == null);
+
+        Log.d("household-visit"+visit.id, "changehead="+ccdataChangeHead);
+
         setMainListsSelectable(true);
     }
 
@@ -418,6 +426,26 @@ public class HouseholdVisitFragment extends Fragment {
         this.btnVisitMemberIncomplete.setEnabled(notVisited);
         this.btnVisitMemberEnu.setVisibility(View.GONE);
         this.btnVisitMemberIncomplete.setVisibility(View.VISIBLE);
+
+        //disable buttons if already collected and ready to edit
+        //Incomplete, Marital, Pregnancy Reg and Pregnancy Outcome - must be collected one per visit and member
+        CoreCollectedData ccdataIncomplete = this.boxCoreCollectedData.query(CoreCollectedData_.visitId.equal(visit.id).and(CoreCollectedData_.formEntity.equal(CoreFormEntity.INCOMPLETE_VISIT.code)).and(CoreCollectedData_.formEntityCode.equal(selectedMember.code))).build().findFirst();
+        CoreCollectedData ccdataPregnancy = this.boxCoreCollectedData.query(CoreCollectedData_.visitId.equal(visit.id).and(CoreCollectedData_.formEntity.equal(CoreFormEntity.PREGNANCY_REGISTRATION.code)).and(CoreCollectedData_.formEntityCode.equal(selectedMember.code))).build().findFirst();
+        CoreCollectedData ccdataPOutcome = this.boxCoreCollectedData.query(CoreCollectedData_.visitId.equal(visit.id).and(CoreCollectedData_.formEntity.equal(CoreFormEntity.PREGNANCY_OUTCOME.code)).and(CoreCollectedData_.formEntityCode.equal(selectedMember.code))).build().findFirst();
+        List<CoreCollectedData> ccdataMaritals = this.boxCoreCollectedData.query(CoreCollectedData_.visitId.equal(visit.id).and(CoreCollectedData_.formEntity.equal(CoreFormEntity.MARITAL_RELATIONSHIP.code))).build().find();
+        boolean hasMaritalRelationship = false;
+        for (CoreCollectedData collectedData : ccdataMaritals) { //all marital relationships registered in this visit
+            long countm = this.boxMaritalRelationships.query(MaritalRelationship_.id.equal(collectedData.formEntityId).and(MaritalRelationship_.memberA_code.equal(selectedMember.code).or(MaritalRelationship_.memberB_code.equal(selectedMember.code)))).build().count();
+            if (countm>0) {
+                hasMaritalRelationship = true;
+                break;
+            }
+        }
+
+        btnVisitMemberIncomplete.setEnabled(ccdataIncomplete == null);
+        btnVisitMaritalRelationship.setEnabled(hasMaritalRelationship == false);
+        btnVisitPregnancyReg.setEnabled(ccdataPregnancy == null);
+        btnVisitBirthReg.setEnabled(ccdataPOutcome == null);
 
         setMainListsSelectable(true);
     }

@@ -12,6 +12,7 @@ import org.philimone.hds.explorer.fragment.ExternalDatasetsFragment;
 import org.philimone.hds.explorer.fragment.household.details.HouseholdEditFragment;
 import org.philimone.hds.explorer.fragment.region.details.RegionChildsFragment;
 import org.philimone.hds.explorer.fragment.region.details.RegionEditFragment;
+import org.philimone.hds.explorer.model.CollectedData;
 import org.philimone.hds.explorer.model.Region;
 import org.philimone.hds.explorer.model.User;
 
@@ -54,6 +55,10 @@ public class RegionDetailsFragmentAdapter extends FragmentStateAdapter {
             default: return null;
         }
 
+    }
+
+    public void setAutoHighlightCollectedData(CollectedData autoHighlightCollectedData) {
+        this.fragCollected.setAutoHighlightCollectedData(autoHighlightCollectedData);
     }
 
     public void setFragmentEditListener(RegionEditFragment.EditListener listener) {

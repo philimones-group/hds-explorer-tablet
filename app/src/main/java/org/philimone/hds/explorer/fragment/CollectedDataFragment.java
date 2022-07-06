@@ -78,6 +78,8 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
 
     private SubjectMode subjectMode;
 
+    private CollectedData autoHighlightCollectedData;
+
     private List<String> selectedModules = new ArrayList<>();
 
     public CollectedDataFragment() {
@@ -275,6 +277,10 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
         this.showCollectedData();
     }
 
+    public void setAutoHighlightCollectedData(CollectedData autoHighlightCollectedData) {
+        this.autoHighlightCollectedData = autoHighlightCollectedData;
+    }
+
     /*
      * Show the data collected for the selected individual - but only shows data that belongs to Forms that the user can view (FormDataLoader)
      * With this if we selected a follow_up list household we will view only the forms of that individual
@@ -295,6 +301,10 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
 
         CollectedDataAdapter adapter = new CollectedDataAdapter(this.getContext(), cdl);
         this.lvCollectedForms.setAdapter(adapter);
+
+        if (autoHighlightCollectedData != null) {
+            setHighlight(autoHighlightCollectedData, adapter);
+        }
     }
 
     public void reloadCollectedData(){
@@ -390,6 +400,24 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
 
             }
         }).show();
+    }
+
+    public void setHighlight(CollectedData collectedData) {
+        CollectedDataAdapter adapter = (CollectedDataAdapter) this.lvCollectedForms.getAdapter();
+
+        int position = adapter.getPositionOf(collectedData);
+        if (position >= 0) {
+            adapter.setHighlightedIndex(position);
+            this.lvCollectedForms.scrollToPosition(position);
+        }
+    }
+
+    public void setHighlight(CollectedData collectedData, CollectedDataAdapter adapter) {
+        int position = adapter.getPositionOf(collectedData);
+        if (position >= 0) {
+            adapter.setHighlightedIndex(position);
+            this.lvCollectedForms.scrollToPosition(position);
+        }
     }
 
     //<editor-fold desc="ODK Form Utility methods">

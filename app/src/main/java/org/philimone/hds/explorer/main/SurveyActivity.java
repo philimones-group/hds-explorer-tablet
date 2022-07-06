@@ -17,6 +17,7 @@ public class SurveyActivity extends AppCompatActivity {
     private Button btSurveyHouseholds;
     private Button btSurveyMembers;
     private Button btTrackingLists;
+    private Button btShowCollectedData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,6 +29,7 @@ public class SurveyActivity extends AppCompatActivity {
         this.btSurveyHouseholds = (Button) findViewById(R.id.btSurveyHouseholds);
         this.btSurveyMembers = (Button) findViewById(R.id.btSurveyMembers);
         this.btTrackingLists = (Button) findViewById(R.id.btTrackingLists);
+        this.btShowCollectedData = (Button) findViewById(R.id.btShowCollectedData);
 
         this.btSurveyHouseholds.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -49,6 +51,10 @@ public class SurveyActivity extends AppCompatActivity {
                 openTrackingLists();
             }
         });
+
+        this.btShowCollectedData.setOnClickListener(v -> {
+            openShowCollectedData();
+        });
     }
 
     private void openSurveyMembers() {
@@ -66,5 +72,9 @@ public class SurveyActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    private void openShowCollectedData() {
+        Intent intent = new Intent(this, ShowCollectedDataActivity.class);
+        startActivity(intent);
+    }
 
 }

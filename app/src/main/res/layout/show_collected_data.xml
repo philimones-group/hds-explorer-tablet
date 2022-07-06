@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:background="@color/white"
+    tools:context="org.philimone.hds.explorer.main.ShowCollectedDataActivity">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <!-- header -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:orientation="horizontal"
+            android:background="@color/white"
+            android:translationZ="5dp"
+            android:elevation="2dp">
+
+            <!-- icon -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent">
+
+                <ImageView
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
+                    android:src="@mipmap/nui_form_red_filled_icon" />
+
+            </LinearLayout>
+
+            <!-- header title -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/show_collected_data_title_lbl"
+                    android:textColor="@color/nui_color_text_red"
+                    android:textSize="20dp"
+                    android:textStyle="bold"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:text="@string/show_collected_data_modules_lbl"
+                        android:textColor="@color/nui_color_text_red"
+                        android:textSize="18sp" />
+
+                    <TextView
+                        android:id="@+id/txtShowCollectedDataModules"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="5dp"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:text="DSS-SURVEY"
+                        android:textColor="@color/nui_color_text_red"
+                        android:textSize="16dp"
+                        android:textStyle="bold"/>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:padding="25dp"
+            android:background="@drawable/nui_region_lists_panel"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="@string/show_collected_data_total_cores_lbl"
+                    android:textColor="@color/nui_color_text_red"
+                    android:textSize="18dp" />
+
+                <TextView
+                    android:id="@+id/txtShowCollectedCoreForms"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="5 Forms"
+                    android:textColor="@color/nui_color_text_red"
+                    android:textSize="16sp"
+                    android:textStyle="bold"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="@string/show_collected_data_total_odks_lbl"
+                    android:textColor="@color/nui_color_text_red"
+                    android:textSize="18dp" />
+
+                <TextView
+                    android:id="@+id/txtShowCollectedOdkForms"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="5 Forms"
+                    android:textColor="@color/nui_color_text_red"
+                    android:textSize="16sp"
+                    android:textStyle="bold"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <!-- Tabs -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="-20dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:id="@+id/mainPanelTabsLayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <com.google.android.material.tabs.TabLayout
+                        android:id="@+id/collectedDataTabLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        app:tabMaxWidth="0dp"
+                        app:tabGravity="fill"
+                        app:tabMode="fixed"
+                        android:elevation="5dp"
+                        app:tabInlineLabel="true"
+                        style="@style/customTabLayout">
+
+                        <com.google.android.material.tabs.TabItem
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/show_collected_data_tab_core_forms_lbl" />
+
+                        <com.google.android.material.tabs.TabItem
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/show_collected_data_tab_odk_forms_lbl" />
+                    </com.google.android.material.tabs.TabLayout>
+
+                    <androidx.viewpager2.widget.ViewPager2
+                        android:id="@+id/collectedDataTabViewPager"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        app:layout_constraintTop_toBottomOf="@id/householdDetailsTabLayout">
+
+                    </androidx.viewpager2.widget.ViewPager2>
+
+                </LinearLayout>
+
+
+                <!-- border of listview -->
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/nui_list_rborder_panel">
+                </View>
+
+                <Button
+                    android:id="@+id/btShowCollectedBack"
+                    android:layout_width="96dp"
+                    android:layout_height="96dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentBottom="true"
+                    android:text=""
+                    android:background="@drawable/nui_btnd_back_one"/>
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
+        <!-- buttons -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:orientation="vertical"
+            android:visibility="visible">
+
+            <Button
+                android:id="@+id/btShowCollectedUpdate"
+                android:layout_width="350dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
+                android:paddingTop="15dp"
+                android:paddingBottom="15dp"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:text="@string/show_collected_data_btn_update_lbl"
+                android:background="@drawable/nui_btnd_rone_dgbevel"/>
+
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+</LinearLayout>

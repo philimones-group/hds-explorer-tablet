@@ -9,6 +9,7 @@ import android.widget.CheckBox;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import org.philimone.hds.explorer.R;
@@ -31,6 +32,7 @@ public class CollectedDataAdapter extends RecyclerView.Adapter<CollectedDataAdap
     private boolean multiSelectable;
     private Context mContext;
     private User currentUser;
+    private int highlightedIndex = -1;
 
     public CollectedDataAdapter(Context context, List<CollectedDataItem> objects){
         this.collectedDataList = new ArrayList<>();
@@ -78,12 +80,29 @@ public class CollectedDataAdapter extends RecyclerView.Adapter<CollectedDataAdap
     @Override
     public void onBindViewHolder(@NonNull CollectedDataViewHolder holder, int position) {
         CollectedDataItem item = getItem(position);
-        holder.setValues(item);
+        holder.setValues(item, position);
     }
 
     @Override
     public int getItemCount() {
         return this.collectedDataList.size();
+    }
+
+    public void setHighlightedIndex(int index) {
+        this.highlightedIndex = index;
+        notifyDataSetChanged();
+    }
+
+    public int getPositionOf(CollectedData collectedData) {
+        for (int i=0; i < this.collectedDataList.size(); i++) {
+            CollectedDataItem dataItem = this.collectedDataList.get(i);
+
+            if (dataItem.getCollectedData().id == collectedData.id) {
+                return i;
+            }
+        }
+
+        return -1;
     }
 
     class CollectedDataViewHolder extends RecyclerView.ViewHolder {
@@ -94,7 +113,7 @@ public class CollectedDataAdapter extends RecyclerView.Adapter<CollectedDataAdap
             this.rowView = (ViewGroup) itemView;
         }
 
-        public void setValues(CollectedDataItem cdi) {
+        public void setValues(CollectedDataItem cdi, int position) {
             TextView txtName = (TextView) rowView.findViewById(R.id.txtItem1);
             TextView txtForm = (TextView) rowView.findViewById(R.id.txtItem2);
             TextView txtExtra = (TextView) rowView.findViewById(R.id.txtItem3);
@@ -116,6 +135,13 @@ public class CollectedDataAdapter extends RecyclerView.Adapter<CollectedDataAdap
                 txtForm.setText(modulesText + " -> " + cdi.getForm().getFormName());
             }else {
                 txtForm.setText(modulesText + " -> " + cd.getFormId());
+            }
+
+            if (highlightedIndex == position) {
+                //highlight record
+                rowView.setBackgroundColor(ContextCompat.getColor(mContext, R.color.nui_sync_lists_selected_item_color_1));
+            } else {
+                rowView.setBackgroundColor(ContextCompat.getColor(mContext, R.color.zxing_transparent));
             }
         }
     }

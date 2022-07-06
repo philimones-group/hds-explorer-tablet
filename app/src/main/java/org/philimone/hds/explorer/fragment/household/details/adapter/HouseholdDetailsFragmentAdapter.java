@@ -6,6 +6,7 @@ import org.philimone.hds.explorer.fragment.CollectedDataFragment;
 import org.philimone.hds.explorer.fragment.ExternalDatasetsFragment;
 import org.philimone.hds.explorer.fragment.household.details.HouseholdEditFragment;
 import org.philimone.hds.explorer.fragment.household.details.HouseholdMembersFragment;
+import org.philimone.hds.explorer.model.CollectedData;
 import org.philimone.hds.explorer.model.Household;
 import org.philimone.hds.explorer.model.User;
 
@@ -55,6 +56,10 @@ public class HouseholdDetailsFragmentAdapter extends FragmentStateAdapter {
             default: return null;
         }
 
+    }
+
+    public void setAutoHighlightCollectedData(CollectedData autoHighlightCollectedData) {
+        this.fragCollected.setAutoHighlightCollectedData(autoHighlightCollectedData);
     }
 
     public void setFragmentEditListener(HouseholdEditFragment.EditListener listener) {

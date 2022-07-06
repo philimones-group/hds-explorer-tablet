@@ -28,6 +28,7 @@ import org.philimone.hds.explorer.main.hdsforms.FormUtilListener;
 import org.philimone.hds.explorer.main.hdsforms.HouseholdFormUtil;
 import org.philimone.hds.explorer.main.hdsforms.VisitFormUtil;
 import org.philimone.hds.explorer.model.ApplicationParam;
+import org.philimone.hds.explorer.model.CollectedData;
 import org.philimone.hds.explorer.model.CoreCollectedData;
 import org.philimone.hds.explorer.model.Form;
 import org.philimone.hds.explorer.model.Household;
@@ -111,6 +112,8 @@ public class HouseholdDetailsActivity extends AppCompatActivity implements House
 
     private FormUtilities odkFormUtilities;
 
+    private CollectedData autoHighlightCollectedData;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -186,6 +189,9 @@ public class HouseholdDetailsActivity extends AppCompatActivity implements House
             //ex.printStackTrace();
         }
 
+        if (getIntent().getExtras().containsKey("odk-form-select")) {
+            this.autoHighlightCollectedData = (CollectedData) getIntent().getExtras().get("odk-form-select");
+        }
     }
 
     private void initModes() {
@@ -305,6 +311,7 @@ public class HouseholdDetailsActivity extends AppCompatActivity implements House
             boolean isTracking = requestCode == RequestCodes.HOUSEHOLD_DETAILS_FROM_TRACKING_LIST_DETAILS;
 
             fragmentAdapter = new HouseholdDetailsFragmentAdapter(this.getSupportFragmentManager(), this.getLifecycle(), household, loggedUser, isTracking ? formDataLoaders : null, tabTitles);
+            fragmentAdapter.setAutoHighlightCollectedData(autoHighlightCollectedData);
             fragmentAdapter.setFragmentEditListener(new HouseholdEditFragment.EditListener() {
                 @Override
                 public void onUpdate() {
@@ -320,6 +327,10 @@ public class HouseholdDetailsActivity extends AppCompatActivity implements House
             new TabLayoutMediator(householdDetailsTabLayout, householdDetailsTabViewPager, (tab, position) -> {
                 tab.setText(fragmentAdapter.getTitle(position));
             }).attach();
+
+            if (autoHighlightCollectedData != null) {
+                this.householdDetailsTabLayout.getTabAt(2).select();
+            }
         }
 
 

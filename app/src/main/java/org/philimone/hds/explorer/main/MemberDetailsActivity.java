@@ -21,6 +21,7 @@ import org.philimone.hds.explorer.fragment.member.details.MemberDetailsFragment;
 import org.philimone.hds.explorer.fragment.member.details.MemberEditFragment;
 import org.philimone.hds.explorer.fragment.member.details.adapter.MemberDetailsFragmentAdapter;
 import org.philimone.hds.explorer.fragment.region.details.RegionEditFragment;
+import org.philimone.hds.explorer.model.CollectedData;
 import org.philimone.hds.explorer.model.Form;
 import org.philimone.hds.explorer.model.Household;
 import org.philimone.hds.explorer.model.Member;
@@ -72,6 +73,8 @@ public class MemberDetailsActivity extends AppCompatActivity {
 
     private int requestCode;
 
+    private CollectedData autoHighlightCollectedData;
+
     //public static final int REQUEST_CODE_ADD_NEW_MEMBER = 10; /* Member Requests will be from 10 to 19 */
     //public static final int REQUEST_CODE_EDIT_NEW_MEMBER = 11;
 
@@ -92,16 +95,15 @@ public class MemberDetailsActivity extends AppCompatActivity {
         enableButtonsByFormLoaders();
     }
 
-    @Override
-    protected void onPostResume() {
-        super.onPostResume();
-    }
-
     private void readIntentData() {
         this.household = (Household) getIntent().getExtras().get("household");
         this.member = (Member) getIntent().getExtras().get("member");
         this.studyCodeValue = getIntent().getExtras().getString("member_studycode");
         this.requestCode = getIntent().getExtras().getInt("request_code");
+
+        if (getIntent().getExtras().containsKey("odk-form-select")) {
+            this.autoHighlightCollectedData = (CollectedData) getIntent().getExtras().get("odk-form-select");
+        }
     }
 
     private void readFormDataLoader(){
@@ -223,6 +225,7 @@ public class MemberDetailsActivity extends AppCompatActivity {
             boolean isTracking = requestCode == RequestCodes.MEMBER_DETAILS_FROM_TRACKING_LIST_DETAILS;
 
             fragmentAdapter = new MemberDetailsFragmentAdapter(this.getSupportFragmentManager(), this.getLifecycle(), household, member, loggedUser, isTracking ? formDataLoaders : null, tabTitles);
+            fragmentAdapter.setAutoHighlightCollectedData(autoHighlightCollectedData);
             memberDetailsTabViewPager.setAdapter(fragmentAdapter);
             fragmentAdapter.setFragmentEditListener(new MemberEditFragment.EditListener() {
                 @Override
@@ -238,6 +241,10 @@ public class MemberDetailsActivity extends AppCompatActivity {
             new TabLayoutMediator(memberDetailsTabLayout, memberDetailsTabViewPager, (tab, position) -> {
                 tab.setText(fragmentAdapter.getTitle(position));
             }).attach();
+
+            if (autoHighlightCollectedData != null) {
+                this.memberDetailsTabLayout.getTabAt(2).select();
+            }
         }
 
 
@@ -326,5 +333,4 @@ public class MemberDetailsActivity extends AppCompatActivity {
         CollectedDataFragment collectedDataFragment = this.fragmentAdapter.getFragmentCollected();
         collectedDataFragment.onCollectData();
     }
-
 }

@@ -3,7 +3,8 @@
     android:id="@+id/MainLinearLayout"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="2dp"
+    android:paddingTop="5dp"
+    android:paddingBottom="5dp"
     android:background="?android:attr/selectableItemBackground"
     android:orientation="horizontal" >
 
@@ -30,6 +31,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_weight="1"
         android:orientation="vertical" >
     
         <TextView
@@ -42,9 +44,7 @@
             android:text="Large Text"
             android:textColor="#444"
             android:textStyle="bold"
-            android:textSize="@dimen/member_item_text_1_size"
-            android:maxLines="1"
-            android:ellipsize="end"/>
+            android:textSize="@dimen/member_item_text_1_size" />
         
         <TextView
             android:id="@+id/txtItem2"
@@ -53,32 +53,51 @@
             android:text="Medium Text"
             android:textColor="#444"
             android:gravity="center_vertical"
-            android:textSize="@dimen/member_item_text_2_size"
-            android:maxLines="1"
-            android:ellipsize="end"/>
+            android:textStyle="bold"
+            android:textSize="12sp" />
 
         <TextView
             android:id="@+id/txtItem3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Medium Text"
+            android:textColor="#444"
+            android:gravity="center_vertical"
+            android:textSize="@dimen/member_item_text_2_size" />
+
+        <TextView
+            android:id="@+id/txtItem4"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="left|top"
             android:text="Medium Text"
             android:textColor="#444"
             android:textSize="@dimen/member_item_text_3_size"
-            android:textStyle="bold"
-            android:maxLines="1"
-            android:ellipsize="end"/>
+            android:textStyle="bold"/>
         
     </LinearLayout>
+
+    <Button
+        android:id="@+id/btnItemInfo"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_gravity="center"
+        android:layout_marginStart="5dp"
+        android:layout_marginEnd="5dp"
+        android:background="@drawable/nui_btnd_sync_info_one"
+        android:focusable="false"
+        android:enabled="false"/>
 
     <CheckBox
         android:id="@+id/chkProcessed"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginLeft="-36dp"
+        android:layout_marginStart="5dp"
+        android:layout_marginEnd="5dp"
         android:focusable="false"
-        android:enabled="false"
+        android:clickable="false"
+        android:visibility="gone"
         />
 
 </LinearLayout>

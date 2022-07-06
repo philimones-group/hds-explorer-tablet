@@ -128,7 +128,7 @@
     <string name="core_entity_edit_household_lbl">Edit Household</string>
     <string name="core_entity_edit_member_lbl">Edit Member</string>
     <string name="core_entity_collected_date_lbl">Collected Date:</string>
-    <string name="core_entity_updated_date_lbl">Updated Date:</string>
+    <string name="core_entity_updated_date_lbl">Last Updated Date:</string>
     <string name="core_entity_uploaded_date_lbl">Uploaded Date:</string>
 
     <string name="core_form_group_item_subtitle">Collected Forms</string>
@@ -136,6 +136,10 @@
     <string name="core_form_group_item_extension_not_collected_lbl">Not Collected</string>
     <string name="core_form_group_item_extension_collected_lbl">Collected</string>
     <string name="core_form_group_item_extension_not_required_lbl">Not Required</string>
+
+    <string name="form_subject_region_lbl">Region</string>
+    <string name="form_subject_household_lbl">Household</string>
+    <string name="form_subject_member_lbl">Member</string>
 
     <string name="form_util_extension_collect_lbl">Form Extension</string>
     <string name="form_util_extension_collect_optional_lbl">Do you want to collect more details about "%1$s" using the Form Extension?</string>
@@ -529,7 +533,7 @@
     <string name="changehead_eventdate_not_great_today_lbl">The date of the event cannot be greater than today</string>
     <string name="changehead_new_head_select_lbl">Select the new Head of Household</string>
     <string name="changehead_new_head_is_head_of_household_lbl">The new Head of Household is a Head of another household. Must first end his current Head Relationship to declare it as head of another!</string>
-    
+
     <string-array name="relationship_types_array">
         <item>Single</item>
         <item>Married</item>
@@ -541,6 +545,18 @@
     <string name="survey_households_btn_lbl">Search By Household</string>
     <string name="survey_members_btn_lbl">Search By Members</string>
     <string name="survey_tracking_lists_btn_lbl">Show Follow-up Lists</string>
+    <string name="survey_show_collected_data_lists_btn_lbl">Show Collected Forms</string>
+
+    <string name="show_collected_data_title_lbl">Show Collected Forms Data</string>
+    <string name="show_collected_data_modules_lbl">Modules:</string>
+    <string name="show_collected_data_total_cores_lbl">Total Core Forms Collected:</string>
+    <string name="show_collected_data_total_odks_lbl">Total Odk Forms Collected:</string>
+    <string name="show_collected_data_total_lbl">%1s Forms</string>
+    <string name="show_collected_data_tab_core_forms_lbl">Recently Visited Households</string>
+    <string name="show_collected_data_tab_odk_forms_lbl">Recently Collected ODK Forms</string>
+    <string name="show_collected_data_btn_update_lbl">Update Collected Data</string>
+    <string name="show_collected_data_list_filter_hint_lbl">Code/Name/Any Subject details</string>
+
 
     <string name="loading_dialog_member_details_lbl">Loading Member Details...</string>
     <string name="loading_dialog_household_details_lbl">Loading Household Details...</string>

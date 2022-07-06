@@ -21,6 +21,7 @@ import org.philimone.hds.explorer.fragment.region.details.RegionChildsFragment;
 import org.philimone.hds.explorer.fragment.region.details.RegionEditFragment;
 import org.philimone.hds.explorer.fragment.region.details.adapter.RegionDetailsFragmentAdapter;
 import org.philimone.hds.explorer.model.ApplicationParam;
+import org.philimone.hds.explorer.model.CollectedData;
 import org.philimone.hds.explorer.model.Form;
 import org.philimone.hds.explorer.model.Region;
 import org.philimone.hds.explorer.model.Region_;
@@ -65,6 +66,8 @@ public class RegionDetailsActivity extends AppCompatActivity {
     private Box<ApplicationParam> boxAppParams;
     private Box<Region> boxRegions;
 
+    private CollectedData autoHighlightCollectedData;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -87,6 +90,10 @@ public class RegionDetailsActivity extends AppCompatActivity {
     private void readIntentData() {
         this.region = (Region) getIntent().getExtras().get("region");
         this.activityRequestCode = getIntent().getExtras().getInt("request_code");
+
+        if (getIntent().getExtras().containsKey("odk-form-select")) {
+            this.autoHighlightCollectedData = (CollectedData) getIntent().getExtras().get("odk-form-select");
+        }
     }
 
     public void setRegion(Region region){
@@ -175,6 +182,7 @@ public class RegionDetailsActivity extends AppCompatActivity {
             boolean isTracking = activityRequestCode == RequestCodes.REGION_DETAILS_FROM_TRACKING_LIST_DETAILS;
 
             fragmentAdapter = new RegionDetailsFragmentAdapter(this.getSupportFragmentManager(), this.getLifecycle(), region, loggedUser, (isTracking) ? formDataLoaders : null, tabTitles);
+            fragmentAdapter.setAutoHighlightCollectedData(autoHighlightCollectedData);
             fragmentAdapter.setFragmentEditListener(new RegionEditFragment.EditListener() {
                 @Override
                 public void onUpdate() {
@@ -190,6 +198,10 @@ public class RegionDetailsActivity extends AppCompatActivity {
             new TabLayoutMediator(regionDetailsTabLayout, regionDetailsTabViewPager, (tab, position) -> {
                 tab.setText(fragmentAdapter.getTitle(position));
             }).attach();
+
+            if (autoHighlightCollectedData != null) {
+                this.regionDetailsTabLayout.getTabAt(2).select();
+            }
         }
 
 

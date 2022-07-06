@@ -137,6 +137,10 @@
     <string name="core_form_group_item_extension_collected_lbl">Colectado</string>
     <string name="core_form_group_item_extension_not_required_lbl">Não é obrigatorio</string>
 
+    <string name="form_subject_region_lbl">Região</string>
+    <string name="form_subject_household_lbl">Agregado</string>
+    <string name="form_subject_member_lbl">Membro</string>
+
     <string name="form_util_extension_collect_lbl">Extensão do Formulário</string>
     <string name="form_util_extension_collect_optional_lbl">Deseja colectar mais detalhes sobre o(a) "%1$s" usando a extensão do Formulário?</string>
     <string name="form_util_extension_collect_required_msg_lbl">Em breve sera redirecionado para colectar mais detalhes sobre o(a) "%1$s"!</string>
@@ -420,40 +424,40 @@
     <string name="relationship_type_select_btn_lbl">Selecionar</string>
 
     <string name="maritalrelationship_recently_created_error_lbl">Já existe um registo de estado civil recentemente criado para este membro.\n, Um novo registo não pode ser criado apenas pode editar o existente.\n(Para editar/alterar use a lista a direita do painel)</string>
-    <string name="maritalrelationship_spouse_select_lbl">Selecione o conjugue deste Membro?</string>
-    <string name="maritalrelationship_spouse_select_update_lbl">Atualização do conjugue deste Membro?</string>
-    <string name="maritalrelationship_spouse_exists_lbl">O Membro se encontra numa relação conjugal e seu conjugue esta registado no sistema?</string>
-    <string name="maritalrelationship_spouse_change_lbl">Deseja atualizar/alterar o conjugue deste Membro?</string>
+    <string name="maritalrelationship_spouse_select_lbl">Selecione o cônjugue deste Membro?</string>
+    <string name="maritalrelationship_spouse_select_update_lbl">Atualização do cônjugue deste Membro?</string>
+    <string name="maritalrelationship_spouse_exists_lbl">O Membro se encontra numa relação conjugal e seu cônjugue esta registado no sistema?</string>
+    <string name="maritalrelationship_spouse_change_lbl">Deseja atualizar/alterar o cônjugue deste Membro?</string>
     <string name="maritalrelationship_spouse_type_change_lbl">Deseja atualizar/alterar o Estado Civil deste Membro?</string>
-    <string name="maritalrelationship_visit_code_empty_lbl">The Visit Code cannot be empty</string>
-    <string name="maritalrelationship_member_a_code_empty_lbl">The Member A Code cannot be empty</string>
-    <string name="maritalrelationship_member_b_code_empty_lbl">The Member B Code cannot be empty</string>
-    <string name="maritalrelationship_member_a_status_empty_lbl">The Member A current status cannot be empty</string>
-    <string name="maritalrelationship_member_b_status_empty_lbl">The Member B current status cannot be empty</string>
-    <string name="maritalrelationship_relationship_type_empty_lbl">The New Marital Status cannot be empty</string>
-    <string name="maritalrelationship_relationship_date_empty_lbl">The Event Date cannot be empty</string>
-    <string name="maritalrelationship_same_member_lbl">The Member A code is the same as Member B code, the spouse must be a different individual</string>
-    <string name="maritalrelationship_spouse_a_not_found_lbl">The Member A was not found in the database</string>
-    <string name="maritalrelationship_spouse_b_not_found_lbl">The Member B was not found in the database</string>
-    <string name="maritalrelationship_eventdate_not_great_today_lbl">The event date cannot be greater than today</string>
-    <string name="maritalrelationship_eventdate_not_before_member_dob_lbl">The event date cannot be before Members date of birth</string>
-    <string name="maritalrelationship_dob_minimum_spouse_age_lbl">The minimum spouse age to register a marital relationship is (%1$s)</string>
-    <string name="maritalrelationship_gender_must_be_opposite_lbl">The gender of the spouse is invalid, must be the opposite, one must be Male and other Female</string>
-    <string name="maritalrelationship_dead_members_lbl">Cannot create a new Marital Relationship for dead Members</string>
-    <string name="maritalrelationship_p1_previous_not_closed_lbl">Cannot create a new Marital Relationship because previous relationship of Member [%1$s] is not closed</string>
-    <string name="maritalrelationship_p2_previous_enddate_overlap_lbl">Cannot create a new Marital Relationship because the startDate of the current relationship is before or equals to the endDate of the previous relationship of Member [%1$s]</string>
-    <string name="maritalrelationship_cp1_current_dont_exists_lbl">Cannot close the Marital Relationship because no relationship record were found for member A and B.</string>
-    <string name="maritalrelationship_cp2_already_closed_lbl">Cannot close the Marital Relationship because its already closed with type [%1$s]</string>
-    <string name="maritalrelationship_cp3_dates_overlap_lbl">Cannot close the Marital Relationship because the endDate cannot be before or equal to the startDate</string>
+    <string name="maritalrelationship_visit_code_empty_lbl">O código da visita não pode estar vazio</string>
+    <string name="maritalrelationship_member_a_code_empty_lbl">O código do membro A não pode estar vazio</string>
+    <string name="maritalrelationship_member_b_code_empty_lbl">O código do membro B não pode estar vazio</string>
+    <string name="maritalrelationship_member_a_status_empty_lbl">O Estado Civil do Membro A não pode estar vazio</string>
+    <string name="maritalrelationship_member_b_status_empty_lbl">O Estado Civil do Membro B não pode estar vazio</string>
+    <string name="maritalrelationship_relationship_type_empty_lbl">O novo Estado Civil não pode estar vazio</string>
+    <string name="maritalrelationship_relationship_date_empty_lbl">A data do evento não pode estar vazio</string>
+    <string name="maritalrelationship_same_member_lbl">O código do membro A é o mesmo que o do membro B, os cônjugues devem ser dos membros diferentes</string>
+    <string name="maritalrelationship_spouse_a_not_found_lbl">O membro A não esta registado no sistema</string>
+    <string name="maritalrelationship_spouse_b_not_found_lbl">O membro B não esta registado no sistema</string>
+    <string name="maritalrelationship_eventdate_not_great_today_lbl">A data do evento não pode estar no futuro</string>
+    <string name="maritalrelationship_eventdate_not_before_member_dob_lbl">A data do evento não pode ser menor que a data de nascimento do membro</string>
+    <string name="maritalrelationship_dob_minimum_spouse_age_lbl">A idade minima para registar o estado civil é de (%1$s)</string>
+    <string name="maritalrelationship_gender_must_be_opposite_lbl">O sexo do cônjugue é inválido, deve ser o oposto, um deve ser Masculino e outro Feminino</string>
+    <string name="maritalrelationship_dead_members_lbl">Não é possivel criar registo de união marital para membros que se encontram mortos</string>
+    <string name="maritalrelationship_p1_previous_not_closed_lbl">Não é possivel criar registo de união marital porque o registo anterior do Membro [%1$s] não esta fechado/terminado</string>
+    <string name="maritalrelationship_p2_previous_enddate_overlap_lbl">Não é possivel criar registo de união marital porque a data do inicio do registo a ser criado é menor ou igual a data de termino do registo anterior do Membro [%1$s]</string>
+    <string name="maritalrelationship_cp1_current_dont_exists_lbl">Não é possivel terminar/fechar registo de união marital porque não foram encontrados registos anteriores para os membro A e B.</string>
+    <string name="maritalrelationship_cp2_already_closed_lbl">Não é possivel terminar/fechar registo de união marital porque o mesmo se encontra terminado com o tipo [%1$s]</string>
+    <string name="maritalrelationship_cp3_dates_overlap_lbl">Não é possivel terminar/fechar registo de união marital porque a data de termino não pode ser menor ou igual a data de inicio do relacionamento</string>
 
-    <string name="incomplete_visit_visit_code_empty">The Visit Code cannot be empty</string>
-    <string name="incomplete_visit_member_code_empty">The Member Code cannot be empty</string>
-    <string name="incomplete_visit_reason_empty">The Reason for not being visited cannot be empty</string>
-    <string name="incomplete_visit_reason_other_empty">The Other reason for not being visited cannot be empty</string>
-    <string name="incomplete_visit_member_not_found_lbl">The Member was not found in the database</string>
+    <string name="incomplete_visit_visit_code_empty">O código da visita não pode estar vazio</string>
+    <string name="incomplete_visit_member_code_empty">O código do membro não pode estar vazio</string>
+    <string name="incomplete_visit_reason_empty">O (Motivo para não ter sido visitado) não pode estar vazio</string>
+    <string name="incomplete_visit_reason_other_empty">O (Outro motivo para não ter sido visitado) não pode estar vazio</string>
+    <string name="incomplete_visit_member_not_found_lbl">O membro não foi encontrado no sistema</string>
 
     <!-- external inmigration -->
-    <string name="external_inmigration_asktype_lbl">O membro ja foi alguma vez registado no sistema? (Retorno a area de estudo)</string>
+    <string name="external_inmigration_asktype_lbl">O membro já foi alguma vez registado no sistema? (Retorno a area de estudo)</string>
     <string name="external_inmigration_select_return_member_lbl">Selecione o membro que deve retornar ao DSS?</string>
     <string name="external_inmigration_reentry_lbl">Retorno do membro ao HDSS</string>
     <string name="external_inmigration_entry_lbl">Registo de um novo membro (Primeira entrada)</string>
@@ -539,6 +543,17 @@
     <string name="survey_households_btn_lbl">Procurar por Agregado</string>
     <string name="survey_members_btn_lbl">Procurar por membros</string>
     <string name="survey_tracking_lists_btn_lbl">Ver Listas de seguimento</string>
+    <string name="survey_show_collected_data_lists_btn_lbl">Mostrar Formulários colhidos</string>
+
+    <string name="show_collected_data_title_lbl">Visualização de Formulários colhidos</string>
+    <string name="show_collected_data_modules_lbl">Módulos:</string>
+    <string name="show_collected_data_total_cores_lbl">Total de Formulários Core colhidos:</string>
+    <string name="show_collected_data_total_odks_lbl">Total de Formulários ODK colhidos:</string>
+    <string name="show_collected_data_total_lbl">%1s Formulários</string>
+    <string name="show_collected_data_tab_core_forms_lbl">Casas Visitadas recentemente</string>
+    <string name="show_collected_data_tab_odk_forms_lbl">Formulários ODK recentes</string>
+    <string name="show_collected_data_btn_update_lbl">Atualizar Listas</string>
+    <string name="show_collected_data_list_filter_hint_lbl">Código/Nome/Outros detalhes</string>
 
     <string name="loading_dialog_member_details_lbl">Carregando Detalhes do Membro...</string>
     <string name="loading_dialog_household_details_lbl">Carregando Detalhes da Casa...</string>

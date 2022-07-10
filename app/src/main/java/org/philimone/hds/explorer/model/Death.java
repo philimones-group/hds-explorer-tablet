@@ -24,10 +24,13 @@ public class Death implements CoreEntity {
 
     public Integer ageAtDeath;
 
+    public Integer ageDaysAtDeath;
+
     public String deathCause;
 
     public String deathPlace;
 
+    public Boolean isPregOutcomeDeath = false;
     //public ToOne<Visit> visit;
 
     @Index

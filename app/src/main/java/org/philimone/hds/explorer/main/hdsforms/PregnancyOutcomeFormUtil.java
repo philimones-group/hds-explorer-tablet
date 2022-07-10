@@ -376,7 +376,7 @@ public class PregnancyOutcomeFormUtil extends FormUtil<PregnancyOutcome> {
                 return new ValidationResult(colChildGender, message);
             }
 
-            if (childGender == Gender.NOT_KNOWN && outcomeType == PregnancyOutcomeType.LIVEBIRTH) {
+            if (childGender == Gender.UNKNOWN && outcomeType == PregnancyOutcomeType.LIVEBIRTH) {
                 String message = this.context.getString(R.string.pregnancy_outcome_member_gender_invalid_lbr_lbl);
                 return new ValidationResult(colChildGender, message);
             }

@@ -11,7 +11,7 @@ public enum Gender {
 
     MALE   ("M", R.string.default_gender_male),
     FEMALE ("F", R.string.default_gender_female),
-    NOT_KNOWN ("NA", R.string.default_gender_female),
+    UNKNOWN ("UNK", R.string.default_gender_female),
     INVALID_ENUM    ( "-1", R.string.invalid_enum_value);
 
     public String code;

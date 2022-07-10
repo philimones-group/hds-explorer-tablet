@@ -3179,6 +3179,16 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 				parser.nextTag();
 			}
 
+			parser.nextTag(); //ageDaysAtDeath
+			if (!isEmptyTag("ageDaysAtDeath", parser)) {
+				parser.next();
+				table.ageDaysAtDeath = Integer.parseInt(parser.getText());
+				parser.nextTag();
+			}else{
+				//table.ageDaysAtDeath = 0;
+				parser.nextTag();
+			}
+
 			parser.nextTag(); //deathCause
 			if (!isEmptyTag("deathCause", parser)) {
 				parser.next();
@@ -3206,6 +3216,16 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 				parser.nextTag();
 			}else{
 				table.visitCode = "";
+				parser.nextTag();
+			}
+
+			parser.nextTag(); //isPregOutcomeDeath
+			if (!isEmptyTag("isPregOutcomeDeath", parser)) {
+				parser.next();
+				table.isPregOutcomeDeath = Boolean.parseBoolean(parser.getText());
+				parser.nextTag();
+			}else{
+				table.isPregOutcomeDeath = false;
 				parser.nextTag();
 			}
 

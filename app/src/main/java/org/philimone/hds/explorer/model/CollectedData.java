@@ -27,8 +27,8 @@ public class CollectedData implements Serializable {
     public long id;
     public String formId;
 
-    @Unique
     public String formUri;
+    @Unique
     public String formXmlPath;
     public String formInstanceName;
     public Date formLastUpdatedDate;

@@ -3267,11 +3267,13 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 
 	private Map<String,String> convertFormMapTextToMap(String formMapText) {
 		Map<String,String> formMap = new HashMap<>();
-		if (formMapText != null && !formMapText.isEmpty()){
 
+
+		if (formMapText != null && !formMapText.isEmpty()){
+			formMapText = formMapText.replace("&gt;", ">");
 			String[] entries = formMapText.split(";");
 			for (String entry : entries){
-				String[] keyValue = entry.split(":");
+				String[] keyValue = entry.split(":", 2);
 				if (keyValue.length == 2){
 					formMap.put(keyValue[1], keyValue[0]); //mapping unique items (odk variables) as Key, the values a the domain column names (TableName.columnName)
 				}

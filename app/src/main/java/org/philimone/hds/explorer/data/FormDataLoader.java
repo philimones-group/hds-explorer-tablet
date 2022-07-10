@@ -29,6 +29,7 @@ import java.util.zip.ZipInputStream;
 
 import io.objectbox.Box;
 import mz.betainteractive.io.readers.CSVReader;
+import mz.betainteractive.utilities.ReflectionUtils;
 import mz.betainteractive.utilities.StringUtil;
 
 /**
@@ -131,6 +132,7 @@ public class FormDataLoader implements Serializable {
                 String internalVariableName = mapValue.replace(householdPrefix, "");
                 String odkVariable = key;
                 String value = household.getValueByName(internalVariableName);
+                boolean isDateField = ReflectionUtils.isDateFieldType(household, internalVariableName);
 
                 if (value == null) value = "";
 
@@ -148,7 +150,7 @@ public class FormDataLoader implements Serializable {
                             value = getChoicesFormattedValue(format, value);
                         }
                         if (format.startsWith(dateFormatPrefix)) {
-                            value = getDateFormattedValue(format, value);
+                            value = getDateFormattedValue(format, value, isDateField);
                         }
                     }
                 }
@@ -169,6 +171,9 @@ public class FormDataLoader implements Serializable {
                 String internalVariableName = mapValue.replace(memberPrefix, "");
                 String odkVariable = key;
                 String value = member.getValueByName(internalVariableName);
+                boolean isDateField = ReflectionUtils.isDateFieldType(member, internalVariableName);
+
+                Log.d("date field", internalVariableName+"->odk("+odkVariable+"), isdate="+isDateField+", value="+value);
 
                 if (value == null) value = "";
 
@@ -185,7 +190,12 @@ public class FormDataLoader implements Serializable {
                             value = getChoicesFormattedValue(format, value);
                         }
                         if (format.startsWith(dateFormatPrefix)) {
-                            value = getDateFormattedValue(format, value);
+                            value = getDateFormattedValue(format, value, isDateField);
+                        }
+                    } else {
+                        if (isDateField) {
+                            //use the default format
+                            value = getDateFormattedValue("yyyy-MM-dd", value, true);
                         }
                     }
                 }
@@ -206,6 +216,7 @@ public class FormDataLoader implements Serializable {
                 String internalVariableName = mapValue.replace(userPrefix, "");
                 String odkVariable = key;
                 String value = user.getValueByName(internalVariableName);
+                boolean isDateField = ReflectionUtils.isDateFieldType(user, internalVariableName);
 
                 if (value == null) value = "";
 
@@ -222,7 +233,7 @@ public class FormDataLoader implements Serializable {
                             value = getChoicesFormattedValue(format, value);
                         }
                         if (format.startsWith(dateFormatPrefix)) {
-                            value = getDateFormattedValue(format, value);
+                            value = getDateFormattedValue(format, value, isDateField);
                         }
                     }
                 }
@@ -243,6 +254,7 @@ public class FormDataLoader implements Serializable {
                 String internalVariableName = mapValue.replace(regionPrefix, "");
                 String odkVariable = key;
                 String value = region.getValueByName(internalVariableName);
+                boolean isDateField = ReflectionUtils.isDateFieldType(region, internalVariableName);
 
                 if (value == null) value = "";
 
@@ -259,7 +271,7 @@ public class FormDataLoader implements Serializable {
                             value = getChoicesFormattedValue(format, value);
                         }
                         if (format.startsWith(dateFormatPrefix)) {
-                            value = getDateFormattedValue(format, value);
+                            value = getDateFormattedValue(format, value, isDateField);
                         }
                     }
                 }
@@ -303,7 +315,7 @@ public class FormDataLoader implements Serializable {
                                 value = getChoicesFormattedValue(format, value);
                             }
                             if (format.startsWith(dateFormatPrefix)) {
-                                value = getDateFormattedValue(format, value);
+                                value = getDateFormattedValue(format, value, false);
                             }
                         }
                     }
@@ -342,7 +354,7 @@ public class FormDataLoader implements Serializable {
                             value = getChoicesFormattedValue(format, value);
                         }
                         if (format.startsWith(dateFormatPrefix)) {
-                            value = getDateFormattedValue(format, value);
+                            value = getDateFormattedValue(format, value, false);
                         }
                     }
                 }
@@ -357,7 +369,7 @@ public class FormDataLoader implements Serializable {
     public void loadSpecialConstantValues(Household household, Member member, User user, Region region, TrackingSubjectItem memberItem){
         Map<String, String> map = form.getFormMap();
         for (String key : map.keySet()){
-            //Log.d("special constant", ""+key );
+            Log.d("special constant", ""+key );
             //key   - odkVariable
             //value - domain column name
             String mapValue = map.get(key); //Domain ColumnName that we will get its content
@@ -374,9 +386,9 @@ public class FormDataLoader implements Serializable {
                 }
 
                 if (internalVariableName.equals("Timestamp")){ //Member Exists on DSS Database
-                    value = StringUtil.format(new Date(), "yyyy-MM-dd HH:mm:ss");
+                    value = StringUtil.format(new Date(), "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
                 }
-
+                Log.d("Timestamp", "value=("+odkVariable+", "+value+")");
                 //get variable format from odkVariable eg. variableName->format => patientName->yes,no
                 if (odkVariable.contains("->")) {
                     String[] splt = odkVariable.split("->");
@@ -390,13 +402,7 @@ public class FormDataLoader implements Serializable {
                             value = getChoicesFormattedValue(format, value);
                         }
                         if (format.startsWith(dateFormatPrefix)) {
-
-                            if (internalVariableName.equals("Timestamp")) {
-                                value = getDateFormattedValue("yyyy-MM-dd HH:mm:ss", format, value);
-                            } else {
-                                value = getDateFormattedValue(format, value);
-                            }
-
+                            value = getDateFormattedValue(format, value, false);
                         }
                     }
                 }
@@ -425,7 +431,7 @@ public class FormDataLoader implements Serializable {
                 //check on constants
 
                 if (internalVariableName.equals("Timestamp")){ //Member Exists on DSS Database
-                    value = StringUtil.format(new Date(), "yyyy-MM-dd HH:mm:ss");
+                    value = StringUtil.format(new Date(), "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
                     foundTimestampVariable = true;
                 }
 
@@ -445,9 +451,9 @@ public class FormDataLoader implements Serializable {
                         if (format.startsWith(dateFormatPrefix)){
 
                             if (internalVariableName.equals("Timestamp")) {
-                                value = getDateFormattedValue("yyyy-MM-dd HH:mm:ss", format, value);
+                                value = getDateFormattedValue("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", format, value);
                             } else {
-                                value = getDateFormattedValue(format, value);
+                                value = getDateFormattedValue(format, value, false);
                             }
 
                         }
@@ -488,13 +494,20 @@ public class FormDataLoader implements Serializable {
         return value;
     }
 
-    private String getDateFormattedValue(String format, String value) {
-        format = format.replace(boolFormatPrefix, "");
+    private String getDateFormattedValue(String format, String value, boolean isDateField) {
+        format = format.replace(dateFormatPrefix, "");
         format = format.replace("]","");
 
         try{
-            Date date = StringUtil.toDate(value, "yyyy-MM-dd"); // the default date format
-            String formattedDate = StringUtil.format(date, format); //format using the desired format
+            Date date = null;
+
+            if (isDateField) {
+                date = StringUtil.toPreciseDate(value); //use precise format if is a datefield
+            } else {
+                date = StringUtil.toDate(value, "yyyy-MM-dd"); // the default date format if is not a date field is YMD
+            }
+
+            String formattedDate = StringUtil.format(date, format); //format using the desired format - next implementation use original format for non-date-fields
             value = formattedDate;
         }catch (Exception e){
             e.printStackTrace();
@@ -504,7 +517,7 @@ public class FormDataLoader implements Serializable {
     }
 
     private String getDateFormattedValue(String originalFormat, String format, String value) {
-        format = format.replace(boolFormatPrefix, "");
+        format = format.replace(dateFormatPrefix, "");
         format = format.replace("]","");
 
         try{

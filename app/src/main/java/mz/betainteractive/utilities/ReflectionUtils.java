@@ -1,6 +1,7 @@
 package mz.betainteractive.utilities;
 
 import java.lang.reflect.Field;
+import java.util.Date;
 
 /**
  * Created by paul on 9/15/16.
@@ -22,12 +23,37 @@ public class ReflectionUtils {
                 return ((boolean)obj) ? "1" : "0";
             }
 
+            if (obj instanceof Date) {
+                Date dateValue = (Date) obj;
+
+                return StringUtil.formatPrecise(dateValue);
+            }
+
             return obj.toString();
 
         }catch(Exception ex){
             ex.printStackTrace();
             return null;
         }
+    }
+
+    public static boolean isFieldType(Object object, String variableName, Class<?> fieldType) {
+        try{
+
+            Field field = object.getClass().getDeclaredField(variableName);
+            field.setAccessible(true);
+            return field.getType().equals(fieldType);
+
+        }catch(Exception ex){
+            ex.printStackTrace();
+            return false;
+        }
+    }
+
+    public static boolean isDateFieldType(Object object, String variableName) {
+        Class<?> fieldType = Date.class;
+
+        return isFieldType(object, variableName, fieldType);
     }
 
 }

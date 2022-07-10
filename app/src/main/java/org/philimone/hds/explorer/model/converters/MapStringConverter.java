@@ -24,7 +24,7 @@ public class MapStringConverter implements PropertyConverter<Map<String, String>
     public String convertToDatabaseValue(Map<String, String> entityProperty) {
 
         entityProperty.forEach( (key, value) -> {
-            final String map = key + ":" + value;
+            final String map = key + "<#>" + value;
             if (mapAsText.isEmpty()){
                 mapAsText = map;
             } else {
@@ -43,7 +43,7 @@ public class MapStringConverter implements PropertyConverter<Map<String, String>
 
             String[] entries = formMapText.split(";");
             for (String entry : entries){
-                String[] keyValue = entry.split(":");
+                String[] keyValue = entry.split("<#>");
                 if (keyValue.length == 2){
                     map.put(keyValue[0], keyValue[1]); //mapping unique items (odk variables) as Key, the values a the domain column names (TableName.columnName)
                 }

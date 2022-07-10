@@ -298,10 +298,27 @@ public class StringUtil {
         return formatter.format(date);
     }
 
+    public static String formatPrecise(Date date){
+        if (date==null) return null;
+        java.text.DateFormat formatter = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+        return formatter.format(date);
+    }
+
     public static Date toDate(String date, String format){
         if (date==null) return null;
 
         java.text.DateFormat formatter = new java.text.SimpleDateFormat(format);
+        try {
+            return formatter.parse(date);
+        } catch (ParseException e) {
+            return null;
+        }
+    }
+
+    public static Date toPreciseDate(String date){
+        if (date==null) return null;
+
+        java.text.DateFormat formatter = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
         try {
             return formatter.parse(date);
         } catch (ParseException e) {

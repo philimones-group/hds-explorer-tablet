@@ -442,10 +442,10 @@ public class HouseholdVisitFragment extends Fragment {
             }
         }
 
-        btnVisitMemberIncomplete.setEnabled(ccdataIncomplete == null);
-        btnVisitMaritalRelationship.setEnabled(hasMaritalRelationship == false);
-        btnVisitPregnancyReg.setEnabled(ccdataPregnancy == null);
-        btnVisitBirthReg.setEnabled(ccdataPOutcome == null);
+        btnVisitMemberIncomplete.setEnabled(btnVisitMemberIncomplete.isEnabled() && ccdataIncomplete == null);
+        btnVisitMaritalRelationship.setEnabled(btnVisitMaritalRelationship.isEnabled() && hasMaritalRelationship == false);
+        btnVisitPregnancyReg.setEnabled(btnVisitPregnancyReg.isEnabled() && ccdataPregnancy == null);
+        btnVisitBirthReg.setEnabled(btnVisitBirthReg.isEnabled() && ccdataPOutcome == null);
 
         setMainListsSelectable(true);
     }

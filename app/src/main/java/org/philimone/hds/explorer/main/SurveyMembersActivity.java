@@ -148,7 +148,7 @@ public class SurveyMembersActivity extends AppCompatActivity implements MemberFi
             this.loadingDialog.setMessage(msg);
             this.loadingDialog.show();
         } else {
-            this.loadingDialog.hide();
+            this.loadingDialog.dismiss();
         }
     }
 

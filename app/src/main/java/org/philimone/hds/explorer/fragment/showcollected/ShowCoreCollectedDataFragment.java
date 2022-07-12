@@ -232,7 +232,7 @@ public class ShowCoreCollectedDataFragment extends Fragment {
             this.loadingDialog.setMessage(msg);
             this.loadingDialog.show();
         } else {
-            this.loadingDialog.hide();
+            this.loadingDialog.dismiss();
         }
     }
 

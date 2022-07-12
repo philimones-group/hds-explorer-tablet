@@ -221,7 +221,7 @@ public class TrackingListDetailsActivity extends AppCompatActivity implements Ba
             this.loadingDialog.setMessage(msg);
             this.loadingDialog.show();
         } else {
-            this.loadingDialog.hide();
+            this.loadingDialog.dismiss();
         }
     }
 

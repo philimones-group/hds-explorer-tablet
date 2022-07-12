@@ -568,7 +568,7 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
             this.loadingDialog.setMessage(msg);
             this.loadingDialog.show();
         } else {
-            this.loadingDialog.hide();
+            this.loadingDialog.dismiss();
         }
     }
 

@@ -372,7 +372,7 @@ public class HouseholdEditFragment extends Fragment implements LocationListener 
             this.loadingDialog.setMessage(msgId);
             this.loadingDialog.show();
         } else {
-            this.loadingDialog.hide();
+            this.loadingDialog.dismiss();
         }
     }
 

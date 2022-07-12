@@ -212,7 +212,7 @@ public class SurveyHouseholdsActivity extends AppCompatActivity implements House
             this.loadingDialog.setMessage(msg);
             this.loadingDialog.show();
         } else {
-            this.loadingDialog.hide();
+            this.loadingDialog.dismiss();
         }
     }
 

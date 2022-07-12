@@ -20,6 +20,7 @@ public class BarcodeScannerActivity extends AppCompatActivity {
     private String resultListenerCode;
     private boolean returningFromScanning;
     private boolean barcodeWasScanned;
+    private DialogFactory askDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,20 +56,25 @@ public class BarcodeScannerActivity extends AppCompatActivity {
             ex.printStackTrace();
         }
 
-        DialogFactory dialog = DialogFactory.createMessageYN(this, getString(R.string.barcode_dialog_ask_scan_title), message, new DialogFactory.OnYesNoClickListener() {
-            @Override
-            public void onYesClicked() {
-                onBarcodeScanClicked();
-            }
+        if (askDialog == null) {
+            askDialog = DialogFactory.createMessageYN(this, getString(R.string.barcode_dialog_ask_scan_title), message, new DialogFactory.OnYesNoClickListener() {
+                @Override
+                public void onYesClicked() {
+                    onBarcodeScanClicked();
+                    askDialog.dismiss();
+                }
 
-            @Override
-            public void onNoClicked() {
+                @Override
+                public void onNoClicked() {
+                    askDialog.dismiss();
+                    finish();
+                }
+            });
+        }
 
-            }
-        });
-        dialog.setYesText(R.string.barcode_dialog_bt_scan_lbl);
-        dialog.setNoText(R.string.barcode_dialog_bt_cancel_lbl);
-        dialog.show();
+        askDialog.setYesText(R.string.barcode_dialog_bt_scan_lbl);
+        askDialog.setNoText(R.string.barcode_dialog_bt_cancel_lbl);
+        askDialog.show();
 
     }
 
@@ -124,7 +130,6 @@ public class BarcodeScannerActivity extends AppCompatActivity {
         } else {
             setResult(RESULT_CANCELED);
         }
-
 
         finish();
     }

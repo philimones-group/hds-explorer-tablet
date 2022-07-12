@@ -256,7 +256,7 @@ public class RegionEditFragment extends Fragment {
             this.loadingDialog.setMessage(msgId);
             this.loadingDialog.show();
         } else {
-            this.loadingDialog.hide();
+            this.loadingDialog.dismiss();
         }
     }
 

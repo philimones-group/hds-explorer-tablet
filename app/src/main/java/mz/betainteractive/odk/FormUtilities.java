@@ -1,4 +1,15 @@
 package mz.betainteractive.odk;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.TimeZone;
+import java.util.concurrent.TimeUnit;
+
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.StringRes;
+import androidx.appcompat.app.AppCompatActivity;
 
 
 import android.Manifest;
@@ -21,24 +32,15 @@ import org.philimone.hds.explorer.R;
 import org.philimone.hds.explorer.widget.DialogFactory;
 
 import java.io.File;
-import java.nio.file.WatchEvent;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.TimeZone;
-import java.util.concurrent.TimeUnit;
-
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import mz.betainteractive.odk.listener.OdkFormLoadListener;
 import mz.betainteractive.odk.listener.OdkFormResultListener;
 import mz.betainteractive.odk.model.FilledForm;
-import mz.betainteractive.odk.task.OdkGeneratedFormLoadTask;
+import mz.betainteractive.odk.task.OdkFormLoadResult;
+import mz.betainteractive.odk.task.OdkFormLoadTask;
 
 public class FormUtilities {
     public static final int SELECTED_ODK_FORM = 51;
@@ -58,10 +60,12 @@ public class FormUtilities {
     private String formId;
 
     private String deviceId;
-    private ActivityResultLauncher<String> requestPermission;
+    private ActivityResultLauncher<String> requestPermissionRpState;
+    private ActivityResultLauncher<String[]> requestPermissionsReadWrite;
     private ActivityResultLauncher<Intent> odkResultLauncher;
-    private OdkGeneratedFormLoadTask currentLoadTask;
-    private OnPermissionRequestListener onPermissionRequestListener;
+    private OdkFormLoadTask currentLoadTask;
+    private OnPermissionRequestListener onPermissionRpStateRequestListener;
+    private OnPermissionRequestListener onPermissionReadWriteRequestListener;
 
 	public FormUtilities(Fragment fragment, OdkFormResultListener listener) {
 	    this.fragment = fragment;
@@ -89,29 +93,31 @@ public class FormUtilities {
             if (granted) {
                 deviceId = getDeviceId();
                 Log.d("deviceidx", ""+deviceId);
+            }
 
-                if (onPermissionRequestListener != null) {
-                    onPermissionRequestListener.requestFinished(granted);
-                }
-
-            } else {
-                //Log.d("deviceid", "no permission to read it");
-                DialogFactory.createMessageInfo(mContext, org.philimone.hds.forms.R.string.device_id_title_lbl, org.philimone.hds.forms.R.string.device_id_permissions_error, new DialogFactory.OnClickListener() {
-                    @Override
-                    public void onClicked(DialogFactory.Buttons clickedButton) {
-                        if (onPermissionRequestListener != null) {
-                            onPermissionRequestListener.requestFinished(granted);
-                        }
-                    }
-                }).show();
+            if (onPermissionRpStateRequestListener != null) {
+                onPermissionRpStateRequestListener.requestFinished(granted);
             }
         };
 
         //for starting request permissions
         if (this.fragment != null) {
-            this.requestPermission = this.fragment.registerForActivityResult(new ActivityResultContracts.RequestPermission(), permissionResultCallback);
+            this.requestPermissionRpState = this.fragment.registerForActivityResult(new ActivityResultContracts.RequestPermission(), permissionResultCallback);
+            this.requestPermissionsReadWrite = this.fragment.registerForActivityResult(new ActivityResultContracts.RequestMultiplePermissions(), permissionResults -> {
+                boolean granted = !permissionResults.values().contains(false);
+                Log.d("request result", ""+granted);
+                if (onPermissionReadWriteRequestListener != null) {
+                    onPermissionReadWriteRequestListener.requestFinished(granted);
+                }
+            });
         } else {
-            this.requestPermission = this.activity.registerForActivityResult(new ActivityResultContracts.RequestPermission(), permissionResultCallback);
+            this.requestPermissionRpState = this.activity.registerForActivityResult(new ActivityResultContracts.RequestPermission(), permissionResultCallback);
+            this.requestPermissionsReadWrite = this.activity.registerForActivityResult(new ActivityResultContracts.RequestMultiplePermissions(), permissionResults -> {
+                boolean granted = !permissionResults.values().contains(false);
+                if (onPermissionReadWriteRequestListener != null) {
+                    onPermissionReadWriteRequestListener.requestFinished(granted);
+                }
+            });
         }
 
         //for starting odk activity
@@ -124,8 +130,18 @@ public class FormUtilities {
     }
 
     private void requestPermissionsForReadingPhoneState(OnPermissionRequestListener listener){
-	    this.onPermissionRequestListener = listener;
-        this.requestPermission.launch(Manifest.permission.READ_PHONE_STATE);
+	    this.onPermissionRpStateRequestListener = listener;
+        this.requestPermissionRpState.launch(Manifest.permission.READ_PHONE_STATE);
+    }
+
+    private void requestPermissionsForReadAndWriteFiles(OnPermissionRequestListener listener){
+        this.onPermissionReadWriteRequestListener = listener;
+        this.requestPermissionsReadWrite.launch(new String[] {Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE});
+    }
+
+    private boolean isPermissionGranted(final String... permissions) {
+        boolean denied = Arrays.stream(permissions).anyMatch(permission -> ContextCompat.checkSelfPermission(this.getContext(), permission) == PackageManager.PERMISSION_DENIED);
+        return !denied;
     }
 
     public void setOdkFormResultListener(OdkFormResultListener listener) {
@@ -135,24 +151,50 @@ public class FormUtilities {
 	public void loadForm(final FilledForm filledForm) {
         this.formId = filledForm.getFormName();
 
-		this.currentLoadTask = new OdkGeneratedFormLoadTask(this, filledForm, new OdkFormLoadListener() {
+		this.currentLoadTask = new OdkFormLoadTask(this, filledForm, new OdkFormLoadListener() {
             public void onOdkFormLoadSuccess(Uri contentUri) {
                 FormUtilities.this.contentUri = contentUri;
 
                 odkResultLauncher.launch(new Intent(Intent.ACTION_EDIT, contentUri));
             }
 
-            public void onOdkFormLoadFailure() {
+            public void onOdkFormLoadFailure(OdkFormLoadResult result) {
                 //Toast.makeText(MainActivity.this, "Cant open ODK Form", 4000);
             	//Log.d("Cant open ODK Form", "odk");
-            	createXFormNotFoundDialog();
+            	createFormLoadResultErrorDialog(result);
             }
         });
 
-		//request permission for reading deviceId - after this execute the load task
-		requestPermissionsForReadingPhoneState(granted -> {
-            currentLoadTask.execute(); //load odk form - regardless of the permission state
-        });
+        OnPermissionRequestListener readPhoneStateGrantListener = granted -> {
+            if (granted) {
+                callExecuteCurrentLoadTask();
+            } else {
+                DialogFactory.createMessageInfo(this.getContext(), R.string.permissions_sync_storage_title_lbl, R.string.odk_form_load_permission_request_readphonestate_denied_lbl).show();
+            }
+        };
+
+        OnPermissionRequestListener readWriteGrantListener = granted -> {
+            if (granted) {
+                if (isPermissionGranted(Manifest.permission.READ_PHONE_STATE)) {
+                    callExecuteCurrentLoadTask();
+                } else {
+                    requestPermissionsForReadingPhoneState(readPhoneStateGrantListener);
+                }
+            } else {
+                DialogFactory.createMessageInfo(this.getContext(), R.string.permissions_sync_storage_title_lbl, R.string.odk_form_load_permission_request_readwrite_denied_lbl).show();
+            }
+        };
+
+        if (isPermissionGranted(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+            if (isPermissionGranted(Manifest.permission.READ_PHONE_STATE)) {
+                callExecuteCurrentLoadTask();
+            } else {
+                requestPermissionsForReadingPhoneState(readPhoneStateGrantListener);
+            }
+        } else {
+            requestPermissionsForReadAndWriteFiles(readWriteGrantListener);
+        }
+
     }
 
     public void loadForm(FilledForm filledForm, String contentUriAsString, final OdkFormResultListener listener){
@@ -161,45 +203,79 @@ public class FormUtilities {
         this.metaInstanceName = "";
         this.lastUpdatedDate = null;
 
-        this.currentLoadTask = new OdkGeneratedFormLoadTask(this, filledForm, contentUri, new OdkFormLoadListener() {
+        this.currentLoadTask = new OdkFormLoadTask(this, filledForm, contentUri, new OdkFormLoadListener() {
             public void onOdkFormLoadSuccess(Uri contentUri) {
                 FormUtilities.this.contentUri = contentUri;
 
                 odkResultLauncher.launch(new Intent(Intent.ACTION_EDIT, contentUri));
             }
 
-            public void onOdkFormLoadFailure() {
+            public void onOdkFormLoadFailure(OdkFormLoadResult result) {
                 //createSavedXFormNotFoundDialog();
                 if (listener != null){
                     listener.onFormNotFound(contentUri);
                 }else{
-                    createSavedXFormNotFoundDialog();
+                    createFormLoadResultErrorDialog(result);
                 }
             }
         });
 
-        //request permission for reading deviceId - after this execute the load task
-        requestPermissionsForReadingPhoneState(granted -> {
-            currentLoadTask.execute(); //load odk form - regardless of the permission state
-        });
-    }
-
-    private void createXFormNotFoundDialog() {
-        //xFormNotFound = true;
-
-        DialogFactory.createMessageInfo(this.mContext, R.string.warning_lbl, R.string.odk_couldnt_open_xform_lbl, new DialogFactory.OnClickListener() {
-            @Override
-            public void onClicked(DialogFactory.Buttons clickedButton) {
-                //xFormNotFound = false;
+        OnPermissionRequestListener readPhoneStateGrantListener = granted -> {
+            if (granted) {
+                callExecuteCurrentLoadTask();
+            } else {
+                DialogFactory.createMessageInfo(this.getContext(), R.string.permissions_sync_storage_title_lbl, R.string.odk_form_load_permission_request_readphonestate_denied_lbl).show();
             }
-        }).show();
 
+        };
+
+        OnPermissionRequestListener readWriteGrantListener = granted -> {
+            if (granted) {
+                if (isPermissionGranted(Manifest.permission.READ_PHONE_STATE)) {
+                    callExecuteCurrentLoadTask();
+                } else {
+                    requestPermissionsForReadingPhoneState(readPhoneStateGrantListener);
+                }
+            } else {
+                DialogFactory.createMessageInfo(this.getContext(), R.string.permissions_sync_storage_title_lbl, R.string.odk_form_load_permission_request_readwrite_denied_lbl).show();
+            }
+        };
+
+        if (isPermissionGranted(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+            if (isPermissionGranted(Manifest.permission.READ_PHONE_STATE)) {
+                callExecuteCurrentLoadTask();
+            } else {
+                requestPermissionsForReadingPhoneState(readPhoneStateGrantListener);
+            }
+        } else {
+            requestPermissionsForReadAndWriteFiles(readWriteGrantListener);
+        }
     }
 
-    private void createSavedXFormNotFoundDialog() {
+    private void callExecuteCurrentLoadTask() {
+        if (this.currentLoadTask != null) {
+            this.currentLoadTask.execute();
+        }
+    }
+
+    private void createFormLoadResultErrorDialog(OdkFormLoadResult result) {
         //xFormNotFound = true;
 
-        DialogFactory.createMessageInfo(this.mContext, R.string.warning_lbl, R.string.odk_couldnt_reopen_xform_lbl, new DialogFactory.OnClickListener() {
+        @StringRes int messageId = R.string.odk_form_load_error_provider_lbl;
+
+        if (result.getStatus() == OdkFormLoadResult.Status.ERROR_PROVIDER_NA) {
+            messageId = R.string.odk_form_load_error_provider_lbl;
+        } else if (result.getStatus() == OdkFormLoadResult.Status.ERROR_FORM_NOT_FOUND) {
+            messageId = R.string.odk_form_load_error_form_not_found_lbl;
+        } else if (result.getStatus() == OdkFormLoadResult.Status.ERROR_ODK_FOLDER_PERMISSION_DENIED) {
+            messageId = R.string.odk_form_load_error_folder_permissions_lbl;
+        } else if (result.getStatus() == OdkFormLoadResult.Status.ERROR_ODK_CREATE_SAVED_INSTANCE_FILE) {
+            messageId = R.string.odk_form_load_error_saving_prefilled_xml_lbl;
+        } else if (result.getStatus() == OdkFormLoadResult.Status.ERROR_ODK_INSERT_SAVED_INSTANCE) {
+            messageId = R.string.odk_form_load_error_saving_instance_form_lbl;
+        }
+
+        DialogFactory.createMessageInfo(this.mContext, R.string.warning_lbl, messageId, new DialogFactory.OnClickListener() {
             @Override
             public void onClicked(DialogFactory.Buttons clickedButton) {
                 //xFormNotFound = false;
@@ -425,7 +501,9 @@ public class FormUtilities {
         }
     }
 
-    interface OnPermissionRequestListener {
-        void requestFinished(boolean granted);
-    }
+
+}
+
+interface OnPermissionRequestListener {
+    void requestFinished(boolean granted);
 }

@@ -1,9 +1,13 @@
 package org.philimone.hds.explorer.database;
 
+import android.content.ContentResolver;
 import android.content.Context;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 import android.os.storage.StorageManager;
+import android.provider.MediaStore;
 import android.util.Log;
 
 import org.philimone.hds.explorer.model.ApplicationParam;
@@ -29,7 +33,7 @@ import io.objectbox.query.QueryBuilder;
 public class Bootstrap {
 
     private static final String APP_PATH = "org.philimone.hds.explorer";
-    private static final String APP_BASE_PATH = File.separator + "Android" + File.separator + "data" + File.separator + APP_PATH + File.separator + "files"+ File.separator;
+    private static final String APP_BASE_PATH = File.separator; //File.separator + "Android" + File.separator + "data" + File.separator + APP_PATH + File.separator + "files"+ File.separator;
     private static final String APP_FORMS_PATH = APP_BASE_PATH + "forms" + File.separator;
     private static final String APP_INSTANCES_PATH = APP_BASE_PATH + "instances" + File.separator;
 
@@ -61,11 +65,6 @@ public class Bootstrap {
         insertParams();
         initializePaths(this.mContext);
         fixDatasets();
-        runTests();
-    }
-
-    private void runTests() {
-
     }
 
     private void fixDatasets() {
@@ -118,6 +117,17 @@ public class Bootstrap {
     }
 
     public static File getRootFolder(Context context) {
+        File root = context.getExternalFilesDir(null);
+        return root;
+    }
+
+    public static File getRealRootFolder(Context context) {
+        File root = getRootFolder(context);
+        String rootx = root.getAbsolutePath().replace("/Android/data/org.philimone.hds.explorer/files", "") ;
+        return new File(rootx);
+    }
+
+    public static File getRootFolderX(Context context) {
         File root = null;
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
@@ -125,11 +135,15 @@ public class Bootstrap {
             if(storageManager == null) {
                 root = Environment.getExternalStorageDirectory(); //you can replace it with the Environment.getExternalStorageDirectory().getAbsolutePath()
             } else {
-                root = storageManager.getPrimaryStorageVolume().getDirectory();
+                //root = storageManager.getPrimaryStorageVolume().getDirectory();
+                root = context.getExternalFilesDir(null);
             }
         } else {
             root = Environment.getExternalStorageDirectory();
         }
+
+        String rootx = root.getAbsolutePath().replace("/Android/data/org.philimone.hds.explorer/files", "") ;
+        root = new File(rootx);
 
         return root;
     }
@@ -138,9 +152,11 @@ public class Bootstrap {
 
         File root = getRootFolder(context);
 
-        absoluteBasePath = root.getAbsolutePath() + APP_BASE_PATH;
-        absoluteFormsPath = root.getAbsolutePath() + APP_FORMS_PATH;
-        absoluteInstancesPath = root.getAbsolutePath() + APP_INSTANCES_PATH;
+        String rootPath = root.getAbsolutePath();
+
+        absoluteBasePath = rootPath + APP_BASE_PATH;
+        absoluteFormsPath = rootPath + APP_FORMS_PATH;
+        absoluteInstancesPath = rootPath + APP_INSTANCES_PATH;
 
         File baseDir = new File(absoluteBasePath);
         File formsDir = new File(absoluteFormsPath);
@@ -178,9 +194,14 @@ public class Bootstrap {
         return absoluteInstancesPath;
     }
 
-    public static String getOdkBasePath(Context context) {
-        File root = getRootFolder(context);
+    public static String getOdkScopedStoragePath(Context context) {
+        File root = getRealRootFolder(context);
         return root.getAbsolutePath() + ODK_APP_BASE_PATH;
+    }
+
+    public static String getOdkVintagePath(Context context) {
+        File root = getRealRootFolder(context);
+        return root.getAbsolutePath() + File.separator + "odk" + File.separator;
     }
 
     public static File getBasePathFile(String filename, Context context) {

@@ -24,10 +24,24 @@
     <string name="error_lbl">Error</string>
     <string name="updated_successfully_lbl">Updated Successfully</string>
 
+    <!-- storage access -->
+    <string name="storage_access_title_lbl">File access not granted</string>
+    <string name="storage_access_odk_error_lbl">Access to Files were denied, HDS Explorer will not have access to ODK Forms due to lack of permissions to ODK Collect</string>
+    <string name="storage_access_odk_error_continue_lbl">Access to ODK Files were denied.\nHDS Explorer will not have access to ODK Forms due to lack of permissions to ODK Collect.\nYou can use the app normally but without ODK Forms access</string>
+
     <!-- Strings related to ODK -->
     <string name="odk_couldnt_open_xform_lbl">Couldnt open the ODK Form</string>
     <string name="odk_couldnt_reopen_xform_lbl">Couldnt re-open the saved ODK Form</string>
     <string name="odk_problem_lbl">A problem occured while trying to open ODK Form</string>
+    <string name="odk_form_load_error_provider_lbl">Couldnt get ODK Forms, There is no ODK Collect App installed or properly configured!</string>
+    <string name="odk_form_load_error_form_not_found_lbl">The form wasnt found on ODK Collect. Please, make sure the ODK Form exists.</string>
+    <string name="odk_form_load_error_folder_permissions_lbl">Couldnt get ODK Forms files, Access to ODK Collect content data was denied!</string>
+    <string name="odk_form_load_permission_storage_denied_lbl">It will not be possible to access ODK Forms. There is no permission to use the Storage for read/write operations on ODK Collect!</string>
+    <string name="odk_form_load_permissions_denied_lbl">To procced to ODK Collect and start collecting the Form.\nYou must grant all the previous permissions given by the system!</string>
+    <string name="odk_form_load_permission_request_readwrite_denied_lbl">It will not be possible to access ODK Forms. There is no ermission to use the Storage for read/write operations on ODK Collect forms!</string>
+    <string name="odk_form_load_permission_request_readphonestate_denied_lbl">It will not be possible to open ODK Forms. There is no permission to get device and network information!</string>
+    <string name="odk_form_load_error_saving_prefilled_xml_lbl">An error occured while trying to save preloaded xml data file.</string>
+    <string name="odk_form_load_error_saving_instance_form_lbl">Couldnt create a new instance of the preloaded xml data in ODK Collect.</string>
     <string name="odk_unfinished_dialog_msg">The form wasnt finalized. This instance of the form will be deleted. Choose the next action?</string>
     <string name="odk_unfinished_button_delete">Delete Form</string>
     <string name="odk_unfinished_button_change">Change Form</string>
@@ -629,7 +643,7 @@
 
     <string name="default_gender_male">Male</string>
     <string name="default_gender_female">Female</string>
-    <string name="default_gender_na">Not Known</string>
+    <string name="default_gender_unk">Unknown</string>
 
     <string name="maritalStatus_single">Single</string>
     <string name="maritalStatus_married">Married</string>

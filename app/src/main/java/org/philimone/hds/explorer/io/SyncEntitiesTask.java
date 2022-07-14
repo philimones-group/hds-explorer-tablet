@@ -547,8 +547,8 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 		//Inform about the download
 		this.listener.onSyncStarted(this.entity, this.state, response.fileSize); //remove KB calc
 		//save file
-		InputStream fileInputStream = saveFileToStorage(response);
-
+		File downloadedFile = saveFileToStorage(response);
+		InputStream fileInputStream = new FileInputStream(downloadedFile);
 
 		Log.d("tag-d", "processData="+processData+", fis="+fileInputStream);
 
@@ -565,6 +565,9 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 				if (response.isZipFile()){
 					processZIPDocument(fileInputStream);
 				}
+
+				boolean deleted = downloadedFile.delete();
+				Log.d("downloaded file", downloadedFile.toString()+" - deleted="+deleted);
 			}
 		}
 
@@ -639,7 +642,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 		}
 	}
 
-	private InputStream saveFileToStorage(DownloadResponse response) throws Exception {
+	private File saveFileToStorage(DownloadResponse response) throws Exception {
 		state = SyncState.DOWNLOADING;
 
 		InputStream content = response.getInputStream();
@@ -665,9 +668,8 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 		fout.close();
 		content.close();
 
-		FileInputStream fin = new FileInputStream(Bootstrap.getBasePath(this.mContext) + response.getFileName());
+		return new File(Bootstrap.getBasePath(this.mContext) + response.getFileName());
 
-		return fin;
 	}
 
 	private void processZIPDocument(InputStream inputStream) throws Exception {

@@ -38,7 +38,9 @@
     <string name="odk_form_load_error_folder_permissions_lbl">Couldnt get ODK Forms files, Access to ODK Collect content data was denied!</string>
     <string name="odk_form_load_permission_storage_denied_lbl">It will not be possible to access ODK Forms. There is no permission to use the Storage for read/write operations on ODK Collect!</string>
     <string name="odk_form_load_permissions_denied_lbl">To procced to ODK Collect and start collecting the Form.\nYou must grant all the previous permissions given by the system!</string>
-    <string name="odk_form_load_permission_request_readwrite_denied_lbl">It will not be possible to access ODK Forms. There is no ermission to use the Storage for read/write operations on ODK Collect forms!</string>
+    <string name="odk_form_load_permission_request_manage_all_title_lbl">ODK Collect Forms Access</string>
+    <string name="odk_form_load_permission_request_manage_all_info_lbl">To be able to access ODK Forms, You must enable "Allow access to manage all files" in the next page after click OK button!</string>
+    <string name="odk_form_load_permission_request_readwrite_denied_lbl">It will not be possible to access ODK Forms. There is no permission to use the Storage for read/write operations on ODK Collect forms!</string>
     <string name="odk_form_load_permission_request_readphonestate_denied_lbl">It will not be possible to open ODK Forms. There is no permission to get device and network information!</string>
     <string name="odk_form_load_error_saving_prefilled_xml_lbl">An error occured while trying to save preloaded xml data file.</string>
     <string name="odk_form_load_error_saving_instance_form_lbl">Couldnt create a new instance of the preloaded xml data in ODK Collect.</string>

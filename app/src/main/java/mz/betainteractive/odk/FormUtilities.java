@@ -23,6 +23,8 @@ import android.net.Uri;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
+import android.os.Build;
+import android.os.Environment;
 import android.provider.Settings;
 import android.telephony.TelephonyManager;
 import android.util.Log;
@@ -63,6 +65,7 @@ public class FormUtilities {
     private ActivityResultLauncher<String> requestPermissionRpState;
     private ActivityResultLauncher<String[]> requestPermissionsReadWrite;
     private ActivityResultLauncher<Intent> odkResultLauncher;
+    private ActivityResultLauncher<Intent> requestManageAllLauncher;
     private OdkFormLoadTask currentLoadTask;
     private OnPermissionRequestListener onPermissionRpStateRequestListener;
     private OnPermissionRequestListener onPermissionReadWriteRequestListener;
@@ -123,8 +126,12 @@ public class FormUtilities {
         //for starting odk activity
         if (this.fragment != null) {
             this.odkResultLauncher = this.fragment.registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> onOdkActivityResult(result.getResultCode()));
+
+            this.requestManageAllLauncher = this.fragment.registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> onRequestManageAllActivityResult(result.getResultCode()));
         } else {
             this.odkResultLauncher = this.activity.registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> onOdkActivityResult(result.getResultCode()));
+
+            this.requestManageAllLauncher = this.activity.registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> onRequestManageAllActivityResult(result.getResultCode()));
         }
 
     }
@@ -137,6 +144,45 @@ public class FormUtilities {
     private void requestPermissionsForReadAndWriteFiles(OnPermissionRequestListener listener){
         this.onPermissionReadWriteRequestListener = listener;
         this.requestPermissionsReadWrite.launch(new String[] {Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE});
+    }
+
+    private void requestPermissionsForManageAllFiles(){
+
+        //Log.d("external", ""+Environment.isExternalStorageManager());
+
+        //Message - to grant access to ODK Form Files on Android 11 and greater, you must enable
+        DialogFactory.createMessageInfo(this.getContext(), R.string.odk_form_load_permission_request_manage_all_title_lbl, R.string.odk_form_load_permission_request_manage_all_info_lbl, clickedButton -> {
+            executeRequestPermissionsForManageAllFiles();
+        }).show();
+
+    }
+
+    private void executeRequestPermissionsForManageAllFiles() {
+        try {
+            Intent intent = new Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION);
+            intent.addCategory("android.intent.category.DEFAULT");
+            intent.setData(Uri.parse(String.format("package:%s", getContext().getPackageName())));
+
+            this.requestManageAllLauncher.launch(intent);
+        } catch (Exception e) {
+            e.printStackTrace();
+
+            Intent intent = new Intent();
+            intent.setAction(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION);
+            this.requestManageAllLauncher.launch(intent);
+        }
+    }
+
+    private void onRequestManageAllActivityResult(int resultCode) {
+        //Log.d("manage-all", "result_code="+resultCode+", "+Environment.isExternalStorageManager());
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && Environment.isExternalStorageManager()) {
+            callExecuteCurrentLoadTask();
+            return;
+        }
+
+        //CANT ACCESS ODK FILES TO PRELOAD DATA TO ODK FORMS
+        DialogFactory.createMessageInfo(this.getContext(), R.string.storage_access_title_lbl, R.string.odk_form_load_permission_storage_denied_lbl).show();
     }
 
     private boolean isPermissionGranted(final String... permissions) {
@@ -164,6 +210,15 @@ public class FormUtilities {
             	createFormLoadResultErrorDialog(result);
             }
         });
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            //On Android 11, the basic permissions dont work, we must grant all access
+            Log.d("Android 11", "need all access");
+
+            requestPermissionsForManageAllFiles();
+
+            return;
+        }
 
         OnPermissionRequestListener readPhoneStateGrantListener = granted -> {
             if (granted) {
@@ -219,6 +274,15 @@ public class FormUtilities {
                 }
             }
         });
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            //On Android 11, the basic permissions dont work, we must grant all access
+            Log.d("Android 11", "need all access");
+
+            requestPermissionsForManageAllFiles();
+
+            return;
+        }
 
         OnPermissionRequestListener readPhoneStateGrantListener = granted -> {
             if (granted) {

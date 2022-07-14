@@ -81,7 +81,7 @@ public class OdkColumnsPreloader {
         //Log.d("executing-pnc",""+params);
         for (int i = 0; i < childElements.getLength(); i++) {
             Node n = childElements.item(i);
-            Log.d("odk-xml-param", ""+n.getNodeName()+", "+n.getNodeValue()+", repeat="+isRepeatGroup(n));
+            //Log.d("odk-xml-param", ""+n.getNodeName()+", "+n.getNodeValue()+", repeat="+isRepeatGroup(n));
             if (n.getNodeType() == Node.ELEMENT_NODE) {
 
                 String name = n.getNodeName();

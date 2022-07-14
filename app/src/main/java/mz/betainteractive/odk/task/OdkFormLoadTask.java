@@ -121,7 +121,6 @@ public class OdkFormLoadTask extends AsyncTask<Void, Void, OdkFormLoadResult> {
                 return new OdkFormLoadResult(OdkFormLoadResult.Status.ERROR_ODK_FOLDER_PERMISSION_DENIED, openMode, null, null);
             }
 
-
             //The file was found
 
             File formFile = searchResult.formFile;
@@ -150,14 +149,13 @@ public class OdkFormLoadTask extends AsyncTask<Void, Void, OdkFormLoadResult> {
             String xml = preloader.generatePreloadedXml(jrFormId, formVersion, formFilePath);
             File targetFile = createNewOdkFormInstanceFile(xml, jrFormName, new File(formFilePath));
             boolean writeFile = false;
-            Log.d("xml", xml);
+
             if (targetFile != null) {
                 writeFile = insertNewOdkFormInstance(targetFile, filledForm.getFormName(), jrFormId, formVersion);
 
                 if (!writeFile) {
                     return new OdkFormLoadResult(OdkFormLoadResult.Status.ERROR_ODK_INSERT_SAVED_INSTANCE, openMode, targetFile, null);
                 }
-
 
             } else {
                 return new OdkFormLoadResult(OdkFormLoadResult.Status.ERROR_ODK_CREATE_SAVED_INSTANCE_FILE, openMode, targetFile, null);

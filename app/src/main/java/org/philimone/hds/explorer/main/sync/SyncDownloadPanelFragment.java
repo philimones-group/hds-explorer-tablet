@@ -1,8 +1,12 @@
 package org.philimone.hds.explorer.main.sync;
 
 import android.Manifest;
+import android.app.Activity;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -12,6 +16,8 @@ import androidx.fragment.app.Fragment;
 import io.objectbox.Box;
 import mz.betainteractive.utilities.StringUtil;
 
+import android.os.Environment;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,6 +27,7 @@ import android.widget.Button;
 import com.google.gson.Gson;
 
 import org.philimone.hds.explorer.R;
+import org.philimone.hds.explorer.database.Bootstrap;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
 import org.philimone.hds.explorer.database.Queries;
 import org.philimone.hds.explorer.io.SyncEntitiesTask;
@@ -84,8 +91,6 @@ public class SyncDownloadPanelFragment extends Fragment implements SyncPanelItem
 
     private Box<SyncReport> boxSyncReports;
 
-    private ActivityResultLauncher<String[]> requestPermissions;
-
     public SyncDownloadPanelFragment() {
         // Required empty public constructor
         initBoxes();
@@ -142,7 +147,6 @@ public class SyncDownloadPanelFragment extends Fragment implements SyncPanelItem
 
         getChildFragmentManager().beginTransaction().replace(R.id.demographicsEventsSyncFragment, this.demographicsEventsSyncFragment).commit();
 
-        initPermissions();
         initialize(view);
 
         return view;
@@ -150,23 +154,6 @@ public class SyncDownloadPanelFragment extends Fragment implements SyncPanelItem
 
     private void initBoxes(){
         this.boxSyncReports = ObjectBoxDatabase.get().boxFor(SyncReport.class);
-    }
-
-    private void initPermissions() {
-        this.requestPermissions = registerForActivityResult(new ActivityResultContracts.RequestMultiplePermissions(), permissionResults -> {
-            boolean granted = !permissionResults.values().contains(false);
-
-            if (granted) {
-                if (this.clickedSyncFragment == null) {//sync all
-                    syncAllData();
-                } else {
-                    executeSyncStartButton(this.clickedSyncFragment);
-                }
-            } else {
-                //message info
-                DialogFactory.createMessageInfo(this.getContext(), R.string.permissions_sync_storage_title_lbl, R.string.permissions_sync_storage_denied_lbl).show();
-            }
-        });
     }
 
     private void initialize(View view) {
@@ -279,9 +266,8 @@ public class SyncDownloadPanelFragment extends Fragment implements SyncPanelItem
         this.synchronizerAllList.clear();
         this.clickedSyncFragment = null;
 
-        if (isPermissionGranted(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-            syncAllData();
-        }
+
+        syncAllData();
     }
 
     private void syncAllData() {
@@ -378,18 +364,6 @@ public class SyncDownloadPanelFragment extends Fragment implements SyncPanelItem
         return result;
     }
 
-    private boolean isPermissionGranted(final String... permissions) {
-
-        boolean denied = Arrays.stream(permissions).anyMatch(permission -> ContextCompat.checkSelfPermission(this.getContext(), permission) == PackageManager.PERMISSION_DENIED);
-
-        if (denied) { //without access
-            //request permissions
-            this.requestPermissions.launch(permissions);
-        }
-
-        return !denied;
-    }
-
     private void executeSyncStartButton(SyncPanelItemFragment syncPanelItem){
         if (syncPanelItem.equals(this.settingsSyncFragment)){
             syncSettings();
@@ -425,9 +399,8 @@ public class SyncDownloadPanelFragment extends Fragment implements SyncPanelItem
             return;
         }
 
-        if (isPermissionGranted(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-            executeSyncStartButton(syncPanelItem);
-        }
+        executeSyncStartButton(syncPanelItem);
+
     }
 
     @Override

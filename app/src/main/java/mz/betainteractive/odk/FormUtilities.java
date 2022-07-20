@@ -1,13 +1,17 @@
 package mz.betainteractive.odk;
+import static android.content.Context.STORAGE_SERVICE;
+
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
+import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.RequiresApi;
 import androidx.annotation.StringRes;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -17,6 +21,8 @@ import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.UriPermission;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
@@ -25,6 +31,9 @@ import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Environment;
+import android.os.storage.StorageManager;
+import android.os.storage.StorageVolume;
+import android.provider.DocumentsContract;
 import android.provider.Settings;
 import android.telephony.TelephonyManager;
 import android.util.Log;
@@ -41,6 +50,8 @@ import androidx.fragment.app.Fragment;
 import mz.betainteractive.odk.listener.OdkFormLoadListener;
 import mz.betainteractive.odk.listener.OdkFormResultListener;
 import mz.betainteractive.odk.model.FilledForm;
+import mz.betainteractive.odk.storage.access.OdkScopedDirUtil;
+import mz.betainteractive.odk.storage.access.OdkStorageType;
 import mz.betainteractive.odk.task.OdkFormLoadResult;
 import mz.betainteractive.odk.task.OdkFormLoadTask;
 
@@ -60,12 +71,16 @@ public class FormUtilities {
     private Date lastUpdatedDate;
 
     private String formId;
-
     private String deviceId;
+
+    private OdkStorageType odkStorageType;
+    private OdkScopedDirUtil odkScopedDirUtil;
+
     private ActivityResultLauncher<String> requestPermissionRpState;
     private ActivityResultLauncher<String[]> requestPermissionsReadWrite;
     private ActivityResultLauncher<Intent> odkResultLauncher;
     private ActivityResultLauncher<Intent> requestManageAllLauncher;
+    private ActivityResultLauncher<Intent> requestAccessAndroidDirLauncher;
     private OdkFormLoadTask currentLoadTask;
     private OnPermissionRequestListener onPermissionRpStateRequestListener;
     private OnPermissionRequestListener onPermissionReadWriteRequestListener;
@@ -75,7 +90,7 @@ public class FormUtilities {
 		this.mContext = fragment.getContext();
         this.formResultListener = listener;
 
-		this.initResultCallbacks();
+        initialize();
 	}
 
     public FormUtilities(AppCompatActivity activity, OdkFormResultListener listener) {
@@ -83,11 +98,21 @@ public class FormUtilities {
         this.mContext = activity;
         this.formResultListener = listener;
 
-        this.initResultCallbacks();
+        this.initialize();
     }
 
     public Context getContext() {
         return mContext;
+    }
+
+    public OdkScopedDirUtil getOdkScopedDirUtil(){
+        return this.odkScopedDirUtil;
+    }
+
+    private void initialize() {
+        this.initResultCallbacks();
+
+        this.retrieveOdkStorageType();
     }
 
     private void initResultCallbacks(){
@@ -125,35 +150,126 @@ public class FormUtilities {
 
         //for starting odk activity
         if (this.fragment != null) {
-            this.odkResultLauncher = this.fragment.registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> onOdkActivityResult(result.getResultCode()));
-
+            this.odkResultLauncher = this.fragment.registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> onOdkActivityResult(result));
             this.requestManageAllLauncher = this.fragment.registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> onRequestManageAllActivityResult(result.getResultCode()));
+            this.requestAccessAndroidDirLauncher =  this.fragment.registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> onRequestAccessAndroidDirResult(result));
         } else {
-            this.odkResultLauncher = this.activity.registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> onOdkActivityResult(result.getResultCode()));
-
+            this.odkResultLauncher = this.activity.registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> onOdkActivityResult(result));
             this.requestManageAllLauncher = this.activity.registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> onRequestManageAllActivityResult(result.getResultCode()));
+            this.requestAccessAndroidDirLauncher =  this.activity.registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> onRequestAccessAndroidDirResult(result));
         }
 
     }
 
+    private void retrieveOdkStorageType() {
+        final int odk_v_1_26_0 = 3713; //scoped storage without projects
+        final int odk_v_1_30_1 = 4094; //last scoped storage with projects
+        final int odk_v_2021_2 = 4242; //scoped storage with projects
+        String versionName = "NONE";
+
+        try {
+            PackageInfo packageInfo = mContext.getPackageManager().getPackageInfo("org.odk.collect.android", 0);
+            versionName = packageInfo.versionName;
+
+            if (packageInfo.versionCode < odk_v_1_26_0) {
+                odkStorageType = OdkStorageType.ODK_SHARED_FOLDER; //Android/data/odk
+            } else if (packageInfo.versionCode < odk_v_2021_2) {
+                odkStorageType = OdkStorageType.ODK_SCOPED_FOLDER_NO_PROJECTS;
+            } else {
+                odkStorageType = OdkStorageType.ODK_SCOPED_FOLDER_PROJECTS;
+            }
+
+        } catch (PackageManager.NameNotFoundException e) {
+            odkStorageType = OdkStorageType.NO_ODK_INSTALLED;
+        }
+
+        Log.d("odk version", odkStorageType+", ODK v"+versionName);
+    }
+
+    public OdkStorageType getOdkStorageType() {
+        return this.odkStorageType;
+    }
+
     private void requestPermissionsForReadingPhoneState(OnPermissionRequestListener listener){
-	    this.onPermissionRpStateRequestListener = listener;
-        this.requestPermissionRpState.launch(Manifest.permission.READ_PHONE_STATE);
+
+        if (isPermissionGranted(Manifest.permission.READ_PHONE_STATE)) {
+            //GO TO CHECK ODK FOLDER ACCESS
+            requestPermissionsForOdkFolders();
+        } else {
+            //request the permission
+            this.onPermissionRpStateRequestListener = listener;
+            this.requestPermissionRpState.launch(Manifest.permission.READ_PHONE_STATE);
+        }
+    }
+
+    private void requestPermissionsForOdkFolders(){
+        //READ_PHONE_STATE ALREADY GRANTED ACCESS
+
+        //Check all cases of storage permissions
+        //- < Android 11
+        //-   Android 11+
+
+        if (odkStorageType == OdkStorageType.NO_ODK_INSTALLED) {
+            DialogFactory.createMessageInfo(mContext, R.string.odk_problem_lbl, R.string.odk_form_load_error_odk_not_installed_lbl).show();
+            return;
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            //On Android 11, the basic permissions dont work, we must grant all access
+            Log.d("Android 11", "need all access");
+
+            if (odkStorageType == OdkStorageType.ODK_SCOPED_FOLDER_NO_PROJECTS || odkStorageType == odkStorageType.ODK_SCOPED_FOLDER_PROJECTS) {
+                //needs to request access to Android/data/org.odk.collect.android/files
+                OdkScopedDirUtil.PRIMARY_ANDROID_DOC_ID = OdkScopedDirUtil.ODK_SCOPED_FOLDER_URI;
+
+            } else if (odkStorageType == OdkStorageType.ODK_SHARED_FOLDER){
+                //needs to request access to /odk
+                OdkScopedDirUtil.PRIMARY_ANDROID_DOC_ID = OdkScopedDirUtil.ODK_SHARED_FOLDER_URI;
+            }
+
+            //We will use the Storage Access Framework Only - MANAGE ALL FILES WILL NOT BE USED
+            requestAccessAndroidDir();
+
+            return;
+        } else {
+            //<= Android 10
+            OnPermissionRequestListener readWriteGrantListener = granted -> {
+                if (granted) {
+                    callExecuteCurrentLoadTask();
+                } else {
+                    DialogFactory.createMessageInfo(this.getContext(), R.string.permissions_sync_storage_title_lbl, R.string.odk_form_load_permission_request_readwrite_denied_lbl).show();
+                }
+            };
+
+            requestPermissionsForReadAndWriteFiles(readWriteGrantListener);
+        }
+
     }
 
     private void requestPermissionsForReadAndWriteFiles(OnPermissionRequestListener listener){
-        this.onPermissionReadWriteRequestListener = listener;
-        this.requestPermissionsReadWrite.launch(new String[] {Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE});
+
+        if (isPermissionGranted(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+            callExecuteCurrentLoadTask();
+        } else {
+            this.onPermissionReadWriteRequestListener = listener;
+            this.requestPermissionsReadWrite.launch(new String[] {Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE});
+        }
+
     }
 
     private void requestPermissionsForManageAllFiles(){
-
         //Log.d("external", ""+Environment.isExternalStorageManager());
 
-        //Message - to grant access to ODK Form Files on Android 11 and greater, you must enable
-        DialogFactory.createMessageInfo(this.getContext(), R.string.odk_form_load_permission_request_manage_all_title_lbl, R.string.odk_form_load_permission_request_manage_all_info_lbl, clickedButton -> {
-            executeRequestPermissionsForManageAllFiles();
-        }).show();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && Environment.isExternalStorageManager()) {
+            callExecuteCurrentLoadTask();
+            return;
+        } else {
+
+            //Message - to grant access to ODK Form Files on Android 11 and greater, you must enable
+            DialogFactory.createMessageInfo(this.getContext(), R.string.odk_form_load_permission_request_manage_all_title_lbl, R.string.odk_form_load_permission_request_manage_all_info_lbl, clickedButton -> {
+                executeRequestPermissionsForManageAllFiles();
+            }).show();
+        }
 
     }
 
@@ -174,15 +290,91 @@ public class FormUtilities {
     }
 
     private void onRequestManageAllActivityResult(int resultCode) {
-        //Log.d("manage-all", "result_code="+resultCode+", "+Environment.isExternalStorageManager());
+
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && Environment.isExternalStorageManager()) {
+            Log.d("manage-all", "result_code="+resultCode+", "+Environment.isExternalStorageManager());
+
             callExecuteCurrentLoadTask();
-            return;
+        } else {
+            //CANT ACCESS ODK FILES TO PRELOAD DATA TO ODK FORMS
+            DialogFactory.createMessageInfo(this.getContext(), R.string.storage_access_title_lbl, R.string.odk_form_load_permission_storage_denied_lbl).show();
+        }
+    }
+
+    private boolean hasSAFPermissionToAndroidDir() {
+        Uri treeUri = DocumentsContract.buildTreeDocumentUri(OdkScopedDirUtil.EXTERNAL_STORAGE_PROVIDER_AUTHORITY, OdkScopedDirUtil.PRIMARY_ANDROID_DOC_ID);
+
+        Log.d("permission asked", ""+treeUri);
+
+        boolean permissionGranted = false;
+
+        for (UriPermission uriPermission : mContext.getContentResolver().getPersistedUriPermissions()) {
+
+            Log.d("permission granted", ""+uriPermission.getUri());
+
+            if (uriPermission.getUri().equals(treeUri) && uriPermission.isReadPermission()) {
+                permissionGranted = true;
+            }
         }
 
-        //CANT ACCESS ODK FILES TO PRELOAD DATA TO ODK FORMS
-        DialogFactory.createMessageInfo(this.getContext(), R.string.storage_access_title_lbl, R.string.odk_form_load_permission_storage_denied_lbl).show();
+        return permissionGranted;
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.Q)
+    private void requestAccessAndroidDir(){
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && hasSAFPermissionToAndroidDir()) {
+            //Create Scoped Dir Utility class and call currentLoadTask
+            this.odkScopedDirUtil = new OdkScopedDirUtil(mContext, odkStorageType);
+            callExecuteCurrentLoadTask();
+
+        } else {
+            //Message - to grant access to ODK Form Files on Android 11 and greater, you must enable
+            DialogFactory.createMessageInfo(this.getContext(), R.string.odk_form_load_permission_request_manage_all_title_lbl, R.string.odk_form_load_permission_request_android_dir_info_lbl, clickedButton -> {
+                executeRequestAccessAndroidDir();
+            }).show();
+        }
+
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.Q)
+    private void executeRequestAccessAndroidDir() {
+        Uri uri = DocumentsContract.buildDocumentUri(OdkScopedDirUtil.EXTERNAL_STORAGE_PROVIDER_AUTHORITY, OdkScopedDirUtil.PRIMARY_ANDROID_DOC_ID);
+        Intent intent = getPrimaryVolume().createOpenDocumentTreeIntent();
+        intent.putExtra("android.provider.extra.INITIAL_URI", uri);
+
+        this.requestAccessAndroidDirLauncher.launch(intent);
+    }
+
+    private void onRequestAccessAndroidDirResult(ActivityResult result) {
+
+        if (result.getResultCode() == Activity.RESULT_OK) {
+            Uri directoryUri = result.getData().getData();
+
+            Log.d("granted uri", directoryUri+"");
+
+            mContext.getContentResolver().takePersistableUriPermission(directoryUri, Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+
+            if (hasSAFPermissionToAndroidDir()) {
+                //Create Scoped Dir Utility class and call currentLoadTask
+                this.odkScopedDirUtil = new OdkScopedDirUtil(mContext, odkStorageType);
+                callExecuteCurrentLoadTask();
+            } else {
+                //CANT ACCESS ODK FILES TO PRELOAD DATA TO ODK FORMS
+                DialogFactory.createMessageInfo(this.getContext(), R.string.storage_access_title_lbl, R.string.odk_form_load_permission_storage_denied_lbl).show();
+            }
+
+        } else {
+            //CANT ACCESS ODK FILES TO PRELOAD DATA TO ODK FORMS
+            DialogFactory.createMessageInfo(this.getContext(), R.string.storage_access_title_lbl, R.string.odk_form_load_permission_storage_denied_lbl).show();
+        }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    private StorageVolume getPrimaryVolume() {
+        StorageManager sm = (StorageManager)  mContext.getSystemService(STORAGE_SERVICE);
+        return sm.getPrimaryStorageVolume();
     }
 
     private boolean isPermissionGranted(final String... permissions) {
@@ -211,45 +403,23 @@ public class FormUtilities {
             }
         });
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            //On Android 11, the basic permissions dont work, we must grant all access
-            Log.d("Android 11", "need all access");
-
-            requestPermissionsForManageAllFiles();
-
-            return;
-        }
+        //we have
+        //- permission phone state
+        //- permission odk access
+        //   - vintage read and write permission
+        //   - manage all files permission
+        //   - manage android directory permission
 
         OnPermissionRequestListener readPhoneStateGrantListener = granted -> {
             if (granted) {
-                callExecuteCurrentLoadTask();
+                requestPermissionsForOdkFolders();
             } else {
                 DialogFactory.createMessageInfo(this.getContext(), R.string.permissions_sync_storage_title_lbl, R.string.odk_form_load_permission_request_readphonestate_denied_lbl).show();
             }
         };
 
-        OnPermissionRequestListener readWriteGrantListener = granted -> {
-            if (granted) {
-                if (isPermissionGranted(Manifest.permission.READ_PHONE_STATE)) {
-                    callExecuteCurrentLoadTask();
-                } else {
-                    requestPermissionsForReadingPhoneState(readPhoneStateGrantListener);
-                }
-            } else {
-                DialogFactory.createMessageInfo(this.getContext(), R.string.permissions_sync_storage_title_lbl, R.string.odk_form_load_permission_request_readwrite_denied_lbl).show();
-            }
-        };
-
-        if (isPermissionGranted(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-            if (isPermissionGranted(Manifest.permission.READ_PHONE_STATE)) {
-                callExecuteCurrentLoadTask();
-            } else {
-                requestPermissionsForReadingPhoneState(readPhoneStateGrantListener);
-            }
-        } else {
-            requestPermissionsForReadAndWriteFiles(readWriteGrantListener);
-        }
-
+        //check all permissions
+        requestPermissionsForReadingPhoneState(readPhoneStateGrantListener);
     }
 
     public void loadForm(FilledForm filledForm, String contentUriAsString, final OdkFormResultListener listener){
@@ -275,14 +445,12 @@ public class FormUtilities {
             }
         });
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            //On Android 11, the basic permissions dont work, we must grant all access
-            Log.d("Android 11", "need all access");
-
-            requestPermissionsForManageAllFiles();
-
-            return;
-        }
+        //we have
+        //- permission phone state
+        //- permission odk access
+        //   - vintage read and write permission
+        //   - manage all files permission
+        //   - manage android directory permission
 
         OnPermissionRequestListener readPhoneStateGrantListener = granted -> {
             if (granted) {
@@ -290,30 +458,10 @@ public class FormUtilities {
             } else {
                 DialogFactory.createMessageInfo(this.getContext(), R.string.permissions_sync_storage_title_lbl, R.string.odk_form_load_permission_request_readphonestate_denied_lbl).show();
             }
-
         };
 
-        OnPermissionRequestListener readWriteGrantListener = granted -> {
-            if (granted) {
-                if (isPermissionGranted(Manifest.permission.READ_PHONE_STATE)) {
-                    callExecuteCurrentLoadTask();
-                } else {
-                    requestPermissionsForReadingPhoneState(readPhoneStateGrantListener);
-                }
-            } else {
-                DialogFactory.createMessageInfo(this.getContext(), R.string.permissions_sync_storage_title_lbl, R.string.odk_form_load_permission_request_readwrite_denied_lbl).show();
-            }
-        };
-
-        if (isPermissionGranted(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-            if (isPermissionGranted(Manifest.permission.READ_PHONE_STATE)) {
-                callExecuteCurrentLoadTask();
-            } else {
-                requestPermissionsForReadingPhoneState(readPhoneStateGrantListener);
-            }
-        } else {
-            requestPermissionsForReadAndWriteFiles(readWriteGrantListener);
-        }
+        //check all permissions
+        requestPermissionsForReadingPhoneState(readPhoneStateGrantListener);
     }
 
     private void callExecuteCurrentLoadTask() {
@@ -325,9 +473,11 @@ public class FormUtilities {
     private void createFormLoadResultErrorDialog(OdkFormLoadResult result) {
         //xFormNotFound = true;
 
-        @StringRes int messageId = R.string.odk_form_load_error_provider_lbl;
+        @StringRes int messageId = R.string.odk_form_load_error_odk_not_installed_lbl;
 
-        if (result.getStatus() == OdkFormLoadResult.Status.ERROR_PROVIDER_NA) {
+        if (result.getStatus() == OdkFormLoadResult.Status.ERROR_NO_ODK_INSTALLED) {
+            messageId = R.string.odk_form_load_error_odk_not_installed_lbl;
+        } else if (result.getStatus() == OdkFormLoadResult.Status.ERROR_PROVIDER_NA) {
             messageId = R.string.odk_form_load_error_provider_lbl;
         } else if (result.getStatus() == OdkFormLoadResult.Status.ERROR_FORM_NOT_FOUND) {
             messageId = R.string.odk_form_load_error_form_not_found_lbl;
@@ -348,17 +498,24 @@ public class FormUtilities {
 
     }
 
-    private void onOdkActivityResult(int resultCode) {
+    private void onOdkActivityResult(ActivityResult result) {
         this.currentLoadTask = null; //already loaded the task and finished
-        handleXformResult(resultCode);
+        handleXformResult(result);
     }
 
-    private void handleXformResult(int resultCode) {
-        if (resultCode == Activity.RESULT_OK) {
+    private void handleXformResult(ActivityResult result) {
+
+        Log.d("result "+result.getResultCode(), ""+result.toString());
+        //The result code its almost meaningless
+
+        new CheckFormStatus(mContext.getContentResolver(), contentUri).execute();
+
+        /*
+        if (result.getResultCode() == Activity.RESULT_OK) {
             new CheckFormStatus(mContext.getContentResolver(), contentUri).execute();
         } else {
             Toast.makeText(mContext, mContext.getString(R.string.odk_problem_lbl), Toast.LENGTH_LONG).show();
-        }
+        }*/
     }
 
     private void saveUnfinalizedFile(){

@@ -1,8 +1,12 @@
 package mz.betainteractive.odk.task;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.PrintStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -13,6 +17,9 @@ import mz.betainteractive.odk.FormsProviderAPI;
 import mz.betainteractive.odk.InstanceProviderAPI;
 import mz.betainteractive.odk.listener.OdkFormLoadListener;
 import mz.betainteractive.odk.model.FilledForm;
+import mz.betainteractive.odk.storage.access.OdkScopedDirUtil;
+import mz.betainteractive.odk.storage.access.OdkStorageType;
+import mz.betainteractive.odk.storage.access.anthonymandra.framework.XDocumentFile;
 import mz.betainteractive.odk.xml.OdkColumnsPreloader;
 import mz.betainteractive.odk.xml.XFormDef;
 import mz.betainteractive.odk.xml.XMLFinder;
@@ -26,12 +33,11 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
 //import android.support.v4.app.ActivityCompat;
+import android.os.Build;
 import android.util.Log;
 
 
 public class OdkFormLoadTask extends AsyncTask<Void, Void, OdkFormLoadResult> {
-
-    private static String FORMS_PATH = "org.philimone.hds.explorer";
 
     private FormUtilities formUtilities;
     private OdkFormLoadListener listener;
@@ -40,6 +46,8 @@ public class OdkFormLoadTask extends AsyncTask<Void, Void, OdkFormLoadResult> {
     private FilledForm filledForm;
     private boolean openingSavedUri;
     private Context mContext;
+
+    OdkScopedDirUtil.OdkFormObject foundFormObject;
 
     private OdkFormLoadTask(FormUtilities formUtilities) {
         this.formUtilities = formUtilities;
@@ -51,7 +59,6 @@ public class OdkFormLoadTask extends AsyncTask<Void, Void, OdkFormLoadResult> {
         this.listener = listener;
         this.resolver = mContext.getContentResolver();
         this.filledForm = filledForm;
-
     }
 
     public OdkFormLoadTask(FormUtilities formUtilities, FilledForm filledForm, Uri uri, OdkFormLoadListener listener) { //used to open pre-existing collected forms and filling out auto-filled columns
@@ -72,31 +79,43 @@ public class OdkFormLoadTask extends AsyncTask<Void, Void, OdkFormLoadResult> {
         String jrFormId = null;
         String jrFormName = null;
         String formFilePath = null;
+        String formAbsoluteFilePath = null;
         String formVersion = null;
         OdkFormLoadResult.OpenMode openMode = openingSavedUri ? OdkFormLoadResult.OpenMode.EDIT_ODK_INSTANCE : OdkFormLoadResult.OpenMode.NEW_ODK_INSTANCE;
-        String savedFormFilePath = openingSavedUri ? getXmlFilePath(odkUri) : null;
-
         Cursor cursor = null;
 
-        cursor = getCursorForFormsProvider(filledForm.getFormName());
+        if (openingSavedUri) {
+            Log.d("openingsaveduri", "true");
+            return new OdkFormLoadResult(OdkFormLoadResult.Status.SUCCESS, openMode, null, null);
+        }
 
-        if (cursor != null) {
-            if (cursor.moveToNext()) {
-                int formIdIndex = cursor.getColumnIndex(FormsProviderAPI.FormsColumns.JR_FORM_ID);
-                int formNameIndex = cursor.getColumnIndex(FormsProviderAPI.FormsColumns.DISPLAY_NAME);
-                int formPathIndex = cursor.getColumnIndex(FormsProviderAPI.FormsColumns.FORM_FILE_PATH);
-                int formVersionIndex = cursor.getColumnIndex(FormsProviderAPI.FormsColumns.JR_VERSION);
+        Log.d("get cursor for forms", "");
 
-                jrFormId = cursor.getString(formIdIndex);
-                jrFormName = cursor.getString(formNameIndex);
-                formFilePath = cursor.getString(formPathIndex);
-                formVersion = cursor.getString(formVersionIndex);
+        try {
+            cursor = getCursorForFormsProvider(filledForm.getFormName());
+
+            if (cursor != null) {
+                if (cursor.moveToNext()) {
+                    int formIdIndex = cursor.getColumnIndex(FormsProviderAPI.FormsColumns.JR_FORM_ID);
+                    int formNameIndex = cursor.getColumnIndex(FormsProviderAPI.FormsColumns.DISPLAY_NAME);
+                    int formPathIndex = cursor.getColumnIndex(FormsProviderAPI.FormsColumns.FORM_FILE_PATH);
+                    int formVersionIndex = cursor.getColumnIndex(FormsProviderAPI.FormsColumns.JR_VERSION);
+
+                    jrFormId = cursor.getString(formIdIndex);
+                    jrFormName = cursor.getString(formNameIndex);
+                    formFilePath = cursor.getString(formPathIndex);
+                    formVersion = cursor.getString(formVersionIndex);
+                }
+
+                cursor.close();
+            } else {
+                //no content provider
+                Log.d("odk content provider", "not available");
+                return new OdkFormLoadResult(OdkFormLoadResult.Status.ERROR_PROVIDER_NA, openMode, null, null);
             }
+        } catch (Exception e) {
+            e.printStackTrace();
 
-            cursor.close();
-        } else {
-            //no content provider
-            Log.d("odk content provider", "not available");
             return new OdkFormLoadResult(OdkFormLoadResult.Status.ERROR_PROVIDER_NA, openMode, null, null);
         }
 
@@ -106,64 +125,114 @@ public class OdkFormLoadTask extends AsyncTask<Void, Void, OdkFormLoadResult> {
 
         //ANDROID 11+ - ITS NOT POSSIBLE TO GET PRIVATE DIRECTORY
 
-        boolean hasPrivateOdkStorage = !new File(formFilePath).exists() && !formFilePath.startsWith("/");
-        Log.d("odk with private folder", hasPrivateOdkStorage+", ffpath: "+formFilePath+", exists="+new File(formFilePath).exists());
+        Log.d("odk storage type", formUtilities.getOdkStorageType()+", ffpath: "+formFilePath+", exists="+new File(formFilePath).exists());
 
-        if (hasPrivateOdkStorage) {
-            //the absolute file path is not found -> try to find using ODK Collect App base Path
-            SearchFormResult searchResult = findOdkFormOnScopedDir(formFilePath);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            //ANDROID 11+ - Accessing Scoped and Shared Folder using SAF
 
-            if (searchResult.status == SearchStatus.NOT_FOUND) {
-                return new OdkFormLoadResult(OdkFormLoadResult.Status.ERROR_FORM_NOT_FOUND, openMode, null, null);
+            OdkScopedDirUtil odkScopedDirUtil = formUtilities.getOdkScopedDirUtil();
+
+            if (formUtilities.getOdkStorageType() == OdkStorageType.ODK_SHARED_FOLDER) {
+                //In Android 11 we must access the file using SAF - direct file path through File API doesnt work without MANAGE ALL FILES PERMISSION
+                //To be able to find the file just get the filename
+                formAbsoluteFilePath = formFilePath; //save the full file path
+                formFilePath = new File(formFilePath).getName();
             }
 
-            if (searchResult.status == SearchStatus.PERMISSION_DENIED) {
-                return new OdkFormLoadResult(OdkFormLoadResult.Status.ERROR_ODK_FOLDER_PERMISSION_DENIED, openMode, null, null);
-            }
+            if (odkScopedDirUtil != null) {
+                foundFormObject = odkScopedDirUtil.findBlankForm(formFilePath);
 
-            //The file was found
-
-            File formFile = searchResult.formFile;
-            Log.d("correct-odk-file", "for=" + formFile.getAbsolutePath() + ", found="+(formFile));
-
-            if (formFile != null) {
-                formFilePath = formFile.getAbsolutePath();
+                if (foundFormObject == null) {
+                    return new OdkFormLoadResult(OdkFormLoadResult.Status.ERROR_FORM_NOT_FOUND, openMode, null, null);
+                }
+                //the blank form was found
             } else {
                 return new OdkFormLoadResult(OdkFormLoadResult.Status.ERROR_ODK_FOLDER_PERMISSION_DENIED, openMode, null, null);
             }
+        } else {
+            //ANDROID 10- - Uses File.API
+
+            if (formUtilities.getOdkStorageType() != OdkStorageType.ODK_SHARED_FOLDER) {
+                //WHEN USING A SCOPED FOLDER
+
+                //the absolute file path is not found -> try to find using ODK Collect App base Path
+                SearchFormResult searchResult = findOdkFormOnScopedDir(formFilePath);
+
+                if (searchResult.status == SearchStatus.NOT_FOUND) {
+                    return new OdkFormLoadResult(OdkFormLoadResult.Status.ERROR_FORM_NOT_FOUND, openMode, null, null);
+                }
+
+                if (searchResult.status == SearchStatus.PERMISSION_DENIED) {
+                    return new OdkFormLoadResult(OdkFormLoadResult.Status.ERROR_ODK_FOLDER_PERMISSION_DENIED, openMode, null, null);
+                }
+
+                //The file was found
+                File formFile = searchResult.formFile;
+                Log.d("correct-odk-file", "for=" + formFile.getAbsolutePath() + ", found=" + (formFile));
+
+                if (formFile != null) {
+                    formFilePath = formFile.getAbsolutePath();
+                } else {
+                    return new OdkFormLoadResult(OdkFormLoadResult.Status.ERROR_ODK_FOLDER_PERMISSION_DENIED, openMode, null, null);
+                }
+
+                if (!new File(formFilePath).canRead()) {
+                    return new OdkFormLoadResult(OdkFormLoadResult.Status.ERROR_ODK_FOLDER_PERMISSION_DENIED, openMode, null, null);
+                }
+            } else {
+                //formFilePath - already have the file location
+            }
         }
 
-        if (!new File(formFilePath).canRead()) {
-            return new OdkFormLoadResult(OdkFormLoadResult.Status.ERROR_ODK_FOLDER_PERMISSION_DENIED, openMode, null, null);
-        }
 
         /* ends here - finding odk form on odk database */
         Log.d("loading forms", "form_id=" + jrFormId + ",ver=" + formVersion + ", path=" + formFilePath);
-
-        //request permission for reading device id
 
         if (openMode == OdkFormLoadResult.OpenMode.NEW_ODK_INSTANCE) {
 
             //**** Open a New ODK Form ****//
             OdkColumnsPreloader preloader = new OdkColumnsPreloader(this.formUtilities, filledForm);
-            String xml = preloader.generatePreloadedXml(jrFormId, formVersion, formFilePath);
-            File targetFile = createNewOdkFormInstanceFile(xml, jrFormName, new File(formFilePath));
-            boolean writeFile = false;
 
-            if (targetFile != null) {
-                writeFile = insertNewOdkFormInstance(targetFile, filledForm.getFormName(), jrFormId, formVersion);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                //We are using SAF to access folder
 
-                if (!writeFile) {
-                    return new OdkFormLoadResult(OdkFormLoadResult.Status.ERROR_ODK_INSERT_SAVED_INSTANCE, openMode, targetFile, null);
+                String xml = preloader.generatePreloadedXml(jrFormId, formVersion, foundFormObject);
+                OdkScopedDirUtil.OdkFormInstance targetFile = createNewOdkFormInstanceFile(xml, jrFormName, foundFormObject);
+                boolean writeFile = false;
+
+                if (targetFile != null) {
+                    writeFile = insertNewOdkFormInstance(targetFile, formAbsoluteFilePath, filledForm.getFormName(), jrFormId, formVersion);
+                    if (!writeFile) {
+                        return OdkFormLoadResult.newInstance(OdkFormLoadResult.Status.ERROR_ODK_INSERT_SAVED_INSTANCE, openMode, targetFile.getInstanceFile(), null);
+                    }
+                } else {
+                    return OdkFormLoadResult.newInstance(OdkFormLoadResult.Status.ERROR_ODK_CREATE_SAVED_INSTANCE_FILE, openMode, targetFile.getInstanceFile(), null);
                 }
 
+                Log.d("finished", "creating file, write file: "+writeFile);
+                return OdkFormLoadResult.newInstance(OdkFormLoadResult.Status.SUCCESS, openMode, targetFile.getInstanceFile(), null);
+
             } else {
-                return new OdkFormLoadResult(OdkFormLoadResult.Status.ERROR_ODK_CREATE_SAVED_INSTANCE_FILE, openMode, targetFile, null);
+
+                //ITS A SHARED FOLDER
+
+                String xml = preloader.generatePreloadedXml(jrFormId, formVersion, formFilePath);
+                File targetFile = createNewOdkFormInstanceFile(xml, jrFormName, new File(formFilePath));
+                boolean writeFile = false;
+
+                if (targetFile != null) {
+                    writeFile = insertNewOdkFormInstance(targetFile, filledForm.getFormName(), jrFormId, formVersion);
+                    if (!writeFile) {
+                        return new OdkFormLoadResult(OdkFormLoadResult.Status.ERROR_ODK_INSERT_SAVED_INSTANCE, openMode, targetFile, null);
+                    }
+                } else {
+                    return new OdkFormLoadResult(OdkFormLoadResult.Status.ERROR_ODK_CREATE_SAVED_INSTANCE_FILE, openMode, targetFile, null);
+                }
+
+                Log.d("finished", "creating file");
+                return new OdkFormLoadResult(OdkFormLoadResult.Status.SUCCESS, openMode, targetFile, null);
             }
 
-            Log.d("finished", "creating file");
-
-            return new OdkFormLoadResult(OdkFormLoadResult.Status.SUCCESS, openMode, targetFile, null);
         }
 
         return new OdkFormLoadResult(OdkFormLoadResult.Status.SUCCESS, openMode, null, null);
@@ -210,19 +279,33 @@ public class OdkFormLoadTask extends AsyncTask<Void, Void, OdkFormLoadResult> {
 
         Log.d("odkDir", ""+odkBasePath+", exists="+odkDir.exists());
         if (odkDir.exists()) {
-            for (File projectSubDir : odkDir.listFiles()) {
-                if (projectSubDir.isDirectory()) { //files/projects/ssad11-ss-1${ODK_PROJECT}plda5da-dadasd
-                    File formsDir = new File(projectSubDir.getAbsolutePath() + File.separator + "forms");
-                    File instancesDir = new File(projectSubDir.getAbsolutePath() + File.separator + "instances");
 
-                    Log.d("found odk-sub-dir", ""+formsDir.toString());
+            if (formUtilities.getOdkStorageType() == OdkStorageType.ODK_SCOPED_FOLDER_PROJECTS) {
+                File projectsDir = new File(odkBasePath + "projects");
 
-                    if (formsDir.exists() && formsDir.isDirectory()) {
+                for (File projectSubDir : projectsDir.listFiles()) {
+                    if (projectSubDir.isDirectory()) { //files/projects/ssad11-ss-1${ODK_PROJECT}plda5da-dadasd
+                        File formsDir = new File(projectSubDir.getAbsolutePath() + File.separator + "forms");
 
-                        return formsDir;
+                        Log.d("found odk-pform-sub-dir", ""+formsDir.toString());
+
+                        if (formsDir.exists() && formsDir.isDirectory()) {
+                            return formsDir;
+                        }
                     }
                 }
+
+                return null;
+            } else if (formUtilities.getOdkStorageType() == OdkStorageType.ODK_SCOPED_FOLDER_NO_PROJECTS) {
+                File formsDir = new File(odkBasePath + "forms");;
+
+                Log.d("found odk-forms-sub-dir", ""+formsDir.toString());
+
+                if (formsDir.exists() && formsDir.isDirectory()) {
+                    return formsDir;
+                }
             }
+
         }
 
         return null;
@@ -313,6 +396,32 @@ public class OdkFormLoadTask extends AsyncTask<Void, Void, OdkFormLoadResult> {
         return null;
     }
 
+    private OdkScopedDirUtil.OdkFormInstance createNewOdkFormInstanceFile(String xml, String jrFormId, OdkScopedDirUtil.OdkFormObject formObject) {
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd_hh-mm-ss");
+        df.setTimeZone(TimeZone.getDefault());
+        String date = df.format(new Date());
+
+        String dirName = jrFormId + "_" + date;
+        String fileName =  jrFormId + "_" + date + ".xml";
+
+        OdkScopedDirUtil.OdkFormInstance formInstance = formObject.createNewInstance(dirName, fileName);
+
+        try {
+
+            OutputStream outputStream = formInstance.getInstanceOutputStream();
+
+            PrintStream output = new PrintStream(outputStream);
+            output.print(xml);
+            output.close();
+
+            return formInstance;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+    }
+
     private boolean insertNewOdkFormInstance(File targetFile, String displayName, String formId, String formVersion) {
 
         ContentValues values = new ContentValues();
@@ -325,6 +434,38 @@ public class OdkFormLoadTask extends AsyncTask<Void, Void, OdkFormLoadResult> {
         }
 
         odkUri = resolver.insert(InstanceProviderAPI.InstanceColumns.CONTENT_URI, values);
+
+        if (odkUri == null) {
+            return false;
+        }
+
+        return true;
+    }
+
+    private boolean insertNewOdkFormInstance(OdkScopedDirUtil.OdkFormInstance targetFile, String blankFormFilePath, String displayName, String formId, String formVersion) {
+
+        //formAbsoluteFilePath - is used with we are using a SHARED FOLDER, we must save the odk full path
+
+        String instanceFilePath = targetFile.getInstanceRelativePath();
+        if (formUtilities.getOdkStorageType() == OdkStorageType.ODK_SHARED_FOLDER) {
+            File formsDir = new File(blankFormFilePath).getParentFile();
+            File odkDir = formsDir.getParentFile();
+            instanceFilePath = odkDir.getAbsolutePath() + File.separator + "instances" + File.separator + targetFile.getInstanceRelativePath();
+        }
+
+
+        ContentValues values = new ContentValues();
+        values.put(InstanceProviderAPI.InstanceColumns.INSTANCE_FILE_PATH, instanceFilePath);
+        values.put(InstanceProviderAPI.InstanceColumns.DISPLAY_NAME, displayName);
+        values.put(InstanceProviderAPI.InstanceColumns.JR_FORM_ID, formId);
+
+        if (formVersion != null){
+            values.put(InstanceProviderAPI.InstanceColumns.JR_VERSION, formVersion);
+        }
+
+        odkUri = resolver.insert(InstanceProviderAPI.InstanceColumns.CONTENT_URI, values);
+
+        Log.d("saving new instance", ""+odkUri);
 
         if (odkUri == null) {
             return false;

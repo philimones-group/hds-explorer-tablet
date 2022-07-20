@@ -11,6 +11,7 @@ import org.xml.sax.SAXException;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 
@@ -21,6 +22,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import mz.betainteractive.odk.FormUtilities;
 import mz.betainteractive.odk.model.FilledForm;
 import mz.betainteractive.odk.model.RepeatGroupType;
+import mz.betainteractive.odk.storage.access.OdkScopedDirUtil;
 
 public class OdkColumnsPreloader {
 
@@ -38,6 +40,40 @@ public class OdkColumnsPreloader {
     public OdkColumnsPreloader(FormUtilities formUtilities, FilledForm filledForm) {
         this.formUtilities = formUtilities;
         this.filledForm = filledForm;
+    }
+
+    public String generatePreloadedXml(String jrFormId, String formVersion, OdkScopedDirUtil.OdkFormObject formObject) {
+
+        StringBuilder sbuilder = new StringBuilder();
+
+        try {
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder builder = factory.newDocumentBuilder();
+            Document doc = builder.parse(formObject.getFormInputStream());
+
+            Node node = doc.getElementsByTagName("data").item(0);
+            formVersion = formVersion == null ? "" : " version=\"" + formVersion + "\"";
+
+            if (node == null) {
+                node = doc.getElementsByTagName(jrFormId).item(0);
+                Log.d("node", ""+node.getNodeName());
+                sbuilder.append("<" + jrFormId + " id=\"" + jrFormId + "\"" + formVersion + ">" + "\r\n"); // version="161103141"
+            } else {
+                sbuilder.append("<data id=\"" + jrFormId + "\"" + formVersion + ">" + "\r\n");
+            }
+
+            processNewNodeChildren(node, sbuilder);
+            Log.d("processXml", "finished!");
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ParserConfigurationException e) {
+            e.printStackTrace();
+        } catch (SAXException e) {
+            e.printStackTrace();
+        }
+
+        return sbuilder.toString();
     }
 
     public String generatePreloadedXml(String jrFormId, String formVersion, String formFilePath) {

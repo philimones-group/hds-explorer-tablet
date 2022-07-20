@@ -1,13 +1,9 @@
 package org.philimone.hds.explorer.database;
 
-import android.content.ContentResolver;
 import android.content.Context;
-import android.database.Cursor;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 import android.os.storage.StorageManager;
-import android.provider.MediaStore;
 import android.util.Log;
 
 import org.philimone.hds.explorer.model.ApplicationParam;
@@ -38,8 +34,7 @@ public class Bootstrap {
     private static final String APP_INSTANCES_PATH = APP_BASE_PATH + "instances" + File.separator;
 
     private static final String ODK_APP_PATH = "org.odk.collect.android";
-    private static final String ODK_APP_BASE_PATH = File.separator + "Android" + File.separator + "data" + File.separator + ODK_APP_PATH + File.separator + "files"+ File.separator + "projects" + File.separator;
-
+    private static final String ODK_APP_BASE_PATH = File.separator + "Android" + File.separator + "data" + File.separator + ODK_APP_PATH + File.separator + "files"+ File.separator;
 
     private static String absoluteBasePath;
     private static String absoluteFormsPath;

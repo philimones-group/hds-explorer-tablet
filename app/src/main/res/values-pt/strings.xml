@@ -33,13 +33,15 @@
     <string name="odk_couldnt_open_xform_lbl">Não foi possivel abrir o formulário ODK</string>
     <string name="odk_couldnt_reopen_xform_lbl">O formulário ODK salvo não foi encontrado, não sera possivel abri-lo</string>
     <string name="odk_problem_lbl">Ocorreu um problema com o ODK</string>
-    <string name="odk_form_load_error_provider_lbl">Couldnt get ODK Forms, There is no ODK Collect App installed or properly configured!!</string>
+    <string name="odk_form_load_error_odk_not_installed_lbl">Couldnt get ODK Forms provider, There is no ODK Collect App installed!</string>
+    <string name="odk_form_load_error_provider_lbl">Couldnt get ODK Forms, An Error occurred while trying to get ODK Forms from content provider!</string>
     <string name="odk_form_load_error_form_not_found_lbl">The form wasnt found on ODK Collect. Please, make sure the ODK Form exists.</string>
     <string name="odk_form_load_error_folder_permissions_lbl">Couldnt get ODK Forms files, Access to ODK Collect content data was denied!</string>
     <string name="odk_form_load_permission_storage_denied_lbl">It will not be possible to access ODK Forms. There is no permission to use the Storage for read/write operations on ODK Collect!</string>
     <string name="odk_form_load_permissions_denied_lbl">To procced to ODK Collect and start collecting the Form.\nYou must grant all the previous permissions given by the system!</string>
     <string name="odk_form_load_permission_request_manage_all_title_lbl">ODK Collect Forms Access</string>
-    <string name="odk_form_load_permission_request_manage_all_info_lbl">To be able to access ODK Forms, You must enable "Allow access to manage all files" in the next page after click OK button!</string>
+    <string name="odk_form_load_permission_request_manage_all_info_lbl">To be able to access ODK Forms, You must enable (Allow access to manage all files) in the next page after click OK button!</string>
+    <string name="odk_form_load_permission_request_android_dir_info_lbl">To be able to access ODK Folder Forms, You must click on (Utilizar esta pasta) in the next page that will be displayed after clicking OK button!</string>
     <string name="odk_form_load_permission_request_readwrite_denied_lbl">It will not be possible to access ODK Forms. There is no permission to use the Storage for read/write operations on ODK Collect forms!</string>
     <string name="odk_form_load_permission_request_readphonestate_denied_lbl">It will not be possible to open ODK Forms. There is no permission to get device and network information!</string>
     <string name="odk_form_load_error_saving_prefilled_xml_lbl">An error occured while trying to save preloaded xml data file.</string>

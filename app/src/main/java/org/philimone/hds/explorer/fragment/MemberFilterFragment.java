@@ -2,9 +2,16 @@ package org.philimone.hds.explorer.fragment;
 
 
 import android.os.Bundle;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -50,6 +57,48 @@ public class MemberFilterFragment extends Fragment implements BarcodeScannerActi
         return view;
     }
 
+    @Override
+    public void onCreateContextMenu(@NonNull ContextMenu menu, @NonNull View v, @Nullable ContextMenu.ContextMenuInfo menuInfo) {
+
+        Log.d("menutag", "creating context menu = "+v.getId());
+        super.onCreateContextMenu(menu, v, menuInfo);
+
+        if (v.getId() == txtMemFilterCode.getId() || v.getId() == txtMemFilterName.getId() || v.getId() == txtMemFilterCurrHousecode.getId()) {
+            menu.add(Menu.NONE, v.getId(), Menu.NONE, "Scan Barcode");
+            Log.d("menutag", ""+v.getId());
+        }
+    }
+
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+
+        menu.add(Menu.NONE, txtMemFilterCode.getId(), Menu.NONE, "Scan Barcode");
+
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+Log.d("menu selected", ""+item);
+        if (item.getItemId() == txtMemFilterName.getId()) {
+            onFilterNameBarcodeScanClicked();
+            return true;
+        }
+
+        if (item.getItemId() == txtMemFilterCode.getId()) {
+            onFilterCodeBarcodeScanClicked();
+            return true;
+        }
+
+        if (item.getItemId() == txtMemFilterCurrHousecode.getId()) {
+            onFilterHouseNmBarcodeScanClicked();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+
+    }
+
     private void initialize(View view) {
         if (getActivity() instanceof Listener){
             this.listener = (Listener) getActivity();
@@ -82,10 +131,14 @@ public class MemberFilterFragment extends Fragment implements BarcodeScannerActi
             }
         });
 
+        //this.registerForContextMenu(txtMemFilterName);
+        //this.registerForContextMenu(txtMemFilterCode);
+        //this.registerForContextMenu(txtMemFilterCurrHousecode);
+
         this.txtMemFilterCode.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                onFilterCodeClicked();
+                onFilterCodeBarcodeScanClicked();
                 return true;
             }
         });
@@ -93,7 +146,7 @@ public class MemberFilterFragment extends Fragment implements BarcodeScannerActi
         this.txtMemFilterCurrHousecode.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                onFilterHouseNmClicked();
+                onFilterHouseNmBarcodeScanClicked();
                 return true;
             }
         });
@@ -133,23 +186,33 @@ public class MemberFilterFragment extends Fragment implements BarcodeScannerActi
         this.barcodeScannerListener = listener;
     }
 
-    private void onFilterHouseNmClicked() {
-       //1-Load scan dialog (scan id or cancel)
-       //2-on scan load scanner and read barcode
-       //3-return with readed barcode and put on houseFilterCode EditText
+    private void onFilterNameBarcodeScanClicked() {
+        //1-Load scan dialog (scan id or cancel)
+        //2-on scan load scanner and read barcode
+        //3-return with readed barcode and put on houseFilterCode EditText
 
         if (this.barcodeScannerListener != null){
-            this.barcodeScannerListener.onBarcodeScannerClicked(R.id.txtMemFilterCurrHousecode, getString(R.string.member_filter_curr_housename_lbl), this);
+            this.barcodeScannerListener.onBarcodeScannerClicked(R.id.txtMemFilterName, getString(R.string.member_filter_name_lbl), this);
         }
     }
 
-    private void onFilterCodeClicked() {
+    private void onFilterCodeBarcodeScanClicked() {
         //1-Load scan dialog (scan id or cancel)
         //2-on scan load scanner and read barcode
         //3-return with readed barcode and put on houseFilterCode EditText
 
         if (this.barcodeScannerListener != null){
             this.barcodeScannerListener.onBarcodeScannerClicked(R.id.txtMemFilterCode, getString(R.string.member_filter_code_lbl), this);
+        }
+    }
+
+    private void onFilterHouseNmBarcodeScanClicked() {
+        //1-Load scan dialog (scan id or cancel)
+        //2-on scan load scanner and read barcode
+        //3-return with readed barcode and put on houseFilterCode EditText
+
+        if (this.barcodeScannerListener != null){
+            this.barcodeScannerListener.onBarcodeScannerClicked(R.id.txtMemFilterCurrHousecode, getString(R.string.member_filter_curr_housename_lbl), this);
         }
     }
 

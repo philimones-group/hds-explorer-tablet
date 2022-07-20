@@ -1,11 +1,19 @@
 package org.philimone.hds.explorer.fragment;
 
 
+import android.annotation.SuppressLint;
+import android.content.ClipboardManager;
+import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.view.menu.MenuBuilder;
 import androidx.fragment.app.Fragment;
+
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
@@ -19,13 +27,16 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 
 import org.philimone.hds.explorer.R;
+import org.philimone.hds.explorer.listeners.BarcodeContextMenuClickedListener;
 import org.philimone.hds.explorer.main.BarcodeScannerActivity;
 import org.philimone.hds.explorer.widget.NumberPicker;
+
+import java.lang.reflect.Field;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class MemberFilterFragment extends Fragment implements BarcodeScannerActivity.ResultListener {
+public class MemberFilterFragment extends Fragment implements BarcodeScannerActivity.ResultListener, BarcodeContextMenuClickedListener {
 
     private EditText txtMemFilterName;
     private EditText txtMemFilterCode;
@@ -55,48 +66,6 @@ public class MemberFilterFragment extends Fragment implements BarcodeScannerActi
 
         initialize(view);
         return view;
-    }
-
-    @Override
-    public void onCreateContextMenu(@NonNull ContextMenu menu, @NonNull View v, @Nullable ContextMenu.ContextMenuInfo menuInfo) {
-
-        Log.d("menutag", "creating context menu = "+v.getId());
-        super.onCreateContextMenu(menu, v, menuInfo);
-
-        if (v.getId() == txtMemFilterCode.getId() || v.getId() == txtMemFilterName.getId() || v.getId() == txtMemFilterCurrHousecode.getId()) {
-            menu.add(Menu.NONE, v.getId(), Menu.NONE, "Scan Barcode");
-            Log.d("menutag", ""+v.getId());
-        }
-    }
-
-    @Override
-    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-
-        menu.add(Menu.NONE, txtMemFilterCode.getId(), Menu.NONE, "Scan Barcode");
-
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-Log.d("menu selected", ""+item);
-        if (item.getItemId() == txtMemFilterName.getId()) {
-            onFilterNameBarcodeScanClicked();
-            return true;
-        }
-
-        if (item.getItemId() == txtMemFilterCode.getId()) {
-            onFilterCodeBarcodeScanClicked();
-            return true;
-        }
-
-        if (item.getItemId() == txtMemFilterCurrHousecode.getId()) {
-            onFilterHouseNmBarcodeScanClicked();
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-
     }
 
     private void initialize(View view) {
@@ -131,28 +100,95 @@ Log.d("menu selected", ""+item);
             }
         });
 
-        //this.registerForContextMenu(txtMemFilterName);
-        //this.registerForContextMenu(txtMemFilterCode);
-        //this.registerForContextMenu(txtMemFilterCurrHousecode);
 
+        /*
         this.txtMemFilterCode.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
                 onFilterCodeBarcodeScanClicked();
                 return true;
             }
-        });
+        });*/
 
+        /*
         this.txtMemFilterCurrHousecode.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
                 onFilterHouseNmBarcodeScanClicked();
                 return true;
             }
-        });
+        });*/
 
         if (txtMemFilterCode.getText().length()>0){
             onSearch();
+        }
+
+        this.registerForContextMenu(txtMemFilterName);
+        this.registerForContextMenu(txtMemFilterCode);
+        this.registerForContextMenu(txtMemFilterCurrHousecode);
+    }
+
+    @Override
+    public void onCreateContextMenu(@NonNull ContextMenu menu, @NonNull View v, @Nullable ContextMenu.ContextMenuInfo menuInfo) {
+        Log.d("menutag", "creating context menu = "+v.getId()+", info="+menuInfo);
+
+        super.onCreateContextMenu(menu, v, menuInfo);
+        MenuInflater inflater = getActivity().getMenuInflater();
+        inflater.inflate(R.menu.menu_barcode, menu);
+
+        for(int i = 0; i < menu.size(); i++) {
+            MenuItem item = menu.getItem(i);
+
+            item.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                @Override
+                public boolean onMenuItemClick(MenuItem item) {
+                    onBarcodeContextMenuItemClicked(v, item);
+                    return true;
+                }
+            });
+
+            SpannableString spanString = new SpannableString(menu.getItem(i).getTitle().toString());
+            spanString.setSpan(new ForegroundColorSpan(Color.BLACK), 0,     spanString.length(), 0); //fix the color to white
+            item.setTitle(spanString);
+            item.setIcon(R.drawable.nui_paste_icon);
+        }
+    }
+
+    @Override
+    public void onBarcodeContextMenuItemClicked(View view, MenuItem item) {
+
+        switch (item.getItemId()) {
+            case R.id.menuBarcodePaste:
+                String paste = getClipboardPasteText();
+                if (view.getId()==txtMemFilterName.getId()) {
+                    txtMemFilterName.setText(paste);
+                } else if (view.getId()==txtMemFilterCode.getId()) {
+                    txtMemFilterCode.setText(paste);
+                } else if (view.getId()==txtMemFilterCurrHousecode.getId()) {
+                    txtMemFilterCurrHousecode.setText(paste);
+                }
+                break;
+            case R.id.menuBarcodeScan:
+                if (view.getId()==txtMemFilterName.getId()) {
+                    onFilterNameBarcodeScanClicked();
+                } else if (view.getId()==txtMemFilterCode.getId()) {
+                    onFilterCodeBarcodeScanClicked();
+                } else if (view.getId()==txtMemFilterCurrHousecode.getId()) {
+                    onFilterHouseNmBarcodeScanClicked();
+                }
+                break;
+        }
+
+        Log.d("barcode menu", view.toString() + ", "+item+", paste="+getClipboardPasteText());
+    }
+
+    private String getClipboardPasteText() {
+        ClipboardManager clipboard = (ClipboardManager) this.getContext().getSystemService(Context.CLIPBOARD_SERVICE);
+        try {
+            CharSequence textToPaste = clipboard.getPrimaryClip().getItemAt(0).getText();
+            return textToPaste.toString();
+        } catch (Exception e) {
+            return null;
         }
     }
 
@@ -234,3 +270,4 @@ Log.d("menu selected", ""+item);
         void onSearch(String name, String code, String houseNumber, String gender, Integer minAge, Integer maxAge, Boolean isDead, Boolean hasOutmigrated, Boolean liveResident);
     }
 }
+

@@ -634,6 +634,8 @@
     <string name="barcode_dialog_bt_scan_lbl">Scanear</string>
     <string name="barcode_dialog_bt_scan_barcode_lbl">Scanear o código de barras</string>
     <string name="barcode_dialog_bt_cancel_lbl">Cancel</string>
+    <string name="barcode_menu_bt_paste_lbl">Colar</string>
+    <string name="barcode_menu_bt_scan_lbl">Scanear o código de barras</string>
 
     <!-- Permissions-->
     <string name="permissions_sync_storage_title_lbl">Negado acesso ao armazenamento!</string>

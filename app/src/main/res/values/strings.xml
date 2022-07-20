@@ -637,6 +637,8 @@
     <string name="barcode_dialog_bt_scan_lbl">Scan</string>
     <string name="barcode_dialog_bt_scan_barcode_lbl">Scan the Barcode</string>
     <string name="barcode_dialog_bt_cancel_lbl">Cancel</string>
+    <string name="barcode_menu_bt_paste_lbl">Paste</string>
+    <string name="barcode_menu_bt_scan_lbl">Scan Barcode</string>
 
     <!-- Permissions-->
     <string name="permissions_sync_storage_title_lbl">Access Permission denied!</string>

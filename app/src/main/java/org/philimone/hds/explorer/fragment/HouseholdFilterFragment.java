@@ -2,15 +2,22 @@ package org.philimone.hds.explorer.fragment;
 
 
 import android.app.Activity;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.SpannableString;
 import android.text.TextWatcher;
+import android.text.style.ForegroundColorSpan;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -23,6 +30,8 @@ import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import org.philimone.hds.explorer.R;
@@ -31,6 +40,7 @@ import org.philimone.hds.explorer.adapter.RegionExpandableListAdapter;
 import org.philimone.hds.explorer.adapter.model.HierarchyItem;
 import org.philimone.hds.explorer.database.Bootstrap;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
+import org.philimone.hds.explorer.listeners.BarcodeContextMenuClickedListener;
 import org.philimone.hds.explorer.main.BarcodeScannerActivity;
 import org.philimone.hds.explorer.main.HouseholdDetailsActivity;
 import org.philimone.hds.explorer.model.ApplicationParam;
@@ -59,7 +69,7 @@ import mz.betainteractive.utilities.StringUtil;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class HouseholdFilterFragment extends Fragment implements RegionExpandableListAdapter.Listener, BarcodeScannerActivity.ResultListener {
+public class HouseholdFilterFragment extends Fragment implements RegionExpandableListAdapter.Listener, BarcodeScannerActivity.ResultListener, BarcodeContextMenuClickedListener {
 
     private Context mContext;
     private EditText txtHouseFilterCode;
@@ -215,13 +225,14 @@ public class HouseholdFilterFragment extends Fragment implements RegionExpandabl
             }
         });
 
+        /*
         this.txtHouseFilterCode.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
                 onHouseFilterCodeClicked();
                 return true;
             }
-        });
+        });*/
 
 
         if (btHouseFilterAddNewHousehold != null) {
@@ -284,9 +295,66 @@ public class HouseholdFilterFragment extends Fragment implements RegionExpandabl
         }
 
         this.btHouseFilterAddNewHousehold.setEnabled(false);
+
+        this.registerForContextMenu(txtHouseFilterCode);
     }
 
-    private void onHouseFilterCodeClicked() {
+    @Override
+    public void onCreateContextMenu(@NonNull ContextMenu menu, @NonNull View v, @Nullable ContextMenu.ContextMenuInfo menuInfo) {
+        Log.d("menutag", "creating context menu = "+v.getId()+", info="+menuInfo);
+
+        super.onCreateContextMenu(menu, v, menuInfo);
+        MenuInflater inflater = getActivity().getMenuInflater();
+        inflater.inflate(R.menu.menu_barcode, menu);
+
+        for(int i = 0; i < menu.size(); i++) {
+            MenuItem item = menu.getItem(i);
+
+            item.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                @Override
+                public boolean onMenuItemClick(MenuItem item) {
+                    onBarcodeContextMenuItemClicked(v, item);
+                    return true;
+                }
+            });
+
+            SpannableString spanString = new SpannableString(menu.getItem(i).getTitle().toString());
+            spanString.setSpan(new ForegroundColorSpan(Color.BLACK), 0,     spanString.length(), 0); //fix the color to white
+            item.setTitle(spanString);
+        }
+    }
+
+    @Override
+    public void onBarcodeContextMenuItemClicked(View view, MenuItem item) {
+
+        switch (item.getItemId()) {
+            case R.id.menuBarcodePaste:
+                String paste = getClipboardPasteText();
+                if (view.getId()==txtHouseFilterCode.getId()) {
+                    txtHouseFilterCode.setText(paste);
+                }
+                break;
+            case R.id.menuBarcodeScan:
+                if (view.getId()==txtHouseFilterCode.getId()) {
+                    onHouseFilterCodeBarcodeScanClicked();
+                }
+                break;
+        }
+
+        Log.d("barcode menu", view.toString() + ", "+item+", paste="+getClipboardPasteText());
+    }
+
+    private String getClipboardPasteText() {
+        ClipboardManager clipboard = (ClipboardManager) this.getContext().getSystemService(Context.CLIPBOARD_SERVICE);
+        try {
+            CharSequence textToPaste = clipboard.getPrimaryClip().getItemAt(0).getText();
+            return textToPaste.toString();
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    private void onHouseFilterCodeBarcodeScanClicked() {
         //1-Load scan dialog (scan id or cancel)
         //2-on scan load scanner and read barcode
         //3-return with readed barcode and put on houseFilterCode EditText

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:id="@+id/menuBarcodePaste"
+        android:icon="@drawable/nui_paste_icon"
+        android:title="@string/barcode_menu_bt_paste_lbl"
+        app:showAsAction="always" />
+    <item android:id="@+id/menuBarcodeScan"
+        android:icon="@drawable/nui_barcode_scan_icon"
+        android:title="@string/barcode_menu_bt_scan_lbl"
+        app:showAsAction="always"/>
+
+</menu>

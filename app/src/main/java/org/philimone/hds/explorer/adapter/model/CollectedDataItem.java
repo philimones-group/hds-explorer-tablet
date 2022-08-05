@@ -117,6 +117,10 @@ public class CollectedDataItem implements Serializable {
         this.collectedData = collectedData;
     }
 
+    public boolean isFormNull(){
+        return form==null;
+    }
+
     public boolean isHouseholdItem(){
         return household!=null;
     }

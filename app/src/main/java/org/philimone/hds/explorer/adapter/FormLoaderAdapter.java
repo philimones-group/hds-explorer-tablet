@@ -12,11 +12,16 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import org.philimone.hds.explorer.R;
+import org.philimone.hds.explorer.adapter.model.TrackingSubListItem;
+import org.philimone.hds.explorer.adapter.model.TrackingSubjectItem;
 import org.philimone.hds.explorer.data.FormDataLoader;
+import org.philimone.hds.explorer.model.Form;
+import org.philimone.hds.explorer.model.enums.FormType;
 import org.philimone.hds.explorer.model.followup.TrackingList;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import mz.betainteractive.utilities.StringUtil;
 
@@ -24,6 +29,10 @@ import mz.betainteractive.utilities.StringUtil;
  * Created by paul on 8/10/16.
  */
 public class FormLoaderAdapter extends RecyclerView.Adapter<FormLoaderAdapter.FormLoaderViewHolder> {
+
+    private final static int VIEW_TYPE_REGULAR = 0;
+    private final static int VIEW_TYPE_GROUP = 1;
+
     private List<FormDataLoader> dataLoaders;
     private Context mContext;
     private String filterText;
@@ -52,8 +61,27 @@ public class FormLoaderAdapter extends RecyclerView.Adapter<FormLoaderAdapter.Fo
     @Override
     public FormLoaderViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View rowView = inflater.inflate(R.layout.form_item, parent, false);
+        View rowView = null;
+
+        if (viewType == VIEW_TYPE_REGULAR) {
+            rowView = inflater.inflate(R.layout.form_item, parent, false);
+        } else {
+            rowView = inflater.inflate(R.layout.form_group_item, parent, false);
+        }
+
         return new FormLoaderViewHolder(rowView);
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+
+        FormDataLoader formDataLoader = this.dataLoaders.get(position);
+
+        if (formDataLoader != null && formDataLoader.getForm() != null) {
+            return formDataLoader.getForm().formType == FormType.FORM_GROUP ? VIEW_TYPE_GROUP : VIEW_TYPE_REGULAR;
+        }
+
+        return VIEW_TYPE_REGULAR;
     }
 
     @Override
@@ -105,9 +133,16 @@ public class FormLoaderAdapter extends RecyclerView.Adapter<FormLoaderAdapter.Fo
         }
 
         public void setValues(FormDataLoader fd) {
-            TextView txtName = (TextView) rowView.findViewById(R.id.txtFormItemName);
-            String processed = "0";
+            Form form = fd.getForm();
+
+            TextView txtName = rowView.findViewById(R.id.txtFormItemName);
+            TextView txtItemId = rowView.findViewById(R.id.txtFormItemId);
+
             txtName.setText(fd.getForm().getFormName());
+            if (form.formType == FormType.FORM_GROUP) {
+                txtItemId.setText(mContext.getString(R.string.show_collected_data_total_lbl, form.groupMappings.size()+""));
+            }
+
         }
     }
 }

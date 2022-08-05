@@ -6,7 +6,7 @@ import mz.betainteractive.odk.task.OdkFormLoadResult;
 
 public interface OdkFormLoadListener {
 
-	public void onOdkFormLoadSuccess(Uri contentUri);
+	public void onOdkFormLoadSuccess(OdkFormLoadResult result);
 	
 	public void onOdkFormLoadFailure(OdkFormLoadResult result);
 

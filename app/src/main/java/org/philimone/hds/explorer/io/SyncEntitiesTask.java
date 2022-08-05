@@ -18,6 +18,8 @@ import org.philimone.hds.explorer.model.CoreFormExtension;
 import org.philimone.hds.explorer.model.Dataset;
 import org.philimone.hds.explorer.model.Death;
 import org.philimone.hds.explorer.model.Form;
+import org.philimone.hds.explorer.model.FormGroupInstance;
+import org.philimone.hds.explorer.model.FormGroupMapping;
 import org.philimone.hds.explorer.model.HeadRelationship;
 import org.philimone.hds.explorer.model.Household;
 import org.philimone.hds.explorer.model.Inmigration;
@@ -39,6 +41,9 @@ import org.philimone.hds.explorer.model.converters.MapStringConverter;
 import org.philimone.hds.explorer.model.converters.StringCollectionConverter;
 import org.philimone.hds.explorer.model.enums.CoreFormEntity;
 import org.philimone.hds.explorer.model.enums.EstimatedDateOfDeliveryType;
+import org.philimone.hds.explorer.model.enums.FormCollectType;
+import org.philimone.hds.explorer.model.enums.FormSubjectType;
+import org.philimone.hds.explorer.model.enums.FormType;
 import org.philimone.hds.explorer.model.enums.Gender;
 import org.philimone.hds.explorer.model.enums.HeadRelationshipType;
 import org.philimone.hds.explorer.model.enums.MaritalEndStatus;
@@ -120,7 +125,9 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 	private Box<CollectedData> boxCollectedData;
 	private Box<CoreCollectedData> boxCoreCollectedData;
 	private Box<Form> boxForms;
+	private Box<FormGroupMapping> boxFormGroupMappings;
 	private Box<CoreFormExtension> boxCoreFormsExts;
+	private Box<FormGroupInstance> boxFormGroupInstances;
 	private Box<User> boxUsers;
 	private Box<Round> boxRounds;
 	private Box<Region> boxRegions;
@@ -166,7 +173,9 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 		this.boxCollectedData = ObjectBoxDatabase.get().boxFor(CollectedData.class);
 		this.boxCoreCollectedData = ObjectBoxDatabase.get().boxFor(CoreCollectedData.class);
 		this.boxForms = ObjectBoxDatabase.get().boxFor(Form.class);
+		this.boxFormGroupMappings = ObjectBoxDatabase.get().boxFor(FormGroupMapping.class);
 		this.boxCoreFormsExts = ObjectBoxDatabase.get().boxFor(CoreFormExtension.class);
+		this.boxFormGroupInstances = ObjectBoxDatabase.get().boxFor(FormGroupInstance.class);
 		this.boxUsers = ObjectBoxDatabase.get().boxFor(User.class);
 		this.boxDatasets = ObjectBoxDatabase.get().boxFor(Dataset.class);
 		this.boxTrackingLists = ObjectBoxDatabase.get().boxFor(TrackingList.class);
@@ -322,7 +331,9 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 						processUrl(baseurl + API_PATH + "/modules/zip", "modules.zip");
 						break;
 					case FORMS:
+						boxFormGroupMappings.removeAll();
 						boxForms.removeAll();
+						deleteFormGroupInstances();
 						processUrl(baseurl + API_PATH + "/forms/zip", "forms.zip");
 						break;
 					case CORE_FORMS_EXT:
@@ -330,6 +341,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 						processUrl(baseurl + API_PATH + "/coreforms/zip", "coreforms.zip");
 						break;
 					case DATASETS:
+						deleteExternalDatasetFiles();
 						this.boxDatasets.removeAll();
 						processUrl(baseurl + API_PATH + "/datasets/zip", "datasets.zip");
 						break;
@@ -362,6 +374,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 						this.boxCollectedData.removeAll();
 						deleteAllCoreCollectedData();
 						this.boxSavedEntityStates.removeAll();
+						deleteFormGroupInstances();
 						//remove related to members
 						boxDeaths.removeAll();
 						boxIncompleteVisits.removeAll();
@@ -434,6 +447,27 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 		this.boxCoreCollectedData.removeAll();
 	}
 
+	private void deleteFormGroupInstances() {
+		//Delete completed and unsed form group instances
+		List<FormGroupInstance> listDelete = new ArrayList<>();
+
+		for (FormGroupInstance formGroupInstance : this.boxFormGroupInstances.getAll()) {
+			if (formGroupInstance.instanceChilds.size()==0) {
+				Log.d("childs", "empty");
+				listDelete.add(formGroupInstance);
+			}
+
+			if (formGroupInstance.formsChilds.size()==formGroupInstance.instanceChilds.size()) {
+				Log.d("form childs", "same as instances - completed will be deleted! "+formGroupInstance.formsChilds.size());
+				listDelete.add(formGroupInstance);
+			}
+		}
+
+		boxFormGroupInstances.remove(listDelete);
+
+		Log.d("removed-fgi", listDelete.size()+"");
+	}
+
 	private void executeOnSyncStarted(SyncEntity entity, SyncState state){
 		int size = getSyncRecordToDownload(entity);
 
@@ -462,6 +496,15 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 		}
 
 		updateSyncReport(SyncEntity.DATASETS_CSV_FILES, new Date(), SyncStatus.STATUS_SYNCED);
+	}
+
+	private void deleteExternalDatasetFiles() {
+		List<Dataset> datasets = this.boxDatasets.getAll();
+
+		for (Dataset dataSet : datasets){
+			File dfile = new File (dataSet.filename);
+			dfile.delete();
+		}
 	}
 
 	/**
@@ -859,6 +902,17 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 
 			Form table = new Form();
 
+			parser.nextTag(); //process formType
+			if (!isEmptyTag("formType", parser)) {
+				parser.next();
+				table.formType = FormType.getFrom(parser.getText());
+				//Log.d(count+"-formType", "value="+ parser.getText());
+				parser.nextTag(); //process </formType>
+			}else{
+				table.formType = null;
+				parser.nextTag();
+			}
+
 			parser.nextTag(); //process formId
 			if (!isEmptyTag("formId", parser)) {
 				parser.next();
@@ -892,14 +946,18 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 				parser.nextTag();
 			}
 
-			parser.nextTag(); //process formDependencies
-			if (!isEmptyTag("formDependencies", parser)) {
+			parser.nextTag(); //process formSubjectType
+			if (!isEmptyTag("formSubjectType", parser)) {
 				parser.next();
-				table.setFormDependencies(parser.getText());
-				parser.nextTag(); //process </formDependencies>
-				//Log.d(count+"-formDependencies", "value="+ parser.getText());
+				table.formSubjectType = FormSubjectType.getFrom(parser.getText());
+				table.isRegionForm = table.formSubjectType==FormSubjectType.REGION;
+				table.isHouseholdForm = table.formSubjectType==FormSubjectType.HOUSEHOLD;
+				table.isMemberForm = table.formSubjectType==FormSubjectType.MEMBER;
+				table.isHouseholdHeadForm = table.formSubjectType==FormSubjectType.HOUSEHOLD_HEAD;
+				parser.nextTag(); //process </formSubjectType>
+				//Log.d(count+"-formSubjectType", "value="+ parser.getText());
 			}else{
-				table.setFormDependencies("");
+				table.formSubjectType = null;
 				parser.nextTag();
 			}
 
@@ -947,61 +1005,6 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 				parser.nextTag();
 			}
 
-			parser.nextTag(); //process modules
-			if (!isEmptyTag("modules", parser)) {
-				parser.next();
-				table.setModules(stringCollectionConverter.getCollectionFrom(parser.getText()));
-				parser.nextTag(); //process </modules>
-				//Log.d(count+"-modules", "value="+ parser.getText());
-			}else{
-				//table.modules.clear();
-				parser.nextTag();
-			}
-
-			parser.nextTag(); //process COLUMN_IS_REGION
-			if (!isEmptyTag("isRegionForm", parser)) {
-				parser.next();
-				table.setRegionForm(Boolean.parseBoolean(parser.getText()));
-				parser.nextTag(); //process </COLUMN_IS_REGION>
-				//Log.d(count+"-COLUMN_IS_REGION", "value="+ parser.getText());
-			}else{
-				table.setRegionForm(false);
-				parser.nextTag();
-			}
-
-			parser.nextTag(); //process isHouseholdForm
-			if (!isEmptyTag("isHouseholdForm", parser)) {
-				parser.next();
-				table.setHouseholdForm(Boolean.parseBoolean(parser.getText()));
-				parser.nextTag(); //process </isHouseholdForm>
-				//Log.d(count+"-isHouseholdForm", "value="+ parser.getText());
-			}else{
-				table.setHouseholdForm(false);
-				parser.nextTag();
-			}
-
-			parser.nextTag(); //process isHouseholdHeadForm
-			if (!isEmptyTag("isHouseholdHeadForm", parser)) {
-				parser.next();
-				table.setHouseholdHeadForm(Boolean.parseBoolean(parser.getText()));
-				parser.nextTag(); //process </isHouseholdHeadForm>
-				//Log.d(count+"-isHouseholdHeadForm", "value="+ parser.getText());
-			}else{
-				table.setHouseholdHeadForm(false);
-				parser.nextTag();
-			}
-
-			parser.nextTag(); //process isMemberForm
-			if (!isEmptyTag("isMemberForm", parser)) {
-				parser.next();
-				table.setMemberForm(Boolean.parseBoolean(parser.getText()));
-				parser.nextTag(); //process </isMemberForm>
-				//Log.d(count+"-isMemberForm", "value="+ parser.getText());
-			}else{
-				table.setMemberForm(false);
-				parser.nextTag();
-			}
-
 			parser.nextTag(); //process isFollowUpOnly
 			if (!isEmptyTag("isFollowUpForm", parser)) {
 				parser.next();
@@ -1010,6 +1013,17 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 				//Log.d(count+"-isFollowUpOnly", "value="+ parser.getText());
 			}else{
 				table.setFollowUpForm(false);
+				parser.nextTag();
+			}
+
+			parser.nextTag(); //process isFormGroupExclusive
+			if (!isEmptyTag("isFormGroupExclusive", parser)) {
+				parser.next();
+				table.isFormGroupExclusive = Boolean.parseBoolean(parser.getText()) && table.formType==FormType.REGULAR; //ensure that if is a form_group, the flag isFormGroupExclusive is always false (we need to visualize those forms)
+				parser.nextTag(); //process </isFormGroupExclusive>
+				//Log.d(count+"-isFormGroupExclusive", "value="+ parser.getText());
+			}else{
+				//table.isFormGroupExclusive = False;
 				parser.nextTag();
 			}
 
@@ -1058,7 +1072,84 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 			}else{
 				table.setRedcapMap("");
 				parser.nextTag();
+			}
 
+			parser.nextTag(); //process modules
+			if (!isEmptyTag("modules", parser)) {
+				parser.next();
+				table.setModules(stringCollectionConverter.getCollectionFrom(parser.getText()));
+				parser.nextTag(); //process </modules>
+				//Log.d(count+"-modules", "value="+ parser.getText());
+			}else{
+				//table.modules.clear();
+				parser.nextTag();
+			}
+
+			parser.nextTag(); //process <groupMappings>
+			if (!isEmptyTag("groupMappings", parser)) {
+
+				while (!isEndTag("groupMappings", parser)) {
+					parser.nextTag(); //goto <formGroup>
+
+					if (isTag("formGroup", parser) && !isEmptyTag("formGroup", parser)) {
+
+						FormGroupMapping subTable = new FormGroupMapping();
+
+						parser.nextTag(); //process ordinal
+						if (!isEmptyTag("ordinal", parser)) {
+							parser.next();
+							subTable.ordinal = Integer.parseInt(parser.getText());							
+							//Log.d(count+"-ordinal", "value="+ parser.getText());
+						}
+						parser.nextTag(); //process </ordinal>
+
+						parser.nextTag(); //process formId
+						if (!isEmptyTag("formId", parser)) {
+							parser.next();
+							subTable.formId = parser.getText();
+							//Log.d(count+"-formId", "value="+ parser.getText());
+						}
+						parser.nextTag(); //process </formId>
+						
+						parser.nextTag(); //process formRequired
+						if (!isEmptyTag("formRequired", parser)) {
+							parser.next();
+							subTable.formRequired = Boolean.parseBoolean(parser.getText());
+							//Log.d(count+"-formRequired", "value="+ parser.getText());
+						}
+						parser.nextTag(); //process </formRequired>
+
+						parser.nextTag(); //process formCollectType
+						if (!isEmptyTag("formCollectType", parser)) {
+							parser.next();
+							subTable.formCollectType = FormCollectType.getFrom(parser.getText());
+							//Log.d(count+"-formCollectType", "value="+ parser.getText());
+						}
+						parser.nextTag(); //process </formCollectType>
+
+						parser.nextTag(); //process formCollectCondition
+						if (!isEmptyTag("formCollectCondition", parser)) {
+							parser.next();
+							subTable.formCollectCondition = parser.getText();
+							//Log.d(count+"-formCollectCondition", "value="+ parser.getText());
+						}
+						parser.nextTag(); //process </formCollectCondition>
+
+						parser.nextTag(); //process formCollectLabel
+						if (!isEmptyTag("formCollectLabel", parser)) {
+							parser.next();
+							subTable.formCollectLabel = parser.getText();
+							//Log.d(count+"-formCollectLabel", "value="+ parser.getText());
+						}
+						parser.nextTag(); //process </formCollectLabel>
+						parser.nextTag(); //</ formGroup>
+
+						table.groupMappings.add(subTable);
+					}
+
+				}
+			} else {
+				parser.nextTag();
 			}
 
 			parser.nextTag();

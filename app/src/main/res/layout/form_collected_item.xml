@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/MainLinearLayout"
-    android:layout_width="fill_parent"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="2dp"
     android:background="?android:attr/selectableItemBackground"
@@ -27,9 +27,20 @@
         android:layout_marginRight="5dp"
         android:src="@mipmap/nui_form_red_icon" />
 
+    <ImageView
+        android:id="@+id/groupIconView"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_gravity="left|center"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:src="@mipmap/nui_form_group_red_icon"
+        android:visibility="gone"/>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+
         android:orientation="vertical" >
     
         <TextView
@@ -38,6 +49,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="left|bottom"
             android:layout_marginTop="4dp"
+            android:layout_marginBottom="4dp"
             android:gravity="center_vertical"
             android:text="Large Text"
             android:textColor="#444"
@@ -50,6 +62,7 @@
             android:id="@+id/txtItem2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp"
             android:text="Medium Text"
             android:textColor="#444"
             android:gravity="center_vertical"

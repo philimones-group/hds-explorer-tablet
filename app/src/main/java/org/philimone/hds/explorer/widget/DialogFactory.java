@@ -86,6 +86,34 @@ public class DialogFactory extends AppCompatDialog {
         return dialog;
     }
 
+    public static DialogFactory newInstance(Context context, @StringRes int titleResId, String message, boolean okButton, boolean yesButton, boolean noButton, boolean cancelButton){
+        DialogFactory dialog = new DialogFactory(context);
+
+        dialog.dialogTitle = context.getString(titleResId);
+        dialog.dialogMessage = message;
+
+        dialog.hasOkButton = okButton;
+        dialog.hasCancelButton = cancelButton;
+        dialog.hasYesButton = yesButton;
+        dialog.hasNoButton = noButton;
+
+        return dialog;
+    }
+
+    public static DialogFactory newInstance(Context context, String title, @StringRes  int messageResId, boolean okButton, boolean yesButton, boolean noButton, boolean cancelButton){
+        DialogFactory dialog = new DialogFactory(context);
+
+        dialog.dialogTitle = title;
+        dialog.dialogMessage = context.getString(messageResId);
+
+        dialog.hasOkButton = okButton;
+        dialog.hasCancelButton = cancelButton;
+        dialog.hasYesButton = yesButton;
+        dialog.hasNoButton = noButton;
+
+        return dialog;
+    }
+
     public static DialogFactory newInstance(Context context, @StringRes int titleResId, @StringRes  int messageResId, boolean cancelButton){
         DialogFactory dialog = new DialogFactory(context);
 
@@ -109,6 +137,18 @@ public class DialogFactory extends AppCompatDialog {
 
     public static DialogFactory createMessageInfo(Context context, @StringRes int titleResId, @StringRes  int messageResId){
         DialogFactory dialog = newInstance(context, titleResId, messageResId, true, false, false, false);
+
+        return dialog;
+    }
+
+    public static DialogFactory createMessageInfo(Context context, @StringRes int titleResId, String message){
+        DialogFactory dialog = newInstance(context, titleResId, message, true, false, false, false);
+
+        return dialog;
+    }
+
+    public static DialogFactory createMessageInfo(Context context, String title, @StringRes int messageResId){
+        DialogFactory dialog = newInstance(context, title, messageResId, true, false, false, false);
 
         return dialog;
     }

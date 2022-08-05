@@ -28,6 +28,16 @@
         android:layout_marginRight="5dp"
         android:src="@mipmap/nui_form_red_icon" />
 
+    <ImageView
+        android:id="@+id/groupIconView"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_gravity="left|center"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:src="@mipmap/nui_form_group_red_icon"
+        android:visibility="gone"/>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

@@ -3,7 +3,7 @@
 
 
 buildscript {
-    ext.objectboxVersion = '3.1.2'
+    ext.objectboxVersion = '3.2.1'
     repositories {
         google()
         mavenCentral()

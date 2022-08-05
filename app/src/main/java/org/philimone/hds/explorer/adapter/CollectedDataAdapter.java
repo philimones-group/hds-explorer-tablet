@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -118,24 +119,20 @@ public class CollectedDataAdapter extends RecyclerView.Adapter<CollectedDataAdap
             TextView txtForm = (TextView) rowView.findViewById(R.id.txtItem2);
             TextView txtExtra = (TextView) rowView.findViewById(R.id.txtItem3);
             CheckBox chkProcessed = (CheckBox) rowView.findViewById(R.id.chkProcessed);
+            ImageView iconView = rowView.findViewById(R.id.iconView);
+            ImageView groupIconView = rowView.findViewById(R.id.groupIconView);
 
             //Member mb = cdi.getMember();
             CollectedData cd = cdi.getCollectedData();
             String sdate = StringUtil.format(cd.formLastUpdatedDate, "yyyy-MM-dd HH:mm:ss");
-
-            String processed = "0";
+            String formId = (cdi.isFormNull() ? cd.getFormId() : cdi.getForm().getFormName());
+            String formGroup = cd.formGroupName;
 
             txtName.setText(cd.getFormInstanceName());
             txtExtra.setText(sdate);
             chkProcessed.setChecked(cd.isFormFinalized());
 
-            String modulesText = currentUser.getModulesNamesAsText(cd.formModules); //should appear the selected names only
-
-            if (cdi.getForm()!=null){
-                txtForm.setText(modulesText + " -> " + cdi.getForm().getFormName());
-            }else {
-                txtForm.setText(modulesText + " -> " + cd.getFormId());
-            }
+            txtForm.setText(cd.formGroupCollected ? (formId + " -> " + formGroup) : formId);
 
             if (highlightedIndex == position) {
                 //highlight record
@@ -143,6 +140,9 @@ public class CollectedDataAdapter extends RecyclerView.Adapter<CollectedDataAdap
             } else {
                 rowView.setBackgroundColor(ContextCompat.getColor(mContext, R.color.zxing_transparent));
             }
+
+            iconView.setVisibility(cd.formGroupCollected ? View.GONE : View.VISIBLE);
+            groupIconView.setVisibility(cd.formGroupCollected ? View.VISIBLE : View.GONE);
         }
     }
 }

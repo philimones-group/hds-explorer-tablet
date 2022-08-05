@@ -573,6 +573,17 @@
     <string name="show_collected_data_btn_update_lbl">Atualizar Listas</string>
     <string name="show_collected_data_list_filter_hint_lbl">Código/Nome/Outros detalhes</string>
 
+    <string name="form_group_selector_uuid_lbl">UUID</string>
+    <string name="form_group_selector_code_lbl">Code</string>
+    <string name="form_group_selector_collected_lbl">Collected:</string>
+    <string name="form_group_selector_not_collected_lbl">Not Collected</string>
+    <string name="form_group_selector_required_lbl">Required</string>
+    <string name="form_group_selector_optional_lbl">Optional</string>
+    <string name="form_group_selector_conditional_lbl">Conditional</string>
+    <string name="form_group_selector_validation_lbl">Form Group Validations</string>
+    <string name="form_group_selector_validation_prev_must_be_collected_lbl">Cannot collect this Form now, because the previous Form (%1s) must be collected first</string>
+    <string name="form_group_selector_validation_form_collect_condition_error_lbl">Cannot collect this Form now, because the current conditions does not match the validation restrictions defined for this Form.\n\nConstraints: (%1s)</string>
+
     <string name="loading_dialog_member_details_lbl">Carregando Detalhes do Membro...</string>
     <string name="loading_dialog_household_details_lbl">Carregando Detalhes da Casa...</string>
     <string name="loading_dialog_region_details_lbl">Carregando Detalhes da Região...</string>

@@ -1,6 +1,5 @@
 package org.philimone.hds.explorer.fragment;
 
-import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -12,17 +11,22 @@ import android.view.ViewGroup;
 import org.philimone.hds.explorer.R;
 import org.philimone.hds.explorer.adapter.CollectedDataAdapter;
 import org.philimone.hds.explorer.adapter.model.CollectedDataItem;
+import org.philimone.hds.explorer.adapter.model.FormGroupChildItem;
 import org.philimone.hds.explorer.data.FormDataLoader;
 import org.philimone.hds.explorer.data.FormFilter;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
-import org.philimone.hds.explorer.main.RegionDetailsActivity;
-import org.philimone.hds.explorer.main.SurveyHouseholdsActivity;
 import org.philimone.hds.explorer.model.CollectedData;
 import org.philimone.hds.explorer.model.CollectedData_;
 import org.philimone.hds.explorer.model.Dataset;
 import org.philimone.hds.explorer.model.Dataset_;
 import org.philimone.hds.explorer.model.Form;
+import org.philimone.hds.explorer.model.FormGroupInstance;
+import org.philimone.hds.explorer.model.FormGroupInstanceChild;
+import org.philimone.hds.explorer.model.FormGroupInstanceChild_;
+import org.philimone.hds.explorer.model.FormGroupInstance_;
+import org.philimone.hds.explorer.model.FormGroupMapping;
 import org.philimone.hds.explorer.model.FormSubject;
+import org.philimone.hds.explorer.model.Form_;
 import org.philimone.hds.explorer.model.Household;
 import org.philimone.hds.explorer.model.Household_;
 import org.philimone.hds.explorer.model.Member;
@@ -30,7 +34,10 @@ import org.philimone.hds.explorer.model.Module;
 import org.philimone.hds.explorer.model.Region;
 import org.philimone.hds.explorer.model.Region_;
 import org.philimone.hds.explorer.model.User;
+import org.philimone.hds.explorer.model.enums.FormType;
+import org.philimone.hds.explorer.utilities.FormGroupUtilities;
 import org.philimone.hds.explorer.widget.DialogFactory;
+import org.philimone.hds.explorer.widget.FormGroupPanelDialog;
 import org.philimone.hds.explorer.widget.FormSelectorDialog;
 import org.philimone.hds.explorer.widget.LoadingDialog;
 import org.philimone.hds.explorer.widget.RecyclerListView;
@@ -48,6 +55,7 @@ import io.objectbox.query.QueryBuilder;
 import mz.betainteractive.odk.FormUtilities;
 import mz.betainteractive.odk.listener.OdkFormResultListener;
 import mz.betainteractive.odk.model.FilledForm;
+import mz.betainteractive.odk.model.OdkFormLoadData;
 import mz.betainteractive.utilities.StringUtil;
 
 /**
@@ -56,6 +64,8 @@ import mz.betainteractive.utilities.StringUtil;
  * create an instance of this fragment.
  */
 public class CollectedDataFragment extends Fragment implements OdkFormResultListener {
+
+    private FormGroupPanelDialog formGroupPanelDialog;
 
     private enum SubjectMode { REGION, HOUSEHOLD, MEMBER };
 
@@ -68,11 +78,14 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
     private List<FormDataLoader> formDataLoaders = new ArrayList<>();
     private FormDataLoader lastLoadedForm;
     private FormUtilities formUtilities;
+    private FormGroupUtilities formGroupUtilities;
 
     private Box<CollectedData> boxCollectedData;
     private Box<Household> boxHouseholds;
     private Box<Region> boxRegions;
     private Box<Form> boxForms;
+    private Box<FormGroupInstance> boxFormGroupInstances;
+    private Box<FormGroupInstanceChild> boxFormGroupInstanceChilds;
     private Box<Module> boxModules;
     private Box<Dataset> boxDatasets;
 
@@ -86,20 +99,6 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
         // Required empty public constructor
         initBoxes();
     }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @return A new instance of fragment HouseholdFormsFragment.
-     */
-    /*public static CollectedDataFragment newInstance(FormSubject subject, User user) {
-        CollectedDataFragment fragment = new CollectedDataFragment();
-        fragment.subject = subject;
-        fragment.loggedUser = user;
-        fragment.initializeDataloaders();
-        return fragment;
-    }*/
 
     public static CollectedDataFragment newInstance(FormSubject subject, User user, List<FormDataLoader> dataLoaders){
         CollectedDataFragment fragment = new CollectedDataFragment();
@@ -120,6 +119,10 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
         super.onCreate(savedInstanceState);
 
         formUtilities = new FormUtilities(this, this);
+
+        formGroupUtilities  = new FormGroupUtilities(getContext());
+
+        removeUnusedFormGroupInstances();
     }
 
     @Override
@@ -139,6 +142,8 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
     private void initBoxes() {
         this.boxCollectedData = ObjectBoxDatabase.get().boxFor(CollectedData.class);
         this.boxForms = ObjectBoxDatabase.get().boxFor(Form.class);
+        this.boxFormGroupInstances = ObjectBoxDatabase.get().boxFor(FormGroupInstance.class);
+        this.boxFormGroupInstanceChilds = ObjectBoxDatabase.get().boxFor(FormGroupInstanceChild.class);
         this.boxRegions = ObjectBoxDatabase.get().boxFor(Region.class);
         this.boxHouseholds = ObjectBoxDatabase.get().boxFor(Household.class);
         this.boxModules = ObjectBoxDatabase.get().boxFor(Module.class);
@@ -178,7 +183,7 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
 
     }
 
-    private void loadMappingDataValues(FormDataLoader formDataLoader) {
+    private void loadMappingDataValues(FormDataLoader formDataLoader, FormGroupInstance formGroupInstance) {
         //get all visible forms for this subject
         Region region = null;
         Household household = null;
@@ -187,14 +192,14 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
 
         if (subject instanceof Region){
             region = (Region) subject;
-            loadFormValues(formDataLoader, null, null, region);
+            loadFormValues(formDataLoader, null, null, region, formGroupInstance);
         }
 
         if (subject instanceof Household){
             household = (Household) subject;
             region = this.boxRegions.query(Region_.code.equal(household.region)).build().findFirst();
 
-            loadFormValues(formDataLoader, household, null, region);
+            loadFormValues(formDataLoader, household, null, region, formGroupInstance);
         }
 
         if (subject instanceof Member){
@@ -202,7 +207,7 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
             household = this.boxHouseholds.query(Household_.code.equal(member.householdCode)).build().findFirst();;
             region = this.boxRegions.query(Region_.code.equal(household.region)).build().findFirst();
 
-            loadFormValues(formDataLoader, household, member, region);
+            loadFormValues(formDataLoader, household, member, region, formGroupInstance);
         }
 
     }
@@ -215,7 +220,7 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
         return FormDataLoader.getFormLoadersList(boxForms, loggedUser, filters);
     }
 
-    private void loadFormValues(FormDataLoader loader, Household household, Member member, Region region){
+    private void loadFormValues(FormDataLoader loader, Household household, Member member, Region region, FormGroupInstance formGroupInstance){
         if (household != null){
             loader.loadHouseholdValues(household);
         }
@@ -227,6 +232,9 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
         }
         if (region != null){
             loader.loadRegionValues(region);
+        }
+        if (formGroupInstance != null) {
+            loader.loadFormGroupValues(formGroupInstance);
         }
 
         loader.loadTrackingListValues();
@@ -252,6 +260,7 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
         }
 
         Log.d("dload-finished", "true");
+
     }
 
     private void initialize(View view) {
@@ -305,6 +314,12 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
         if (autoHighlightCollectedData != null) {
             setHighlight(autoHighlightCollectedData, adapter);
         }
+
+        //Update FormGroupPanel if is visible
+        Log.d("group panel "+(this.formGroupPanelDialog==null), "visitble="+ (this.formGroupPanelDialog != null && this.formGroupPanelDialog.isVisible()) );
+        if (this.formGroupPanelDialog != null && this.formGroupPanelDialog.isVisible()) {
+            this.formGroupPanelDialog.reloadPanelData();
+        }
     }
 
     public void reloadCollectedData(){
@@ -318,7 +333,12 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
         CollectedData collectedData = dataItem.getCollectedData();
         FormDataLoader formDataLoader = getFormDataLoader(collectedData);
 
-        reOpenOdkForm(formDataLoader, collectedData);
+        if (collectedData.formGroupCollected) {
+            //Handle Form Group edition correctly
+            handleOnFormGroupCollectedData(collectedData);
+        } else {
+            reOpenOdkForm(formDataLoader, collectedData, false, null);
+        }
     }
 
     private Form getFormById(List<Form> forms, String formId){
@@ -330,7 +350,7 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
     }
 
     private boolean hasFormDataLoadersContains(String formId){
-        for (FormDataLoader fdl : formDataLoaders){
+        for (FormDataLoader fdl : getFormDataLoaders()){
             if (fdl.getForm().getFormId().equals(formId)){
                 return true;
             }
@@ -340,7 +360,7 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
 
     private FormDataLoader getFormDataLoader(CollectedData collectedData){
 
-        for (FormDataLoader dl : this.formDataLoaders){
+        for (FormDataLoader dl : getFormDataLoaders()){
             if (dl.getForm().getFormId().equals(collectedData.getFormId())){
                 return dl;
             }
@@ -375,24 +395,41 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
 
     public void onCollectData(){
 
-        if (formDataLoaders != null && formDataLoaders.size() > 0){
+        List<FormDataLoader> loaderList = getFormDataLoaders();
 
-            if (formDataLoaders.size()==1){
+        if (loaderList != null && loaderList.size() > 0){
+
+            if (loaderList.size()==1){
                 //open directly the form
-                openOdkForm(formDataLoaders.get(0));
+                FormDataLoader formDataLoader = loaderList.get(0);
+                Form form = formDataLoader.getForm();
+
+                if (form.formType == FormType.FORM_GROUP) {
+                    handleOnCollectFormGroupSelected(formDataLoader);
+                } else {
+                    openOdkForm(formDataLoader, false, null);
+                }
             }else {
                 //load list dialog and choice the form
-                buildFormSelectorDialog(formDataLoaders);
+                buildFormSelectorDialog(loaderList);
             }
         }
     }
 
     private void buildFormSelectorDialog(List<FormDataLoader> loaders) {
 
+        //remove all formGroupExclusive Forms
+        loaders = filterFormGroupExclusive(loaders);
+
         FormSelectorDialog.createDialog(this.getParentFragmentManager(), loaders, new FormSelectorDialog.OnFormSelectedListener() {
             @Override
             public void onFormSelected(FormDataLoader formDataLoader) {
-                openOdkForm(formDataLoader);
+                openOdkForm(formDataLoader, false, null);
+            }
+
+            @Override
+            public void onFormGroupSelected(FormDataLoader formDataLoader) {
+                handleOnCollectFormGroupSelected(formDataLoader);
             }
 
             @Override
@@ -400,6 +437,112 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
 
             }
         }).show();
+    }
+
+    private List<FormDataLoader> filterFormGroupExclusive(List<FormDataLoader> loaders) {
+        List<FormDataLoader> exclusiveList = new ArrayList<>();
+
+        for (FormDataLoader fdl : loaders) {
+            if (fdl.getForm().isFormGroupExclusive) {
+                exclusiveList.add(fdl);
+            }
+        }
+
+        loaders.removeAll(exclusiveList);
+
+        return loaders;
+    }
+
+    private List<FormDataLoader> getFormGroupDataLoaders(Form formGroup) {
+        List<FormDataLoader> dataLoaders = new ArrayList<>();
+
+        for (FormGroupMapping mapping : formGroup.groupMappings) {
+            Form form = boxForms.query(Form_.formId.equal(mapping.formId)).build().findFirst();
+            dataLoaders.add(new FormDataLoader(form));
+        }
+
+        return dataLoaders;
+    }
+
+    private void handleOnFormGroupCollectedData(CollectedData collectedData) {
+
+        Form formGroup = boxForms.query(Form_.formId.equal(collectedData.formGroupId)).build().findFirst();
+        List<FormDataLoader> dataLoaders = getFormGroupDataLoaders(formGroup);
+        FormGroupInstance groupInstance = boxFormGroupInstances.query(FormGroupInstance_.instanceUuid.equal(collectedData.formGroupInstanceUuid)).build().findFirst();
+
+        this.formGroupPanelDialog = FormGroupPanelDialog.createDialog(this.getContext(), this.getParentFragmentManager(), this.formGroupUtilities, this.subject, formGroup, dataLoaders, groupInstance, new FormGroupPanelDialog.OnFormSelectedListener() {
+            @Override
+            public void onFormSelected(FormGroupChildItem childItem) {
+                if (childItem.getCollectedData() != null) {
+                    reOpenOdkForm(childItem.getFormDataLoader(), collectedData, true, groupInstance);
+                } else {
+                    openOdkForm(childItem.getFormDataLoader(), true, groupInstance);
+                }
+            }
+
+            @Override
+            public void onCancelClicked() {
+                removeUnusedFormGroupInstances();
+                formGroupPanelDialog = null;
+            }
+        });
+
+        this.formGroupPanelDialog.show();
+    }
+
+    private void handleOnCollectFormGroupSelected(FormDataLoader formDataLoader) {
+
+        Form formGroup = formDataLoader.getForm();
+        List<FormDataLoader> dataLoaders = getFormGroupDataLoaders(formGroup);
+        FormGroupInstance groupInstance = null;
+
+        //find existent or create new
+        if (formGroup.multiCollPerSession == false) {
+            groupInstance = this.formGroupUtilities.getLastFormGroupInstanceCreated(formGroup, this.subject);
+        }
+
+        if (groupInstance == null) {
+            groupInstance = this.formGroupUtilities.createNewInstance(formGroup, this.subject);
+            boxFormGroupInstances.put(groupInstance);
+        }
+
+        FormGroupInstance finalGroupInstance = groupInstance;
+        this.formGroupPanelDialog = FormGroupPanelDialog.createDialog(this.getContext(), this.getParentFragmentManager(), this.formGroupUtilities, this.subject, formGroup, dataLoaders, groupInstance, new FormGroupPanelDialog.OnFormSelectedListener() {
+            @Override
+            public void onFormSelected(FormGroupChildItem childItem) {
+                if (childItem.getCollectedData() != null){
+                    reOpenOdkForm(childItem.getFormDataLoader(), childItem.getCollectedData(), true, finalGroupInstance);
+                } else {
+                    openOdkForm(childItem.getFormDataLoader(), true, finalGroupInstance);
+                }
+            }
+
+            @Override
+            public void onCancelClicked() {
+                removeUnusedFormGroupInstances();
+                formGroupPanelDialog = null;
+            }
+        });
+
+        this.formGroupPanelDialog.show();
+
+    }
+
+    private void removeUnusedFormGroupInstances() {
+
+        List<FormGroupInstance> listDelete = new ArrayList<>();
+
+        for (FormGroupInstance formGroupInstance : this.boxFormGroupInstances.getAll()) {
+            if (formGroupInstance.instanceChilds.size()==0) {
+                Log.d("childs", "empty");
+
+                listDelete.add(formGroupInstance);
+            }
+        }
+
+        boxFormGroupInstances.remove(listDelete);
+
+        Log.d("removed-fgi", listDelete.size()+"");
     }
 
     public void setHighlight(CollectedData collectedData) {
@@ -421,21 +564,21 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
     }
 
     //<editor-fold desc="ODK Form Utility methods">
-    private void openOdkForm(FormDataLoader formDataLoader) {
-        OpenODKFormTask task = new OpenODKFormTask(formDataLoader);
+    private void openOdkForm(FormDataLoader formDataLoader, boolean isFormGroup, FormGroupInstance formGroupInstance) {
+        OpenODKFormTask task = new OpenODKFormTask(formDataLoader, isFormGroup, formGroupInstance);
         task.execute();
         showLoadingDialog(getString(R.string.loading_dialog_odk_load_lbl), true);
     }
 
-    private void reOpenOdkForm(FormDataLoader formDataLoader, CollectedData collectedData) {
-        ReOpenODKFormTask task = new ReOpenODKFormTask(formDataLoader, collectedData);
+    private void reOpenOdkForm(FormDataLoader formDataLoader, CollectedData collectedData, boolean isFormGroup, FormGroupInstance formGroupInstance) {
+        ReOpenODKFormTask task = new ReOpenODKFormTask(formDataLoader, collectedData, isFormGroup, formGroupInstance);
         task.execute();
         showLoadingDialog(getString(R.string.loading_dialog_odk_reload_lbl), true);
     }
 
     @Override
-    public void onFormFinalized(Uri contentUri, String formId, File xmlFile, String metaInstanceName, Date lastUpdatedDate) {
-        Log.d("form finalized"," "+contentUri+", "+xmlFile);
+    public void onFormFinalized(OdkFormLoadData formLoadData, Uri contentUri, String formId, String instanceFileUri, String metaInstanceName, Date lastUpdatedDate) {
+        Log.d("form finalized"," "+contentUri+", file-uri = "+instanceFileUri);
 
         //search existing record
         CollectedData collectedData = this.boxCollectedData.query().equal(CollectedData_.formUri, contentUri.toString(), QueryBuilder.StringOrder.CASE_SENSITIVE)
@@ -444,9 +587,9 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
 
         if (collectedData == null){ //insert
             collectedData = new CollectedData();
-            collectedData.setFormId(lastLoadedForm.getForm().getFormId());
+            collectedData.setFormId(formId);
             collectedData.setFormUri(contentUri.toString());
-            collectedData.setFormXmlPath(xmlFile.toString());
+            collectedData.setFormXmlPath(instanceFileUri);
             collectedData.setFormInstanceName(metaInstanceName);
             collectedData.setFormLastUpdatedDate(lastUpdatedDate);
 
@@ -459,12 +602,17 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
             collectedData.setRecordId(subject.getId());
             collectedData.setRecordEntity(subject.getTableName());
 
+            collectedData.formGroupCollected = formLoadData.isFormGroupLoad;
+            collectedData.formGroupId = formLoadData.formGroupId;
+            collectedData.formGroupName = formLoadData.formGroupName;
+            collectedData.formGroupInstanceUuid = formLoadData.formGroupInstanceUuid;
+
             this.boxCollectedData.put(collectedData);
             Log.d("inserting", "new collected data");
         }else{ //update
-            collectedData.setFormId(lastLoadedForm.getForm().getFormId());
+            collectedData.setFormId(formId);
             collectedData.setFormUri(contentUri.toString());
-            collectedData.setFormXmlPath(xmlFile.toString());
+            //collectedData.setFormXmlPath(instanceFileUri);
             collectedData.setFormInstanceName(metaInstanceName);
             collectedData.setFormLastUpdatedDate(lastUpdatedDate);
 
@@ -476,8 +624,26 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
             collectedData.setRecordId(subject.getId());
             collectedData.setRecordEntity(subject.getTableName());
 
+            collectedData.formGroupCollected = formLoadData.isFormGroupLoad;
+            collectedData.formGroupId = formLoadData.formGroupId;
+            collectedData.formGroupName = formLoadData.formGroupName;
+            collectedData.formGroupInstanceUuid = formLoadData.formGroupInstanceUuid;
+
             this.boxCollectedData.put(collectedData);
             Log.d("updating", "new collected data");
+        }
+
+        //save formGroupInstance child
+        if (formLoadData.isFormGroupLoad && formLoadData.formGroupInstanceUuid != null) {
+            FormGroupInstance formGroupInstance = boxFormGroupInstances.query(FormGroupInstance_.instanceUuid.equal(formLoadData.formGroupInstanceUuid)).build().findFirst();
+            FormGroupInstanceChild instanceChild = formGroupUtilities.findInstanceChildBy(formGroupInstance, collectedData.formXmlPath);
+
+            if (instanceChild == null) {
+                instanceChild = formGroupUtilities.createNewInstanceChild(formGroupInstance, collectedData);
+                formGroupInstance.instanceChilds.add(instanceChild);
+            }
+
+            this.boxFormGroupInstances.put(formGroupInstance);
         }
 
         showCollectedData();
@@ -485,7 +651,7 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
     }
 
     @Override
-    public void onFormUnFinalized(Uri contentUri, String formId, File xmlFile, String metaInstanceName, Date lastUpdatedDate) {
+    public void onFormUnFinalized(OdkFormLoadData formLoadData, Uri contentUri, String formId, String instanceFileUri, String metaInstanceName, Date lastUpdatedDate) {
         Log.d("form unfinalized"," "+contentUri);
 
         //search existing record
@@ -495,9 +661,9 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
 
         if (collectedData == null){ //insert
             collectedData = new CollectedData();
-            collectedData.setFormId(lastLoadedForm.getForm().getFormId());
+            collectedData.setFormId(formId);
             collectedData.setFormUri(contentUri.toString());
-            collectedData.setFormXmlPath("");
+            collectedData.setFormXmlPath(instanceFileUri);
             collectedData.setFormInstanceName(metaInstanceName);
             collectedData.setFormLastUpdatedDate(lastUpdatedDate);
 
@@ -510,12 +676,17 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
             collectedData.setRecordId(subject.getId());
             collectedData.setRecordEntity(subject.getTableName());
 
+            collectedData.formGroupCollected = formLoadData.isFormGroupLoad;
+            collectedData.formGroupId = formLoadData.formGroupId;
+            collectedData.formGroupName = formLoadData.formGroupName;
+            collectedData.formGroupInstanceUuid = formLoadData.formGroupInstanceUuid;
+
             this.boxCollectedData.put(collectedData);
             Log.d("inserting", "new collected data");
         }else{ //update
-            collectedData.setFormId(lastLoadedForm.getForm().getFormId());
+            collectedData.setFormId(formId);
             collectedData.setFormUri(contentUri.toString());
-            collectedData.setFormXmlPath("");
+            //collectedData.setFormXmlPath(instanceFileUri);
             collectedData.setFormInstanceName(metaInstanceName);
             collectedData.setFormLastUpdatedDate(lastUpdatedDate);
 
@@ -527,32 +698,58 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
             collectedData.setRecordId(subject.getId());
             collectedData.setRecordEntity(subject.getTableName());
 
+            collectedData.formGroupCollected = formLoadData.isFormGroupLoad;
+            collectedData.formGroupId = formLoadData.formGroupId;
+            collectedData.formGroupName = formLoadData.formGroupName;
+            collectedData.formGroupInstanceUuid = formLoadData.formGroupInstanceUuid;
+
             this.boxCollectedData.put(collectedData);
             Log.d("updating", "new collected data");
+        }
+
+        //save formGroupInstance child
+        if (formLoadData.isFormGroupLoad && formLoadData.formGroupInstanceUuid != null) {
+            FormGroupInstance formGroupInstance = boxFormGroupInstances.query(FormGroupInstance_.instanceUuid.equal(formLoadData.formGroupInstanceUuid)).build().findFirst();
+            FormGroupInstanceChild instanceChild = formGroupUtilities.findInstanceChildBy(formGroupInstance, collectedData.formXmlPath);
+
+            if (instanceChild == null) {
+                instanceChild = formGroupUtilities.createNewInstanceChild(formGroupInstance, collectedData);
+                formGroupInstance.instanceChilds.add(instanceChild);
+            }
+
+            this.boxFormGroupInstances.put(formGroupInstance);
         }
 
         showCollectedData();
     }
 
     @Override
-    public void onDeleteForm(Uri contentUri) {
+    public void onDeleteForm(OdkFormLoadData formLoadData, Uri contentUri, String instanceFileUri) {
 
         this.boxCollectedData.query().equal(CollectedData_.formUri, contentUri.toString(), QueryBuilder.StringOrder.CASE_SENSITIVE).build().remove(); //delete where formUri=contentUri
+
+        //delete the instanceFileUri - already deleted by removing instance
+        if (instanceFileUri != null) {
+            //formUtilities.deleteInstanceFile(instanceFileUri);
+        }
+
+        //delete also the formGroupInstanceChild
+        this.boxFormGroupInstanceChilds.query(FormGroupInstanceChild_.formInstanceUri.equal(instanceFileUri)).build().remove();
 
         showCollectedData();
     }
 
     @Override
-    public void onFormNotFound(final Uri contenUri) {
-        buildDeleteSavedFormDialog(contenUri);
+    public void onFormInstanceNotFound(OdkFormLoadData formLoadData, final Uri contenUri) {
+        buildDeleteFormInstanceNotFoundDialog(formLoadData, contenUri);
     }
 
-    private void buildDeleteSavedFormDialog(final Uri contenUri){
+    private void buildDeleteFormInstanceNotFoundDialog(OdkFormLoadData formLoadData, final Uri contenUri){
 
         DialogFactory.createMessageYN(this.getContext(), R.string.household_details_dialog_del_saved_form_title_lbl, R.string.household_details_dialog_del_saved_form_msg_lbl, new DialogFactory.OnYesNoClickListener() {
             @Override
             public void onYesClicked() {
-                onDeleteForm(contenUri);
+                onDeleteForm(formLoadData, contenUri, null);
             }
 
             @Override
@@ -574,27 +771,33 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
 
     class OpenODKFormTask extends AsyncTask<Void, Void, XResult> {
         private FormDataLoader formDataLoader;
+        private boolean isFormGroup;
+        private FormGroupInstance formGroupInstance;
 
-        public OpenODKFormTask(FormDataLoader formDataLoader) {
+        public OpenODKFormTask(FormDataLoader formDataLoader, boolean isFormGroup, FormGroupInstance formGroupInstance) {
             this.formDataLoader = formDataLoader;
+            this.isFormGroup = isFormGroup;
+            this.formGroupInstance = formGroupInstance;
         }
 
         @Override
         protected XResult doInBackground(Void... voids) {
 
-            CollectedData collectedData = getCollectedData(formDataLoader);
+            Form form = formDataLoader.getForm();
 
-            loadMappingDataValues(formDataLoader);
+            //get the collected data only if is one form per session
+            CollectedData collectedData = form.multiCollPerSession ? null : getCollectedData(formDataLoader);
+
+            loadMappingDataValues(formDataLoader, formGroupInstance);
             //reload timestamp constants
             formDataLoader.reloadTimestampConstants();
 
-            Form form = formDataLoader.getForm();
             FilledForm filledForm = new FilledForm(form.getFormId());
             filledForm.putAll(formDataLoader.getValues());
             filledForm.updateUnknownMember(getContext());
             //filledForm.setHouseholdMembers(getMemberOnListAdapter());
 
-            return new XResult(form, filledForm, collectedData);
+            return new XResult(form, new OdkFormLoadData(form, filledForm, isFormGroup, formGroupInstance), collectedData);
         }
 
         @Override
@@ -605,9 +808,9 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
             lastLoadedForm = formDataLoader;
 
             if (result.collectedData == null || result.form.isMultiCollPerSession()){
-                formUtilities.loadForm(result.filledForm);
+                formUtilities.loadForm(result.odkFormLoadData);
             }else{
-                formUtilities.loadForm(result.filledForm, result.collectedData.getFormUri(), CollectedDataFragment.this);
+                formUtilities.loadForm(result.odkFormLoadData, result.collectedData.getFormUri(), result.collectedData.formXmlPath, CollectedDataFragment.this);
             }
         }
 
@@ -617,10 +820,14 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
     class ReOpenODKFormTask extends AsyncTask<Void, Void, XResult> {
         private FormDataLoader formDataLoader;
         private CollectedData collectedData;
+        private boolean isFormGroup;
+        private FormGroupInstance formGroupInstance;
 
-        public ReOpenODKFormTask(FormDataLoader formDataLoader, CollectedData collectedData) {
+        public ReOpenODKFormTask(FormDataLoader formDataLoader, CollectedData collectedData, boolean loadingFormGroup, FormGroupInstance formGroupInstance) {
             this.formDataLoader = formDataLoader;
             this.collectedData = collectedData;
+            this.isFormGroup = loadingFormGroup;
+            this.formGroupInstance = formGroupInstance;
         }
 
         @Override
@@ -633,7 +840,7 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
             filledForm.putAll(this.formDataLoader.getValues());
             filledForm.updateUnknownMember(getContext());
 
-            return new XResult(form, filledForm, this.collectedData);
+            return new XResult(form, new OdkFormLoadData(form, filledForm, isFormGroup, formGroupInstance), this.collectedData);
         }
 
         @Override
@@ -643,23 +850,22 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
 
             lastLoadedForm = formDataLoader;
 
-            if (collectedData == null){
-                formUtilities.loadForm(result.filledForm);
-            }else{
-                formUtilities.loadForm(result.filledForm, result.collectedData.getFormUri(), CollectedDataFragment.this);
-            }
+            //we are reopening a saved form
+            formUtilities.loadForm(result.odkFormLoadData, result.collectedData.getFormUri(), result.collectedData.formXmlPath, CollectedDataFragment.this);
         }
     }
 
     class XResult {
         Form form;
         CollectedData collectedData;
+        OdkFormLoadData odkFormLoadData;
         FilledForm filledForm;
 
-        public XResult(Form form, FilledForm filledForm, CollectedData collectedData) {
+        public XResult(Form form, OdkFormLoadData loadData, CollectedData collectedData) {
             this.form = form;
             this.collectedData = collectedData;
-            this.filledForm = filledForm;
+            this.odkFormLoadData = loadData;
+            //this.filledForm = filledForm;
         }
     }
 }

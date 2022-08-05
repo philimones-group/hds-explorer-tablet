@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
@@ -46,6 +47,29 @@ public class StringUtil {
         }
 
         return time;
+    }
+
+    public static String toLowerCase(String expression, String[] words) {
+
+        //println(expression);
+        String regex = "";
+        for (String w : words){
+            regex += regex.isEmpty() ? w : "|"+w;
+        }
+
+        Pattern pattern = Pattern.compile("("+ regex +")");
+        Matcher matcher = pattern.matcher(expression.toLowerCase());
+
+        while (matcher.find()) {
+            //println(matcher.group(1)+", "+matcher.start(1));
+            String wordToReplace = expression.substring(matcher.start(1), matcher.end(1));
+            String wordLowercase = matcher.group(1);
+            expression = expression.replace(wordToReplace, wordLowercase);
+        }
+
+        //println(expression);
+
+        return expression;
     }
 
     public static String removeAcentuation(String text) {

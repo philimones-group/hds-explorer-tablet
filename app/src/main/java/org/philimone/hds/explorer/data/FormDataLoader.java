@@ -5,11 +5,14 @@ import android.util.Log;
 import org.philimone.hds.explorer.adapter.model.TrackingSubjectItem;
 import org.philimone.hds.explorer.model.Dataset;
 import org.philimone.hds.explorer.model.Form;
+import org.philimone.hds.explorer.model.FormGroupInstance;
+import org.philimone.hds.explorer.model.FormSubject;
 import org.philimone.hds.explorer.model.Form_;
 import org.philimone.hds.explorer.model.Household;
 import org.philimone.hds.explorer.model.Member;
 import org.philimone.hds.explorer.model.Region;
 import org.philimone.hds.explorer.model.User;
+import org.philimone.hds.explorer.model.enums.FormType;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -40,6 +43,7 @@ public class FormDataLoader implements Serializable {
     private final String memberPrefix = "Member.";
     private final String userPrefix = "User.";
     private final String regionPrefix = "Region.";
+    private final String formGroupPrefix = "Form-Group.";
     private final String trackingListPrefix = "FollowUp-List.";
     private final String constPrefix = "#.";
     private final String specialConstPrefix = "$.";
@@ -49,6 +53,7 @@ public class FormDataLoader implements Serializable {
     private final String choiceFormatPrefix = "Choices[";
 
     private Form form;
+    private FormSubject subject;
     private TrackingSubjectItem trackingSubjectItem;
     private Map<String, Object> values;
 
@@ -68,6 +73,12 @@ public class FormDataLoader implements Serializable {
         this.form = form;
     }
 
+    public FormDataLoader(Form form, FormSubject subject){
+        this();
+        this.form = form;
+        this.subject = subject;
+    }
+
     public FormDataLoader(Form form, TrackingSubjectItem subjectItem){
         this(form);
         this.trackingSubjectItem = subjectItem;
@@ -81,6 +92,14 @@ public class FormDataLoader implements Serializable {
 
     public void setForm(Form form) {
         this.form = form;
+    }
+
+    public FormSubject getSubject() {
+        return subject;
+    }
+
+    public void setSubject(FormSubject subject) {
+        this.subject = subject;
     }
 
     public Map<String, Object> getValues() {
@@ -282,6 +301,32 @@ public class FormDataLoader implements Serializable {
         }
     }
 
+    public void loadFormGroupValues(FormGroupInstance formGroupInstance){
+        //Log.d("loadgroup", "trying "+formGroupInstance);
+        Map<String, String> map = form.getFormMap();
+        for (String key : map.keySet()){
+            //key   - odkVariable
+            //value - domain column name
+            String mapValue = map.get(key); //Domain ColumnName that we will get its content
+
+            //Log.d("map print", "value=" + mapValue + ", key="+ key);
+
+            if (mapValue.startsWith(formGroupPrefix)) {
+                String internalVariableName = mapValue.replace(formGroupPrefix, "");
+                String odkVariable = key;
+                String value = "";
+                odkVariable = odkVariable.replace("->None", "");
+
+                if (internalVariableName.equals("form_group_code")) value = formGroupInstance.instanceCode;
+
+                if (internalVariableName.equals("form_group_uuid")) value = formGroupInstance.instanceUuid;
+
+                this.values.put(odkVariable, value);
+                //Log.d("r-odk auto-loadable", odkVariable + ", " + value);
+            }
+        }
+    }
+
     public void loadTrackingListValues(){
         Log.d("reading dl", trackingSubjectItem+" FormDL");
         if (this.trackingSubjectItem != null) {
@@ -291,37 +336,22 @@ public class FormDataLoader implements Serializable {
                 //value - domain column name
                 String mapValue = map.get(key); //Domain ColumnName that we will get its content
 
-                Log.d("all vars", key+":"+mapValue+", vcode="+trackingSubjectItem.getVisitCode()+", vuuid="+trackingSubjectItem.getVisitUuid());
+                //Log.d("all vars", key+":"+mapValue+", vcode="+trackingSubjectItem.getVisitCode()+", vuuid="+trackingSubjectItem.getVisitUuid());
 
                 if (mapValue.startsWith(trackingListPrefix)) {
                     String internalVariableName = mapValue.replace(trackingListPrefix, "");
                     String odkVariable = key;
                     String value = ""; //member.getValueByName(internalVariableName);
+                    odkVariable = odkVariable.replace("->None", "");
 
                     if (internalVariableName.equals("subject_visit_code")) value = this.trackingSubjectItem.getVisitCode();
 
                     if (internalVariableName.equals("subject_visit_uuid")) value = this.trackingSubjectItem.getVisitUuid();
 
-                    //get variable format from odkVariable eg. variableName->format => patientName->yes,no
-                    if (odkVariable.contains("->")) {
-                        String[] splt = odkVariable.split("->");
-                        odkVariable = splt[0]; //variableName
-                        String format = splt[1];      //format of the value
-                        if (!format.equalsIgnoreCase("None")) {
-                            if (format.startsWith(boolFormatPrefix)) {
-                                value = getBooleanFormattedValue(format, value);
-                            }
-                            if (format.startsWith(choiceFormatPrefix)) {
-                                value = getChoicesFormattedValue(format, value);
-                            }
-                            if (format.startsWith(dateFormatPrefix)) {
-                                value = getDateFormattedValue(format, value, false);
-                            }
-                        }
-                    }
-
                     this.values.put(odkVariable, value);
-                    Log.d("trl-odk auto-loadable", odkVariable + ", " + value);
+                    //Log.d("trl-odk auto-loadable", odkVariable + ", " + value);
+
+
                 }
             }
         }
@@ -369,7 +399,7 @@ public class FormDataLoader implements Serializable {
     public void loadSpecialConstantValues(Household household, Member member, User user, Region region, TrackingSubjectItem memberItem){
         Map<String, String> map = form.getFormMap();
         for (String key : map.keySet()){
-            Log.d("special constant", ""+key );
+            //Log.d("special constant", ""+key );
             //key   - odkVariable
             //value - domain column name
             String mapValue = map.get(key); //Domain ColumnName that we will get its content
@@ -738,6 +768,11 @@ public class FormDataLoader implements Serializable {
             if (StringUtil.containsAny(user.modules, form.modules)){ //if the user has access to module specified on Form
 
                 FormDataLoader loader = new FormDataLoader(form);
+                /*
+                if (form.formType== FormType.REGULAR && form.isFormGroupExclusive) {
+                    //DONT SHOW FORM GROUP EXCLUSIVE FORMS - THEY WILL BE VISIBLE ONLY INSIDE FORM_GROUP SELECTOR
+                    continue;
+                }*/
 
                 if (form.isFollowUpForm() && listFilters.contains(FormFilter.FOLLOW_UP)){
                     list.add(loader);

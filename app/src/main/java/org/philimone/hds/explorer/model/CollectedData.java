@@ -27,11 +27,19 @@ public class CollectedData implements Serializable {
     public long id;
     public String formId;
 
-    public String formUri;
+    public String formUri; /* odk content uri, its different from file path */
     @Unique
     public String formXmlPath;
     public String formInstanceName;
     public Date formLastUpdatedDate;
+
+    public boolean formGroupCollected = false;
+    @Index
+    public String formGroupId;
+    public String formGroupName;
+    @Index
+    public String formGroupInstanceUuid;
+
     @Index
     @Convert(converter = StringCollectionConverter.class, dbType = String.class)
     public Set<String> formModules;
@@ -40,7 +48,7 @@ public class CollectedData implements Serializable {
     @Index
     public long visitId; /* will be different from zero if the form was collected during a DSS Household Visit*/
     @Index
-    public long recordId;
+    public long recordId; /*should be changed to recordCode - to survive synchronizations */
 
     @Convert(converter = SubjectEntityConverter.class, dbType = String.class)
     public SubjectEntity recordEntity;

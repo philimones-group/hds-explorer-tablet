@@ -76,6 +76,7 @@ public class ShowCoreCollectedDataFragment extends Fragment {
     public ShowCoreCollectedDataFragment() {
         // Required empty public constructor
         initBoxes();
+        loggedUser = Bootstrap.getCurrentUser();
     }
 
     public static ShowCoreCollectedDataFragment newInstance(){
@@ -100,6 +101,8 @@ public class ShowCoreCollectedDataFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        loggedUser = Bootstrap.getCurrentUser();
 
         initialize(view);
     }

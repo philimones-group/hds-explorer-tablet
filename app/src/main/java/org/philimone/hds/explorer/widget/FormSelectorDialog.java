@@ -18,6 +18,7 @@ import org.philimone.hds.explorer.R;
 import org.philimone.hds.explorer.adapter.FormLoaderAdapter;
 import org.philimone.hds.explorer.adapter.trackinglist.TrackingListAdapter;
 import org.philimone.hds.explorer.data.FormDataLoader;
+import org.philimone.hds.explorer.model.enums.FormType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -131,7 +132,14 @@ public class FormSelectorDialog extends DialogFragment {
     private void onSelectedForm(FormDataLoader formDataLoader) {
         dismiss();
 
-        if (listener != null) listener.onFormSelected(formDataLoader);
+        if (listener != null) {
+
+            if (formDataLoader.getForm().formType == FormType.REGULAR) {
+                listener.onFormSelected(formDataLoader);
+            } else {
+                listener.onFormGroupSelected(formDataLoader);
+            }
+        }
     }
 
     public void show(){
@@ -140,6 +148,8 @@ public class FormSelectorDialog extends DialogFragment {
 
     public interface OnFormSelectedListener {
         void onFormSelected(FormDataLoader formDataLoader);
+
+        void onFormGroupSelected(FormDataLoader formDataLoader);
 
         void onCancelClicked();
     }

@@ -8,6 +8,7 @@ import org.jdom2.input.SAXBuilder;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,7 +24,17 @@ public class FormXmlReader {
         this.contentValues = new LinkedHashMap<>();
     }
 
-    public void readFile(String xmlFilePath){
+    public static Map<String, String> getXmlData(String xmlFilePath) {
+        FormXmlReader reader = new FormXmlReader();
+        return reader.getXmlContentValues(xmlFilePath);
+    }
+
+    public static Map<String, String> getXmlData(InputStream xmlInputStream) {
+        FormXmlReader reader = new FormXmlReader();
+        return reader.getXmlContentValues(xmlInputStream);
+    }
+
+    private void readFile(String xmlFilePath){
         try {
 
             SAXBuilder builder = new SAXBuilder();
@@ -44,8 +55,33 @@ public class FormXmlReader {
         }
     }
 
+    private void readFile(InputStream xmlInputStream){
+        try {
+
+            SAXBuilder builder = new SAXBuilder();
+
+            org.jdom2.Document doc = (org.jdom2.Document) builder.build(xmlInputStream);
+            org.jdom2.Element element = (org.jdom2.Element) doc.getRootElement();
+
+            //Log.d("xmlFile", xmlFilePath);
+            //Log.d("element", element.getName() +", "+element);
+
+            readXmlNode(element);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (JDOMException e) {
+            e.printStackTrace();
+        }
+    }
+
     public Map<String, String> getXmlContentValues(String xmlFilePath){
         readFile(xmlFilePath);
+        return getContentValues();
+    }
+
+    public Map<String, String> getXmlContentValues(InputStream xmlInputStream){
+        readFile(xmlInputStream);
         return getContentValues();
     }
 

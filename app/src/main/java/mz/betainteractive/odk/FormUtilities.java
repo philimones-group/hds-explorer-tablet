@@ -1,6 +1,8 @@
 package mz.betainteractive.odk;
 import static android.content.Context.STORAGE_SERVICE;
 
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
@@ -49,9 +51,10 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import mz.betainteractive.odk.listener.OdkFormLoadListener;
 import mz.betainteractive.odk.listener.OdkFormResultListener;
-import mz.betainteractive.odk.model.FilledForm;
+import mz.betainteractive.odk.model.OdkFormLoadData;
 import mz.betainteractive.odk.storage.access.OdkScopedDirUtil;
 import mz.betainteractive.odk.storage.access.OdkStorageType;
+import mz.betainteractive.odk.storage.access.anthonymandra.framework.XDocumentFile;
 import mz.betainteractive.odk.task.OdkFormLoadResult;
 import mz.betainteractive.odk.task.OdkFormLoadTask;
 
@@ -62,7 +65,9 @@ public class FormUtilities {
     private Context mContext;
     private Fragment fragment;
     private AppCompatActivity activity;
-	private Uri contentUri;
+    private OdkFormLoadData formLoadData;
+	private Uri contentUri; /* odk CONTENT_URI of every instance */
+    private String instanceUri; /* odk instance file uri */
     private boolean formUnFinished;
     private String xmlFilePath;
     private OdkFormResultListener formResultListener;
@@ -386,14 +391,16 @@ public class FormUtilities {
 	    this.formResultListener = listener;
     }
 
-	public void loadForm(final FilledForm filledForm) {
-        this.formId = filledForm.getFormName();
+	public void loadForm(final OdkFormLoadData loadData) {
+        this.formId = loadData.formId;
+        this.formLoadData = loadData;
 
-		this.currentLoadTask = new OdkFormLoadTask(this, filledForm, new OdkFormLoadListener() {
-            public void onOdkFormLoadSuccess(Uri contentUri) {
-                FormUtilities.this.contentUri = contentUri;
+		this.currentLoadTask = new OdkFormLoadTask(this, loadData, new OdkFormLoadListener() {
+            public void onOdkFormLoadSuccess(OdkFormLoadResult result) {
+                FormUtilities.this.contentUri = result.getContentUri();
+                FormUtilities.this.instanceUri = result.getInstanceUri();
 
-                odkResultLauncher.launch(new Intent(Intent.ACTION_EDIT, contentUri));
+                odkResultLauncher.launch(new Intent(Intent.ACTION_EDIT, result.getContentUri()));
             }
 
             public void onOdkFormLoadFailure(OdkFormLoadResult result) {
@@ -422,23 +429,26 @@ public class FormUtilities {
         requestPermissionsForReadingPhoneState(readPhoneStateGrantListener);
     }
 
-    public void loadForm(FilledForm filledForm, String contentUriAsString, final OdkFormResultListener listener){
-        this.formId = filledForm.getFormName();
+    public void loadForm(OdkFormLoadData loadData, String contentUriAsString, String instanceXmlUri, final OdkFormResultListener listener){
+        this.formId = loadData.formId;
+        this.formLoadData = loadData;
 	    this.contentUri = Uri.parse(contentUriAsString);
         this.metaInstanceName = "";
         this.lastUpdatedDate = null;
+        loadData.formInstanceUri = instanceXmlUri;
 
-        this.currentLoadTask = new OdkFormLoadTask(this, filledForm, contentUri, new OdkFormLoadListener() {
-            public void onOdkFormLoadSuccess(Uri contentUri) {
-                FormUtilities.this.contentUri = contentUri;
+        this.currentLoadTask = new OdkFormLoadTask(this, loadData, this.contentUri, new OdkFormLoadListener() {
+            public void onOdkFormLoadSuccess(OdkFormLoadResult result) {
+                FormUtilities.this.contentUri = result.getContentUri();
+                FormUtilities.this.instanceUri = result.getInstanceUri();
 
-                odkResultLauncher.launch(new Intent(Intent.ACTION_EDIT, contentUri));
+                odkResultLauncher.launch(new Intent(Intent.ACTION_EDIT, result.getContentUri()));
             }
 
             public void onOdkFormLoadFailure(OdkFormLoadResult result) {
                 //createSavedXFormNotFoundDialog();
                 if (listener != null){
-                    listener.onFormNotFound(contentUri);
+                    listener.onFormInstanceNotFound(formLoadData, contentUri);
                 }else{
                     createFormLoadResultErrorDialog(result);
                 }
@@ -553,7 +563,7 @@ public class FormUtilities {
                 mContext.getContentResolver().delete(contentUri, InstanceProviderAPI.InstanceColumns.STATUS + "=?", new String[] { InstanceProviderAPI.STATUS_INCOMPLETE });
 
                 if (formResultListener != null) {
-                    formResultListener.onDeleteForm(contentUri);
+                    formResultListener.onDeleteForm(formLoadData, contentUri, instanceUri);
                 }
             }
 
@@ -570,7 +580,7 @@ public class FormUtilities {
                 saveUnfinalizedFile();
 
                 if (formResultListener != null) {
-                    formResultListener.onFormUnFinalized(contentUri, formId, new File(xmlFilePath), metaInstanceName, lastUpdatedDate);
+                    formResultListener.onFormUnFinalized(formLoadData, contentUri, formId, instanceUri, metaInstanceName, lastUpdatedDate);
                 }
             }
         });
@@ -655,6 +665,81 @@ public class FormUtilities {
         return deviceId;
     }
 
+    public boolean deleteInstanceFile(String instanceFileUri) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            //SAF
+
+            try {
+                Log.d("saf delete file0", instanceFileUri);
+
+                /*
+                //instanceFileUri = instanceFileUri.replace("content://com.android.externalstorage.documents/tree/primary%3Aodk/document/",""); //remove authority from id
+                //instanceFileUri = instanceFileUri.replace("%3A", ":");
+                //instanceFileUri = instanceFileUri.replace("%2F", "/");
+                //instanceFileUri = instanceFileUri.replace("%20", " ");
+
+
+                Log.d("saf delete file1", instanceFileUri);
+
+                Uri uri = Uri.parse(instanceFileUri);
+
+                //Uri uri = DocumentsContract.buildTreeDocumentUri(OdkScopedDirUtil.EXTERNAL_STORAGE_PROVIDER_AUTHORITY, instanceFileUri);
+                Log.d("saf delete file2", uri.toString());
+                //int result = mContext.getContentResolver().delete(uri, null);
+
+                XDocumentFile xdocFile = XDocumentFile.fromUri(mContext, uri);
+                boolean delete = xdocFile.delete(); //result > 0;
+                */
+
+                boolean delete = DocumentsContract.deleteDocument(mContext.getContentResolver(), Uri.parse(instanceFileUri));
+
+                Log.d("saf delete file", instanceFileUri+" - "+delete);
+                return delete;
+
+            }catch (Exception ex) {
+                Log.d("saf delete file uri", "couldnt delete - "+ex.getMessage());
+                ex.printStackTrace();
+
+                return false;
+            }
+
+        } else {
+            //File API
+            try {
+                boolean delete = new File(instanceFileUri).delete();
+                Log.d("delete file", instanceFileUri+" - "+delete);
+                return delete;
+            } catch (Exception ex) {
+                Log.d("delete file uri", "couldnt delete - "+ex.getMessage());
+                ex.printStackTrace();
+
+                return false;
+            }
+        }
+
+    }
+
+    public InputStream openInstanceInputStream(String instanceFileUri) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            //SAF
+            try {
+                Uri uri = Uri.parse(instanceFileUri);
+                return mContext.getContentResolver().openInputStream(uri);
+            }catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        } else {
+            //File API
+            try {
+                return new FileInputStream(instanceFileUri);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+
+        return null;
+    }
+
     class CheckFormStatus extends AsyncTask<Void, Void, Boolean> {
 
         private ContentResolver resolver;
@@ -677,7 +762,7 @@ public class FormUtilities {
 
             if (cursor.moveToNext()) {
                 Log.d("move next", ""+cursor.getString(0));
-                xmlFilePath = cursor.getString(cursor.getColumnIndex(InstanceProviderAPI.InstanceColumns.INSTANCE_FILE_PATH)); //used to read the xml file
+                xmlFilePath = cursor.getString(cursor.getColumnIndex(InstanceProviderAPI.InstanceColumns.INSTANCE_FILE_PATH)); //used to read the xml file - its a relative path id is using SAF
 
                 String sdate = cursor.getString(cursor.getColumnIndex(InstanceProviderAPI.InstanceColumns.LAST_STATUS_CHANGE_DATE));
                 java.util.Date ludate = new java.util.Date(Long.parseLong(sdate)) ;
@@ -713,7 +798,7 @@ public class FormUtilities {
 
                 //pass contentUri and filepath to a listener - onFormFinalized, onFormUnfinalized
                 if (formResultListener != null) {
-                    formResultListener.onFormFinalized(contentUri, formId, new File(xmlFilePath), metaInstanceName, lastUpdatedDate);
+                    formResultListener.onFormFinalized(formLoadData, contentUri, formId, instanceUri, metaInstanceName, lastUpdatedDate);
                 }
             } else {
                 createUnfinishedFormDialog();

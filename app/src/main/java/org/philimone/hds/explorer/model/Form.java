@@ -1,7 +1,11 @@
 package org.philimone.hds.explorer.model;
 
+import org.philimone.hds.explorer.model.converters.FormSubjectTypeConverter;
+import org.philimone.hds.explorer.model.converters.FormTypeConverter;
 import org.philimone.hds.explorer.model.converters.MapStringConverter;
 import org.philimone.hds.explorer.model.converters.StringCollectionConverter;
+import org.philimone.hds.explorer.model.enums.FormSubjectType;
+import org.philimone.hds.explorer.model.enums.FormType;
 
 import java.io.Serializable;
 import java.util.Collection;
@@ -10,11 +14,13 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
+import io.objectbox.annotation.Backlink;
 import io.objectbox.annotation.Convert;
 import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Id;
 import io.objectbox.annotation.Index;
 import io.objectbox.annotation.Unique;
+import io.objectbox.relation.ToMany;
 
 /**
  * Created by paul on 5/20/16.
@@ -24,10 +30,16 @@ public class Form implements Serializable {
 
     @Id
     public long id;
+    @Convert(converter = FormTypeConverter.class, dbType = String.class)
+    public FormType formType;
+
     @Unique
     public String formId;
     public String formName;
     public String formDescription;
+
+    @Convert(converter = FormSubjectTypeConverter.class, dbType = String.class)
+    public FormSubjectType formSubjectType;
     public String formDependencies;
     public String regionLevel;
     public String gender; /*M, F, ALL*/
@@ -43,6 +55,7 @@ public class Form implements Serializable {
     public boolean isHouseholdHeadForm;
     public boolean isMemberForm;
     public boolean isFollowUpForm;
+    public boolean isFormGroupExclusive;
     public boolean multiCollPerSession;
 
     @Convert(converter = MapStringConverter.class, dbType = String.class)
@@ -50,6 +63,9 @@ public class Form implements Serializable {
 
     public String redcapApi;
     public String redcapMapText;
+
+    @Backlink(to = "groupForm")
+    public ToMany<FormGroupMapping> groupMappings;
 
     public Form(){
         this.formMap = new LinkedHashMap<>();

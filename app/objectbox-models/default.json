@@ -103,7 +103,7 @@
     },
     {
       "id": "4:136916130421403055",
-      "lastPropertyId": "18:911686321780812726",
+      "lastPropertyId": "22:7026526191422063031",
       "name": "CollectedData",
       "properties": [
         {
@@ -196,13 +196,37 @@
           "indexId": "96:5550492903331625789",
           "type": 9,
           "flags": 2048
+        },
+        {
+          "id": "19:513470732332536871",
+          "name": "formGroupCollected",
+          "type": 1
+        },
+        {
+          "id": "20:7330178491057754157",
+          "name": "formGroupInstanceUuid",
+          "indexId": "110:8522979444937177242",
+          "type": 9,
+          "flags": 2048
+        },
+        {
+          "id": "21:7173338276842646289",
+          "name": "formGroupId",
+          "indexId": "111:694109635311256836",
+          "type": 9,
+          "flags": 2048
+        },
+        {
+          "id": "22:7026526191422063031",
+          "name": "formGroupName",
+          "type": 9
         }
       ],
       "relations": []
     },
     {
       "id": "5:8229384567030576964",
-      "lastPropertyId": "20:7111462965614881981",
+      "lastPropertyId": "23:6815152292883125977",
       "name": "Form",
       "properties": [
         {
@@ -303,6 +327,21 @@
         {
           "id": "20:7111462965614881981",
           "name": "isFollowUpForm",
+          "type": 1
+        },
+        {
+          "id": "21:1262024426497610516",
+          "name": "formType",
+          "type": 9
+        },
+        {
+          "id": "22:7165199798089548090",
+          "name": "formSubjectType",
+          "type": 9
+        },
+        {
+          "id": "23:6815152292883125977",
+          "name": "isFormGroupExclusive",
           "type": 1
         }
       ],
@@ -2114,10 +2153,182 @@
         }
       ],
       "relations": []
+    },
+    {
+      "id": "28:7831859789114375899",
+      "lastPropertyId": "10:4953192376403726310",
+      "name": "FormGroupInstance",
+      "properties": [
+        {
+          "id": "1:6018762933549971856",
+          "name": "id",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:1799566270422038791",
+          "name": "groupFormId",
+          "indexId": "101:8823752748293368721",
+          "type": 9,
+          "flags": 2048
+        },
+        {
+          "id": "3:5764027035677493009",
+          "name": "subjectEntity",
+          "indexId": "102:3453786523803754015",
+          "type": 9,
+          "flags": 2048
+        },
+        {
+          "id": "4:7351739073836806507",
+          "name": "subjectCode",
+          "indexId": "103:3574659728713273460",
+          "type": 9,
+          "flags": 2048
+        },
+        {
+          "id": "5:1731877498290804216",
+          "name": "instanceUuid",
+          "indexId": "104:7117765195438890165",
+          "type": 9,
+          "flags": 2080
+        },
+        {
+          "id": "6:2032241552709431748",
+          "name": "instanceCode",
+          "indexId": "105:1141143892499500081",
+          "type": 9,
+          "flags": 2080
+        },
+        {
+          "id": "8:821114221582881803",
+          "name": "createdDate",
+          "type": 10
+        },
+        {
+          "id": "9:481047505943989313",
+          "name": "groupFormName",
+          "type": 9
+        },
+        {
+          "id": "10:4953192376403726310",
+          "name": "formsChilds",
+          "type": 9
+        }
+      ],
+      "relations": []
+    },
+    {
+      "id": "29:3125325812753154326",
+      "lastPropertyId": "8:1586138230455118804",
+      "name": "FormGroupMapping",
+      "properties": [
+        {
+          "id": "1:1478743898491328183",
+          "name": "id",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:8288691257707214150",
+          "name": "ordinal",
+          "type": 5
+        },
+        {
+          "id": "3:8855983505787930341",
+          "name": "formId",
+          "indexId": "106:5067486467300987038",
+          "type": 9,
+          "flags": 2048
+        },
+        {
+          "id": "4:7403859047033642934",
+          "name": "formRequired",
+          "type": 1
+        },
+        {
+          "id": "5:4069846811229379545",
+          "name": "formCollectType",
+          "type": 9
+        },
+        {
+          "id": "6:5720120107208920659",
+          "name": "formCollectCondition",
+          "type": 9
+        },
+        {
+          "id": "7:7336198620794870945",
+          "name": "formCollectLabel",
+          "type": 9
+        },
+        {
+          "id": "8:1586138230455118804",
+          "name": "groupFormId",
+          "indexId": "107:5065898077497365330",
+          "type": 11,
+          "flags": 520,
+          "relationTarget": "Form"
+        }
+      ],
+      "relations": []
+    },
+    {
+      "id": "30:705738454573743021",
+      "lastPropertyId": "10:28132289434322702",
+      "name": "FormGroupInstanceChild",
+      "properties": [
+        {
+          "id": "1:4980292391069568496",
+          "name": "id",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:916682465085809347",
+          "name": "formId",
+          "indexId": "108:7533860225792839330",
+          "type": 9,
+          "flags": 2048
+        },
+        {
+          "id": "3:5139887935461989041",
+          "name": "collected",
+          "type": 1
+        },
+        {
+          "id": "4:5743555488136112319",
+          "name": "collectedDate",
+          "type": 10
+        },
+        {
+          "id": "5:3851706084406762109",
+          "name": "uploaded",
+          "type": 1
+        },
+        {
+          "id": "6:2179872763713033610",
+          "name": "uploadedDate",
+          "type": 10
+        },
+        {
+          "id": "7:3169293492487020638",
+          "name": "groupInstanceId",
+          "indexId": "109:30127645058275082",
+          "type": 11,
+          "flags": 520,
+          "relationTarget": "FormGroupInstance"
+        },
+        {
+          "id": "10:28132289434322702",
+          "name": "formInstanceUri",
+          "type": 9
+        }
+      ],
+      "relations": []
     }
   ],
-  "lastEntityId": "27:3552757355833103195",
-  "lastIndexId": "100:2886321682941064944",
+  "lastEntityId": "30:705738454573743021",
+  "lastIndexId": "111:694109635311256836",
   "lastRelationId": "0:0",
   "lastSequenceId": "0:0",
   "modelVersion": 5,
@@ -2148,7 +2359,10 @@
     4907339215622276343,
     7840623867802962784,
     3235012691595534058,
-    3349601725358663484
+    3349601725358663484,
+    5250188650950478882,
+    6768563999367357692,
+    2500248657558795085
   ],
   "retiredRelationUids": [],
   "version": 1

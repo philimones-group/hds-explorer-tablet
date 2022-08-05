@@ -178,5 +178,9 @@ public class OdkScopedDirUtil {
         public OutputStream getInstanceOutputStream() throws FileNotFoundException {
             return contentResolver.openOutputStream(instanceFile.getUri());
         }
+
+        public InputStream getInstanceInputStream() throws FileNotFoundException {
+            return contentResolver.openInputStream(instanceFile.getUri());
+        }
     }
 }

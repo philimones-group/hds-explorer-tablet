@@ -6,6 +6,8 @@ public interface FormSubject {
 
     public long getId();
 
+    public String getCode();
+
     public SubjectEntity getTableName();
 
     public String getValueByName(String fieldName);

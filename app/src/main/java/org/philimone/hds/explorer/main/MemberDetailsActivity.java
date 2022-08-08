@@ -11,7 +11,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import org.philimone.hds.explorer.R;
-import org.philimone.hds.explorer.adapter.model.TrackingSubjectItem;
 import org.philimone.hds.explorer.data.FormDataLoader;
 import org.philimone.hds.explorer.database.Bootstrap;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
@@ -20,12 +19,12 @@ import org.philimone.hds.explorer.fragment.ExternalDatasetsFragment;
 import org.philimone.hds.explorer.fragment.member.details.MemberDetailsFragment;
 import org.philimone.hds.explorer.fragment.member.details.MemberEditFragment;
 import org.philimone.hds.explorer.fragment.member.details.adapter.MemberDetailsFragmentAdapter;
-import org.philimone.hds.explorer.fragment.region.details.RegionEditFragment;
 import org.philimone.hds.explorer.model.CollectedData;
 import org.philimone.hds.explorer.model.Form;
 import org.philimone.hds.explorer.model.Household;
 import org.philimone.hds.explorer.model.Member;
 import org.philimone.hds.explorer.model.User;
+import org.philimone.hds.explorer.model.followup.TrackingSubjectList;
 import org.philimone.hds.explorer.settings.RequestCodes;
 
 import java.util.ArrayList;
@@ -66,7 +65,11 @@ public class MemberDetailsActivity extends AppCompatActivity {
     private List<FormDataLoader> formDataLoaders = new ArrayList<>();
 
     private Box<Member> boxMembers;
+    private Box<Household> boxHousehold;
+    private Box<CollectedData> boxCollectedData;
+    private Box<TrackingSubjectList> boxTrackingSubjectList;
 
+    private TrackingSubjectList trackingSubject;
     private MemberDetailsFragmentAdapter fragmentAdapter;
 
     private User loggedUser;
@@ -85,45 +88,37 @@ public class MemberDetailsActivity extends AppCompatActivity {
 
         this.loggedUser = Bootstrap.getCurrentUser();
 
-        readIntentData();
-
-        readFormDataLoader();
-
         initBoxes();
+        readIntentData();
         initialize();
         initFragments();
         enableButtonsByFormLoaders();
     }
 
     private void readIntentData() {
-        this.household = (Household) getIntent().getExtras().get("household");
-        this.member = (Member) getIntent().getExtras().get("member");
-        this.studyCodeValue = getIntent().getExtras().getString("member_studycode");
+        long householdId = getIntent().getExtras().getLong("household");
+        long memberId = getIntent().getExtras().getLong("member");
         this.requestCode = getIntent().getExtras().getInt("request_code");
 
-        if (getIntent().getExtras().containsKey("odk-form-select")) {
-            this.autoHighlightCollectedData = (CollectedData) getIntent().getExtras().get("odk-form-select");
-        }
-    }
-
-    private void readFormDataLoader(){
-
-        if (!getIntent().getExtras().containsKey("dataloaders")){
-            return;
+        try {
+            this.household = boxHousehold.get(householdId);
+        }catch (Exception ex) {
+            Log.d("intent-error", ex.getMessage());
         }
 
         try {
-            Object[] objs = (Object[]) getIntent().getExtras().get("dataloaders");
+            this.member = boxMembers.get(memberId);
+        } catch (Exception ex) {
+            Log.d("intent-error", ex.getMessage());
+        }
 
-            for (int i = 0; i < objs.length; i++) {
-                FormDataLoader formDataLoader = (FormDataLoader) objs[i];
-                //Log.d("tag", "" + formDataLoader.getForm().getFormId());
-                if (isMemberVisualizableForm(formDataLoader.getForm())) {
-                    this.formDataLoaders.add(formDataLoader);
-                }
-            }
-        }catch (Exception ex) {
-            Log.d("dataloaders", "failed to read them - "+ex.getMessage());
+        if (getIntent().getExtras().containsKey("tracking_subject_id")) {
+            this.trackingSubject = boxTrackingSubjectList.get(getIntent().getExtras().getLong("tracking_subject_id"));
+        }
+
+        if (getIntent().getExtras().containsKey("odk-form-select")) {
+            long collectedDataId = getIntent().getExtras().getLong("odk-form-select");
+            this.autoHighlightCollectedData = boxCollectedData.get(collectedDataId);
         }
     }
 
@@ -150,9 +145,10 @@ public class MemberDetailsActivity extends AppCompatActivity {
     }
 
     private void initBoxes() {
-        //this.boxCollectedData = ObjectBoxDatabase.get().boxFor(CollectedData.class);
-        //this.boxForms = ObjectBoxDatabase.get().boxFor(Form.class);
+        this.boxCollectedData = ObjectBoxDatabase.get().boxFor(CollectedData.class);
+        this.boxHousehold = ObjectBoxDatabase.get().boxFor(Household.class);
         this.boxMembers = ObjectBoxDatabase.get().boxFor(Member.class);
+        this.boxTrackingSubjectList = ObjectBoxDatabase.get().boxFor(TrackingSubjectList.class);
     }
 
     private void initialize() {
@@ -224,7 +220,7 @@ public class MemberDetailsActivity extends AppCompatActivity {
 
             boolean isTracking = requestCode == RequestCodes.MEMBER_DETAILS_FROM_TRACKING_LIST_DETAILS;
 
-            fragmentAdapter = new MemberDetailsFragmentAdapter(this.getSupportFragmentManager(), this.getLifecycle(), household, member, loggedUser, isTracking ? formDataLoaders : null, tabTitles);
+            fragmentAdapter = new MemberDetailsFragmentAdapter(this.getSupportFragmentManager(), this.getLifecycle(), household, member, loggedUser, trackingSubject, tabTitles);
             fragmentAdapter.setAutoHighlightCollectedData(autoHighlightCollectedData);
             memberDetailsTabViewPager.setAdapter(fragmentAdapter);
             fragmentAdapter.setFragmentEditListener(new MemberEditFragment.EditListener() {

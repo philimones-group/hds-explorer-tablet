@@ -2156,7 +2156,7 @@
     },
     {
       "id": "28:7831859789114375899",
-      "lastPropertyId": "9:481047505943989313",
+      "lastPropertyId": "10:4953192376403726310",
       "name": "FormGroupInstance",
       "properties": [
         {
@@ -2208,6 +2208,11 @@
         {
           "id": "9:481047505943989313",
           "name": "groupFormName",
+          "type": 9
+        },
+        {
+          "id": "10:4953192376403726310",
+          "name": "formsChilds",
           "type": 9
         }
       ],

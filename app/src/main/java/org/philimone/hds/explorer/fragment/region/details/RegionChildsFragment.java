@@ -248,7 +248,7 @@ public class RegionChildsFragment extends Fragment {
         protected void onPostExecute(Void result) {
 
             Intent intent = new Intent(RegionChildsFragment.this.getContext(), HouseholdDetailsActivity.class);
-            intent.putExtra("household", household);
+            intent.putExtra("household", household.id);
 
             showLoadingDialog(null, false);
 
@@ -274,7 +274,7 @@ public class RegionChildsFragment extends Fragment {
             showLoadingDialog(null, false);
 
             Intent intent = new Intent(RegionChildsFragment.this.getContext(), RegionDetailsActivity.class);
-            intent.putExtra("region", region);
+            intent.putExtra("region", region.id);
 
             startActivity(intent);
         }

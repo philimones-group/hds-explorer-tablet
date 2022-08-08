@@ -15,6 +15,7 @@ import org.philimone.hds.explorer.fragment.region.details.RegionEditFragment;
 import org.philimone.hds.explorer.model.CollectedData;
 import org.philimone.hds.explorer.model.Region;
 import org.philimone.hds.explorer.model.User;
+import org.philimone.hds.explorer.model.followup.TrackingSubjectList;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,18 +29,16 @@ public class RegionDetailsFragmentAdapter extends FragmentStateAdapter {
     private RegionEditFragment fragEdit;
     private Region region;
     private User user;
-    private List<FormDataLoader> formDataLoaders;
 
-    public RegionDetailsFragmentAdapter(@NonNull FragmentManager fragmentManager, @NonNull Lifecycle lifecycle, Region region, User user, List<FormDataLoader> formDataLoaders, List<String> titles) {
+    public RegionDetailsFragmentAdapter(@NonNull FragmentManager fragmentManager, @NonNull Lifecycle lifecycle, Region region, User user, TrackingSubjectList trackingSubjectItem, List<String> titles) {
         super(fragmentManager, lifecycle);
         this.region = region;
         this.user = user;
-        this.formDataLoaders = formDataLoaders;
         this.tabTitles.addAll(titles);
 
         this.fragRegionChilds = RegionChildsFragment.newInstance(this.region, this.user);
         this.fragDatasets = ExternalDatasetsFragment.newInstance(this.region);
-        this.fragCollected = CollectedDataFragment.newInstance(this.region, this.user, this.formDataLoaders);
+        this.fragCollected = CollectedDataFragment.newInstance(this.region, this.user, trackingSubjectItem);
         this.fragEdit = RegionEditFragment.newInstance(this.region, this.user);
     }
 

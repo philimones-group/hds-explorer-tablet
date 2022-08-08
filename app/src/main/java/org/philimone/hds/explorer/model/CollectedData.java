@@ -32,6 +32,7 @@ public class CollectedData implements Serializable {
     public String formXmlPath;
     public String formInstanceName;
     public Date formLastUpdatedDate;
+    public boolean formFinalized;
 
     public boolean formGroupCollected = false;
     @Index
@@ -161,7 +162,7 @@ public class CollectedData implements Serializable {
     }
 
     public boolean isFormFinalized(){
-        return this.formXmlPath!=null && !this.formXmlPath.isEmpty();
+        return formFinalized; //this.formXmlPath!=null && !this.formXmlPath.isEmpty();
     }
 
     public boolean isSupervised() {

@@ -384,7 +384,7 @@ public class HouseholdFilterFragment extends Fragment implements RegionExpandabl
         //Receive the recent created Household, put the code on search after it
 
         Intent intent = new Intent(this.getContext(), HouseholdDetailsActivity.class);
-        intent.putExtra("region", currentRegion);
+        intent.putExtra("region", currentRegion.id);
         intent.putExtra("request_code", RequestCodes.HOUSEHOLD_DETAILS_FROM_HFILTER_NEW_HOUSEHOLD);
 
         addNewHouseholdLauncher.launch(intent);

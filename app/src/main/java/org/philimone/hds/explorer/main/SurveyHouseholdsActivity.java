@@ -265,8 +265,8 @@ public class SurveyHouseholdsActivity extends AppCompatActivity implements House
         protected void onPostExecute(Void result) {
 
             Intent intent = new Intent(SurveyHouseholdsActivity.this, MemberDetailsActivity.class);
-            intent.putExtra("household", this.household);
-            intent.putExtra("member", this.member);
+            intent.putExtra("household", this.household.id);
+            intent.putExtra("member", this.member.id);
 
             showLoadingDialog(null, false);
 
@@ -294,7 +294,7 @@ public class SurveyHouseholdsActivity extends AppCompatActivity implements House
         protected void onPostExecute(Void result) {
 
             Intent intent = new Intent(SurveyHouseholdsActivity.this, HouseholdDetailsActivity.class);
-            intent.putExtra("household", household);
+            intent.putExtra("household", household.id);
 
             showLoadingDialog(null, false);
 
@@ -320,7 +320,7 @@ public class SurveyHouseholdsActivity extends AppCompatActivity implements House
             showLoadingDialog(null, false);
 
             Intent intent = new Intent(SurveyHouseholdsActivity.this, RegionDetailsActivity.class);
-            intent.putExtra("region", region);
+            intent.putExtra("region", region.id);
 
             startActivity(intent);
         }

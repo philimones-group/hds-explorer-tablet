@@ -6,13 +6,12 @@ import org.philimone.hds.explorer.adapter.model.TrackingSubjectItem;
 import org.philimone.hds.explorer.model.Dataset;
 import org.philimone.hds.explorer.model.Form;
 import org.philimone.hds.explorer.model.FormGroupInstance;
-import org.philimone.hds.explorer.model.FormSubject;
 import org.philimone.hds.explorer.model.Form_;
 import org.philimone.hds.explorer.model.Household;
 import org.philimone.hds.explorer.model.Member;
 import org.philimone.hds.explorer.model.Region;
 import org.philimone.hds.explorer.model.User;
-import org.philimone.hds.explorer.model.enums.FormType;
+import org.philimone.hds.explorer.model.followup.TrackingSubjectList;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -53,8 +52,6 @@ public class FormDataLoader implements Serializable {
     private final String choiceFormatPrefix = "Choices[";
 
     private Form form;
-    private FormSubject subject;
-    private TrackingSubjectItem trackingSubjectItem;
     private Map<String, Object> values;
 
     private Map<String, CSVReader.CSVRow> generalCSVRows;
@@ -73,33 +70,12 @@ public class FormDataLoader implements Serializable {
         this.form = form;
     }
 
-    public FormDataLoader(Form form, FormSubject subject){
-        this();
-        this.form = form;
-        this.subject = subject;
-    }
-
-    public FormDataLoader(Form form, TrackingSubjectItem subjectItem){
-        this(form);
-        this.trackingSubjectItem = subjectItem;
-
-        Log.d("settingstr", "subj: "+subjectItem);
-    }
-
     public Form getForm() {
         return form;
     }
 
     public void setForm(Form form) {
         this.form = form;
-    }
-
-    public FormSubject getSubject() {
-        return subject;
-    }
-
-    public void setSubject(FormSubject subject) {
-        this.subject = subject;
     }
 
     public Map<String, Object> getValues() {
@@ -327,9 +303,9 @@ public class FormDataLoader implements Serializable {
         }
     }
 
-    public void loadTrackingListValues(){
+    public void loadTrackingListValues(TrackingSubjectList trackingSubjectItem){
         Log.d("reading dl", trackingSubjectItem+" FormDL");
-        if (this.trackingSubjectItem != null) {
+        if (trackingSubjectItem != null) {
             Map<String, String> map = form.getFormMap();
             for (String key : map.keySet()){
                 //key   - odkVariable
@@ -344,14 +320,12 @@ public class FormDataLoader implements Serializable {
                     String value = ""; //member.getValueByName(internalVariableName);
                     odkVariable = odkVariable.replace("->None", "");
 
-                    if (internalVariableName.equals("subject_visit_code")) value = this.trackingSubjectItem.getVisitCode();
+                    if (internalVariableName.equals("subject_visit_code")) value = trackingSubjectItem.subjectVisitCode;
 
-                    if (internalVariableName.equals("subject_visit_uuid")) value = this.trackingSubjectItem.getVisitUuid();
+                    if (internalVariableName.equals("subject_visit_uuid")) value = trackingSubjectItem.subjectVisitUuid;
 
                     this.values.put(odkVariable, value);
                     //Log.d("trl-odk auto-loadable", odkVariable + ", " + value);
-
-
                 }
             }
         }

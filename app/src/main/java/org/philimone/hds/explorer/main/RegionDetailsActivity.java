@@ -26,6 +26,7 @@ import org.philimone.hds.explorer.model.Form;
 import org.philimone.hds.explorer.model.Region;
 import org.philimone.hds.explorer.model.Region_;
 import org.philimone.hds.explorer.model.User;
+import org.philimone.hds.explorer.model.followup.TrackingSubjectList;
 import org.philimone.hds.explorer.settings.RequestCodes;
 
 import java.util.ArrayList;
@@ -65,7 +66,10 @@ public class RegionDetailsActivity extends AppCompatActivity {
 
     private Box<ApplicationParam> boxAppParams;
     private Box<Region> boxRegions;
+    private Box<CollectedData> boxCollectedData;
+    private Box<TrackingSubjectList> boxTrackingSubjectList;
 
+    private TrackingSubjectList trackingSubject;
     private CollectedData autoHighlightCollectedData;
 
     @Override
@@ -75,12 +79,8 @@ public class RegionDetailsActivity extends AppCompatActivity {
 
         this.loggedUser = Bootstrap.getCurrentUser();
 
-        readIntentData();
-
-
         initBoxes();
-
-        readFormDataLoader();
+        readIntentData();
 
         initialize();
         initFragments();
@@ -88,11 +88,17 @@ public class RegionDetailsActivity extends AppCompatActivity {
     }
 
     private void readIntentData() {
-        this.region = (Region) getIntent().getExtras().get("region");
+        long regionId = getIntent().getExtras().getLong("region");
+        this.region = boxRegions.get(regionId);
         this.activityRequestCode = getIntent().getExtras().getInt("request_code");
 
+        if (getIntent().getExtras().containsKey("tracking_subject_id")) {
+            this.trackingSubject = boxTrackingSubjectList.get(getIntent().getExtras().getLong("tracking_subject_id"));
+        }
+
         if (getIntent().getExtras().containsKey("odk-form-select")) {
-            this.autoHighlightCollectedData = (CollectedData) getIntent().getExtras().get("odk-form-select");
+            long collectedDataId = getIntent().getExtras().getLong("odk-form-select");
+            this.autoHighlightCollectedData = boxCollectedData.get(collectedDataId);
         }
     }
 
@@ -103,6 +109,8 @@ public class RegionDetailsActivity extends AppCompatActivity {
     private void initBoxes() {
         this.boxAppParams = ObjectBoxDatabase.get().boxFor(ApplicationParam.class);
         this.boxRegions = ObjectBoxDatabase.get().boxFor(Region.class);
+        this.boxTrackingSubjectList = ObjectBoxDatabase.get().boxFor(TrackingSubjectList.class);
+        this.boxCollectedData = ObjectBoxDatabase.get().boxFor(CollectedData.class);
     }
 
     private void initialize() {
@@ -181,7 +189,7 @@ public class RegionDetailsActivity extends AppCompatActivity {
 
             boolean isTracking = activityRequestCode == RequestCodes.REGION_DETAILS_FROM_TRACKING_LIST_DETAILS;
 
-            fragmentAdapter = new RegionDetailsFragmentAdapter(this.getSupportFragmentManager(), this.getLifecycle(), region, loggedUser, (isTracking) ? formDataLoaders : null, tabTitles);
+            fragmentAdapter = new RegionDetailsFragmentAdapter(this.getSupportFragmentManager(), this.getLifecycle(), region, loggedUser, this.trackingSubject, tabTitles);
             fragmentAdapter.setAutoHighlightCollectedData(autoHighlightCollectedData);
             fragmentAdapter.setFragmentEditListener(new RegionEditFragment.EditListener() {
                 @Override
@@ -235,28 +243,6 @@ public class RegionDetailsActivity extends AppCompatActivity {
         }
 
         return true;
-    }
-
-    private void readFormDataLoader(){
-
-        if (!getIntent().getExtras().containsKey("dataloaders")){
-            return;
-        }
-
-        try {
-            Object[] objs = (Object[]) getIntent().getExtras().get("dataloaders");
-
-            for (int i=0; i < objs.length; i++){
-                FormDataLoader formDataLoader = (FormDataLoader) objs[i];
-                //Log.d("tag", ""+formDataLoader.getForm().getFormId());
-                if (formDataLoader.getForm().isRegionForm() && formDataLoader.getForm().getRegionLevel().equals(region.getLevel()) && isVisibleForm(formDataLoader.getForm())){
-                    this.formDataLoaders.add(formDataLoader);
-                }
-            }
-        } catch (Exception ex) {
-            Log.d("dataloaders", "failed to read them - "+ex.getMessage());
-        }
-
     }
 
     private void onCollectDataClicked(){

@@ -19,6 +19,7 @@ import org.philimone.hds.explorer.model.CollectedData;
 import org.philimone.hds.explorer.model.Household;
 import org.philimone.hds.explorer.model.Member;
 import org.philimone.hds.explorer.model.User;
+import org.philimone.hds.explorer.model.followup.TrackingSubjectList;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,19 +35,17 @@ public class MemberDetailsFragmentAdapter extends FragmentStateAdapter {
     private Household household;
     private Member member;
     private User user;
-    private List<FormDataLoader> formDataLoaders;
 
-    public MemberDetailsFragmentAdapter(@NonNull FragmentManager fragmentManager, @NonNull Lifecycle lifecycle, Household household, Member member, User user, List<FormDataLoader> formDataLoaders, List<String> titles) {
+    public MemberDetailsFragmentAdapter(@NonNull FragmentManager fragmentManager, @NonNull Lifecycle lifecycle, Household household, Member member, User user, TrackingSubjectList trackingSubject, List<String> titles) {
         super(fragmentManager, lifecycle);
         this.household = household;
         this.member = member;
         this.user = user;
-        this.formDataLoaders = formDataLoaders;
         this.tabTitles.addAll(titles);
 
         this.fragMemberDetails = MemberDetailsFragment.newInstance(this.member, this.user);
         this.fragDatasets = ExternalDatasetsFragment.newInstance(this.member);
-        this.fragCollected = CollectedDataFragment.newInstance(this.member, this.user, this.formDataLoaders);
+        this.fragCollected = CollectedDataFragment.newInstance(this.member, this.user, trackingSubject);
         this.fragEdit = MemberEditFragment.newInstance(fragmentManager, this.household, this.member, this.user);
     }
 

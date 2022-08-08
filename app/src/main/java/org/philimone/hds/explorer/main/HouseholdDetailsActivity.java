@@ -40,6 +40,7 @@ import org.philimone.hds.explorer.model.Round_;
 import org.philimone.hds.explorer.model.User;
 import org.philimone.hds.explorer.model.Visit;
 import org.philimone.hds.explorer.model.Visit_;
+import org.philimone.hds.explorer.model.followup.TrackingSubjectList;
 import org.philimone.hds.explorer.settings.RequestCodes;
 import org.philimone.hds.explorer.widget.DialogFactory;
 
@@ -100,8 +101,11 @@ public class HouseholdDetailsActivity extends AppCompatActivity implements House
     private Box<Household> boxHouseholds;
     private Box<Round> boxRounds;
     private Box<Visit> boxVisits;
+    private Box<CollectedData> boxCollectedData;
     private Box<CoreCollectedData> boxCoreCollectedData;
+    private Box<TrackingSubjectList> boxTrackingSubjectList;
 
+    private TrackingSubjectList trackingSubject;
     private Round currentRound;
 
     private Integer requestCode;
@@ -119,9 +123,10 @@ public class HouseholdDetailsActivity extends AppCompatActivity implements House
         super.onCreate(savedInstanceState);
         setContentView(R.layout.household_details);
 
+        initBoxes();
+
         readIntentData();
 
-        initBoxes();
         initialize();
         initModes();
     }
@@ -165,13 +170,15 @@ public class HouseholdDetailsActivity extends AppCompatActivity implements House
 
 
         try {
-            this.region = (Region) getIntent().getExtras().get("region");
+            long regionId = getIntent().getExtras().getLong("region");
+            this.region = boxRegions.get(regionId);
         } catch (Exception ex){
             ex.printStackTrace();
         }
 
         try{
-            this.household = (Household) getIntent().getExtras().get("household");
+            long householdId = getIntent().getExtras().getLong("household");
+            this.household = boxHouseholds.get(householdId);
         }catch (Exception ex){
             ex.printStackTrace();
         }
@@ -182,15 +189,13 @@ public class HouseholdDetailsActivity extends AppCompatActivity implements House
             ex.printStackTrace();
         }
 
-        try {
-            readFormDataLoader();
-        } catch (Exception ex){
-            Log.d("dataloaders", "failed to read them - "+ex.getMessage());
-            //ex.printStackTrace();
+        if (getIntent().getExtras().containsKey("tracking_subject_id")) {
+            this.trackingSubject = boxTrackingSubjectList.get(getIntent().getExtras().getLong("tracking_subject_id"));
         }
 
         if (getIntent().getExtras().containsKey("odk-form-select")) {
-            this.autoHighlightCollectedData = (CollectedData) getIntent().getExtras().get("odk-form-select");
+            long collectedDataId = getIntent().getExtras().getLong("odk-form-select");
+            this.autoHighlightCollectedData = boxCollectedData.get(collectedDataId);
         }
     }
 
@@ -215,24 +220,9 @@ public class HouseholdDetailsActivity extends AppCompatActivity implements House
         this.boxVisits = ObjectBoxDatabase.get().boxFor(Visit.class);
         this.boxHouseholds = ObjectBoxDatabase.get().boxFor(Household.class);
         this.boxRounds = ObjectBoxDatabase.get().boxFor(Round.class);
+        this.boxCollectedData = ObjectBoxDatabase.get().boxFor(CollectedData.class);
         this.boxCoreCollectedData = ObjectBoxDatabase.get().boxFor(CoreCollectedData.class);
-    }
-
-    private void readFormDataLoader(){
-
-        if (!getIntent().getExtras().containsKey("dataloaders")){
-            return;
-        }
-
-        Object[] objs = (Object[]) getIntent().getExtras().get("dataloaders");
-
-        for (int i=0; i < objs.length; i++){
-            FormDataLoader formDataLoader = (FormDataLoader) objs[i];
-            //Log.d("tag", ""+formDataLoader.getForm().getFormId());
-            if (isVisibleForm(formDataLoader.getForm())){
-                this.formDataLoaders.add(formDataLoader);
-            }
-        }
+        this.boxTrackingSubjectList = ObjectBoxDatabase.get().boxFor(TrackingSubjectList.class);
     }
 
     private void initialize() {
@@ -310,7 +300,7 @@ public class HouseholdDetailsActivity extends AppCompatActivity implements House
 
             boolean isTracking = requestCode == RequestCodes.HOUSEHOLD_DETAILS_FROM_TRACKING_LIST_DETAILS;
 
-            fragmentAdapter = new HouseholdDetailsFragmentAdapter(this.getSupportFragmentManager(), this.getLifecycle(), household, loggedUser, isTracking ? formDataLoaders : null, tabTitles);
+            fragmentAdapter = new HouseholdDetailsFragmentAdapter(this.getSupportFragmentManager(), this.getLifecycle(), household, loggedUser, this.trackingSubject, tabTitles);
             fragmentAdapter.setAutoHighlightCollectedData(autoHighlightCollectedData);
             fragmentAdapter.setFragmentEditListener(new HouseholdEditFragment.EditListener() {
                 @Override

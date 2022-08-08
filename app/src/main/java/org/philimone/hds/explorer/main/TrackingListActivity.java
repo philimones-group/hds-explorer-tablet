@@ -138,7 +138,7 @@ public class TrackingListActivity extends AppCompatActivity {
         TrackingList trackingList = adapter.getItem(position);
 
         Intent intent = new Intent(this, TrackingListDetailsActivity.class);
-        intent.putExtra("trackinglist", trackingList);
+        intent.putExtra("trackinglist", trackingList.id);
 
         startActivity(intent);
     }

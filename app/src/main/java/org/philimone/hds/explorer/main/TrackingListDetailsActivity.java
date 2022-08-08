@@ -115,7 +115,8 @@ public class TrackingListDetailsActivity extends AppCompatActivity implements Ba
 
     private void initialize() {
         this.loggedUser = Bootstrap.getCurrentUser();
-        this.trackingList = (TrackingList) getIntent().getExtras().get("trackinglist");
+        long trackingListId = getIntent().getExtras().getLong("trackinglist");
+        this.trackingList = boxTrackingLists.get(trackingListId);
 
         this.txtTrackListTitle = (TextView) findViewById(R.id.txtTrackListTitle);
         this.txtTrackListDetails = (TextView) findViewById(R.id.txtTrackListDetails);
@@ -264,8 +265,8 @@ public class TrackingListDetailsActivity extends AppCompatActivity implements Ba
         int i=0;
         for (Form form : forms){
             if (subjectItem.getForms().contains(form.getFormId())){ //Create formloader for only the forms that the subjectItem has to collect
-                FormDataLoader loader = new FormDataLoader(form, subjectItem);
-                list.add(loader);
+                //FormDataLoader loader = new FormDataLoader(form, subjectItem);
+                //list.add(loader);
             }
         }
 
@@ -436,6 +437,7 @@ public class TrackingListDetailsActivity extends AppCompatActivity implements Ba
 
         //List<CollectedData> list = Queries.getAllCollectedDataBy(db, DatabaseHelper.CollectedData.COLUMN_RECORD_ID+"=? AND "+DatabaseHelper.CollectedData.COLUMN_FORM_ID+" IN (?)", new String[]{ member.getId()+"", StringUtil.toInClause(forms)});
 
+        tSubject.setEntityId(item.id);
         tSubject.setRegion(region);
         tSubject.setHousehold(household);
         tSubject.setMember(member);
@@ -470,7 +472,7 @@ public class TrackingListDetailsActivity extends AppCompatActivity implements Ba
     }
 
     private void filterSubjectsByCode(String code){
-        if (code != null){
+        if (code != null && adapter != null){
             adapter.filterSubjects(code);
             //this.elvTrackingLists.invalidate();
         }
@@ -585,7 +587,7 @@ public class TrackingListDetailsActivity extends AppCompatActivity implements Ba
         @Override
         protected Void doInBackground(Void... voids) {
 
-            this.dataLoaders = getFormLoaders(subjectItem);
+            //this.dataLoaders = getFormLoaders(subjectItem);
 
             if (isRegion){
                 this.region = subjectItem.getRegion();
@@ -610,24 +612,23 @@ public class TrackingListDetailsActivity extends AppCompatActivity implements Ba
 
             if (isRegion) {
                 intent = new Intent(TrackingListDetailsActivity.this, RegionDetailsActivity.class);
-                intent.putExtra("region", region);
-                intent.putExtra("dataloaders", dataLoaders);
+                intent.putExtra("region", region.id);
+                intent.putExtra("tracking_subject_id", subjectItem.getEntityId());
                 intent.putExtra("request_code", RequestCodes.REGION_DETAILS_FROM_TRACKING_LIST_DETAILS);
             }
 
             if (isHousehold) {
                 intent = new Intent(TrackingListDetailsActivity.this, HouseholdDetailsActivity.class);
-                intent.putExtra("household", household);
-                intent.putExtra("dataloaders", dataLoaders);
+                intent.putExtra("household", household.id);
+                intent.putExtra("tracking_subject_id", subjectItem.getEntityId());
                 intent.putExtra("request_code", RequestCodes.HOUSEHOLD_DETAILS_FROM_TRACKING_LIST_DETAILS);
             }
 
             if (isMember) {
                 intent = new Intent(TrackingListDetailsActivity.this, MemberDetailsActivity.class);
-                intent.putExtra("member", subjectItem.getMember());
-                intent.putExtra("member_studycode", subjectItem.getSubjectType());
+                intent.putExtra("member", member.id);
                 intent.putExtra("request_code", RequestCodes.MEMBER_DETAILS_FROM_TRACKING_LIST_DETAILS);
-                intent.putExtra("dataloaders", dataLoaders);
+                intent.putExtra("tracking_subject_id", subjectItem.getEntityId());
             }
 
 

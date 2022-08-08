@@ -206,7 +206,7 @@ public class ShowCoreCollectedDataFragment extends Fragment {
     private List<CoreCollectedDataItem> getAllCollectedData() {
         List<CoreCollectedDataItem> list = new ArrayList<>();
         List<CoreCollectedData> listc = this.boxCoreCollectedData.query(CoreCollectedData_.formEntity.equal(CoreFormEntity.VISIT.code))
-                                                                .order(CoreCollectedData_.formEntityCode).order(CoreCollectedData_.createdDate).build().find();
+                                                                .order(CoreCollectedData_.createdDate).order(CoreCollectedData_.formEntityCode).build().find();
 
         for (CoreCollectedData cdata : listc) {
             Visit visit = this.boxVisits.get(cdata.visitId);
@@ -255,7 +255,7 @@ public class ShowCoreCollectedDataFragment extends Fragment {
         protected void onPostExecute(Void result) {
 
             Intent intent = new Intent(ShowCoreCollectedDataFragment.this.getContext(), HouseholdDetailsActivity.class);
-            intent.putExtra("household", household);
+            intent.putExtra("household", household.id);
 
             showLoadingDialog(null, false);
 

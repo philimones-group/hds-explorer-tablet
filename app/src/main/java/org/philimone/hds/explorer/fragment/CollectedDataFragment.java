@@ -35,6 +35,7 @@ import org.philimone.hds.explorer.model.Region;
 import org.philimone.hds.explorer.model.Region_;
 import org.philimone.hds.explorer.model.User;
 import org.philimone.hds.explorer.model.enums.FormType;
+import org.philimone.hds.explorer.model.followup.TrackingSubjectList;
 import org.philimone.hds.explorer.utilities.FormGroupUtilities;
 import org.philimone.hds.explorer.widget.DialogFactory;
 import org.philimone.hds.explorer.widget.FormGroupPanelDialog;
@@ -89,6 +90,7 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
     private Box<Module> boxModules;
     private Box<Dataset> boxDatasets;
 
+    private TrackingSubjectList trackingSubject;
     private SubjectMode subjectMode;
 
     private CollectedData autoHighlightCollectedData;
@@ -100,16 +102,13 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
         initBoxes();
     }
 
-    public static CollectedDataFragment newInstance(FormSubject subject, User user, List<FormDataLoader> dataLoaders){
+    public static CollectedDataFragment newInstance(FormSubject subject, User user, TrackingSubjectList trackingSubject){
         CollectedDataFragment fragment = new CollectedDataFragment();
+        fragment.trackingSubject = trackingSubject;
         fragment.subject = subject;
         fragment.loggedUser = user;
 
-        if (dataLoaders == null) {
-            fragment.initializeDataloaders();
-        } else {
-            fragment.formDataLoaders.addAll(dataLoaders);
-        }
+        fragment.initializeDataloaders();
 
         return fragment;
     }
@@ -157,6 +156,22 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
         Member member = null;
         User user = loggedUser;
 
+        if (this.trackingSubject != null) {
+
+            String[] formIds = this.trackingSubject.getSubjectForms().split(",");
+
+            if (formIds.length > 0){
+                List<Form> forms = this.boxForms.query(Form_.formId.oneOf(formIds)).build().find();
+
+                for (Form form : forms) {
+                    FormDataLoader loader = new FormDataLoader(form);
+                    this.formDataLoaders.add(loader);
+                }
+            }
+
+            return;
+        }
+
         if (subject instanceof Region){
             region = (Region) subject;
 
@@ -183,7 +198,7 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
 
     }
 
-    private void loadMappingDataValues(FormDataLoader formDataLoader, FormGroupInstance formGroupInstance) {
+    private void loadMappingDataValues(FormDataLoader formDataLoader, TrackingSubjectList trackingSubject, FormGroupInstance formGroupInstance) {
         //get all visible forms for this subject
         Region region = null;
         Household household = null;
@@ -192,14 +207,14 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
 
         if (subject instanceof Region){
             region = (Region) subject;
-            loadFormValues(formDataLoader, null, null, region, formGroupInstance);
+            loadFormValues(formDataLoader, null, null, region, trackingSubject, formGroupInstance);
         }
 
         if (subject instanceof Household){
             household = (Household) subject;
             region = this.boxRegions.query(Region_.code.equal(household.region)).build().findFirst();
 
-            loadFormValues(formDataLoader, household, null, region, formGroupInstance);
+            loadFormValues(formDataLoader, household, null, region, trackingSubject, formGroupInstance);
         }
 
         if (subject instanceof Member){
@@ -207,7 +222,7 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
             household = this.boxHouseholds.query(Household_.code.equal(member.householdCode)).build().findFirst();;
             region = this.boxRegions.query(Region_.code.equal(household.region)).build().findFirst();
 
-            loadFormValues(formDataLoader, household, member, region, formGroupInstance);
+            loadFormValues(formDataLoader, household, member, region, trackingSubject, formGroupInstance);
         }
 
     }
@@ -220,7 +235,7 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
         return FormDataLoader.getFormLoadersList(boxForms, loggedUser, filters);
     }
 
-    private void loadFormValues(FormDataLoader loader, Household household, Member member, Region region, FormGroupInstance formGroupInstance){
+    private void loadFormValues(FormDataLoader loader, Household household, Member member, Region region, TrackingSubjectList trackingSubjectItem, FormGroupInstance formGroupInstance){
         if (household != null){
             loader.loadHouseholdValues(household);
         }
@@ -237,7 +252,9 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
             loader.loadFormGroupValues(formGroupInstance);
         }
 
-        loader.loadTrackingListValues();
+        if (trackingSubjectItem != null) {
+            loader.loadTrackingListValues(trackingSubjectItem);
+        }
 
         loader.loadConstantValues();
         loader.loadSpecialConstantValues(household, member, loggedUser, region, null);
@@ -592,6 +609,7 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
             collectedData.setFormXmlPath(instanceFileUri);
             collectedData.setFormInstanceName(metaInstanceName);
             collectedData.setFormLastUpdatedDate(lastUpdatedDate);
+            collectedData.formFinalized = true;
 
             collectedData.setFormModules(lastLoadedForm.getForm().modules);
 
@@ -615,6 +633,7 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
             //collectedData.setFormXmlPath(instanceFileUri);
             collectedData.setFormInstanceName(metaInstanceName);
             collectedData.setFormLastUpdatedDate(lastUpdatedDate);
+            collectedData.formFinalized = true;
 
             //collectedData.setFormModule(lastLoadedForm.getForm().getModules());
             //collectedData.setCollectedBy(loggedUser.getUsername());
@@ -666,6 +685,7 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
             collectedData.setFormXmlPath(instanceFileUri);
             collectedData.setFormInstanceName(metaInstanceName);
             collectedData.setFormLastUpdatedDate(lastUpdatedDate);
+            collectedData.formFinalized = false;
 
             collectedData.setFormModules(lastLoadedForm.getForm().modules);
 
@@ -689,6 +709,7 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
             //collectedData.setFormXmlPath(instanceFileUri);
             collectedData.setFormInstanceName(metaInstanceName);
             collectedData.setFormLastUpdatedDate(lastUpdatedDate);
+            collectedData.formFinalized = false;
 
             //collectedData.setFormModule(lastLoadedForm.getForm().getModules());
             //collectedData.setCollectedBy(loggedUser.getUsername());
@@ -788,7 +809,7 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
             //get the collected data only if is one form per session
             CollectedData collectedData = form.multiCollPerSession ? null : getCollectedData(formDataLoader);
 
-            loadMappingDataValues(formDataLoader, formGroupInstance);
+            loadMappingDataValues(formDataLoader, trackingSubject, formGroupInstance);
             //reload timestamp constants
             formDataLoader.reloadTimestampConstants();
 

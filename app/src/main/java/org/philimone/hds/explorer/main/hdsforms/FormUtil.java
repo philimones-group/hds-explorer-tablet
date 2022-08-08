@@ -418,6 +418,7 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
             odkCollectedData.setFormXmlPath(instanceFileUri);
             odkCollectedData.setFormInstanceName(metaInstanceName);
             odkCollectedData.setFormLastUpdatedDate(lastUpdatedDate);
+            odkCollectedData.formFinalized = true;
 
             odkCollectedData.setFormModules(user.getSelectedModules());
 
@@ -438,6 +439,7 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
             //odkCollectedData.setFormXmlPath(instanceFileUri);
             odkCollectedData.setFormInstanceName(metaInstanceName);
             odkCollectedData.setFormLastUpdatedDate(lastUpdatedDate);
+            odkCollectedData.formFinalized = true;
 
             //collectedData.setFormModule(lastLoadedForm.getForm().getModules());
             //collectedData.setCollectedBy(loggedUser.getUsername());
@@ -475,6 +477,7 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
             odkCollectedData.setFormXmlPath(instanceFileUri);
             odkCollectedData.setFormInstanceName(metaInstanceName);
             odkCollectedData.setFormLastUpdatedDate(lastUpdatedDate);
+            odkCollectedData.formFinalized = false;
 
             odkCollectedData.setFormModules(user.getSelectedModules());
 
@@ -494,6 +497,7 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
             //odkCollectedData.setFormXmlPath(instanceFileUri);
             odkCollectedData.setFormInstanceName(metaInstanceName);
             odkCollectedData.setFormLastUpdatedDate(lastUpdatedDate);
+            odkCollectedData.formFinalized = false;
 
             //collectedData.setFormModule(lastLoadedForm.getForm().getModules());
             //collectedData.setCollectedBy(loggedUser.getUsername());

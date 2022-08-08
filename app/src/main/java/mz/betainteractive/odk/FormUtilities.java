@@ -752,6 +752,20 @@ public class FormUtilities {
 
         @Override
         protected Boolean doInBackground(Void... arg0) {
+
+            Cursor cursorx = resolver.query(contentUri, null, null, null,null);
+            while (cursorx.moveToNext()) {
+                Log.d("started", "record");
+                for (int i = 0; i < cursorx.getColumnCount(); i++) {
+                    String columnName = cursorx.getColumnName(i);
+                    String columnValue = cursorx.getString(i);
+                    Log.d("column(name,value) "+i, columnName+" = "+columnValue);
+                }
+
+                Log.d("finished", "record");
+            }
+
+
             Cursor cursor = resolver.query(contentUri, new String[] { InstanceProviderAPI.InstanceColumns.STATUS,
                             InstanceProviderAPI.InstanceColumns.INSTANCE_FILE_PATH, InstanceProviderAPI.InstanceColumns.DISPLAY_NAME, InstanceProviderAPI.InstanceColumns.LAST_STATUS_CHANGE_DATE },
                     InstanceProviderAPI.InstanceColumns.STATUS + "=?",
@@ -762,18 +776,23 @@ public class FormUtilities {
 
             if (cursor.moveToNext()) {
                 Log.d("move next", ""+cursor.getString(0));
-                xmlFilePath = cursor.getString(cursor.getColumnIndex(InstanceProviderAPI.InstanceColumns.INSTANCE_FILE_PATH)); //used to read the xml file - its a relative path id is using SAF
 
-                String sdate = cursor.getString(cursor.getColumnIndex(InstanceProviderAPI.InstanceColumns.LAST_STATUS_CHANGE_DATE));
-                java.util.Date ludate = new java.util.Date(Long.parseLong(sdate)) ;
+                String status = cursor.getString(cursor.getColumnIndex(InstanceProviderAPI.InstanceColumns.STATUS));
 
-                metaInstanceName = cursor.getString(cursor.getColumnIndex(InstanceProviderAPI.InstanceColumns.DISPLAY_NAME));
-                lastUpdatedDate = ludate;
+                //guarantee that is a imcomplete form
+                if (InstanceProviderAPI.STATUS_INCOMPLETE.equals(status)) {
+                    resultToReturn = false;
+                } else { //its a completed form
+                    String statusChangeDate = cursor.getString(cursor.getColumnIndex(InstanceProviderAPI.InstanceColumns.LAST_STATUS_CHANGE_DATE));
+                    xmlFilePath = cursor.getString(cursor.getColumnIndex(InstanceProviderAPI.InstanceColumns.INSTANCE_FILE_PATH)); //used to read the xml file - its a relative path id is using SAF
+                    metaInstanceName = cursor.getString(cursor.getColumnIndex(InstanceProviderAPI.InstanceColumns.DISPLAY_NAME));
+                    lastUpdatedDate = new java.util.Date(Long.parseLong(statusChangeDate)) ;
+                    //Log.d("content-x", "" + metaInstanceName );
+                    //Log.d("last-date", "" + lastUpdatedDate );
 
-                //Log.d("content-x", "" + metaInstanceName );
-                //Log.d("last-date", "" + lastUpdatedDate );
+                    resultToReturn = true;
+                }
 
-                resultToReturn = true;
             } else {
                 Log.d("move next", "couldnt find executed form");
                 resultToReturn = false;

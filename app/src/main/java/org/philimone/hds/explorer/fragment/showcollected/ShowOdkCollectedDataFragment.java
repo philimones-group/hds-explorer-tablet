@@ -244,7 +244,7 @@ public class ShowOdkCollectedDataFragment extends Fragment {
 
     private List<CollectedData> getAllCollectedData() {
         List<CollectedData> list = this.boxCollectedData.query().filter((c) -> StringUtil.containsAny(c.formModules, selectedModules))
-                                                                .order(CollectedData_.recordEntity).order(CollectedData_.recordId).order(CollectedData_.formId).orderDesc(CollectedData_.formLastUpdatedDate)
+                                                                .orderDesc(CollectedData_.formLastUpdatedDate).order(CollectedData_.recordEntity).order(CollectedData_.recordId).order(CollectedData_.formId)
                                                                 .build().find();
         return list;
     }
@@ -276,8 +276,8 @@ public class ShowOdkCollectedDataFragment extends Fragment {
         protected void onPostExecute(Void result) {
 
             Intent intent = new Intent(ShowOdkCollectedDataFragment.this.getContext(), RegionDetailsActivity.class);
-            intent.putExtra("region", region);
-            intent.putExtra("odk-form-select", collectedData);
+            intent.putExtra("region", region.id);
+            intent.putExtra("odk-form-select", collectedData.id);
 
             showLoadingDialog(null, false);
 
@@ -303,8 +303,8 @@ public class ShowOdkCollectedDataFragment extends Fragment {
         protected void onPostExecute(Void result) {
 
             Intent intent = new Intent(ShowOdkCollectedDataFragment.this.getContext(), HouseholdDetailsActivity.class);
-            intent.putExtra("household", household);
-            intent.putExtra("odk-form-select", collectedData);
+            intent.putExtra("household", household.id);
+            intent.putExtra("odk-form-select", collectedData.id);
 
             showLoadingDialog(null, false);
 
@@ -330,8 +330,8 @@ public class ShowOdkCollectedDataFragment extends Fragment {
         protected void onPostExecute(Void result) {
 
             Intent intent = new Intent(ShowOdkCollectedDataFragment.this.getContext(), MemberDetailsActivity.class);
-            intent.putExtra("member", member);
-            intent.putExtra("odk-form-select", collectedData);
+            intent.putExtra("member", member.id);
+            intent.putExtra("odk-form-select", collectedData.id);
 
             showLoadingDialog(null, false);
 

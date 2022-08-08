@@ -15,6 +15,7 @@ import static org.philimone.hds.explorer.model.followup.TrackingSubjectList.TYPE
 import static org.philimone.hds.explorer.model.followup.TrackingSubjectList.TYPE_REGION;
 
 public class TrackingSubjectItem implements Serializable {
+    private long entityId;
     private Region region;
     private Household  household;
     private Member member;
@@ -28,6 +29,14 @@ public class TrackingSubjectItem implements Serializable {
     public TrackingSubjectItem() {
         forms = new ArrayList<>();
         collectedForms = new ArrayList<>();
+    }
+
+    public long getEntityId() {
+        return entityId;
+    }
+
+    public void setEntityId(long entityId) {
+        this.entityId = entityId;
     }
 
     public void addForm(String form){

@@ -134,7 +134,7 @@ public class GpsSearchedListActivity extends AppCompatActivity {
         //adapter.setSelectedIndex(-1);
 
         Intent intent = new Intent(this, MemberDetailsActivity.class);
-        intent.putExtra("member", member);
+        intent.putExtra("member", member.id);
 
         startActivity(intent);
     }

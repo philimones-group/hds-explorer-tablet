@@ -236,33 +236,61 @@ public class FormGroupPanelDialog extends DialogFragment {
         //validateForm();
         FormGroupMapping formGroupMapping = childItem.getFormGroupMapping();
 
-        if (childItem.getCollectedData() != null) {
-
+        if (childItem.getCollectedData() == null) {
+            Log.d("colectype", ""+formGroupMapping.formCollectType);
+            //previous must be finalized
             if (formGroupMapping.formCollectType == FormCollectType.PREVIOUS_FORM_COLLECTED) {
                 FormGroupChildItem previousChildItem = childItem.getPreviousItem();
 
-                if (previousChildItem != null && previousChildItem.getCollectedData() == null) {
-                    //Previous Form is not collected yet, collect it first
-                    String formName = previousChildItem.getForm().getFormName();
-                    DialogFactory.createMessageInfo(this.mContext, R.string.form_group_selector_validation_lbl, this.mContext.getString(R.string.form_group_selector_validation_prev_must_be_collected_lbl, formName)).show();
-                    return;
+                if (previousChildItem != null) {
+
+                    if (previousChildItem.getCollectedData() == null) {
+                        //Previous Form is not collected yet, collect it first
+                        String formName = previousChildItem.getForm().getFormName();
+                        DialogFactory.createMessageInfo(this.mContext, R.string.form_group_selector_validation_lbl, this.mContext.getString(R.string.form_group_selector_validation_prev_must_be_collected_lbl, formName)).show();
+                        return;
+                    } else if (!previousChildItem.getCollectedData().isFormFinalized()) {
+                        //Form Not Finalized, finalize it first
+                        String formName = previousChildItem.getForm().getFormName();
+                        DialogFactory.createMessageInfo(this.mContext, R.string.form_group_selector_validation_lbl, this.mContext.getString(R.string.form_group_selector_validation_prev_must_be_finalized_lbl, formName)).show();
+                        return;
+                    }
                 }
             }
 
             if (formGroupMapping.formCollectType == FormCollectType.CALCULATE_EXPRESSION) {
                 //get expression and calculate
                 //translate variables (get form previous form values)
-
-                String expression = formGroupUtilities.translateExpression(formGroupMapping.formCollectCondition, this.formGroupInstance);
+                Log.d("calculate", "expression");
+                FormGroupUtilities.ExTranslationResult trResult = formGroupUtilities.translateExpression(formGroupMapping.formCollectCondition, this.formGroupInstance);
+                String expression = trResult.translatedExpression;
                 String label = formGroupMapping.formCollectLabel;
 
-                String result = formGroupUtilities.evaluateExpression(expression).toString();
-                boolean openForm = StringTools.isBlank(result) ? true : result.equalsIgnoreCase("true");
+                if (trResult.status == FormGroupUtilities.TranslationStatus.SUCCESS) {
 
-                if (openForm == false) {
+                    String result = formGroupUtilities.evaluateExpression(expression).toString();
+                    boolean openForm = StringTools.isBlank(result) ? true : result.equalsIgnoreCase("true");
 
-                    String message = mContext.getString(R.string.form_group_selector_validation_form_collect_condition_error_lbl, label == null ? "" : label);
-                    DialogFactory.createMessageInfo(this.mContext, R.string.form_group_selector_validation_lbl, message).show();
+                    if (openForm == false) {
+
+                        String message = mContext.getString(R.string.form_group_selector_validation_form_collect_condition_error_lbl, label == null ? "" : label);
+                        DialogFactory.createMessageInfo(this.mContext, R.string.form_group_selector_validation_lbl, message).show();
+
+                        return;
+                    }
+                } else {
+                    if (trResult.status == FormGroupUtilities.TranslationStatus.ERROR_DEPENDENCY_NOT_FOUND) {
+                        DialogFactory.createMessageInfo(this.mContext, R.string.form_group_selector_validation_lbl, R.string.form_group_selector_validation_form_collect_condition_dependency_not_found_error_lbl).show();
+                        return;
+                    }
+
+                    if (trResult.status == FormGroupUtilities.TranslationStatus.ERROR_DEPENDENCY_FORM_NOT_FINALIZED) {
+                        String formId = trResult.affectedChild!=null ? trResult.affectedChild.formId : "NULL";
+                        String formName = getFormName(formId);
+                        String message = this.mContext.getString(R.string.form_group_selector_validation_form_collect_condition_dependency_not_finalized_error_lbl, formName);
+                        DialogFactory.createMessageInfo(this.mContext, R.string.form_group_selector_validation_lbl, message).show();
+                        return;
+                    }
 
                     return;
                 }
@@ -273,6 +301,16 @@ public class FormGroupPanelDialog extends DialogFragment {
         //dismiss();
 
         if (listener != null) listener.onFormSelected(childItem);
+    }
+
+    private String getFormName(String formId) {
+        for (FormGroupChildItem item : formsList) {
+            Form form = item.getForm();
+            if (form != null && form.formId.equals(formId)) {
+                return  form.formName;
+            }
+        }
+        return formId;
     }
 
     public void show(){

@@ -14,6 +14,7 @@ import org.philimone.hds.explorer.database.Bootstrap;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
 import org.philimone.hds.explorer.io.xml.FormXmlReader;
 import org.philimone.hds.explorer.model.CollectedData;
+import org.philimone.hds.explorer.model.CollectedData_;
 import org.philimone.hds.explorer.model.Form;
 import org.philimone.hds.explorer.model.FormGroupInstance;
 import org.philimone.hds.explorer.model.FormGroupInstanceChild;
@@ -40,6 +41,7 @@ public class FormGroupUtilities {
     private Context mContext;
     private Box<FormGroupInstance> boxFormGroupInstances;
     private Box<FormGroupInstanceChild> boxFormGroupInstanceChilds;
+    private Box<CollectedData> boxCollectedData;
     private User currentUser;
 
     private JexlEngine scriptEngine;
@@ -54,6 +56,7 @@ public class FormGroupUtilities {
     private void initBoxes() {
         this.boxFormGroupInstances = ObjectBoxDatabase.get().boxFor(FormGroupInstance.class);
         this.boxFormGroupInstanceChilds = ObjectBoxDatabase.get().boxFor(FormGroupInstanceChild.class);
+        this.boxCollectedData = ObjectBoxDatabase.get().boxFor(CollectedData.class);
     }
 
     private void initScriptEngine() {
@@ -147,7 +150,7 @@ public class FormGroupUtilities {
      * @param expression
      * @return
      */
-    public String translateExpression(String expression, FormGroupInstance formGroupInstance) {
+    public ExTranslationResult translateExpression(String expression, FormGroupInstance formGroupInstance) {
 
         //${form_group_sample_main.question1}=true
         //replace formInstance variables with values, ${}
@@ -159,13 +162,13 @@ public class FormGroupUtilities {
 
         Map<String, String> mapVariableValues = new LinkedHashMap<>();
         Map<String, Map<String, String>> mapFormContent = new HashMap<>();
-        Map<String, String> mapInstanceChilds = new HashMap<>();
+        Map<String, FormGroupInstanceChild> mapInstanceChilds = new HashMap<>();
 
         //Log.d("childs", ""+formGroupInstance.instanceChilds.size());
 
         for (FormGroupInstanceChild instanceChild : formGroupInstance.instanceChilds) {
             Log.d("instace "+instanceChild.formId, ""+instanceChild.formInstanceUri);
-            mapInstanceChilds.put(instanceChild.formId, instanceChild.formInstanceUri);
+            mapInstanceChilds.put(instanceChild.formId, instanceChild);
         }
 
         //1. extract vars
@@ -179,7 +182,19 @@ public class FormGroupUtilities {
                 String[] spt = variableName.split("\\.");
                 String formId = spt[0];
                 String columnName = spt[1];
-                String formInstanceUri = mapInstanceChilds.get(formId);
+                FormGroupInstanceChild instanceChild = mapInstanceChilds.get(formId);
+                String formInstanceUri = instanceChild != null ? instanceChild.formInstanceUri : "";
+
+                //check if form is finalized
+                CollectedData collectedData = boxCollectedData.query(CollectedData_.formXmlPath.equal(formInstanceUri)).build().findFirst();
+
+                if (collectedData == null) {
+                    return new ExTranslationResult(TranslationStatus.ERROR_DEPENDENCY_NOT_FOUND, "", null, instanceChild);
+                } else {
+                    if (!collectedData.isFormFinalized()) {
+                        return new ExTranslationResult(TranslationStatus.ERROR_DEPENDENCY_FORM_NOT_FINALIZED, "", null, instanceChild);
+                    }
+                }
 
                 //get form variables
                 Map<String,String> formData = mapFormContent.get(formId);
@@ -220,7 +235,7 @@ public class FormGroupUtilities {
 
         expression = StringUtil.toLowerCase(expression, words);
 
-        return expression;
+        return new ExTranslationResult(TranslationStatus.SUCCESS, expression);
     }
 
     private InputStream openInstanceInputStream(String instanceFileUri) {
@@ -243,4 +258,26 @@ public class FormGroupUtilities {
 
         return null;
     }
+
+    public class ExTranslationResult {
+
+        public String translatedExpression;
+        public TranslationStatus status;
+        public String errorMessage;
+        public FormGroupInstanceChild affectedChild;
+
+        public ExTranslationResult(TranslationStatus status, String translatedExpression, String errorMessage, FormGroupInstanceChild instanceChild) {
+            this.translatedExpression = translatedExpression;
+            this.status = status;
+            this.errorMessage = errorMessage;
+            this.affectedChild = instanceChild;
+        }
+
+        public ExTranslationResult(TranslationStatus status, String translatedExpression) {
+            this.translatedExpression = translatedExpression;
+            this.status = status;
+        }
+    }
+
+    public enum TranslationStatus { SUCCESS, ERROR, ERROR_DEPENDENCY_FORM_NOT_FINALIZED, ERROR_DEPENDENCY_NOT_FOUND};
 }

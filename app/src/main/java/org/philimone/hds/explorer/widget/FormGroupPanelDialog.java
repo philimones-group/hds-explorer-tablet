@@ -56,6 +56,7 @@ public class FormGroupPanelDialog extends DialogFragment {
     private List<FormDataLoader> formDataLoaders;
 
     private Box<CollectedData> boxCollectedData;
+    private Box<FormGroupInstance> boxFormGroupInstances;
 
     private FormSubject subject;
     private Form formGroup;
@@ -70,6 +71,7 @@ public class FormGroupPanelDialog extends DialogFragment {
 
         this.formGroupUtilities = formGroupUtilities;
         this.boxCollectedData = ObjectBoxDatabase.get().boxFor(CollectedData.class);
+        this.boxFormGroupInstances = ObjectBoxDatabase.get().boxFor(FormGroupInstance.class);
     }
 
     public static FormGroupPanelDialog createDialog(Context context, FragmentManager fm, FormGroupUtilities formGroupUtilities, FormSubject subject, Form form, List<FormDataLoader> formsList, FormGroupInstance formGroupInstance, OnFormSelectedListener listener){
@@ -232,6 +234,8 @@ public class FormGroupPanelDialog extends DialogFragment {
     }
 
     private void onSelectedForm(FormGroupChildItem childItem) {
+
+        this.formGroupInstance = boxFormGroupInstances.get(this.formGroupInstance.id);
 
         //validateForm();
         FormGroupMapping formGroupMapping = childItem.getFormGroupMapping();

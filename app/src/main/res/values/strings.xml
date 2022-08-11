@@ -3,7 +3,7 @@
     <string name="app_name">HDS Explorer</string>
 
     <!-- Copyright    -->
-    <string name="copyright_app_name_lbl">HDS Explorer v2.0</string>
+    <string name="copyright_app_name_lbl">HDS Explorer</string>
     <string name="copyright_app_company_lbl">© 2022 Philimone\'s Group</string>
     <string name="copyright_app_developers_lbl">Developed by Paulo Filimone</string>
 
@@ -148,6 +148,8 @@
     <string name="core_entity_collected_date_lbl">Collected Date:</string>
     <string name="core_entity_updated_date_lbl">Last Updated Date:</string>
     <string name="core_entity_uploaded_date_lbl">Uploaded Date:</string>
+
+    <string name="core_entity_extension_lbl">Extension Form</string>
 
     <string name="core_form_group_item_subtitle">Collected Forms</string>
     <string name="core_form_group_item_extension_lbl">Extension:</string>

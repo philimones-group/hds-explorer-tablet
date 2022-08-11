@@ -70,7 +70,7 @@ public class CoreCollectedExpandableAdapter extends BaseExpandableListAdapter im
 
     @Override
     public long getChildId(int groupPosition, int childPosition) {
-        return (groupPosition*1000)+childPosition;
+        return childPosition;
     }
 
     @Override

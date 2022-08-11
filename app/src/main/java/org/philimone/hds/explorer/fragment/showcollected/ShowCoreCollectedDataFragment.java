@@ -172,7 +172,6 @@ public class ShowCoreCollectedDataFragment extends Fragment {
         //this.showProgress(true);
         List<CoreCollectedDataItem> list = getAllCollectedData();
 
-
         ShowCoreCollectedDataAdapter adapter = new ShowCoreCollectedDataAdapter(this.getContext(), list, new ShowCoreCollectedDataAdapter.OnItemActionListener() {
             @Override
             public void onInfoButtonClicked(CoreCollectedDataItem collectedData) {
@@ -206,7 +205,7 @@ public class ShowCoreCollectedDataFragment extends Fragment {
     private List<CoreCollectedDataItem> getAllCollectedData() {
         List<CoreCollectedDataItem> list = new ArrayList<>();
         List<CoreCollectedData> listc = this.boxCoreCollectedData.query(CoreCollectedData_.formEntity.equal(CoreFormEntity.VISIT.code))
-                                                                .order(CoreCollectedData_.createdDate).order(CoreCollectedData_.formEntityCode).build().find();
+                                                                .orderDesc(CoreCollectedData_.createdDate).order(CoreCollectedData_.formEntityCode).build().find();
 
         for (CoreCollectedData cdata : listc) {
             Visit visit = this.boxVisits.get(cdata.visitId);

@@ -6,13 +6,10 @@ import android.util.Log;
 import org.philimone.hds.explorer.R;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
 import org.philimone.hds.explorer.model.CoreCollectedData;
-import org.philimone.hds.explorer.model.Death;
 import org.philimone.hds.explorer.model.Household;
 import org.philimone.hds.explorer.model.Household_;
-import org.philimone.hds.explorer.model.Member;
 import org.philimone.hds.explorer.model.Region;
 import org.philimone.hds.explorer.model.Region_;
-import org.philimone.hds.explorer.model.Visit;
 import org.philimone.hds.explorer.model.converters.StringCollectionConverter;
 import org.philimone.hds.explorer.model.enums.CoreFormEntity;
 import org.philimone.hds.forms.model.CollectedDataMap;
@@ -27,7 +24,7 @@ import java.util.Map;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
+
 import io.objectbox.Box;
 import io.objectbox.query.QueryBuilder;
 import mz.betainteractive.odk.FormUtilities;
@@ -35,10 +32,10 @@ import mz.betainteractive.utilities.StringUtil;
 
 public class HouseholdFormUtil extends FormUtil<Household> {
 
-    private Box<Household> boxHouseholds;
+    //private Box<Household> boxHouseholds;
     private Box<Region> boxRegions;
     private Region region;
-    private Household currentHousehold;
+    //private Household household;
 
     public HouseholdFormUtil(Fragment fragment, Context context, Region region, FormUtilities odkFormUtilities, FormUtilListener<Household> listener){
         super(fragment, context, FormUtil.getHouseholdForm(context), odkFormUtilities, listener);
@@ -54,7 +51,7 @@ public class HouseholdFormUtil extends FormUtil<Household> {
 
         initBoxes();
 
-        this.currentHousehold = householdToEdit;
+        this.household = householdToEdit;
         this.region = this.boxRegions.query(Region_.code.equal(householdToEdit.region)).build().findFirst();
 
         initialize();
@@ -74,7 +71,7 @@ public class HouseholdFormUtil extends FormUtil<Household> {
 
         initBoxes();
 
-        this.currentHousehold = householdToEdit;
+        this.household = householdToEdit;
         this.region = this.boxRegions.query(Region_.code.equal(householdToEdit.region)).build().findFirst();
 
         initialize();
@@ -95,7 +92,7 @@ public class HouseholdFormUtil extends FormUtil<Household> {
         super.initBoxes();
 
         this.boxRegions = ObjectBoxDatabase.get().boxFor(Region.class);
-        this.boxHouseholds = ObjectBoxDatabase.get().boxFor(Household.class);
+        //this.boxHouseholds = ObjectBoxDatabase.get().boxFor(Household.class);
 
     }
 
@@ -220,6 +217,7 @@ public class HouseholdFormUtil extends FormUtil<Household> {
         boxCoreCollectedData.put(collectedData);
 
         this.entity = household;
+        this.household = household;
         collectExtensionForm(collectedValues);
     }
 

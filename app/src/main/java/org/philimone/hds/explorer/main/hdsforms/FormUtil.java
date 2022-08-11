@@ -16,6 +16,7 @@ import org.philimone.hds.explorer.model.CoreCollectedData_;
 import org.philimone.hds.explorer.model.CoreEntity;
 import org.philimone.hds.explorer.model.CoreFormExtension;
 import org.philimone.hds.explorer.model.CoreFormExtension_;
+import org.philimone.hds.explorer.model.Household;
 import org.philimone.hds.explorer.model.Round;
 import org.philimone.hds.explorer.model.Round_;
 import org.philimone.hds.explorer.model.User;
@@ -60,6 +61,7 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
     protected FragmentManager fragmentManager;
     protected Context context;
     protected HForm form;
+    protected Household household;
     protected T entity;
     protected CoreCollectedData collectedData;
     protected CodeGeneratorService codeGenerator;
@@ -76,6 +78,7 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
     protected Box<CoreCollectedData> boxCoreCollectedData;
     protected Box<CoreFormExtension> boxCoreFormExtension;
     protected Box<CollectedData> boxCollectedData;
+    protected Box<Household> boxHouseholds;
     protected Box<SavedEntityState> boxSavedEntityStates;
 
     protected FormUtilities odkFormUtilities;
@@ -191,6 +194,10 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
             this.boxCoreFormExtension = ObjectBoxDatabase.get().boxFor(CoreFormExtension.class);
         }
 
+        if (this.boxHouseholds == null) {
+            this.boxHouseholds = ObjectBoxDatabase.get().boxFor(Household.class);
+        }
+
         if (this.boxCollectedData == null) {
             this.boxCollectedData = ObjectBoxDatabase.get().boxFor(CollectedData.class);
         }
@@ -253,7 +260,7 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
                     String message = this.context.getString(R.string.form_util_extension_collect_required_msg_lbl, getFormName());
                     DialogFactory.createMessageInfo(this.context, title, message, clickedButton -> {
                         //COLLECT EXTENSION FORM
-                        openOdkForm(new OdkFormLoadData(formExtension.extFormId, odkFilledForm, false));
+                        openOdkForm(new OdkFormLoadData(formExtension.extFormId, odkFilledForm, false, true));
                     }).show();
                 } else {
                     //optional message
@@ -262,7 +269,7 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
                         @Override
                         public void onYesClicked() {
                             //COLLECT EXTENSION FORM
-                            openOdkForm(new OdkFormLoadData(formExtension.extFormId, odkFilledForm, false));
+                            openOdkForm(new OdkFormLoadData(formExtension.extFormId, odkFilledForm, false, true));
                         }
 
                         @Override
@@ -276,6 +283,16 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
             }
         } else {
             onFinishedExtensionCollection();
+        }
+    }
+
+    public void editExtensionForm(CollectedData odkCollectedData) {
+
+        CoreFormExtension formExtension = getFormExtension(collectedData.formEntity);
+
+        if (odkCollectedData != null) {
+            FilledForm filledForm = new FilledForm(formExtension.extFormId);
+            openOdkForm(new OdkFormLoadData(formExtension.extFormId, filledForm, false, true), odkCollectedData);
         }
     }
 
@@ -426,8 +443,8 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
             odkCollectedData.setUpdatedBy("");
             odkCollectedData.setSupervisedBy("");
 
-            //collectedData.setRecordId(subject.getId());
-            //collectedData.setRecordEntity(subject.getTableName());
+            odkCollectedData.setRecordId(household.getId());
+            odkCollectedData.setRecordEntity(household.getTableName());
             odkCollectedData.collectedId = this.collectedData.collectedId;
 
             this.boxCollectedData.put(odkCollectedData);
@@ -446,8 +463,8 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
             odkCollectedData.setUpdatedBy(user.getUsername());
             //collectedData.setSupervisedBy("");
 
-            //collectedData.setRecordId(subject.getId());
-            //collectedData.setRecordEntity(subject.getTableName());
+            odkCollectedData.setRecordId(household.getId());
+            odkCollectedData.setRecordEntity(household.getTableName());
             odkCollectedData.collectedId = this.collectedData.collectedId;
 
             this.boxCollectedData.put(odkCollectedData);
@@ -485,8 +502,8 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
             odkCollectedData.setUpdatedBy("");
             odkCollectedData.setSupervisedBy("");
 
-            //collectedData.setRecordId(subject.getId());
-            //collectedData.setRecordEntity(subject.getTableName());
+            odkCollectedData.setRecordId(household.getId());
+            odkCollectedData.setRecordEntity(household.getTableName());
             odkCollectedData.collectedId = this.collectedData.collectedId;
 
             this.boxCollectedData.put(odkCollectedData);

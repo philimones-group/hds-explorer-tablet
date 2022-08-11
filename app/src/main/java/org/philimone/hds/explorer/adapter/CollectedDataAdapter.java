@@ -121,18 +121,19 @@ public class CollectedDataAdapter extends RecyclerView.Adapter<CollectedDataAdap
             CheckBox chkProcessed = (CheckBox) rowView.findViewById(R.id.chkProcessed);
             ImageView iconView = rowView.findViewById(R.id.iconView);
             ImageView groupIconView = rowView.findViewById(R.id.groupIconView);
+            ImageView hdsIconView = rowView.findViewById(R.id.hdsIconView);
 
             //Member mb = cdi.getMember();
             CollectedData cd = cdi.getCollectedData();
             String sdate = StringUtil.format(cd.formLastUpdatedDate, "yyyy-MM-dd HH:mm:ss");
-            String formId = (cdi.isFormNull() ? cd.getFormId() : cdi.getForm().getFormName());
+            String formName = cdi.getFormName(mContext); //cdi.isFormNull() ? cd.getFormId() : cdi.getForm().getFormName());
             String formGroup = cd.formGroupName;
 
             txtName.setText(cd.getFormInstanceName());
             txtExtra.setText(sdate);
             chkProcessed.setChecked(cd.isFormFinalized());
 
-            txtForm.setText(cd.formGroupCollected ? (formId + " -> " + formGroup) : formId);
+            txtForm.setText(cd.formGroupCollected ? (formName + " -> " + formGroup) : formName);
 
             if (highlightedIndex == position) {
                 //highlight record
@@ -141,8 +142,9 @@ public class CollectedDataAdapter extends RecyclerView.Adapter<CollectedDataAdap
                 rowView.setBackgroundColor(ContextCompat.getColor(mContext, R.color.zxing_transparent));
             }
 
-            iconView.setVisibility(cd.formGroupCollected ? View.GONE : View.VISIBLE);
-            groupIconView.setVisibility(cd.formGroupCollected ? View.VISIBLE : View.GONE);
+            iconView.setVisibility(cdi.isFormExtension() || cd.formGroupCollected ? View.GONE : View.VISIBLE);
+            groupIconView.setVisibility(cd.formGroupCollected && !cdi.isFormExtension() ? View.VISIBLE : View.GONE);
+            hdsIconView.setVisibility(cdi.isFormExtension() ? View.VISIBLE : View.GONE);
         }
     }
 }

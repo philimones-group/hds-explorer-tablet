@@ -39,11 +39,11 @@ import mz.betainteractive.utilities.StringUtil;
 
 public class VisitFormUtil extends FormUtil<Visit> {
 
-    private Box<Household> boxHouseholds;
+    //private Box<Household> boxHouseholds;
     private Box<Visit> boxVisits;
     private Box<Member> boxMembers;
 
-    private Household household;
+    //private Household household;
     private Member respondentMember;
     private boolean newHouseholdCreated;
     private boolean respondentNotRegistered = false;
@@ -110,7 +110,7 @@ public class VisitFormUtil extends FormUtil<Visit> {
     protected void initBoxes() {
         super.initBoxes();
 
-        this.boxHouseholds = ObjectBoxDatabase.get().boxFor(Household.class);
+        //this.boxHouseholds = ObjectBoxDatabase.get().boxFor(Household.class);
         this.boxVisits = ObjectBoxDatabase.get().boxFor(Visit.class);
         this.boxMembers = ObjectBoxDatabase.get().boxFor(Member.class);
 

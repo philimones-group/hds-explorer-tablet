@@ -50,12 +50,12 @@ import mz.betainteractive.utilities.StringUtil;
 
 public class MemberEnumerationFormUtil extends FormUtil<Member> {
 
-    private Box<Household> boxHouseholds;
+    //private Box<Household> boxHouseholds;
     private Box<Member> boxMembers;
     private Box<Residency> boxResidencies;
     private Box<HeadRelationship> boxHeadRelationships;
 
-    private Household household;
+    //private Household household;
     private Visit visit;
     private Member father;
     private Member mother;
@@ -111,7 +111,7 @@ public class MemberEnumerationFormUtil extends FormUtil<Member> {
     protected void initBoxes() {
         super.initBoxes();
 
-        this.boxHouseholds = ObjectBoxDatabase.get().boxFor(Household.class);
+        //this.boxHouseholds = ObjectBoxDatabase.get().boxFor(Household.class);
         this.boxMembers = ObjectBoxDatabase.get().boxFor(Member.class);
         this.boxResidencies = ObjectBoxDatabase.get().boxFor(Residency.class);
         this.boxHeadRelationships = ObjectBoxDatabase.get().boxFor(HeadRelationship.class);

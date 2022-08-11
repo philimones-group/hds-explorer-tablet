@@ -54,15 +54,15 @@ import mz.betainteractive.utilities.StringUtil;
 
 public class InternalInMigrationFormUtil extends FormUtil<Inmigration> {
 
-    private Box<Household> boxHouseholds;
+    //private Box<Household> boxHouseholds;
     private Box<Member> boxMembers;
     private Box<Residency> boxResidencies;
     private Box<HeadRelationship> boxHeadRelationships;
     private Box<Inmigration> boxInmigrations;
     private Box<Outmigration> boxOutmigrations;
-        protected Box<Death> boxDeaths;
+    protected Box<Death> boxDeaths;
 
-    private Household household;
+    //private Household household;
     private Visit visit;
     private Member selectedMember;
     private Residency selectedMemberResidency;
@@ -113,7 +113,7 @@ public class InternalInMigrationFormUtil extends FormUtil<Inmigration> {
     protected void initBoxes() {
         super.initBoxes();
 
-        this.boxHouseholds = ObjectBoxDatabase.get().boxFor(Household.class);
+        //this.boxHouseholds = ObjectBoxDatabase.get().boxFor(Household.class);
         this.boxMembers = ObjectBoxDatabase.get().boxFor(Member.class);
         this.boxResidencies = ObjectBoxDatabase.get().boxFor(Residency.class);
         this.boxHeadRelationships = ObjectBoxDatabase.get().boxFor(HeadRelationship.class);

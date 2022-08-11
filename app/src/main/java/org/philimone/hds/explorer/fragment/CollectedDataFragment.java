@@ -15,8 +15,12 @@ import org.philimone.hds.explorer.adapter.model.FormGroupChildItem;
 import org.philimone.hds.explorer.data.FormDataLoader;
 import org.philimone.hds.explorer.data.FormFilter;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
+import org.philimone.hds.explorer.main.hdsforms.EditCoreExtensionFormUtil;
 import org.philimone.hds.explorer.model.CollectedData;
 import org.philimone.hds.explorer.model.CollectedData_;
+import org.philimone.hds.explorer.model.CoreCollectedData;
+import org.philimone.hds.explorer.model.CoreCollectedData_;
+import org.philimone.hds.explorer.model.CoreFormExtension;
 import org.philimone.hds.explorer.model.Dataset;
 import org.philimone.hds.explorer.model.Dataset_;
 import org.philimone.hds.explorer.model.Form;
@@ -82,9 +86,11 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
     private FormGroupUtilities formGroupUtilities;
 
     private Box<CollectedData> boxCollectedData;
+    private Box<CoreCollectedData> boxCoreCollectedData;
     private Box<Household> boxHouseholds;
     private Box<Region> boxRegions;
     private Box<Form> boxForms;
+    private Box<CoreFormExtension> boxCoreFormExtensions;
     private Box<FormGroupInstance> boxFormGroupInstances;
     private Box<FormGroupInstanceChild> boxFormGroupInstanceChilds;
     private Box<Module> boxModules;
@@ -140,7 +146,9 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
 
     private void initBoxes() {
         this.boxCollectedData = ObjectBoxDatabase.get().boxFor(CollectedData.class);
+        this.boxCoreCollectedData = ObjectBoxDatabase.get().boxFor(CoreCollectedData.class);
         this.boxForms = ObjectBoxDatabase.get().boxFor(Form.class);
+        this.boxCoreFormExtensions = ObjectBoxDatabase.get().boxFor(CoreFormExtension.class);
         this.boxFormGroupInstances = ObjectBoxDatabase.get().boxFor(FormGroupInstance.class);
         this.boxFormGroupInstanceChilds = ObjectBoxDatabase.get().boxFor(FormGroupInstanceChild.class);
         this.boxRegions = ObjectBoxDatabase.get().boxFor(Region.class);
@@ -316,12 +324,14 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
 
         List<CollectedData> list = getAllCollectedData();
         List<Form> forms = this.boxForms.getAll();
+        List<CoreFormExtension> coreforms = this.boxCoreFormExtensions.getAll();
         List<CollectedDataItem> cdl = new ArrayList<>();
 
         for (CollectedData cd : list){
-            if (hasFormDataLoadersContains(cd.getFormId())){
+            if (hasFormDataLoadersContains(cd.getFormId()) || getFormExtensionById(coreforms, cd.getFormId()) != null){
                 Form form = getFormById(forms, cd.getFormId());
-                cdl.add(new CollectedDataItem(subject, form, cd));
+                CoreFormExtension formExtension = form == null ? getFormExtensionById(coreforms, cd.getFormId()) : null;
+                cdl.add(new CollectedDataItem(subject, cd.getFormId(), form, formExtension, cd));
             }
         }
 
@@ -348,19 +358,44 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
         CollectedDataItem dataItem = adapter.getItem(position);
 
         CollectedData collectedData = dataItem.getCollectedData();
-        FormDataLoader formDataLoader = getFormDataLoader(collectedData);
 
-        if (collectedData.formGroupCollected) {
-            //Handle Form Group edition correctly
-            handleOnFormGroupCollectedData(collectedData);
+
+        if (dataItem.isFormExtension()) {
+            CoreCollectedData coreCollectedData = boxCoreCollectedData.query(CoreCollectedData_.collectedId.equal(collectedData.collectedId)).build().findFirst();
+            EditCoreExtensionFormUtil formUtil = new EditCoreExtensionFormUtil(this, this.getContext(), null, coreCollectedData, (Household) this.subject, this.formUtilities, new EditCoreExtensionFormUtil.Listener() {
+                @Override
+                public void onFinishedCollecting() {
+                    showCollectedData();
+                }
+            });
+
+            formUtil.editExtensionForm(collectedData);
+
         } else {
-            reOpenOdkForm(formDataLoader, collectedData, false, null);
+            FormDataLoader formDataLoader = getFormDataLoader(collectedData);
+
+            if (collectedData.formGroupCollected) {
+                //Handle Form Group edition correctly
+                handleOnFormGroupCollectedData(collectedData);
+            } else {
+                reOpenOdkForm(formDataLoader, collectedData, false, null);
+            }
         }
+
+
     }
 
     private Form getFormById(List<Form> forms, String formId){
         for (Form f : forms){
             if (f.getFormId().equals(formId)) return f;
+        }
+
+        return null;
+    }
+
+    private CoreFormExtension getFormExtensionById(List<CoreFormExtension> forms, String formId){
+        for (CoreFormExtension f : forms){
+            if (f.extFormId.equals(formId)) return f;
         }
 
         return null;

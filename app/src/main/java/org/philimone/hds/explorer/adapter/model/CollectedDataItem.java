@@ -1,6 +1,10 @@
 package org.philimone.hds.explorer.adapter.model;
 
+import android.content.Context;
+
+import org.philimone.hds.explorer.R;
 import org.philimone.hds.explorer.model.CollectedData;
+import org.philimone.hds.explorer.model.CoreFormExtension;
 import org.philimone.hds.explorer.model.Form;
 import org.philimone.hds.explorer.model.FormSubject;
 import org.philimone.hds.explorer.model.Household;
@@ -15,21 +19,18 @@ import java.io.Serializable;
 public class CollectedDataItem implements Serializable {
 
     private int id;
+    private String formId;
     private Household household;
     private Member member;
     private Form form;
+    private CoreFormExtension formExtension;
     private Region region;
     private CollectedData collectedData;
 
-    public CollectedDataItem(int id, Member member, Form form, CollectedData collectedData) {
-        this.id = id;
-        this.member = member;
+    public CollectedDataItem(FormSubject subject, String formId, Form form, CoreFormExtension coreFormExtension, CollectedData collectedData) {
+        this.formId = formId;
         this.form = form;
-        this.collectedData = collectedData;
-    }
-
-    public CollectedDataItem(FormSubject subject, Form form, CollectedData collectedData) {
-        this.form = form;
+        this.formExtension = coreFormExtension;
         this.collectedData = collectedData;
 
         if (subject instanceof Region){
@@ -41,40 +42,6 @@ public class CollectedDataItem implements Serializable {
         if (subject instanceof Member){
             this.member = (Member) subject;
         }
-
-
-    }
-
-    public CollectedDataItem(Member member, Form form, CollectedData collectedData) {
-        this.member = member;
-        this.form = form;
-        this.collectedData = collectedData;
-    }
-
-    public CollectedDataItem(int id, Household household, Form form, CollectedData collectedData) {
-        this.id = id;
-        this.household = household;
-        this.form = form;
-        this.collectedData = collectedData;
-    }
-
-    public CollectedDataItem(Household household, Form form, CollectedData collectedData) {
-        this.household = household;
-        this.form = form;
-        this.collectedData = collectedData;
-    }
-
-    public CollectedDataItem(int id, Region region, Form form, CollectedData collectedData) {
-        this.id = id;
-        this.region = region;
-        this.form = form;
-        this.collectedData = collectedData;
-    }
-
-    public CollectedDataItem(Region region, Form form, CollectedData collectedData) {
-        this.region = region;
-        this.form = form;
-        this.collectedData = collectedData;
     }
 
     public int getId() {
@@ -107,6 +74,15 @@ public class CollectedDataItem implements Serializable {
 
     public void setForm(Form form) {
         this.form = form;
+    }
+
+    public String getFormName(Context context) {
+        String extension = " " + context.getString(R.string.core_entity_extension_lbl);
+        return form != null ? form.getFormName() : formExtension != null ? context.getString(formExtension.formEntity.name) + extension : formId;
+    }
+
+    public boolean isFormExtension() {
+        return formExtension != null;
     }
 
     public CollectedData getCollectedData() {

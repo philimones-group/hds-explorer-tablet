@@ -820,7 +820,16 @@ public class FormUtilities {
                     formResultListener.onFormFinalized(formLoadData, contentUri, formId, instanceUri, metaInstanceName, lastUpdatedDate);
                 }
             } else {
-                createUnfinishedFormDialog();
+
+                if (formLoadData.skipUnfinalizedCheck) {
+                    //jump to call listener FormUnFinalized
+                    if (formResultListener != null) {
+                        saveUnfinalizedFile();
+                        formResultListener.onFormUnFinalized(formLoadData, contentUri, formId, instanceUri, metaInstanceName, lastUpdatedDate);
+                    }
+                } else {
+                    createUnfinishedFormDialog();
+                }
             }
 
         }

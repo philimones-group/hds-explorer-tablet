@@ -40,7 +40,7 @@ public class PregnancyRegistrationFormUtil extends FormUtil<PregnancyRegistratio
     private Box<Member> boxMembers;
     private Box<PregnancyRegistration> boxPregnancyRegistrations;
     
-    private Household household;
+    //private Household household;
     private Visit visit;
     private Member mother;
     private boolean nonPregnantRegistration = false;

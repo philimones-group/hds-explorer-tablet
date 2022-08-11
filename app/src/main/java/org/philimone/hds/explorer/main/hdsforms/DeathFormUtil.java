@@ -59,14 +59,14 @@ import mz.betainteractive.utilities.StringUtil;
 
 public class DeathFormUtil extends FormUtil<Death> {
 
-    private Box<Household> boxHouseholds;
+    //private Box<Household> boxHouseholds;
     private Box<Member> boxMembers;
     private Box<Death> boxDeaths;
     private Box<HeadRelationship> boxHeadRelationships;
     private Box<Residency> boxResidencies;
     private Box<MaritalRelationship> boxMaritalRelationships;
     
-    private Household household;
+    //private Household household;
     private Visit visit;
     private Member member;
     private Boolean isHouseholdHead = false;
@@ -123,7 +123,7 @@ public class DeathFormUtil extends FormUtil<Death> {
     protected void initBoxes() {
         super.initBoxes();
 
-        this.boxHouseholds = ObjectBoxDatabase.get().boxFor(Household.class);
+        //this.boxHouseholds = ObjectBoxDatabase.get().boxFor(Household.class);
         this.boxMembers = ObjectBoxDatabase.get().boxFor(Member.class);
         this.boxDeaths = ObjectBoxDatabase.get().boxFor(Death.class);
         this.boxHeadRelationships = ObjectBoxDatabase.get().boxFor(HeadRelationship.class);

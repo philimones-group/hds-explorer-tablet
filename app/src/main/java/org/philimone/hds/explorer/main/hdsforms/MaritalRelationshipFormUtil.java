@@ -15,6 +15,7 @@ import org.philimone.hds.explorer.model.ApplicationParam;
 import org.philimone.hds.explorer.model.ApplicationParam_;
 import org.philimone.hds.explorer.model.CoreCollectedData;
 import org.philimone.hds.explorer.model.Death;
+import org.philimone.hds.explorer.model.Household_;
 import org.philimone.hds.explorer.model.MaritalRelationship;
 import org.philimone.hds.explorer.model.MaritalRelationship_;
 import org.philimone.hds.explorer.model.Member;
@@ -108,6 +109,7 @@ public class MaritalRelationshipFormUtil extends FormUtil<MaritalRelationship> {
     protected void initialize(){
         super.initialize();
 
+        this.household = boxHouseholds.query(Household_.code.equal(visit.householdCode)).build().findFirst();
         this.minimunSpouseAge = retrieveMinimumSpouseAge();
         this.genderChecking = retrieveGenderChecking();
     }

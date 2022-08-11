@@ -55,9 +55,9 @@ public class ChangeHeadFormUtil extends FormUtil<HeadRelationship> {
 
     private Box<Member> boxMembers;
     private Box<Residency> boxResidencies;
-    private Box<Household> boxHouseholds;
+    //private Box<Household> boxHouseholds;
     private Box<HeadRelationship> boxHeadRelationships;
-    private Household household;
+    //private Household household;
     private Visit visit;
     private Member oldHeadMember;
     private Member newHeadMember;
@@ -114,7 +114,7 @@ public class ChangeHeadFormUtil extends FormUtil<HeadRelationship> {
 
         this.boxMembers = ObjectBoxDatabase.get().boxFor(Member.class);
         this.boxHeadRelationships = ObjectBoxDatabase.get().boxFor(HeadRelationship.class);
-        this.boxHouseholds = ObjectBoxDatabase.get().boxFor(Household.class);
+        //this.boxHouseholds = ObjectBoxDatabase.get().boxFor(Household.class);
         this.boxResidencies = ObjectBoxDatabase.get().boxFor(Residency.class);
     }
 

@@ -27,6 +27,7 @@ import org.philimone.hds.explorer.main.MemberDetailsActivity;
 import org.philimone.hds.explorer.main.RegionDetailsActivity;
 import org.philimone.hds.explorer.model.CollectedData;
 import org.philimone.hds.explorer.model.CollectedData_;
+import org.philimone.hds.explorer.model.CoreFormExtension;
 import org.philimone.hds.explorer.model.Dataset;
 import org.philimone.hds.explorer.model.Dataset_;
 import org.philimone.hds.explorer.model.Form;
@@ -71,6 +72,7 @@ public class ShowOdkCollectedDataFragment extends Fragment {
     private Box<Visit> boxVisits;
     private Box<User> boxUsers;
     private Box<Form> boxForms;
+    private Box<CoreFormExtension> boxCoreForms;
     private Box<Module> boxModules;
     private Box<Dataset> boxDatasets;
     private List<String> selectedModules = new ArrayList<>();
@@ -112,6 +114,7 @@ public class ShowOdkCollectedDataFragment extends Fragment {
     private void initBoxes() {
         this.boxCollectedData = ObjectBoxDatabase.get().boxFor(CollectedData.class);
         this.boxForms = ObjectBoxDatabase.get().boxFor(Form.class);
+        this.boxCoreForms = ObjectBoxDatabase.get().boxFor(CoreFormExtension.class);
         this.boxRegions = ObjectBoxDatabase.get().boxFor(Region.class);
         this.boxHouseholds = ObjectBoxDatabase.get().boxFor(Household.class);
         this.boxMembers = ObjectBoxDatabase.get().boxFor(Member.class);
@@ -177,11 +180,13 @@ public class ShowOdkCollectedDataFragment extends Fragment {
 
         List<CollectedData> list = getAllCollectedData();
         List<Form> forms = this.boxForms.getAll();
+        List<CoreFormExtension> coreforms = this.boxCoreForms.getAll();
         List<OdkCollectedDataItem> cdl = new ArrayList<>();
 
         for (CollectedData cd : list){
             Form form = getFormById(forms, cd.getFormId());
-            cdl.add(new OdkCollectedDataItem(getSubject(cd), form, cd));
+            CoreFormExtension coreform = form==null ? getFormExtensionById(coreforms, cd.getFormId()) : null;
+            cdl.add(new OdkCollectedDataItem(cd.getFormId(), getSubject(cd), form, coreform, cd));
         }
 
         ShowCollectedDataAdapter adapter = new ShowCollectedDataAdapter(this.getContext(), cdl);
@@ -190,6 +195,8 @@ public class ShowOdkCollectedDataFragment extends Fragment {
 
     private FormSubject getSubject(CollectedData collectedData) {
         FormSubject subject = null;
+
+        if (collectedData.recordEntity == null) return null;
 
         switch (collectedData.recordEntity) {
             case REGION: subject = this.boxRegions.get(collectedData.recordId); break;
@@ -237,6 +244,14 @@ public class ShowOdkCollectedDataFragment extends Fragment {
     private Form getFormById(List<Form> forms, String formId){
         for (Form f : forms){
             if (f.getFormId().equals(formId)) return f;
+        }
+
+        return null;
+    }
+
+    private CoreFormExtension getFormExtensionById(List<CoreFormExtension> forms, String formId){
+        for (CoreFormExtension f : forms){
+            if (f.extFormId.equals(formId)) return f;
         }
 
         return null;

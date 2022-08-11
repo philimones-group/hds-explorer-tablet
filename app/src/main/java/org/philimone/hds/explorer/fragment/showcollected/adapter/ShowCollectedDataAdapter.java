@@ -136,11 +136,12 @@ public class ShowCollectedDataAdapter extends RecyclerView.Adapter<ShowCollected
             CheckBox chkProcessed = rowView.findViewById(R.id.chkProcessed);
             ImageView iconView = rowView.findViewById(R.id.iconView);
             ImageView groupIconView = rowView.findViewById(R.id.groupIconView);
+            ImageView hdsIconView = rowView.findViewById(R.id.hdsIconView);
 
             //Member mb = cdi.getMember();
             CollectedData cd = cdi.getCollectedData();
             String instanceName = cd.getFormInstanceName();
-            String formName = (cdi.isFormNull() ? cd.getFormId() : cdi.getForm().getFormName());
+            String formName = cdi.getFormName(mContext);
             String formGroupName = cd.formGroupName;
             String subjectText = getFormText(cdi);
             String updatedDate = StringUtil.format(cd.formLastUpdatedDate, "yyyy-MM-dd HH:mm:ss");
@@ -152,8 +153,9 @@ public class ShowCollectedDataAdapter extends RecyclerView.Adapter<ShowCollected
             txtDate.setText(mContext.getString(R.string.core_entity_updated_date_lbl) + " " +updatedDate);
             chkProcessed.setChecked(cd.isFormFinalized());
 
-            iconView.setVisibility(cd.formGroupCollected ? View.GONE : View.VISIBLE);
+            iconView.setVisibility(cd.formGroupCollected || cdi.isFormExtension() ? View.GONE : View.VISIBLE);
             groupIconView.setVisibility(cd.formGroupCollected ? View.VISIBLE : View.GONE);
+            hdsIconView.setVisibility(cdi.isFormExtension() ? View.VISIBLE : View.GONE);
         }
 
         private String getFormText(OdkCollectedDataItem cdi) {

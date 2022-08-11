@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ExpandableListView;
 
@@ -21,6 +22,7 @@ import org.philimone.hds.explorer.database.ObjectBoxDatabase;
 import org.philimone.hds.explorer.listeners.HouseholdDetailsListener;
 import org.philimone.hds.explorer.main.hdsforms.ChangeHeadFormUtil;
 import org.philimone.hds.explorer.main.hdsforms.DeathFormUtil;
+import org.philimone.hds.explorer.main.hdsforms.EditCoreExtensionFormUtil;
 import org.philimone.hds.explorer.main.hdsforms.ExternalInMigrationFormUtil;
 import org.philimone.hds.explorer.main.hdsforms.FormUtil;
 import org.philimone.hds.explorer.main.hdsforms.FormUtilListener;
@@ -241,12 +243,31 @@ public class HouseholdVisitFragment extends Fragment {
             @Override
             public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
                 CoreCollectedExpandableAdapter adapter = (CoreCollectedExpandableAdapter) parent.getExpandableListAdapter();
-
                 CoreCollectedData coreCollectedData = (CoreCollectedData) adapter.getChild(groupPosition, childPosition);
 
-                onSelectedToEdit(coreCollectedData);
+                onVisitCollectedChildClicked(coreCollectedData);
 
                 return true;
+            }
+        });
+
+        this.elvVisitCollected.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+
+                if (ExpandableListView.getPackedPositionType(id) == ExpandableListView.PACKED_POSITION_TYPE_CHILD) {
+                    int groupPosition = ExpandableListView.getPackedPositionGroup(id);
+                    int childPosition = ExpandableListView.getPackedPositionChild(id);
+                    Log.d("long clicked", "group="+groupPosition+", child="+childPosition+", position="+position);
+                    CoreCollectedExpandableAdapter adapter = (CoreCollectedExpandableAdapter) elvVisitCollected.getExpandableListAdapter();
+                    CoreCollectedData coreCollectedData = (CoreCollectedData) adapter.getChild(groupPosition, childPosition);
+
+                    onVisitCollectedChildLongClicked(coreCollectedData);
+
+                    return true;
+                }
+
+                return false;
             }
         });
 
@@ -555,7 +576,7 @@ public class HouseholdVisitFragment extends Fragment {
         }
     }
 
-    private void onSelectedToEdit(CoreCollectedData coreCollectedData) {
+    private void onVisitCollectedChildClicked(CoreCollectedData coreCollectedData) {
         switch (coreCollectedData.formEntity) {
             case HOUSEHOLD:
                 Household household = this.boxHouseholds.get(coreCollectedData.formEntityId);
@@ -608,6 +629,31 @@ public class HouseholdVisitFragment extends Fragment {
         }
     }
 
+    private void onVisitCollectedChildLongClicked(CoreCollectedData coreCollectedData) {
+        //edit the odk form
+        if (coreCollectedData != null && coreCollectedData.extensionCollected) {
+            ///edit
+            Log.d("edot core odk", coreCollectedData.extensionCollectedUri);
+
+            CollectedData odkCollectedData = boxCollectedData.query(CollectedData_.collectedId.equal(coreCollectedData.collectedId).and(CollectedData_.formUri.equal(coreCollectedData.extensionCollectedUri))).build().findFirst();
+
+            EditCoreExtensionFormUtil formUtil = new EditCoreExtensionFormUtil(this, this.getContext(), null, coreCollectedData, this.household, this.odkFormUtilities, new EditCoreExtensionFormUtil.Listener() {
+                @Override
+                public void onFinishedCollecting() {
+                    loadDataToListViews();
+                    updateHouseholdDetails();
+                }
+            });
+
+            formUtil.editExtensionForm(odkCollectedData);
+
+        }
+    }
+
+    private void onClearMemberClicked() {
+        setHouseholdMode();
+    }
+
     private void onEditHousehold(Household household) {
         HouseholdFormUtil.newInstance(FormUtil.Mode.EDIT, this, this.getContext(), null, household, this.odkFormUtilities, new FormUtilListener<Household>() {
             @Override
@@ -642,10 +688,6 @@ public class HouseholdVisitFragment extends Fragment {
         });
 
         formUtil.collect();
-    }
-
-    private void onClearMemberClicked() {
-        setHouseholdMode();
     }
 
     private void onIncompleteVisitClicked(IncompleteVisit incompleteVisit) {

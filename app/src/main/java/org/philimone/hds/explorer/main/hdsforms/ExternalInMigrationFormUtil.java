@@ -56,14 +56,14 @@ import mz.betainteractive.utilities.StringUtil;
 
 public class ExternalInMigrationFormUtil extends FormUtil<Inmigration> {
 
-    private Box<Household> boxHouseholds;
+    //private Box<Household> boxHouseholds;
     private Box<Member> boxMembers;
     private Box<Inmigration> boxInmigrations;
     private Box<Residency> boxResidencies;
     private Box<HeadRelationship> boxHeadRelationships;
     private Box<Death> boxDeaths;
 
-    private Household household;
+    //private Household household;
     private Visit visit;
     private Member father;
     private Member mother;

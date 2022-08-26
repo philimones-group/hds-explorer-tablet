@@ -102,7 +102,7 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-        Button btSettings = (Button) findViewById(R.id.settings_button);
+        Button btSettings = (Button) findViewById(R.id.btnLoginSettings);
         btSettings.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {

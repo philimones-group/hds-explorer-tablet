@@ -11,7 +11,8 @@
     <!-- header -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="100dp"
+        android:layout_height="wrap_content"
+        android:paddingBottom="10dp"
         android:background="@drawable/nui_subject_details_panel"
         android:orientation="horizontal">
 
@@ -29,7 +30,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginLeft="10dp"
-            android:paddingTop="0dp"
+            android:paddingTop="5dp"
             android:orientation="vertical">
 
             <TextView
@@ -39,7 +40,7 @@
                 android:layout_marginTop="8dp"
                 android:text="MARGARIDA MOLUSCO MBUTI"
                 android:textColor="#ffffff"
-                android:textSize="@dimen/household_details_info_textsize"
+                android:textSize="@dimen/household_details_land_info_textsize"
                 android:textStyle="bold"/>
 
             <LinearLayout
@@ -54,7 +55,7 @@
                     android:layout_marginTop="0dp"
                     android:text="ACA0000101"
                     android:textColor="#92edb3"
-                    android:textSize="@dimen/household_details_info_textsize"
+                    android:textSize="@dimen/household_details_land_info_textsize"
                     android:textStyle="bold" />
 
                 <LinearLayout
@@ -69,7 +70,7 @@
                         android:layout_marginRight="1dp"
                         android:text="@string/household_details_head_name_lbl"
                         android:textColor="#c4daca"
-                        android:textSize="@dimen/household_details_info_textsize"
+                        android:textSize="@dimen/household_details_land_info_textsize"
                         android:textStyle="bold" />
 
                     <TextView
@@ -79,7 +80,7 @@
                         android:layout_marginLeft="4dp"
                         android:text="BOB ESPONJA"
                         android:textColor="#83d34a"
-                        android:textSize="@dimen/household_details_info_textsize"
+                        android:textSize="@dimen/household_details_land_info_textsize"
                         android:textStyle="bold"
                         />
 
@@ -90,7 +91,7 @@
                         android:layout_marginLeft="27dp"
                         android:text="@string/household_details_head_code_lbl"
                         android:textColor="#c4daca"
-                        android:textSize="@dimen/household_details_info_textsize"
+                        android:textSize="@dimen/household_details_land_info_textsize"
                         android:textStyle="bold" />
 
                     <TextView
@@ -100,7 +101,7 @@
                         android:layout_marginLeft="4dp"
                         android:text="ACA0100123"
                         android:textColor="#83d34a"
-                        android:textSize="@dimen/household_details_info_textsize"
+                        android:textSize="@dimen/household_details_land_info_textsize"
                         android:textStyle="bold"
                         />
 
@@ -119,7 +120,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginRight="1dp"
                     android:text="@string/household_details_region_lbl"
-                    android:textSize="@dimen/household_details_info_textsize"
+                    android:textSize="@dimen/household_details_land_info_textsize"
                     android:textColor="#c4daca"
                     android:textStyle="bold" />
 
@@ -129,10 +130,40 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="4dp"
                     android:text="34th Street, Maputo"
-                    android:textSize="@dimen/household_details_info_textsize"
+                    android:textSize="@dimen/household_details_land_info_textsize"
                     android:textColor="#83d34a"
                     android:textStyle="bold"
                     />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="65dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/hhDetailsVisitLastLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="0dp"
+                        android:layout_marginRight="1dp"
+                        android:text="@string/household_details_last_visit_lbl"
+                        android:textSize="@dimen/household_details_land_info_textsize"
+                        android:textColor="#c4daca"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/hhDetailsVisitDateValue"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="0dp"
+                        android:layout_marginLeft="4dp"
+                        android:text="2021-05-01"
+                        android:textSize="@dimen/household_details_land_info_textsize"
+                        android:textColor="#83d34a"
+                        android:textStyle="bold"
+                        />
+                </LinearLayout>
 
             </LinearLayout>
 
@@ -143,19 +174,19 @@
     <!-- Main Panel -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_weight="1"
         android:layout_marginBottom="0dp"
-        android:layout_marginTop="5dp"
+        android:layout_marginTop="10dp"
         android:layout_marginLeft="5dp"
-        android:layout_marginRight="10dp"
-        android:orientation="horizontal">
+        android:layout_marginRight="5dp"
+        android:orientation="vertical">
+
         <!-- Tabs  - Normal Mode -->
         <RelativeLayout
             android:id="@+id/mainPanelTabsLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:visibility="visible"
             android:orientation="vertical">
 
             <LinearLayout
@@ -189,6 +220,11 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/household_details_tab_collected_forms_lbl" />
+
+                    <com.google.android.material.tabs.TabItem
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/household_details_tab_edit_lbl" />
                 </com.google.android.material.tabs.TabLayout>
 
                 <androidx.viewpager2.widget.ViewPager2
@@ -228,7 +264,6 @@
         </LinearLayout>
         <!-- Household Visit Fragment -->
 
-
     </LinearLayout>
 
     <!-- buttons -->
@@ -245,24 +280,65 @@
         android:orientation="horizontal">
 
         <Button
-            android:id="@+id/btHouseDetailsBack"
-            android:layout_width="350dp"
-            android:layout_height="@dimen/member_details_bt_height"
-            android:layout_marginRight="10dp"
-            android:textSize="@dimen/member_details_buttons_textsize"
+            android:id="@+id/btHouseDetailsCreateVisit"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/form_main_dialog_bt_height"
+            android:paddingStart="30dp"
+            android:paddingEnd="30dp"
+            android:layout_marginEnd="10dp"
+            android:textSize="@dimen/household_details_land_buttons_textsize"
             android:textStyle="bold"
-            android:text="@string/member_details_bt_back_lbl"
-            android:background="@drawable/nui_btnd_rone_gflat"/>
+            android:text="@string/household_details_bt_create_visit_lbl"
+            android:background="@drawable/nui_btnd_rone_dgbevel"/>
+
+        <Button
+            android:id="@+id/btHouseDetailsOpenVisit"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/form_main_dialog_bt_height"
+            android:layout_marginEnd="10dp"
+            android:paddingStart="30dp"
+            android:paddingEnd="30dp"
+            android:textSize="@dimen/household_details_land_buttons_textsize"
+            android:textStyle="bold"
+            android:text="@string/household_details_bt_open_visit_lbl"
+            android:background="@drawable/nui_btnd_rone_dgbevel"
+            android:visibility="visible"/>
+
+        <Button
+            android:id="@+id/btHouseDetailsFinishVisit"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/form_main_dialog_bt_height"
+            android:layout_marginEnd="10dp"
+            android:paddingStart="30dp"
+            android:paddingEnd="30dp"
+            android:textSize="@dimen/household_details_land_buttons_textsize"
+            android:textStyle="bold"
+            android:text="@string/household_details_bt_finish_visit_lbl"
+            android:background="@drawable/nui_btnd_rone_dgbevel"
+            android:visibility="visible"/>
 
         <Button
             android:id="@+id/btHouseDetailsCollectData"
-            android:layout_width="350dp"
-            android:layout_height="@dimen/member_details_bt_height"
-            android:layout_marginLeft="10dp"
-            android:textSize="@dimen/member_details_buttons_textsize"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/form_main_dialog_bt_height"
+            android:paddingStart="30dp"
+            android:paddingEnd="30dp"
+            android:textSize="@dimen/household_details_land_buttons_textsize"
             android:textStyle="bold"
             android:text="@string/member_details_bt_openform_lbl"
             android:background="@drawable/nui_btnd_rone_dgbevel"/>
+
+        <Button
+            android:id="@+id/btHouseDetailsBack"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/form_main_dialog_bt_height"
+            android:paddingStart="30dp"
+            android:paddingEnd="30dp"
+            android:textSize="@dimen/household_details_land_buttons_textsize"
+            android:textStyle="bold"
+            android:text="@string/member_details_bt_back_lbl"
+            android:background="@drawable/nui_btnd_rone_gflat"
+            android:visibility="gone"/>
 
 
     </LinearLayout>

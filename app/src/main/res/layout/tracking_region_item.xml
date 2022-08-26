@@ -35,7 +35,7 @@
             android:text="Large Text"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:singleLine="true"
-            android:textSize="18dp"
+            android:textSize="@dimen/tracking_list_item_title_txtsize"
             android:textStyle=""
             android:textColor="@color/black" />
         
@@ -44,7 +44,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Medium Text"
-            android:textSize="14sp"
+            android:textSize="@dimen/tracking_list_item_details_txtsize"
             android:textColor="#444" />
 
         <TextView
@@ -52,7 +52,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Medium Text"
-            android:textSize="13sp"
+            android:textSize="@dimen/tracking_list_item_module_txtsize"
             android:textStyle="bold"
             android:textColor="@color/nui_color_text_red" />
         

@@ -1,0 +1,284 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".fragment.household.details.HouseholdEditFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- form -->
+        <LinearLayout
+            android:id="@+id/layout_md_xdata"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="20dp"
+            android:paddingStart="30dp"
+            android:paddingEnd="30dp"
+            android:background="@drawable/nui_list_rborder_panel"
+            android:orientation="horizontal">
+
+            <!-- Name Textbox -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:layout_marginTop="15dp"
+                android:orientation="vertical"
+                android:fitsSystemWindows="true">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/column_margin_top"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginBottom="5dp"
+                        android:layout_gravity="center|left"
+                        android:gravity="left|center_horizontal"
+                        android:text="@string/household_details_edit_household_name_lbl"
+                        android:textStyle="bold"
+                        android:textColor="@color/nui_color_text_darkgray"
+                        android:textSize="@dimen/household_details_edit_txtsize" />
+
+                </LinearLayout>
+
+                <EditText
+                    android:id="@+id/txtEditName"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:text="PAULO FILIMONE HOUSE"
+                    android:textSize="@dimen/household_details_edit_txtsize"
+                    android:textColor="@color/black"
+                    android:paddingStart="20dp"
+                    android:background="@drawable/nui_txtbox_rone_wbevel"/>
+
+                <!-- buttons -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <Button
+                        android:id="@+id/btEditUpdateDetails"
+                        android:layout_width="350dp"
+                        android:layout_height="@dimen/form_main_dialog_bt_height"
+                        android:layout_marginLeft="10dp"
+                        android:layout_gravity="center"
+                        android:textSize="@dimen/household_details_land_buttons_textsize"
+                        android:textStyle="bold"
+                        android:text="@string/household_details_edit_button_update_details_lbl"
+                        android:background="@drawable/nui_btnd_rone_dgbevel"/>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <!-- GPS Update -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginBottom="15dp"
+                android:orientation="vertical" >
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:layout_gravity="center|left"
+                        android:gravity="left|center_horizontal"
+                        android:text="@string/household_details_edit_gps_lbl"
+                        android:textStyle="bold"
+                        android:textColor="@color/nui_color_text_darkgray"
+                        android:textSize="@dimen/household_details_edit_txtsize" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:background="@drawable/nui_list_rborder_panel">
+
+                    <LinearLayout
+                        android:id="@+id/getGpsLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:layout_marginTop="20dp"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginRight="20dp"
+                        android:layout_marginBottom="5dp"
+                        android:orientation="horizontal">
+
+                        <Button
+                            android:id="@+id/btEditGetGps"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:paddingStart="50dp"
+                            android:paddingEnd="50dp"
+                            android:text="@string/household_details_edit_button_gps_lbl"
+                            android:textSize="@dimen/household_details_edit_gps_coords_txtsize"
+                            android:maxLines="1"
+                            android:background="@drawable/nui_btnd_rone_dgbevel"
+                            android:textColor="@color/white"
+                            android:elevation="5dp"
+                            />
+
+                    </LinearLayout>
+
+                    <TableLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginRight="20dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginBottom="20dp"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:background="@drawable/nui_list_rborder_panel">
+
+                        <TableRow
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_marginTop="10dp">
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_marginLeft="10dp"
+                                android:layout_weight="1"
+                                android:text="@string/household_details_edit_gps_lat_lbl"
+                                android:gravity="right"
+                                android:textSize="@dimen/household_details_edit_gps_coords_txtsize"
+                                android:textColor="@color/black"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/txtGpsLatitude"
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_marginLeft="10dp"
+                                android:gravity="center_vertical"
+                                android:layout_weight="1"
+                                android:text="N 37º24'26&quot;"
+                                android:textSize="@dimen/household_details_edit_gps_coords_txtsize"
+                                android:textColor="@color/black" />
+
+                        </TableRow>
+
+                        <TableRow
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent">
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_marginLeft="10dp"
+                                android:layout_weight="1"
+                                android:text="@string/household_details_edit_gps_lon_lbl"
+                                android:gravity="right"
+                                android:textSize="@dimen/household_details_edit_gps_coords_txtsize"
+                                android:textColor="@color/black"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/txtGpsLongitude"
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_marginLeft="10dp"
+                                android:gravity="center_vertical"
+                                android:layout_weight="1"
+                                android:text="W 122º2'38&quot;"
+                                android:textSize="@dimen/household_details_edit_gps_coords_txtsize"
+                                android:textColor="@color/black" />
+
+                        </TableRow>
+
+                        <TableRow
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent">
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_marginLeft="10dp"
+                                android:layout_weight="1"
+                                android:text="@string/household_details_edit_gps_alt_lbl"
+                                android:gravity="right"
+                                android:textSize="@dimen/household_details_edit_gps_coords_txtsize"
+                                android:textColor="@color/black"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/txtGpsAltitude"
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_marginLeft="10dp"
+                                android:gravity="center_vertical"
+                                android:layout_weight="1"
+                                android:text="0m"
+                                android:textSize="@dimen/household_details_edit_gps_coords_txtsize"
+                                android:textColor="@color/black" />
+
+                        </TableRow>
+
+                        <TableRow
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_marginBottom="10dp">
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_marginLeft="10dp"
+                                android:layout_weight="1"
+                                android:text="@string/household_details_edit_gps_acc_lbl"
+                                android:gravity="right"
+                                android:textSize="@dimen/household_details_edit_gps_coords_txtsize"
+                                android:textColor="@color/black"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/txtGpsAccuracy"
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_marginLeft="10dp"
+                                android:layout_weight="1"
+                                android:gravity="center_vertical"
+                                android:text="20m"
+                                android:textSize="@dimen/household_details_edit_gps_coords_txtsize"
+                                android:textColor="@color/black" />
+
+                        </TableRow>
+                    </TableLayout>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</ScrollView>

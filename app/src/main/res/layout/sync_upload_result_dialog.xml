@@ -67,7 +67,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="center"
-                android:textSize="@dimen/sync_progress_textsize"
+                android:textSize="@dimen/datetime_selector_message_txtsize"
                 android:textColor="@color/nui_color_text_darkgray"
                 android:text=""
                 android:visibility="invisible"/>

@@ -54,11 +54,6 @@ public class MemberDetailsActivity extends AppCompatActivity {
     private Button btMemDetailsBack;
     private ImageView iconView;
 
-    private LinearLayout mbDetailsLayoutSc;
-    private TextView mbDetailsStudyCodeLabel;
-    private TextView mbDetailsStudyCodeValue;
-    private String studyCodeValue;
-
     private Household household;
     private Member member;
     private boolean isNewTempMember;
@@ -164,11 +159,6 @@ public class MemberDetailsActivity extends AppCompatActivity {
         memberDetailsTabViewPager = findViewById(R.id.memberDetailsTabViewPager);
         mainPanelTabsLayout = findViewById(R.id.mainPanelTabsLayout);
 
-        mbDetailsLayoutSc = (LinearLayout) findViewById(R.id.mbDetailsLayoutSc);
-        mbDetailsStudyCodeLabel = (TextView) findViewById(R.id.mbDetailsStudyCodeLabel);
-        mbDetailsStudyCodeValue = (TextView) findViewById(R.id.mbDetailsStudyCodeValue);
-
-
         btMemDetailsBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -272,16 +262,6 @@ public class MemberDetailsActivity extends AppCompatActivity {
         mbDetailsGender.setText("");
         mbDetailsAge.setText("");
         mbDetailsDob.setText("");
-
-        if (studyCodeValue != null){
-            mbDetailsLayoutSc.setVisibility(View.VISIBLE);
-
-            String studyCodeLabel = getString(R.string.member_details_studycode_lbl); //.replace("#", loggedUser.getModules());
-            mbDetailsStudyCodeLabel.setText(studyCodeLabel);
-            mbDetailsStudyCodeValue.setText(studyCodeValue);
-        }else{
-            mbDetailsLayoutSc.setVisibility(View.GONE);
-        }
     }
 
     private void setMemberData(){
@@ -300,16 +280,6 @@ public class MemberDetailsActivity extends AppCompatActivity {
 
         if (member.isSecHouseholdHead()){
             iconView.setImageResource(R.mipmap.nui_member_red_filled_two_icon);
-        }
-
-        if (studyCodeValue != null){
-            mbDetailsLayoutSc.setVisibility(View.VISIBLE);
-
-            String studyCodeLabel = getString(R.string.member_details_studycode_lbl); //.replace("#", loggedUser.getModules());
-            mbDetailsStudyCodeLabel.setText(studyCodeLabel);
-            mbDetailsStudyCodeValue.setText(studyCodeValue);
-        }else{
-            mbDetailsLayoutSc.setVisibility(View.GONE);
         }
 
         showCollectedData();

@@ -262,8 +262,8 @@
 
         <Button
             android:id="@+id/btNewMemCancel"
-            android:layout_width="@dimen/member_form_dialog_button_size"
-            android:layout_height="@dimen/member_details_bt_height"
+            android:layout_width="@dimen/form_main_dialog_button_size"
+            android:layout_height="@dimen/form_main_dialog_bt_height"
             android:layout_marginRight="10dp"
             android:textSize="@dimen/member_form_dialog_button_textsize"
             android:textStyle="bold"
@@ -272,8 +272,8 @@
 
         <Button
             android:id="@+id/btNewMemCollect"
-            android:layout_width="@dimen/member_form_dialog_button_size"
-            android:layout_height="@dimen/member_details_bt_height"
+            android:layout_width="@dimen/form_main_dialog_button_size"
+            android:layout_height="@dimen/form_main_dialog_bt_height"
             android:layout_marginLeft="10dp"
             android:textSize="@dimen/member_form_dialog_button_textsize"
             android:textStyle="bold"

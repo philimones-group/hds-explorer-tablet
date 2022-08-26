@@ -56,7 +56,7 @@
             android:gravity="left|center_horizontal"
             android:text="Large Text"
             android:singleLine="true"
-            android:textSize="22dp"
+            android:textSize="@dimen/tracking_sublist_item_title_txtsize"
             android:textColor="@color/white" />
 
         <TextView
@@ -64,7 +64,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Medium Text"
-            android:textSize="16dp"
+            android:textSize="@dimen/tracking_sublist_item_extras_txtsize"
             android:textColor="@color/white" />
 
         

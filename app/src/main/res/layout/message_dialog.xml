@@ -58,7 +58,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="center"
-                android:textSize="@dimen/sync_progress_textsize"
+                android:textSize="@dimen/datetime_selector_message_txtsize"
                 android:textColor="@color/nui_color_text_darkgray"
                 android:text="Can you use this Message Dialog properly?" />
 
@@ -88,8 +88,8 @@
 
         <Button
             android:id="@+id/btDialogOk"
-            android:layout_width="@dimen/dialog_factory_button_size"
-            android:layout_height="@dimen/dialog_factory_button_height"
+            android:layout_width="@dimen/datetime_selector_button_width"
+            android:layout_height="@dimen/datetime_selector_button_height"
             android:layout_marginLeft="3dp"
             android:layout_marginRight="3dp"
             android:layout_centerInParent="true"
@@ -101,8 +101,8 @@
 
         <Button
             android:id="@+id/btDialogYes"
-            android:layout_width="@dimen/dialog_factory_button_size"
-            android:layout_height="@dimen/dialog_factory_button_height"
+            android:layout_width="@dimen/datetime_selector_button_width"
+            android:layout_height="@dimen/datetime_selector_button_height"
             android:layout_marginLeft="3dp"
             android:layout_marginRight="3dp"
             android:layout_centerInParent="true"
@@ -114,8 +114,8 @@
 
         <Button
             android:id="@+id/btDialogNo"
-            android:layout_width="@dimen/dialog_factory_button_size"
-            android:layout_height="@dimen/dialog_factory_button_height"
+            android:layout_width="@dimen/datetime_selector_button_width"
+            android:layout_height="@dimen/datetime_selector_button_height"
             android:layout_marginLeft="3dp"
             android:layout_marginRight="3dp"
             android:layout_centerInParent="true"
@@ -127,8 +127,8 @@
 
         <Button
             android:id="@+id/btDialogCancel"
-            android:layout_width="@dimen/dialog_factory_button_size"
-            android:layout_height="@dimen/dialog_factory_button_height"
+            android:layout_width="@dimen/datetime_selector_button_width"
+            android:layout_height="@dimen/datetime_selector_button_height"
             android:layout_marginLeft="3dp"
             android:layout_marginRight="3dp"
             android:layout_centerInParent="true"

@@ -19,8 +19,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="10dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
         android:layout_marginRight="0dp"
         android:layout_weight="1"
         android:orientation="vertical" >
@@ -33,7 +33,7 @@
             android:gravity="left|center_horizontal"
             android:text="Large Text"
             android:singleLine="true"
-            android:textSize="18sp"
+            android:textSize="@dimen/tracking_list_item_title_txtsize"
             android:textStyle=""
             android:textColor="@color/black" />
 
@@ -42,7 +42,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Medium Text"
-            android:textSize="14sp"
+            android:textSize="@dimen/tracking_list_item_details_txtsize"
             android:singleLine="true"
             android:textColor="#444" />
 
@@ -51,7 +51,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Medium Text"
-            android:textSize="13sp"
+            android:textSize="@dimen/tracking_list_item_module_txtsize"
             android:textStyle="bold"
             android:singleLine="true"
             android:textColor="@color/nui_color_text_red" />

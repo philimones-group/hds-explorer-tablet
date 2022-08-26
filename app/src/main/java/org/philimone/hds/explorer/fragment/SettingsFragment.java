@@ -75,6 +75,7 @@ public class SettingsFragment extends PreferenceFragment {
             public boolean onPreferenceChange(Preference preference, Object newValue) {
                 //Log.d("value-changed-to", ""+newValue);
                 setValueInDatabase((EditTextPreference) preference, newValue.toString());
+                setValueInPreference((EditTextPreference) preference, newValue.toString());
                 return true;
             }
         });
@@ -84,6 +85,7 @@ public class SettingsFragment extends PreferenceFragment {
             public boolean onPreferenceChange(Preference preference, Object newValue) {
                 //Log.d("value-changed-to", ""+newValue);
                 setValueInDatabase((EditTextPreference) preference, newValue.toString());
+                setValueInPreference((EditTextPreference) preference, newValue.toString());
                 return true;
             }
         });
@@ -93,6 +95,7 @@ public class SettingsFragment extends PreferenceFragment {
             public boolean onPreferenceChange(Preference preference, Object newValue) {
                 //Log.d("value-changed-to", ""+newValue);
                 setValueInDatabase((EditTextPreference) preference, newValue.toString());
+                setValueInPreference((EditTextPreference) preference, newValue.toString());
                 return true;
             }
         });
@@ -102,6 +105,7 @@ public class SettingsFragment extends PreferenceFragment {
             public boolean onPreferenceChange(Preference preference, Object newValue) {
                 //Log.d("value-changed-to", ""+newValue);
                 setValueInDatabase(preference, newValue.toString());
+                setValueInPreference((CheckBoxPreference) preference, (Boolean) newValue);
                 return true;
             }
         });

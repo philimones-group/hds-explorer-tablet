@@ -3,6 +3,7 @@ package org.philimone.hds.explorer.main.sync;
 import android.os.Bundle;
 
 import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.tabs.TabLayoutMediator;
 
 import org.philimone.hds.explorer.R;
 
@@ -70,6 +71,10 @@ public class SyncPanelActivity extends AppCompatActivity {
         SyncFragmentsAdapter adapter = new SyncFragmentsAdapter(this.getSupportFragmentManager(),  this.getLifecycle(), list);
         syncViewPager.setAdapter(adapter);
 
+        List<String> tabTitles = new ArrayList<>();
+        tabTitles.add(getString(R.string.server_sync_download_lbl));
+        tabTitles.add(getString(R.string.server_sync_upload_lbl));
+
         //create on change tab listener
         this.syncTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
@@ -95,6 +100,10 @@ public class SyncPanelActivity extends AppCompatActivity {
 
         //this will create all fragments
         syncViewPager.setOffscreenPageLimit(list.size());
+
+        new TabLayoutMediator(syncTabLayout, syncViewPager, (tab, position) -> {
+            tab.setText(tabTitles.get(position));
+        }).attach();
     }
 
     private void updateFragments(){

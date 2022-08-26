@@ -77,7 +77,7 @@
             <Button
                 android:id="@+id/btEditUpdateDetails"
                 android:layout_width="350dp"
-                android:layout_height="@dimen/member_details_bt_height"
+                android:layout_height="@dimen/form_main_dialog_bt_height"
                 android:layout_marginLeft="10dp"
                 android:layout_gravity="center"
                 android:textSize="@dimen/member_details_buttons_textsize"

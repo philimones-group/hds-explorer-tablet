@@ -273,7 +273,7 @@
         <Button
             android:id="@+id/btHouseDetailsCreateVisit"
             android:layout_width="350dp"
-            android:layout_height="@dimen/member_details_bt_height"
+            android:layout_height="@dimen/form_main_dialog_bt_height"
             android:layout_marginTop="5dp"
             android:layout_marginBottom="5dp"
             android:textSize="@dimen/member_details_buttons_textsize"
@@ -284,7 +284,7 @@
         <Button
             android:id="@+id/btHouseDetailsOpenVisit"
             android:layout_width="350dp"
-            android:layout_height="@dimen/member_details_bt_height"
+            android:layout_height="@dimen/form_main_dialog_bt_height"
             android:layout_marginTop="5dp"
             android:layout_marginBottom="5dp"
             android:textSize="@dimen/member_details_buttons_textsize"
@@ -296,7 +296,7 @@
         <Button
             android:id="@+id/btHouseDetailsFinishVisit"
             android:layout_width="350dp"
-            android:layout_height="@dimen/member_details_bt_height"
+            android:layout_height="@dimen/form_main_dialog_bt_height"
             android:layout_marginTop="5dp"
             android:layout_marginBottom="5dp"
             android:textSize="@dimen/member_details_buttons_textsize"
@@ -308,7 +308,7 @@
         <Button
             android:id="@+id/btHouseDetailsCollectData"
             android:layout_width="350dp"
-            android:layout_height="@dimen/member_details_bt_height"
+            android:layout_height="@dimen/form_main_dialog_bt_height"
             android:layout_marginTop="5dp"
             android:layout_marginBottom="5dp"
             android:textSize="@dimen/member_details_buttons_textsize"
@@ -319,7 +319,7 @@
         <Button
             android:id="@+id/btHouseDetailsBack"
             android:layout_width="350dp"
-            android:layout_height="@dimen/member_details_bt_height"
+            android:layout_height="@dimen/form_main_dialog_bt_height"
             android:layout_marginTop="5dp"
             android:layout_marginBottom="5dp"
             android:textSize="@dimen/member_details_buttons_textsize"

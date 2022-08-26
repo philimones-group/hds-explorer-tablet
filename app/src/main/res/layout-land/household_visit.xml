@@ -28,8 +28,7 @@
             <!-- members list -->
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1" >
+                android:layout_height="match_parent" >
 
                 <org.philimone.hds.explorer.widget.RecyclerListView
                     android:id="@+id/lvHouseholdMembers"
@@ -53,20 +52,6 @@
                     android:visibility="visible" />
 
             </RelativeLayout>
-
-            <!-- collected events list -->
-            <ExpandableListView
-                android:id="@+id/elvVisitCollected"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:layoutDirection="rtl"
-                android:paddingEnd="10dp"
-                android:paddingTop="15dp"
-                android:paddingBottom="15dp"
-                android:background="@drawable/nui_lists_events_panel"
-                />
-
 
         </LinearLayout>
 
@@ -317,6 +302,18 @@
 
         </LinearLayout>
 
+        <!-- collected events list -->
+        <ExpandableListView
+            android:id="@+id/elvVisitCollected"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layoutDirection="rtl"
+            android:paddingEnd="10dp"
+            android:paddingTop="15dp"
+            android:paddingBottom="15dp"
+            android:background="@drawable/nui_lists_events_panel"
+            />
     </LinearLayout>
 
 

@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".fragment.household.details.HouseholdMembersFragment">
+
+    <!-- List of Members -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center_vertical"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/layout_md_xdata"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingBottom="10dp"
+            android:background="@drawable/nui_txtbox_rone_wbevel"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="26dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginLeft="@dimen/member_filter_xdata_margin_left"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="@dimen/member_details_txtview_width"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/member_details_info_gender_layout_txtsize"
+                    android:text="@string/member_details_housename_lbl"
+                    android:textColor="@color/nui_color_text_darkgray"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/member_details_info_gender_layout_txtsize"
+                    android:textStyle="bold"
+                    android:textColor="@color/nui_color_text_darkgray"
+                    android:text="05-1233-123"
+                    android:id="@+id/mbDetailsHouseName" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:layout_marginLeft="@dimen/member_filter_xdata_margin_left"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="@dimen/member_details_txtview_width"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/member_details_info_gender_layout_txtsize"
+                    android:textColor="@color/nui_color_text_darkgray"
+                    android:text="@string/member_details_member_endtype_lbl"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/member_details_info_gender_layout_txtsize"
+                    android:textColor="@color/nui_color_text_darkgray"
+                    android:textStyle="bold"
+                    android:text="Esta a residir nesta casa"
+                    android:id="@+id/mbDetailsEndType" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:layout_marginLeft="@dimen/member_filter_xdata_margin_left"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="@dimen/member_details_txtview_width"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/member_details_info_gender_layout_txtsize"
+                    android:textColor="@color/nui_color_text_darkgray"
+                    android:text="@string/member_details_member_enddate_lbl"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/member_details_info_gender_layout_txtsize"
+                    android:textColor="@color/nui_color_text_darkgray"
+                    android:textStyle="bold"
+                    android:text="2015-01-01"
+                    android:id="@+id/mbDetailsEndDate" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:layout_marginLeft="@dimen/member_filter_xdata_margin_left"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="@dimen/member_details_txtview_width"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/member_details_info_gender_layout_txtsize"
+                    android:textColor="@color/nui_color_text_darkgray"
+                    android:text="@string/member_details_forms_spouse_lbl"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/member_details_info_gender_layout_txtsize"
+                    android:textColor="@color/nui_color_text_darkgray"
+                    android:textStyle="bold"
+                    android:text="AIAI MARIA AI XIHORA MATI"
+                    android:id="@+id/mbDetailsSpouse" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:layout_marginLeft="@dimen/member_filter_xdata_margin_left"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="@dimen/member_details_txtview_width"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/member_details_info_gender_layout_txtsize"
+                    android:textColor="@color/nui_color_text_darkgray"
+                    android:text="@string/member_details_father_lbl"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/member_details_info_gender_layout_txtsize"
+                    android:textColor="@color/nui_color_text_darkgray"
+                    android:textStyle="bold"
+                    android:text="JOAO MACACO SIMANGO"
+                    android:id="@+id/mbDetailsFather" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:layout_marginLeft="@dimen/member_filter_xdata_margin_left"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="@dimen/member_details_txtview_width"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/member_details_info_gender_layout_txtsize"
+                    android:textColor="@color/nui_color_text_darkgray"
+                    android:text="@string/member_details_mother_lbl"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/member_details_info_gender_layout_txtsize"
+                    android:textColor="@color/nui_color_text_darkgray"
+                    android:textStyle="bold"
+                    android:text="Desconhecida"
+                    android:id="@+id/mbDetailsMother" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+</FrameLayout>

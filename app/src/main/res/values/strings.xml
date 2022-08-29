@@ -26,32 +26,32 @@
 
     <!-- storage access -->
     <string name="storage_access_title_lbl">File access not granted</string>
-    <string name="storage_access_odk_error_lbl">Access to Files were denied, HDS Explorer will not have access to ODK Forms due to lack of permissions to ODK Collect</string>
+    <string name="storage_access_odk_error_lbl">Access to files were denied, HDS Explorer will not have access to ODK Forms due to lack of permissions to ODK Collect</string>
     <string name="storage_access_odk_error_continue_lbl">Access to ODK Files were denied.\nHDS Explorer will not have access to ODK Forms due to lack of permissions to ODK Collect.\nYou can use the app normally but without ODK Forms access</string>
 
     <!-- Strings related to ODK -->
-    <string name="odk_couldnt_open_xform_lbl">Couldnt open the ODK Form</string>
-    <string name="odk_couldnt_reopen_xform_lbl">Couldnt re-open the saved ODK Form</string>
-    <string name="odk_problem_lbl">A problem occured while trying to open ODK Form</string>
-    <string name="odk_form_load_error_odk_not_installed_lbl">Couldnt get ODK Forms, There is no ODK Collect App installed!</string>
-    <string name="odk_form_load_error_provider_lbl">Couldnt get ODK Forms, An Error occurred while trying to get ODK Forms from content provider!</string>
-    <string name="odk_form_load_error_form_not_found_lbl">The form wasnt found on ODK Collect. Please, make sure the ODK Form exists.</string>
-    <string name="odk_form_load_error_folder_permissions_lbl">Couldnt get ODK Forms files, Access to ODK Collect content data was denied!</string>
-    <string name="odk_form_load_permission_storage_denied_lbl">It will not be possible to access ODK Forms. There is no permission to use the Storage for read/write operations on ODK Collect!</string>
-    <string name="odk_form_load_permissions_denied_lbl">To procced to ODK Collect and start collecting the Form.\nYou must grant all the previous permissions given by the system!</string>
+    <string name="odk_couldnt_open_xform_lbl">Couldn\'t open the ODK Form</string>
+    <string name="odk_couldnt_reopen_xform_lbl">Couldn\'t re-open the saved ODK Form</string>
+    <string name="odk_problem_lbl">A problem occurred while trying to open the ODK Form</string>
+    <string name="odk_form_load_error_odk_not_installed_lbl">Couldn\'t get ODK Forms, There is no ODK Collect App installed!</string>
+    <string name="odk_form_load_error_provider_lbl">Couldn\'t get ODK Forms, An Error occurred while trying to get ODK Forms from content provider!</string>
+    <string name="odk_form_load_error_form_not_found_lbl">The form wasn\'t found on ODK Collect. Please, make sure the ODK Form exists.</string>
+    <string name="odk_form_load_error_folder_permissions_lbl">Couldn\'t get ODK Forms files, Access to ODK Collect content data was denied!</string>
+    <string name="odk_form_load_permission_storage_denied_lbl">It will not be possible to access ODK Forms. There is no permission to use the storage for read/write operations on ODK Collect!</string>
+    <string name="odk_form_load_permissions_denied_lbl">To proceed to ODK Collect and start collecting the Form.\nYou must grant all the previous permissions given by the system!</string>
     <string name="odk_form_load_permission_request_manage_all_title_lbl">ODK Collect Forms Access</string>
     <string name="odk_form_load_permission_request_manage_all_info_lbl">To be able to access ODK Forms, You must enable (Allow access to manage all files) in the next page after click OK button!</string>
     <string name="odk_form_load_permission_request_android_dir_info_lbl">To be able to access ODK Folder Forms, You must click on (Use this Folder) in the next page that will be displayed after clicking OK button!</string>
-    <string name="odk_form_load_permission_request_readwrite_denied_lbl">It will not be possible to access ODK Forms. There is no permission to use the Storage for read/write operations on ODK Collect forms!</string>
+    <string name="odk_form_load_permission_request_readwrite_denied_lbl">It will not be possible to access ODK Forms. There is no permission to use the storage for read/write operations on ODK Collect forms!</string>
     <string name="odk_form_load_permission_request_readphonestate_denied_lbl">It will not be possible to open ODK Forms. There is no permission to get device and network information!</string>
-    <string name="odk_form_load_error_saving_prefilled_xml_lbl">An error occured while trying to save preloaded xml data file.</string>
-    <string name="odk_form_load_error_saving_instance_form_lbl">Couldnt create a new instance of the preloaded xml data in ODK Collect.</string>
-    <string name="odk_unfinished_dialog_msg">The form wasnt finalized. This instance of the form will be deleted. Choose the next action?</string>
+    <string name="odk_form_load_error_saving_prefilled_xml_lbl">An error occurred while trying to save preloaded xml data file.</string>
+    <string name="odk_form_load_error_saving_instance_form_lbl">Couldn\'t create a new instance of the preloaded xml data in ODK Collect.</string>
+    <string name="odk_unfinished_dialog_msg">The form wasn\'t finalized. This instance of the form will be deleted. Choose the next action?</string>
     <string name="odk_unfinished_button_delete">Delete Form</string>
     <string name="odk_unfinished_button_change">Change Form</string>
     <string name="odk_unfinished_button_save">Save Form</string>
     <string name="odk_unfinished_form_saved">The form was saved but is not finalized, can be edited later.</string>
-    <string name="odk_unfinished_form_not_found">The form wasnt found on ODK Collect. Please, make sure the ODK Form exists.</string>
+    <string name="odk_unfinished_form_not_found">The form wasn\'t found on ODK Collect. Please, make sure the ODK Form exists.</string>
 
 
     <!-- Sync Tasks -->
@@ -64,7 +64,7 @@
     <string name="sync_users_lbl">Users</string>
     <string name="sync_datasets_lbl">Datasets</string>
     <string name="sync_datasets_csv_lbl">Datasets CSV/ZIP Files</string>
-    <string name="sync_tracking_lists_lbl">FollowUp Lists</string>
+    <string name="sync_tracking_lists_lbl">Follow-Up Lists</string>
     <string name="sync_rounds_lbl">Rounds</string>
     <string name="sync_regions_lbl">Regions</string>
     <string name="sync_households_datasets_lbl">Households Datasets</string>
@@ -75,7 +75,7 @@
     <string name="sync_visits_lbl">Visits</string>
     <string name="sync_head_relationships_lbl">Head Relationships</string>
     <string name="sync_marital_relationships_lbl">Marital Relationships</string>
-    <string name="sync_inmigrations_lbl">Inmigrations</string>
+    <string name="sync_inmigrations_lbl">Immigrations</string>
     <string name="sync_outmigrations_lbl">Outmigrations</string>
     <string name="sync_pregnancy_registrations_lbl">Pregnancies</string>
     <string name="sync_pregnancy_outcomes_lbl">Pregnancy Outcomes</string>
@@ -84,8 +84,8 @@
     <string name="sync_saved_lbl">Saved</string>
     <string name="sync_records_lbl">records</string>
     <string name="sync_successfully_lbl">Data was successfully synchronized.</string>
-    <string name="sync_failure_file_not_found_lbl">Couldnt find file on the Server to Download</string>
-    <string name="sync_failure_unknown_lbl">An error occured during synchronization</string>
+    <string name="sync_failure_file_not_found_lbl">Couldn\'t find file on the Server to Download</string>
+    <string name="sync_failure_unknown_lbl">An error occurred during synchronization</string>
     <string name="sync_synchronized_msg_lbl">Total of #1 records synced:</string>
     <string name="sync_downloaded_msg_lbl">Total of #1 data downloaded:</string>
 
@@ -178,7 +178,7 @@
     <string name="login_password_short_lbl">Log in</string>
     <string name="login_synchronize_lbl">Synchronize</string>
     <string name="login_settings_lbl">Change Settings</string>
-    <string name="error_no_modules_permission">This user doesnt have any permission on this system</string>
+    <string name="error_no_modules_permission">This user doesn\'t have any permission on this system</string>
     <string name="error_invalid_email">This email address is invalid</string>
     <string name="error_user_not_found">Login Failed. User not found</string>
     <string name="error_invalid_password">This password is too short</string>
@@ -187,7 +187,7 @@
     <string name="warning_lbl">Warning</string>
 
     <!-- Rounds -->
-    <string name="round_does_not_exists_lbl">Cant proceed, there is no DSS Rounds defined in the system.\nTry creating a new Round in the server app</string>
+    <string name="round_does_not_exists_lbl">Cannot proceed, there is no DSS Rounds defined in the system.\nTry creating a new Round in the server app</string>
     <string name="round_household_details_does_not_exists_lbl">There is no DSS Rounds configured in the system.\nDSS Visits wont be possible to collect</string>
 
     <!-- Strings related to Member Filter -->
@@ -245,7 +245,7 @@
     <string name="member_list_newmem_name_lbl">Fullname</string>
     <string name="member_list_newmem_name_hint">eg. JON SNOW</string>
     <string name="member_list_newmem_dob_lbl">Date of Birth</string>
-    <string name="member_list_newmem_dob_hint">eg. 2017-12-25</string>
+    <string name="member_list_newmem_dob_hint">eg. 2017–12–25</string>
 
     <string name="member_list_newmem_code_err_lbl">The format of the Code is incorrect</string>
     <string name="member_list_newmem_code_exists_lbl">The Code of this Individual already exists</string>
@@ -285,7 +285,7 @@
     <string name="member_details_name_unknown_lbl">Unknown Name</string>
     <string name="member_details_member_enddate_lbl">Status Date</string>
     <string name="member_details_dialog_del_saved_form_title_lbl">Delete saved info</string>
-    <string name="member_details_dialog_del_saved_form_msg_lbl">The associated ODK Form wasnt found, the system will delete the saved information in order to keep collecting data\nDo you want to execute this operation?</string>
+    <string name="member_details_dialog_del_saved_form_msg_lbl">The associated ODK Form wasn\'t found, the system will delete the saved information in order to keep collecting data\nDo you want to execute this operation?</string>
 
     <string name="member_details_edit_member_name_lbl">Name</string>
     <string name="member_details_edit_member_dob_lbl">Date of Birth</string>
@@ -318,7 +318,7 @@
     <string name="household_details_region_lbl">Located Region:</string>
     <string name="household_details_last_visit_lbl">Last Visit Date:</string>
     <string name="household_details_dialog_del_saved_form_title_lbl">Delete saved info</string>
-    <string name="household_details_dialog_del_saved_form_msg_lbl">The associated ODK Form instance wasnt found, the system will delete the saved information in order to keep collecting data\nDo you want to execute this operation?</string>
+    <string name="household_details_dialog_del_saved_form_msg_lbl">The associated ODK Form instance wasn\'t found, the system will delete the saved information in order to keep collecting data\nDo you want to execute this operation?</string>
     <string name="household_details_forms_selector_lbl">Select an Form</string>
 
     <string name="household_details_edit_household_name_lbl">Household Name</string>
@@ -356,7 +356,7 @@
     <string name="gps_title_lbl">GPS Location</string>
     <string name="gps_permissions_error">You must grant Location permissions to be able to use the GPS feature</string>
     <string name="gps_loading_lbl">Loading GPS Location</string>
-    <string name="gps_loading_error">Couldnt provide GPS Location</string>
+    <string name="gps_loading_error">Couldn\'t provide GPS Location</string>
     <string name="gps_no_provider_available_error">Providers are disabled. To be able to continue, enable Network or Location provider</string>
 
     <string name="region_details_tab_details_list_lbl">Region Childs List</string>
@@ -387,13 +387,13 @@
     <string name="new_household_region_name_lbl">Region Name</string>
     <string name="new_household_code_lbl">Household Code</string>
     <string name="new_household_name_lbl">Household Name</string>
-    <string name="new_household_name_hint">eg: 0101-0001</string>
+    <string name="new_household_name_hint">eg: 0101–0001</string>
     <string name="new_household_bt_collect_lbl">Collect Data (ODK)</string>
     <string name="new_household_bt_cancel_lbl">Cancel</string>
     <string name="new_household_code_err_lbl">The format of the Household Code is incorrect</string>
     <string name="new_household_code_empty_lbl">The Household Code cannot be empty</string>
     <string name="new_household_name_empty_lbl">The Household Name cannot be empty</string>
-    <string name="new_household_code_region_err_lbl">The Household Code doesnt belong to the selected neighborhood</string>
+    <string name="new_household_code_region_err_lbl">The Household Code doesn\'t belong to the selected neighborhood</string>
     <string name="new_household_code_exists_lbl">The Household Code already exists</string>
 
     <!-- New Visit -->
@@ -401,7 +401,7 @@
     <string name="new_visit_respondent_not_reg_lbl">Respondent not yet registered</string>
     <string name="new_visit_respondent_not_reg_continue_lbl">The respodent is not yet registered in the system.\nPlease continue to fill the Visit Form Registration after that register the new Member that will become the respondent!</string>
     <string name="new_visit_code_err_lbl">The format of the Visit Code is incorrect</string>
-    <string name="new_visit_code_household_err_lbl">The Visit code doesnt reflect the selected household</string>
+    <string name="new_visit_code_household_err_lbl">The Visit code doesn\'t reflect the selected household</string>
     <string name="new_visit_code_exists_lbl">The Visit Code already exists</string>
     <string name="new_visit_round_number_empty_lbl">The Visit Round Number cannot be empty</string>
     <string name="new_visit_date_not_great_today_lbl">The Visit date cannot be greater than today</string>
@@ -414,7 +414,7 @@
     <!-- New Member -->
 
     <string name="new_member_code_err_lbl">The format of the Member Code is incorrect</string>
-    <string name="new_member_code_household_err_lbl">The Member code doesnt reflect the selected household</string>
+    <string name="new_member_code_household_err_lbl">The Member code doesn\'t reflect the selected household</string>
     <string name="new_member_code_exists_lbl">The Member Code already exists</string>
     <string name="new_member_mother_empty_lbl">The Mother Code cannot be empty</string>
     <string name="new_member_father_empty_lbl">The Father Code cannot be empty</string>
@@ -480,16 +480,16 @@
     <!-- external inmigration -->
     <string name="external_inmigration_asktype_lbl">Is the Member already registered in the DSS? (Its returning to the study area)</string>
     <string name="external_inmigration_select_return_member_lbl">Select the Member that will return to DSS?</string>
-    <string name="external_inmigration_reentry_lbl">Registered Member returning to the HDSS</string>
+    <string name="external_inmigration_reentry_lbl">Registered Member returning to the DSS</string>
     <string name="external_inmigration_entry_lbl">New Member Registration (First Entry)</string>
     <string name="external_inmigration_migration_type_empty_lbl">The Migration Type cannot be empty</string>
     <string name="external_inmigration_migrationdate_empty_lbl">The Migration date cannot be empty</string>
     <string name="external_inmigration_migrationdate_not_great_today_lbl">The Migration date cannot be greater than today</string>
     <string name="external_inmigration_migrationdate_not_before_dob_lbl">The Migration date cannot be before the date of birth</string>
-    <string name="external_inmigration_death_exists_lbl">Cannot create an Inmigration. The selected member is dead</string>
-    <string name="external_inmigration_head_relationship_opened_lbl">Cannot create an Inmigration. The last Head Relationship of this member is not closed</string>
+    <string name="external_inmigration_death_exists_lbl">Cannot create an Immigration. The selected member is dead</string>
+    <string name="external_inmigration_head_relationship_opened_lbl">Cannot create an Immigration. The last Head Relationship of this member is not closed</string>
 
-    <string name="internal_inmigration_select_inmig_member_lbl">Select the Inmigrating Member?</string>
+    <string name="internal_inmigration_select_inmig_member_lbl">Select the Immigrating Member?</string>
     <string name="internal_inmigration_select_inmig_no_residency_lbl">The selected Member is not registered in any household. Please contact the Data Managers!</string>
     <string name="internal_inmigration_is_head_of_household_lbl">The selected Member is a Head of another household. Must first end his current Head Relationship to move to another household!</string>
 
@@ -518,7 +518,7 @@
     <string name="pregnancy_outcome_nroutcomes_lbl">Number of outcomes</string>
     <string name="pregnancy_outcome_create_pregreg_info_lbl">There is no previous collected pregnancy registration for this outcome,\nA new pregnancy registration will be created with status [Delivered],\n\nThen you can continue the outcome registration</string>
     <string name="pregnancy_outcome_member_code_err_lbl">The format of the Child Code is incorrect</string>
-    <string name="pregnancy_outcome_member_code_household_err_lbl">The Child code doesnt reflect the selected household</string>
+    <string name="pregnancy_outcome_member_code_household_err_lbl">The Child code doesn\'t reflect the selected household</string>
     <string name="pregnancy_outcome_member_code_exists_lbl">The Child Code already exists</string>
     <string name="pregnancy_outcome_member_name_empty_lbl">The Name of the Child cannot be empty</string>
     <string name="pregnancy_outcome_member_gender_empty_lbl">The Sex of the Child cannot be empty</string>
@@ -681,7 +681,7 @@
     <string name="eddtype_ultrasound">Ultrasound</string>
     <string name="eddtype_last_menstrual_period">Last Menstrual Period</string>
     <string name="eddtype_symphisis_fundal_eight">Symphisis Fundal Height</string>
-    <string name="eddtype_dont_know">Dont Know</string>
+    <string name="eddtype_dont_know">Don\'t Know</string>
 
     <string name="pregOutcomeType_livebirth">Live birth</string>
     <string name="pregOutcomeType_stillbirth">Still Birth</string>
@@ -714,7 +714,7 @@
     <string name="headRelationshipType_grandchild">Grandchild</string>
     <string name="headRelationshipType_not_related">Not Related</string>
     <string name="headRelationshipType_other">Other Relative</string>
-    <string name="headRelationshipType_dont_know">Dont Know</string>
+    <string name="headRelationshipType_dont_know">Don\'t Know</string>
 
     <string name="region_level1_label">Level 1</string>
     <string name="region_level2_label">Level 2</string>

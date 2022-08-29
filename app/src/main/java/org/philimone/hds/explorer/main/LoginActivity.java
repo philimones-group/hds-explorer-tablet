@@ -378,6 +378,8 @@ public class LoginActivity extends AppCompatActivity {
             //http request
             try {
 
+                retrieveServerUrl();
+
                 //check if is a local user
                 isLocalUser = boxUsers.query().equal(User_.username, this.mUsername, QueryBuilder.StringOrder.CASE_SENSITIVE).or().equal(User_.code, this.mUsername, QueryBuilder.StringOrder.CASE_SENSITIVE).build().findFirst() != null;
 

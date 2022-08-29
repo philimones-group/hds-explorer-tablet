@@ -1,22 +1,6 @@
 package mz.betainteractive.odk;
+
 import static android.content.Context.STORAGE_SERVICE;
-
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.TimeZone;
-import java.util.concurrent.TimeUnit;
-
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.RequiresApi;
-import androidx.annotation.StringRes;
-import androidx.appcompat.app.AppCompatActivity;
-
 
 import android.Manifest;
 import android.app.Activity;
@@ -41,20 +25,35 @@ import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.RequiresApi;
+import androidx.annotation.StringRes;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+
 import org.philimone.hds.explorer.R;
 import org.philimone.hds.explorer.widget.DialogFactory;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.fragment.app.Fragment;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.TimeZone;
+import java.util.concurrent.TimeUnit;
+
 import mz.betainteractive.odk.listener.OdkFormLoadListener;
 import mz.betainteractive.odk.listener.OdkFormResultListener;
 import mz.betainteractive.odk.model.OdkFormLoadData;
 import mz.betainteractive.odk.storage.access.OdkScopedDirUtil;
 import mz.betainteractive.odk.storage.access.OdkStorageType;
-import mz.betainteractive.odk.storage.access.anthonymandra.framework.XDocumentFile;
 import mz.betainteractive.odk.task.OdkFormLoadResult;
 import mz.betainteractive.odk.task.OdkFormLoadTask;
 

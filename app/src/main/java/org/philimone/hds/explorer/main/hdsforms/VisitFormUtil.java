@@ -337,7 +337,7 @@ public class VisitFormUtil extends FormUtil<Visit> {
     public void collect() {
 
         if (newHouseholdCreated || currentMode==Mode.EDIT) {
-            if (this.entity != null) {
+            if (this.entity != null && this.entity.respondentCode != null) {
                 this.respondentMember = this.boxMembers.query(Member_.code.equal(this.entity.respondentCode)).build().findFirst();
             }
 

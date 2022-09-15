@@ -9,8 +9,10 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import androidx.annotation.Nullable;
+import androidx.annotation.StringRes;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentManager;
 
@@ -18,6 +20,7 @@ import org.philimone.hds.explorer.R;
 import org.philimone.hds.explorer.adapter.FormLoaderAdapter;
 import org.philimone.hds.explorer.adapter.trackinglist.TrackingListAdapter;
 import org.philimone.hds.explorer.data.FormDataLoader;
+import org.philimone.hds.explorer.model.Form;
 import org.philimone.hds.explorer.model.enums.FormType;
 
 import java.util.ArrayList;
@@ -27,6 +30,7 @@ public class FormSelectorDialog extends DialogFragment {
 
     private FragmentManager fragmentManager;
 
+    private TextView txtDialogTitle;
     private EditText txtFilterName;
     private RecyclerListView lvFormsList;
     private Button btDialogBack;
@@ -69,6 +73,7 @@ public class FormSelectorDialog extends DialogFragment {
     }
 
     private void initialize(View view){
+        this.txtDialogTitle = view.findViewById(R.id.txtDialogTitle);
         this.txtFilterName = view.findViewById(R.id.txtFilterName);
         this.lvFormsList = view.findViewById(R.id.lvFormsList);
         this.btDialogBack = (Button) view.findViewById(R.id.btDialogBack);
@@ -110,6 +115,22 @@ public class FormSelectorDialog extends DialogFragment {
 
                 }
             });
+        }
+
+        //choose title
+        if (formsList != null && formsList.size()>0) {
+            FormDataLoader dataLoader = formsList.get(0);
+
+            if (dataLoader != null && dataLoader.getForm() != null) {
+                Form form = dataLoader.getForm();
+
+                @StringRes int titleEntityId = form.isMemberForm() ? R.string.form_subject_member_lbl : form.isHouseholdForm ? R.string.form_subject_household_lbl : form.isRegionForm() ? R.string.form_subject_region_lbl : R.string.invalid_enum_value;
+
+                if (titleEntityId != R.string.invalid_enum_value) {
+                    String title = getString(R.string.member_details_forms_selector_lbl) + " ("+ getString(titleEntityId) +")";
+                    this.txtDialogTitle.setText(title);
+                }
+            }
         }
 
         this.adapter = new FormLoaderAdapter(getActivity(), this.formsList);

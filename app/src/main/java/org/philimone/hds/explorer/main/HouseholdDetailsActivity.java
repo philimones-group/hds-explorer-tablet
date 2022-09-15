@@ -168,7 +168,6 @@ public class HouseholdDetailsActivity extends AppCompatActivity implements House
 
         this.loggedUser = Bootstrap.getCurrentUser();
 
-
         try {
             long regionId = getIntent().getExtras().getLong("region");
             this.region = boxRegions.get(regionId);
@@ -341,8 +340,10 @@ public class HouseholdDetailsActivity extends AppCompatActivity implements House
     }
 
     private void initializeButtons() {
-        boolean hasForms = this.fragmentAdapter.getFragmentCollected().getFormDataLoaders().size()>0;;
-        this.btHouseDetailsCollectData.setEnabled(hasForms);
+        if (this.fragmentAdapter != null) {
+            boolean hasForms = this.fragmentAdapter.getFragmentCollected().getFormDataLoaders().size() > 0;
+            this.btHouseDetailsCollectData.setEnabled(hasForms);
+        }
     }
 
     private void displayHouseholdDetails(){
@@ -421,8 +422,10 @@ public class HouseholdDetailsActivity extends AppCompatActivity implements House
         //this.householdDetailsTabViewPager.setCurrentItem(2, true);
 
         //Go to HouseholdFormsFragment and call this action
-        CollectedDataFragment collectedDataFragment = this.fragmentAdapter.getFragmentCollected();
-        collectedDataFragment.onCollectData();
+        if (this.fragmentAdapter != null) {
+            CollectedDataFragment collectedDataFragment = this.fragmentAdapter.getFragmentCollected();
+            collectedDataFragment.onCollectData();
+        }
     }
 
     private boolean hasRecentlyCreatedVisit() {
@@ -472,12 +475,15 @@ public class HouseholdDetailsActivity extends AppCompatActivity implements House
         mainPanelVisitLayout.setVisibility(View.VISIBLE);
 
         displayHouseholdDetails();
+        initializeButtons();
 
         //load visit fragment
         Log.d("setvisitmode", "visitFragment="+householdVisitFragment+", household="+household);
         if (this.householdVisitFragment != null) {
             this.householdVisitFragment.load(household, visit, loggedUser, visitExtraData);
         }
+
+
 
         Log.d("visit code", ""+visit.code);
     }
@@ -497,6 +503,8 @@ public class HouseholdDetailsActivity extends AppCompatActivity implements House
 
         mainPanelTabsLayout.setVisibility(View.GONE);
         mainPanelVisitLayout.setVisibility(View.VISIBLE);
+
+        initializeButtons();
     }
 
     private void setTrackingMode(){

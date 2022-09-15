@@ -1,5 +1,7 @@
 package org.philimone.hds.explorer.fragment.household.details;
 
+import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -20,6 +22,7 @@ import org.philimone.hds.explorer.adapter.CoreCollectedExpandableAdapter;
 import org.philimone.hds.explorer.adapter.MemberAdapter;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
 import org.philimone.hds.explorer.listeners.HouseholdDetailsListener;
+import org.philimone.hds.explorer.main.MemberDetailsActivity;
 import org.philimone.hds.explorer.main.hdsforms.ChangeHeadFormUtil;
 import org.philimone.hds.explorer.main.hdsforms.DeathFormUtil;
 import org.philimone.hds.explorer.main.hdsforms.EditCoreExtensionFormUtil;
@@ -52,6 +55,8 @@ import org.philimone.hds.explorer.model.Outmigration;
 import org.philimone.hds.explorer.model.PregnancyOutcome;
 import org.philimone.hds.explorer.model.PregnancyRegistration;
 import org.philimone.hds.explorer.model.PregnancyRegistration_;
+import org.philimone.hds.explorer.model.Region;
+import org.philimone.hds.explorer.model.Region_;
 import org.philimone.hds.explorer.model.User;
 import org.philimone.hds.explorer.model.Visit;
 import org.philimone.hds.explorer.model.enums.CoreFormEntity;
@@ -60,6 +65,7 @@ import org.philimone.hds.explorer.model.enums.PregnancyStatus;
 import org.philimone.hds.explorer.model.enums.SubjectEntity;
 import org.philimone.hds.explorer.model.enums.temporal.ResidencyEndType;
 import org.philimone.hds.explorer.widget.DialogFactory;
+import org.philimone.hds.explorer.widget.LoadingDialog;
 import org.philimone.hds.explorer.widget.RecyclerListView;
 
 import java.util.ArrayList;
@@ -90,12 +96,15 @@ public class HouseholdVisitFragment extends Fragment {
     private Button btnVisitMemberIncomplete;
     private Button btnVisitChangeHead;
 
+    private LoadingDialog loadingDialog;
+
     private Household household;
     private Visit visit;
     private Member selectedMember;
     private User loggedUser;
     private Map<String, Object> visitExtraData = new HashMap<>();
 
+    private Box<Region> boxRegions;
     private Box<Household> boxHouseholds;
     private Box<Visit> boxVisits;
     private Box<Member> boxMembers;
@@ -196,6 +205,7 @@ public class HouseholdVisitFragment extends Fragment {
     private void initBoxes() {
         this.boxCollectedData = ObjectBoxDatabase.get().boxFor(CollectedData.class);
         this.boxCoreCollectedData = ObjectBoxDatabase.get().boxFor(CoreCollectedData.class);
+        this.boxRegions = ObjectBoxDatabase.get().boxFor(Region.class);
         this.boxHouseholds = ObjectBoxDatabase.get().boxFor(Household.class);
         this.boxVisits = ObjectBoxDatabase.get().boxFor(Visit.class);
         this.boxMembers = ObjectBoxDatabase.get().boxFor(Member.class);
@@ -226,6 +236,8 @@ public class HouseholdVisitFragment extends Fragment {
         this.btnVisitExtraForm = view.findViewById(R.id.btnVisitExtraForm);
         this.btnVisitMemberIncomplete = view.findViewById(R.id.btnVisitMemberIncomplete);
         this.btnVisitChangeHead = view.findViewById(R.id.btnVisitChangeHead);
+
+        this.loadingDialog = new LoadingDialog(this.getContext());
 
         this.lvHouseholdMembers.addOnItemClickListener(new RecyclerListView.OnItemClickListener() {
             @Override
@@ -315,6 +327,20 @@ public class HouseholdVisitFragment extends Fragment {
             onChangeHeadClicked(null);
         });
 
+        this.btnVisitExtraForm.setOnClickListener(v -> {
+            onCollectExtraFormClicked();
+        });
+
+    }
+
+    private void onCollectExtraFormClicked() {
+        if (selectedMember != null) {
+
+            MemberSelectedTask task = new MemberSelectedTask(selectedMember, household, true);
+            task.execute();
+
+            showLoadingDialog(getString(R.string.loading_dialog_member_details_lbl), true);
+        }
     }
 
     private void selectMember(Member member){
@@ -340,7 +366,12 @@ public class HouseholdVisitFragment extends Fragment {
         //select one and show MemberDetails without Highlight
         MemberAdapter adapter = getMembersAdapter();
         if (adapter != null) {
-            //Member member = adapter.getItem(position);
+            Member member = adapter.getItem(position);
+
+            MemberSelectedTask task = new MemberSelectedTask(member, household, false);
+            task.execute();
+
+            showLoadingDialog(getString(R.string.loading_dialog_member_details_lbl), true);
         }
     }
 
@@ -1067,5 +1098,47 @@ public class HouseholdVisitFragment extends Fragment {
     }
 
     //endregion
+
+    private void showLoadingDialog(String msg, boolean show){
+        if (show) {
+            this.loadingDialog.setMessage(msg);
+            this.loadingDialog.show();
+        } else {
+            this.loadingDialog.dismiss();
+        }
+    }
+
+    class MemberSelectedTask  extends AsyncTask<Void, Void, Void> {
+        private Household household;
+        private Member member;
+        private boolean clickCollectData;
+
+        public MemberSelectedTask(Member member, Household household, boolean clickCollectData) {
+            this.household = household;
+            this.member = member;
+            this.clickCollectData = clickCollectData;
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void result) {
+
+            Intent intent = new Intent(getActivity(), MemberDetailsActivity.class);
+            intent.putExtra("household", this.household.id);
+            intent.putExtra("member", this.member.id);
+
+            if (clickCollectData) {
+                intent.putExtra("odk-form-collect", "true");
+            }
+
+            showLoadingDialog(null, false);
+
+            startActivity(intent);
+        }
+    }
 
 }

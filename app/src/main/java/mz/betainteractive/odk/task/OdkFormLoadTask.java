@@ -96,31 +96,46 @@ public class OdkFormLoadTask extends AsyncTask<Void, Void, OdkFormLoadResult> {
 
         try {
             cursor = getCursorForFormsProvider(filledForm.getFormName());
+        } catch (Exception e) {
+            Log.d("special error", ""+e.getMessage());
 
-            if (cursor != null) {
-                if (cursor.moveToNext()) {
-                    int formIdIndex = cursor.getColumnIndex(FormsProviderAPI.FormsColumns.JR_FORM_ID);
-                    int formNameIndex = cursor.getColumnIndex(FormsProviderAPI.FormsColumns.DISPLAY_NAME);
-                    int formPathIndex = cursor.getColumnIndex(FormsProviderAPI.FormsColumns.FORM_FILE_PATH);
-                    int formVersionIndex = cursor.getColumnIndex(FormsProviderAPI.FormsColumns.JR_VERSION);
+            if (e.getMessage().contains("AppDependencyComponent.inject(org.odk.collect.android.external.FormsProvider)' on a null object reference")) {
+                //try again
 
-                    jrFormId = cursor.getString(formIdIndex);
-                    jrFormName = cursor.getString(formNameIndex);
-                    formFilePath = cursor.getString(formPathIndex);
-                    formVersion = cursor.getString(formVersionIndex);
+                try {
+                    cursor = getCursorForFormsProvider(filledForm.getFormName());
+                } catch (Exception ex) {
+                    e.printStackTrace();
+                    return OdkFormLoadResult.newErrorResult(this.odkFormLoadData, OdkFormLoadResult.Status.ERROR_PROVIDER_NA, openMode);
                 }
 
-                cursor.close();
             } else {
-                //no content provider
-                Log.d("odk content provider", "not available");
+                e.printStackTrace();
                 return OdkFormLoadResult.newErrorResult(this.odkFormLoadData, OdkFormLoadResult.Status.ERROR_PROVIDER_NA, openMode);
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+        }
 
+        //After trying to get the cursor
+        if (cursor != null) {
+            if (cursor.moveToNext()) {
+                int formIdIndex = cursor.getColumnIndex(FormsProviderAPI.FormsColumns.JR_FORM_ID);
+                int formNameIndex = cursor.getColumnIndex(FormsProviderAPI.FormsColumns.DISPLAY_NAME);
+                int formPathIndex = cursor.getColumnIndex(FormsProviderAPI.FormsColumns.FORM_FILE_PATH);
+                int formVersionIndex = cursor.getColumnIndex(FormsProviderAPI.FormsColumns.JR_VERSION);
+
+                jrFormId = cursor.getString(formIdIndex);
+                jrFormName = cursor.getString(formNameIndex);
+                formFilePath = cursor.getString(formPathIndex);
+                formVersion = cursor.getString(formVersionIndex);
+            }
+
+            cursor.close();
+        } else {
+            //no content provider
+            Log.d("odk content provider", "not available");
             return OdkFormLoadResult.newErrorResult(this.odkFormLoadData, OdkFormLoadResult.Status.ERROR_PROVIDER_NA, openMode);
         }
+
 
         if (jrFormId == null || formFilePath == null) {
             return OdkFormLoadResult.newErrorResult(this.odkFormLoadData, OdkFormLoadResult.Status.ERROR_FORM_NOT_FOUND, openMode);

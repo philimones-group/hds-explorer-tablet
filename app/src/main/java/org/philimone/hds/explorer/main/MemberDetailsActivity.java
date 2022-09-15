@@ -72,6 +72,7 @@ public class MemberDetailsActivity extends AppCompatActivity {
     private int requestCode;
 
     private CollectedData autoHighlightCollectedData;
+    private boolean autoClickCollectData;
 
     //public static final int REQUEST_CODE_ADD_NEW_MEMBER = 10; /* Member Requests will be from 10 to 19 */
     //public static final int REQUEST_CODE_EDIT_NEW_MEMBER = 11;
@@ -114,6 +115,10 @@ public class MemberDetailsActivity extends AppCompatActivity {
         if (getIntent().getExtras().containsKey("odk-form-select")) {
             long collectedDataId = getIntent().getExtras().getLong("odk-form-select");
             this.autoHighlightCollectedData = boxCollectedData.get(collectedDataId);
+        }
+
+        if (getIntent().getExtras().containsKey("odk-form-collect")) {
+            this.autoClickCollectData = true;
         }
     }
 
@@ -212,6 +217,7 @@ public class MemberDetailsActivity extends AppCompatActivity {
 
             fragmentAdapter = new MemberDetailsFragmentAdapter(this.getSupportFragmentManager(), this.getLifecycle(), household, member, loggedUser, trackingSubject, tabTitles);
             fragmentAdapter.setAutoHighlightCollectedData(autoHighlightCollectedData);
+            fragmentAdapter.setAutoClickCollectData(autoClickCollectData);
             memberDetailsTabViewPager.setAdapter(fragmentAdapter);
             fragmentAdapter.setFragmentEditListener(new MemberEditFragment.EditListener() {
                 @Override
@@ -230,6 +236,11 @@ public class MemberDetailsActivity extends AppCompatActivity {
 
             if (autoHighlightCollectedData != null) {
                 this.memberDetailsTabLayout.getTabAt(2).select();
+            }
+
+            if (autoClickCollectData) {
+                //onCollectDataClicked();
+                autoClickCollectData = false;
             }
         }
 

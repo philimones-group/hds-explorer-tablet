@@ -100,6 +100,7 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
     private SubjectMode subjectMode;
 
     private CollectedData autoHighlightCollectedData;
+    private boolean autoClickCollectData;
 
     private List<String> selectedModules = new ArrayList<>();
 
@@ -309,10 +310,18 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
         });
 
         this.showCollectedData();
+
+        if (autoClickCollectData) {
+            this.onCollectData();
+        }
     }
 
     public void setAutoHighlightCollectedData(CollectedData autoHighlightCollectedData) {
         this.autoHighlightCollectedData = autoHighlightCollectedData;
+    }
+
+    public void setAutoClickCollectData(boolean autoClickCollectData) {
+        this.autoClickCollectData = autoClickCollectData;
     }
 
     /*

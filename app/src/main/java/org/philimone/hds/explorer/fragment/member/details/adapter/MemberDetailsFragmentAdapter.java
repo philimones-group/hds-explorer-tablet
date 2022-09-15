@@ -71,6 +71,10 @@ public class MemberDetailsFragmentAdapter extends FragmentStateAdapter {
         this.fragCollected.setAutoHighlightCollectedData(autoHighlightCollectedData);
     }
 
+    public void setAutoClickCollectData(boolean autoClickCollectData) {
+        this.fragCollected.setAutoClickCollectData(autoClickCollectData);
+    }
+
     public String getTitle(int position) {
         return this.tabTitles.get(position);
     }
@@ -101,4 +105,5 @@ public class MemberDetailsFragmentAdapter extends FragmentStateAdapter {
     public ExternalDatasetsFragment getFragmentDatasets() {
         return fragDatasets;
     }
+
 }

@@ -6,6 +6,7 @@ import java.io.File;
 import java.util.Date;
 
 import mz.betainteractive.odk.model.OdkFormLoadData;
+import mz.betainteractive.odk.task.OdkFormLoadResult;
 
 /**
  * Created by paul on 8/11/16.
@@ -17,6 +18,8 @@ public interface OdkFormResultListener {
     public void onFormUnFinalized(OdkFormLoadData formLoadData, Uri contentUri, String formId, String instanceFileUri, String metaInstanceName, Date lastUpdatedDate);
 
     public void onDeleteForm(OdkFormLoadData formLoadData, Uri contentUri, String instanceFileUri);
+
+    public void onFormLoadError(OdkFormLoadData formLoadData, OdkFormLoadResult result);
 
     /* For cases where the uri of form was not found */
     public void onFormInstanceNotFound(OdkFormLoadData formLoadData, Uri contenUri);

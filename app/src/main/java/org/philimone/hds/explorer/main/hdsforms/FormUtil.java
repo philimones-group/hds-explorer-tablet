@@ -50,6 +50,7 @@ import mz.betainteractive.odk.FormUtilities;
 import mz.betainteractive.odk.listener.OdkFormResultListener;
 import mz.betainteractive.odk.model.FilledForm;
 import mz.betainteractive.odk.model.OdkFormLoadData;
+import mz.betainteractive.odk.task.OdkFormLoadResult;
 import mz.betainteractive.utilities.StringUtil;
 
 public abstract class FormUtil<T extends CoreEntity> implements FormCollectionListener, OdkFormResultListener {
@@ -550,6 +551,11 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
         this.collectedData.extensionCollectedUri = null;
         this.boxCoreCollectedData.put(collectedData);
 
+        onFinishedExtensionCollection();
+    }
+
+    @Override
+    public void onFormLoadError(OdkFormLoadData formLoadData, OdkFormLoadResult result) {
         onFinishedExtensionCollection();
     }
 

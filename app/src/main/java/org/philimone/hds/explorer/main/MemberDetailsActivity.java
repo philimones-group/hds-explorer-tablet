@@ -227,6 +227,14 @@ public class MemberDetailsActivity extends AppCompatActivity {
                 }
             });
 
+            fragmentAdapter.setFragmentCollectListener(new CollectedDataFragment.CollectedDataFragmentListener() {
+                @Override
+                public void onCollectDataBackClicked() {
+                    autoClickCollectData = false;
+                    onBackPressed();
+                }
+            });
+
             //this will create all fragments
             memberDetailsTabViewPager.setOffscreenPageLimit(4);
 
@@ -236,11 +244,6 @@ public class MemberDetailsActivity extends AppCompatActivity {
 
             if (autoHighlightCollectedData != null) {
                 this.memberDetailsTabLayout.getTabAt(2).select();
-            }
-
-            if (autoClickCollectData) {
-                //onCollectDataClicked();
-                autoClickCollectData = false;
             }
         }
 

@@ -405,7 +405,7 @@ public class FormUtilities {
             public void onOdkFormLoadFailure(OdkFormLoadResult result) {
                 //Toast.makeText(MainActivity.this, "Cant open ODK Form", 4000);
             	//Log.d("Cant open ODK Form", "odk");
-            	createFormLoadResultErrorDialog(result);
+            	createFormLoadResultErrorDialog(result, loadData);
             }
         });
 
@@ -449,7 +449,7 @@ public class FormUtilities {
                 if (listener != null){
                     listener.onFormInstanceNotFound(formLoadData, contentUri);
                 }else{
-                    createFormLoadResultErrorDialog(result);
+                    createFormLoadResultErrorDialog(result, loadData);
                 }
             }
         });
@@ -479,7 +479,7 @@ public class FormUtilities {
         }
     }
 
-    private void createFormLoadResultErrorDialog(OdkFormLoadResult result) {
+    private void createFormLoadResultErrorDialog(OdkFormLoadResult result, OdkFormLoadData loadData) {
         //xFormNotFound = true;
 
         @StringRes int messageId = R.string.odk_form_load_error_odk_not_installed_lbl;
@@ -502,6 +502,9 @@ public class FormUtilities {
             @Override
             public void onClicked(DialogFactory.Buttons clickedButton) {
                 //xFormNotFound = false;
+                if (formResultListener != null) {
+                    formResultListener.onFormLoadError(loadData, result);
+                }
             }
         }).show();
 

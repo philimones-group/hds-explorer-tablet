@@ -67,6 +67,10 @@ public class MemberDetailsFragmentAdapter extends FragmentStateAdapter {
         this.fragEdit.setEditListener(listener);
     }
 
+    public void setFragmentCollectListener(CollectedDataFragment.CollectedDataFragmentListener listener){
+        this.fragCollected.setCollectedDataFragmentListener(listener);
+    }
+
     public void setAutoHighlightCollectedData(CollectedData autoHighlightCollectedData) {
         this.fragCollected.setAutoHighlightCollectedData(autoHighlightCollectedData);
     }

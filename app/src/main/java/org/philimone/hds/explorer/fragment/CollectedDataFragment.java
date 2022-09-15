@@ -61,6 +61,7 @@ import mz.betainteractive.odk.FormUtilities;
 import mz.betainteractive.odk.listener.OdkFormResultListener;
 import mz.betainteractive.odk.model.FilledForm;
 import mz.betainteractive.odk.model.OdkFormLoadData;
+import mz.betainteractive.odk.task.OdkFormLoadResult;
 import mz.betainteractive.utilities.StringUtil;
 
 /**
@@ -103,6 +104,8 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
     private boolean autoClickCollectData;
 
     private List<String> selectedModules = new ArrayList<>();
+
+    private CollectedDataFragmentListener collectedDataFragmentListener;
 
     public CollectedDataFragment() {
         // Required empty public constructor
@@ -156,6 +159,10 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
         this.boxHouseholds = ObjectBoxDatabase.get().boxFor(Household.class);
         this.boxModules = ObjectBoxDatabase.get().boxFor(Module.class);
         this.boxDatasets = ObjectBoxDatabase.get().boxFor(Dataset.class);
+    }
+
+    public void setCollectedDataFragmentListener(CollectedDataFragmentListener collectedDataFragmentListener) {
+        this.collectedDataFragmentListener = collectedDataFragmentListener;
     }
 
     private void initializeDataloaders() {
@@ -495,9 +502,19 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
 
             @Override
             public void onCancelClicked() {
-
+                onFormSelectorBackClicked();
             }
         }).show();
+    }
+
+    private void onFormSelectorBackClicked() {
+
+        if (autoClickCollectData) {
+            //if we opened collect data function specifically - perform a backpress on master activity (A Entity Details)
+            if (collectedDataFragmentListener != null) {
+                collectedDataFragmentListener.onCollectDataBackClicked();
+            }
+        }
     }
 
     private List<FormDataLoader> filterFormGroupExclusive(List<FormDataLoader> loaders) {
@@ -709,7 +726,7 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
             this.boxFormGroupInstances.put(formGroupInstance);
         }
 
-        showCollectedData();
+        onFinishedOdkDataCollection(formLoadData);
 
     }
 
@@ -785,7 +802,7 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
             this.boxFormGroupInstances.put(formGroupInstance);
         }
 
-        showCollectedData();
+        onFinishedOdkDataCollection(formLoadData);
     }
 
     @Override
@@ -801,12 +818,25 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
         //delete also the formGroupInstanceChild
         this.boxFormGroupInstanceChilds.query(FormGroupInstanceChild_.formInstanceUri.equal(instanceFileUri)).build().remove();
 
-        showCollectedData();
+        onFinishedOdkDataCollection(formLoadData);
+    }
+
+    @Override
+    public void onFormLoadError(OdkFormLoadData formLoadData, OdkFormLoadResult result) {
+        onFinishedOdkDataCollection(formLoadData);
     }
 
     @Override
     public void onFormInstanceNotFound(OdkFormLoadData formLoadData, final Uri contenUri) {
         buildDeleteFormInstanceNotFoundDialog(formLoadData, contenUri);
+    }
+
+    private void onFinishedOdkDataCollection(OdkFormLoadData formLoadData){
+        showCollectedData();
+
+        if (formLoadData.isFormGroupLoad == false) { //normal odk collection
+            onFormSelectorBackClicked(); //try to back from the EntityDetails panel - if is autoCollectDataClicked
+        }
     }
 
     private void buildDeleteFormInstanceNotFoundDialog(OdkFormLoadData formLoadData, final Uri contenUri){
@@ -932,5 +962,9 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
             this.odkFormLoadData = loadData;
             //this.filledForm = filledForm;
         }
+    }
+
+    public interface CollectedDataFragmentListener {
+        void onCollectDataBackClicked();
     }
 }

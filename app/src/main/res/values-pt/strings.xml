@@ -18,45 +18,45 @@
     <string name="bt_delete_lbl">Apagar</string>
     <string name="bt_open_lbl">Abrir</string>
     <string name="bt_close_lbl">Fechar</string>
-    <string name="bt_enable_lbl">Ativar</string>
-    <string name="bt_disable_lbl">Desativar</string>
+    <string name="bt_enable_lbl">Activar</string>
+    <string name="bt_disable_lbl">Desactivar</string>
     <string name="info_lbl">Info</string>
     <string name="error_lbl">Erro</string>
-    <string name="updated_successfully_lbl">Atualizado com sucesso</string>
+    <string name="updated_successfully_lbl">Actualizado com sucesso</string>
 
     <!-- storage access -->
     <string name="storage_access_title_lbl">Acesso aos Ficheiros</string>
-    <string name="storage_access_odk_error_lbl">Acesso ao ficheiros foi rejeitado, O HDS-Explorer não tera acesso aos formulário ODK, por falta de permissão para aceder ao ODK Collect</string>
-    <string name="storage_access_odk_error_continue_lbl">Acesso ao ficheiros foi rejeitado.\nO HDS-Explorer não tera acesso aos formulário ODK, por falta de permissão para aceder ao ODK Collect.\nPode continuar a usar o aplicativo mas não tera acesso ao ODK Collect</string>
+    <string name="storage_access_odk_error_lbl">Acesso aos ficheiros foi rejeitado, O HDS-Explorer não terá acesso aos formulários ODK, por falta de permissão para aceder ao ODK Collect</string>
+    <string name="storage_access_odk_error_continue_lbl">Acesso aos ficheiros foi rejeitado.\nO HDS-Explorer não terá acesso aos formulários ODK, por falta de permissão para aceder ao ODK Collect.\nPode continuar a usar o aplicativo mas não terá acesso ao ODK Collect</string>
 
     <!-- Strings related to ODK -->
     <string name="odk_couldnt_open_xform_lbl">Não foi possível abrir o formulário ODK</string>
     <string name="odk_couldnt_reopen_xform_lbl">O formulário ODK salvo não foi encontrado, não será possível abri-lo</string>
     <string name="odk_problem_lbl">Ocorreu um problema com o ODK</string>
-    <string name="odk_form_load_error_odk_not_installed_lbl">Não foi possível obter o provedor de formulários ODK, O aplicativo ODK Collect não esta instalado!</string>
+    <string name="odk_form_load_error_odk_not_installed_lbl">Não foi possível obter o provedor de formulários ODK, O Aplicativo ODK Collect não está instalado!</string>
     <string name="odk_form_load_error_provider_lbl">Não foi possível obter formulários ODK, Ocorreu um erro ao tentar obter os formulários ODK!</string>
     <string name="odk_form_load_error_form_not_found_lbl">O formulário não foi encontrado no ODK Collect. Por favor, certifique-se de que o formulário ODK existe.</string>
     <string name="odk_form_load_error_folder_permissions_lbl">Não foi possível obter os ficheiros dos formulários ODK, O acesso ao ODK Collect foi negado!</string>
-    <string name="odk_form_load_permission_storage_denied_lbl">Não será possível acessar os formulários ODK. Não existem permissões habilitadas para leitura e escrita nos ficheiros do ODK collect!</string>
+    <string name="odk_form_load_permission_storage_denied_lbl">Não será possível aceder aos formulários ODK. Não existem permissões habilitadas para leitura e escrita nos ficheiros do ODK Collect!</string>
     <string name="odk_form_load_permissions_denied_lbl">Para poder prosseguir com a colecta de dados.\nSerá necessário conceder acesso as permissões mostradas anteriormente pelo sistema!</string>
     <string name="odk_form_load_permission_request_manage_all_title_lbl">Acesso aos formulários ODK</string>
-    <string name="odk_form_load_permission_request_manage_all_info_lbl">Para poder aceder aos formulários ODK, será necessário ativar a opção (Permitir acesso para gerir todos os ficheiros) na próxima página á seguir o OK!</string>
-    <string name="odk_form_load_permission_request_android_dir_info_lbl">Para poder aceder aos formulários ODK, será necessário clicar em (Utilizar esta pasta) na próxima página á seguir o OK!</string>
-    <string name="odk_form_load_permission_request_readwrite_denied_lbl">Não será possível aceder ao formulário ODK. Não existem permissões habilitadas para leitura e escrita nos ficheiros do ODK collect!</string>
+    <string name="odk_form_load_permission_request_manage_all_info_lbl">Para poder aceder aos formulários ODK, será necessário activar a opção (Permitir acesso para gerir todos os ficheiros) na próxima página a seguir o OK!</string>
+    <string name="odk_form_load_permission_request_android_dir_info_lbl">Para poder aceder aos formulários ODK, será necessário clicar em (Utilizar esta pasta) na próxima página a seguir o OK!</string>
+    <string name="odk_form_load_permission_request_readwrite_denied_lbl">Não será possível aceder ao formulário ODK. Não existem permissões habilitadas para leitura e escrita nos ficheiros do ODK Collect!</string>
     <string name="odk_form_load_permission_request_readphonestate_denied_lbl">Não será possível abrir o formulário ODK. Não há permissão concedida para obter informações do dispositivo e da rede!</string>
     <string name="odk_form_load_error_saving_prefilled_xml_lbl">Ocorreu um erro ao tentar salvar o ficheiro XML com dados pré-carregados.</string>
     <string name="odk_form_load_error_saving_instance_form_lbl">Não foi possível criar o ficheiro XML com dados pré-carregados para o ODK Collect.</string>
-    <string name="odk_unfinished_dialog_msg">O formulário foi aberto mas não foi finalizado. Esta instância do formulário será apagada. O que deseja fazer?</string>
+    <string name="odk_unfinished_dialog_msg">O formulário foi aberto, mas não foi finalizado. Esta instância do formulário será apagada. O que deseja fazer?</string>
     <string name="odk_unfinished_button_delete">Apagar formulário</string>
     <string name="odk_unfinished_button_change">Alterar formulário</string>
     <string name="odk_unfinished_button_save">Salvar formulário</string>
-    <string name="odk_unfinished_form_saved">O formulário foi salvo mas não esta finalizado, poderá ser editado depois</string>
-    <string name="odk_unfinished_form_not_found">O formulário não pôde ser encontrado no ODK Collect. Por favor, certifique-se que ele existe e que foi escrito corretamente.</string>
+    <string name="odk_unfinished_form_saved">O formulário foi salvo, mas não está finalizado, poderá ser editado depois</string>
+    <string name="odk_unfinished_form_not_found">O formulário não pôde ser encontrado no ODK Collect. Por favor, certifique-se que ele existe e que foi escrito correctamente.</string>
 
 
     <!-- Sync Tasks -->
-    <string name="sync_downloading_lbl">Baixando</string>
-    <string name="sync_saving_lbl">Guardando dados</string>
+    <string name="sync_downloading_lbl">A baixar</string>
+    <string name="sync_saving_lbl">A guardar dados</string>
     <string name="sync_params_lbl">Pârametros</string>
     <string name="sync_modules_lbl">Módulos</string>
     <string name="sync_forms_lbl">Formulários ODK</string>
@@ -82,7 +82,7 @@
     <string name="sync_deaths_lbl">Mortes</string>
     <string name="sync_incomplete_visits_lbl">Visitas Incompletas</string>
     <string name="sync_saved_lbl">Guardado</string>
-    <string name="sync_records_lbl">registros</string>
+    <string name="sync_records_lbl">registos</string>
     <string name="sync_successfully_lbl">Os dados foram sincronizados com sucesso.</string>
     <string name="sync_failure_file_not_found_lbl">O ficheiro não foi encontrado no servidor para ser baixado.</string>
     <string name="sync_failure_unknown_lbl">Ocorreu um erro ao tentar sincronizar os dados do servidor</string>
@@ -101,12 +101,12 @@
     <string name="server_sync_status_notsynced_lbl">Não foi sincronizado</string>
     <string name="server_sync_status_synced_lbl">Data da última sincronização</string>
     <string name="server_sync_status_sync_error_lbl">Data da última sincr. com erro</string>
-    <string name="server_sync_bt_upload_all_lbl">Enviar formulários selecionados</string>
+    <string name="server_sync_bt_upload_all_lbl">Enviar formulários seleccionados</string>
     <string name="server_sync_bt_sync_all_lbl">Sincronizar Todos</string>
     <string name="server_sync_bt_sync_lbl">Sincronizar</string>
     <string name="server_sync_bt_stop_lbl">Parar</string>
     <string name="server_sync_bt_settings_lbl">Baixar Definições</string>
-    <string name="server_sync_bt_datasets_lbl">Baixar Datasets externos</string>
+    <string name="server_sync_bt_datasets_lbl">Baixar Datasets Externos</string>
     <string name="server_sync_bt_tracking_lists_lbl">Baixar Listas de Seguimento</string>
     <string name="server_sync_bt_households_datasets_lbl">Baixar Dados das Casas/Agregados</string>
     <string name="server_sync_bt_dssevents_lbl">Baixar Eventos Demográficos</string>
@@ -118,14 +118,14 @@
     <string name="server_sync_upload_show_not_uploaded_lbl">Mostrar formulários não enviados</string>
     <string name="server_sync_upload_show_uploaded_forms_lbl">Mostrar formulários enviados</string>
     <string name="server_sync_upload_show_uploaded_werrors_lbl">Mostrar formulários enviados com erros</string>
-    <string name="server_sync_upload_select_all">Selecionar todos</string>
+    <string name="server_sync_upload_select_all">Seleccionar todos</string>
     <string name="server_sync_upload_total_lbl">%1$d Formulário(s)</string>
-    <string name="server_sync_uploading_form_lbl">Enviando Formulário de %1$s</string>
+    <string name="server_sync_uploading_form_lbl">A enviar Formulário de %1$s</string>
     <string name="server_sync_uploading_finished_lbl">Envio de dados finalizado</string>
     <string name="server_sync_upload_errors_result_lbl">Enviados com erros de validação</string>
 
     <string name="server_sync_offline_mode_title_lbl">Não é possível sincronizar</string>
-    <string name="server_sync_offline_mode_msg_lbl">O painel esta no modo offline, para poder sincronizar dados, faça login novamente</string>
+    <string name="server_sync_offline_mode_msg_lbl">O painel está no modo offline, para poder sincronizar dados, faça login novamente</string>
     <string name="server_sync_offline_mode_continue_title_lbl">Não foi possível conectar ao servidor</string>
     <string name="server_sync_offline_mode_continue_msg_lbl">Ocorreu um erro ao tentar sincronizar os dados do servidor, tente novamente ou continue no modo offline\n\nDeseja abrir o painel de sincronização no modo offline?</string>
 
@@ -134,8 +134,8 @@
     <string name="core_entity_head_relationship_lbl">Registo de Relação com chefe</string>
     <string name="core_entity_marital_relationship_lbl">Registo de União Marital</string>
     <string name="core_entity_inmigration_lbl">Registo de Imigração</string>
-    <string name="core_entity_external_inmigration_lbl">Registo de Imigração Externa </string>
-    <string name="core_entity_outmigration_lbl">Registo de saida (Emigração)</string>
+    <string name="core_entity_external_inmigration_lbl">Registo de Imigração Externa</string>
+    <string name="core_entity_outmigration_lbl">Registo de saída (Emigração)</string>
     <string name="core_entity_pregnancy_reg_lbl">Registo de Gravidez</string>
     <string name="core_entity_pregnancy_out_lbl">Registo de Resultado de Gravidez</string>
     <string name="core_entity_death_lbl">Registo de Morte</string>
@@ -146,10 +146,10 @@
     <string name="core_entity_edit_household_lbl">Alterar Agregado</string>
     <string name="core_entity_edit_member_lbl">Alterar Membro</string>
     <string name="core_entity_collected_date_lbl">Data da colecta:</string>
-    <string name="core_entity_updated_date_lbl">Data da atualização:</string>
+    <string name="core_entity_updated_date_lbl">Data da actualização:</string>
     <string name="core_entity_uploaded_date_lbl">Data do envio:</string>
 
-    <string name="core_entity_extension_lbl">Extension Form</string>
+    <string name="core_entity_extension_lbl">Formulário de Extensão</string>
 
     <string name="core_form_group_item_subtitle">Formulários colectados</string>
     <string name="core_form_group_item_extension_lbl">Extensão:</string>
@@ -167,7 +167,7 @@
 
     <!-- SplashScreen -->
     <string name="splashscreen_hds_explorer_name_1">Health and Demographics</string>
-    <string name="splashscreen_hds_explorer_name_2">Surveyllance Data Explorer</string>
+    <string name="splashscreen_hds_explorer_name_2">Surveillance Data Explorer</string>
 
     <!-- Strings related to login -->
     <string name="login_welcome_lbl">BEM-VINDO</string>
@@ -204,8 +204,8 @@
     <string name="member_filter_gender_male_lbl">Masculino</string>
     <string name="member_filter_gender_female_lbl">Feminino</string>
     <string name="member_filter_age_details_lbl">Idade</string>
-    <string name="member_filter_age_min_lbl">Min.</string>
-    <string name="member_filter_age_max_lbl">Max.</string>
+    <string name="member_filter_age_min_lbl">Mín.</string>
+    <string name="member_filter_age_max_lbl">Máx.</string>
     <string name="member_filter_current_status_lbl">Estado Corrente</string>
     <string name="member_filter_choose_current_status_lbl">Escolher estado corrente</string>
     <string name="member_filter_death_status_lbl">Falecido</string>
@@ -217,22 +217,22 @@
     <string name="member_list_bt_clear_lbl">Limpar Lista</string>
     <string name="member_list_bt_show_houses_maps_lbl">Mapa GPS das Casas</string>
     <string name="member_list_gps_not_available_lbl">As cooredenadas GPS da casa não estão disponíveis</string>
-    <string name="member_list_member_gps_not_available_lbl">As cooredenadas GPS da casa do membro selecionado não estão disponíveis</string>
+    <string name="member_list_member_gps_not_available_lbl">As cooredenadas GPS da casa do membro seleccionado não estão disponíveis</string>
     <string name="member_list_household_not_found_lbl">A casa do membro selecionado não foi encontrada no sistema</string>
     <string name="member_list_bt_show_household_lbl">Ver Detalhes da Casa</string>Nem todos membros foram visitados nesta visita
     <string name="member_list_bt_show_gps_housemembers_lbl">Mostrar Mapa GPS</string>
     <string name="member_list_bt_show_houses_lbl">Mostrar Mapa GPS das casas</string>
-    <string name="member_list_bt_show_closest_houses_lbl">Mapa de Casas prox.</string>
-    <string name="member_list_bt_show_closest_members_lbl">Mapa de Membros prox.</string>
+    <string name="member_list_bt_show_closest_houses_lbl">Mapa de Casas próx.</string>
+    <string name="member_list_bt_show_closest_members_lbl">Mapa de Membros próx.</string>
     <string name="member_list_bt_new_member_collect_lbl">Colher Membro Temp.</string>
     <string name="member_list_bt_add_new_member_lbl">Adicionar Novo Membro</string>
     <string name="member_list_bt_edit_new_member_lbl">Alterar Membro</string>
     <string name="member_list_bt_show_collected_data_lbl">Mostrar Dados Colhidos</string>
     <string name="member_list_item_extra_collected_lbl"># Formulário(s) Colhido(s)</string>
     <string name="member_list_select_distance_title_lbl">Procura de casas por perto</string>
-    <string name="member_list_select_distance_radius_lbl">Selecione o raio de pesquisa</string>
-    <string name="member_list_no_members_lbl">A lista de membros/indivíduos esta vazia</string>
-    <string name="member_list_member_not_found_lbl">Membros com filtros escolectados não foram encontrados</string>
+    <string name="member_list_select_distance_radius_lbl">Seleccione o raio de pesquisa</string>
+    <string name="member_list_no_members_lbl">A lista de membros/indivíduos está vazia</string>
+    <string name="member_list_member_not_found_lbl">Membros com filtros seleccionados não foram encontrados</string>
 
     <string name="member_list_bt_mark_as_supervised_lbl">Marcar todos como supervisionados</string>
 
@@ -250,9 +250,9 @@
     <string name="member_list_newmem_code_err_lbl">O Código está incorrecto!</string>
     <string name="member_list_newmem_code_exists_lbl">O Código introduzido já existe, introduza outro</string>
     <string name="member_list_newmem_name_err_lbl">O nome não pode estar vazio</string>
-    <string name="member_list_newmem_dob_err_lbl">A data de nascimento não pode ser maior que a data de hoje!</string>
-    <string name="member_list_newmem_gender_err1_lbl">Por favor selecione somente um dos sexos!</string>
-    <string name="member_list_newmem_gender_err2_lbl">Por favor selecione um dos sexos!</string>
+    <string name="member_list_newmem_dob_err_lbl">A data de nascimento não pode estar no futuro!</string>
+    <string name="member_list_newmem_gender_err1_lbl">Por favor, seleccione somente um dos sexos!</string>
+    <string name="member_list_newmem_gender_err2_lbl">Por favor, seleccione um dos sexos!</string>
 
     <string name="member_details_tab_details_list_lbl">Detalhes do Membro</string>
     <string name="member_details_tab_collected_forms_lbl">Formulários Colhidos</string>
@@ -270,16 +270,16 @@
     <string name="member_details_other_info_lbl">Detalhes do Membro</string>
     <string name="member_details_col_data_info_lbl">Dados colectados (formulários)</string>
     <string name="member_details_housename_lbl">Código da casa:</string>
-    <string name="member_details_member_endtype_lbl">Estado atual:</string>
+    <string name="member_details_member_endtype_lbl">Estado actual:</string>
     <string name="member_details_father_lbl">Pai:</string>
     <string name="member_details_mother_lbl">Mãe:</string>
-    <string name="member_details_forms_spouse_lbl">Cônjugue:</string>
+    <string name="member_details_forms_spouse_lbl">Cônjuge:</string>
     <string name="member_details_bt_openform_lbl">Colher Dados</string>
     <string name="member_details_bt_back_lbl">Voltar</string>
-    <string name="member_details_forms_selector_lbl">Selecionar um Formulário</string>
+    <string name="member_details_forms_selector_lbl">Seleccionar um Formulário</string>
 
     <string name="member_details_unknown_lbl">Desconhecido</string>
-    <string name="member_details_endtype_na_lbl">Vivendo nesta casa</string>
+    <string name="member_details_endtype_na_lbl">A viver nesta casa</string>
     <string name="member_details_endtype_ext_lbl">Emigrou</string>
     <string name="member_details_endtype_dth_lbl">Faleceu</string>
     <string name="member_details_name_unknown_lbl">Nome Desconhecido</string>
@@ -299,14 +299,14 @@
     <string name="member_details_edit_mother_unknown_lbl">Definir como Mãe Desconhecida</string>
     <string name="member_details_edit_button_change_lbl">Alterar</string>
     <string name="member_details_edit_button_update_details_lbl">Alterar Detalhes</string>
-    <string name="member_details_edit_cant_update_new_record">Não será possível atualizar este Membro porque foi criado recentemente.\nPara atualiza-lo pode faze-lo no Formulário que usou para registar este Membro</string>
+    <string name="member_details_edit_cant_update_new_record">Não será possível actualizar este Membro porque foi criado recentemente.\nPara actualizá-lo, pode fazê-lo no Formulário que usou para registar este Membro</string>
     <string name="member_details_edit_father_sex_cant_change_lbl">Não será possível alterar o sexo, porque o membro já é Pai de outros membros no sistema.\nAltere primeiro o Pai dos membros relacionados</string>
-    <string name="member_details_edit_mother_sex_cant_change_lbl">Não será possível alterar o sexo, porque o membro já é Mãe de outros membros no sistema.\nAltere primeiro o Mãe dos membros relacionados</string>
-    <string name="member_details_edit_dob_bir_warning_lbl">Este membro foi registrado através dum Registo de Nascimento.\nPortanto a data em que começou a residir na casa é a mesma que a data de nascimento!\n\nTem certeza que deseja alterar a data de nascimento (isto afectara o reg. de nascimento)?</string>
+    <string name="member_details_edit_mother_sex_cant_change_lbl">Não será possível alterar o sexo, porque o membro já é Mãe de outros membros no sistema.\nAltere primeiro a Mãe dos membros relacionados</string>
+    <string name="member_details_edit_dob_bir_warning_lbl">Este membro foi registado através dum Registo de Nascimento.\nPortanto a data em que começou a residir na casa é a mesma que a data de nascimento!\n\nTem certeza que deseja alterar a data de nascimento (isto afectará  o reg. de nascimento)?</string>
 
     <string name="region_details_edit_region_name_lbl">Nome da Região</string>
     <string name="region_details_edit_button_update_details_lbl">Alterar Detalhes</string>
-    <string name="region_details_edit_cant_update_new_record">Não será possível atualizar esta Região porque foi criado recentemente.\nPara atualiza-lo pode faze-lo no Formulário de Registo do novo Agregado</string>
+    <string name="region_details_edit_cant_update_new_record">Não será possível actualizar esta Região porque foi criado recentemente.\nPara actualizá -lo, pode fazê-lo no Formulário de Registo do novo Agregado</string>
 
     <string name="household_details_tab_members_list_lbl">Lista de Membros</string>
     <string name="household_details_tab_collected_forms_lbl">Formulários Colhidos</string>
@@ -319,7 +319,7 @@
     <string name="household_details_last_visit_lbl">Data da Última Visita:</string>
     <string name="household_details_dialog_del_saved_form_title_lbl">Apagar informação salva</string>
     <string name="household_details_dialog_del_saved_form_msg_lbl">O formulário ODK salvo não foi encontrado, a informação salva será apagada para permitir colheita de novos formulários\nDeseja prosseguir com a execução deste processo?</string>
-    <string name="household_details_forms_selector_lbl">Selecionar um Formulário</string>
+    <string name="household_details_forms_selector_lbl">Seleccionar um Formulário</string>
 
     <string name="household_details_edit_household_name_lbl">Nomde do Agregado</string>
     <string name="household_details_edit_gps_lbl">Coordenadas GPS</string>
@@ -329,7 +329,7 @@
     <string name="household_details_edit_gps_alt_lbl">Altitude:</string>
     <string name="household_details_edit_gps_acc_lbl">Precisão:</string>
     <string name="household_details_edit_button_update_details_lbl">Alterar Detalhes</string>
-    <string name="household_details_edit_cant_update_new_record">Não será possível atualizar esta Casa/Agregado porque foi criado recentemente.\nPara atualiza-lo pode faze-lo no Formulário de Registo do novo Agregado</string>
+    <string name="household_details_edit_cant_update_new_record">Não será possível actualizar esta Casa/Agregado porque foi criado recentemente.\nPara actualizá-lo pode fazê-lo no Formulário de Registo do novo Agregado</string>
 
     <string name="household_details_bt_create_visit_lbl">Iniciar Visita</string>
     <string name="household_details_bt_finish_visit_lbl">Terminar Visita</string>
@@ -350,14 +350,14 @@
     <string name="household_visit_bt_incomplete_lbl">Visita \nIncompleta</string>
     <string name="household_visit_bt_collect_lbl">Colher Dados</string>
     <string name="household_visit_not_finished_title_lbl">Visita não terminada</string>
-    <string name="household_visit_not_finished_msg_lbl">Nem todos membros foram visitados nesta visita\nPor favor colecte o formulário (Visita Incompleta) para os membros a seguir:\n(%1$s)</string>
+    <string name="household_visit_not_finished_msg_lbl">Nem todos membros foram visitados nesta visita\nPor favor, colecte o formulário (Visita Incompleta) para os membros a seguir:\n(%1$s)</string>
     <string name="household_visit_not_finished_msg_ask_lbl">Nem todos membros foram visitados nesta visita,\nMembros: (%1$s)\nPode colectar o formulário visita incompleta ou marcar todos como não visitados.\n\nDeseja marcar todos estes membros como não visitados?</string>
 
     <string name="gps_title_lbl">Coordenadas GPS</string>
-    <string name="gps_permissions_error">É necessario ter permissões de Localização para pode aceder ao GPS</string>
-    <string name="gps_loading_lbl">Carregando coordenadas GPS</string>
+    <string name="gps_permissions_error">É necessário ter permissões de Localização para pode aceder ao GPS</string>
+    <string name="gps_loading_lbl">A carregar coordenadas GPS</string>
     <string name="gps_loading_error">Não foi possível encontrar coordenadas GPS</string>
-    <string name="gps_no_provider_available_error">Provedor de GPS desativado. Para poder continuar ative a Rede Wifi ou provedor de GPS</string>
+    <string name="gps_no_provider_available_error">Provedor de GPS desactivado. Para poder continuar, active a Rede Wifi ou provedor de GPS</string>
 
     <string name="region_details_tab_details_list_lbl">Lista de sub-regiões</string>
     <string name="region_details_tab_collected_forms_lbl">Formulários Colhidos</string>
@@ -372,7 +372,7 @@
     <string name="household_filter_search_lbl">Procurar casa</string>
     <string name="household_filter_gpsmap_lbl">Mapa GPS</string>
     <string name="household_filter_gps_not_available_title_lbl">Não será possível visualizar o mapa</string>
-    <string name="household_filter_gps_not_available_lbl">As cooredenadas GPS das casas não estão disponíveis</string>
+    <string name="household_filter_gps_not_available_lbl">As coordenadas GPS das casas não estão disponíveis</string>
     <string name="household_filter_no_houses_lbl">A lista das casas está vazia</string>
     <string name="household_filter_add_house_lbl">Adicionar Nova Casa</string>
     <string name="household_filter_edit_house_lbl">Alterar Nova Casa</string>
@@ -391,84 +391,84 @@
     <string name="new_household_bt_collect_lbl">Colher Dados (ODK)</string>
     <string name="new_household_bt_cancel_lbl">Cancelar</string>
     <string name="new_household_code_err_lbl">O código do agregado está incorrecto!</string>
-    <string name="new_household_code_empty_lbl">O código da agregado não pode estar vazio</string>
+    <string name="new_household_code_empty_lbl">O código do agregado não pode estar vazio</string>
     <string name="new_household_name_empty_lbl">O nome do agregado não pode estar vazio</string>
-    <string name="new_household_code_region_err_lbl">O código do agregado introduzido não pertence a região selecionada!</string>
-    <string name="new_household_code_exists_lbl">O código do agregado introduzido ja existe!</string>
+    <string name="new_household_code_region_err_lbl">O código do agregado introduzido não pertence a região seleccionada!</string>
+    <string name="new_household_code_exists_lbl">O código do agregado introduzido já existe!</string>
 
     <!-- New Visit -->
-    <string name="new_visit_select_respondent_lbl">Selecione o respondente</string>
+    <string name="new_visit_select_respondent_lbl">Seleccione o respondente</string>
     <string name="new_visit_respondent_not_reg_lbl">Respondente não registado</string>
-    <string name="new_visit_respondent_not_reg_continue_lbl">O respondente ainda não esta registado no sistema.\nPor favor, prossiga para o formulário de Visita e depois registe o novo membro que será o respondente!</string>
+    <string name="new_visit_respondent_not_reg_continue_lbl">O respondente ainda não está registado no sistema.\nPor favor, prossiga para o formulário de Visita e depois registe o novo membro que será o respondente!</string>
     <string name="new_visit_code_err_lbl">O código da visita está incorrecto!</string>
-    <string name="new_visit_code_household_err_lbl">O código da visita introduzido não reflecte a casa selecionada!</string>
-    <string name="new_visit_code_exists_lbl">O código da visita introduzido ja existe!</string>
-    <string name="new_visit_date_not_great_today_lbl">A data da visita não pode esta no futuro</string>
+    <string name="new_visit_code_household_err_lbl">O código da visita introduzido não reflecte a casa seleccionada!</string>
+    <string name="new_visit_code_exists_lbl">O código da visita introduzido já existe!</string>
+    <string name="new_visit_date_not_great_today_lbl">A data da visita não pode estar no futuro</string>
     <string name="new_visit_round_number_empty_lbl">O número de ronda não pode estar vazio</string>
     <string name="new_visit_reason_empty_lbl">O motivo da visita não pode estar vazio</string>
     <string name="new_visit_respondent_empty_lbl">O código do respondente não pode estar vazio</string>
     <string name="new_visit_interpreter_empty_lbl">O nome do respondente não pode estar vazio</string>
-    <string name="new_visit_location_empty_lbl">Por favor, selecione onde a visita esta sendo realizada</string>
-    <string name="new_visit_location_other_empty_lbl">Por favor, especifique onde a visita esta sendo realizada</string>
+    <string name="new_visit_location_empty_lbl">Por favor, seleccione onde a visita está a ser realizada</string>
+    <string name="new_visit_location_other_empty_lbl">Por favor, especifique onde a visita está a ser realizada</string>
 
     <!-- New Member -->
     <string name="new_member_code_err_lbl">O código do Membro está incorrecto!</string>
-    <string name="new_member_code_household_err_lbl">O código do Membro introduzido não reflecte a casa selecionada!</string>
-    <string name="new_member_code_exists_lbl">O código do Membro introduzido ja existe!</string>
+    <string name="new_member_code_household_err_lbl">O código do Membro introduzido não reflecte a casa seleccionada!</string>
+    <string name="new_member_code_exists_lbl">O código do Membro introduzido já existe!</string>
     <string name="new_member_mother_empty_lbl">O código da Mãe do membro não pode estar vazio</string>
-    <string name="new_member_father_empty_lbl">O código da Pai do membro não pode estar vazio</string>
+    <string name="new_member_father_empty_lbl">O código do Pai do membro não pode estar vazio</string>
     <string name="new_member_name_empty_lbl">O nome do membro não pode estar vazio</string>
     <string name="new_member_gender_empty_lbl">O sexo do membro não pode estar vazio</string>
-    <string name="new_member_dob_empty_lbl">O data de nascimento do membro não pode estar vazio</string>
-    <string name="new_member_dob_not_great_today_lbl">A data de nascimento não pode esta no futuro</string>
-    <string name="new_member_dob_minimum_age_head_lbl">A idade minima para o membro seja chefe de agregado é (%1$s)</string>
-    <string name="new_member_head_relattype_empty_lbl">A relação com o chefe de agregado não pode estar vazio</string>
+    <string name="new_member_dob_empty_lbl">A data de nascimento do membro não pode estar vazia</string>
+    <string name="new_member_dob_not_great_today_lbl">A data de nascimento não pode estar no futuro</string>
+    <string name="new_member_dob_minimum_age_head_lbl">A idade mínima para o membro seja chefe de agregado é (%1$s)</string>
+    <string name="new_member_head_relattype_empty_lbl">A relação com o chefe de agregado não pode estar vazia</string>
     <string name="new_member_migration_type_empty_lbl">o tipo de migração não pode estar vazio</string>
-    <string name="new_member_residency_startdate_empty_lbl">A data do censo não pode estar vazio</string>
+    <string name="new_member_residency_startdate_empty_lbl">A data do censo não pode estar vazia</string>
     <string name="new_member_residency_startdate_not_great_today_lbl">A data do censo não pode estar no futuro</string>
     <string name="new_member_residency_startdate_not_before_dob_lbl">A data do censo não pode ser antes da data de nascimento</string>
     <string name="new_member_title_lbl">Censo: Adicionar novo Membro</string>
     <string name="new_member_collect_lbl">Guardar e Colher Dados</string>
-    <string name="new_member_dialog_change_title_lbl">Atualização de dados</string>
-    <string name="new_member_dialog_mother_select_lbl">Selecione a Mãe do membro?</string>
-    <string name="new_member_dialog_mother_exists_lbl">A mãe é conhecida e esta registada no sistema?</string>
-    <string name="new_member_dialog_mother_change_lbl">Deseja atualizar/alterar a Mãe deste Membro?</string>
-    <string name="new_member_dialog_father_select_lbl">Selecione o Pai do membro?</string>
-    <string name="new_member_dialog_father_exists_lbl">O Pai é conhecido e esta registado no sistema?</string>
-    <string name="new_member_dialog_father_change_lbl">Deseja atualizar/alterar o Pai deste Membro?</string>
+    <string name="new_member_dialog_change_title_lbl">Actualização de dados</string>
+    <string name="new_member_dialog_mother_select_lbl">Seleccione a Mãe do membro?</string>
+    <string name="new_member_dialog_mother_exists_lbl">A mãe é conhecida e está registada no sistema?</string>
+    <string name="new_member_dialog_mother_change_lbl">Deseja actualizar/alterar a Mãe deste Membro?</string>
+    <string name="new_member_dialog_father_select_lbl">Seleccione o Pai do membro?</string>
+    <string name="new_member_dialog_father_exists_lbl">O Pai é conhecido e está registado no sistema?</string>
+    <string name="new_member_dialog_father_change_lbl">Deseja actualizar/alterar o Pai deste Membro?</string>
     <string name="new_member_dialog_household_head_warning_lbl">Este é o primeiro Membro a ser registado neste Agregado.\nEle será declarado automaticamente como chefe deste Agregado!</string>
-    <string name="new_member_dialog_household_head_updated_lbl">Informações acerca do Agregado foram atualizadas!</string>
+    <string name="new_member_dialog_household_head_updated_lbl">Informações acerca do Agregado foram actualizadas!</string>
 
     <string name="relationship_type_title_lbl">Estado Civil do Membro</string>
     <string name="relationship_type_question_lbl">Escolha o Estado Civil?</string>
-    <string name="relationship_type_select_btn_lbl">Selecionar</string>
+    <string name="relationship_type_select_btn_lbl">Seleccionar</string>
 
-    <string name="maritalrelationship_recently_created_error_lbl">Já existe um registo de estado civil recentemente criado para este membro.\n, Um novo registo não pode ser criado apenas pode editar o existente.\n(Para editar/alterar use a lista a direita do painel)</string>
-    <string name="maritalrelationship_spouse_select_lbl">Selecione o cônjugue deste Membro?</string>
-    <string name="maritalrelationship_spouse_select_update_lbl">Atualização do cônjugue deste Membro?</string>
-    <string name="maritalrelationship_spouse_exists_lbl">O Membro se encontra numa relação conjugal e seu cônjugue esta registado no sistema?</string>
-    <string name="maritalrelationship_spouse_change_lbl">Deseja atualizar/alterar o cônjugue deste Membro?</string>
-    <string name="maritalrelationship_spouse_type_change_lbl">Deseja atualizar/alterar o Estado Civil deste Membro?</string>
+    <string name="maritalrelationship_recently_created_error_lbl">Já existe um registo de estado civil recentemente criado para este membro.\n, Um novo registo não pode ser criado apenas pode editar o existente.\n(Para editar/alterar use a lista à direita do painel)</string>
+    <string name="maritalrelationship_spouse_select_lbl">Seleccione o cônjuge deste Membro?</string>
+    <string name="maritalrelationship_spouse_select_update_lbl">Actualização do cônjuge deste Membro?</string>
+    <string name="maritalrelationship_spouse_exists_lbl">O Membro encontra-se numa relação conjugal e seu cônjuge está registado no sistema?</string>
+    <string name="maritalrelationship_spouse_change_lbl">Deseja actualizar/alterar o cônjuge deste Membro?</string>
+    <string name="maritalrelationship_spouse_type_change_lbl">Deseja actualizar/alterar o Estado Civil deste Membro?</string>
     <string name="maritalrelationship_visit_code_empty_lbl">O código da visita não pode estar vazio</string>
     <string name="maritalrelationship_member_a_code_empty_lbl">O código do membro A não pode estar vazio</string>
     <string name="maritalrelationship_member_b_code_empty_lbl">O código do membro B não pode estar vazio</string>
     <string name="maritalrelationship_member_a_status_empty_lbl">O Estado Civil do Membro A não pode estar vazio</string>
     <string name="maritalrelationship_member_b_status_empty_lbl">O Estado Civil do Membro B não pode estar vazio</string>
     <string name="maritalrelationship_relationship_type_empty_lbl">O novo Estado Civil não pode estar vazio</string>
-    <string name="maritalrelationship_relationship_date_empty_lbl">A data do evento não pode estar vazio</string>
-    <string name="maritalrelationship_same_member_lbl">O código do membro A é o mesmo que o do membro B, os cônjugues devem ser dos membros diferentes</string>
-    <string name="maritalrelationship_spouse_a_not_found_lbl">O membro A não esta registado no sistema</string>
-    <string name="maritalrelationship_spouse_b_not_found_lbl">O membro B não esta registado no sistema</string>
+    <string name="maritalrelationship_relationship_date_empty_lbl">A data do evento não pode estar vazia</string>
+    <string name="maritalrelationship_same_member_lbl">O código do membro A é o mesmo que o do membro B, os cônjuges devem ser dos membros diferentes</string>
+    <string name="maritalrelationship_spouse_a_not_found_lbl">O membro A não está registado no sistema</string>
+    <string name="maritalrelationship_spouse_b_not_found_lbl">O membro B não está registado no sistema</string>
     <string name="maritalrelationship_eventdate_not_great_today_lbl">A data do evento não pode estar no futuro</string>
     <string name="maritalrelationship_eventdate_not_before_member_dob_lbl">A data do evento não pode ser menor que a data de nascimento do membro</string>
-    <string name="maritalrelationship_dob_minimum_spouse_age_lbl">A idade minima para registar o estado civil é de (%1$s)</string>
+    <string name="maritalrelationship_dob_minimum_spouse_age_lbl">A idade mínima para registar o estado civil é de (%1$s)</string>
     <string name="maritalrelationship_gender_must_be_opposite_lbl">O sexo do cônjugue é inválido, deve ser o oposto, um deve ser Masculino e outro Feminino</string>
     <string name="maritalrelationship_dead_members_lbl">Não é possível criar registo de união marital para membros que se encontram mortos</string>
-    <string name="maritalrelationship_p1_previous_not_closed_lbl">Não é possível criar registo de união marital porque o registo anterior do Membro [%1$s] não esta fechado/terminado</string>
-    <string name="maritalrelationship_p2_previous_enddate_overlap_lbl">Não é possível criar registo de união marital porque a data do início do registo a ser criado é menor ou igual a data de termino do registo anterior do Membro [%1$s]</string>
+    <string name="maritalrelationship_p1_previous_not_closed_lbl">Não é possível criar registo de união marital porque o registo anterior do Membro [%1$s] não está fechado/terminado</string>
+    <string name="maritalrelationship_p2_previous_enddate_overlap_lbl">Não é possível criar registo de união marital porque a data do início do registo a ser criado é menor ou igual a data de término do registo anterior do Membro [%1$s]</string>
     <string name="maritalrelationship_cp1_current_dont_exists_lbl">Não é possível terminar/fechar registo de união marital porque não foram encontrados registos anteriores para os membro A e B.</string>
     <string name="maritalrelationship_cp2_already_closed_lbl">Não é possível terminar/fechar registo de união marital porque o mesmo se encontra terminado com o tipo [%1$s]</string>
-    <string name="maritalrelationship_cp3_dates_overlap_lbl">Não é possível terminar/fechar registo de união marital porque a data de termino não pode ser menor ou igual a data de início do relacionamento</string>
+    <string name="maritalrelationship_cp3_dates_overlap_lbl">Não é possível terminar/fechar registo de união marital porque a data de término não pode ser menor ou igual a data de início do relacionamento</string>
 
     <string name="incomplete_visit_visit_code_empty">O código da visita não pode estar vazio</string>
     <string name="incomplete_visit_member_code_empty">O código do membro não pode estar vazio</string>
@@ -477,56 +477,56 @@
     <string name="incomplete_visit_member_not_found_lbl">O membro não foi encontrado no sistema</string>
 
     <!-- external inmigration -->
-    <string name="external_inmigration_asktype_lbl">O membro já foi alguma vez registado no sistema? (Retorno a area de estudo)</string>
-    <string name="external_inmigration_select_return_member_lbl">Selecione o membro que deve retornar ao DSS?</string>
-    <string name="external_inmigration_reentry_lbl">Retorno do membro ao HDSS</string>
+    <string name="external_inmigration_asktype_lbl">O membro já foi alguma vez registado no sistema? (Retorno à área de estudo)</string>
+    <string name="external_inmigration_select_return_member_lbl">Seleccione o membro que deve retornar ao DSS?</string>
+    <string name="external_inmigration_reentry_lbl">Retorno do membro ao DSS</string>
     <string name="external_inmigration_entry_lbl">Registo de um novo membro (Primeira entrada)</string>
     <string name="external_inmigration_migration_type_empty_lbl">O tipo de migração não pode estar vazio</string>
     <string name="external_inmigration_migrationdate_empty_lbl">A data da migração não pode estar vazia</string>
-    <string name="external_inmigration_migrationdate_not_great_today_lbl">A data da migração não pode ser maior que a data de hoje</string>
+    <string name="external_inmigration_migrationdate_not_great_today_lbl">A data da migração não pode estar no futuro</string>
     <string name="external_inmigration_migrationdate_not_before_dob_lbl">A data da migração não pode ser antes da data de nascimento</string>
-    <string name="external_inmigration_death_exists_lbl">Não é possível imigrar o membro. O membro selecionado está registado como morto</string>
+    <string name="external_inmigration_death_exists_lbl">Não é possível imigrar o membro. O membro seleccionado está registado como morto</string>
     <string name="external_inmigration_head_relationship_opened_lbl">Não é possível imigrar o membro. O último estado da relação com o chefe de agregado encontra-se aberto</string>
 
-    <string name="internal_inmigration_select_inmig_member_lbl">Selecione o membro que irá imigrar para esta casa?</string>
-    <string name="internal_inmigration_select_inmig_no_residency_lbl">O membro selecionado não esta registado em nenhuma casa. Por favor contact o gestor de dados!</string>
-    <string name="internal_inmigration_is_head_of_household_lbl">O membro selecionado é chefe de um outro agregado. É necessario primeiro deixar de ser o chefe para poder imigrar!</string>
+    <string name="internal_inmigration_select_inmig_member_lbl">Seleccione o membro que irá imigrar para esta casa?</string>
+    <string name="internal_inmigration_select_inmig_no_residency_lbl">O membro seleccionado não está registado em nenhuma casa. Por favor contacte o gestor de dados!</string>
+    <string name="internal_inmigration_is_head_of_household_lbl">O membro seleccionado é chefe de um outro agregado. É necessário primeiro deixar de ser o chefe para poder imigrar!</string>
 
-    <string name="outmigration_death_exists_lbl">Não é possível emigrar o membro. O membro selecionado está registado como morto</string>
-    <string name="outmigration_is_head_of_household_lbl">O membro selecionado é chefe deste agregado. É necessario primeiro deixar de ser o chefe para poder emigrar!</string>
+    <string name="outmigration_death_exists_lbl">Não é possível emigrar o membro. O membro seleccionado está registado como morto</string>
+    <string name="outmigration_is_head_of_household_lbl">O membro seleccionado é chefe deste agregado. É necessário primeiro deixar de ser o chefe para poder emigrar!</string>
 
     <!-- pregnancy registration -->
-    <string name="pregnancy_registration_code_err_lbl">O código do registro de gravidez está incorrecto</string>
-    <string name="pregnancy_registration_code_exists_lbl">Código duplicado, Este código da gravidez ja existe!</string>
+    <string name="pregnancy_registration_code_err_lbl">O código do registo de gravidez está incorrecto</string>
+    <string name="pregnancy_registration_code_exists_lbl">Código duplicado, Este código da gravidez já existe!</string>
     <string name="pregnancy_registration_mothercode_empty_lbl">O código da mãe não pode estar vazio</string>
     <string name="pregnancy_registration_status_empty_lbl">O estado da gravidez não pode estar vazio</string>
     <string name="pregnancy_registration_eddate_empty_lbl">A data provável do parto não pode estar vazia</string>
     <string name="pregnancy_registration_eddate_not_before_dob_lbl">A data provável do parto não pode ser antes da data de nascimento</string>
-    <string name="pregnancy_registration_previous_pending_lbl">Esta mãe se encontra com uma gravidez pendente registada no sistema, é necessário primeiro fazer registo do Resultado da gravidez anterior para poder registar uma nova.</string>
-    <string name="pregnancy_registration_mother_age_err_lbl">A idade da mãe selecionada é menor que a idade minima para ter um registro de gravidez.</string>
+    <string name="pregnancy_registration_previous_pending_lbl">Esta mãe encontra-se com uma gravidez pendente registada no sistema, é necessário primeiro fazer registo do Resultado da gravidez anterior para poder registar uma nova.</string>
+    <string name="pregnancy_registration_mother_age_err_lbl">A idade da mãe seleccionada é menor que a idade mínima para ter um registo de gravidez.</string>
 
     <!-- pregnancy outcome -->
-    <string name="pregnancy_outcome_code_err_lbl">O código do registro de gravidez está incorrecto</string>
-    <string name="pregnancy_outcome_code_exists_lbl">Código duplicado, Este código da gravidez ja existe!</string>
+    <string name="pregnancy_outcome_code_err_lbl">O código do registo de gravidez está incorrecto</string>
+    <string name="pregnancy_outcome_code_exists_lbl">Código duplicado, Este código da gravidez já existe!</string>
     <string name="pregnancy_outcome_mothercode_empty_lbl">O código da mãe não pode estar vazio</string>
-    <string name="pregnancy_outcome_nroutcomes_empty_lbl">O número de bebês nascidos não pode estar vazio</string>
+    <string name="pregnancy_outcome_nroutcomes_empty_lbl">O número de bebés nascidos não pode estar vazio</string>
     <string name="pregnancy_outcome_outcomedate_empty_lbl">A data do parto não pode estar vazia</string>
     <string name="pregnancy_outcome_outcdate_not_before_dob_lbl">A data do parto não pode ser antes da data de nascimento da mãe</string>
-    <string name="pregnancy_outcome_previous_pending_lbl">Esta mãe se encontra com uma gravidez pendente registada no sistema, é necessário primeiro fazer registo do Resultado da gravidez anterior para poder registar uma nova.</string>
+    <string name="pregnancy_outcome_previous_pending_lbl">Esta mãe encontra-se com uma gravidez pendente registada no sistema, é necessário primeiro fazer registo do Resultado da gravidez anterior para poder registar uma nova.</string>
     <string name="pregnancy_outcome_nroutcomes_title_lbl">Resultado da gravidez</string>
-    <string name="pregnancy_outcome_nroutcomes_lbl">O número de bebês nascidos</string>
-    <string name="pregnancy_outcome_create_pregreg_info_lbl">Não existe registo de gravidez,\nUm novo registo de gravidez será criado com o estado [já deu parto],\n\nDe seguida prossiga com o registro do resultado da gravidez</string>
-    <string name="pregnancy_outcome_member_code_err_lbl">O código do bebê está incorrecto!</string>
-    <string name="pregnancy_outcome_member_code_household_err_lbl">O código do bebê introduzido não reflecte a casa selecionada!</string>
-    <string name="pregnancy_outcome_member_code_exists_lbl">O código do bebê introduzido ja existe!</string>
-    <string name="pregnancy_outcome_member_name_empty_lbl">O nome do bebê não pode estar vazio</string>
-    <string name="pregnancy_outcome_member_gender_empty_lbl">O sexo do bebê não pode estar vazio</string>
-    <string name="pregnancy_outcome_member_gender_invalid_lbr_lbl">O sexo do bebê não pode ser desconhecido quando o tipo de resultado da gravidez é nascido vivo</string>
-    <string name="pregnancy_outcome_member_head_relattype_empty_lbl">A relação do bebê com o chefe de agregado não pode estar vazio</string>
-    <string name="pregnancy_outcome_child_father_select_lbl">Selecione o Pai do bebê?</string>
-    <string name="pregnancy_outcome_child_father_change_title_lbl">Atualização do resultado de gravidez?</string>
-    <string name="pregnancy_outcome_child_father_exists_lbl">O Pai do bebê é conhecido e esta registado no sistema?</string>
-    <string name="pregnancy_outcome_child_father_change_lbl">Deseja atualizar/alterar o Pai do bebê?</string>
+    <string name="pregnancy_outcome_nroutcomes_lbl">O número de bebés nascidos</string>
+    <string name="pregnancy_outcome_create_pregreg_info_lbl">Não existe registo de gravidez,\nUm novo registo de gravidez será criado com o estado [já deu parto],\n\nDe seguida prossiga com o registo do resultado da gravidez</string>
+    <string name="pregnancy_outcome_member_code_err_lbl">O código do bebé está incorrecto!</string>
+    <string name="pregnancy_outcome_member_code_household_err_lbl">O código do bebé introduzido não reflecte a casa seleccionada!</string>
+    <string name="pregnancy_outcome_member_code_exists_lbl">O código do bebé introduzido já existe!</string>
+    <string name="pregnancy_outcome_member_name_empty_lbl">O nome do bebé não pode estar vazio</string>
+    <string name="pregnancy_outcome_member_gender_empty_lbl">O sexo do bebé não pode estar vazio</string>
+    <string name="pregnancy_outcome_member_gender_invalid_lbr_lbl">O sexo do bebé não pode ser desconhecido quando o tipo de resultado da gravidez é nascido vivo</string>
+    <string name="pregnancy_outcome_member_head_relattype_empty_lbl">A relação do bebé com o chefe de agregado não pode estar vazia</string>
+    <string name="pregnancy_outcome_child_father_select_lbl">Seleccione o Pai do bebé?</string>
+    <string name="pregnancy_outcome_child_father_change_title_lbl">Actualização do resultado de gravidez?</string>
+    <string name="pregnancy_outcome_child_father_exists_lbl">O Pai do bebé é conhecido e está registado no sistema?</string>
+    <string name="pregnancy_outcome_child_father_change_lbl">Deseja actualizar/alterar o Pai do bebé?</string>
     
     <!-- death registration -->
     <string name="death_visit_code_empty_lbl">O código da visita não pode estar vazio</string>
@@ -534,30 +534,30 @@
     <string name="death_member_code_exists_lbl">O membro identificado já possui registo de óbito</string>
     <string name="death_deathdate_empty_lbl">A data da morte não pode estar vazia</string>
     <string name="death_deathdate_not_before_dob_lbl">A data da morte não pode ser antes da data de nascimento</string>
-    <string name="death_deathdate_not_great_today_lbl">A data da morte não pode ser maior que a data de hoje</string>
+    <string name="death_deathdate_not_great_today_lbl">A data da morte não pode estar no futuro</string>
     <string name="death_new_head_code_empty_lbl">O código do novo chefe de agregado não pode estar vazio</string>
-    <string name="death_new_head_select_lbl">Selecione o novo chefe do agregado</string>
-    <string name="death_dialog_change_title_lbl">Atualização de dados</string>
-    <string name="death_dialog_head_change_lbl">Deseja atualizar/alterar o novo chefe do agregado do membro que faleceu?</string>
+    <string name="death_new_head_select_lbl">Seleccione o novo chefe do agregado</string>
+    <string name="death_dialog_change_title_lbl">Actualização de dados</string>
+    <string name="death_dialog_head_change_lbl">Deseja actualizar/alterar o novo chefe do agregado do membro que faleceu?</string>
 
     <!-- changehead registration -->
-    <string name="changehead_dialog_change_title_lbl">Atualização de dados</string>
-    <string name="changehead_dialog_head_change_lbl">Deseja atualizar/alterar o novo chefe do agregado?</string>
+    <string name="changehead_dialog_change_title_lbl">Actualização de dados</string>
+    <string name="changehead_dialog_head_change_lbl">Deseja actualizar/alterar o novo chefe do agregado?</string>
     <string name="changehead_visit_code_empty_lbl">O código da visita não pode estar vazio</string>
     <string name="changehead_oldhead_code_empty_lbl">O código do antigo chefe do agregado não pode estar vazio</string>
     <string name="changehead_newhead_code_empty_lbl">O código do novo chefe do agregado não pode estar vazio</string>
     <string name="changehead_eventdate_empty_lbl">A data do evento não pode estar vazia</string>
     <string name="changehead_eventdate_not_before_dob_lbl">A data do evento não pode ser antes da data de nascimento</string>
-    <string name="changehead_eventdate_not_great_today_lbl">A data da evento não pode ser maior que a data de hoje</string>
-    <string name="changehead_new_head_select_lbl">Selecione o novo chefe do agregado</string>
-    <string name="changehead_new_head_is_head_of_household_lbl">O novo chefe do agregado é chefe de um outro agregado. É necessario primeiro deixar de ser o chefe para poder tornar-se chefe neste!</string>
+    <string name="changehead_eventdate_not_great_today_lbl">A data da evento não pode estar no futuro</string>
+    <string name="changehead_new_head_select_lbl">Seleccione o novo chefe do agregado</string>
+    <string name="changehead_new_head_is_head_of_household_lbl">O novo chefe do agregado é chefe de um outro agregado. É necessário primeiro deixar de ser o chefe para poder tornar-se chefe neste!</string>
 
     <string-array name="relationship_types_array">
         <item>Solteiro</item>
-        <item>Casado</item>
-        <item>Divorciado/a</item>
+        <item>Casado(a)</item>
+        <item>Separado(a)/Divorciado/a</item>
         <item>Viúvo/a</item>
-        <item>Vivendo Maritalmente</item>
+        <item>A viver maritalmente</item>
     </string-array>
 
     <string name="survey_households_btn_lbl">Procurar por Agregado</string>
@@ -572,7 +572,7 @@
     <string name="show_collected_data_total_lbl">%1s Formulários</string>
     <string name="show_collected_data_tab_core_forms_lbl">Casas Visitadas recentemente</string>
     <string name="show_collected_data_tab_odk_forms_lbl">Formulários ODK recentes</string>
-    <string name="show_collected_data_btn_update_lbl">Atualizar Listas</string>
+    <string name="show_collected_data_btn_update_lbl">Actualizar Listas</string>
     <string name="show_collected_data_list_filter_hint_lbl">Código/Nome/Outros detalhes</string>
 
     <string name="form_group_selector_uuid_lbl">UUID</string>
@@ -583,26 +583,26 @@
     <string name="form_group_selector_optional_lbl">Opcional</string>
     <string name="form_group_selector_conditional_lbl">Condicional</string>
     <string name="form_group_selector_validation_lbl">Validações de Grupo de Formulários</string>
-    <string name="form_group_selector_validation_prev_must_be_collected_lbl">Não será possível colectar o formulário, porque o formulario anterior (%1s) deve ser colectado primeiro</string>
-    <string name="form_group_selector_validation_prev_must_be_finalized_lbl">Não será possível colectar o formulário, porque o formulario anterior (%1s) não foi finalizado, marque como finalizado primeiro</string>
-    <string name="form_group_selector_validation_form_collect_condition_error_lbl">Não será possível colectar o formulário, porque as condicoes atuais porque as condições atuais não correspondem às restrições de validação definidas para este formulário.\n\Restrições: (%1s)</string>
+    <string name="form_group_selector_validation_prev_must_be_collected_lbl">Não será possível colectar o formulário, porque o formulário anterior (%1s) deve ser colectado primeiro</string>
+    <string name="form_group_selector_validation_prev_must_be_finalized_lbl">Não será possível colectar o formulário, porque o formulário anterior (%1s) não foi finalizado, marque como finalizado primeiro</string>
+    <string name="form_group_selector_validation_form_collect_condition_error_lbl">Não será possível colectar o formulário, porque as condições actuais não correspondem às restrições de validação definidas para este formulário.\n\Restrições: (%1s)</string>
     <string name="form_group_selector_validation_form_collect_condition_dependency_not_found_error_lbl">Não será possível colectar o formulário, porque um dos formulários usados para calcular as validações não foi encontrado.</string>
     <string name="form_group_selector_validation_form_collect_condition_dependency_not_finalized_error_lbl">Não será possível colectar o formulário, porque o formulário (%1s) usado para calcular validações não foi finalizado.</string>
 
-    <string name="loading_dialog_member_details_lbl">Carregando Detalhes do Membro...</string>
-    <string name="loading_dialog_household_details_lbl">Carregando Detalhes da Casa...</string>
-    <string name="loading_dialog_region_details_lbl">Carregando Detalhes da Região...</string>
-    <string name="loading_dialog_odk_load_lbl">Carregando Formulário ODK...</string>
-    <string name="loading_dialog_odk_reload_lbl">Recarregando Formulário ODK...</string>
+    <string name="loading_dialog_member_details_lbl">A carregar Detalhes do Membro...</string>
+    <string name="loading_dialog_household_details_lbl">A carregar Detalhes da Casa...</string>
+    <string name="loading_dialog_region_details_lbl">A Carregar Detalhes da Região...</string>
+    <string name="loading_dialog_odk_load_lbl">A Carregar Formulário ODK...</string>
+    <string name="loading_dialog_odk_reload_lbl">A Recarregar Formulário ODK...</string>
     <string name="loading_dialog_filter_name_hint_lbl">Insira o nome do formulário</string>
 
     <!-- GPS Maps -->
     <string name="map_gps_not_available_title_lbl">Não será possível visualizar o mapa</string>
     <string name="map_closest_members">Indivíduos por perto</string>
-    <string name="map_closest_houses_from_lbl">Casas perto de </string>
-    <string name="map_closest_members_from_lbl">Membros perto de </string>
-    <string name="map_no_closest_houses_found_lbl">Não foram encontradas casas vizinhas num raio de %1$s da casa selecionada.</string>
-    <string name="map_no_closest_members_found_lbl">Não foram encontrados membros vizinhos num raio de %1$s da casa do membro selecionado</string>
+    <string name="map_closest_houses_from_lbl">Casas perto de</string>
+    <string name="map_closest_members_from_lbl">Membros perto de</string>
+    <string name="map_no_closest_houses_found_lbl">Não foram encontradas casas vizinhas num raio de %1$s da casa seleccionada.</string>
+    <string name="map_no_closest_members_found_lbl">Não foram encontrados membros vizinhos num raio de %1$s da casa do membro seleccionado</string>
     <string name="map_members_coordinates">Localização dos indivíduos/pessoas</string>
     <string name="map_households">Localização das casas</string>
 
@@ -616,13 +616,13 @@
     <!-- Member Filter Dialog -->
     <string-array name="member_current_status">
         <item>Todos</item>
-        <item>Falecido</item>
+        <item>Está morto</item>
         <item>Emigrou</item>
         <item>Residente</item>
     </string-array>
 
     <!-- Follow-up List - Tracking Lists -->
-    <string name="trackinglist_bt_update_lbl">Atualizar listas de seguimento</string>
+    <string name="trackinglist_bt_update_lbl">Actualizar listas de seguimento</string>
     <string name="trackinglist_bt_back_lbl">Voltar</string>
     <string name="trackinglist_title_lbl">Listas de seguimento</string>
     <string name="trackinglist_module_lbl">Módulo</string>
@@ -642,7 +642,7 @@
     <string name="settings_execute_on_upload_lbl">Executar depois de transferir ao Servidor</string>
 
     <!-- Modules Selector -->
-    <string name="modules_selector_select_lbl">Selecione o Módulo</string>
+    <string name="modules_selector_select_lbl">Seleccione o Módulo</string>
 
     <!-- barcode scanner -->
     <string name="barcode_dialog_ask_scan_title">Scanner de Código de barras</string>
@@ -658,7 +658,7 @@
     <string name="permissions_sync_storage_denied_lbl">Não é possível sincronizar/baixar os dados do servidor. A permissão de acesso ao armazenamento de dados não foi concedida!</string>
 
     <!-- Enums -->
-    <string name="invalid_enum_value">!!!VALOR INVALIDO!!!</string>
+    <string name="invalid_enum_value">!!!VALOR INVÁLIDO!!!</string>
 
     <string name="default_gender_male">Masculino</string>
     <string name="default_gender_female">Feminino</string>
@@ -670,10 +670,10 @@
     <string name="maritalStatus_separated">Separado(a)</string>
     <string name="maritalStatus_widowed">Viuvo(a)</string>
     <string name="maritalStatus_living_togheter">União de facto</string>
-    <string name="maritalStatus_not_applicable">Não Aplicavel (Casado)</string>
+    <string name="maritalStatus_not_applicable">Não Aplicável (Casado)</string>
 
-    <string name="pregnacyStatus_pregnant">Gravida</string>
-    <string name="pregnacyStatus_delivered">Ja deu parto</string>
+    <string name="pregnacyStatus_pregnant">Grávida</string>
+    <string name="pregnacyStatus_delivered">Já deu parto</string>
     <string name="pregnacyStatus_lost_track">Impossível Seguir a gravidez</string>
 
     <string name="eddtype_ultrasound">Ecografia (ultra-som)</string>
@@ -687,7 +687,7 @@
     <string name="pregOutcomeType_abortion">Aborto induzido/provocado (menos de 28 semanas de gestação)</string>
 
     <string name="birthPlace_home">Em casa</string>
-    <string name="birthPlace_hospital">Unidade Sanitaria/Hospital Público</string>
+    <string name="birthPlace_hospital">Unidade Sanitária/Hospital Público</string>
     <string name="birthPlace_traditional_midwife">Em casa da parteira tradicional</string>
     <string name="birthPlace_health_center_clinic">Centro de Saúde/Clínica Privada</string>
     <string name="birthPlace_other">Outro</string>
@@ -696,7 +696,7 @@
     <string name="eventType_birth">Nascimento</string>
     <string name="eventType_internal_inmigration">Imigração Interna</string>
     <string name="eventType_external_inmigration">Imigração Externa</string>
-    <string name="eventType_not_applicable">Não Aplicavel (Residindo nesta casa)</string>
+    <string name="eventType_not_applicable">Não Aplicável (A residir nesta casa)</string>
     <string name="eventType_internal_outmigration">Emigração Interna</string>
     <string name="eventType_external_outmigration">Emigração Externa</string>
     <string name="eventType_death">Morte</string>
@@ -726,21 +726,21 @@
     <string name="region_level10_label">Nível 10</string>
 
     <string name="visitLocation_home">Em casa</string>
-    <string name="visitLocation_workplace">Local de trabalho do respondente</string>
+    <string name="visitLocation_workplace">Local de trabalho do Respondente</string>
     <string name="visitLocation_healthunit">Na unidade Sanitária</string>
     <string name="visitLocation_other">Outro lugar</string>
 
     <string name="visitReason_update_round">Ronda de DSS</string>
     <string name="visitReason_baseline">Registo de Censo</string>
     <string name="visitReason_newhouse">Registo de novo Agregado</string>
-    <string name="visitReason_dataclean">Correção de Erros</string>
+    <string name="visitReason_dataclean">Correcção de Erros</string>
     <string name="visitReason_other">Outros motivos</string>
 
-    <string name="incompleteVisitReason_unavail_today">Não esta disponível hoje</string>
-    <string name="incompleteVisitReason_unavail_round">Não esta disponível nesta ronda (temporariamente fora, pelos estudos, trabalho, etc)</string>
+    <string name="incompleteVisitReason_unavail_today">Não está disponível hoje</string>
+    <string name="incompleteVisitReason_unavail_round">Não está disponível nesta ronda (temporariamente fora, pelos estudos, trabalho, etc)</string>
     <string name="incompleteVisitReason_unwilling">Não deseja participar nesta ronda</string>
     <string name="incompleteVisitReason_hospitalized">Hospitalizado</string>
-    <string name="incompleteVisitReason_relocated">Emigrou para fora da area de estudo</string>
+    <string name="incompleteVisitReason_relocated">Emigrou para fora da área de estudo</string>
     <string name="incompleteVisitReason_withdrew">Rejeitou/Retirou o consentimento</string>
     <string name="incompleteVisitReason_dead">Morto</string>
     <string name="incompleteVisitReason_other">Outra</string>

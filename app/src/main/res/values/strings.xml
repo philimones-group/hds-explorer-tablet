@@ -27,7 +27,7 @@
     <!-- storage access -->
     <string name="storage_access_title_lbl">File access not granted</string>
     <string name="storage_access_odk_error_lbl">Access to files were denied, HDS Explorer will not have access to ODK Forms due to lack of permissions to ODK Collect</string>
-    <string name="storage_access_odk_error_continue_lbl">Access to ODK Files were denied.\nHDS Explorer will not have access to ODK Forms due to lack of permissions to ODK Collect.\nYou can use the app normally but without ODK Forms access</string>
+    <string name="storage_access_odk_error_continue_lbl">Access to ODK Files was denied.\nHDS Explorer will not have access to ODK Forms due to lack of permissions to ODK Collect.\nYou can use the app normally but without ODK Forms access</string>
 
     <!-- Strings related to ODK -->
     <string name="odk_couldnt_open_xform_lbl">Couldn\'t open the ODK Form</string>
@@ -124,7 +124,7 @@
     <string name="server_sync_uploading_finished_lbl">Upload Finished</string>
     <string name="server_sync_upload_errors_result_lbl">Uploaded with Validation Errors</string>
 
-    <string name="server_sync_offline_mode_title_lbl">Can\'t Synchronization</string>
+    <string name="server_sync_offline_mode_title_lbl">Can\'t Synchronize</string>
     <string name="server_sync_offline_mode_msg_lbl">You are currently in offline mode, to be able to sync login again</string>
     <string name="server_sync_offline_mode_continue_title_lbl">Can\'t connect to the Server</string>
     <string name="server_sync_offline_mode_continue_msg_lbl">An issue occurred while trying to login to the server, try again or continue to offline mode\n\nDo you want to open Synchronization panel in offline mode?</string>
@@ -167,7 +167,7 @@
 
     <!-- SplashScreen -->
     <string name="splashscreen_hds_explorer_name_1">Health and Demographics</string>
-    <string name="splashscreen_hds_explorer_name_2">Surveyllance Data Explorer</string>
+    <string name="splashscreen_hds_explorer_name_2">Surveillance Data Explorer</string>
 
     <!-- Strings related to login -->
     <string name="login_welcome_lbl">WELCOME</string>
@@ -239,7 +239,7 @@
     <string name="member_list_new_temp_mem_title_lbl">Add New Member to Collect Data</string>
     <string name="member_list_newmem_collect_lbl">Save and Collect</string>
     <string name="member_list_newmem_housename_lbl">Household Name</string>
-    <string name="member_list_newmem_housename_hint">eg. LANGA FAMILY</string>
+    <string name="member_list_newmem_housename_hint">eg. LANGA\'s FAMILY</string>
     <string name="member_list_newmem_code_lbl">Code</string>
     <string name="member_list_newmem_code_hint">eg. ACA000001</string>
     <string name="member_list_newmem_name_lbl">Fullname</string>
@@ -250,7 +250,7 @@
     <string name="member_list_newmem_code_err_lbl">The format of the Code is incorrect</string>
     <string name="member_list_newmem_code_exists_lbl">The Code of this Individual already exists</string>
     <string name="member_list_newmem_name_err_lbl">The name must not be empty</string>
-    <string name="member_list_newmem_dob_err_lbl">The Date of birth cannot be after today date</string>
+    <string name="member_list_newmem_dob_err_lbl">The date of birth cannot be greater than today</string>
     <string name="member_list_newmem_gender_err1_lbl">Select only one of the sexes, please!</string>
     <string name="member_list_newmem_gender_err2_lbl">Select one of the sexes, please!</string>
 
@@ -319,7 +319,7 @@
     <string name="household_details_last_visit_lbl">Last Visit Date:</string>
     <string name="household_details_dialog_del_saved_form_title_lbl">Delete saved info</string>
     <string name="household_details_dialog_del_saved_form_msg_lbl">The associated ODK Form instance wasn\'t found, the system will delete the saved information in order to keep collecting data\nDo you want to execute this operation?</string>
-    <string name="household_details_forms_selector_lbl">Select an Form</string>
+    <string name="household_details_forms_selector_lbl">Select a Form</string>
 
     <string name="household_details_edit_household_name_lbl">Household Name</string>
     <string name="household_details_edit_gps_lbl">GPS Coordinates</string>
@@ -359,7 +359,7 @@
     <string name="gps_loading_error">Couldn\'t provide GPS Location</string>
     <string name="gps_no_provider_available_error">Providers are disabled. To be able to continue, enable Network or Location provider</string>
 
-    <string name="region_details_tab_details_list_lbl">Region Childs List</string>
+    <string name="region_details_tab_details_list_lbl">Region Child\'s List</string>
     <string name="region_details_tab_collected_forms_lbl">Collected Forms</string>
     <string name="region_details_tab_datasets_lbl">Extra Details</string>
     <string name="region_details_tab_edit_lbl">Edit Details</string>
@@ -393,7 +393,7 @@
     <string name="new_household_code_err_lbl">The format of the Household Code is incorrect</string>
     <string name="new_household_code_empty_lbl">The Household Code cannot be empty</string>
     <string name="new_household_name_empty_lbl">The Household Name cannot be empty</string>
-    <string name="new_household_code_region_err_lbl">The Household Code doesn\'t belong to the selected neighborhood</string>
+    <string name="new_household_code_region_err_lbl">The Household Code doesn\'t belong to the selected neighbourhood</string>
     <string name="new_household_code_exists_lbl">The Household Code already exists</string>
 
     <!-- New Visit -->
@@ -447,7 +447,7 @@
     <string name="maritalrelationship_recently_created_error_lbl">There is a recently created Marital Relationship for this member.\n, A new one cannot be created, you can only edit the recently created Marital Relationship.\n(Use the collected list in the right panel to edit)</string>
     <string name="maritalrelationship_spouse_select_lbl">Select the spouse of the Member?</string>
     <string name="maritalrelationship_spouse_select_update_lbl">Update the spouse of the Member?</string>
-    <string name="maritalrelationship_spouse_exists_lbl">Does the Member has a spouse known and registered in the system?</string>
+    <string name="maritalrelationship_spouse_exists_lbl">Does the Member have a spouse known and registered in the system?</string>
     <string name="maritalrelationship_spouse_change_lbl">Do you want to update the spouse of this Member?</string>
     <string name="maritalrelationship_spouse_type_change_lbl">Do you want to update the Marital Status of this Member?</string>
     <string name="maritalrelationship_visit_code_empty_lbl">The Visit Code cannot be empty</string>
@@ -601,8 +601,8 @@
     <!-- GPS Maps -->
     <string name="map_gps_not_available_title_lbl">Cannot view GPS Map</string>
     <string name="map_closest_members">Closest Individuals Localizations</string>
-    <string name="map_closest_houses_from_lbl">Closest houses from </string>
-    <string name="map_closest_members_from_lbl">Closest individuals from </string>
+    <string name="map_closest_houses_from_lbl">Closest houses from</string>
+    <string name="map_closest_members_from_lbl">Closest individuals from</string>
     <string name="map_no_closest_houses_found_lbl">No houses were found within a radius of %1$s from the selected house.</string>
     <string name="map_no_closest_members_found_lbl">No houses were found within a radius of %1$s from the house of the selected member.</string>
     <string name="map_members_coordinates">Localization of Individuals Houses</string>
@@ -671,7 +671,7 @@
     <string name="maritalStatus_divorced">Divorced</string>
     <string name="maritalStatus_separated">Separated</string>
     <string name="maritalStatus_widowed">Widowed</string>
-    <string name="maritalStatus_living_togheter">Living Togheter</string>
+    <string name="maritalStatus_living_togheter">Living Together</string>
     <string name="maritalStatus_not_applicable">Not Applicable (Currently Married)</string>
 
     <string name="pregnacyStatus_pregnant">Still Pregnant</string>
@@ -728,7 +728,7 @@
     <string name="region_level10_label">Level 10</string>
 
     <string name="visitLocation_home">At Home</string>
-    <string name="visitLocation_workplace">At Respondent Workplace</string>
+    <string name="visitLocation_workplace">At Respondent\'s Workplace</string>
     <string name="visitLocation_healthunit">At Health Unit</string>
     <string name="visitLocation_other">Other place</string>
 

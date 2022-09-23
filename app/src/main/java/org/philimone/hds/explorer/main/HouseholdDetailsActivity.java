@@ -566,6 +566,7 @@ public class HouseholdDetailsActivity extends AppCompatActivity implements House
                     @Override
                     public void onYesClicked() {
                         markAllAsNonVisited(visit, nonVisitedCodesList, finalList);
+                        finishVisit();
                     }
 
                     @Override

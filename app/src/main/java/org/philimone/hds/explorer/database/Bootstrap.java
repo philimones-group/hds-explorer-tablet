@@ -68,7 +68,7 @@ public class Bootstrap {
 
     private void insertParams(){
         if (boxAppParams.count()==0){
-            boxAppParams.put(new ApplicationParam(ApplicationParam.APP_URL, "string", "https://www.philimones-group.co.mz/hds-explorer")); // Server URL hds-explorer-server //https://www.philimones-group.co.mz/hds-explorer/
+            boxAppParams.put(new ApplicationParam(ApplicationParam.APP_URL, "string", "https://www.philimones-group.co.mz/hds-explorer-server")); // Server URL hds-explorer-server //https://www.philimones-group.co.mz/hds-explorer/
             boxAppParams.put(new ApplicationParam(ApplicationParam.ODK_URL, "string", "https://www.philimones-group.co.mz/odk-aggregate"));        // ODK Aggregate Server URL
             boxAppParams.put(new ApplicationParam(ApplicationParam.REDCAP_URL, "string", "https://www.philimones-group.co.mz/redcap"));            // REDCap Server URL
             boxAppParams.put(new ApplicationParam(ApplicationParam.HFORM_POST_EXECUTION, "string", "false"));            // REDCap Server URL

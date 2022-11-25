@@ -12,7 +12,7 @@ android {
         config {
             keyAlias 'phils group'
             keyPassword 'android47jks'
-            storeFile file('/home/paul/local/personal/usefull-information/keystores/android-apk-key.jks')
+            storeFile file('../android-key.jks')
             storePassword 'android47jks'
         }
     }
@@ -36,6 +36,7 @@ android {
         }
         debug {
             zipAlignEnabled true
+            signingConfig signingConfigs.config
         }
     }
     productFlavors {

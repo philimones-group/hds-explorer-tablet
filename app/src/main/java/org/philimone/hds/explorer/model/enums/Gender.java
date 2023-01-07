@@ -26,6 +26,10 @@ public enum Gender {
         return code;
     }
 
+    public String toString() {
+        return code;
+    }
+
     /* Finding Enum by code */
     private static final Map<String, Gender> MAP = new HashMap<>();
 

@@ -17,7 +17,7 @@ import io.objectbox.annotation.Unique;
 import mz.betainteractive.utilities.ReflectionUtils;
 
 @Entity
-public class Region implements FormSubject, Serializable {
+public class Region implements CoreEntity, FormSubject, Serializable {
 
     public static String HIERARCHY_1 = "hierarchy1";
     public static String HIERARCHY_2 = "hierarchy2";
@@ -37,6 +37,15 @@ public class Region implements FormSubject, Serializable {
     public String name;
     public String level;
     public String parent;
+
+    @Unique
+    public String collectedId;
+    public boolean recentlyCreated = false;
+    public String recentlyCreatedUri;
+
+    /* shared and pre-register settings */
+    public boolean shareable;
+    public boolean preRegistration;
 
     @Index
     @Convert(converter = StringCollectionConverter.class, dbType = String.class)
@@ -108,6 +117,21 @@ public class Region implements FormSubject, Serializable {
     @Override
     public SubjectEntity getTableName() {
         return SubjectEntity.REGION;
+    }
+
+    @Override
+    public String getCollectedId() {
+        return this.collectedId;
+    }
+
+    @Override
+    public boolean isRecentlyCreated() {
+        return this.recentlyCreated;
+    }
+
+    @Override
+    public String getRecentlyCreatedUri() {
+        return this.recentlyCreatedUri;
     }
 
 }

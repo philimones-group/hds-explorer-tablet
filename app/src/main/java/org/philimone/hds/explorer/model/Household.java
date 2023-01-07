@@ -60,6 +60,10 @@ public class Household implements CoreEntity, FormSubject, Serializable {
     public boolean recentlyCreated = false;
     public String recentlyCreatedUri;
 
+    /* shared and pre-register settings */
+    public boolean shareable;
+    public boolean preRegistration;
+
     @Index
     @Convert(converter = StringCollectionConverter.class, dbType = String.class)
     public Set<String> modules;

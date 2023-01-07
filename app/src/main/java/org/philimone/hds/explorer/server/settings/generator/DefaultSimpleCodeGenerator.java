@@ -14,20 +14,20 @@ import mz.betainteractive.utilities.StringUtil;
 /*
  * The HDS-Explorer Default code generator (different sites can implement they own type of codes)
  */
-public class DefaultCodeGenerator implements CodeGenerator {
+public class DefaultSimpleCodeGenerator implements CodeGenerator {
     final String REGION_CODE_PATTERN = "^[A-Z0-9]{3}$";
-    final String HOUSEHOLD_CODE_PATTERN = "^[A-Z0-9]{6}[0-9]{3}$";
-    final String MEMBER_CODE_PATTERN = "^[A-Z0-9]{6}[0-9]{6}$";
-    final String VISIT_CODE_PATTERN = "^[A-Z0-9]{6}[0-9]{3}-[0-9]{3}-[0-9]{3}$";
+    final String HOUSEHOLD_CODE_PATTERN = "^[A-Z0-9]{3}[0-9]{6}$";
+    final String MEMBER_CODE_PATTERN = "^[A-Z0-9]{3}[0-9]{9}$";
+    final String VISIT_CODE_PATTERN = "^[A-Z0-9]{3}[0-9]{6}-[0-9]{3}-[0-9]{3}$";
     final String USER_CODE_PATTERN = "^[A-Z0-9]{3}$";
-    final String PREGNANCY_CODE_PATTERN = "^[A-Z0-9]{6}[0-9]{6}-[0-9]{2}$";
+    final String PREGNANCY_CODE_PATTERN = "^[A-Z0-9]{3}[0-9]{9}-[0-9]{2}$";
 
     final String CHARS_A_TO_Z = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     final String CHARS_1_TO_9 = "123456789";
 
     @Override
     public String getName() {
-        return "Default Code Scheme Generator";
+        return "Simple Code Scheme Generator (Household w/o user code)";
     }
 
     @Override
@@ -106,10 +106,10 @@ public class DefaultCodeGenerator implements CodeGenerator {
         if (StringUtil.isBlank(baseCode)) return null;
 
         if (existentCodes.size()==0){
-            return baseCode+"001";
+            return baseCode+"000001";
         } else {
-            for (int i=1; i <= 999; i++){
-                String code = baseCode+ String.format("%03d", i);
+            for (int i=1; i <= 999999; i++){
+                String code = baseCode+ String.format("%06d", i);
                 if (!existentCodes.contains(code)){
                     return code;
                 }
@@ -224,7 +224,7 @@ public class DefaultCodeGenerator implements CodeGenerator {
 
     @Override
     public String getHouseholdBaseCode(Region region, User user) {
-        return region.code + "" + user.code;
+        return region.code;
     }
 
     @Override

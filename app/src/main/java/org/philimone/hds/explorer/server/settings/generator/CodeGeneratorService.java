@@ -50,6 +50,10 @@ public class CodeGeneratorService {
         return codeGenerator.isRegionCodeValid(code);
     }
 
+    public boolean isLowestRegionCodeValid(String code) {
+        return codeGenerator.isLowestRegionCodeValid(code);
+    }
+
     public boolean isHouseholdCodeValid(String code) {
         return codeGenerator.isHouseholdCodeValid(code);
     }
@@ -70,15 +74,20 @@ public class CodeGeneratorService {
         return codeGenerator.isPregnancyCodeValid(code);
     }
 
-    public String generateRegionCode(String regionName) {
-
+    public String generateRegionCode(Region parentRegion, String regionName) {
         String[] codesArray = boxRegions.query().build().property(Region_.code).findStrings();
         List<String> codes = Arrays.asList(codesArray);
-        return codeGenerator.generateRegionCode(regionName, codes);
+        return codeGenerator.generateRegionCode(parentRegion, regionName, codes);
+    }
+
+    public String generateLowestRegionCode(Region parentRegion, String regionName, List<String> existentCodes) {
+        String[] codesArray = boxRegions.query().build().property(Region_.code).findStrings();
+        List<String> codes = Arrays.asList(codesArray);
+        return codeGenerator.generateLowestRegionCode(parentRegion, regionName, existentCodes);
     }
 
     public String generateHouseholdCode(Region region, User user) {
-        String cbase = region.code + user.code;
+        String cbase = codeGenerator.getHouseholdBaseCode(region, user);
         String[] codesArray = boxHouseholds.query().startsWith(Household_.code, cbase, QueryBuilder.StringOrder.CASE_SENSITIVE)
                                                    .order(Household_.code).build()
                                                    .property(Household_.code).findStrings();
@@ -121,8 +130,10 @@ public class CodeGeneratorService {
 
     public String generateVisitCode(Household household) {
 
-        long round = boxRounds.query().build().property(Round_.roundNumber).max();
-        String cbase = household.code + "-" + String.format("%03d", round);
+        long roundNumber = boxRounds.query().build().property(Round_.roundNumber).max();
+        Round round = boxRounds.query(Round_.roundNumber.equal(roundNumber)).build().findFirst();
+        String cbase = codeGenerator.getVisitBaseCode(household, round);
+
         String[] codesArray = boxVisits.query().startsWith(Visit_.code, cbase, QueryBuilder.StringOrder.CASE_SENSITIVE)
                                                .order(Visit_.code).build()
                                                .property(Visit_.code).findStrings();
@@ -150,5 +161,37 @@ public class CodeGeneratorService {
         List<String> codes = Arrays.asList(codesArray); //PregnancyRegistration.findAllByCodeLike("${cbase}%", [sort:'code', order: 'asc']).collect{ t -> t.code};
 
         return codeGenerator.generatePregnancyCode(cbase, codes);
+    }
+
+    public String getModuleSampleCode() {
+        return codeGenerator.getModuleSampleCode();
+    }
+
+    public String getRegionSampleCode() {
+        return codeGenerator.getRegionSampleCode();
+    }
+
+    public String getLowestRegionSampleCode() {
+        return codeGenerator.getLowestRegionSampleCode();
+    }
+
+    public String getHouseholdSampleCode() {
+        return codeGenerator.getHouseholdSampleCode();
+    }
+
+    public String getMemberSampleCode() {
+        return codeGenerator.getMemberSampleCode();
+    }
+
+    public String getVisitSampleCode() {
+        return codeGenerator.getVisitSampleCode();
+    }
+
+    public String getUserSampleCode() {
+        return codeGenerator.getUserSampleCode();
+    }
+
+    public String getPregnancySampleCode() {
+        return codeGenerator.getPregnancySampleCode();
     }
 }

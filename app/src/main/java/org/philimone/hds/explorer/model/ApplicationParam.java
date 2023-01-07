@@ -22,6 +22,8 @@ public class ApplicationParam {
     public static final String PARAMS_MIN_AGE_OF_MOTHER = "hds.explorer.constraints.mother.age.min";
     public static final String PARAMS_MIN_AGE_OF_HEAD   = "hds.explorer.constraints.head.age.min";
     public static final String PARAMS_MIN_AGE_OF_SPOUSE   = "hds.explorer.constraints.spouse.age.min";
+    public static final String PARAMS_SYSTEM_LANGUAGE = "hds.explorer.system.language";
+    public static final String PARAMS_SYSTEM_CODE_GENERATOR = "hds.explorer.system.codegenerator";
 
     @Id
     private long id;

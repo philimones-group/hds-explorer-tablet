@@ -1,3 +1,4 @@
+
 apply plugin: 'com.android.application'
 //apply plugin: 'io.objectbox'
 
@@ -33,10 +34,12 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             zipAlignEnabled true
             signingConfig signingConfigs.config
+            debuggable true
         }
         debug {
             zipAlignEnabled true
             signingConfig signingConfigs.config
+            debuggable true
         }
     }
     productFlavors {

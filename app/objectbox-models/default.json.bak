@@ -424,7 +424,7 @@
     },
     {
       "id": "7:4964342909160099197",
-      "lastPropertyId": "6:3059116414472503778",
+      "lastPropertyId": "8:3235403756955365855",
       "name": "Region",
       "properties": [
         {
@@ -461,6 +461,16 @@
           "indexId": "72:33360039710303458",
           "type": 9,
           "flags": 2048
+        },
+        {
+          "id": "7:1416210506592351527",
+          "name": "shareable",
+          "type": 1
+        },
+        {
+          "id": "8:3235403756955365855",
+          "name": "preRegistration",
+          "type": 1
         }
       ],
       "relations": []
@@ -668,7 +678,7 @@
     },
     {
       "id": "11:1466558823270581169",
-      "lastPropertyId": "28:5861578808668040693",
+      "lastPropertyId": "30:3556858845354105784",
       "name": "Household",
       "properties": [
         {
@@ -821,6 +831,16 @@
           "indexId": "85:7829580265406635387",
           "type": 9,
           "flags": 2080
+        },
+        {
+          "id": "29:8876621414539336212",
+          "name": "shareable",
+          "type": 1
+        },
+        {
+          "id": "30:3556858845354105784",
+          "name": "preRegistration",
+          "type": 1
         }
       ],
       "relations": []

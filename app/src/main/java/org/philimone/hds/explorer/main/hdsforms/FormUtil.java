@@ -22,7 +22,7 @@ import org.philimone.hds.explorer.model.Round_;
 import org.philimone.hds.explorer.model.User;
 import org.philimone.hds.explorer.model.enums.CoreFormEntity;
 import org.philimone.hds.explorer.model.oldstate.SavedEntityState;
-import org.philimone.hds.explorer.settings.generator.CodeGeneratorService;
+import org.philimone.hds.explorer.server.settings.generator.CodeGeneratorService;
 import org.philimone.hds.explorer.widget.DialogFactory;
 import org.philimone.hds.forms.listeners.FormCollectionListener;
 import org.philimone.hds.forms.main.FormFragment;
@@ -33,7 +33,6 @@ import org.philimone.hds.forms.model.PreloadMap;
 import org.philimone.hds.forms.model.RepeatColumnValue;
 import org.philimone.hds.forms.parsers.ExcelFormParser;
 
-import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Date;

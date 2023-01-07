@@ -1,4 +1,4 @@
-package org.philimone.hds.explorer.settings.generator;
+package org.philimone.hds.explorer.server.settings.generator;
 
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
 import org.philimone.hds.explorer.model.Household;
@@ -33,7 +33,6 @@ public class CodeGeneratorService {
     private Box<Visit> boxVisits;
     private Box<Round> boxRounds;
     private Box<PregnancyRegistration> boxPregnancies;
-    
 
     public CodeGeneratorService() {
         this.codeGenerator =  CodeGeneratorFactory.newInstance();

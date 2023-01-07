@@ -1,4 +1,4 @@
-package org.philimone.hds.explorer.settings.generator;
+package org.philimone.hds.explorer.server.settings.generator;
 
 public class CodeGeneratorFactory {
     public static CodeGenerator newInstance(){

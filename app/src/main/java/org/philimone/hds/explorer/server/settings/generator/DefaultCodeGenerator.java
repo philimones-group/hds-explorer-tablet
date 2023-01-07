@@ -1,4 +1,4 @@
-package org.philimone.hds.explorer.settings.generator;
+package org.philimone.hds.explorer.server.settings.generator;
 
 import android.util.Log;
 

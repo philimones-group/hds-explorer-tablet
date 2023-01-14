@@ -129,6 +129,7 @@
     <string name="server_sync_offline_mode_continue_title_lbl">Can\'t connect to the Server</string>
     <string name="server_sync_offline_mode_continue_msg_lbl">An issue occurred while trying to login to the server, try again or continue to offline mode\n\nDo you want to open Synchronization panel in offline mode?</string>
 
+    <string name="core_entity_region_lbl">Region Registration</string>
     <string name="core_entity_household_lbl">Household Registration</string>
     <string name="core_entity_member_enu_lbl">Member Enumeration</string>
     <string name="core_entity_head_relationship_lbl">Head Relationship Registration</string>
@@ -306,7 +307,7 @@
 
     <string name="region_details_edit_region_name_lbl">Region Name</string>
     <string name="region_details_edit_button_update_details_lbl">Update Details</string>
-    <string name="region_details_edit_cant_update_new_record">Cannot edit/update this Region data because it was recently created.\nTo perform any change you must do it in the Household Form</string>
+    <string name="region_details_edit_cant_update_new_record">Cannot edit/update this Region data because it was recently created.\nTo perform any change you must do it in the Region Form</string>
 
     <string name="household_details_tab_members_list_lbl">Members List</string>
     <string name="household_details_tab_collected_forms_lbl">Collected Forms</string>
@@ -377,10 +378,16 @@
     <string name="household_filter_add_house_lbl">Add New Household</string>
     <string name="household_filter_edit_house_lbl">Edit Household</string>
     <string name="household_filter_clear_lbl">Clear</string>
-    <string name="household_filter_show_region_btn_lbl">Show Region Details</string>
+    <string name="household_filter_show_region_btn_lbl">Show Region</string>
     <string name="household_filter_household_not_found_lbl">Households with code like (%1$s) were not found</string>
     <string name="household_filter_head_label">Head:</string>
 
+    <!-- New Region -->
+    <string name="new_region_code_err_lbl">The format of the Region Code is incorrect</string>
+    <string name="new_region_code_empty_lbl">The Region Code cannot be empty</string>
+    <string name="new_region_name_empty_lbl">The Region Name cannot be empty</string>
+    <string name="new_region_code_exists_lbl">The Region Code already exists</string>
+    
     <!-- New Household -->
     <string name="new_household_main_dialog_lbl">Add New Household</string>
     <string name="new_household_region_code_lbl">Region Code</string>

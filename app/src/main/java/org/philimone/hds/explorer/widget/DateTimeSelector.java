@@ -15,7 +15,10 @@ import androidx.appcompat.app.AppCompatDialog;
 import org.philimone.hds.forms.R;
 import org.philimone.hds.forms.utilities.StringTools;
 
+import java.util.Calendar;
 import java.util.Date;
+
+import mz.betainteractive.utilities.GeneralUtil;
 
 public class DateTimeSelector extends AppCompatDialog {
 
@@ -30,6 +33,8 @@ public class DateTimeSelector extends AppCompatDialog {
     private String dialogTitle;
     private String dialogMessage;
     private boolean dateWithTime;
+
+    private Date defaultDate;
 
     public enum Buttons { OK, CANCEL };
 
@@ -52,6 +57,24 @@ public class DateTimeSelector extends AppCompatDialog {
         DateTimeSelector dialog = new DateTimeSelector(context);
         dialog.listener = listener;
         dialog.dateWithTime = true;
+
+        return dialog;
+    }
+
+    public static DateTimeSelector createDateWidget(Context context, Date defaultDate, OnSelectedListener listener){
+        DateTimeSelector dialog = new DateTimeSelector(context);
+        dialog.listener = listener;
+        dialog.dateWithTime = false;
+        dialog.defaultDate = defaultDate;
+
+        return dialog;
+    }
+
+    public static DateTimeSelector createDateTimeWidget(Context context, Date defaultDate, OnSelectedListener listener){
+        DateTimeSelector dialog = new DateTimeSelector(context);
+        dialog.listener = listener;
+        dialog.dateWithTime = true;
+        dialog.defaultDate = defaultDate;
 
         return dialog;
     }
@@ -88,6 +111,7 @@ public class DateTimeSelector extends AppCompatDialog {
         setCancelable(false);
 
         setTexts();
+        setDefaultDate(defaultDate);
 
         this.btDialogOk.setVisibility(View.VISIBLE);
         this.btDialogCancel.setVisibility(View.VISIBLE);
@@ -104,8 +128,8 @@ public class DateTimeSelector extends AppCompatDialog {
         int y = this.dtpColumnDateValue.getYear();
         int m = this.dtpColumnDateValue.getMonth()+1;
         int d = this.dtpColumnDateValue.getDayOfMonth();
-        int hh = dateWithTime ? this.dtpColumnTimeValue.getHour() : 0;
-        int mm = dateWithTime ? this.dtpColumnTimeValue.getMinute() : 0;
+        int hh = dateWithTime ? this.dtpColumnTimeValue.getCurrentHour() : 0;
+        int mm = dateWithTime ? this.dtpColumnTimeValue.getCurrentMinute() : 0;
 
         String strdate = y + "-" + String.format("%02d", m) + "-" + String.format("%02d", d);
         String format = "yyyy-MM-dd";
@@ -125,6 +149,16 @@ public class DateTimeSelector extends AppCompatDialog {
     private void onOkClicked() {
         dismiss();
         onDateSelected();
+    }
+
+    private void setDefaultDate(Date date) {
+        Calendar cal = GeneralUtil.getCalendar(date);
+        dtpColumnDateValue.updateDate(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH));
+
+        if (dateWithTime) {
+            dtpColumnTimeValue.setCurrentHour(cal.get(Calendar.HOUR_OF_DAY));
+            dtpColumnTimeValue.setCurrentMinute(cal.get(Calendar.MINUTE));
+        }
     }
 
     public void setTexts(){

@@ -103,8 +103,8 @@
             android:layout_height="wrap_content"
             android:layout_weight="0"
             android:gravity="center|bottom"
-            android:layout_marginTop="5dp"
-            android:layout_marginBottom="5dp"
+            android:layout_marginTop="@dimen/fagm_margin_top"
+            android:layout_marginBottom="@dimen/fagm_margin_bottom"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:orientation="vertical">

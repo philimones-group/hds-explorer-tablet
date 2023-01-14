@@ -28,6 +28,36 @@
         android:layout_marginRight="5dp"
         android:src="@mipmap/nui_form_red_icon" />
 
+    <ImageView
+        android:id="@+id/iconView2"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_gravity="left|center"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:visibility="gone"
+        android:src="@mipmap/nui_form_red_region_icon" />
+
+    <ImageView
+        android:id="@+id/iconView3"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_gravity="left|center"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:visibility="gone"
+        android:src="@mipmap/nui_form_red_household_icon" />
+
+    <ImageView
+        android:id="@+id/iconView4"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_gravity="left|center"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:visibility="gone"
+        android:src="@mipmap/nui_form_red_member_icon" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

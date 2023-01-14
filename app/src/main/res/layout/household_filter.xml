@@ -34,8 +34,7 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@drawable/nui_region_lists_panel">
-            </View>
+                android:background="@drawable/nui_region_lists_panel"></View>
 
         </RelativeLayout>
 
@@ -284,20 +283,46 @@
                         android:text="South Region" />
                 </LinearLayout>
 
-                <!-- show region details -->
-                <Button
-                    android:id="@+id/btHouseFilterShowRegion"
+                <FrameLayout
                     android:layout_width="match_parent"
-                    android:layout_height="40dp"
-                    android:layout_marginTop="3dp"
-                    android:layout_marginBottom="2dp"
-                    android:layout_marginStart="20dp"
-                    android:layout_marginEnd="20dp"
-                    android:background="@drawable/nui_btnd_rone_gflat"
-                    android:enabled="false"
-                    android:text="@string/household_filter_show_region_btn_lbl"
-                    android:textSize="@dimen/household_filter_button_textsize"
-                    android:elevation="5dp"/>
+                    android:layout_height="wrap_content"
+                    android:paddingStart="20dp"
+                    android:paddingEnd="20dp"
+                    android:orientation="horizontal">
+
+                    <!-- show region details -->
+                    <Button
+                        android:id="@+id/btHouseFilterShowRegion"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:layout_marginEnd="35dp"
+                        android:background="@drawable/nui_btnd_rone_gflat_showregion"
+                        android:enabled="false"
+                        android:text="@string/household_filter_show_region_btn_lbl"
+                        android:textSize="@dimen/household_filter_button_textsize"
+                        android:paddingStart="-25dp"
+                        android:paddingEnd="0dp"
+                        android:elevation="4dp"
+                        />
+
+                    <!-- add new region -->
+                    <Button
+                        android:id="@+id/btHouseFilterAddRegion"
+                        android:layout_width="70dp"
+                        android:layout_height="40dp"
+                        android:layout_gravity="right"
+                        android:layout_marginStart="-35dp"
+                        android:background="@drawable/nui_btnd_rone_gflat_addregion"
+                        android:enabled="false"
+                        android:textStyle="bold"
+                        android:textSize="14sp"
+                        android:elevation="4dp"
+                        android:translationZ="4dp"
+                        android:stateListAnimator="@null"
+                        />
+
+
+                </FrameLayout>
 
             </LinearLayout>
 

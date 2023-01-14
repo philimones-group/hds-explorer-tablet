@@ -16,13 +16,14 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import org.philimone.hds.explorer.R;
-import org.philimone.hds.explorer.adapter.trackinglist.TrackingListAdapter;
 import org.philimone.hds.explorer.data.FormDataLoader;
 import org.philimone.hds.explorer.database.Bootstrap;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
 import org.philimone.hds.explorer.fragment.showcollected.adapter.model.CoreCollectedDataItem;
 import org.philimone.hds.explorer.fragment.showcollected.adapter.ShowCoreCollectedDataAdapter;
 import org.philimone.hds.explorer.main.HouseholdDetailsActivity;
+import org.philimone.hds.explorer.main.MemberDetailsActivity;
+import org.philimone.hds.explorer.main.RegionDetailsActivity;
 import org.philimone.hds.explorer.model.CollectedData;
 import org.philimone.hds.explorer.model.CoreCollectedData;
 import org.philimone.hds.explorer.model.CoreCollectedData_;
@@ -31,8 +32,10 @@ import org.philimone.hds.explorer.model.FormSubject;
 import org.philimone.hds.explorer.model.Household;
 import org.philimone.hds.explorer.model.Household_;
 import org.philimone.hds.explorer.model.Member;
+import org.philimone.hds.explorer.model.Member_;
 import org.philimone.hds.explorer.model.Module;
 import org.philimone.hds.explorer.model.Region;
+import org.philimone.hds.explorer.model.Region_;
 import org.philimone.hds.explorer.model.User;
 import org.philimone.hds.explorer.model.Visit;
 import org.philimone.hds.explorer.model.enums.CoreFormEntity;
@@ -193,13 +196,24 @@ public class ShowCoreCollectedDataFragment extends Fragment {
     private void onCollectedDataItemClicked(int position) {
         ShowCoreCollectedDataAdapter adapter = (ShowCoreCollectedDataAdapter) this.lvCollectedForms.getAdapter();
         CoreCollectedDataItem dataItem = adapter.getItem(position);
-        Visit visit = this.boxVisits.get(dataItem.collectedData.visitId);
-        Household household = this.boxHouseholds.query(Household_.code.equal(visit.householdCode)).build().findFirst();
 
-        ShowHouseholdTask task = new ShowHouseholdTask(household);
-        task.execute();
+        if (dataItem.household != null) {
+            ShowHouseholdTask task = new ShowHouseholdTask(dataItem.household);
+            task.execute();
+            showLoadingDialog(getString(R.string.loading_dialog_household_details_lbl), true);
+        }
 
-        showLoadingDialog(getString(R.string.loading_dialog_household_details_lbl), true);
+        if (dataItem.member != null) {
+            ShowMemberTask task = new ShowMemberTask(dataItem.member);
+            task.execute();
+            showLoadingDialog(getString(R.string.loading_dialog_member_details_lbl), true);
+        }
+
+        if (dataItem.region != null) {
+            ShowRegionTask task = new ShowRegionTask(dataItem.region);
+            task.execute();
+            showLoadingDialog(getString(R.string.loading_dialog_region_details_lbl), true);
+        }
     }
 
     private List<CoreCollectedDataItem> getAllCollectedData() {
@@ -215,6 +229,12 @@ public class ShowCoreCollectedDataFragment extends Fragment {
             list.add(new CoreCollectedDataItem(cdata, household, collectedForms));
         }
 
+        List<CoreCollectedData> listd = this.boxCoreCollectedData.query(CoreCollectedData_.visitId.equal(0)).orderDesc(CoreCollectedData_.createdDate).order(CoreCollectedData_.formEntityCode).build().find();
+        for (CoreCollectedData cdata : listd) {
+            FormSubject subject = getFormSubject(cdata);
+            list.add(new CoreCollectedDataItem(cdata, subject));
+        }
+
         return list;
     }
 
@@ -227,6 +247,21 @@ public class ShowCoreCollectedDataFragment extends Fragment {
         }
 
         return formEntities;
+    }
+
+    private FormSubject getFormSubject(CoreCollectedData collectedData) {
+
+        switch (collectedData.formEntity) {
+            case REGION:
+            case EDITED_REGION:
+                return this.boxRegions.query(Region_.id.equal(collectedData.formEntityId)).build().findFirst();
+            case HOUSEHOLD:
+            case EDITED_HOUSEHOLD: return boxHouseholds.query(Household_.id.equal(collectedData.formEntityId)).build().findFirst();
+            case EDITED_MEMBER: return boxMembers.query(Member_.id.equal(collectedData.formEntityId)).build().findFirst();
+
+        }
+
+        return null;
     }
 
     private void showLoadingDialog(String msg, boolean show){
@@ -255,6 +290,54 @@ public class ShowCoreCollectedDataFragment extends Fragment {
 
             Intent intent = new Intent(ShowCoreCollectedDataFragment.this.getContext(), HouseholdDetailsActivity.class);
             intent.putExtra("household", household.id);
+
+            showLoadingDialog(null, false);
+
+            startActivity(intent);
+        }
+    }
+
+    class ShowMemberTask extends AsyncTask<Void, Void, Void> {
+        private Member member;
+
+        public ShowMemberTask(Member member) {
+            this.member = member;
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void result) {
+
+            Intent intent = new Intent(ShowCoreCollectedDataFragment.this.getContext(), MemberDetailsActivity.class);
+            intent.putExtra("member", member.id);
+
+            showLoadingDialog(null, false);
+
+            startActivity(intent);
+        }
+    }
+
+    class ShowRegionTask extends AsyncTask<Void, Void, Void> {
+        private Region region;
+
+        public ShowRegionTask(Region region) {
+            this.region = region;
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void result) {
+
+            Intent intent = new Intent(ShowCoreCollectedDataFragment.this.getContext(), RegionDetailsActivity.class);
+            intent.putExtra("region", region.id);
 
             showLoadingDialog(null, false);
 

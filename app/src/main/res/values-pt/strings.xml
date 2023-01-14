@@ -129,6 +129,7 @@
     <string name="server_sync_offline_mode_continue_title_lbl">Não foi possível conectar ao servidor</string>
     <string name="server_sync_offline_mode_continue_msg_lbl">Ocorreu um erro ao tentar sincronizar os dados do servidor, tente novamente ou continue no modo offline\n\nDeseja abrir o painel de sincronização no modo offline?</string>
 
+    <string name="core_entity_region_lbl">Registo de Nova Região</string>
     <string name="core_entity_household_lbl">Registo de Novo Agregado</string>
     <string name="core_entity_member_enu_lbl">Registo de Novo Membro</string>
     <string name="core_entity_head_relationship_lbl">Registo de Relação com chefe</string>
@@ -306,7 +307,7 @@
 
     <string name="region_details_edit_region_name_lbl">Nome da Região</string>
     <string name="region_details_edit_button_update_details_lbl">Alterar Detalhes</string>
-    <string name="region_details_edit_cant_update_new_record">Não será possível actualizar esta Região porque foi criado recentemente.\nPara actualizá -lo, pode fazê-lo no Formulário de Registo do novo Agregado</string>
+    <string name="region_details_edit_cant_update_new_record">Não será possível actualizar esta Região porque foi criado recentemente.\nPara actualizá -lo, pode fazê-lo no Formulário de Registo de Região</string>
 
     <string name="household_details_tab_members_list_lbl">Lista de Membros</string>
     <string name="household_details_tab_collected_forms_lbl">Formulários Colhidos</string>
@@ -377,10 +378,16 @@
     <string name="household_filter_add_house_lbl">Adicionar Nova Casa</string>
     <string name="household_filter_edit_house_lbl">Alterar Nova Casa</string>
     <string name="household_filter_clear_lbl">Limpar</string>
-    <string name="household_filter_show_region_btn_lbl">Ver Detalhes da Região</string>
+    <string name="household_filter_show_region_btn_lbl">Mostrar Região</string>
     <string name="household_filter_household_not_found_lbl">Casas com código (%1$s) não foram encontradas</string>
     <string name="household_filter_head_label">Chefe:</string>
 
+    <!-- New Region -->
+    <string name="new_region_code_err_lbl">O código da região está incorrecto!</string>
+    <string name="new_region_code_empty_lbl">O código da região não pode estar vazio</string>
+    <string name="new_region_name_empty_lbl">O nome da região não pode estar vazio</string>
+    <string name="new_region_code_exists_lbl">O código da região introduzido já existe!</string>
+    
     <!-- New Household -->
     <string name="new_household_main_dialog_lbl">Adicionar Novo Agregado/Casa</string>
     <string name="new_household_region_code_lbl">Código da Região</string>

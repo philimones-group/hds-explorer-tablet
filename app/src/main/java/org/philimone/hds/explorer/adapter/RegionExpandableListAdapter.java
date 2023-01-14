@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.CheckBox;
+import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
@@ -16,6 +17,7 @@ import org.philimone.hds.explorer.model.Region;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class RegionExpandableListAdapter extends BaseExpandableListAdapter implements Serializable {
 
@@ -117,10 +119,14 @@ public class RegionExpandableListAdapter extends BaseExpandableListAdapter imple
         TextView txtChildRegionName = (TextView) convertView.findViewById(R.id.txtChildRegionName);
         TextView txtChildRegionCode = (TextView) convertView.findViewById(R.id.txtChildRegionCode);
         RadioButton chkRegionSelected = (RadioButton) convertView.findViewById(R.id.chkRegionSelected);
+        ImageView iconView = convertView.findViewById(R.id.iconView);
+        ImageView iconNewView = convertView.findViewById(R.id.iconNewView);
 
         HierarchyItem itemGroup = groupItems.get(groupPosition);
         Region region = this.regionCollection.get(itemGroup).get(childPosition);
 
+        iconView.setVisibility(region.isRecentlyCreated() ? View.GONE : View.VISIBLE);
+        iconNewView.setVisibility(region.isRecentlyCreated() ? View.VISIBLE : View.GONE);
 
         txtChildRegionName.setText(region.getName());
         txtChildRegionCode.setText(region.getCode() );
@@ -145,6 +151,24 @@ public class RegionExpandableListAdapter extends BaseExpandableListAdapter imple
 
         region.setSelected(true);
 
+        //get all parents of this region and set them selected=true (retro cascade select)
+        String parentCode = region.parent;
+        for (int i = groupPosition-1; i >= 0; i--) {
+            HierarchyItem parentItem = this.groupItems.get(i);
+
+            //find parent with code = currentParent
+            List<Region> regionList = this.regionCollection.get(parentItem);
+            if (regionList != null) {
+                final String pcode = parentCode;
+                Region parentRegion = regionList.stream().filter(r -> r.code.equals(pcode)).findFirst().orElse(null);
+
+                if (parentRegion != null) {
+                    parentRegion.setSelected(true);
+                    parentCode = parentRegion.parent;
+                }
+            }
+        }
+
         //Filter Items
         int nextGroup = filterNextGroupBy(region, groupPosition);
 
@@ -158,7 +182,7 @@ public class RegionExpandableListAdapter extends BaseExpandableListAdapter imple
             ArrayList<Region> nextGroupList = this.regionCollection.get( this.groupItems.get(nextGroup) );
 
             if (nextGroupList.size()==1){
-                selectChild(nextGroup, 0); // select automatically the next group child
+                //selectChild(nextGroup, 0); // select automatically the next group child
             }
         }
 
@@ -177,11 +201,12 @@ public class RegionExpandableListAdapter extends BaseExpandableListAdapter imple
         //get data from the original source
         ArrayList<Region> originalList = this.originalRegionCollection.get(nextItem);
         ArrayList<Region> currentList = this.regionCollection.get(nextItem);
-
         currentList.clear();
+
         for (Region r : originalList){ //fill new list with filtered content
             if (r.getParent().equals(parentRegion.getCode())){ //check if the parent is the clicked region
                 currentList.add(r);
+                r.setSelected(false);
             }
         }
 
@@ -200,9 +225,38 @@ public class RegionExpandableListAdapter extends BaseExpandableListAdapter imple
             g++;
         }
 
-
-
         return groupPosition;
+    }
+
+    public Region selectRegion(Region region) {
+        String level = region.getLevel();
+        HierarchyItem item = groupItems.stream().filter(r -> r.getLevel().equals(level)).findFirst().orElse(null);
+        List<Region> regionList = regionCollection.get(item);
+
+        Region resultRegion = regionList.stream().filter(r -> r.code.equals(region.code)).findFirst().orElse(null);
+
+        if (resultRegion != null) {
+            int group = groupItems.indexOf(item);
+            int child = regionList.indexOf(resultRegion);
+
+            selectChild(group, child);
+
+            return resultRegion;
+        }
+
+        return null;
+    }
+
+    public void addRegion(Region region) {
+        String level = region.getLevel();
+        HierarchyItem item = groupItems.stream().filter(r -> r.getLevel().equals(level)).findFirst().orElse(null);
+        List<Region> currentList = regionCollection.get(item);
+        List<Region> originalList = originalRegionCollection.get(item);
+
+        currentList.add(region);
+        originalList.add(region);
+
+        notifyDataSetChanged();
     }
 
     public interface Listener {

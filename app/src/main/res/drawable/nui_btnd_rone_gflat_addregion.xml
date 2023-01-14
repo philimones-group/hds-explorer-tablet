@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android" >
+    <!-- pressed -->
+    <item android:state_pressed="true" >
+        <layer-list>
+            <item>
+                <shape android:shape="rectangle" >
+                    <corners android:radius="30dp" />
+                    <solid android:color="#4C4C4C" />
+                </shape>
+            </item>
+
+            <item
+                android:left="15dp"
+                android:right="15dp"
+                android:top="15dp"
+                android:bottom="15dp">
+                <bitmap android:alpha="0.5" android:src="@mipmap/nui_region_add_symbol" android:gravity="center" />
+            </item>
+
+        </layer-list>
+
+    </item>
+
+    <!-- disabled -->
+    <item android:state_enabled="false">
+        <layer-list>
+            <item>
+                <shape android:shape="rectangle" >
+                    <corners android:radius="30dp" />
+                    <gradient
+                        android:angle="270"
+                        android:gradientRadius="45"
+                        android:centerX="35%"
+                        android:centerY="50%"
+                        android:startColor="#127C43"
+                        android:endColor="#127C43"
+                        android:type="linear"
+                        />
+
+                    <stroke android:width="0dp" android:color="#56C161" />
+                </shape>
+            </item>
+            <item
+                android:left="15dp"
+                android:right="15dp"
+                android:top="15dp"
+                android:bottom="15dp">
+                <bitmap android:alpha="0.5" android:src="@mipmap/nui_region_add_symbol" android:gravity="center" />
+            </item>
+        </layer-list>
+    </item>
+
+    <!-- normal -->
+    <item>
+        <layer-list>
+            <item>
+                <shape android:shape="rectangle" >
+                    <corners android:radius="30dp" />
+                    <gradient
+                        android:angle="270"
+                        android:gradientRadius="45"
+                        android:centerX="35%"
+                        android:centerY="50%"
+                        android:startColor="@color/nui_color_dg_start"
+                        android:endColor="@color/nui_color_dg_end"
+                        android:type="linear"
+                        />
+
+                    <stroke android:width="0dp" android:color="#56C161" />
+                </shape>
+            </item>
+
+            <item
+                android:left="15dp"
+                android:right="15dp"
+                android:top="15dp"
+                android:bottom="15dp">
+                <bitmap android:src="@mipmap/nui_region_add_symbol" android:gravity="center" />
+            </item>
+        </layer-list>
+
+    </item>
+
+
+</selector>
+

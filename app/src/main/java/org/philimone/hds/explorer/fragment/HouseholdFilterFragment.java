@@ -43,6 +43,8 @@ import org.philimone.hds.explorer.database.ObjectBoxDatabase;
 import org.philimone.hds.explorer.listeners.BarcodeContextMenuClickedListener;
 import org.philimone.hds.explorer.main.BarcodeScannerActivity;
 import org.philimone.hds.explorer.main.HouseholdDetailsActivity;
+import org.philimone.hds.explorer.main.hdsforms.FormUtilListener;
+import org.philimone.hds.explorer.main.hdsforms.RegionFormUtil;
 import org.philimone.hds.explorer.model.ApplicationParam;
 import org.philimone.hds.explorer.model.ApplicationParam_;
 import org.philimone.hds.explorer.model.Form;
@@ -60,9 +62,11 @@ import org.philimone.hds.explorer.widget.RecyclerListView;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import io.objectbox.Box;
 import io.objectbox.query.QueryBuilder;
+import mz.betainteractive.odk.FormUtilities;
 import mz.betainteractive.utilities.StringUtil;
 
 
@@ -76,6 +80,7 @@ public class HouseholdFilterFragment extends Fragment implements RegionExpandabl
     private RecyclerListView hfHousesList;
     private Button btHouseFilterAddNewHousehold;
     private Button btHouseFilterShowRegion;
+    private Button btHouseFilterAddRegion;
     private Button btHouseFilterSearch;
     private RelativeLayout hfViewProgressBar;
 
@@ -122,6 +127,8 @@ public class HouseholdFilterFragment extends Fragment implements RegionExpandabl
     private String lastRegionLevel = "";
     private User loggedUser = Bootstrap.getCurrentUser();
     private Household household;
+
+    private FormUtilities odkFormUtilities;
 
     private boolean censusMode;
 
@@ -180,7 +187,10 @@ public class HouseholdFilterFragment extends Fragment implements RegionExpandabl
         this.hfViewProgressBar = (RelativeLayout) view.findViewById(R.id.hfViewProgressBar);
 
         btHouseFilterShowRegion = (Button) view.findViewById(R.id.btHouseFilterShowRegion);
+        btHouseFilterAddRegion = (Button) view.findViewById(R.id.btHouseFilterAddRegion);
         expListRegions = (ExpandableListView) view.findViewById(R.id.expListRegions);
+
+        odkFormUtilities = new FormUtilities(this, null);
 
         /* region items */
         layoutHierarchy1 = (LinearLayout) view.findViewById(R.id.layoutHierarchy1);
@@ -244,6 +254,7 @@ public class HouseholdFilterFragment extends Fragment implements RegionExpandabl
             });
         }
 
+
         if (btHouseFilterSearch != null) {
             this.btHouseFilterSearch.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -291,6 +302,12 @@ public class HouseholdFilterFragment extends Fragment implements RegionExpandabl
                 public void onClick(View view) {
                     onShowRegionClicked();
                 }
+            });
+        }
+
+        if (btHouseFilterAddRegion != null) {
+            btHouseFilterAddRegion.setOnClickListener(v -> {
+                onAddNewRegionClicked();
             });
         }
 
@@ -371,6 +388,38 @@ public class HouseholdFilterFragment extends Fragment implements RegionExpandabl
         listener.onHouseholdClick(household);
     }
 
+    private void onAddNewRegionClicked() {
+        //select parent
+        //call form util
+        //reload filters and select new region
+
+        RegionFormUtil regionFormUtil = new RegionFormUtil(this, this.mContext, this.currentRegion.code, this.odkFormUtilities, new FormUtilListener<Region>() {
+            @Override
+            public void onNewEntityCreated(Region region, Map<String, Object> data) {
+                //reload filters and select new region
+                regionAdapter.addRegion(region);
+                selectRegion(region);
+            }
+
+            @Override
+            public void onEntityEdited(Region region, Map<String, Object> data) {
+
+            }
+
+            @Override
+            public void onFormCancelled() {
+
+            }
+        });
+
+        regionFormUtil.collect();
+    }
+
+    private void selectRegion(Region region) {
+        Region adapterRegion = this.regionAdapter.selectRegion(region);
+        updateCurrentRegion(adapterRegion);
+    }
+
     private void onAddNewHouseholdClicked() {
 
         boolean roundsExists = this.boxRounds.query().order(Round_.roundNumber, QueryBuilder.DESCENDING).build().count()>0;
@@ -400,24 +449,10 @@ public class HouseholdFilterFragment extends Fragment implements RegionExpandabl
 
     @Override
     public void onBarcodeScanned(int txtResId, String labelText, String resultContent) {
-//if (textBox != null)
-        //            textBox.requestFocus();
-
         Log.d("we got the barcode", ""+resultContent);
 
         txtHouseFilterCode.setText(resultContent);
         txtHouseFilterCode.requestFocus();
-    }
-
-    private void onSelectedRegion(Region region){
-
-        boolean lastLevel = region.getLevel().equals(lastRegionLevel);
-
-        this.btHouseFilterShowRegion.setEnabled(true);
-        btHouseFilterSearch.setEnabled(lastLevel);
-        btHouseFilterAddNewHousehold.setEnabled(lastLevel);
-
-        //listener.onSelectedRegion(region);
     }
 
     public void setBarcodeScannerListener(BarcodeScannerActivity.InvokerClickListener listener){
@@ -449,7 +484,7 @@ public class HouseholdFilterFragment extends Fragment implements RegionExpandabl
 
         expandRegionGroup(nextGroupPosition);
 
-        setSelectedRegion(selectedRegion);
+        updateCurrentRegion(selectedRegion);
 
         Log.d("last level", ""+lastRegionLevel);
         //Log.d("gp", "group="+groupPosition+", count="+regionAdapter.getGroupCount()+", isLast="+isLastRegionGroup(groupPosition));
@@ -592,76 +627,89 @@ public class HouseholdFilterFragment extends Fragment implements RegionExpandabl
         }
     }
     
-    private void setSelectedRegion(Region region){
+    private void updateCurrentRegion(Region region){
         this.currentRegion = region;
-        updateRegionTextViews(region);
 
         Log.d("region", ""+currentRegion.getLevel()+", "+currentRegion.getName());
 
-        onSelectedRegion(region);
+        updateRegionTextViews(region);
+        updateButtonViews(region);
+    }
+
+    private void updateButtonViews(Region region){
+
+        boolean lastLevel = region.getLevel().equals(lastRegionLevel);
+
+        this.btHouseFilterShowRegion.setEnabled(true);
+        this.btHouseFilterAddRegion.setEnabled(!lastLevel);
+        btHouseFilterSearch.setEnabled(lastLevel);
+        btHouseFilterAddNewHousehold.setEnabled(lastLevel);
     }
 
     private void updateRegionTextViews(Region region){
-        if (region.getLevel().equalsIgnoreCase(Region.HIERARCHY_1)){
-            txtHierarchy1_value.setText(region.getName());
-            txtHierarchy2_value.setText("");
-            txtHierarchy3_value.setText("");
-            txtHierarchy4_value.setText("");
-            txtHierarchy5_value.setText("");
-            txtHierarchy6_value.setText("");
-            txtHierarchy7_value.setText("");
-            txtHierarchy8_value.setText("");
-            return;
-        }
-        if (region.getLevel().equalsIgnoreCase(Region.HIERARCHY_2)){
-            txtHierarchy2_value.setText(region.getName());
-            txtHierarchy3_value.setText("");
-            txtHierarchy4_value.setText("");
-            txtHierarchy5_value.setText("");
-            txtHierarchy6_value.setText("");
-            txtHierarchy7_value.setText("");
-            txtHierarchy8_value.setText("");
-            return;
-        }
-        if (region.getLevel().equalsIgnoreCase(Region.HIERARCHY_3)){
-            txtHierarchy3_value.setText(region.getName());
-            txtHierarchy4_value.setText("");
-            txtHierarchy5_value.setText("");
-            txtHierarchy6_value.setText("");
-            txtHierarchy7_value.setText("");
-            txtHierarchy8_value.setText("");
-            return;
-        }
-        if (region.getLevel().equalsIgnoreCase(Region.HIERARCHY_4)){
-            txtHierarchy4_value.setText(region.getName());
-            txtHierarchy5_value.setText("");
-            txtHierarchy6_value.setText("");
-            txtHierarchy7_value.setText("");
-            txtHierarchy8_value.setText("");
-            return;
-        }
-        if (region.getLevel().equalsIgnoreCase(Region.HIERARCHY_5)){
-            txtHierarchy5_value.setText(region.getName());
-            txtHierarchy6_value.setText("");
-            txtHierarchy7_value.setText("");
-            txtHierarchy8_value.setText("");
-            return;
-        }
-        if (region.getLevel().equalsIgnoreCase(Region.HIERARCHY_6)){
-            txtHierarchy6_value.setText(region.getName());
-            txtHierarchy7_value.setText("");
-            txtHierarchy8_value.setText("");
-            return;
-        }
-        if (region.getLevel().equalsIgnoreCase(Region.HIERARCHY_7)){
-            txtHierarchy7_value.setText(region.getName());
-            txtHierarchy8_value.setText("");
-            return;
-        }
-        if (region.getLevel().equalsIgnoreCase(Region.HIERARCHY_8)){
-            txtHierarchy8_value.setText(region.getName());
-            return;
-        }
+
+        Region reg = region;
+        do {
+            String regionLevel = reg.getLevel();
+
+            if (regionLevel.equalsIgnoreCase(Region.HIERARCHY_1)){
+                txtHierarchy1_value.setText(region.getName());
+                txtHierarchy2_value.setText("");
+                txtHierarchy3_value.setText("");
+                txtHierarchy4_value.setText("");
+                txtHierarchy5_value.setText("");
+                txtHierarchy6_value.setText("");
+                txtHierarchy7_value.setText("");
+                txtHierarchy8_value.setText("");
+                return;
+            } else if (regionLevel.equalsIgnoreCase(Region.HIERARCHY_2)){
+                txtHierarchy2_value.setText(region.getName());
+                txtHierarchy3_value.setText("");
+                txtHierarchy4_value.setText("");
+                txtHierarchy5_value.setText("");
+                txtHierarchy6_value.setText("");
+                txtHierarchy7_value.setText("");
+                txtHierarchy8_value.setText("");
+                return;
+            } else if (regionLevel.equalsIgnoreCase(Region.HIERARCHY_3)){
+                txtHierarchy3_value.setText(region.getName());
+                txtHierarchy4_value.setText("");
+                txtHierarchy5_value.setText("");
+                txtHierarchy6_value.setText("");
+                txtHierarchy7_value.setText("");
+                txtHierarchy8_value.setText("");
+                return;
+            } else if (regionLevel.equalsIgnoreCase(Region.HIERARCHY_4)){
+                txtHierarchy4_value.setText(region.getName());
+                txtHierarchy5_value.setText("");
+                txtHierarchy6_value.setText("");
+                txtHierarchy7_value.setText("");
+                txtHierarchy8_value.setText("");
+                return;
+            } else if (regionLevel.equalsIgnoreCase(Region.HIERARCHY_5)){
+                txtHierarchy5_value.setText(region.getName());
+                txtHierarchy6_value.setText("");
+                txtHierarchy7_value.setText("");
+                txtHierarchy8_value.setText("");
+                return;
+            } else if (regionLevel.equalsIgnoreCase(Region.HIERARCHY_6)){
+                txtHierarchy6_value.setText(region.getName());
+                txtHierarchy7_value.setText("");
+                txtHierarchy8_value.setText("");
+                return;
+            } else if (regionLevel.equalsIgnoreCase(Region.HIERARCHY_7)){
+                txtHierarchy7_value.setText(region.getName());
+                txtHierarchy8_value.setText("");
+                return;
+            } else if (regionLevel.equalsIgnoreCase(Region.HIERARCHY_8)){
+                txtHierarchy8_value.setText(region.getName());
+                return;
+            }
+
+            reg = boxRegions.query(Region_.code.equal(reg.parent)).build().findFirst();
+
+        } while (reg != null);
+
 
     }
 

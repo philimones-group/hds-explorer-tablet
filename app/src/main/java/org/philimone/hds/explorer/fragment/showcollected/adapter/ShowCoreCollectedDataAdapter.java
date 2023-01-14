@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -16,6 +17,8 @@ import org.philimone.hds.explorer.R;
 import org.philimone.hds.explorer.fragment.showcollected.adapter.model.CoreCollectedDataItem;
 import org.philimone.hds.explorer.model.CoreCollectedData;
 import org.philimone.hds.explorer.model.Household;
+import org.philimone.hds.explorer.model.Member;
+import org.philimone.hds.explorer.model.Region;
 import org.philimone.hds.explorer.model.enums.CoreFormRecordType;
 import org.philimone.hds.explorer.model.followup.TrackingList;
 
@@ -194,7 +197,13 @@ public class ShowCoreCollectedDataAdapter extends RecyclerView.Adapter<ShowCoreC
 
             CoreCollectedData cd = dataItem.collectedData;
             Household hh = dataItem.household;
+            Member mm = dataItem.member;
+            Region rr = dataItem.region;
 
+            ImageView iconView = rowView.findViewById(R.id.iconView);
+            ImageView iconView2Reg = rowView.findViewById(R.id.iconView2);
+            ImageView iconView3Hou = rowView.findViewById(R.id.iconView3);
+            ImageView iconView4Mem = rowView.findViewById(R.id.iconView4);
             TextView txtItem1 = rowView.findViewById(R.id.txtItem1);
             TextView txtItem2 = rowView.findViewById(R.id.txtItem2);
             TextView txtItem3 = rowView.findViewById(R.id.txtItem3);
@@ -212,10 +221,35 @@ public class ShowCoreCollectedDataAdapter extends RecyclerView.Adapter<ShowCoreC
             String uploadedDate = cd.uploadedDate==null ? "" : StringUtil.format(cd.uploadedDate, "yyyy-MM-dd HH:mm:ss");
             String code = StringUtil.isBlank(cd.formEntityCode) ? "" : cd.formEntityCode + " - ";
 
-            txtItem1.setText(hh.name);
-            txtItem2.setText(hh.code + " - " + mContext.getString(cd.formEntity.name) + "(" + cd.formEntityCode + ")");
-            txtItem3.setText(mContext.getString(R.string.core_entity_updated_date_lbl) + " " +updatedDate); //mContext.getString(R.string.core_entity_collected_date_lbl)+" "+createdDate+", " +
+            String name = hh!=null ? hh.name : mm!=null ? mm.name : rr!=null ? rr.name : "";
+
+
+            txtItem1.setText(name);
+            txtItem2.setText(mContext.getString(cd.formEntity.name) + " (" + cd.formEntityCode + ")");
+            txtItem3.setText(mContext.getString(R.string.core_entity_updated_date_lbl) + " " +updatedDate);
             txtItem4.setText(dataItem.collectedForms.size() + " " + mContext.getString(R.string.core_form_group_item_subtitle));
+
+            //Visit based collected data
+            //Non-visit based collected data
+            //New Region
+            //Edited Region
+            //Edited Household
+            //Edited Member
+
+            iconView.setVisibility(View.GONE);
+            iconView2Reg.setVisibility(View.GONE);
+            iconView3Hou.setVisibility(View.GONE);
+            iconView4Mem.setVisibility(View.GONE);
+
+            if (cd.visitId != 0) { //visit based
+                iconView.setVisibility(View.VISIBLE);
+                txtItem4.setVisibility(View.VISIBLE);
+            } else { //non visit based
+                iconView2Reg.setVisibility(rr != null ? View.VISIBLE : View.GONE);
+                iconView3Hou.setVisibility(hh != null ? View.VISIBLE : View.GONE);
+                iconView4Mem.setVisibility(mm != null ? View.VISIBLE : View.GONE);
+            }
+
 
             if (cd.recordType == CoreFormRecordType.UPDATE_RECORD) {
                 //DO SOMETHING DIFFERENT WITH EDIT/UPDATES

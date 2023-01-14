@@ -4,8 +4,11 @@ import org.philimone.hds.explorer.model.converters.StringCollectionConverter;
 import org.philimone.hds.explorer.model.enums.SubjectEntity;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import io.objectbox.annotation.Convert;
@@ -29,6 +32,8 @@ public class Region implements CoreEntity, FormSubject, Serializable {
     public static String HIERARCHY_8 = "hierarchy8";
     public static String HIERARCHY_9 = "hierarchy9";
     public static String HIERARCHY_10 = "hierarchy10";
+    public static List<String> ALL_HIERARCHIES = Arrays.asList(HIERARCHY_1, HIERARCHY_2, HIERARCHY_3, HIERARCHY_4, HIERARCHY_5,
+                                                               HIERARCHY_6, HIERARCHY_7, HIERARCHY_8, HIERARCHY_9, HIERARCHY_10);
 
     @Id
     public long id;

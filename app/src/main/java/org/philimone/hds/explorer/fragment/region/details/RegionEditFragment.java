@@ -178,10 +178,10 @@ public class RegionEditFragment extends Fragment {
 
     private void onUpdateDetailsClicked() {
 
-        /*if (this.region.isRecentlyCreated()) {
-            DialogFactory.createMessageInfo(this.getContext(), R.string.household_details_tab_edit_lbl, R.string.region_details_edit_cant_update_new_record).show();
+        if (this.region.isRecentlyCreated()) {
+            DialogFactory.createMessageInfo(this.getContext(), R.string.region_details_tab_edit_lbl, R.string.region_details_edit_cant_update_new_record).show();
             return;
-        }*/
+        }
 
         //persist the changes into the database
         this.region.name = this.txtEditName.getText().toString();

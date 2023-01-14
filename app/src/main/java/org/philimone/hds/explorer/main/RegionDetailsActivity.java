@@ -158,7 +158,7 @@ public class RegionDetailsActivity extends AppCompatActivity {
         txtRdHieararchyName.setText(hierarchyName);
         txtRdRegionName.setText(region.getName());
         txtRdRegionCode.setText(region.getCode());
-        txtRdParent.setText(parent.getName());
+        txtRdParent.setText(parent != null ? parent.getName() : "");
     }
 
     private Region getRegion(String code){

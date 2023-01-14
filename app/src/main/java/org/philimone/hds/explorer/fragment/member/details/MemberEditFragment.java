@@ -178,7 +178,7 @@ public class MemberEditFragment extends Fragment {
 
         this.loadingDialog = new LoadingDialog(this.getContext());
 
-        this.datePicker = DateTimeSelector.createDateWidget(this.getContext(), (pSelectedDate, selectedDateText) -> {
+        this.datePicker = DateTimeSelector.createDateWidget(this.getContext(), member.dob, (pSelectedDate, selectedDateText) -> {
             txtEditDob.setText(selectedDateText);
             selectedDob = pSelectedDate;
             onFormContentChanges();
@@ -281,7 +281,7 @@ public class MemberEditFragment extends Fragment {
         if (selectedDob != null) {
             Residency residency = this.boxResidencies.query(Residency_.memberCode.equal(member.code).and(Residency_.startType.equal(ResidencyStartType.BIRTH.code))).build().findFirst();
 
-            if (GeneralUtil.dateEquals(member.dob, residency.startDate) && !GeneralUtil.dateEquals(selectedDob, member.dob)) {
+            if (residency != null && GeneralUtil.dateEquals(member.dob, residency.startDate) && !GeneralUtil.dateEquals(selectedDob, member.dob)) {
                 //throw warning
 
                 DialogFactory.createMessageYN(this.getContext(), R.string.member_details_edit_member_dob_lbl, R.string.member_details_edit_dob_bir_warning_lbl, new DialogFactory.OnYesNoClickListener() {

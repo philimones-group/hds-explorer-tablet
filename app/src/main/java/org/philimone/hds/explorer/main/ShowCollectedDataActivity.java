@@ -118,7 +118,7 @@ public class ShowCollectedDataActivity extends AppCompatActivity {
         loadOdkCollectedDataList();
     }
 
-    private void loadOdkCollectedDataList() {
+    private void loadCoreCollectedDataList() {
         if (this.fragmentAdapter != null) {
             ShowCoreCollectedDataFragment fragment = this.fragmentAdapter.getFragmentCoreCollectedData();
             if (fragment != null) {
@@ -127,7 +127,7 @@ public class ShowCollectedDataActivity extends AppCompatActivity {
         }
     }
 
-    private void loadCoreCollectedDataList() {
+    private void loadOdkCollectedDataList() {
         if (this.fragmentAdapter != null) {
             ShowOdkCollectedDataFragment fragment = this.fragmentAdapter.getFragmentOdkCollectedData();
             if (fragment != null) {

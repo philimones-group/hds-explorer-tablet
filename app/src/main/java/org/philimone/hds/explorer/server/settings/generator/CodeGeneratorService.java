@@ -80,10 +80,10 @@ public class CodeGeneratorService {
         return codeGenerator.generateRegionCode(parentRegion, regionName, codes);
     }
 
-    public String generateLowestRegionCode(Region parentRegion, String regionName, List<String> existentCodes) {
+    public String generateLowestRegionCode(Region parentRegion, String regionName) {
         String[] codesArray = boxRegions.query().build().property(Region_.code).findStrings();
         List<String> codes = Arrays.asList(codesArray);
-        return codeGenerator.generateLowestRegionCode(parentRegion, regionName, existentCodes);
+        return codeGenerator.generateLowestRegionCode(parentRegion, regionName, codes);
     }
 
     public String generateHouseholdCode(Region region, User user) {

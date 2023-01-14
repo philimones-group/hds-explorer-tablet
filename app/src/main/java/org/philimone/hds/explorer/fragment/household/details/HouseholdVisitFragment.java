@@ -396,20 +396,22 @@ public class HouseholdVisitFragment extends Fragment {
 
     private void setHouseholdMode() {
         this.currentEventMode = VisitEventsMode.HOUSEHOLD_EVENTS;
-        
+        boolean isCensusHousehold = this.household.recentlyCreated;
         clearMemberSelection();
 
         this.btnVisitMemberEnu.setEnabled(true);
         this.btnVisitBirthReg.setEnabled(false);
         this.btnVisitPregnancyReg.setEnabled(false);
-        this.btnVisitExtInmigration.setEnabled(true);
-        this.btnVisitIntInmigration.setEnabled(true);
+
+        this.btnVisitExtInmigration.setEnabled(true && !isCensusHousehold);
+        this.btnVisitIntInmigration.setEnabled(true && !isCensusHousehold);
+        this.btnVisitChangeHead.setEnabled(true && !isCensusHousehold);
+
         this.btnVisitOutmigration.setEnabled(false);
         this.btnVisitDeath.setEnabled(false);
         this.btnVisitMaritalRelationship.setEnabled(false);
         this.btnVisitExtraForm.setEnabled(false); //we need to analyse better this
 
-        this.btnVisitChangeHead.setEnabled(true);
         this.btnVisitPregnancyReg.setVisibility(View.GONE);
         this.btnVisitChangeHead.setVisibility(View.VISIBLE);
 
@@ -431,14 +433,15 @@ public class HouseholdVisitFragment extends Fragment {
         //is household mode
 
         this.currentEventMode = VisitEventsMode.RESPONDENT_NOT_REG_EVENTS;
+        boolean isCensusHousehold = this.household.recentlyCreated;
 
         clearMemberSelection();
 
         this.btnVisitMemberEnu.setEnabled(true);
         this.btnVisitBirthReg.setEnabled(false);
         this.btnVisitPregnancyReg.setEnabled(false);
-        this.btnVisitExtInmigration.setEnabled(true);
-        this.btnVisitIntInmigration.setEnabled(true);
+        this.btnVisitExtInmigration.setEnabled(true && !isCensusHousehold);
+        this.btnVisitIntInmigration.setEnabled(true && !isCensusHousehold);
         this.btnVisitOutmigration.setEnabled(false);
         this.btnVisitDeath.setEnabled(false);
         this.btnVisitMaritalRelationship.setEnabled(false);
@@ -458,7 +461,7 @@ public class HouseholdVisitFragment extends Fragment {
     
     private void setMemberMode() {
         this.currentEventMode = VisitEventsMode.MEMBER_EVENTS;
-
+        boolean isCensusHousehold = this.household.recentlyCreated;
         boolean notVisited = countCollectedForms(selectedMember)==0;
 
         this.btnVisitMemberEnu.setEnabled(false);
@@ -466,8 +469,8 @@ public class HouseholdVisitFragment extends Fragment {
         this.btnVisitPregnancyReg.setEnabled(this.selectedMember!=null && this.selectedMember.gender== Gender.FEMALE);
         this.btnVisitExtInmigration.setEnabled(false);
         this.btnVisitIntInmigration.setEnabled(false);
-        this.btnVisitOutmigration.setEnabled(true);
-        this.btnVisitDeath.setEnabled(true);
+        this.btnVisitOutmigration.setEnabled(true && !isCensusHousehold);
+        this.btnVisitDeath.setEnabled(true && !isCensusHousehold);
         this.btnVisitMaritalRelationship.setEnabled(true);
         this.btnVisitExtraForm.setEnabled(true); //we need to analyse better this
 

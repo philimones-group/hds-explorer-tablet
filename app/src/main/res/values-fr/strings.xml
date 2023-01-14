@@ -129,6 +129,7 @@
     <string name="server_sync_offline_mode_continue_title_lbl">Impossible de se connecter au serveur</string>
     <string name="server_sync_offline_mode_continue_msg_lbl">Une erreur s\'est produite lors de la tentative de synchronisation des données du serveur. Veuillez réessayer ou continuer en mode hors ligne.\n\nVoulez-vous ouvrir le panneau de synchronisation en mode hors ligne?</string>
 
+    <string name="core_entity_region_lbl">Enregistrement d\'un nouveau région</string>
     <string name="core_entity_household_lbl">Enregistrement d\'un nouveau ménage</string>
     <string name="core_entity_member_enu_lbl">Inscription de nouveau membre</string>
     <string name="core_entity_head_relationship_lbl">Enregistrement des relations avec le responsable</string>
@@ -306,7 +307,7 @@
 
     <string name="region_details_edit_region_name_lbl">Nom de la région</string>
     <string name="region_details_edit_button_update_details_lbl">Changer les détails</string>
-    <string name="region_details_edit_cant_update_new_record">Il ne sera pas possible de mettre à jour cette région car elle n\'a été créée que récemment. Pour la mettre à jour, vous pouvez le faire dans le formulaire d\'enregistrement des nouveaux ménages.</string>
+    <string name="region_details_edit_cant_update_new_record">Il ne sera pas possible de mettre à jour cette région car elle n\'a été créée que récemment. Pour la mettre à jour, vous pouvez le faire dans le formulaire d\'enregistrement des nouveaux Régions.</string>
 
     <string name="household_details_tab_members_list_lbl">Liste des membres</string>
     <string name="household_details_tab_collected_forms_lbl">Formulaires recueillis</string>
@@ -377,10 +378,16 @@
     <string name="household_filter_add_house_lbl">Ajouter une nouvelle maison</string>
     <string name="household_filter_edit_house_lbl">Changer la nouvelle maison</string>
     <string name="household_filter_clear_lbl">Effacer</string>
-    <string name="household_filter_show_region_btn_lbl">Voir les détails de la région</string>
+    <string name="household_filter_show_region_btn_lbl">Afficher la région</string>
     <string name="household_filter_household_not_found_lbl">Les maisons avec le code (%1$s) n\'ont pas été trouvées</string>
     <string name="household_filter_head_label">Chef:</string>
 
+    <!-- New Region -->
+    <string name="new_region_code_err_lbl">Le code de la région est incorrect!</string>
+    <string name="new_region_code_empty_lbl">Le code de la région ne peut pas être vide</string>
+    <string name="new_region_name_empty_lbl">Le nom de la région ne peut pas être vide</string>
+    <string name="new_region_code_exists_lbl">Le code de la région saisi existe déjà!</string>
+    
     <!-- New Household -->
     <string name="new_household_main_dialog_lbl">Ajouter un nouveau ménage/maison</string>
     <string name="new_household_region_code_lbl">Indicatif régional</string>

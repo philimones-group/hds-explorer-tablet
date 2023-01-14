@@ -298,7 +298,7 @@
             <Button
                 android:id="@+id/btMemFilterClear"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
+                android:layout_height="wrap_content"
                 android:textSize="@dimen/member_filter_button_textsize"
                 android:text="@string/member_filter_clear_lbl"
                 android:layout_gravity="left"
@@ -307,7 +307,7 @@
             <Button
                 android:id="@+id/btMemFilterSearch"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
                 android:layout_gravity="right"
                 android:textSize="@dimen/member_filter_button_textsize"

@@ -3,13 +3,9 @@ package org.philimone.hds.explorer.widget;
 
 import android.content.Context;
 import android.os.Bundle;
-
-import androidx.annotation.LayoutRes;
-import androidx.annotation.NonNull;
-import androidx.annotation.StringRes;
-import androidx.appcompat.app.AppCompatDialog;
-
 import android.text.InputType;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -18,11 +14,20 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.annotation.LayoutRes;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.StringRes;
+import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.FragmentManager;
+
 import org.philimone.hds.explorer.R;
 
 import mz.betainteractive.utilities.StringUtil;
 
-public class DialogFactory extends AppCompatDialog {
+public class DialogFragmentFactory extends DialogFragment {
+
+    private FragmentManager fragmentManager;
 
     private Context mContext;
     private TextView txtDialogTitle;
@@ -33,14 +38,17 @@ public class DialogFactory extends AppCompatDialog {
     private Button btDialogNo;
     private Button btDialogCancel;
 
+    private @LayoutRes int dialogLayoutResId;
+
     private boolean hasInput;
     private boolean hasOkButton = true;
     private boolean hasYesButton = false;
     private boolean hasNoButton = false;
     private boolean hasCancelButton = false;
-
     private boolean cancelable = false;
 
+    private @StringRes int dialogTitleResId;
+    private @StringRes int dialogMessageResId;
     private String dialogTitle;
     private String dialogMessage;
     private String dialogYesText;
@@ -59,13 +67,24 @@ public class DialogFactory extends AppCompatDialog {
     private OnYesNoCancelClickListener yesNoCancelClickListener;
     private OnInputTextListener inputTextListener;
 
-    public DialogFactory(@NonNull Context context) {
-        super(context);
-        this.mContext = context;
+    public DialogFragmentFactory(FragmentManager fragmentManager) {
+        super();
+        this.fragmentManager = fragmentManager;
     }
 
-    public static DialogFactory newInstance(Context context, String title, String message, boolean okButton, boolean yesButton, boolean noButton, boolean cancelButton){
-        DialogFactory dialog = new DialogFactory(context);
+    public static DialogFragmentFactory newInstance(FragmentManager fragManager, @LayoutRes int dialogLayoutResId, OnYesNoClickListener listener) {
+        DialogFragmentFactory dialog = new DialogFragmentFactory(fragManager);
+        dialog.dialogLayoutResId = dialogLayoutResId;
+        dialog.yesNoClickListener = listener;
+        dialog.hasOkButton = false;
+        dialog.hasCancelButton = false;
+        dialog.hasYesButton = true;
+        dialog.hasNoButton = true;
+        return dialog;
+    }
+
+    public static DialogFragmentFactory newInstance(FragmentManager fragManager, String title, String message, boolean okButton, boolean yesButton, boolean noButton, boolean cancelButton){
+        DialogFragmentFactory dialog = new DialogFragmentFactory(fragManager);
 
         dialog.dialogTitle = title;
         dialog.dialogMessage = message;
@@ -78,11 +97,11 @@ public class DialogFactory extends AppCompatDialog {
         return dialog;
     }
 
-    public static DialogFactory newInstance(Context context, @StringRes int titleResId, @StringRes  int messageResId, boolean okButton, boolean yesButton, boolean noButton, boolean cancelButton){
-        DialogFactory dialog = new DialogFactory(context);
+    public static DialogFragmentFactory newInstance(FragmentManager fragManager, @StringRes int titleResId, @StringRes  int messageResId, boolean okButton, boolean yesButton, boolean noButton, boolean cancelButton){
+        DialogFragmentFactory dialog = new DialogFragmentFactory(fragManager);
 
-        dialog.dialogTitle = context.getString(titleResId);
-        dialog.dialogMessage = context.getString(messageResId);
+        dialog.dialogTitleResId = titleResId;
+        dialog.dialogMessageResId = messageResId;
 
         dialog.hasOkButton = okButton;
         dialog.hasCancelButton = cancelButton;
@@ -92,10 +111,10 @@ public class DialogFactory extends AppCompatDialog {
         return dialog;
     }
 
-    public static DialogFactory newInstance(Context context, @StringRes int titleResId, String message, boolean okButton, boolean yesButton, boolean noButton, boolean cancelButton){
-        DialogFactory dialog = new DialogFactory(context);
+    public static DialogFragmentFactory newInstance(FragmentManager fragManager, @StringRes int titleResId, String message, boolean okButton, boolean yesButton, boolean noButton, boolean cancelButton){
+        DialogFragmentFactory dialog = new DialogFragmentFactory(fragManager);
 
-        dialog.dialogTitle = context.getString(titleResId);
+        dialog.dialogTitleResId = titleResId;
         dialog.dialogMessage = message;
 
         dialog.hasOkButton = okButton;
@@ -106,11 +125,11 @@ public class DialogFactory extends AppCompatDialog {
         return dialog;
     }
 
-    public static DialogFactory newInstance(Context context, String title, @StringRes  int messageResId, boolean okButton, boolean yesButton, boolean noButton, boolean cancelButton){
-        DialogFactory dialog = new DialogFactory(context);
+    public static DialogFragmentFactory newInstance(FragmentManager fragManager, String title, @StringRes  int messageResId, boolean okButton, boolean yesButton, boolean noButton, boolean cancelButton){
+        DialogFragmentFactory dialog = new DialogFragmentFactory(fragManager);
 
         dialog.dialogTitle = title;
-        dialog.dialogMessage = context.getString(messageResId);
+        dialog.dialogMessageResId = messageResId;
 
         dialog.hasOkButton = okButton;
         dialog.hasCancelButton = cancelButton;
@@ -120,11 +139,11 @@ public class DialogFactory extends AppCompatDialog {
         return dialog;
     }
 
-    public static DialogFactory newInstance(Context context, @StringRes int titleResId, @StringRes  int messageResId, boolean cancelButton){
-        DialogFactory dialog = new DialogFactory(context);
+    public static DialogFragmentFactory newInstance(FragmentManager fragManager, @StringRes int titleResId, @StringRes  int messageResId, boolean cancelButton){
+        DialogFragmentFactory dialog = new DialogFragmentFactory(fragManager);
 
-        dialog.dialogTitle = context.getString(titleResId);
-        dialog.dialogMessage = context.getString(messageResId);
+        dialog.dialogTitleResId = titleResId;
+        dialog.dialogMessageResId = messageResId;
 
         dialog.hasInput = true;
         dialog.hasOkButton = true;
@@ -135,91 +154,129 @@ public class DialogFactory extends AppCompatDialog {
         return dialog;
     }
 
-    public static DialogFactory createMessageInfo(Context context, String title, String message){
-        DialogFactory dialog = newInstance(context, title, message, true, false, false, false);
+    public static DialogFragmentFactory createMessageInfo(FragmentManager fragManager, String title, String message){
+        DialogFragmentFactory dialog = newInstance(fragManager, title, message, true, false, false, false);
 
         return dialog;
     }
 
-    public static DialogFactory createMessageInfo(Context context, @StringRes int titleResId, @StringRes  int messageResId){
-        DialogFactory dialog = newInstance(context, titleResId, messageResId, true, false, false, false);
+    public static DialogFragmentFactory createMessageInfo(FragmentManager fragManager, @StringRes int titleResId, @StringRes  int messageResId){
+        DialogFragmentFactory dialog = newInstance(fragManager, titleResId, messageResId, true, false, false, false);
 
         return dialog;
     }
 
-    public static DialogFactory createMessageInfo(Context context, @StringRes int titleResId, String message){
-        DialogFactory dialog = newInstance(context, titleResId, message, true, false, false, false);
+    public static DialogFragmentFactory createMessageInfo(FragmentManager fragManager, @StringRes int titleResId, String message){
+        DialogFragmentFactory dialog = newInstance(fragManager, titleResId, message, true, false, false, false);
 
         return dialog;
     }
 
-    public static DialogFactory createMessageInfo(Context context, String title, @StringRes int messageResId){
-        DialogFactory dialog = newInstance(context, title, messageResId, true, false, false, false);
+    public static DialogFragmentFactory createMessageInfo(FragmentManager fragManager, String title, @StringRes int messageResId){
+        DialogFragmentFactory dialog = newInstance(fragManager, title, messageResId, true, false, false, false);
 
         return dialog;
     }
 
-    public static DialogFactory createMessageInfo(Context context, String title, String message, OnClickListener okListener){
-        DialogFactory dialog = newInstance(context, title, message, true, false, false, false);
+    public static DialogFragmentFactory createMessageInfo(FragmentManager fragManager, String title, String message, OnClickListener okListener){
+        DialogFragmentFactory dialog = newInstance(fragManager, title, message, true, false, false, false);
         dialog.okClickListener = okListener;
         return dialog;
     }
 
-    public static DialogFactory createMessageInfo(Context context, @StringRes int titleResId, @StringRes int messageResId, OnClickListener okListener){
-        DialogFactory dialog = newInstance(context, titleResId, messageResId, true, false, false, false);
+    public static DialogFragmentFactory createMessageInfo(FragmentManager fragManager, @StringRes int titleResId, @StringRes int messageResId, OnClickListener okListener){
+        DialogFragmentFactory dialog = newInstance(fragManager, titleResId, messageResId, true, false, false, false);
         dialog.okClickListener = okListener;
         return dialog;
     }
 
-    public static DialogFactory createMessageYN(Context context, String title, String message, OnYesNoClickListener clickListener){
-        DialogFactory dialog = newInstance(context, title, message, false, true, true, false);
+    public static DialogFragmentFactory createMessageYN(FragmentManager fragManager, String title, String message, OnYesNoClickListener clickListener){
+        DialogFragmentFactory dialog = newInstance(fragManager, title, message, false, true, true, false);
         dialog.yesNoClickListener = clickListener;
         return dialog;
     }
 
-    public static DialogFactory createMessageYN(Context context, @StringRes int titleResId, @StringRes int messageResId, OnYesNoClickListener clickListener){
-        DialogFactory dialog = newInstance(context, titleResId, messageResId, false, true, true, false);
+    public static DialogFragmentFactory createMessageYN(FragmentManager fragManager, @StringRes int titleResId, @StringRes int messageResId, OnYesNoClickListener clickListener){
+        DialogFragmentFactory dialog = newInstance(fragManager, titleResId, messageResId, false, true, true, false);
         dialog.yesNoClickListener = clickListener;
         return dialog;
     }
 
-    public static DialogFactory createMessageYNC(Context context, String title, String message, OnYesNoCancelClickListener clickListener){
-        DialogFactory dialog = newInstance(context, title, message, false, true, true, true);
+    public static DialogFragmentFactory createMessageYNC(FragmentManager fragManager, String title, String message, OnYesNoCancelClickListener clickListener){
+        DialogFragmentFactory dialog = newInstance(fragManager, title, message, false, true, true, true);
         dialog.yesNoCancelClickListener = clickListener;
         return dialog;
     }
 
-    public static DialogFactory createMessageYNC(Context context, @StringRes int titleResId, @StringRes int messageResId, OnYesNoCancelClickListener clickListener){
-        DialogFactory dialog = newInstance(context, titleResId, messageResId, false, true, true, true);
+    public static DialogFragmentFactory createMessageYNC(FragmentManager fragManager, @StringRes int titleResId, @StringRes int messageResId, OnYesNoCancelClickListener clickListener){
+        DialogFragmentFactory dialog = newInstance(fragManager, titleResId, messageResId, false, true, true, true);
         dialog.yesNoCancelClickListener = clickListener;
         return dialog;
     }
 
-    public static DialogFactory createNumberInput(Context context, @StringRes int titleResId, @StringRes int messageResId, OnInputTextListener listener){
-        DialogFactory dialog = newInstance(context, titleResId, messageResId, true);
+    public static DialogFragmentFactory createNumberInput(FragmentManager fragManager, @StringRes int titleResId, @StringRes int messageResId, OnInputTextListener listener){
+        DialogFragmentFactory dialog = newInstance(fragManager, titleResId, messageResId, true);
         dialog.inputTextListener = listener;
         dialog.dialogInputType = DialogInputType.NUMBER;
         return dialog;
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-        setContentView(R.layout.message_dialog);
+        this.setStyle(DialogFragment.STYLE_NORMAL, org.philimone.hds.forms.R.style.AppTheme);
 
-        initialize();
+        this.setCancelable(cancelable);
     }
 
-    private void initialize(){
-        this.txtDialogTitle = (TextView) findViewById(R.id.txtDialogTitle);
-        this.txtDialogMessage = (TextView) findViewById(R.id.txtDialogMessage);
-        this.txtDialogInput = findViewById(R.id.txtDialogInput);
-        this.btDialogOk = (Button) findViewById(R.id.btDialogOk);
-        this.btDialogYes = (Button) findViewById(R.id.btDialogYes);
-        this.btDialogNo = (Button) findViewById(R.id.btDialogNo);
-        this.btDialogCancel = (Button) findViewById(R.id.btDialogCancel);
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        @LayoutRes int resourceId = (dialogLayoutResId == 0) ? R.layout.message_dialog : dialogLayoutResId;
+
+        View view = inflater.inflate(resourceId, container, false);
+
+        Window window = getDialog().getWindow();
+
+        window.requestFeature(Window.FEATURE_NO_TITLE);
+        window.setLayout(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        window.setGravity(Gravity.CENTER); // Optional
+        window.setBackgroundDrawableResource(R.drawable.nui_dialog_border_shadow);
+
+        return view;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        //this.requestWindowFeature(Window.FEATURE_NO_TITLE);
+
+        this.mContext = this.getContext();
+
+
+
+        initialize(view);
+    }
+/*
+    public void onResume()
+    {
+        super.onResume();
+        Window window = getDialog().getWindow();
+
+        window.requestFeature(Window.FEATURE_NO_TITLE);
+        window.setLayout(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        window.setGravity(Gravity.CENTER); // Optional
+    }*/
+
+    private void initialize(View view){
+        this.txtDialogTitle = (TextView) view.findViewById(R.id.txtDialogTitle);
+        this.txtDialogMessage = (TextView) view.findViewById(R.id.txtDialogMessage);
+        this.txtDialogInput = view.findViewById(R.id.txtDialogInput);
+        this.btDialogOk = (Button) view.findViewById(R.id.btDialogOk);
+        this.btDialogYes = (Button) view.findViewById(R.id.btDialogYes);
+        this.btDialogNo = (Button) view.findViewById(R.id.btDialogNo);
+        this.btDialogCancel = (Button) view.findViewById(R.id.btDialogCancel);
 
         if (this.btDialogOk != null)
             this.btDialogOk.setOnClickListener(new View.OnClickListener() {
@@ -260,6 +317,12 @@ public class DialogFactory extends AppCompatDialog {
         doLayout();
     }
 
+    @Override
+    public void setCancelable(boolean cancelable) {
+        this.cancelable = cancelable;
+        super.setCancelable(cancelable);
+    }
+
     private void onCancelCicked(){
         dismiss();
 
@@ -282,7 +345,7 @@ public class DialogFactory extends AppCompatDialog {
                     return;
                 }
 
-                if (dialogInputType==DialogInputType.NUMBER) {
+                if (dialogInputType== DialogInputType.NUMBER) {
                     inputTextListener.onNumberTyped(Integer.parseInt(value));
                 } else {
                     inputTextListener.onTextTyped(value);
@@ -308,6 +371,18 @@ public class DialogFactory extends AppCompatDialog {
     }
 
     public void setTexts(){
+
+        if (dialogLayoutResId != 0) {
+            return;
+        }
+
+        if (this.dialogTitleResId != 0) {
+            this.dialogTitle = mContext.getString(this.dialogTitleResId);
+        }
+
+        if (this.dialogMessageResId != 0) {
+            this.dialogMessage = mContext.getString(this.dialogMessageResId);
+        }
 
         if (this.txtDialogTitle != null){
             this.txtDialogTitle.setText(this.dialogTitle);
@@ -377,12 +452,6 @@ public class DialogFactory extends AppCompatDialog {
         this.dialogOkText = getContext().getString(textResId);
     }
 
-    @Override
-    public void setCancelable(boolean flag) {
-        super.setCancelable(flag);
-        this.cancelable = flag;
-    }
-
     public void doLayout() {
 
         super.setCancelable(cancelable);
@@ -407,6 +476,11 @@ public class DialogFactory extends AppCompatDialog {
             txtDialogInput.setInputType(InputType.TYPE_TEXT_FLAG_MULTI_LINE);
         }
 
+
+    }
+
+    public void show() {
+        show(fragmentManager, "dfragfactory");
     }
 
     public interface OnClickListener {

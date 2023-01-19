@@ -6,6 +6,7 @@ import android.util.Log;
 import org.philimone.hds.explorer.R;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
 import org.philimone.hds.explorer.model.CoreCollectedData;
+import org.philimone.hds.explorer.model.CoreCollectedData_;
 import org.philimone.hds.explorer.model.Household;
 import org.philimone.hds.explorer.model.Household_;
 import org.philimone.hds.explorer.model.Region;
@@ -18,6 +19,7 @@ import org.philimone.hds.forms.model.HForm;
 import org.philimone.hds.forms.model.ValidationResult;
 import org.philimone.hds.forms.model.XmlFormResult;
 
+import java.io.File;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -87,6 +89,12 @@ public class HouseholdFormUtil extends FormUtil<Household> {
         return null;
     }
 
+    public static HouseholdFormUtil completeRegistration(AppCompatActivity activity, Context context, Region region, Household preRegHousehold, FormUtilities odkFormUtilities, FormUtilListener<Household> listener) {
+        HouseholdFormUtil formUtil = new HouseholdFormUtil(activity, context, region, odkFormUtilities, listener);
+        formUtil.household = preRegHousehold;
+        return formUtil;
+    }
+
     @Override
     protected void initBoxes() {
         super.initBoxes();
@@ -98,9 +106,14 @@ public class HouseholdFormUtil extends FormUtil<Household> {
 
     @Override
     protected void preloadValues() {
+
+        String code = (household != null && household.preRegistration) ? household.code : codeGenerator.generateHouseholdCode(region, this.user);
+        String name = (household != null && household.preRegistration) ? household.name : "";
+
         preloadedMap.put("regionCode", region.code);
         preloadedMap.put("regionName", region.name);
-        preloadedMap.put("householdCode", codeGenerator.generateHouseholdCode(region, this.user));
+        preloadedMap.put("householdCode", code);
+        preloadedMap.put("householdName", name);
         preloadedMap.put("modules", this.user.getSelectedModulesCodes());
     }
 
@@ -136,7 +149,8 @@ public class HouseholdFormUtil extends FormUtil<Household> {
         }
 
         //check if household with code exists
-        if (currentMode==Mode.CREATE && boxHouseholds.query().equal(Household_.code, household_code, QueryBuilder.StringOrder.CASE_SENSITIVE).build().findFirst() != null){
+        boolean preRegistered = (this.household != null && this.household.preRegistration);
+        if (currentMode==Mode.CREATE && !preRegistered && boxHouseholds.query().equal(Household_.code, household_code, QueryBuilder.StringOrder.CASE_SENSITIVE).build().findFirst() != null){
             String message = this.context.getString(R.string.new_household_code_exists_lbl);
             //DialogFactory.createMessageInfo(HouseholdDetailsActivity.this, R.string.info_lbl, R.string.new_household_code_exists_lbl).show();
             return new ValidationResult(columnHouseholdCode, message);
@@ -183,8 +197,9 @@ public class HouseholdFormUtil extends FormUtil<Household> {
         Double gpsAlt = gpsValues.get("gpsAlt");
         Double gpsAcc = gpsValues.get("gpsAcc");
 
+        boolean wasPreRegistered = (this.household != null && this.household.preRegistration);
 
-        Household household = new Household();
+        Household household = wasPreRegistered ? this.household : new Household();
         household.region = colRegionCode.getValue();
         household.code = colHouseholdCode.getValue();
         household.name = colHouseholdName.getValue();
@@ -196,6 +211,8 @@ public class HouseholdFormUtil extends FormUtil<Household> {
         household.gpsAccuracy = gpsAcc;
         household.updateGpsCalculations();
         household.collectedId = collectedValues.get(HForm.COLUMN_ID).getValue();
+        household.preRegistration = false;
+        household.shareable = false;
         household.recentlyCreated = true;
         household.recentlyCreatedUri = result.getFilename();
         household.modules.addAll(StringCollectionConverter.getCollectionFrom(colModules.getValue()));
@@ -215,6 +232,22 @@ public class HouseholdFormUtil extends FormUtil<Household> {
         collectedData.extension.setTarget(this.getFormExtension(collectedData.formEntity));
 
         boxCoreCollectedData.put(collectedData);
+
+        //remove pregistered data if exists on this tablet
+        if (wasPreRegistered) {
+            CoreCollectedData preCoreCollectedData = boxCoreCollectedData.query(CoreCollectedData_.formEntityId.equal(household.id).and(CoreCollectedData_.formEntity.equal(CoreFormEntity.PRE_HOUSEHOLD.code))).build().findFirst();
+
+            if (preCoreCollectedData != null) {
+                try {
+                    new File(preCoreCollectedData.formFilename).delete();
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+
+                //delete core data
+                this.boxCoreCollectedData.remove(preCoreCollectedData);
+            }
+        }
 
         this.entity = household;
         this.household = household;

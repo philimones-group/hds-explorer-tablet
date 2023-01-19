@@ -1,6 +1,8 @@
 package org.philimone.hds.explorer.fragment;
 
 
+import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
+
 import android.app.Activity;
 import android.content.ClipboardManager;
 import android.content.Context;
@@ -44,6 +46,7 @@ import org.philimone.hds.explorer.listeners.BarcodeContextMenuClickedListener;
 import org.philimone.hds.explorer.main.BarcodeScannerActivity;
 import org.philimone.hds.explorer.main.HouseholdDetailsActivity;
 import org.philimone.hds.explorer.main.hdsforms.FormUtilListener;
+import org.philimone.hds.explorer.main.hdsforms.PreHouseholdFormUtil;
 import org.philimone.hds.explorer.main.hdsforms.RegionFormUtil;
 import org.philimone.hds.explorer.model.ApplicationParam;
 import org.philimone.hds.explorer.model.ApplicationParam_;
@@ -57,6 +60,7 @@ import org.philimone.hds.explorer.model.Round_;
 import org.philimone.hds.explorer.model.User;
 import org.philimone.hds.explorer.settings.RequestCodes;
 import org.philimone.hds.explorer.widget.DialogFactory;
+import org.philimone.hds.explorer.widget.DialogFragmentFactory;
 import org.philimone.hds.explorer.widget.RecyclerListView;
 
 import java.util.ArrayList;
@@ -384,8 +388,12 @@ public class HouseholdFilterFragment extends Fragment implements RegionExpandabl
     private void onHouseholdClicked(Household household){
         //paint item as selected
         this.household = household;
-
         listener.onHouseholdClick(household);
+
+        if (household.preRegistration) {
+            //try to complete registration
+            completeHouseholdRegistration(household);
+        }
     }
 
     private void onAddNewRegionClicked() {
@@ -422,6 +430,24 @@ public class HouseholdFilterFragment extends Fragment implements RegionExpandabl
 
     private void onAddNewHouseholdClicked() {
 
+        DialogFragmentFactory dialogFactory = DialogFragmentFactory.newInstance(this.getParentFragmentManager(), R.layout.add_household_ask_dialog, new DialogFragmentFactory.OnYesNoClickListener() {
+            @Override
+            public void onYesClicked() {
+                preRegisterNewHousehold();
+            }
+
+            @Override
+            public void onNoClicked() {
+                addNewHousehold();
+            }
+        });
+
+        dialogFactory.setCancelable(true);
+        dialogFactory.show();
+    }
+
+    private void addNewHousehold() {
+        //Add new Household
         boolean roundsExists = this.boxRounds.query().order(Round_.roundNumber, QueryBuilder.DESCENDING).build().count()>0;
 
         if (!roundsExists) {
@@ -434,6 +460,48 @@ public class HouseholdFilterFragment extends Fragment implements RegionExpandabl
 
         Intent intent = new Intent(this.getContext(), HouseholdDetailsActivity.class);
         intent.putExtra("region", currentRegion.id);
+        intent.putExtra("request_code", RequestCodes.HOUSEHOLD_DETAILS_FROM_HFILTER_NEW_HOUSEHOLD);
+
+        addNewHouseholdLauncher.launch(intent);
+    }
+
+    private void preRegisterNewHousehold() {
+        PreHouseholdFormUtil regionFormUtil = new PreHouseholdFormUtil(this, this.mContext, this.currentRegion, this.odkFormUtilities, new FormUtilListener<Household>() {
+            @Override
+            public void onNewEntityCreated(Household household, Map<String, Object> data) {
+                //reload filters and select new region
+                searchHouses(household.code);
+            }
+
+            @Override
+            public void onEntityEdited(Household household, Map<String, Object> data) {
+
+            }
+
+            @Override
+            public void onFormCancelled() {
+
+            }
+        });
+
+        regionFormUtil.collect();
+    }
+
+    private void completeHouseholdRegistration(Household household) {
+        //Add new Household
+        boolean roundsExists = this.boxRounds.query().order(Round_.roundNumber, QueryBuilder.DESCENDING).build().count()>0;
+
+        if (!roundsExists) {
+            DialogFactory.createMessageInfo(this.mContext, R.string.error_lbl, R.string.round_does_not_exists_lbl).show();
+            return;
+        }
+
+        //Call HouseholdDetailsActivity in mode NEW_HOUSEHOLD
+        //Receive the recent created Household, put the code on search after it
+
+        Intent intent = new Intent(this.getContext(), HouseholdDetailsActivity.class);
+        intent.putExtra("region", currentRegion.id);
+        intent.putExtra("household", household.id);
         intent.putExtra("request_code", RequestCodes.HOUSEHOLD_DETAILS_FROM_HFILTER_NEW_HOUSEHOLD);
 
         addNewHouseholdLauncher.launch(intent);

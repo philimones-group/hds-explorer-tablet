@@ -131,6 +131,7 @@
 
     <string name="core_entity_region_lbl">Registo de Nova Região</string>
     <string name="core_entity_household_lbl">Registo de Novo Agregado</string>
+    <string name="core_entity_pre_household_lbl">Pre-registo de Novo Agregado</string>
     <string name="core_entity_member_enu_lbl">Registo de Novo Membro</string>
     <string name="core_entity_head_relationship_lbl">Registo de Relação com chefe</string>
     <string name="core_entity_marital_relationship_lbl">Registo de União Marital</string>
@@ -321,6 +322,8 @@
     <string name="household_details_dialog_del_saved_form_title_lbl">Apagar informação salva</string>
     <string name="household_details_dialog_del_saved_form_msg_lbl">O formulário ODK salvo não foi encontrado, a informação salva será apagada para permitir colheita de novos formulários\nDeseja prosseguir com a execução deste processo?</string>
     <string name="household_details_forms_selector_lbl">Seleccionar um Formulário</string>
+    <string name="household_details_complete_reg_title_lbl">Completar o registo do Agregado</string>
+    <string name="household_details_complete_reg_msg_lbl">Este Agregado foi pre-registado, \nDeseja completar o registo deste Agregado?</string>
 
     <string name="household_details_edit_household_name_lbl">Nomde do Agregado</string>
     <string name="household_details_edit_gps_lbl">Coordenadas GPS</string>
@@ -381,6 +384,10 @@
     <string name="household_filter_show_region_btn_lbl">Mostrar Região</string>
     <string name="household_filter_household_not_found_lbl">Casas com código (%1$s) não foram encontradas</string>
     <string name="household_filter_head_label">Chefe:</string>
+    <string name="household_filter_new_household_dialog_title_label">Registo de um novo Agregado</string>
+    <string name="household_filter_new_household_dialog_message_label">Como pretende registar o novo Agregado?</string>
+    <string name="household_filter_new_household_dialog_yes_label">Pré-registar Agregado</string>
+    <string name="household_filter_new_household_dialog_no_label">Adicionar novo Agregado</string>
 
     <!-- New Region -->
     <string name="new_region_code_err_lbl">O código da região está incorrecto!</string>

@@ -10,6 +10,7 @@ import androidx.annotation.StringRes;
 public enum CoreFormEntity {
 
     REGION                 ("rawRegion",                R.string.core_entity_region_lbl),
+    PRE_HOUSEHOLD          ("rawPreHousehold",             R.string.core_entity_pre_household_lbl),
     HOUSEHOLD              ("rawHousehold",             R.string.core_entity_household_lbl),
     MEMBER_ENU             ("rawMemberEnu",             R.string.core_entity_member_enu_lbl),
     HEAD_RELATIONSHIP      ("rawHeadRelationship",      R.string.core_entity_head_relationship_lbl),

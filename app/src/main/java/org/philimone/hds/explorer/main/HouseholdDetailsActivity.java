@@ -13,7 +13,6 @@ import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
 import org.philimone.hds.explorer.R;
-import org.philimone.hds.explorer.adapter.model.TrackingSubjectItem;
 import org.philimone.hds.explorer.data.FormDataLoader;
 import org.philimone.hds.explorer.database.Bootstrap;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
@@ -348,6 +347,14 @@ public class HouseholdDetailsActivity extends AppCompatActivity implements House
 
     private void displayHouseholdDetails(){
 
+        hhDetailsName.setText("");
+        hhDetailsCode.setText("");
+        hhDetailsHeadName.setText("");
+        hhDetailsHeadCode.setText("");
+        hhDetailsRegionLabel.setText("");
+        hhDetailsRegionValue.setText("");
+        hhDetailsVisitDateValue.setText("");
+
         if (household == null) return;
 
         //reload
@@ -494,7 +501,7 @@ public class HouseholdDetailsActivity extends AppCompatActivity implements House
         boolean roundExists = currentRound != null;
 
         btHouseDetailsCreateVisit.setEnabled(false);
-        btHouseDetailsFinishVisit.setEnabled(roundExists && true);
+        btHouseDetailsFinishVisit.setEnabled(false);
         btHouseDetailsOpenVisit.setEnabled(false);
 
         btHouseDetailsCreateVisit.setVisibility(View.GONE);
@@ -505,6 +512,7 @@ public class HouseholdDetailsActivity extends AppCompatActivity implements House
         mainPanelVisitLayout.setVisibility(View.VISIBLE);
 
         initializeButtons();
+        displayHouseholdDetails();
     }
 
     private void setTrackingMode(){
@@ -529,7 +537,7 @@ public class HouseholdDetailsActivity extends AppCompatActivity implements House
     private void createNewHousehold(){
         //load new Household HDS-Form and save it
         if (this.region != null) {
-            loadNewHouseholdForm();
+            onCreateNewHousehold();
         } else {
             DialogFactory.createMessageInfo(this, "Household Enumeration", "Cant create new Household because there is no region selected");
         }
@@ -625,8 +633,31 @@ public class HouseholdDetailsActivity extends AppCompatActivity implements House
     }
 
     /* Household Form */
-    private void loadNewHouseholdForm(){
+    private void onCreateNewHousehold(){
 
+        //check if this household is pre-registered
+        if (this.household != null && this.household.preRegistration == true) {
+
+            //Try to complete Household Registration
+            DialogFactory.createMessageYN(this, R.string.household_details_complete_reg_title_lbl, R.string.household_details_complete_reg_msg_lbl, new DialogFactory.OnYesNoClickListener() {
+                @Override
+                public void onYesClicked() {
+                    completeHouseholdRegistration();
+                }
+
+                @Override
+                public void onNoClicked() {
+                    finish(); //close this activity
+                }
+            }).show();
+
+        } else {
+            loadNewHouseholdForm();
+        }
+
+    }
+
+    private void loadNewHouseholdForm() {
         HouseholdFormUtil householdForm = new HouseholdFormUtil(this, this, this.region, this.odkFormUtilities, new FormUtilListener<Household>() {
             @Override
             public void onNewEntityCreated(Household household, Map<String, Object> data) {
@@ -644,9 +675,28 @@ public class HouseholdDetailsActivity extends AppCompatActivity implements House
                 HouseholdDetailsActivity.this.finish();
             }
         });
-
         householdForm.collect();
+    }
 
+    private void completeHouseholdRegistration() {
+        HouseholdFormUtil householdFormUtil = HouseholdFormUtil.completeRegistration(this, this, this.region, this.household, this.odkFormUtilities, new FormUtilListener<Household>() {
+            @Override
+            public void onNewEntityCreated(Household entity, Map<String, Object> data) {
+                HouseholdDetailsActivity.this.household = household;
+                loadNewVisitForm(true);
+            }
+
+            @Override
+            public void onEntityEdited(Household entity, Map<String, Object> data) {
+
+            }
+
+            @Override
+            public void onFormCancelled() {
+                finish();
+            }
+        });
+        householdFormUtil.collect();
     }
 
     /* Visit Form */

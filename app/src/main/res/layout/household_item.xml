@@ -28,7 +28,9 @@
             android:gravity="left"
             android:text="Large Text"
             android:textColor="@color/nui_household_item_textcolor"
-            android:textSize="@dimen/household_item_text_1_size" />
+            android:textSize="@dimen/household_item_text_1_size"
+            android:maxLines="1"
+            android:ellipsize="end"/>
         
         <TextView
             android:id="@+id/txtHouseCode"

@@ -131,6 +131,7 @@
 
     <string name="core_entity_region_lbl">Enregistrement d\'un nouveau région</string>
     <string name="core_entity_household_lbl">Enregistrement d\'un nouveau ménage</string>
+    <string name="core_entity_pre_household_lbl">Pré-Enregistrement d\'un nouveau ménage</string>
     <string name="core_entity_member_enu_lbl">Inscription de nouveau membre</string>
     <string name="core_entity_head_relationship_lbl">Enregistrement des relations avec le responsable</string>
     <string name="core_entity_marital_relationship_lbl">Enregistrement de l\'union conjugale</string>
@@ -321,6 +322,8 @@
     <string name="household_details_dialog_del_saved_form_title_lbl">Supprimer les informations enregistrées</string>
     <string name="household_details_dialog_del_saved_form_msg_lbl">Le formulaire ODK enregistré n\'a pas été trouvé, les informations enregistrées seront supprimées pour permettre la collecte de nouveaux formulaires.\nSouhaitez-vous procéder à l\'exécution de ce processus?</string>
     <string name="household_details_forms_selector_lbl">Sélectionner un formulaire</string>
+    <string name="household_details_complete_reg_title_lbl">Terminer l\'enregistrement du Agrégat</string>
+    <string name="household_details_complete_reg_msg_lbl">Ce Agrégat a été pré-enregistré, \nSouhaitez-vous remplir cet enregistrement de Agrégat?</string>
 
     <string name="household_details_edit_household_name_lbl">Nom de l\'agrégat</string>
     <string name="household_details_edit_gps_lbl">Coordonnées GPS</string>
@@ -368,19 +371,23 @@
     <string name="region_details_parent_lbl">Région:</string>
 
     <!-- Household Filter -->
-    <string name="household_filter_code_lbl">Code de la maison</string>
-    <string name="household_filter_code_hint_lbl">Code de la maison</string>
-    <string name="household_filter_search_lbl">Recherche de maison</string>
+    <string name="household_filter_code_lbl">Code de la Agrégat</string>
+    <string name="household_filter_code_hint_lbl">Code de la Agrégat</string>
+    <string name="household_filter_search_lbl">Recherche de Agrégat</string>
     <string name="household_filter_gpsmap_lbl">Carte GPS</string>
     <string name="household_filter_gps_not_available_title_lbl">Impossible d\'afficher la carte</string>
-    <string name="household_filter_gps_not_available_lbl">Les coordonnées GPS des maisons ne sont pas disponibles</string>
+    <string name="household_filter_gps_not_available_lbl">Les coordonnées GPS des Agrégats ne sont pas disponibles</string>
     <string name="household_filter_no_houses_lbl">La liste des maisons est vide</string>
-    <string name="household_filter_add_house_lbl">Ajouter une nouvelle maison</string>
-    <string name="household_filter_edit_house_lbl">Changer la nouvelle maison</string>
+    <string name="household_filter_add_house_lbl">Ajouter une nouvelle Agrégat</string>
+    <string name="household_filter_edit_house_lbl">Changer la nouvelle Agrégat</string>
     <string name="household_filter_clear_lbl">Effacer</string>
     <string name="household_filter_show_region_btn_lbl">Afficher la région</string>
     <string name="household_filter_household_not_found_lbl">Les maisons avec le code (%1$s) n\'ont pas été trouvées</string>
     <string name="household_filter_head_label">Chef:</string>
+    <string name="household_filter_new_household_dialog_title_label">Enregistrement du Agrégat</string>
+    <string name="household_filter_new_household_dialog_message_label">Comment souhaitez-vous enregistrer un nouveau Agrégat?</string>
+    <string name="household_filter_new_household_dialog_yes_label">Pré-enregistrement Agrégat</string>
+    <string name="household_filter_new_household_dialog_no_label">Ajouter un nouveau Agrégat</string>
 
     <!-- New Region -->
     <string name="new_region_code_err_lbl">Le code de la région est incorrect!</string>

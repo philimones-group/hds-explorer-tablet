@@ -131,6 +131,7 @@
 
     <string name="core_entity_region_lbl">Region Registration</string>
     <string name="core_entity_household_lbl">Household Registration</string>
+    <string name="core_entity_pre_household_lbl">Household Pre-registration</string>
     <string name="core_entity_member_enu_lbl">Member Enumeration</string>
     <string name="core_entity_head_relationship_lbl">Head Relationship Registration</string>
     <string name="core_entity_marital_relationship_lbl">Marital Relationship Registration</string>
@@ -321,6 +322,8 @@
     <string name="household_details_dialog_del_saved_form_title_lbl">Delete saved info</string>
     <string name="household_details_dialog_del_saved_form_msg_lbl">The associated ODK Form instance wasn\'t found, the system will delete the saved information in order to keep collecting data\nDo you want to execute this operation?</string>
     <string name="household_details_forms_selector_lbl">Select a Form</string>
+    <string name="household_details_complete_reg_title_lbl">Complete Household Registration</string>
+    <string name="household_details_complete_reg_msg_lbl">This Household was pre-registered, \nDo you want to complete this Household Registration?</string>
 
     <string name="household_details_edit_household_name_lbl">Household Name</string>
     <string name="household_details_edit_gps_lbl">GPS Coordinates</string>
@@ -381,6 +384,10 @@
     <string name="household_filter_show_region_btn_lbl">Show Region</string>
     <string name="household_filter_household_not_found_lbl">Households with code like (%1$s) were not found</string>
     <string name="household_filter_head_label">Head:</string>
+    <string name="household_filter_new_household_dialog_title_label">Household Registration</string>
+    <string name="household_filter_new_household_dialog_message_label">How do you want to register a new Household?</string>
+    <string name="household_filter_new_household_dialog_yes_label">Pre-register Household</string>
+    <string name="household_filter_new_household_dialog_no_label">Add new Household</string>
 
     <!-- New Region -->
     <string name="new_region_code_err_lbl">The format of the Region Code is incorrect</string>

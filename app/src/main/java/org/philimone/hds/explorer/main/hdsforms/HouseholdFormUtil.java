@@ -107,8 +107,8 @@ public class HouseholdFormUtil extends FormUtil<Household> {
     @Override
     protected void preloadValues() {
 
-        String code = (household != null && household.preRegistration) ? household.code : codeGenerator.generateHouseholdCode(region, this.user);
-        String name = (household != null && household.preRegistration) ? household.name : "";
+        String code = (household != null && household.preRegistered) ? household.code : codeGenerator.generateHouseholdCode(region, this.user);
+        String name = (household != null && household.preRegistered) ? household.name : "";
 
         preloadedMap.put("regionCode", region.code);
         preloadedMap.put("regionName", region.name);
@@ -149,7 +149,7 @@ public class HouseholdFormUtil extends FormUtil<Household> {
         }
 
         //check if household with code exists
-        boolean preRegistered = (this.household != null && this.household.preRegistration);
+        boolean preRegistered = (this.household != null && this.household.preRegistered);
         if (currentMode==Mode.CREATE && !preRegistered && boxHouseholds.query().equal(Household_.code, household_code, QueryBuilder.StringOrder.CASE_SENSITIVE).build().findFirst() != null){
             String message = this.context.getString(R.string.new_household_code_exists_lbl);
             //DialogFactory.createMessageInfo(HouseholdDetailsActivity.this, R.string.info_lbl, R.string.new_household_code_exists_lbl).show();
@@ -197,7 +197,7 @@ public class HouseholdFormUtil extends FormUtil<Household> {
         Double gpsAlt = gpsValues.get("gpsAlt");
         Double gpsAcc = gpsValues.get("gpsAcc");
 
-        boolean wasPreRegistered = (this.household != null && this.household.preRegistration);
+        boolean wasPreRegistered = (this.household != null && this.household.preRegistered);
 
         Household household = wasPreRegistered ? this.household : new Household();
         household.region = colRegionCode.getValue();
@@ -211,7 +211,7 @@ public class HouseholdFormUtil extends FormUtil<Household> {
         household.gpsAccuracy = gpsAcc;
         household.updateGpsCalculations();
         household.collectedId = collectedValues.get(HForm.COLUMN_ID).getValue();
-        household.preRegistration = false;
+        household.preRegistered = false;
         household.shareable = false;
         household.recentlyCreated = true;
         household.recentlyCreatedUri = result.getFilename();

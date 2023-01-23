@@ -141,13 +141,13 @@ public class MemberListFragment extends Fragment {
 
         for (Buttons button : buttons){
             if (button==Buttons.SHOW_HOUSEHOLD){
-                btMemListShowHousehold.setEnabled(enabled);
+                btMemListShowHousehold.setEnabled(!currentHousehold.preRegistered && enabled);
             }
             if (button==Buttons.MEMBERS_MAP){
-                btMemListShowMmbMap.setEnabled(enabled);
+                btMemListShowMmbMap.setEnabled(!currentHousehold.preRegistered && enabled);
             }
             if (button==Buttons.COLLECTED_DATA){
-                btMemListShowCollectedData.setEnabled(enabled);
+                btMemListShowCollectedData.setEnabled(!currentHousehold.preRegistered && enabled);
             }
         }
     }

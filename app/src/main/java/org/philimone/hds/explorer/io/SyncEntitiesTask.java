@@ -1994,7 +1994,20 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
                 parser.nextTag();
             }
 
-			parser.nextTag(); //process <collectedId>
+			parser.nextTag(); //process <preRegistered>
+			if (isTag("preRegistered", parser)) { //if this tag doesnt exist jump to <collectedId>
+				if (!isEmptyTag("preRegistered", parser)) {
+					parser.next();
+					table.preRegistered = Boolean.parseBoolean(parser.getText());
+					parser.nextTag(); //process </preRegistered>
+				} else {
+					table.preRegistered = false;
+					parser.nextTag();
+				}
+
+				parser.nextTag(); //process <collectedId>
+			}
+
 			if (!isEmptyTag("collectedId", parser)) {
 				parser.next();
 				table.collectedId = parser.getText();

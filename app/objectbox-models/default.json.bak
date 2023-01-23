@@ -424,7 +424,7 @@
     },
     {
       "id": "7:4964342909160099197",
-      "lastPropertyId": "8:3235403756955365855",
+      "lastPropertyId": "11:8237342152894299626",
       "name": "Region",
       "properties": [
         {
@@ -471,6 +471,23 @@
           "id": "8:3235403756955365855",
           "name": "preRegistration",
           "type": 1
+        },
+        {
+          "id": "9:1830561966993148167",
+          "name": "collectedId",
+          "indexId": "112:8524751376140357902",
+          "type": 9,
+          "flags": 2080
+        },
+        {
+          "id": "10:1929053924036668962",
+          "name": "recentlyCreated",
+          "type": 1
+        },
+        {
+          "id": "11:8237342152894299626",
+          "name": "recentlyCreatedUri",
+          "type": 9
         }
       ],
       "relations": []
@@ -2353,7 +2370,7 @@
     }
   ],
   "lastEntityId": "30:705738454573743021",
-  "lastIndexId": "111:694109635311256836",
+  "lastIndexId": "112:8524751376140357902",
   "lastRelationId": "0:0",
   "lastSequenceId": "0:0",
   "modelVersion": 5,

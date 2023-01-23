@@ -62,7 +62,7 @@ public class Household implements CoreEntity, FormSubject, Serializable {
 
     /* shared and pre-register settings */
     public boolean shareable;
-    public boolean preRegistration;
+    public boolean preRegistered;
 
     @Index
     @Convert(converter = StringCollectionConverter.class, dbType = String.class)

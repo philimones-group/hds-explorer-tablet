@@ -79,7 +79,8 @@ public class SyncUploadEntitiesTask extends AsyncTask<Void, Integer, UploadRespo
         String url = baseurl + API_PATH;
 
         switch (formEntity) {
-            //case REGION:                 return url + "/regions";
+            case REGION:                 return url + "/regions";
+            case PRE_HOUSEHOLD:          return url + "/prehouseholds";
             case HOUSEHOLD:              return url + "/households";
             case MEMBER_ENU:             return url + "/memberenus";
             case HEAD_RELATIONSHIP:      return url + "/headrelationships";
@@ -124,7 +125,7 @@ public class SyncUploadEntitiesTask extends AsyncTask<Void, Integer, UploadRespo
         String response = null;
         int responseCode = 0;
 
-
+        Log.d("debugg", "conn="+connection+", xml="+xmlBytes);
         if (connection != null && xmlBytes != null) {
 
             try {

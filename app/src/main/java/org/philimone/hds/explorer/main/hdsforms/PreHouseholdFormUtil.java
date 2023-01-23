@@ -8,8 +8,6 @@ import androidx.fragment.app.Fragment;
 
 import org.philimone.hds.explorer.R;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
-import org.philimone.hds.explorer.model.ApplicationParam;
-import org.philimone.hds.explorer.model.ApplicationParam_;
 import org.philimone.hds.explorer.model.CoreCollectedData;
 import org.philimone.hds.explorer.model.Household;
 import org.philimone.hds.explorer.model.Household_;
@@ -25,7 +23,6 @@ import org.philimone.hds.forms.model.XmlFormResult;
 
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 
 import io.objectbox.Box;
 import io.objectbox.query.QueryBuilder;
@@ -194,7 +191,7 @@ public class PreHouseholdFormUtil extends FormUtil<Household> {
         household.region = region_code;
 
         household.shareable = true;
-        household.preRegistration = true;
+        household.preRegistered = true;
 
         household.collectedId = collectedValues.get(HForm.COLUMN_ID).getValue();
         household.recentlyCreated = true;

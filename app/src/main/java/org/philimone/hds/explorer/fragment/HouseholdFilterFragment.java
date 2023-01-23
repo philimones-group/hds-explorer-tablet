@@ -1,8 +1,6 @@
 package org.philimone.hds.explorer.fragment;
 
 
-import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
-
 import android.app.Activity;
 import android.content.ClipboardManager;
 import android.content.Context;
@@ -390,7 +388,7 @@ public class HouseholdFilterFragment extends Fragment implements RegionExpandabl
         this.household = household;
         listener.onHouseholdClick(household);
 
-        if (household.preRegistration) {
+        if (household.preRegistered) {
             //try to complete registration
             completeHouseholdRegistration(household);
         }
@@ -499,8 +497,10 @@ public class HouseholdFilterFragment extends Fragment implements RegionExpandabl
         //Call HouseholdDetailsActivity in mode NEW_HOUSEHOLD
         //Receive the recent created Household, put the code on search after it
 
+        Region region = this.boxRegions.query(Region_.code.equal(household.region)).build().findFirst();
+
         Intent intent = new Intent(this.getContext(), HouseholdDetailsActivity.class);
-        intent.putExtra("region", currentRegion.id);
+        intent.putExtra("region", region.id);
         intent.putExtra("household", household.id);
         intent.putExtra("request_code", RequestCodes.HOUSEHOLD_DETAILS_FROM_HFILTER_NEW_HOUSEHOLD);
 

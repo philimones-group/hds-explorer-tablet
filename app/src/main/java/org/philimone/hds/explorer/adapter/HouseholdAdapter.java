@@ -171,7 +171,7 @@ public class HouseholdAdapter extends RecyclerView.Adapter<HouseholdAdapter.Hous
                 iconView.setImageResource(R.mipmap.nui_household_red_new_icon);
             }
 
-            if (hh.preRegistration) {
+            if (hh.preRegistered) {
                 iconView.setImageResource(R.mipmap.nui_household_red_notreg_icon);
             }
 

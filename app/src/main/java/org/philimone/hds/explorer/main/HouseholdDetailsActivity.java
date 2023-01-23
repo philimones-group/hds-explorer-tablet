@@ -636,7 +636,7 @@ public class HouseholdDetailsActivity extends AppCompatActivity implements House
     private void onCreateNewHousehold(){
 
         //check if this household is pre-registered
-        if (this.household != null && this.household.preRegistration == true) {
+        if (this.household != null && this.household.preRegistered == true) {
 
             //Try to complete Household Registration
             DialogFactory.createMessageYN(this, R.string.household_details_complete_reg_title_lbl, R.string.household_details_complete_reg_msg_lbl, new DialogFactory.OnYesNoClickListener() {

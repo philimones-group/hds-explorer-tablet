@@ -320,12 +320,12 @@ public class DialogFactory extends AppCompatDialog {
 
         if (this.btDialogYes != null && this.dialogYesText != null) {
             this.btDialogYes.setText(dialogYesText);
-            this.btDialogYes.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, this.btDialogYes.getLayoutParams().height));
+            //this.btDialogYes.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, this.btDialogYes.getLayoutParams().height));
         }
 
         if (this.btDialogNo != null && this.dialogNoText != null) {
             this.btDialogNo.setText(dialogNoText);
-            this.btDialogNo.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, this.btDialogNo.getLayoutParams().height));
+            //this.btDialogNo.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, this.btDialogNo.getLayoutParams().height));
         }
 
         if (this.btDialogCancel != null && this.dialogCancelText != null)

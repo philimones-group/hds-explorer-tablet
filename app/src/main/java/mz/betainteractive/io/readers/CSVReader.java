@@ -387,6 +387,16 @@ public class CSVReader {
         public List<String> getFieldNames() {
             return this.csvReader.getFieldNames();
         }
+
+        @Override
+        public String toString() {
+            return "CSVRow{" +
+                    "csvReader=" + csvReader +
+                    ", row=" + Arrays.toString(row) +
+                    ", rawRow='" + rawRow + '\'' +
+                    ", regex_delimiter='" + regex_delimiter + '\'' +
+                    '}';
+        }
     }
 
     private class RowIterable implements Iterable<CSVRow> {

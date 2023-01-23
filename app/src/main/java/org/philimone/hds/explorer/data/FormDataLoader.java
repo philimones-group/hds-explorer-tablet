@@ -590,8 +590,6 @@ public class FormDataLoader implements Serializable {
             }
         }
 
-
-
         //process zip file - get row with ${dtKeyColumn}=linkValue  -
 
         String csvRowKey = dataSet.getName()+"->"+tableName+tableColumnName+"="+linkValue;
@@ -629,10 +627,30 @@ public class FormDataLoader implements Serializable {
 
             if (mapVariable.startsWith(dataSetPrefix)){ // Get DatasetName.csvColumn
                 String internalVariableName = mapVariable.replace(dataSetPrefix, "");
-
                 String value = valueRow.getField(internalVariableName);
 
                 if (value == null) value = "";
+
+                //TREAT THE VARIABLE
+                //get variable format from odkVariable eg. variableName->format => patientName->yes,no
+                if (odkVariable.contains("->")) {
+                    String[] splt = odkVariable.split("->");
+                    odkVariable = splt[0]; //variableName
+                    String format = splt[1];      //format of the value
+                    if (!format.equalsIgnoreCase("None")) {
+                        if (format.startsWith(boolFormatPrefix)) {
+                            value = getBooleanFormattedValue(format, value);
+                        }
+                        if (format.startsWith(choiceFormatPrefix)) {
+                            value = getChoicesFormattedValue(format, value);
+                        }
+                        if (format.startsWith(dateFormatPrefix)) {
+                            value = getDateFormattedValue(format, value, false); //we dont know the format of the date
+                        }
+                    } else {
+                        //None, no problemCHE
+                    }
+                }
 
                 this.values.put(odkVariable, value);
                 //Log.d("xxx-odk auto-loadable", odkVariable + ", " + value);

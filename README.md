@@ -8,7 +8,7 @@ Mobile Application for Health and Demographics Surveillance system data collecti
 HDS-Explorer provides an internal forms render [HDS-Forms Library](https://github.com/philimones-group/hds-forms-lib) based on Excel file (similar to ODK) for demographics surveillance core forms data capture.  
 This application also support ODK Forms data collection, allowing to effectively use HDSS dataset to implement researches with different use cases.
 
-* HDS-Explorer website: [https://www.philimones-group.co.mz/hds-explorer/](https://opendatakit.org/use/aggregate/)
+* HDS-Explorer website: [https://www.hds-explorer.org](https://opendatakit.org/use/aggregate/)
 * ODK website: [https://opendatakit.org](https://opendatakit.org)
 
 ### Features

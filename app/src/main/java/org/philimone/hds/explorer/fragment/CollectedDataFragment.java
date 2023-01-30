@@ -466,21 +466,7 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
         List<FormDataLoader> loaderList = getFormDataLoaders();
 
         if (loaderList != null && loaderList.size() > 0){
-
-            if (loaderList.size()==1){
-                //open directly the form
-                FormDataLoader formDataLoader = loaderList.get(0);
-                Form form = formDataLoader.getForm();
-
-                if (form.formType == FormType.FORM_GROUP) {
-                    handleOnCollectFormGroupSelected(formDataLoader);
-                } else {
-                    openOdkForm(formDataLoader, false, null);
-                }
-            }else {
-                //load list dialog and choice the form
-                buildFormSelectorDialog(loaderList);
-            }
+            buildFormSelectorDialog(loaderList);
         }
     }
 

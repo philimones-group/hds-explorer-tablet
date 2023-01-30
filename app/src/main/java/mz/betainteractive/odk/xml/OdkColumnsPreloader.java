@@ -10,10 +10,13 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -29,6 +32,8 @@ public class OdkColumnsPreloader {
     private FormUtilities formUtilities;
     private FilledForm filledForm;
 
+    private Set<String> preloadedStartVariables;
+
     private final String householdPrefix = "Household.";
     private final String memberPrefix = "Member.";
     private final String userPrefix = "User.";
@@ -40,30 +45,58 @@ public class OdkColumnsPreloader {
     public OdkColumnsPreloader(FormUtilities formUtilities, FilledForm filledForm) {
         this.formUtilities = formUtilities;
         this.filledForm = filledForm;
+        this.preloadedStartVariables = new HashSet<>();
     }
 
     public String generatePreloadedXml(String jrFormId, String formVersion, OdkScopedDirUtil.OdkFormObject formObject) {
+        try {
+            return executeGeneratePreloadedXml(jrFormId, formVersion, formObject.getFormInputStream());
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public String generatePreloadedXml(String jrFormId, String formVersion, String formFilePath) {
+        try {
+            return executeGeneratePreloadedXml(jrFormId, formVersion, new FileInputStream(formFilePath));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private String executeGeneratePreloadedXml(String jrFormId, String formVersion, InputStream xmlInputStream) {
 
         StringBuilder sbuilder = new StringBuilder();
 
         try {
+
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             DocumentBuilder builder = factory.newDocumentBuilder();
-            Document doc = builder.parse(formObject.getFormInputStream());
+            Document doc = builder.parse(xmlInputStream);
 
-            Node node = doc.getElementsByTagName("data").item(0);
+            readSpecialVariables(doc);
+
+            String mainTag = jrFormId;
             formVersion = formVersion == null ? "" : " version=\"" + formVersion + "\"";
+            Node node = doc.getElementsByTagName(mainTag).item(0);
 
             if (node == null) {
-                node = doc.getElementsByTagName(jrFormId).item(0);
-                Log.d("node", ""+node.getNodeName());
-                sbuilder.append("<" + jrFormId + " id=\"" + jrFormId + "\"" + formVersion + ">" + "\r\n"); // version="161103141"
-            } else {
-                sbuilder.append("<data id=\"" + jrFormId + "\"" + formVersion + ">" + "\r\n");
+                mainTag = "data";
+                node = doc.getElementsByTagName(mainTag).item(0);
             }
 
-            processNewNodeChildren(node, sbuilder);
-            Log.d("processXml", "finished!");
+            if (node != null) {
+                Log.d("first-node", ""+node.getNodeName());
+                sbuilder.append("<" + mainTag + " id=\"" + jrFormId + "\"" + formVersion + ">" + "\r\n"); // version="161103141"
+
+                processNewNodeChildren(node, sbuilder);
+                Log.d("processXml", "finished!");
+            } else {
+                Log.d("odk main tag", "not found");
+            }
+
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -76,38 +109,29 @@ public class OdkColumnsPreloader {
         return sbuilder.toString();
     }
 
-    public String generatePreloadedXml(String jrFormId, String formVersion, String formFilePath) {
+    private void readSpecialVariables(Document doc) {
+        //find variables with jr:preloadParams="start"
 
-        StringBuilder sbuilder = new StringBuilder();
+        NodeList nodes = doc.getElementsByTagName("bind");
 
-        try {
-            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder builder = factory.newDocumentBuilder();
-            Document doc = builder.parse(new FileInputStream(formFilePath));
+        for (int i = 0; i < nodes.getLength(); i++) {
+            Node bindNode = nodes.item(i);
+            NamedNodeMap nodeAttrs = bindNode.getAttributes();
+            Node node = nodeAttrs.getNamedItem("jr:preloadParams");
 
-            Node node = doc.getElementsByTagName("data").item(0);
-            formVersion = formVersion == null ? "" : " version=\"" + formVersion + "\"";
+            if (node != null) { //its a start timestamp
 
-            if (node == null) {
-                node = doc.getElementsByTagName(jrFormId).item(0);
-                Log.d("node", ""+node.getNodeName());
-                sbuilder.append("<" + jrFormId + " id=\"" + jrFormId + "\"" + formVersion + ">" + "\r\n"); // version="161103141"
-            } else {
-                sbuilder.append("<data id=\"" + jrFormId + "\"" + formVersion + ">" + "\r\n");
+                Log.d("binds", "node="+node+" -> " + (node!=null ? node.getNodeName() + ", " +node.getNodeValue() : ""));
+
+                if ("start".equals(node.getNodeValue())) {
+                    Node nodeset = nodeAttrs.getNamedItem("nodeset");
+                    String nodevalue = nodeset.getNodeValue();
+                    String variable = nodevalue.substring(nodevalue.lastIndexOf("/")+1);
+
+                    this.preloadedStartVariables.add(variable);
+                }
             }
-
-            processNewNodeChildren(node, sbuilder);
-            Log.d("processXml", "finished!");
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ParserConfigurationException e) {
-            e.printStackTrace();
-        } catch (SAXException e) {
-            e.printStackTrace();
         }
-
-        return sbuilder.toString();
     }
 
     private void processNewNodeChildren(Node node, StringBuilder sbuilder) {
@@ -159,7 +183,9 @@ public class OdkColumnsPreloader {
                         sbuilder.append(value == null ? "<" + name + " />" + "\r\n" : "<" + name + ">" + value + "</" + name + ">" + "\r\n");
                     }
 
-                } else if (name.equalsIgnoreCase("start")) {
+                } else if (preloadedStartVariables.contains(name)) { //OLD - name.equalsIgnoreCase("start")
+                    //Check if this variable is a preoloaded variable of start timestamp
+                    Log.d("start-variable", "yes="+name);
                     sbuilder.append("<" + name + ">" + this.formUtilities.getStartTimestamp() + "</" + name + ">" + "\r\n");
                 } else if (name.equalsIgnoreCase("deviceId")) {
                     String deviceId = this.formUtilities.getDeviceId();

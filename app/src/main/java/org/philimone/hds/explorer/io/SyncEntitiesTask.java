@@ -87,6 +87,7 @@ import java.util.zip.ZipInputStream;
 
 import io.objectbox.Box;
 import io.objectbox.query.QueryBuilder;
+import mz.betainteractive.io.writers.ZipMaker;
 import mz.betainteractive.utilities.StringUtil;
 
 /**
@@ -362,6 +363,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 						processUrl(baseurl + API_PATH + "/rounds/zip", "rounds.zip");
 						break;
 					case REGIONS:
+						createBackupCoreCollectedData();
 						this.boxRegions.removeAll();
 						processUrl(baseurl + API_PATH + "/regions/zip", "regions.zip");
 						break;
@@ -432,10 +434,31 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 		return new ExecutionReport(this.mContext.getString(R.string.sync_successfully_lbl));
 	}
 
+	private void createBackupCoreCollectedData() {
+		String instancesDir = Bootstrap.getInstancesPath(mContext);
+		String dateStr = StringUtil.formatPrecise(new Date());
+		dateStr = dateStr.replace(" ", "_").replace(":","_");
+		String backupFilename = instancesDir + "backup-core-" + dateStr + ".zip";
+
+		ZipMaker zipMaker = new ZipMaker(backupFilename);
+
+		for (CoreCollectedData cdata : this.boxCoreCollectedData.getAll()) {
+			if (new File(cdata.formFilename).exists()){
+				Log.d("backup core form", cdata.formFilename);
+				zipMaker.addFile(cdata.formFilename);
+			}
+		}
+
+		boolean result = zipMaker.makeZip();
+
+		Log.d("backup core forms", backupFilename + " created="+result);
+	}
+
 	private void deleteAllCoreCollectedData() {
 
 		for (CoreCollectedData cdata : this.boxCoreCollectedData.getAll()) {
 			if (cdata.uploaded) {
+
 				try {
 					new File(cdata.formFilename).delete();
 				} catch (Exception ex) {
@@ -730,7 +753,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 		zin.close();
 	}
 
-	private boolean notEndOfXmlDoc(String element, XmlPullParser parser) throws XmlPullParserException {
+	private boolean notEndOfTag(String element, XmlPullParser parser) throws XmlPullParserException {
 		return !(element.equals(parser.getName()) && parser.getEventType() == XmlPullParser.END_TAG) && !isCancelled();
 	}
 
@@ -758,7 +781,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 
 		parser.nextTag(); //<applicationParam>
 
-		while (notEndOfXmlDoc("applicationParams", parser)) {
+		while (notEndOfTag("applicationParams", parser)) {
 
 			count++;
 			ApplicationParam table = new ApplicationParam();
@@ -830,7 +853,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 
 		parser.nextTag(); //<module>
 
-		while (notEndOfXmlDoc("modules", parser)) {
+		while (notEndOfTag("modules", parser)) {
 
 			count++;
 			Module table = new Module();
@@ -897,7 +920,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 		values.clear();
 
 		parser.nextTag(); //<form>
-		while (notEndOfXmlDoc("forms", parser)) {
+		while (notEndOfTag("forms", parser)) {
 			count++;
 
 			Form table = new Form();
@@ -1180,7 +1203,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 		values.clear();
 
 		parser.nextTag(); //<coreformext>
-		while (notEndOfXmlDoc("coreformexts", parser)) {
+		while (notEndOfTag("coreformexts", parser)) {
 			count++;
 
 			CoreFormExtension table = new CoreFormExtension();
@@ -1283,7 +1306,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 
 		parser.nextTag(); //<dataSet>
 
-		while (notEndOfXmlDoc("datasets", parser)) {
+		while (notEndOfTag("datasets", parser)) {
 			count++;
 
 			Dataset table = new Dataset();
@@ -1453,7 +1476,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 
 		parser.nextTag();
 
-		while (notEndOfXmlDoc("trackinglists", parser)) {
+		while (notEndOfTag("trackinglists", parser)) {
 
 			if (isEndTag("tracking_list", parser) || isEmptyTag("tracking_list", parser)){
 				parser.nextTag();
@@ -1588,7 +1611,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 
 		parser.nextTag();
 
-		while (notEndOfXmlDoc("users", parser)) {
+		while (notEndOfTag("users", parser)) {
 			count++;
 
 			User table = new User();
@@ -1711,7 +1734,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 
 		parser.nextTag(); //<region>
 
-		while (notEndOfXmlDoc("regions", parser)) {
+		while (notEndOfTag("regions", parser)) {
 
 			count++;
 			Region table = new Region();
@@ -1798,7 +1821,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 
 		parser.nextTag();
 
-		while (notEndOfXmlDoc("households", parser)) {
+		while (notEndOfTag("households", parser)) {
 			count++;
 
 			Household table = new Household();
@@ -2067,7 +2090,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 
 		parser.nextTag();
 
-		while (notEndOfXmlDoc("members", parser)) {
+		while (notEndOfTag("members", parser)) {
 			count++;
 
 			Member table = new Member();
@@ -2461,7 +2484,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 
 		parser.nextTag();
 
-		while (notEndOfXmlDoc("rounds", parser)) {
+		while (notEndOfTag("rounds", parser)) {
 			count++;
 
 			Round table = new Round();
@@ -2540,7 +2563,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 
 		parser.nextTag();
 
-		while (notEndOfXmlDoc("residencies", parser)) {
+		while (notEndOfTag("residencies", parser)) {
 			count++;
 
 			Residency table = new Residency();
@@ -2642,7 +2665,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 
 		parser.nextTag();
 
-		while (notEndOfXmlDoc("visits", parser)) {
+		while (notEndOfTag("visits", parser)) {
 			count++;
 
 			Visit table = new Visit();
@@ -2834,7 +2857,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 
 		parser.nextTag();
 
-		while (notEndOfXmlDoc("headrelationships", parser)) {
+		while (notEndOfTag("headrelationships", parser)) {
 			count++;
 
 			HeadRelationship table = new HeadRelationship();
@@ -2956,7 +2979,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 
 		parser.nextTag();
 
-		while (notEndOfXmlDoc("maritalrelationships", parser)) {
+		while (notEndOfTag("maritalrelationships", parser)) {
 			count++;
 
 			MaritalRelationship table = new MaritalRelationship();
@@ -3068,7 +3091,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 
 		parser.nextTag();
 
-		while (notEndOfXmlDoc("pregnancyregistrations", parser)) {
+		while (notEndOfTag("pregnancyregistrations", parser)) {
 			count++;
 
 			PregnancyRegistration table = new PregnancyRegistration();
@@ -3250,7 +3273,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 
 		parser.nextTag();
 
-		while (notEndOfXmlDoc("deaths", parser)) {
+		while (notEndOfTag("deaths", parser)) {
 			count++;
 
 			Death table = new Death();

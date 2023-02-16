@@ -120,6 +120,7 @@
                     android:layout_height="wrap_content"
                     android:minHeight="48dp"
                     android:textAlignment="textStart"
+                    android:checked="true"
                     app:switchPadding="8dp" />
 
                 <TextView

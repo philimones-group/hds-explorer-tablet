@@ -68,7 +68,7 @@
             android:layout_height="70dp"
             android:layout_marginTop="50dp"
             android:text="@string/survey_households_btn_lbl"
-            android:textSize="20dp"
+            android:textSize="20sp"
             android:textColor="@android:color/background_light"
             android:background="@drawable/nui_btnd_rone_dgb_house"
             />
@@ -80,7 +80,7 @@
             android:layout_height="70dp"
             android:layout_marginTop="50dp"
             android:text="@string/survey_members_btn_lbl"
-            android:textSize="20dp"
+            android:textSize="20sp"
             android:textColor="@android:color/background_light"
             android:background="@drawable/nui_btnd_rone_dgb_member"
             />
@@ -92,7 +92,7 @@
             android:layout_height="70dp"
             android:layout_marginTop="50dp"
             android:text="@string/survey_tracking_lists_btn_lbl"
-            android:textSize="20dp"
+            android:textSize="20sp"
             android:textColor="@android:color/background_light"
             android:background="@drawable/nui_btnd_rone_dgb_lists"
             />
@@ -104,7 +104,7 @@
             android:layout_height="70dp"
             android:layout_marginTop="50dp"
             android:text="@string/survey_show_collected_data_lists_btn_lbl"
-            android:textSize="20dp"
+            android:textSize="20sp"
             android:textColor="@android:color/background_light"
             android:background="@drawable/nui_btnd_rone_dgb_forms"
             />

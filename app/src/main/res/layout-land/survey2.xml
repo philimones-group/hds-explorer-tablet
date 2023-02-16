@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/linearLayout2"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:gravity="center_horizontal"
+    android:weightSum="1"
+    tools:context="org.philimone.hds.explorer.main.SurveyActivity">
+
+    <!-- logo layout -->
+    <LinearLayout
+        android:id="@+id/surveyLogoLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.120000005">
+
+        <!-- logo -->
+        <ImageView
+            android:layout_width="453dp"
+            android:layout_height="70dp"
+            android:layout_gravity="right"
+            android:src="@mipmap/nui_logo_clean" />
+
+    </LinearLayout>
+
+    <!-- Buttons -->
+    <LinearLayout
+        android:id="@+id/buttonsLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/surveyLogoLayout"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="10dp"
+        android:orientation="vertical">
+
+        <TableRow
+            android:id="@+id/tableRow1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_marginTop="@dimen/household_visit_row_margin_top"
+            android:layout_marginBottom="5dp"
+            android:paddingBottom="5dp"
+            android:paddingTop="5dp">
+
+            <Button
+                android:id="@+id/btSurveyHouseholds"
+                android:layout_width="@dimen/survey_main_button_width"
+                android:layout_height="@dimen/survey_main_button_height"
+                android:layout_gravity="center"
+                android:layout_marginEnd="@dimen/survey_main_button_left_margin_end"
+                android:background="@drawable/nui_btnd_rone_dgbevel"
+                android:drawableTop="@mipmap/nui_household_icon"
+                android:drawablePadding="@dimen/survey_main_button_drawable_padding"
+                android:paddingTop="@dimen/survey_main_button_padding_top"
+                android:paddingBottom="@dimen/survey_main_button_padding_bottom"
+                android:elevation="3dp"
+                android:translationZ="3dp"
+                android:stateListAnimator="@null"
+                android:maxLines="2"
+                android:text="@string/survey_households_btn_lbl"
+                android:textSize="@dimen/survey_main_button_textsize"
+                android:textStyle="bold"
+                android:textAlignment="center"
+                android:textColor="@android:color/background_light" />
+
+            <Button
+                android:id="@+id/btSurveyMembers"
+                android:layout_width="@dimen/survey_main_button_width"
+                android:layout_height="@dimen/survey_main_button_height"
+                android:layout_gravity="center"
+                android:layout_marginEnd="@dimen/survey_main_button_left_margin_end"
+                android:background="@drawable/nui_btnd_rone_dgbevel"
+                android:drawableTop="@mipmap/nui_member_icon"
+                android:drawablePadding="@dimen/survey_main_button_drawable_padding"
+                android:paddingTop="@dimen/survey_main_button_padding_top"
+                android:paddingBottom="@dimen/survey_main_button_padding_bottom"
+                android:elevation="3dp"
+                android:translationZ="3dp"
+                android:stateListAnimator="@null"
+                android:maxLines="2"
+                android:text="@string/survey_members_btn_lbl"
+                android:textSize="@dimen/survey_main_button_textsize"
+                android:textStyle="bold"
+                android:textAlignment="center"
+                android:textColor="@android:color/background_light" />
+
+            <Button
+                android:id="@+id/btSearchByDatasets"
+                android:layout_width="@dimen/survey_main_button_width"
+                android:layout_height="@dimen/survey_main_button_height"
+                android:layout_gravity="center"
+                android:background="@drawable/nui_btnd_rone_dgbevel"
+                android:drawableTop="@mipmap/nui_dataset_white_icon"
+                android:drawablePadding="@dimen/survey_main_button_drawable_padding"
+                android:paddingTop="@dimen/survey_main_button_padding_top"
+                android:paddingBottom="@dimen/survey_main_button_padding_bottom"
+                android:maxLines="2"
+                android:elevation="3dp"
+                android:translationZ="3dp"
+                android:stateListAnimator="@null"
+                android:text="@string/survey_search_by_datasets_btn_lbl"
+                android:textSize="@dimen/survey_main_button_textsize"
+                android:textStyle="bold"
+                android:textAlignment="center"
+                android:textColor="@android:color/background_light"
+                android:enabled="false"/>
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/tableRow2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_marginTop="@dimen/household_visit_row_margin_top"
+            android:layout_marginBottom="5dp"
+            android:paddingBottom="5dp"
+            android:paddingTop="5dp">
+
+            <Button
+                android:id="@+id/btTrackingLists"
+                android:layout_width="@dimen/survey_main_button_width"
+                android:layout_height="@dimen/survey_main_button_height"
+                android:layout_gravity="center"
+                android:layout_marginEnd="@dimen/survey_main_button_left_margin_end"
+                android:background="@drawable/nui_btnd_rone_dgbevel"
+                android:drawableTop="@mipmap/nui_lists2_white_icon"
+                android:drawablePadding="@dimen/survey_main_button_drawable_padding"
+                android:paddingTop="@dimen/survey_main_button_padding_top"
+                android:paddingBottom="@dimen/survey_main_button_padding_bottom"
+                android:elevation="3dp"
+                android:translationZ="3dp"
+                android:stateListAnimator="@null"
+                android:maxLines="2"
+                android:text="@string/survey_tracking_lists_btn_lbl"
+                android:textSize="@dimen/survey_main_button_textsize"
+                android:textStyle="bold"
+                android:textAlignment="center"
+                android:textColor="@android:color/background_light" />
+
+            <Button
+                android:id="@+id/btShowCollectedData"
+                android:layout_width="@dimen/survey_main_button_width"
+                android:layout_height="@dimen/survey_main_button_height"
+                android:layout_gravity="center"
+                android:layout_marginEnd="@dimen/survey_main_button_left_margin_end"
+                android:background="@drawable/nui_btnd_rone_dgbevel"
+                android:drawableTop="@mipmap/nui_form2_white_icon"
+                android:drawablePadding="@dimen/survey_main_button_drawable_padding"
+                android:paddingTop="@dimen/survey_main_button_padding_top"
+                android:paddingBottom="@dimen/survey_main_button_padding_bottom"
+                android:maxLines="2"
+                android:elevation="3dp"
+                android:translationZ="3dp"
+                android:stateListAnimator="@null"
+                android:text="@string/survey_show_collected_data_lists_btn_lbl"
+                android:textSize="@dimen/survey_main_button_textsize"
+                android:textStyle="bold"
+                android:textAlignment="center"
+                android:textColor="@android:color/background_light" />
+
+            <Button
+                android:id="@+id/btSyncDataSharing"
+                android:layout_width="@dimen/survey_main_button_width"
+                android:layout_height="@dimen/survey_main_button_height"
+                android:layout_gravity="center"
+                android:background="@drawable/nui_btnd_rone_dgbevel"
+                android:drawableTop="@mipmap/nui_data_sharing_icon"
+                android:drawablePadding="@dimen/survey_main_button_drawable_padding"
+                android:paddingTop="@dimen/survey_main_button_padding_top"
+                android:paddingBottom="@dimen/survey_main_button_padding_bottom"
+                android:maxLines="2"
+                android:elevation="3dp"
+                android:translationZ="3dp"
+                android:stateListAnimator="@null"
+                android:text="@string/survey_sync_data_sharing_btn_lbl"
+                android:textSize="@dimen/survey_main_button_textsize"
+                android:textStyle="bold"
+                android:textAlignment="center"
+                android:textColor="@android:color/background_light" />
+
+        </TableRow>
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -580,6 +580,8 @@
     <string name="survey_members_btn_lbl">Rechercher les membres</string>
     <string name="survey_tracking_lists_btn_lbl">Afficher les listes de suivi</string>
     <string name="survey_show_collected_data_lists_btn_lbl">Afficher les formulaires recueillis</string>
+    <string name="survey_search_by_datasets_btn_lbl">Rechercher par ensembles de données</string>
+    <string name="survey_sync_data_sharing_btn_lbl">Partage de données</string>
 
     <string name="show_collected_data_title_lbl">Afficher les formulaires recueillis</string>
     <string name="show_collected_data_modules_lbl">Modules:</string>
@@ -659,6 +661,39 @@
 
     <!-- Modules Selector -->
     <string name="modules_selector_select_lbl">Sélectionner le module</string>
+
+    <!-- Data sharing -->
+    <string name="data_sharing_connection_type_lbl">Type de connexion</string>
+    <string name="data_sharing_connection_type_bluetooth_lbl">Connexion Bluetooth</string>
+    <string name="data_sharing_connection_type_wifi_lbl">Connexion WiFI/IP</string>
+    <string name="data_sharing_bt_start_server_lbl">Démarrer le serveur</string>
+    <string name="data_sharing_bt_connect_to_a_server_lbl">Se connecter à un serveur</string>
+    <string name="data_sharing_msg_listening_to_devices_lbl">Écouter des appareils</string>
+    <string name="data_sharing_records_to_share_lbl">Jeux de données à partager</string>
+    <string name="data_sharing_shared_records_lbl">Ensembles de données partagés</string>
+    <string name="data_sharing_connected_devices_lbl">Des appareils connectés</string>
+    <string name="data_sharing_bt_start_data_sharing_lbl">Démarrer le partage de données</string>
+    <string name="data_sharing_devlist_title_lbl">Analyseur d\'appareils Bluetooth</string>
+    <string name="data_sharing_msg_conn_not_init_lbl">Connexion non initialisée</string>
+    <string name="data_sharing_device_disabled_lbl">L\'appareil Bluetooth est désactivé</string>
+    <string name="data_sharing_device_not_found_lbl">Périphérique Bluetooth introuvable</string>
+    <string name="data_sharing_server_listening_lbl">Le serveur écoute les périphériques</string>
+    <string name="data_sharing_server_stopped_listening_lbl">Le serveur a cessé d\'écouter les périphériques</string>
+    <string name="data_sharing_device_connection_failure_lbl">Impossible de se connecter au périphérique Bluetooth</string>
+    <string name="data_sharing_scan_for_servers_lbl">Recherche de périphériques serveur</string>
+    <string name="data_sharing_scanning_stopped_lbl">Recherche de périphériques serveur</string>
+    <string name="data_sharing_transferring_data_lbl">Transfert d\'ensembles de données partagés</string>
+    <string name="data_sharing_transferring_failure_lbl">Une erreur s\'est produite lors de la tentative de partage des ensembles de données</string>
+    <string name="data_sharing_data_shared_lbl">Ensembles de données partagés avec succès</string>
+
+    <!--  Data sharing - Bluetooth Devices List -->
+    <string name="data_sharing_devlist_scanning_lbl">Recherche d\'appareils...</string>
+    <string name="data_sharing_devlist_select_device_lbl">Sélectionnez un appareil</string>
+    <string name="data_sharing_devlist_none_paired_lbl">Aucun appareil n\'a été jumelé</string>
+    <string name="data_sharing_devlist_none_found_lbl">Aucun périphérique trouvé</string>
+    <string name="data_sharing_devlist_title_paired_devices_lbl">Appareils jumelés</string>
+    <string name="data_sharing_devlist_title_other_devices_lbl">Autres appareils disponibles</string>
+    <string name="data_sharing_devlist_button_scan_lbl">Rechercher des appareils</string>
 
     <!-- barcode scanner -->
     <string name="barcode_dialog_ask_scan_title">Scanner le code à barres</string>

@@ -574,10 +574,12 @@
         <item>A viver maritalmente</item>
     </string-array>
 
-    <string name="survey_households_btn_lbl">Procurar por Agregado</string>
-    <string name="survey_members_btn_lbl">Procurar por membros</string>
+    <string name="survey_households_btn_lbl">Pesquisar por Agregado</string>
+    <string name="survey_members_btn_lbl">Pesquisar por membros</string>
     <string name="survey_tracking_lists_btn_lbl">Ver Listas de seguimento</string>
     <string name="survey_show_collected_data_lists_btn_lbl">Mostrar Formulários colectados</string>
+    <string name="survey_search_by_datasets_btn_lbl">Procurar por Datasets externos</string>
+    <string name="survey_sync_data_sharing_btn_lbl">Partilha de Dados</string>
 
     <string name="show_collected_data_title_lbl">Visualização de Formulários colectados</string>
     <string name="show_collected_data_modules_lbl">Módulos:</string>
@@ -657,6 +659,39 @@
 
     <!-- Modules Selector -->
     <string name="modules_selector_select_lbl">Seleccione o Módulo</string>
+
+    <!-- Data sharing -->
+    <string name="data_sharing_connection_type_lbl">Tipo de conexão</string>
+    <string name="data_sharing_connection_type_bluetooth_lbl">Conexão via Bluetooth</string>
+    <string name="data_sharing_connection_type_wifi_lbl">Conexão via WiFI/IP</string>
+    <string name="data_sharing_bt_start_server_lbl">Iniciar Servidor</string>
+    <string name="data_sharing_bt_connect_to_a_server_lbl">Conectar ao servidor</string>
+    <string name="data_sharing_msg_listening_to_devices_lbl">Aguardando dispositivos</string>
+    <string name="data_sharing_records_to_share_lbl">Registos de dados a partilhar</string>
+    <string name="data_sharing_shared_records_lbl">Registo de dados partilhados</string>
+    <string name="data_sharing_connected_devices_lbl">Dispositivos conectados</string>
+    <string name="data_sharing_bt_start_data_sharing_lbl">Iniciar partilha de dados</string>
+    <string name="data_sharing_devlist_title_lbl">Dispositivos Bluetooth</string>
+    <string name="data_sharing_msg_conn_not_init_lbl">Conexão não inicializada</string>
+    <string name="data_sharing_device_disabled_lbl">Dispositivo Bluetooth esta desativado</string>
+    <string name="data_sharing_device_not_found_lbl">Dispositivo Bluetooth não foi encontrado</string>
+    <string name="data_sharing_server_listening_lbl">O servidor esta aguardando dispositivos</string>
+    <string name="data_sharing_server_stopped_listening_lbl">O servidor terminou a leitura de dispositivos</string>
+    <string name="data_sharing_device_connection_failure_lbl">Não foi possivel conectar-se ao dispositivo Bluetooth</string>
+    <string name="data_sharing_scan_for_servers_lbl">Procurando dispositivos servidores</string>
+    <string name="data_sharing_scanning_stopped_lbl">Procura de dispositivos terminada</string>
+    <string name="data_sharing_transferring_data_lbl">Sincronizando registos de dados partilhados</string>
+    <string name="data_sharing_transferring_failure_lbl">Ocorreu um erro ao tentar partilhar os dados</string>
+    <string name="data_sharing_data_shared_lbl">Registos de dados partilhados com sucesso</string>
+
+    <!--  Data sharing - Bluetooth Devices List -->
+    <string name="data_sharing_devlist_scanning_lbl">Procurando dispositivos...</string>
+    <string name="data_sharing_devlist_select_device_lbl">Selecione o dispositivo</string>
+    <string name="data_sharing_devlist_none_paired_lbl">Nenhum dispositivo foi emparelhado</string>
+    <string name="data_sharing_devlist_none_found_lbl">Nenhum dispositivo foi encontrado</string>
+    <string name="data_sharing_devlist_title_paired_devices_lbl">Dispositivos emparelhados</string>
+    <string name="data_sharing_devlist_title_other_devices_lbl">Dispositivos disponiveis</string>
+    <string name="data_sharing_devlist_button_scan_lbl">Procurar por dispositivos</string>
 
     <!-- barcode scanner -->
     <string name="barcode_dialog_ask_scan_title">Scanner de Código de barras</string>

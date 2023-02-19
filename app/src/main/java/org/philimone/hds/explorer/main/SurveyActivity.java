@@ -7,6 +7,7 @@ import android.widget.Button;
 
 import org.philimone.hds.explorer.R;
 import org.philimone.hds.explorer.database.Bootstrap;
+import org.philimone.hds.explorer.main.sync.SyncDataSharingActivity;
 import org.philimone.hds.explorer.model.User;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -18,11 +19,13 @@ public class SurveyActivity extends AppCompatActivity {
     private Button btSurveyMembers;
     private Button btTrackingLists;
     private Button btShowCollectedData;
+    private Button btSearchByDatasets;
+    private Button btSyncDataSharing;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.survey);
+        setContentView(R.layout.survey2);
 
         this.loggedUser = Bootstrap.getCurrentUser();
 
@@ -30,6 +33,8 @@ public class SurveyActivity extends AppCompatActivity {
         this.btSurveyMembers = (Button) findViewById(R.id.btSurveyMembers);
         this.btTrackingLists = (Button) findViewById(R.id.btTrackingLists);
         this.btShowCollectedData = (Button) findViewById(R.id.btShowCollectedData);
+        this.btSearchByDatasets = (Button) findViewById(R.id.btSearchByDatasets);
+        this.btSyncDataSharing = (Button) findViewById(R.id.btSyncDataSharing);
 
         this.btSurveyHouseholds.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -55,6 +60,14 @@ public class SurveyActivity extends AppCompatActivity {
         this.btShowCollectedData.setOnClickListener(v -> {
             openShowCollectedData();
         });
+
+        this.btSearchByDatasets.setOnClickListener( v -> {
+            openSearchByDatasets();
+        });
+
+        this.btSyncDataSharing.setOnClickListener(v -> {
+            openSyncDataSharing();
+        });
     }
 
     private void openSurveyMembers() {
@@ -75,6 +88,15 @@ public class SurveyActivity extends AppCompatActivity {
     private void openShowCollectedData() {
         Intent intent = new Intent(this, ShowCollectedDataActivity.class);
         startActivity(intent);
+    }
+
+    private void openSyncDataSharing() {
+        Intent intent = new Intent(this, SyncDataSharingActivity.class);
+        startActivity(intent);
+    }
+
+    private void openSearchByDatasets() {
+        //TODO To be implemented
     }
 
 }

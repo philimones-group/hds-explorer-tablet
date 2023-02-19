@@ -394,7 +394,7 @@
     <string name="new_region_code_empty_lbl">The Region Code cannot be empty</string>
     <string name="new_region_name_empty_lbl">The Region Name cannot be empty</string>
     <string name="new_region_code_exists_lbl">The Region Code already exists</string>
-    
+
     <!-- New Household -->
     <string name="new_household_main_dialog_lbl">Add New Household</string>
     <string name="new_household_region_code_lbl">Region Code</string>
@@ -580,6 +580,8 @@
     <string name="survey_members_btn_lbl">Search By Members</string>
     <string name="survey_tracking_lists_btn_lbl">Show Follow-up Lists</string>
     <string name="survey_show_collected_data_lists_btn_lbl">Show Collected Forms</string>
+    <string name="survey_search_by_datasets_btn_lbl">Search By Datasets</string>
+    <string name="survey_sync_data_sharing_btn_lbl">Data Sharing Synchronization</string>
 
     <string name="show_collected_data_title_lbl">Show Collected Forms Data</string>
     <string name="show_collected_data_modules_lbl">Modules:</string>
@@ -659,6 +661,39 @@
 
     <!-- Modules Selector -->
     <string name="modules_selector_select_lbl">Select a Module</string>
+
+    <!-- Data sharing -->
+    <string name="data_sharing_connection_type_lbl">Connection Type</string>
+    <string name="data_sharing_connection_type_bluetooth_lbl">Bluetooth Connection</string>
+    <string name="data_sharing_connection_type_wifi_lbl">WiFI/IP Connection</string>
+    <string name="data_sharing_bt_start_server_lbl">Start Server</string>
+    <string name="data_sharing_bt_connect_to_a_server_lbl">Connect to a server</string>
+    <string name="data_sharing_msg_listening_to_devices_lbl">Listening to Devices</string>
+    <string name="data_sharing_records_to_share_lbl">Datasets records to share</string>
+    <string name="data_sharing_shared_records_lbl">Shared datasets records</string>
+    <string name="data_sharing_connected_devices_lbl">Connected Devices</string>
+    <string name="data_sharing_bt_start_data_sharing_lbl">Start Data Sharing</string>
+    <string name="data_sharing_devlist_title_lbl">Bluetooth Devices Scanner</string>
+    <string name="data_sharing_msg_conn_not_init_lbl">Connection not Initialized</string>
+    <string name="data_sharing_device_disabled_lbl">Bluetooth device is disabled</string>
+    <string name="data_sharing_device_not_found_lbl">Bluetooth device not found</string>
+    <string name="data_sharing_server_listening_lbl">Server is listening for devices</string>
+    <string name="data_sharing_server_stopped_listening_lbl">Server stopped listening for devices</string>
+    <string name="data_sharing_device_connection_failure_lbl">Couldn\'t connect to bluetooth device</string>
+    <string name="data_sharing_scan_for_servers_lbl">Scanning for server devices</string>
+    <string name="data_sharing_scanning_stopped_lbl">Stopped scanning for devices</string>
+    <string name="data_sharing_transferring_data_lbl">Transferring shared datasets records</string>
+    <string name="data_sharing_transferring_failure_lbl">An error occured while trying to share datasets</string>
+    <string name="data_sharing_data_shared_lbl">Datasets shared successfully</string>
+
+    <!--  Data sharing - Bluetooth Devices List -->
+    <string name="data_sharing_devlist_scanning_lbl">Scanning for devices...</string>
+    <string name="data_sharing_devlist_select_device_lbl">Select a device to connect</string>
+    <string name="data_sharing_devlist_none_paired_lbl">No devices have been paired</string>
+    <string name="data_sharing_devlist_none_found_lbl">No devices found</string>
+    <string name="data_sharing_devlist_title_paired_devices_lbl">Paired Devices</string>
+    <string name="data_sharing_devlist_title_other_devices_lbl">Other Available Devices</string>
+    <string name="data_sharing_devlist_button_scan_lbl">Scan for devices</string>
 
     <!-- barcode scanner -->
     <string name="barcode_dialog_ask_scan_title">Barcode Id Scanner</string>

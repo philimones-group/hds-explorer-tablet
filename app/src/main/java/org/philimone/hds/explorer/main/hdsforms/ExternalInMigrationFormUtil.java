@@ -173,10 +173,10 @@ public class ExternalInMigrationFormUtil extends FormUtil<Inmigration> {
 
         preloadedMap.put("visitCode", this.visit.code);
         preloadedMap.put("memberCode", memberCode);
-        preloadedMap.put("motherCode", mother.code);
-        preloadedMap.put("motherName", mother.isUnknownIndividual() ? context.getString(R.string.member_details_unknown_lbl) : mother.name);
-        preloadedMap.put("fatherCode", father.code);
-        preloadedMap.put("fatherName", father.isUnknownIndividual() ? context.getString(R.string.member_details_unknown_lbl) : father.name);
+        preloadedMap.put("memberMotherCode", mother.code);
+        preloadedMap.put("memberMotherName", mother.isUnknownIndividual() ? context.getString(R.string.member_details_unknown_lbl) : mother.name);
+        preloadedMap.put("memberFatherCode", father.code);
+        preloadedMap.put("memberFatherName", father.isUnknownIndividual() ? context.getString(R.string.member_details_unknown_lbl) : father.name);
         preloadedMap.put("migrationType", InMigrationType.EXTERNAL.code);
         preloadedMap.put("extMigrationType", externalInMigrationType.code); //Must be selected
 
@@ -200,10 +200,10 @@ public class ExternalInMigrationFormUtil extends FormUtil<Inmigration> {
     @Override
     protected void preloadUpdatedValues() {
         //only father and mother can be updated using dialogs
-        preloadedMap.put("motherCode", mother.code);
-        preloadedMap.put("motherName", mother.isUnknownIndividual() ? context.getString(R.string.member_details_unknown_lbl) : mother.name);
-        preloadedMap.put("fatherCode", father.code);
-        preloadedMap.put("fatherName", father.isUnknownIndividual() ? context.getString(R.string.member_details_unknown_lbl) : father.name);
+        preloadedMap.put("memberMotherCode", mother.code);
+        preloadedMap.put("memberMotherName", mother.isUnknownIndividual() ? context.getString(R.string.member_details_unknown_lbl) : mother.name);
+        preloadedMap.put("memberFatherCode", father.code);
+        preloadedMap.put("memberFatherName", father.isUnknownIndividual() ? context.getString(R.string.member_details_unknown_lbl) : father.name);
     }
 
     @Override
@@ -211,10 +211,10 @@ public class ExternalInMigrationFormUtil extends FormUtil<Inmigration> {
 
         ColumnValue colVisitCode = collectedValues.get("visitCode");
         ColumnValue colMemberCode = collectedValues.get("memberCode"); //check if code is valid + check duplicate + member belongs to household
-        ColumnValue colMotherCode = collectedValues.get("motherCode"); //not blank
-        ColumnValue colMotherName = collectedValues.get("motherName");
-        ColumnValue colFatherCode = collectedValues.get("fatherCode"); //not blank
-        ColumnValue colFatherName = collectedValues.get("fatherName");
+        ColumnValue colMotherCode = collectedValues.get("memberMotherCode"); //not blank
+        ColumnValue colMotherName = collectedValues.get("memberMotherName");
+        ColumnValue colFatherCode = collectedValues.get("memberFatherCode"); //not blank
+        ColumnValue colFatherName = collectedValues.get("memberFatherName");
         ColumnValue colMemberName = collectedValues.get("memberName"); //not blank
         ColumnValue colMemberGender = collectedValues.get("memberGender"); //not blank
         ColumnValue colMemberDob = collectedValues.get("memberDob"); //date cannot be in future + head min age
@@ -364,6 +364,18 @@ public class ExternalInMigrationFormUtil extends FormUtil<Inmigration> {
     }
 
     @Override
+    public void onBeforeFormFinished(HForm form, CollectedDataMap collectedValues) {
+        //using it to update collectedHouseholdId, collectedMemberId
+        ColumnValue colHouseholdId = collectedValues.get("collectedHouseholdId");
+        ColumnValue colMemberId = collectedValues.get("collectedMemberId");
+
+        String memberId = (returningMember != null) ? returningMember.collectedId : collectedValues.get(HForm.COLUMN_ID).getValue();
+
+        colHouseholdId.setValue(this.household.collectedId);
+        colMemberId.setValue(memberId);
+    }
+
+    @Override
     public void onFormFinished(HForm form, CollectedDataMap collectedValues, XmlFormResult result) {
 
         Log.d("resultxml", result.getXmlResult());
@@ -380,10 +392,10 @@ public class ExternalInMigrationFormUtil extends FormUtil<Inmigration> {
         //saveNewHousehold();
         ColumnValue colVisitCode = collectedValues.get("visitCode");
         ColumnValue colMemberCode = collectedValues.get("memberCode"); //check if code is valid + check duplicate + member belongs to household
-        ColumnValue colMotherCode = collectedValues.get("motherCode"); //not blank
-        ColumnValue colMotherName = collectedValues.get("motherName");
-        ColumnValue colFatherCode = collectedValues.get("fatherCode"); //not blank
-        ColumnValue colFatherName = collectedValues.get("fatherName");
+        ColumnValue colMotherCode = collectedValues.get("memberMotherCode"); //not blank
+        ColumnValue colMotherName = collectedValues.get("memberMotherName");
+        ColumnValue colFatherCode = collectedValues.get("memberFatherCode"); //not blank
+        ColumnValue colFatherName = collectedValues.get("memberFatherName");
         ColumnValue colMemberName = collectedValues.get("memberName"); //not blank
         ColumnValue colMemberGender = collectedValues.get("memberGender"); //not blank
         ColumnValue colMemberDob = collectedValues.get("memberDob"); //date cannot be in future + head min age
@@ -443,12 +455,15 @@ public class ExternalInMigrationFormUtil extends FormUtil<Inmigration> {
             member.entryHousehold = household.code;
             member.entryType = ResidencyStartType.EXTERNAL_INMIGRATION;
             member.entryDate = migrationDate;
+            member.collectedId = collectedValues.get(HForm.COLUMN_ID).getValue(); //only new members receive the collectedId
 
         } else {
             member = returningMember;
         }
 
         //residency current status
+        member.householdCode = household.code;
+        member.householdName = household.name;
         member.startType = ResidencyStartType.EXTERNAL_INMIGRATION;
         member.startDate = migrationDate;
         member.endType = ResidencyEndType.NOT_APPLICABLE;
@@ -464,7 +479,6 @@ public class ExternalInMigrationFormUtil extends FormUtil<Inmigration> {
         member.sinLatitude = household.sinLatitude;
         member.cosLongitude = household.cosLongitude;
         member.sinLongitude = household.sinLongitude;
-        member.collectedId = collectedValues.get(HForm.COLUMN_ID).getValue();
         member.recentlyCreated = true;
         member.recentlyCreatedUri = result.getFilename();
         member.modules.addAll(StringCollectionConverter.getCollectionFrom(colModules.getValue()));

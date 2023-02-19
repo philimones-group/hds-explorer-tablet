@@ -379,6 +379,15 @@ public class ChangeHeadFormUtil extends FormUtil<HeadRelationship> {
         return count > 0;
     }
 
+    @Override
+    public void onBeforeFormFinished(HForm form, CollectedDataMap collectedValues) {
+        //using it to update collectedHouseholdId, collectedMemberId
+        ColumnValue colHouseholdId = collectedValues.get("collectedHouseholdId");
+        ColumnValue colMemberId = collectedValues.get("collectedMemberId");
+
+        colHouseholdId.setValue(this.household.collectedId);
+        colMemberId.setValue(this.newHeadMember.collectedId);
+    }
 
     @Override
     public void onFormFinished(HForm form, CollectedDataMap collectedValues, XmlFormResult result) {

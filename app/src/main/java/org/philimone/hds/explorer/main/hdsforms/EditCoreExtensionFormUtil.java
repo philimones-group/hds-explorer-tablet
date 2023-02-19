@@ -57,6 +57,11 @@ public class EditCoreExtensionFormUtil extends FormUtil<Household> {
     }
 
     @Override
+    public void onBeforeFormFinished(HForm form, CollectedDataMap collectedValues) {
+
+    }
+
+    @Override
     public void onFormFinished(HForm form, CollectedDataMap collectedValues, XmlFormResult result) {
 
     }

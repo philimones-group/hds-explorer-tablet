@@ -398,6 +398,16 @@ public class MaritalRelationshipFormUtil extends FormUtil<MaritalRelationship> {
     }
 
     @Override
+    public void onBeforeFormFinished(HForm form, CollectedDataMap collectedValues) {
+        //using it to update collectedHouseholdId, collectedMemberId
+        ColumnValue colHouseholdId = collectedValues.get("collectedHouseholdId");
+        ColumnValue colMemberId = collectedValues.get("collectedMemberId");
+
+        colHouseholdId.setValue(this.household.collectedId);
+        colMemberId.setValue(this.spouseA.collectedId);
+    }
+
+    @Override
     public void onFormFinished(HForm form, CollectedDataMap collectedValues, XmlFormResult result) {
 
         Log.d("resultxml", result.getXmlResult());

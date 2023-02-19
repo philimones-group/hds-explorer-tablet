@@ -67,8 +67,8 @@ public class DeathFormUtil extends FormUtil<Death> {
     private Box<MaritalRelationship> boxMaritalRelationships;
     
     //private Household household;
-    private Visit visit;
-    private Member member;
+    private final Visit visit;
+    private final Member member;
     private Boolean isHouseholdHead = false;
     private Member newHeadMember;
     private Member previousNewHeadMember;
@@ -456,6 +456,16 @@ public class DeathFormUtil extends FormUtil<Death> {
         }
 
         return false;
+    }
+
+    @Override
+    public void onBeforeFormFinished(HForm form, CollectedDataMap collectedValues) {
+        //using it to update collectedHouseholdId, collectedMemberId
+        ColumnValue colHouseholdId = collectedValues.get("collectedHouseholdId");
+        ColumnValue colMemberId = collectedValues.get("collectedMemberId");
+
+        colHouseholdId.setValue(this.household.collectedId);
+        colMemberId.setValue(this.member.collectedId);
     }
 
     @Override

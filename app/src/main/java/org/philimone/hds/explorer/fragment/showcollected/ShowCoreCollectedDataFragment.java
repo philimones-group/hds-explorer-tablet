@@ -255,6 +255,7 @@ public class ShowCoreCollectedDataFragment extends Fragment {
             case REGION:
             case EDITED_REGION:
                 return this.boxRegions.query(Region_.id.equal(collectedData.formEntityId)).build().findFirst();
+            case PRE_HOUSEHOLD:
             case HOUSEHOLD:
             case EDITED_HOUSEHOLD: return boxHouseholds.query(Household_.id.equal(collectedData.formEntityId)).build().findFirst();
             case EDITED_MEMBER: return boxMembers.query(Member_.id.equal(collectedData.formEntityId)).build().findFirst();

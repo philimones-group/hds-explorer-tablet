@@ -39,6 +39,7 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
@@ -596,6 +597,10 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
         if (this instanceof VisitFormUtil) return this.context.getString(R.string.core_entity_visit_lbl);
 
         return null;
+    }
+
+    protected String generateUUID() {
+        return UUID.randomUUID().toString().replaceAll("-", "");
     }
 
     /* statics */

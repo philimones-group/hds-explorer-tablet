@@ -196,6 +196,7 @@ public class PregnancyOutcomeFormUtil extends FormUtil<PregnancyOutcome> {
             String code = codeGenerator.generateMemberCode(this.household, generatedCodes);
             generatedCodes.add(code);
 
+            obj.put("childCollectedId", this.generateUUID());
             obj.put("childCode", code);
             obj.put("headRelationshipType", parentsAreHouseholdHead ? "SON" : ""); //Set the head if is one of them
             obj.put("childOrdinalPosition", ""+(i+1));
@@ -392,6 +393,16 @@ public class PregnancyOutcomeFormUtil extends FormUtil<PregnancyOutcome> {
     }
 
     @Override
+    public void onBeforeFormFinished(HForm form, CollectedDataMap collectedValues) {
+        //using it to update collectedHouseholdId, collectedMemberId
+        ColumnValue colHouseholdId = collectedValues.get("collectedHouseholdId");
+        ColumnValue colMemberId = collectedValues.get("collectedMemberId");
+
+        colHouseholdId.setValue(this.household.collectedId);
+        colMemberId.setValue(this.mother.collectedId);
+    }
+
+    @Override
     public void onFormFinished(HForm form, CollectedDataMap collectedValues, XmlFormResult result) {
 
         Log.d("resultxml", result.getXmlResult());
@@ -418,6 +429,7 @@ public class PregnancyOutcomeFormUtil extends FormUtil<PregnancyOutcome> {
 
         RepeatColumnValue repChilds = collectedValues.getRepeatColumn("childs");
         List<ColumnValue> colOutcomeTypes = new ArrayList<>();
+        List<ColumnValue> colChildCollectedIds = new ArrayList<>();
         List<ColumnValue> colChildCodes = new ArrayList<>();
         List<ColumnValue> colChildNames = new ArrayList<>();
         List<ColumnValue> colChildGenders = new ArrayList<>();
@@ -427,6 +439,7 @@ public class PregnancyOutcomeFormUtil extends FormUtil<PregnancyOutcome> {
         if (repChilds != null) {
             for (int i = 0; i < repChilds.getCount(); i++) {
                 ColumnValue colOutcomeType = repChilds.get("outcomeType", i);
+                ColumnValue colChildCollectedId = repChilds.get("childCollectedId", i);
                 ColumnValue colChildCode = repChilds.get("childCode", i);
                 ColumnValue colChildName = repChilds.get("childName", i);
                 ColumnValue colChildGender = repChilds.get("childGender", i);
@@ -434,6 +447,7 @@ public class PregnancyOutcomeFormUtil extends FormUtil<PregnancyOutcome> {
                 ColumnValue colChildRelationship = repChilds.get("headRelationshipType", i);
 
                 colOutcomeTypes.add(colOutcomeType);
+                colChildCollectedIds.add(colChildCollectedId);
                 colChildCodes.add(colChildCode);
                 colChildNames.add(colChildName);
                 colChildGenders.add(colChildGender);
@@ -458,6 +472,7 @@ public class PregnancyOutcomeFormUtil extends FormUtil<PregnancyOutcome> {
         String birthPlaceOther = colBirthPlaceOther.getValue();
 
         List<String> childOutcomeTypes = colOutcomeTypes.stream().map(ColumnValue::getValue).collect(Collectors.toList());
+        List<String> childCollectedIds = colChildCollectedIds.stream().map(ColumnValue::getValue).collect(Collectors.toList());
         List<String> childCodes = colChildCodes.stream().map(ColumnValue::getValue).collect(Collectors.toList());
         List<String> childNames = colChildNames.stream().map(ColumnValue::getValue).collect(Collectors.toList());
         List<String> childGenders = colChildGenders.stream().map(ColumnValue::getValue).collect(Collectors.toList());
@@ -501,6 +516,7 @@ public class PregnancyOutcomeFormUtil extends FormUtil<PregnancyOutcome> {
                 livebirths++;
             }
 
+            String childCollectedId = childCollectedIds.get(i);
             String childCode = childCodes.get(i);
             String childName = childNames.get(i);
             Gender childGender = Gender.getFrom(childGenders.get(i));
@@ -508,7 +524,7 @@ public class PregnancyOutcomeFormUtil extends FormUtil<PregnancyOutcome> {
             HeadRelationshipType headRelationshipType = HeadRelationshipType.getFrom(childRelationships.get(i));
 
             //Member
-            Member childMember = createNewMember(pregnancyOutcome, childCode, childName, childGender, headRelationshipType, colModules.getValue());
+            Member childMember = createNewMember(pregnancyOutcome, childCollectedId, childCode, childName, childGender, headRelationshipType, colModules.getValue());
             this.boxMembers.put(childMember);
 
             affectedMembers = addAffectedMembers(affectedMembers, childMember.code);
@@ -804,7 +820,7 @@ public class PregnancyOutcomeFormUtil extends FormUtil<PregnancyOutcome> {
         return members;
     }
 
-    private Member createNewMember(PregnancyOutcome pregnancyOutcome, String code, String name, Gender gender, HeadRelationshipType headRelationshipType, String modules) {
+    private Member createNewMember(PregnancyOutcome pregnancyOutcome, String collectedId, String code, String name, Gender gender, HeadRelationshipType headRelationshipType, String modules) {
         Member member = new Member();
         member.code = code;
         member.name = name;
@@ -838,6 +854,7 @@ public class PregnancyOutcomeFormUtil extends FormUtil<PregnancyOutcome> {
         member.sinLatitude = household.sinLatitude;
         member.cosLongitude = household.cosLongitude;
         member.sinLongitude = household.sinLongitude;
+        member.collectedId = collectedId;
         member.recentlyCreated = true;
         member.modules.addAll(StringCollectionConverter.getCollectionFrom(modules));
 

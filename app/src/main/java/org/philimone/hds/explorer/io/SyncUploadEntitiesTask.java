@@ -11,7 +11,9 @@ import org.philimone.hds.explorer.model.enums.CoreFormEntity;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.DataInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -104,10 +106,14 @@ public class SyncUploadEntitiesTask extends AsyncTask<Void, Integer, UploadRespo
     }
 
     private byte[] getXmlData(CoreCollectedData collectedData) {
-
-        if ( new File(collectedData.formFilename).exists()){
+        File file = new File(collectedData.formFilename);
+        if (file.exists()){
             try {
-                byte[] data = FileUtils.readFileToByteArray(new File(collectedData.formFilename));
+                byte[] data = new byte[(int)file.length()];
+                BufferedInputStream bInputStream = new BufferedInputStream(new FileInputStream(file));
+                DataInputStream reader = new DataInputStream(bInputStream);
+                reader.readFully(data);
+
                 return data;
             } catch (IOException e) {
                 e.printStackTrace();

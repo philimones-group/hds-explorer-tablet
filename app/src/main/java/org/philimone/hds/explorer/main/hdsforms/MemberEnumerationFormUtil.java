@@ -306,6 +306,18 @@ public class MemberEnumerationFormUtil extends FormUtil<Member> {
     }
 
     @Override
+    public void onBeforeFormFinished(HForm form, CollectedDataMap collectedValues) {
+        //using it to update collectedHouseholdId, collectedMemberId
+        ColumnValue colHouseholdId = collectedValues.get("collectedHouseholdId");
+        ColumnValue colMemberId = collectedValues.get("collectedMemberId");
+
+        String memberId = collectedValues.get(HForm.COLUMN_ID).getValue();
+
+        colHouseholdId.setValue(this.household.collectedId);
+        colMemberId.setValue(memberId);
+    }
+
+    @Override
     public void onFormFinished(HForm form, CollectedDataMap collectedValues, XmlFormResult result) {
 
         Log.d("resultxml", result.getXmlResult());

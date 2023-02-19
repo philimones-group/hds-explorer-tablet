@@ -166,6 +166,11 @@ public class HouseholdFormUtil extends FormUtil<Household> {
     }
 
     @Override
+    public void onBeforeFormFinished(HForm form, CollectedDataMap collectedValues) {
+
+    }
+
+    @Override
     public void onFormFinished(HForm form, CollectedDataMap collectedValues, XmlFormResult result) {
 
         Log.d("resultxml", result.getXmlResult());

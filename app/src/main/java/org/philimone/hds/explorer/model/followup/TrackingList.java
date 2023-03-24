@@ -21,7 +21,7 @@ public class TrackingList implements Serializable {
 
     @Id
     public long id;
-    @Unique
+    //@Unique
     public String code;    /** The Follow-up List identification code **/
     public String name;    /** The name of the Follow-up List (eg. HIV Case or Index Case) - will be displayed as the top left header label**/
     public String title;   /** The title of the Follow-up List  **/

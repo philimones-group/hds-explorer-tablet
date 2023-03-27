@@ -28,6 +28,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center|left"
             android:gravity="left|center_horizontal"
+            android:singleLine="true"
             android:text="Large Text"
             android:textSize="@dimen/member_item_text_1_size"
             android:textColor="@color/nui_member_item_textcolor" />
@@ -36,6 +37,7 @@
             android:id="@+id/txtMemberItemCode"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:singleLine="true"
             android:text="Medium Text"
             android:textSize="@dimen/member_item_text_1_size"
             android:textStyle="bold|italic"

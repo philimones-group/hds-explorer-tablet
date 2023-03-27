@@ -11,24 +11,28 @@
     tools:context="org.philimone.hds.explorer.main.SurveyActivity">
 
     <!-- logo layout -->
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/surveyLogoLayout"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.120000005">
+        app:layout_constraintStart_toStartOf="@id/mainGuidelineVertical"
+        app:layout_constraintTop_toTopOf="@id/mainGuidelineHorizontal"
+        android:visibility="gone">
 
         <!-- logo -->
         <ImageView
-            android:layout_width="453dp"
-            android:layout_height="70dp"
-            android:layout_gravity="right"
-            android:src="@mipmap/nui_logo_clean" />
+            android:id="@+id/imageView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:contentDescription="@string/bt_yes_lbl"
+            android:src="@mipmap/nui_logo_clean"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
 
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <!-- Buttons -->
     <LinearLayout
@@ -38,7 +42,6 @@
         app:layout_constraintTop_toBottomOf="@id/surveyLogoLayout"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="10dp"
         android:orientation="vertical">
 
         <TableRow
@@ -190,5 +193,19 @@
         </TableRow>
 
     </LinearLayout>
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/mainGuidelineVertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.6" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/mainGuidelineHorizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.0" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

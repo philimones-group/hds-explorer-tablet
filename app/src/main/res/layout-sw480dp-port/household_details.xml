@@ -1,0 +1,333 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="org.philimone.hds.explorer.main.HouseholdDetailsActivity"
+    android:background="@color/white">
+
+    <!-- Header -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/nui_subject_details_panel"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/iconView"
+            android:layout_width="90dp"
+            android:layout_height="100dp"
+            android:layout_marginTop="10dp"
+            android:layout_gravity="left|top"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginBottom="10dp"
+            android:src="@mipmap/nui_household_filled_icon" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/hhDetailsName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="MARGARIDA MOLUSCO MBUTI"
+                android:textColor="#ffffff"
+                android:textSize="@dimen/member_details_info_name_layout_txtsize"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:id="@+id/hhDetailsCode"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="ACA0000101"
+                android:textColor="#92edb3"
+                android:textSize="@dimen/member_details_info_name_layout_txtsize"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="0dp"
+                    android:layout_marginRight="1dp"
+                    android:text="@string/household_details_head_name_lbl"
+                    android:textColor="#c4daca"
+                    android:textSize="@dimen/member_details_info_other_layout_txtsize"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/hhDetailsHeadName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="0dp"
+                    android:layout_marginLeft="4dp"
+                    android:text="BOB ESPONJA"
+                    android:textColor="#83d34a"
+                    android:textSize="@dimen/member_details_info_other_layout_txtsize"
+                    android:textStyle="bold"
+                    />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="0dp"
+                    android:layout_marginRight="1dp"
+                    android:layout_marginLeft="20dp"
+                    android:text="@string/household_details_head_code_lbl"
+                    android:textColor="#c4daca"
+                    android:textSize="@dimen/member_details_info_other_layout_txtsize"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/hhDetailsHeadCode"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="0dp"
+                    android:layout_marginLeft="4dp"
+                    android:text="ACA0100123"
+                    android:textColor="#83d34a"
+                    android:textSize="@dimen/member_details_info_other_layout_txtsize"
+                    android:textStyle="bold"
+                     />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/hhDetailsRegionLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="0dp"
+                    android:layout_marginRight="1dp"
+                    android:text="@string/household_details_region_lbl"
+                    android:textSize="@dimen/member_details_info_other_layout_txtsize"
+                    android:textColor="#c4daca"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/hhDetailsRegionValue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="0dp"
+                    android:layout_marginLeft="4dp"
+                    android:text="34th Street, Maputo"
+                    android:textSize="@dimen/member_details_info_other_layout_txtsize"
+                    android:textColor="#83d34a"
+                    android:textStyle="bold"
+                    />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:id="@+id/hhDetailsVisitLastLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="0dp"
+                    android:layout_marginRight="1dp"
+                    android:text="@string/household_details_last_visit_lbl"
+                    android:textSize="@dimen/member_details_info_other_layout_txtsize"
+                    android:textColor="#c4daca"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/hhDetailsVisitDateValue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="0dp"
+                    android:layout_marginLeft="4dp"
+                    android:text="2021-05-01"
+                    android:textSize="@dimen/member_details_info_other_layout_txtsize"
+                    android:textColor="#83d34a"
+                    android:textStyle="bold"
+                    />
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <!-- Main Panel -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:layout_marginBottom="0dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:orientation="vertical">
+
+        <!-- Tabs  - Normal Mode -->
+        <RelativeLayout
+            android:id="@+id/mainPanelTabsLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <com.google.android.material.tabs.TabLayout
+                    android:id="@+id/householdDetailsTabLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    app:tabMaxWidth="0dp"
+                    app:tabGravity="fill"
+                    app:tabMode="fixed"
+                    android:elevation="5dp"
+                    app:tabInlineLabel="true"
+                    style="@style/customTabLayout">
+
+                    <com.google.android.material.tabs.TabItem
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/household_details_tab_members_list_lbl" />
+
+                    <com.google.android.material.tabs.TabItem
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/household_details_tab_datasets_lbl" />
+
+                    <com.google.android.material.tabs.TabItem
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/household_details_tab_collected_forms_lbl" />
+
+                    <com.google.android.material.tabs.TabItem
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/household_details_tab_edit_lbl" />
+                </com.google.android.material.tabs.TabLayout>
+
+                <androidx.viewpager2.widget.ViewPager2
+                    android:id="@+id/householdDetailsTabViewPager"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:layout_constraintTop_toBottomOf="@id/householdDetailsTabLayout">
+
+                </androidx.viewpager2.widget.ViewPager2>
+
+            </LinearLayout>
+
+
+            <!-- border of listview -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/nui_list_rborder_panel">
+            </View>
+
+        </RelativeLayout>
+
+        <!-- Visit - Visit Mode -->
+        <LinearLayout
+            android:id="@+id/mainPanelVisitLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <fragment android:name="org.philimone.hds.explorer.fragment.household.details.HouseholdVisitFragment"
+                android:id="@+id/householdVisitFragment"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:layout="@layout/household_visit" />
+
+        </LinearLayout>
+        <!-- Household Visit Fragment -->
+
+    </LinearLayout>
+
+    <!-- Buttons -->
+    <LinearLayout
+        android:id="@+id/hhLayoutButtons"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0"
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <Button
+            android:id="@+id/btHouseDetailsCreateVisit"
+            android:layout_width="350dp"
+            android:layout_height="@dimen/member_details_edit_bt_height"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:textSize="@dimen/member_details_buttons_textsize"
+            android:textStyle="bold"
+            android:text="@string/household_details_bt_create_visit_lbl"
+            android:background="@drawable/nui_btnd_rone_dgbevel"/>
+
+        <Button
+            android:id="@+id/btHouseDetailsOpenVisit"
+            android:layout_width="350dp"
+            android:layout_height="@dimen/member_details_edit_bt_height"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:textSize="@dimen/member_details_buttons_textsize"
+            android:textStyle="bold"
+            android:text="@string/household_details_bt_open_visit_lbl"
+            android:background="@drawable/nui_btnd_rone_dgbevel"
+            android:visibility="visible"/>
+
+        <Button
+            android:id="@+id/btHouseDetailsFinishVisit"
+            android:layout_width="350dp"
+            android:layout_height="@dimen/member_details_edit_bt_height"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:textSize="@dimen/member_details_buttons_textsize"
+            android:textStyle="bold"
+            android:text="@string/household_details_bt_finish_visit_lbl"
+            android:background="@drawable/nui_btnd_rone_dgbevel"
+            android:visibility="visible"/>
+
+        <Button
+            android:id="@+id/btHouseDetailsCollectData"
+            android:layout_width="350dp"
+            android:layout_height="@dimen/member_details_edit_bt_height"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:textSize="@dimen/member_details_buttons_textsize"
+            android:textStyle="bold"
+            android:text="@string/member_details_bt_openform_lbl"
+            android:background="@drawable/nui_btnd_rone_dgbevel"/>
+
+        <Button
+            android:id="@+id/btHouseDetailsBack"
+            android:layout_width="350dp"
+            android:layout_height="@dimen/member_details_edit_bt_height"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:textSize="@dimen/member_details_buttons_textsize"
+            android:textStyle="bold"
+            android:text="@string/member_details_bt_back_lbl"
+            android:background="@drawable/nui_btnd_rone_gflat"
+            android:visibility="gone"/>
+
+    </LinearLayout>
+
+</LinearLayout>

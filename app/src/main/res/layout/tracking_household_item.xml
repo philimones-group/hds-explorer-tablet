@@ -43,6 +43,7 @@
             android:id="@+id/txtMemberItemCode"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:singleLine="true"
             android:text="Medium Text"
             android:textSize="14sp"
             android:textColor="#444" />
@@ -51,6 +52,7 @@
             android:id="@+id/txtMemberItemExtras"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:singleLine="true"
             android:text="Medium Text"
             android:textSize="13sp"
             android:textStyle="bold"

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -7,421 +7,428 @@
     android:orientation="vertical"
     tools:context=".fragment.member.details.MemberEditFragment">
 
-    <!-- form -->
     <LinearLayout
-        android:id="@+id/layout_md_xdata"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginTop="10dp"
-        android:paddingStart="10dp"
-        android:paddingEnd="10dp"
-        android:background="@drawable/nui_list_rborder_panel"
+        android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <!-- first row -->
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/firstRowLayout"
+        <!-- form -->
+        <LinearLayout
+            android:id="@+id/layout_md_xdata"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="10dp">
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="10dp"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
+            android:background="@drawable/nui_list_rborder_panel"
+            android:orientation="vertical">
 
-            <!-- Name Textbox -->
-            <LinearLayout
-                android:id="@+id/nameLayout"
-                android:layout_width="0dp"
+            <!-- first row -->
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/firstRowLayout"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/sexLayout"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
+                android:paddingTop="10dp">
 
+                <!-- Name Textbox -->
                 <LinearLayout
-                    android:layout_width="match_parent"
+                    android:id="@+id/nameLayout"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                    android:orientation="vertical"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/sexLayout"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="20dp"
+                            android:layout_marginBottom="5dp"
+                            android:text="@string/member_details_edit_member_name_lbl"
+                            android:textColor="@color/nui_color_text_darkgray"
+                            android:textSize="@dimen/member_details_edit_grouplabel_txtsize"
+                            android:textStyle="bold" />
+
+                    </LinearLayout>
+
+                    <EditText
+                        android:id="@+id/txtEditName"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:background="@drawable/nui_txtbox_rone_wbevel"
+                        android:paddingStart="20dp"
+                        android:text="Kael Ezra Filimone"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/member_details_edit_textbox_txtsize" />
+
+                </LinearLayout>
+
+                <!-- Gender Info -->
+                <LinearLayout
+                    android:id="@+id/sexLayout"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:orientation="vertical"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/dobLayout"
+                    app:layout_constraintStart_toEndOf="@id/nameLayout"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/member_filter_textlabel_margin_left"
+                        android:layout_marginBottom="5dp"
+                        android:text="@string/member_filter_gender_lbl"
+                        android:textColor="@color/nui_color_text_darkgray"
+                        android:textSize="@dimen/member_details_edit_grouplabel_txtsize"
+                        android:textStyle="bold" />
+
+                    <RadioGroup
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/nui_list_rborder_panel"
+                        android:gravity="center"
+                        android:orientation="horizontal"
+                        android:paddingStart="30dp"
+                        android:paddingEnd="30dp">
+
+                        <RadioButton
+                            android:id="@+id/chkEditGFemale"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginRight="15dp"
+                            android:minHeight="48dp"
+                            android:text="@string/member_filter_gender_female_lbl"
+                            android:textColor="@color/nui_color_text_darkgray"
+                            android:textSize="@dimen/member_details_edit_textview_txtsize"
+                            android:textStyle="bold" />
+
+                        <RadioButton
+                            android:id="@+id/chkEditGMale"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:minHeight="48dp"
+                            android:text="@string/member_filter_gender_male_lbl"
+                            android:textColor="@color/nui_color_text_darkgray"
+                            android:textSize="@dimen/member_details_edit_textview_txtsize"
+                            android:textStyle="bold" />
+
+                    </RadioGroup>
+
+                </LinearLayout>
+
+                <!-- DOB-->
+                <LinearLayout
+                    android:id="@+id/dobLayout"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:orientation="vertical"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/sexLayout"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginBottom="5dp"
+                        android:text="@string/member_details_edit_member_dob_lbl"
+                        android:textColor="@color/nui_color_text_darkgray"
+                        android:textSize="@dimen/member_details_edit_grouplabel_txtsize"
+                        android:textStyle="bold" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/nui_list_rborder_panel"
+                        android:gravity="center"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/txtEditDob"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginTop="15dp"
+                            android:layout_marginRight="10dp"
+                            android:layout_marginBottom="15dp"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:maxLines="1"
+                            android:paddingStart="12dp"
+                            android:paddingTop="5dp"
+                            android:paddingEnd="12dp"
+                            android:paddingBottom="5dp"
+                            android:text="1988-09-16"
+                            android:textColor="@color/black"
+                            android:textSize="@dimen/member_details_edit_textview_txtsize"
+                            android:textStyle="bold" />
+
+                        <Button
+                            android:id="@+id/btEditDob"
+                            android:layout_width="150dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="15dp"
+                            android:background="@drawable/nui_btnd_rone_dgbevel"
+                            android:elevation="5dp"
+                            android:text="@string/member_details_edit_button_change_lbl"
+                            android:textColor="@color/white"
+                            android:textSize="@dimen/member_details_edit_button_change_txtsize"
+                            android:textStyle="bold" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <!-- parents -->
+            <LinearLayout
+                android:id="@+id/parentsLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:orientation="horizontal">
+
+                <!-- Father -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginTop="10dp"
+                    android:orientation="vertical" >
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="20dp"
                         android:layout_marginBottom="5dp"
-                        android:text="@string/member_details_edit_member_name_lbl"
+                        android:layout_gravity="center|left"
+                        android:gravity="left|center_horizontal"
+                        android:text="@string/member_details_edit_member_father_lbl"
+                        android:textStyle="bold"
                         android:textColor="@color/nui_color_text_darkgray"
-                        android:textSize="@dimen/member_details_edit_grouplabel_txtsize"
-                        android:textStyle="bold" />
+                        android:textSize="@dimen/member_details_edit_grouplabel_txtsize" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:background="@drawable/nui_list_rborder_panel"
+                        android:orientation="horizontal">
+
+                        <TableLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_marginLeft="20dp"
+                            android:layout_marginRight="20dp"
+                            android:layout_marginTop="15dp"
+                            android:layout_marginBottom="15dp"
+                            android:gravity="center"
+                            android:orientation="vertical">
+
+                            <TableRow
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="match_parent"
+                                    android:layout_marginLeft="5dp"
+                                    android:gravity="start"
+                                    android:text="@string/member_details_edit_member_parent_code_lbl"
+                                    android:textSize="@dimen/member_details_edit_textview_small_txtsize"
+                                    android:textColor="@color/black"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:id="@+id/txtEditFatherCode"
+                                    android:layout_width="0dp"
+                                    android:layout_height="match_parent"
+                                    android:layout_marginLeft="5dp"
+                                    android:layout_weight="1"
+                                    android:gravity="center_vertical"
+                                    android:text="ACAPF1001001"
+                                    android:textSize="@dimen/member_details_edit_textview_small_txtsize"
+                                    android:textColor="@color/black" />
+
+                            </TableRow>
+
+                            <TableRow
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_marginTop="10dp">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="match_parent"
+                                    android:layout_marginLeft="5dp"
+                                    android:text="@string/member_details_edit_member_parent_name_lbl"
+                                    android:gravity="start"
+                                    android:textSize="@dimen/member_details_edit_textview_small_txtsize"
+                                    android:textColor="@color/black"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:id="@+id/txtEditFatherName"
+                                    android:layout_width="0dp"
+                                    android:layout_height="match_parent"
+                                    android:layout_marginLeft="5dp"
+                                    android:gravity="center_vertical"
+                                    android:layout_weight="1"
+                                    android:maxLines="1"
+                                    android:ellipsize="end"
+                                    android:text="PAULO ROBERTO FILIMONE MEIGOS"
+                                    android:textSize="@dimen/member_details_edit_textview_small_txtsize"
+                                    android:textColor="@color/black" />
+
+                            </TableRow>
+
+                        </TableLayout>
+
+                        <Button
+                            android:id="@+id/btEditFather"
+                            android:layout_width="150dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="15dp"
+                            android:text="@string/member_details_edit_button_change_lbl"
+                            android:textSize="@dimen/member_details_edit_button_change_txtsize"
+                            android:textStyle="bold"
+                            android:textColor="@color/white"
+                            android:background="@drawable/nui_btnd_rone_dgbevel"
+                            android:elevation="5dp" />
+
+                    </LinearLayout>
 
                 </LinearLayout>
 
-                <EditText
-                    android:id="@+id/txtEditName"
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:background="@drawable/nui_txtbox_rone_wbevel"
-                    android:paddingStart="20dp"
-                    android:text="Kael Ezra Filimone"
-                    android:textColor="@color/black"
-                    android:textSize="@dimen/member_details_edit_textbox_txtsize" />
-
-            </LinearLayout>
-
-            <!-- Gender Info -->
-            <LinearLayout
-                android:id="@+id/sexLayout"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="5dp"
-                android:orientation="vertical"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/dobLayout"
-                app:layout_constraintStart_toEndOf="@id/nameLayout"
-                app:layout_constraintTop_toTopOf="parent">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/member_filter_textlabel_margin_left"
-                    android:layout_marginBottom="5dp"
-                    android:text="@string/member_filter_gender_lbl"
-                    android:textColor="@color/nui_color_text_darkgray"
-                    android:textSize="@dimen/member_details_edit_grouplabel_txtsize"
-                    android:textStyle="bold" />
-
-                <RadioGroup
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@drawable/nui_list_rborder_panel"
-                    android:gravity="center"
-                    android:orientation="horizontal"
-                    android:paddingStart="30dp"
-                    android:paddingEnd="30dp">
-
-                    <RadioButton
-                        android:id="@+id/chkEditGFemale"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginRight="15dp"
-                        android:minHeight="48dp"
-                        android:text="@string/member_filter_gender_female_lbl"
-                        android:textColor="@color/nui_color_text_darkgray"
-                        android:textSize="@dimen/member_details_edit_textview_txtsize"
-                        android:textStyle="bold" />
-
-                    <RadioButton
-                        android:id="@+id/chkEditGMale"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:minHeight="48dp"
-                        android:text="@string/member_filter_gender_male_lbl"
-                        android:textColor="@color/nui_color_text_darkgray"
-                        android:textSize="@dimen/member_details_edit_textview_txtsize"
-                        android:textStyle="bold" />
-
-                </RadioGroup>
-
-            </LinearLayout>
-
-            <!-- DOB-->
-            <LinearLayout
-                android:id="@+id/dobLayout"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="5dp"
-                android:orientation="vertical"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/sexLayout"
-                app:layout_constraintTop_toTopOf="parent">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp"
-                    android:layout_marginBottom="5dp"
-                    android:text="@string/member_details_edit_member_dob_lbl"
-                    android:textColor="@color/nui_color_text_darkgray"
-                    android:textSize="@dimen/member_details_edit_grouplabel_txtsize"
-                    android:textStyle="bold" />
-
+                <!-- Mother -->
                 <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@drawable/nui_list_rborder_panel"
-                    android:gravity="center"
-                    android:orientation="horizontal">
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginTop="10dp"
+                    android:orientation="vertical" >
 
                     <TextView
-                        android:id="@+id/txtEditDob"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginTop="15dp"
-                        android:layout_marginRight="10dp"
-                        android:layout_marginBottom="15dp"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:maxLines="1"
-                        android:paddingStart="12dp"
-                        android:paddingTop="5dp"
-                        android:paddingEnd="12dp"
-                        android:paddingBottom="5dp"
-                        android:text="1988-09-16"
-                        android:textColor="@color/black"
-                        android:textSize="@dimen/member_details_edit_textview_txtsize"
-                        android:textStyle="bold" />
-
-                    <Button
-                        android:id="@+id/btEditDob"
-                        android:layout_width="150dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginRight="15dp"
-                        android:background="@drawable/nui_btnd_rone_dgbevel"
-                        android:elevation="5dp"
-                        android:text="@string/member_details_edit_button_change_lbl"
-                        android:textColor="@color/white"
-                        android:textSize="@dimen/member_details_edit_button_change_txtsize"
-                        android:textStyle="bold" />
-
-                </LinearLayout>
-
-            </LinearLayout>
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <!-- parents -->
-        <LinearLayout
-            android:id="@+id/parentsLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:orientation="horizontal">
-
-            <!-- Father -->
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_marginTop="10dp"
-                android:orientation="vertical" >
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp"
-                    android:layout_marginBottom="5dp"
-                    android:layout_gravity="center|left"
-                    android:gravity="left|center_horizontal"
-                    android:text="@string/member_details_edit_member_father_lbl"
-                    android:textStyle="bold"
-                    android:textColor="@color/nui_color_text_darkgray"
-                    android:textSize="@dimen/member_details_edit_grouplabel_txtsize" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:background="@drawable/nui_list_rborder_panel"
-                    android:orientation="horizontal">
-
-                    <TableLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
                         android:layout_marginLeft="20dp"
-                        android:layout_marginRight="20dp"
-                        android:layout_marginTop="15dp"
-                        android:layout_marginBottom="15dp"
-                        android:gravity="center"
-                        android:orientation="vertical">
-
-                        <TableRow
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="match_parent"
-                                android:layout_marginLeft="5dp"
-                                android:gravity="start"
-                                android:text="@string/member_details_edit_member_parent_code_lbl"
-                                android:textSize="@dimen/member_details_edit_textview_small_txtsize"
-                                android:textColor="@color/black"
-                                android:textStyle="bold" />
-
-                            <TextView
-                                android:id="@+id/txtEditFatherCode"
-                                android:layout_width="0dp"
-                                android:layout_height="match_parent"
-                                android:layout_marginLeft="5dp"
-                                android:layout_weight="1"
-                                android:gravity="center_vertical"
-                                android:text="ACAPF1001001"
-                                android:textSize="@dimen/member_details_edit_textview_small_txtsize"
-                                android:textColor="@color/black" />
-
-                        </TableRow>
-
-                        <TableRow
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_marginTop="10dp">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="match_parent"
-                                android:layout_marginLeft="5dp"
-                                android:text="@string/member_details_edit_member_parent_name_lbl"
-                                android:gravity="start"
-                                android:textSize="@dimen/member_details_edit_textview_small_txtsize"
-                                android:textColor="@color/black"
-                                android:textStyle="bold" />
-
-                            <TextView
-                                android:id="@+id/txtEditFatherName"
-                                android:layout_width="0dp"
-                                android:layout_height="match_parent"
-                                android:layout_marginLeft="5dp"
-                                android:gravity="center_vertical"
-                                android:layout_weight="1"
-                                android:maxLines="1"
-                                android:ellipsize="end"
-                                android:text="PAULO ROBERTO FILIMONE MEIGOS"
-                                android:textSize="@dimen/member_details_edit_textview_small_txtsize"
-                                android:textColor="@color/black" />
-
-                        </TableRow>
-
-                    </TableLayout>
-
-                    <Button
-                        android:id="@+id/btEditFather"
-                        android:layout_width="150dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginRight="15dp"
-                        android:text="@string/member_details_edit_button_change_lbl"
-                        android:textSize="@dimen/member_details_edit_button_change_txtsize"
+                        android:layout_marginBottom="5dp"
+                        android:layout_gravity="center|left"
+                        android:gravity="left|center_horizontal"
+                        android:text="@string/member_details_edit_member_mother_lbl"
                         android:textStyle="bold"
-                        android:textColor="@color/white"
-                        android:background="@drawable/nui_btnd_rone_dgbevel"
-                        android:elevation="5dp" />
+                        android:textColor="@color/nui_color_text_darkgray"
+                        android:textSize="@dimen/member_details_edit_grouplabel_txtsize" />
 
-                </LinearLayout>
-
-            </LinearLayout>
-
-            <!-- Mother -->
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_marginStart="5dp"
-                android:layout_marginTop="10dp"
-                android:orientation="vertical" >
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp"
-                    android:layout_marginBottom="5dp"
-                    android:layout_gravity="center|left"
-                    android:gravity="left|center_horizontal"
-                    android:text="@string/member_details_edit_member_mother_lbl"
-                    android:textStyle="bold"
-                    android:textColor="@color/nui_color_text_darkgray"
-                    android:textSize="@dimen/member_details_edit_grouplabel_txtsize" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:background="@drawable/nui_list_rborder_panel"
-                    android:orientation="horizontal">
-
-                    <TableLayout
+                    <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:layout_marginLeft="20dp"
-                        android:layout_marginRight="20dp"
-                        android:layout_marginTop="15dp"
-                        android:layout_marginBottom="15dp"
+                        android:layout_height="match_parent"
                         android:gravity="center"
-                        android:orientation="vertical">
+                        android:background="@drawable/nui_list_rborder_panel"
+                        android:orientation="horizontal">
 
-                        <TableRow
+                        <TableLayout
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent">
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_marginLeft="20dp"
+                            android:layout_marginRight="20dp"
+                            android:layout_marginTop="15dp"
+                            android:layout_marginBottom="15dp"
+                            android:gravity="center"
+                            android:orientation="vertical">
 
-                            <TextView
-                                android:layout_width="wrap_content"
+                            <TableRow
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="match_parent"
+                                    android:layout_marginLeft="5dp"
+                                    android:gravity="start"
+                                    android:text="@string/member_details_edit_member_parent_code_lbl"
+                                    android:textSize="@dimen/member_details_edit_textview_small_txtsize"
+                                    android:textColor="@color/black"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:id="@+id/txtEditMotherCode"
+                                    android:layout_width="0dp"
+                                    android:layout_height="match_parent"
+                                    android:layout_marginLeft="5dp"
+                                    android:layout_weight="1"
+                                    android:gravity="center_vertical"
+                                    android:text="ACAPF1001002"
+                                    android:textSize="@dimen/member_details_edit_textview_small_txtsize"
+                                    android:textColor="@color/black" />
+
+                            </TableRow>
+
+                            <TableRow
+                                android:layout_width="match_parent"
                                 android:layout_height="match_parent"
-                                android:layout_marginLeft="5dp"
-                                android:gravity="start"
-                                android:text="@string/member_details_edit_member_parent_code_lbl"
-                                android:textSize="@dimen/member_details_edit_textview_small_txtsize"
-                                android:textColor="@color/black"
-                                android:textStyle="bold" />
+                                android:layout_marginTop="10dp">
 
-                            <TextView
-                                android:id="@+id/txtEditMotherCode"
-                                android:layout_width="0dp"
-                                android:layout_height="match_parent"
-                                android:layout_marginLeft="5dp"
-                                android:layout_weight="1"
-                                android:gravity="center_vertical"
-                                android:text="ACAPF1001002"
-                                android:textSize="@dimen/member_details_edit_textview_small_txtsize"
-                                android:textColor="@color/black" />
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="match_parent"
+                                    android:layout_marginLeft="5dp"
+                                    android:text="@string/member_details_edit_member_parent_name_lbl"
+                                    android:gravity="start"
+                                    android:textSize="@dimen/member_details_edit_textview_small_txtsize"
+                                    android:textColor="@color/black"
+                                    android:textStyle="bold" />
 
-                        </TableRow>
+                                <TextView
+                                    android:id="@+id/txtEditMotherName"
+                                    android:layout_width="0dp"
+                                    android:layout_height="match_parent"
+                                    android:layout_marginLeft="5dp"
+                                    android:gravity="center_vertical"
+                                    android:layout_weight="1"
+                                    android:maxLines="1"
+                                    android:ellipsize="end"
+                                    android:text="DENISE ANGELE FILIMONE MEIGOS"
+                                    android:textSize="@dimen/member_details_edit_textview_small_txtsize"
+                                    android:textColor="@color/black" />
 
-                        <TableRow
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_marginTop="10dp">
+                            </TableRow>
 
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="match_parent"
-                                android:layout_marginLeft="5dp"
-                                android:text="@string/member_details_edit_member_parent_name_lbl"
-                                android:gravity="start"
-                                android:textSize="@dimen/member_details_edit_textview_small_txtsize"
-                                android:textColor="@color/black"
-                                android:textStyle="bold" />
+                        </TableLayout>
 
-                            <TextView
-                                android:id="@+id/txtEditMotherName"
-                                android:layout_width="0dp"
-                                android:layout_height="match_parent"
-                                android:layout_marginLeft="5dp"
-                                android:gravity="center_vertical"
-                                android:layout_weight="1"
-                                android:maxLines="1"
-                                android:ellipsize="end"
-                                android:text="DENISE ANGELE FILIMONE MEIGOS"
-                                android:textSize="@dimen/member_details_edit_textview_small_txtsize"
-                                android:textColor="@color/black" />
+                        <Button
+                            android:id="@+id/btEditMother"
+                            android:layout_width="150dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="15dp"
+                            android:text="@string/member_details_edit_button_change_lbl"
+                            android:textSize="@dimen/member_details_edit_button_change_txtsize"
+                            android:textStyle="bold"
+                            android:textColor="@color/white"
+                            android:background="@drawable/nui_btnd_rone_dgbevel"
+                            android:elevation="5dp" />
 
-                        </TableRow>
-
-                    </TableLayout>
-
-                    <Button
-                        android:id="@+id/btEditMother"
-                        android:layout_width="150dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginRight="15dp"
-                        android:text="@string/member_details_edit_button_change_lbl"
-                        android:textSize="@dimen/member_details_edit_button_change_txtsize"
-                        android:textStyle="bold"
-                        android:textColor="@color/white"
-                        android:background="@drawable/nui_btnd_rone_dgbevel"
-                        android:elevation="5dp" />
+                    </LinearLayout>
 
                 </LinearLayout>
 
@@ -429,26 +436,26 @@
 
         </LinearLayout>
 
+        <!-- buttons -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:orientation="vertical">
+
+            <Button
+                android:id="@+id/btEditUpdateDetails"
+                android:layout_width="350dp"
+                android:layout_height="@dimen/member_details_edit_bt_height"
+                android:layout_gravity="center"
+                android:textSize="@dimen/member_details_edit_button_update_txtsize"
+                android:textStyle="bold"
+                android:text="@string/member_details_edit_button_update_details_lbl"
+                android:background="@drawable/nui_btnd_rone_dgbevel"/>
+
+        </LinearLayout>
+
     </LinearLayout>
 
-    <!-- buttons -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="10dp"
-        android:orientation="vertical">
-
-        <Button
-            android:id="@+id/btEditUpdateDetails"
-            android:layout_width="350dp"
-            android:layout_height="@dimen/form_main_dialog_bt_height"
-            android:layout_gravity="center"
-            android:textSize="@dimen/member_details_edit_button_update_txtsize"
-            android:textStyle="bold"
-            android:text="@string/member_details_edit_button_update_details_lbl"
-            android:background="@drawable/nui_btnd_rone_dgbevel"/>
-
-    </LinearLayout>
-
-</LinearLayout>
+</ScrollView>

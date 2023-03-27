@@ -36,6 +36,7 @@
             android:id="@+id/txtHouseCode"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:singleLine="true"
             android:text="Medium Text"
             android:textColor="@color/nui_household_item_textcolor"
             android:textSize="@dimen/household_item_text_2_size" />
@@ -49,6 +50,7 @@
                 android:id="@+id/txtHeadLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:singleLine="true"
                 android:text="@string/household_filter_head_label"
                 android:textColor="@color/nui_household_item_textcolor"
                 android:textSize="@dimen/household_item_text_3_size"
@@ -59,6 +61,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
+                android:singleLine="true"
                 android:text="Medium Text"
                 android:textColor="@color/nui_household_item_textcolor"
                 android:textSize="@dimen/household_item_text_3_size"

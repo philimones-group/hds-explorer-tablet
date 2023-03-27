@@ -83,7 +83,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp"
+                    android:layout_marginLeft="15dp"
                     android:layout_marginTop="0dp"
                     android:layout_marginRight="1dp"
                     android:text="@string/member_details_age_lbl"
@@ -105,7 +105,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp"
+                    android:layout_marginLeft="15dp"
                     android:layout_marginTop="0dp"
                     android:layout_marginRight="1dp"
                     android:text="@string/member_details_dob_lbl"
@@ -220,7 +220,7 @@
         <Button
             android:id="@+id/btMemDetailsCollectData"
             android:layout_width="350dp"
-            android:layout_height="@dimen/form_main_dialog_bt_height"
+            android:layout_height="@dimen/member_details_edit_bt_height"
             android:layout_marginTop="10dp"
             android:layout_marginBottom="5dp"
             android:background="@drawable/nui_btnd_rone_dgbevel"
@@ -231,7 +231,7 @@
         <Button
             android:id="@+id/btMemDetailsBack"
             android:layout_width="350dp"
-            android:layout_height="@dimen/form_main_dialog_bt_height"
+            android:layout_height="@dimen/member_details_edit_bt_height"
             android:layout_marginTop="5dp"
             android:layout_marginBottom="10dp"
             android:background="@drawable/nui_btnd_rone_gflat"

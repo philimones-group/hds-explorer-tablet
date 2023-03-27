@@ -229,7 +229,7 @@
         <Button
             android:id="@+id/btMemDetailsBack"
             android:layout_width="350dp"
-            android:layout_height="@dimen/form_main_dialog_bt_height"
+            android:layout_height="@dimen/member_details_edit_bt_height"
             android:layout_marginRight="10dp"
             android:textSize="@dimen/member_details_land_buttons_textsize"
             android:textStyle="bold"
@@ -239,7 +239,7 @@
         <Button
             android:id="@+id/btMemDetailsCollectData"
             android:layout_width="350dp"
-            android:layout_height="@dimen/form_main_dialog_bt_height"
+            android:layout_height="@dimen/member_details_edit_bt_height"
             android:layout_marginLeft="10dp"
             android:textSize="@dimen/member_details_land_buttons_textsize"
             android:textStyle="bold"

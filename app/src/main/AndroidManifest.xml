@@ -64,27 +64,21 @@
             android:windowSoftInputMode="stateHidden|adjustPan" />
         <activity
             android:name=".main.SurveyActivity"
-            android:configChanges="orientation|screenSize"
             android:windowSoftInputMode="stateHidden|adjustPan" />
         <activity
             android:name=".main.SurveyHouseholdsActivity"
-            android:configChanges="orientation|screenSize"
             android:windowSoftInputMode="stateHidden|adjustPan" />
         <activity
             android:name=".main.SurveyMembersActivity"
-            android:configChanges="orientation|screenSize"
             android:windowSoftInputMode="stateHidden|adjustPan" />
         <activity
             android:name=".main.ShowCollectedDataActivity"
-            android:configChanges="orientation|screenSize"
             android:windowSoftInputMode="stateHidden|adjustPan" />
         <activity
             android:name=".main.HouseholdDetailsActivity"
-            android:configChanges="orientation|screenSize"
             android:windowSoftInputMode="stateHidden|adjustResize" />
         <activity
             android:name=".main.MemberDetailsActivity"
-            android:configChanges="orientation|screenSize"
             android:windowSoftInputMode="stateHidden|adjustPan" />
         <activity
             android:name=".main.GpsSearchedListActivity"
@@ -103,7 +97,6 @@
             android:windowSoftInputMode="stateHidden|adjustPan" />
         <activity
             android:name=".main.RegionDetailsActivity"
-            android:configChanges="orientation|screenSize"
             android:windowSoftInputMode="stateHidden|adjustPan" />
     </application>
 

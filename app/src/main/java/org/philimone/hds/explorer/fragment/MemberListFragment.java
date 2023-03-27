@@ -63,7 +63,7 @@ public class MemberListFragment extends Fragment {
     private Button btMemListShowMmbMap;
     private Button btMemListShowCollectedData;
 
-    private View mProgressView;
+    private View viewListProgressBar;
 
     private ArrayList<String> lastSearch;
 
@@ -154,6 +154,8 @@ public class MemberListFragment extends Fragment {
 
     public void setHouseholdHeaderVisibility(boolean visibility) {
         this.memberListHouseHeader.setVisibility(visibility ? View.VISIBLE : View.GONE);
+        this.viewListProgressBar.setBackground(this.getContext().getDrawable(visibility ? R.drawable.nui_members_list_panel : R.drawable.nui_list_rborder_panel));
+        this.lvMembersList.setBackground(this.getContext().getDrawable(visibility ? R.drawable.nui_members_list_panel : R.drawable.nui_list_rborder_panel));
     }
 
     private void initialize(View view) {
@@ -168,9 +170,11 @@ public class MemberListFragment extends Fragment {
         this.listButtons = (LinearLayout) view.findViewById(R.id.viewListButtons);
         this.memberListHouseHeader = (LinearLayout) view.findViewById(R.id.memberListHouseHeader);
         this.mbHouseDetailsNumber = (TextView)  view.findViewById(R.id.mbHouseDetailsNumber);
-        this.mProgressView = view.findViewById(R.id.viewListProgressBar);
+        this.viewListProgressBar = view.findViewById(R.id.viewListProgressBar);
 
         this.memberListHouseHeader.setVisibility(View.GONE);
+        this.viewListProgressBar.setBackground(this.getContext().getDrawable(R.drawable.nui_list_rborder_panel));
+        this.lvMembersList.setBackground(this.getContext().getDrawable(R.drawable.nui_list_rborder_panel));
         this.btMemListShowHousehold.setEnabled(false);
         this.btMemListShowMmbMap.setEnabled(false);
         this.mbHouseDetailsNumber.setText("");
@@ -796,7 +800,7 @@ public class MemberListFragment extends Fragment {
     }
 
     public void showProgress(final boolean show) {
-        mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+        viewListProgressBar.setVisibility(show ? View.VISIBLE : View.GONE);
         lvMembersList.setVisibility(show ? View.GONE : View.VISIBLE);
     }
 

@@ -40,6 +40,7 @@
             android:id="@+id/txtFormItemId"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:singleLine="true"
             android:text="Medium Text"
             android:textSize="@dimen/member_item_text_2_size"
             android:textColor="#444"

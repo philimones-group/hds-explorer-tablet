@@ -1,0 +1,160 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context="org.philimone.hds.explorer.fragment.MemberListFragment">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginBottom="5dp"
+            android:layout_marginRight="@dimen/fagm_margin_right"
+            android:layout_marginTop="@dimen/fagm_margin_top"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:id="@+id/memberListHouseHeader"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/nui_selected_household_panel"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/iconView"
+                    android:layout_width="@dimen/member_list_household_icon_width"
+                    android:layout_height="@dimen/member_list_household_icon_height"
+                    android:layout_marginTop="5dp"
+                    android:layout_gravity="left|top"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="0dp"
+                    android:layout_marginBottom="5dp"
+                    android:src="@mipmap/nui_household_icon" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/mbHouseDetailsNumber"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginEnd="25dp"
+                        android:gravity="center"
+                        android:text="CHEPF1001"
+                        android:textStyle="bold"
+                        android:textSize="@dimen/member_list_household_textsize"
+                        android:maxLines="1"/>
+
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <RelativeLayout
+                android:id="@+id/viewListProgressBar"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                android:background="@drawable/nui_members_list_panel"
+                android:visibility="gone">
+
+                <ProgressBar
+                    style="?android:attr/progressBarStyleLarge"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true"
+                    />
+
+            </RelativeLayout>
+
+            <org.philimone.hds.explorer.widget.RecyclerListView
+                app:layoutManager="LinearLayoutManager"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                android:background="@drawable/nui_members_list_panel"
+                android:id="@+id/lvMembersList"
+                />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/viewListButtons"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="0"
+            android:gravity="center|bottom"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginRight="@dimen/fagm_margin_right"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/btMemListShowHousehold"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textSize="@dimen/member_list_button_textsize"
+                    android:text="@string/member_list_bt_show_household_lbl"
+                    android:background="@drawable/nui_btnd_rone_gflat"
+                    android:elevation="5dp"/>
+
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/btMemListShowMmbMap"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textSize="@dimen/member_list_button_textsize"
+                    android:text="@string/member_list_bt_show_gps_housemembers_lbl"
+                    android:background="@drawable/nui_btnd_rone_gflat"
+                    android:elevation="5dp"/>
+
+                <Button
+                    android:id="@+id/btMemListShowCollectedData"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textSize="@dimen/member_list_button_textsize"
+                    android:text="@string/member_list_bt_show_collected_data_lbl"
+                    android:background="@drawable/nui_btnd_rone_gflat"
+                    android:elevation="5dp"
+                    android:visibility="gone"/>
+
+            </LinearLayout>
+
+
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</FrameLayout>

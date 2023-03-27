@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -17,7 +17,7 @@
             android:layout_height="match_parent"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="10dp"
             android:paddingStart="30dp"
             android:paddingEnd="30dp"
             android:background="@drawable/nui_list_rborder_panel"
@@ -27,8 +27,8 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="45dp"
-                android:layout_marginBottom="45dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="30dp"
                 android:orientation="vertical"
                 android:fitsSystemWindows="true">
 
@@ -70,14 +70,14 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="40dp"
+            android:layout_marginTop="10dp"
             android:layout_marginBottom="10dp"
             android:orientation="vertical">
 
             <Button
                 android:id="@+id/btEditUpdateDetails"
                 android:layout_width="350dp"
-                android:layout_height="@dimen/form_main_dialog_bt_height"
+                android:layout_height="@dimen/member_details_edit_bt_height"
                 android:layout_marginLeft="10dp"
                 android:layout_gravity="center"
                 android:textSize="@dimen/member_details_buttons_textsize"
@@ -89,4 +89,4 @@
 
     </LinearLayout>
 
-</FrameLayout>
+</ScrollView>

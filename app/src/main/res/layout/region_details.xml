@@ -210,7 +210,7 @@
         <Button
             android:id="@+id/btRegionDetailsCollectData"
             android:layout_width="350dp"
-            android:layout_height="@dimen/form_main_dialog_bt_height"
+            android:layout_height="@dimen/member_details_edit_bt_height"
             android:layout_marginTop="10dp"
             android:layout_marginBottom="5dp"
             android:textSize="@dimen/member_details_buttons_textsize"
@@ -221,7 +221,7 @@
         <Button
             android:id="@+id/btRegionDetailsBack"
             android:layout_width="350dp"
-            android:layout_height="@dimen/form_main_dialog_bt_height"
+            android:layout_height="@dimen/member_details_edit_bt_height"
             android:layout_marginTop="10dp"
             android:layout_marginBottom="10dp"
             android:textSize="@dimen/member_details_buttons_textsize"

@@ -62,6 +62,8 @@
             android:layout_weight="0"
             android:layout_gravity="center"
             android:orientation="vertical"
+            android:paddingStart="5dp"
+            android:paddingEnd="5dp"
             android:background="@drawable/nui_lists_rone_border">
 
             <TableRow

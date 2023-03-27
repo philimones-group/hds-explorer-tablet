@@ -4,6 +4,7 @@
     android:layout_height="wrap_content"
     android:paddingStart="20dp"
     android:padding="10dp"
+    android:singleLine="true"
     android:textColor="@color/nui_color_text_adgray"
     android:textSize="16sp"
     android:textStyle="bold" />

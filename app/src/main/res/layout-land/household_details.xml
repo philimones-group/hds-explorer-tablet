@@ -18,9 +18,9 @@
 
         <ImageView
             android:id="@+id/iconView"
-            android:layout_width="70dp"
-            android:layout_height="80dp"
-            android:layout_marginTop="14dp"
+            android:layout_width="40dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="0dp"
             android:layout_gravity="left|top"
             android:layout_marginLeft="15dp"
             android:layout_marginRight="10dp"
@@ -28,40 +28,30 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="10dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="0dp"
             android:paddingTop="5dp"
             android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/hhDetailsName"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="MARGARIDA MOLUSCO MBUTI"
-                android:textColor="#ffffff"
-                android:textSize="@dimen/household_details_land_info_textsize"
-                android:textStyle="bold"/>
-
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
                 <TextView
-                    android:id="@+id/hhDetailsCode"
+                    android:id="@+id/hhDetailsName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="0dp"
-                    android:text="ACA0000101"
-                    android:textColor="#92edb3"
+                    android:text="MARGARIDA MOLUSCO MBUTI"
+                    android:textColor="#ffffff"
                     android:textSize="@dimen/household_details_land_info_textsize"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"/>
 
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="50dp"
+                    android:layout_marginLeft="40dp"
                     android:layout_marginTop="0dp"
                     android:orientation="horizontal">
                     <TextView
@@ -107,65 +97,86 @@
 
                 </LinearLayout>
 
-
             </LinearLayout>
 
+
+
             <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
 
                 <TextView
-                    android:id="@+id/hhDetailsRegionLabel"
+                    android:id="@+id/hhDetailsCode"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="1dp"
-                    android:text="@string/household_details_region_lbl"
+                    android:layout_marginTop="0dp"
+                    android:text="ACA0000101"
+                    android:textColor="#92edb3"
                     android:textSize="@dimen/household_details_land_info_textsize"
-                    android:textColor="#c4daca"
                     android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/hhDetailsRegionValue"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="4dp"
-                    android:text="34th Street, Maputo"
-                    android:textSize="@dimen/household_details_land_info_textsize"
-                    android:textColor="#83d34a"
-                    android:textStyle="bold"
-                    />
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginStart="65dp"
-                    android:orientation="horizontal">
+                    android:layout_marginStart="20dp">
 
                     <TextView
-                        android:id="@+id/hhDetailsVisitLastLabel"
+                        android:id="@+id/hhDetailsRegionLabel"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="0dp"
                         android:layout_marginRight="1dp"
-                        android:text="@string/household_details_last_visit_lbl"
+                        android:text="@string/household_details_region_lbl"
                         android:textSize="@dimen/household_details_land_info_textsize"
                         android:textColor="#c4daca"
                         android:textStyle="bold" />
 
                     <TextView
-                        android:id="@+id/hhDetailsVisitDateValue"
+                        android:id="@+id/hhDetailsRegionValue"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="0dp"
                         android:layout_marginLeft="4dp"
-                        android:text="2021-05-01"
+                        android:text="34th Street, Maputo"
                         android:textSize="@dimen/household_details_land_info_textsize"
                         android:textColor="#83d34a"
                         android:textStyle="bold"
                         />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginStart="20dp"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/hhDetailsVisitLastLabel"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="0dp"
+                            android:layout_marginRight="1dp"
+                            android:text="@string/household_details_last_visit_lbl"
+                            android:textSize="@dimen/household_details_land_info_textsize"
+                            android:textColor="#c4daca"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/hhDetailsVisitDateValue"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="0dp"
+                            android:layout_marginLeft="4dp"
+                            android:text="2021-05-01"
+                            android:textSize="@dimen/household_details_land_info_textsize"
+                            android:textColor="#83d34a"
+                            android:textStyle="bold"
+                            />
+                    </LinearLayout>
+
                 </LinearLayout>
 
             </LinearLayout>
+
+
 
         </LinearLayout>
 
@@ -282,7 +293,7 @@
         <Button
             android:id="@+id/btHouseDetailsCreateVisit"
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/form_main_dialog_bt_height"
+            android:layout_height="@dimen/member_details_edit_bt_height"
             android:paddingStart="30dp"
             android:paddingEnd="30dp"
             android:layout_marginEnd="10dp"
@@ -294,7 +305,7 @@
         <Button
             android:id="@+id/btHouseDetailsOpenVisit"
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/form_main_dialog_bt_height"
+            android:layout_height="@dimen/member_details_edit_bt_height"
             android:layout_marginEnd="10dp"
             android:paddingStart="30dp"
             android:paddingEnd="30dp"
@@ -307,7 +318,7 @@
         <Button
             android:id="@+id/btHouseDetailsFinishVisit"
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/form_main_dialog_bt_height"
+            android:layout_height="@dimen/member_details_edit_bt_height"
             android:layout_marginEnd="10dp"
             android:paddingStart="30dp"
             android:paddingEnd="30dp"
@@ -320,7 +331,7 @@
         <Button
             android:id="@+id/btHouseDetailsCollectData"
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/form_main_dialog_bt_height"
+            android:layout_height="@dimen/member_details_edit_bt_height"
             android:paddingStart="30dp"
             android:paddingEnd="30dp"
             android:textSize="@dimen/household_details_land_buttons_textsize"
@@ -331,7 +342,7 @@
         <Button
             android:id="@+id/btHouseDetailsBack"
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/form_main_dialog_bt_height"
+            android:layout_height="@dimen/member_details_edit_bt_height"
             android:paddingStart="30dp"
             android:paddingEnd="30dp"
             android:textSize="@dimen/household_details_land_buttons_textsize"

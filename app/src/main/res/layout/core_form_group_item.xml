@@ -43,7 +43,10 @@
             android:id="@+id/txtGroupSubtitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_gravity="center|left"
+            android:gravity="left|center_horizontal"
             android:paddingEnd="25dp"
+            android:singleLine="true"
             android:text="Medium Text"
             android:textSize="11sp"
             android:textColor="@color/nui_member_item_textcolor" />

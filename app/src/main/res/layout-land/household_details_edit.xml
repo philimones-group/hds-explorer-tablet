@@ -73,10 +73,11 @@
 
                     <Button
                         android:id="@+id/btEditUpdateDetails"
-                        android:layout_width="350dp"
-                        android:layout_height="@dimen/form_main_dialog_bt_height"
-                        android:layout_marginLeft="10dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="@dimen/member_details_edit_bt_height"
                         android:layout_gravity="center"
+                        android:paddingStart="100dp"
+                        android:paddingEnd="100dp"
                         android:textSize="@dimen/household_details_land_buttons_textsize"
                         android:textStyle="bold"
                         android:text="@string/household_details_edit_button_update_details_lbl"

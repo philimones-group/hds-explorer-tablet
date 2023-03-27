@@ -46,12 +46,14 @@ public class HouseholdMembersFragment extends Fragment {
     private User loggedUser;
 
     private Box<Region> boxRegions;
+    private Box<Household> boxHouseholds;
     private Box<Member> boxMembers;
     private Box<Form> boxForms;
     private Box<Dataset> boxDatasets;
 
     public HouseholdMembersFragment() {
         // Required empty public constructor
+        initBoxes();
     }
 
     /**
@@ -70,14 +72,25 @@ public class HouseholdMembersFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if (savedInstanceState != null && savedInstanceState.containsKey("household_id")) {
+            this.household = this.boxHouseholds.get(savedInstanceState.getLong("household_id"));
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        if (outState != null && this.household != null) {
+            outState.putLong("household_id", this.household.id);
+        }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.household_members, container, false);
-
-        initBoxes();
 
         return view;
     }
@@ -115,7 +128,7 @@ public class HouseholdMembersFragment extends Fragment {
         this.boxForms = ObjectBoxDatabase.get().boxFor(Form.class);
         this.boxDatasets = ObjectBoxDatabase.get().boxFor(Dataset.class);
         this.boxRegions = ObjectBoxDatabase.get().boxFor(Region.class);
-//        this.boxHouseholds = ObjectBoxDatabase.get().boxFor(Household.class);
+        this.boxHouseholds = ObjectBoxDatabase.get().boxFor(Household.class);
         this.boxMembers = ObjectBoxDatabase.get().boxFor(Member.class);
     }
 

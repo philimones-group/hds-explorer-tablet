@@ -40,21 +40,21 @@
 
     <dimen name="member_list_buttons">16dp</dimen>
     <dimen name="member_list_button_textsize">14sp</dimen>
-    <dimen name="member_list_household_textsize">18sp</dimen>
+    <dimen name="member_list_household_textsize">16sp</dimen>
     <dimen name="member_list_household_icon_width">50dp</dimen>
     <dimen name="member_list_household_icon_height">50dp</dimen>
 
     <dimen name="member_details_txtview_width">180dp</dimen>
-    <dimen name="form_main_dialog_bt_height">50dp</dimen>
-    <dimen name="member_details_buttons_textsize">18sp</dimen>
-    <dimen name="member_details_other_info_txtsize">20sp</dimen>
+    <dimen name="member_details_edit_bt_height">50dp</dimen>
+    <dimen name="member_details_buttons_textsize">16sp</dimen>
+    <dimen name="member_details_other_info_txtsize">16sp</dimen>
     <dimen name="member_details_land_info_textsize">16sp</dimen>
     <dimen name="member_details_land_buttons_textsize">16sp</dimen>
     <dimen name="member_details_land_dtlayout_margin_left">20dp</dimen>
     <dimen name="member_details_land_dtlayout_margin_top">12dp</dimen>
     <dimen name="member_details_info_name_layout_txtsize">16sp</dimen>
     <dimen name="member_details_info_other_layout_txtsize">13sp</dimen>
-    <dimen name="member_details_info_gender_layout_txtsize">18sp</dimen>
+    <dimen name="member_details_info_gender_layout_txtsize">16sp</dimen>
 
     <dimen name="member_details_edit_grouplabel_txtsize">14sp</dimen>
     <dimen name="member_details_edit_textbox_txtsize">14sp</dimen>
@@ -63,22 +63,22 @@
     <dimen name="member_details_edit_button_change_txtsize">14sp</dimen>
     <dimen name="member_details_edit_button_update_txtsize">14sp</dimen>
 
-    <dimen name="household_details_info_textsize">18sp</dimen>
-    <dimen name="household_details_land_info_textsize">16sp</dimen>
-    <dimen name="household_details_land_buttons_textsize">16sp</dimen>
+    <dimen name="household_details_info_textsize">16sp</dimen>
+    <dimen name="household_details_land_info_textsize">14sp</dimen>
+    <dimen name="household_details_land_buttons_textsize">14sp</dimen>
 
-    <dimen name="household_details_edit_txtsize">16sp</dimen>
-    <dimen name="household_details_edit_gps_coords_txtsize">14sp</dimen>
+    <dimen name="household_details_edit_txtsize">14sp</dimen>
+    <dimen name="household_details_edit_gps_coords_txtsize">12sp</dimen>
 
     <dimen name="household_filter_buttons">60dp</dimen>
-    <dimen name="household_filter_button_textsize">14sp</dimen>
+    <dimen name="household_filter_button_textsize">12sp</dimen>
     <dimen name="household_filter_textsize">14sp</dimen>
     <dimen name="household_filter_region_text_width">100dp</dimen>
-    <dimen name="household_filter_region_text_size">10dp</dimen>
-    <dimen name="household_filter_region_layout_top_margin">2dp</dimen>
-    <dimen name="household_filter_region_layout_bottom_margin">2dp</dimen>
+    <dimen name="household_filter_region_text_size">8sp</dimen>
+    <dimen name="household_filter_region_layout_top_margin">0dp</dimen>
+    <dimen name="household_filter_region_layout_bottom_margin">0dp</dimen>
     <dimen name="household_filter_region_text_margin_left">20dp</dimen>
-    <dimen name="household_filter_selected_region_value_width">100dp</dimen>
+    <dimen name="household_filter_selected_region_value_width">80dp</dimen>
 
     <dimen name="household_item_text_1_size">14sp</dimen>
     <dimen name="household_item_text_2_size">10sp</dimen>
@@ -131,15 +131,15 @@
 
     <dimen name="household_visit_row_margin_top">5dp</dimen>
     <dimen name="household_visit_row_margin_bottom">5dp</dimen>
-    <dimen name="household_visit_button_padding_top">15dp</dimen>
+    <dimen name="household_visit_button_padding_top">10dp</dimen>
     <dimen name="household_visit_button_padding_bottom">15dp</dimen>
     <dimen name="household_visit_button_padding_start">15dp</dimen>
     <dimen name="household_visit_button_padding_end">15dp</dimen>
-    <dimen name="household_visit_button_text_size">12sp</dimen>
-    <dimen name="household_visit_button_width">120dp</dimen>
-    <dimen name="household_visit_button_height">110dp</dimen>
-    <dimen name="household_visit_button_icon_width">50dp</dimen>
-    <dimen name="household_visit_button_icon_height">50dp</dimen>
+    <dimen name="household_visit_button_text_size">8sp</dimen>
+    <dimen name="household_visit_button_width">90dp</dimen>
+    <dimen name="household_visit_button_height">70dp</dimen>
+    <dimen name="household_visit_button_icon_width">25dp</dimen>
+    <dimen name="household_visit_button_icon_height">25dp</dimen>
     <dimen name="household_visit_middle_button_margin_left">25dp</dimen>
     <dimen name="household_visit_middle_button_margin_right">25dp</dimen>
     <dimen name="household_visit_middle_button_margin_left_land">5dp</dimen>
@@ -148,12 +148,12 @@
     <dimen name="resume_column_item_text_1_size">16sp</dimen>
     <dimen name="resume_column_item_text_2_size">16sp</dimen>
 
-    <dimen name="show_collected_data_title_txtsize">18sp</dimen>
-    <dimen name="show_collected_data_modules_txtsize">16sp</dimen>
-    <dimen name="show_collected_data_modules_value_txtsize">14sp</dimen>
-    <dimen name="show_collected_data_resume_totals_label_txtsize">14sp</dimen>
-    <dimen name="show_collected_data_resume_totals_value_txtsize">12sp</dimen>
-    <dimen name="show_collected_data_update_button_txtsize">16sp</dimen>
+    <dimen name="show_collected_data_title_txtsize">16sp</dimen>
+    <dimen name="show_collected_data_modules_txtsize">14sp</dimen>
+    <dimen name="show_collected_data_modules_value_txtsize">12sp</dimen>
+    <dimen name="show_collected_data_resume_totals_label_txtsize">12sp</dimen>
+    <dimen name="show_collected_data_resume_totals_value_txtsize">10sp</dimen>
+    <dimen name="show_collected_data_update_button_txtsize">14sp</dimen>
     <dimen name="show_collected_data_title_icon_width">50dp</dimen>
     <dimen name="show_collected_data_title_icon_height">50dp</dimen>
     <dimen name="show_collected_data_title_padding_top">0dp</dimen>

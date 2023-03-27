@@ -8,30 +8,35 @@
     tools:context="org.philimone.hds.explorer.main.LoginActivity">
 
     <!-- logo layout -->
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/loginLogoLayout"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.17000002">
+        app:layout_constraintStart_toStartOf="@id/mainGuidelineVertical"
+        app:layout_constraintTop_toTopOf="@id/mainGuidelineHorizontal">
 
         <!-- logo -->
         <ImageView
-            android:layout_width="483dp"
-            android:layout_height="77dp"
-            android:layout_gravity="end"
+            android:id="@+id/imageView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
             android:contentDescription="@string/bt_yes_lbl"
-            android:src="@mipmap/nui_logo_clean" />
+            android:src="@mipmap/nui_logo_clean"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/welcomeLayout"
+            app:layout_constraintEnd_toEndOf="parent"/>
 
         <!-- welcome message -->
         <LinearLayout
+            android:id="@+id/welcomeLayout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="start"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            app:layout_constraintTop_toBottomOf="@id/imageView"
+            app:layout_constraintStart_toStartOf="@id/imageView">
 
             <TextView
                 android:layout_width="match_parent"
@@ -49,37 +54,40 @@
 
         </LinearLayout>
 
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <!-- main -->
     <LinearLayout
         android:id="@+id/loginTextboxLayout"
-        android:layout_width="0dp"
+        android:layout_width="0dip"
         android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
+        android:gravity="center"
         android:orientation="vertical"
+        android:layout_marginTop="40dp"
         android:paddingLeft="@dimen/activity_horizontal_margin"
         android:paddingTop="@dimen/activity_vertical_margin"
         android:paddingRight="@dimen/activity_horizontal_margin"
         android:paddingBottom="@dimen/activity_vertical_margin"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/loginLogoLayout"
+        app:layout_constraintBottom_toTopOf="@id/loginButtonsLayout"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/loginLogoLayout">
+        app:layout_constraintEnd_toEndOf="parent"
+        >
 
         <!-- login form -->
         <LinearLayout
             android:id="@+id/login_form"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="30dp"
-            android:layout_marginEnd="30dp"
+            android:layout_marginStart="30dip"
+            android:layout_marginEnd="30dip"
             android:orientation="vertical">
 
             <!-- Text -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
+                android:layout_marginStart="20dip"
                 android:text="@string/login_username_lbl"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 android:textColor="@color/nui_color_text_green" />
@@ -87,14 +95,14 @@
             <AutoCompleteTextView
                 android:id="@+id/login_username_txt"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_marginTop="8dp"
+                android:layout_height="50dip"
+                android:layout_marginTop="8dip"
                 android:background="@drawable/nui_txtbox_rone_wbevel"
                 android:inputType="text"
                 android:labelFor="@id/login_username_txt"
                 android:maxLines="1"
-                android:paddingStart="20dp"
-                android:paddingEnd="20dp"
+                android:paddingStart="20dip"
+                android:paddingEnd="20dip"
                 android:singleLine="true"
                 android:text=""
                 tools:ignore="SpeakableTextPresentCheck" />
@@ -102,8 +110,8 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
-                android:layout_marginTop="15dp"
+                android:layout_marginStart="20dip"
+                android:layout_marginTop="15dip"
                 android:text="@string/login_password_lbl"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 android:textColor="@color/nui_color_text_green" />
@@ -111,14 +119,14 @@
             <EditText
                 android:id="@+id/login_password_txt"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_marginTop="8dp"
+                android:layout_height="50dip"
+                android:layout_marginTop="8dip"
                 android:autofillHints="name"
                 android:background="@drawable/nui_txtbox_rone_wbevel"
                 android:inputType="textPassword"
                 android:maxLines="1"
-                android:paddingStart="20dp"
-                android:paddingEnd="20dp"
+                android:paddingStart="20dip"
+                android:paddingEnd="20dip"
                 android:singleLine="true"
                 android:text=""
                 tools:ignore="SpeakableTextPresentCheck" />
@@ -132,29 +140,32 @@
         android:id="@+id/loginButtonsLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
+        android:gravity="center"
         android:orientation="vertical"
-        app:layout_constraintTop_toBottomOf="@+id/loginTextboxLayout">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/loginTextboxLayout"
+        app:layout_constraintBottom_toTopOf="@id/copyright_layout">
 
         <Button
             android:id="@+id/login_button"
-            android:layout_width="300dp"
+            android:layout_width="300dip"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="16dip"
             android:background="@drawable/nui_btnd_rone_dgbevel"
             android:elevation="10sp"
             android:text="@string/login_button_lbl"
             android:textColor="@android:color/background_light"
             android:textSize="18sp"
-            android:translationZ="10dp" />
+            android:translationZ="10dip" />
 
         <Button
             android:id="@+id/synchronize_button"
-            android:layout_width="300dp"
+            android:layout_width="300dip"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="16dip"
             android:background="@drawable/nui_btnd_rone_black"
             android:text="@string/login_synchronize_lbl"
             android:textColor="@android:color/background_light"
@@ -167,7 +178,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginTop="15dp"
+            android:layout_marginTop="15dip"
             android:visibility="invisible" />
 
     </LinearLayout>
@@ -175,10 +186,11 @@
     <!-- copyright-->
     <LinearLayout
         android:id="@+id/copyright_layout"
-        android:layout_width="0dp"
+        android:layout_width="0dip"
         android:layout_height="wrap_content"
         android:gravity="center"
         android:orientation="vertical"
+        android:layout_marginBottom="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -191,7 +203,7 @@
             android:layout_gravity="center"
             android:background="@android:color/transparent"
             android:drawableStart="@drawable/nui_btnd_stg"
-            android:drawablePadding="5dp"
+            android:drawablePadding="5dip"
             android:text="@string/login_settings_lbl"
             android:textColor="@color/nui_color_text_darkgray" />
 
@@ -222,5 +234,18 @@
 
     </LinearLayout>
 
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/mainGuidelineVertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.2" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/mainGuidelineHorizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.1" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

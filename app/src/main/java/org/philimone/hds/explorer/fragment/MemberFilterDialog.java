@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -126,6 +127,9 @@ public class MemberFilterDialog extends DialogFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
+        getDialog().requestWindowFeature(Window.FEATURE_NO_TITLE);
+
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.member_filter_dialog, container, false);
 

@@ -724,6 +724,8 @@ public class MaritalRelationshipFormUtil extends FormUtil<MaritalRelationship> {
 
         dialog.setFilterMinAge(this.minimunSpouseAge, true);
         dialog.setFilterHouseCode(visit.householdCode);
+        dialog.addFilterExcludeMember(this.spouseA);
+        dialog.addFilterExcludeMember(this.spouseB);
         dialog.setStartSearchOnShow(true);
         dialog.show();
     }

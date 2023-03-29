@@ -3,7 +3,6 @@ package org.philimone.hds.explorer.fragment;
 import androidx.annotation.StringRes;
 import androidx.fragment.app.DialogFragment;
 
-import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -11,12 +10,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -79,6 +76,7 @@ public class MemberFilterDialog extends DialogFragment {
     private boolean filterStatusExclusive;
     private String filterExcludeHousehold;
     private String filterExcludeMember;
+    private List<String> filterExcludeMembers;
 
     private Map<Buttons, CustomButton> enabledButtons = new HashMap<>();
 
@@ -97,6 +95,7 @@ public class MemberFilterDialog extends DialogFragment {
 
     public MemberFilterDialog(){
         super();
+        this.filterExcludeMembers = new ArrayList<>();
         initBoxes();
     }
     /*
@@ -402,8 +401,11 @@ public class MemberFilterDialog extends DialogFragment {
         this.filterExcludeHousehold = householdCode;
     }
 
-    public void setFilterExcludeMember(String memberCode) {
-        this.filterExcludeMember = memberCode;
+    public void addFilterExcludeMember(Member member) {
+        if (member != null) {
+            this.filterExcludeMembers.add(member.code);
+        }
+        //this.filterExcludeMember = memberCode;
     }
 
     public void setFilterStatus(StatusFilter filter, boolean exclusiveSelection) {
@@ -567,8 +569,14 @@ public class MemberFilterDialog extends DialogFragment {
             builder.notEqual(Member_.householdCode, filterExcludeHousehold, QueryBuilder.StringOrder.CASE_SENSITIVE);
         }
 
-        if (filterExcludeMember != null) {
+        /*if (filterExcludeMember != null) {
             builder.notEqual(Member_.code, filterExcludeMember, QueryBuilder.StringOrder.CASE_SENSITIVE);
+        }*/
+
+        if (filterExcludeMembers.size() > 0) {
+            for (String memberCode : filterExcludeMembers) {
+                builder.notEqual(Member_.code, memberCode, QueryBuilder.StringOrder.CASE_SENSITIVE);
+            }
         }
 
         Log.d("sql", builder.toString());

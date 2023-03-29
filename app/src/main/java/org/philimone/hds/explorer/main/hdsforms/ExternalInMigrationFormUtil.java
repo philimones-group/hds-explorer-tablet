@@ -894,6 +894,7 @@ public class ExternalInMigrationFormUtil extends FormUtil<Inmigration> {
         dialog.setFilterMinAge(this.minimunFatherAge, true);
         dialog.setFilterHouseCode(household.getCode());
         dialog.setStartSearchOnShow(true);
+        dialog.addFilterExcludeMember(this.returningMember);
         dialog.show();
     }
 
@@ -917,6 +918,7 @@ public class ExternalInMigrationFormUtil extends FormUtil<Inmigration> {
         dialog.setGenderFemaleOnly();
         dialog.setFilterMinAge(this.minimunMotherAge, true);
         dialog.setFilterHouseCode(household.getCode());
+        dialog.addFilterExcludeMember(this.returningMember);
         dialog.setStartSearchOnShow(true);
         dialog.show();
     }

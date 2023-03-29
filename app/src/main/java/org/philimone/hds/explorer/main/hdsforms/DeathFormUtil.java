@@ -900,7 +900,7 @@ public class DeathFormUtil extends FormUtil<Death> {
         dialog.setFilterMinAge(this.minimunHeadAge, true);
         dialog.setFilterHouseCode(visit.householdCode, true);
         dialog.setFilterStatus(MemberFilterDialog.StatusFilter.RESIDENT, true);
-        dialog.setFilterExcludeMember(this.member.code);
+        dialog.addFilterExcludeMember(this.member);
         dialog.setStartSearchOnShow(true);
         dialog.show();
     }

@@ -802,7 +802,7 @@ public class ChangeHeadFormUtil extends FormUtil<HeadRelationship> {
         dialog.setFilterMinAge(this.minimunHeadAge, true);
         dialog.setFilterHouseCode(visit.householdCode);
         dialog.setFilterStatus(MemberFilterDialog.StatusFilter.RESIDENT, true);
-        dialog.setFilterExcludeMember(this.oldHeadMember.code);
+        dialog.addFilterExcludeMember(this.oldHeadMember);
         dialog.setStartSearchOnShow(true);
         dialog.show();
     }

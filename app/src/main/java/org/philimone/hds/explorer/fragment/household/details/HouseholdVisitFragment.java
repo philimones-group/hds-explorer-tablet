@@ -354,9 +354,13 @@ public class HouseholdVisitFragment extends Fragment {
         //select one member and highlight
 
         MemberAdapter adapter = getMembersAdapter();
-        adapter.setSelectedIndex(position);
+
 
         this.selectedMember = adapter.getItem(position);
+
+        adapter.setSelectedIndex(position);
+        this.lvHouseholdMembers.scrollToPosition(position);
+
         setMemberMode();
 
         btClearMember.setVisibility(View.VISIBLE);

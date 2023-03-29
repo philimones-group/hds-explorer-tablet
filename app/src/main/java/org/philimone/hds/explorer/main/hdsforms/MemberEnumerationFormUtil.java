@@ -726,6 +726,7 @@ public class MemberEnumerationFormUtil extends FormUtil<Member> {
         dialog.setGenderMaleOnly();
         dialog.setFilterMinAge(this.minimunFatherAge, true);
         dialog.setFilterHouseCode(household.getCode());
+        dialog.addFilterExcludeMember(this.entity); //exclude the member to be edited (if is editing)
         dialog.setStartSearchOnShow(true);
         dialog.show();
     }
@@ -750,6 +751,7 @@ public class MemberEnumerationFormUtil extends FormUtil<Member> {
         dialog.setGenderFemaleOnly();
         dialog.setFilterMinAge(this.minimunMotherAge, true);
         dialog.setFilterHouseCode(household.getCode());
+        dialog.addFilterExcludeMember(this.entity); //exclude the member to be edited (if is editing)
         dialog.setStartSearchOnShow(true);
         dialog.show();
     }

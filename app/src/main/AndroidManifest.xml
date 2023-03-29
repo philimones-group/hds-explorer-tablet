@@ -39,7 +39,7 @@
 
         <activity android:name=".main.sync.SyncDataSharingActivity" />
 
-        <activity android:name=".main.SplashScreenActivity">
+        <activity android:name=".main.SplashScreenActivity" android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

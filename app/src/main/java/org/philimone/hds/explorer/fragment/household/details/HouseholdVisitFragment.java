@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.fragment.app.Fragment;
 import io.objectbox.Box;
 import io.objectbox.query.QueryBuilder;
@@ -20,6 +22,7 @@ import android.widget.ExpandableListView;
 import org.philimone.hds.explorer.R;
 import org.philimone.hds.explorer.adapter.CoreCollectedExpandableAdapter;
 import org.philimone.hds.explorer.adapter.MemberAdapter;
+import org.philimone.hds.explorer.adapter.model.VisitCollectedDataItem;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
 import org.philimone.hds.explorer.listeners.HouseholdDetailsListener;
 import org.philimone.hds.explorer.main.MemberDetailsActivity;
@@ -43,6 +46,8 @@ import org.philimone.hds.explorer.model.CollectedData_;
 import org.philimone.hds.explorer.model.CoreCollectedData;
 import org.philimone.hds.explorer.model.CoreCollectedData_;
 import org.philimone.hds.explorer.model.Death;
+import org.philimone.hds.explorer.model.Form;
+import org.philimone.hds.explorer.model.Form_;
 import org.philimone.hds.explorer.model.HeadRelationship;
 import org.philimone.hds.explorer.model.Household;
 import org.philimone.hds.explorer.model.IncompleteVisit;
@@ -56,7 +61,6 @@ import org.philimone.hds.explorer.model.PregnancyOutcome;
 import org.philimone.hds.explorer.model.PregnancyRegistration;
 import org.philimone.hds.explorer.model.PregnancyRegistration_;
 import org.philimone.hds.explorer.model.Region;
-import org.philimone.hds.explorer.model.Region_;
 import org.philimone.hds.explorer.model.User;
 import org.philimone.hds.explorer.model.Visit;
 import org.philimone.hds.explorer.model.enums.CoreFormEntity;
@@ -118,6 +122,7 @@ public class HouseholdVisitFragment extends Fragment {
     private Box<IncompleteVisit> boxIncompleteVisits;
     private Box<CollectedData> boxCollectedData;
     private Box<CoreCollectedData> boxCoreCollectedData;
+    private Box<Form> boxForms;
 
     private HouseholdDetailsListener householdDetailsListener;
 
@@ -126,8 +131,12 @@ public class HouseholdVisitFragment extends Fragment {
     private VisitEventsMode currentEventMode = VisitEventsMode.HOUSEHOLD_EVENTS;
 
     private boolean respondentNotRegistered = false;
-    
+
     private enum VisitEventsMode { HOUSEHOLD_EVENTS, MEMBER_EVENTS, RESPONDENT_NOT_REG_EVENTS}
+
+    private ActivityResultLauncher<Intent> onMemberDetailsExtraFormCollectLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+        loadDataToListViews();
+    });
 
     public HouseholdVisitFragment(){
         initBoxes();
@@ -205,6 +214,7 @@ public class HouseholdVisitFragment extends Fragment {
     private void initBoxes() {
         this.boxCollectedData = ObjectBoxDatabase.get().boxFor(CollectedData.class);
         this.boxCoreCollectedData = ObjectBoxDatabase.get().boxFor(CoreCollectedData.class);
+        this.boxForms = ObjectBoxDatabase.get().boxFor(Form.class);
         this.boxRegions = ObjectBoxDatabase.get().boxFor(Region.class);
         this.boxHouseholds = ObjectBoxDatabase.get().boxFor(Household.class);
         this.boxVisits = ObjectBoxDatabase.get().boxFor(Visit.class);
@@ -255,9 +265,13 @@ public class HouseholdVisitFragment extends Fragment {
             @Override
             public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
                 CoreCollectedExpandableAdapter adapter = (CoreCollectedExpandableAdapter) parent.getExpandableListAdapter();
-                CoreCollectedData coreCollectedData = (CoreCollectedData) adapter.getChild(groupPosition, childPosition);
+                VisitCollectedDataItem dataItem = (VisitCollectedDataItem) adapter.getChild(groupPosition, childPosition);
 
-                onVisitCollectedChildClicked(coreCollectedData);
+                if (dataItem.isCoreCollectedData()) {
+                    onVisitCoreCollectedChildClicked(dataItem.getCoreCollectedData());
+                } else if (dataItem.isOdkCollectedData()) {
+                    onVisitOdkCollectedChildClicked(dataItem.getOdkCollectedData());
+                }
 
                 return true;
             }
@@ -272,9 +286,13 @@ public class HouseholdVisitFragment extends Fragment {
                     int childPosition = ExpandableListView.getPackedPositionChild(id);
                     Log.d("long clicked", "group="+groupPosition+", child="+childPosition+", position="+position);
                     CoreCollectedExpandableAdapter adapter = (CoreCollectedExpandableAdapter) elvVisitCollected.getExpandableListAdapter();
-                    CoreCollectedData coreCollectedData = (CoreCollectedData) adapter.getChild(groupPosition, childPosition);
+                    VisitCollectedDataItem dataItem = (VisitCollectedDataItem) adapter.getChild(groupPosition, childPosition);
 
-                    onVisitCollectedChildLongClicked(coreCollectedData);
+                    if (dataItem.isCoreCollectedData()) {
+                        onVisitCollectedChildLongClicked(dataItem.getCoreCollectedData());
+                    } else {
+                        //do nothing
+                    }
 
                     return true;
                 }
@@ -334,13 +352,11 @@ public class HouseholdVisitFragment extends Fragment {
     }
 
     private void onCollectExtraFormClicked() {
-        if (selectedMember != null) {
 
-            MemberSelectedTask task = new MemberSelectedTask(selectedMember, household, true);
-            task.execute();
+        OnExtraFormCollectTask task = new OnExtraFormCollectTask(selectedMember, household, visit);
+        task.execute();
 
-            showLoadingDialog(getString(R.string.loading_dialog_member_details_lbl), true);
-        }
+        showLoadingDialog(getString(R.string.loading_dialog_extra_forms_load_lbl), true);
     }
 
     private void selectMember(Member member){
@@ -372,7 +388,7 @@ public class HouseholdVisitFragment extends Fragment {
         if (adapter != null) {
             Member member = adapter.getItem(position);
 
-            MemberSelectedTask task = new MemberSelectedTask(member, household, false);
+            MemberSelectedTask task = new MemberSelectedTask(member, household, this.visit, false);
             task.execute();
 
             showLoadingDialog(getString(R.string.loading_dialog_member_details_lbl), true);
@@ -414,7 +430,7 @@ public class HouseholdVisitFragment extends Fragment {
         this.btnVisitOutmigration.setEnabled(false);
         this.btnVisitDeath.setEnabled(false);
         this.btnVisitMaritalRelationship.setEnabled(false);
-        this.btnVisitExtraForm.setEnabled(false); //we need to analyse better this
+        this.btnVisitExtraForm.setEnabled(true);
 
         this.btnVisitPregnancyReg.setVisibility(View.GONE);
         this.btnVisitChangeHead.setVisibility(View.VISIBLE);
@@ -532,34 +548,44 @@ public class HouseholdVisitFragment extends Fragment {
         //Type: Member Enumeration (3) -> CoreCollectedData as subitem
         //layouts: core_form_collected_item,
 
-        List<CoreCollectedData> coreList = this.boxCoreCollectedData.query().equal(CoreCollectedData_.visitId, this.visit.id)
-                                                                            .order(CoreCollectedData_.createdDate).build().find();
-        LinkedHashMap<CoreFormEntity, List<CoreCollectedData>> mapData = new LinkedHashMap<>();
+        List<CoreCollectedData> coreList = this.boxCoreCollectedData.query().equal(CoreCollectedData_.visitId, this.visit.id).order(CoreCollectedData_.createdDate).build().find();
+        List<CollectedData> extraList = this.boxCollectedData.query().equal(CollectedData_.visitId, this.visit.id).order(CollectedData_.formLastUpdatedDate).build().find();
+
+        Log.d("extraList", ""+extraList.size());
+
+        LinkedHashMap<CoreFormEntity, List<VisitCollectedDataItem>> mapData = new LinkedHashMap<>();
         
-        mapData.put(CoreFormEntity.HOUSEHOLD, new ArrayList<CoreCollectedData>());
-        mapData.put(CoreFormEntity.MEMBER_ENU, new ArrayList<CoreCollectedData>());
-        //mapData.put(CoreFormEntity.HEAD_RELATIONSHIP, new ArrayList<CoreCollectedData>());
-        mapData.put(CoreFormEntity.MARITAL_RELATIONSHIP, new ArrayList<CoreCollectedData>());
-        mapData.put(CoreFormEntity.INMIGRATION, new ArrayList<CoreCollectedData>());
-        mapData.put(CoreFormEntity.EXTERNAL_INMIGRATION, new ArrayList<CoreCollectedData>());
-        mapData.put(CoreFormEntity.OUTMIGRATION, new ArrayList<CoreCollectedData>());
-        mapData.put(CoreFormEntity.PREGNANCY_REGISTRATION, new ArrayList<CoreCollectedData>());
-        mapData.put(CoreFormEntity.PREGNANCY_OUTCOME, new ArrayList<CoreCollectedData>());
-        mapData.put(CoreFormEntity.DEATH, new ArrayList<CoreCollectedData>());
-        mapData.put(CoreFormEntity.CHANGE_HOUSEHOLD_HEAD, new ArrayList<CoreCollectedData>());
-        mapData.put(CoreFormEntity.INCOMPLETE_VISIT, new ArrayList<CoreCollectedData>());
-        mapData.put(CoreFormEntity.VISIT, new ArrayList<CoreCollectedData>());
+        mapData.put(CoreFormEntity.HOUSEHOLD, new ArrayList<VisitCollectedDataItem>());
+        mapData.put(CoreFormEntity.MEMBER_ENU, new ArrayList<VisitCollectedDataItem>());
+        //mapData.put(CoreFormEntity.HEAD_RELATIONSHIP, new ArrayList<VisitCollectedDataItem>());
+        mapData.put(CoreFormEntity.MARITAL_RELATIONSHIP, new ArrayList<VisitCollectedDataItem>());
+        mapData.put(CoreFormEntity.INMIGRATION, new ArrayList<VisitCollectedDataItem>());
+        mapData.put(CoreFormEntity.EXTERNAL_INMIGRATION, new ArrayList<VisitCollectedDataItem>());
+        mapData.put(CoreFormEntity.OUTMIGRATION, new ArrayList<VisitCollectedDataItem>());
+        mapData.put(CoreFormEntity.PREGNANCY_REGISTRATION, new ArrayList<VisitCollectedDataItem>());
+        mapData.put(CoreFormEntity.PREGNANCY_OUTCOME, new ArrayList<VisitCollectedDataItem>());
+        mapData.put(CoreFormEntity.DEATH, new ArrayList<VisitCollectedDataItem>());
+        mapData.put(CoreFormEntity.CHANGE_HOUSEHOLD_HEAD, new ArrayList<VisitCollectedDataItem>());
+        mapData.put(CoreFormEntity.INCOMPLETE_VISIT, new ArrayList<VisitCollectedDataItem>());
+        mapData.put(CoreFormEntity.VISIT, new ArrayList<VisitCollectedDataItem>());
+
+        mapData.put(CoreFormEntity.EXTRA_FORM, new ArrayList<VisitCollectedDataItem>());
 
         //group the coreList in Map
         for(CoreCollectedData collectedData : coreList) {
-            mapData.get(collectedData.formEntity).add(collectedData);
+            mapData.get(collectedData.formEntity).add(new VisitCollectedDataItem(collectedData));
+        }
+        //group the odkList in Map - EXTRA FORMS
+        for(CollectedData collectedData : extraList) {
+            Form form = boxForms.query().equal(Form_.formId, collectedData.formId, QueryBuilder.StringOrder.CASE_SENSITIVE).build().findFirst();
+            mapData.get(CoreFormEntity.EXTRA_FORM).add(new VisitCollectedDataItem(collectedData, form));
         }
 
         CoreCollectedExpandableAdapter adapter = new CoreCollectedExpandableAdapter(this.getContext(), mapData);
         this.elvVisitCollected.setAdapter(adapter);
     }
 
-    private void loadDataToListViews(){
+    public void loadDataToListViews(){
         loadMembersToList();
         loadCollectedEventsToList();
 
@@ -614,7 +640,7 @@ public class HouseholdVisitFragment extends Fragment {
         }
     }
 
-    private void onVisitCollectedChildClicked(CoreCollectedData coreCollectedData) {
+    private void onVisitCoreCollectedChildClicked(CoreCollectedData coreCollectedData) {
         switch (coreCollectedData.formEntity) {
             case HOUSEHOLD:
                 Household household = this.boxHouseholds.get(coreCollectedData.formEntityId);
@@ -665,6 +691,14 @@ public class HouseholdVisitFragment extends Fragment {
                 onIncompleteVisitClicked(incvisit);
                 break;
         }
+    }
+
+    private void onVisitOdkCollectedChildClicked(CollectedData collectedData) {
+        //reopen odk form
+        OnExtraFormEditTask task = new OnExtraFormEditTask(collectedData);
+        task.execute();
+
+        showLoadingDialog(getString(R.string.loading_dialog_extra_forms_load_lbl), true);
     }
 
     private void onVisitCollectedChildLongClicked(CoreCollectedData coreCollectedData) {
@@ -1115,14 +1149,16 @@ public class HouseholdVisitFragment extends Fragment {
         }
     }
 
-    class MemberSelectedTask  extends AsyncTask<Void, Void, Void> {
+    class MemberSelectedTask extends AsyncTask<Void, Void, Void> {
         private Household household;
         private Member member;
+        private Visit visit;
         private boolean clickCollectData;
 
-        public MemberSelectedTask(Member member, Household household, boolean clickCollectData) {
+        public MemberSelectedTask(Member member, Household household, Visit visit, boolean clickCollectData) {
             this.household = household;
             this.member = member;
+            this.visit = visit;
             this.clickCollectData = clickCollectData;
         }
 
@@ -1137,6 +1173,7 @@ public class HouseholdVisitFragment extends Fragment {
             Intent intent = new Intent(getActivity(), MemberDetailsActivity.class);
             intent.putExtra("household", this.household.id);
             intent.putExtra("member", this.member.id);
+            intent.putExtra("visit", this.visit.id);
 
             if (clickCollectData) {
                 intent.putExtra("odk-form-collect", "true");
@@ -1145,6 +1182,86 @@ public class HouseholdVisitFragment extends Fragment {
             showLoadingDialog(null, false);
 
             startActivity(intent);
+        }
+    }
+
+    class OnExtraFormCollectTask extends AsyncTask<Void, Void, Void> {
+        private Household household;
+        private Member member;
+        private Visit visit;
+
+        public OnExtraFormCollectTask(Member member, Household household, Visit visit) {
+            this.household = household;
+            this.member = member;
+            this.visit = visit;
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void result) {
+
+            showLoadingDialog(null, false);
+
+            if (this.member != null) {
+                //execute member based forms
+                Intent intent = new Intent(getActivity(), MemberDetailsActivity.class);
+                intent.putExtra("household", this.household.id);
+                intent.putExtra("member", this.member.id);
+                intent.putExtra("visit", this.visit.id);
+                intent.putExtra("odk-form-collect", "true");
+
+                onMemberDetailsExtraFormCollectLauncher.launch(intent);
+            } else {
+                //execute household based forms
+                householdDetailsListener.onVisitCollectData(this.visit);
+            }
+
+        }
+    }
+
+    class OnExtraFormEditTask extends AsyncTask<Void, Void, Void> {
+        private Household household;
+        private Member member;
+        private Visit visit;
+        private CollectedData collectedData;
+
+        public OnExtraFormEditTask(CollectedData collectedDataToEdit) {
+            this.collectedData = collectedDataToEdit;
+            this.household = HouseholdVisitFragment.this.household;
+            this.visit = HouseholdVisitFragment.this.visit;
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            if (collectedData.recordEntity == SubjectEntity.MEMBER) {
+                this.member = boxMembers.get(collectedData.recordId);
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void result) {
+
+            showLoadingDialog(null, false);
+
+            if (this.member != null) {
+                //execute member based forms
+                Intent intent = new Intent(getActivity(), MemberDetailsActivity.class);
+                intent.putExtra("household", this.household.id);
+                intent.putExtra("member", this.member.id);
+                intent.putExtra("visit", this.visit.id);
+                intent.putExtra("odk-form-edit", this.collectedData.id);
+
+                onMemberDetailsExtraFormCollectLauncher.launch(intent);
+            } else {
+                //execute household based forms
+                householdDetailsListener.onVisitEditData(this.visit, collectedData);
+            }
+
         }
     }
 

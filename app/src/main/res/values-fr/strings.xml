@@ -144,6 +144,7 @@
     <string name="core_entity_changehoh_lbl">Changement du responsable de l\'agrégat</string>
     <string name="core_entity_member_not_visited_lbl">Membre non visité</string>
     <string name="core_entity_visit_lbl">Enregistrement de la visite</string>
+    <string name="core_entity_extra_form_lbl">Autres formulaires (ODK)</string>
     <string name="core_entity_edit_region_lbl">Changer la région</string>
     <string name="core_entity_edit_household_lbl">Changer l\'agrégat</string>
     <string name="core_entity_edit_member_lbl">Changer le membre</string>
@@ -159,9 +160,11 @@
     <string name="core_form_group_item_extension_collected_lbl">Recueilli</string>
     <string name="core_form_group_item_extension_not_required_lbl">Non obligatoire</string>
 
+    <string name="form_subject_user_lbl">Utilisateur</string>
     <string name="form_subject_region_lbl">Région</string>
     <string name="form_subject_household_lbl">Agrégat</string>
     <string name="form_subject_member_lbl">Membre</string>
+    <string name="form_subject_visit_lbl">Visite</string>
 
     <string name="form_util_extension_collect_lbl">Extension du formulaire</string>
     <string name="form_util_extension_collect_optional_lbl">Souhaitez-vous recueillir plus de détails sur "%1$s" en utilisant l\'extension du formulaire</string>
@@ -612,6 +615,7 @@
     <string name="loading_dialog_region_details_lbl">En chargeant les détails de la région...</string>
     <string name="loading_dialog_odk_load_lbl">En chargeant le formulaire ODK...</string>
     <string name="loading_dialog_odk_reload_lbl">En rechargeant le formulaire ODK…</string>
+    <string name="loading_dialog_extra_forms_load_lbl">En chargeant de la liste des formulaires...</string>
     <string name="loading_dialog_filter_name_hint_lbl">Saisissez le nom du formulaire</string>
 
     <!-- GPS Maps -->

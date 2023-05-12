@@ -27,6 +27,7 @@ import org.philimone.hds.explorer.io.UploadEntityResult;
 import org.philimone.hds.explorer.io.UploadResponse;
 import org.philimone.hds.explorer.model.CoreCollectedData;
 import org.philimone.hds.explorer.model.CoreCollectedData_;
+import org.philimone.hds.explorer.model.enums.CoreFormEntity;
 import org.philimone.hds.explorer.widget.DialogFactory;
 import org.philimone.hds.explorer.widget.RecyclerListView;
 import org.philimone.hds.explorer.widget.UploadResultDialog;
@@ -228,6 +229,8 @@ public class SyncUploadPanelFragment extends Fragment implements SyncUploadEntit
         }
 
 
+        //filter EXTRA_FORM out of uploadable data
+        builder.notEqual(CoreCollectedData_.formEntity, CoreFormEntity.EXTRA_FORM.code, QueryBuilder.StringOrder.CASE_INSENSITIVE);
 
         List<CoreCollectedData> dataList = builder.order(CoreCollectedData_.recordType).order(CoreCollectedData_.createdDate).build().find(); //order by recordType,createDate - first the new records than edit records
         CoreCollectedDataAdapter adapter = new CoreCollectedDataAdapter(this.getContext(), dataList, this);

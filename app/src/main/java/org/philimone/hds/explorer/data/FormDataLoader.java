@@ -11,6 +11,7 @@ import org.philimone.hds.explorer.model.Household;
 import org.philimone.hds.explorer.model.Member;
 import org.philimone.hds.explorer.model.Region;
 import org.philimone.hds.explorer.model.User;
+import org.philimone.hds.explorer.model.Visit;
 import org.philimone.hds.explorer.model.followup.TrackingSubjectList;
 
 import java.io.FileInputStream;
@@ -42,6 +43,7 @@ public class FormDataLoader implements Serializable {
     private final String memberPrefix = "Member.";
     private final String userPrefix = "User.";
     private final String regionPrefix = "Region.";
+    private final String visitPrefix = "Visit.";
     private final String formGroupPrefix = "Form-Group.";
     private final String trackingListPrefix = "FollowUp-List.";
     private final String constPrefix = "#.";
@@ -250,6 +252,44 @@ public class FormDataLoader implements Serializable {
                 String odkVariable = key;
                 String value = region.getValueByName(internalVariableName);
                 boolean isDateField = ReflectionUtils.isDateFieldType(region, internalVariableName);
+
+                if (value == null) value = "";
+
+                //get variable format from odkVariable eg. variableName->format => patientName->yes,no
+                if (odkVariable.contains("->")) {
+                    String[] splt = odkVariable.split("->");
+                    odkVariable = splt[0]; //variableName
+                    String format = splt[1];      //format of the value
+                    if (!format.equalsIgnoreCase("None")) {
+                        if (format.startsWith(boolFormatPrefix)) {
+                            value = getBooleanFormattedValue(format, value);
+                        }
+                        if (format.startsWith(choiceFormatPrefix)) {
+                            value = getChoicesFormattedValue(format, value);
+                        }
+                        if (format.startsWith(dateFormatPrefix)) {
+                            value = getDateFormattedValue(format, value, isDateField);
+                        }
+                    }
+                }
+
+                this.values.put(odkVariable, value);
+                //Log.d("r-odk auto-loadable", odkVariable + ", " + value);
+            }
+        }
+    }
+
+    public void loadVisitValues(Visit visit) {
+        Map<String, String> map = form.getFormMap();
+        for (String key : map.keySet()){
+            //key   - odkVariable
+            //value - domain column name
+            String mapValue = map.get(key); //Domain ColumnName that we will get its content
+            if (mapValue.startsWith(visitPrefix)) {
+                String internalVariableName = mapValue.replace(visitPrefix, "");
+                String odkVariable = key;
+                String value = visit.getValueByName(internalVariableName);
+                boolean isDateField = ReflectionUtils.isDateFieldType(visit, internalVariableName);
 
                 if (value == null) value = "";
 

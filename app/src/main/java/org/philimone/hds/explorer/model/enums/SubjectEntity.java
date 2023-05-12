@@ -5,22 +5,24 @@ import java.util.Map;
 
 import androidx.annotation.StringRes;
 
+import org.philimone.hds.explorer.R;
+
 public enum SubjectEntity {
 
-    USER        ("User"),
-    REGION      ("Region"),
-    HOUSEHOLD   ("Household"),
-    MEMBER      ("Member"),
-    VISIT       ("Visit"),
+    USER        ("User", R.string.form_subject_user_lbl),
+    REGION      ("Region", R.string.form_subject_region_lbl),
+    HOUSEHOLD   ("Household", R.string.form_subject_household_lbl),
+    MEMBER      ("Member", R.string.form_subject_member_lbl),
+    VISIT       ("Visit", R.string.form_subject_visit_lbl),
 
-    INVALID_ENUM    ( "-1");
+    INVALID_ENUM    ( "-1", R.string.invalid_enum_value);
 
     public String code;
     public @StringRes int name;
 
-    SubjectEntity(String code){
+    SubjectEntity(String code, @StringRes int nameRes){
         this.code = code;
-        this.name = name;
+        this.name = nameRes;
     }
 
     public String getId(){

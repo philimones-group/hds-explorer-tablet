@@ -1,7 +1,5 @@
 package org.philimone.hds.explorer.fragment.household.details.adapter;
 
-import org.philimone.hds.explorer.R;
-import org.philimone.hds.explorer.data.FormDataLoader;
 import org.philimone.hds.explorer.fragment.CollectedDataFragment;
 import org.philimone.hds.explorer.fragment.ExternalDatasetsFragment;
 import org.philimone.hds.explorer.fragment.household.details.HouseholdEditFragment;
@@ -57,12 +55,16 @@ public class HouseholdDetailsFragmentAdapter extends FragmentStateAdapter {
 
     }
 
-    public void setAutoHighlightCollectedData(CollectedData autoHighlightCollectedData) {
-        this.fragCollected.setAutoHighlightCollectedData(autoHighlightCollectedData);
+    public void setCollectedDataToEdit(CollectedData collectedData) {
+        this.fragCollected.setExternalCollectedDataToEdit(collectedData);
     }
 
     public void setFragmentEditListener(HouseholdEditFragment.EditListener listener) {
         this.fragEdit.setEditListener(listener);
+    }
+
+    public void setFragmentCollectListener(CollectedDataFragment.CollectedDataFragmentListener listener){
+        this.fragCollected.setCollectedDataFragmentListener(listener);
     }
 
     public String getTitle(int position) {

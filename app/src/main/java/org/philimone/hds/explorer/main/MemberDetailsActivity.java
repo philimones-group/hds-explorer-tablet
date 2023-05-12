@@ -6,7 +6,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -24,6 +23,7 @@ import org.philimone.hds.explorer.model.Form;
 import org.philimone.hds.explorer.model.Household;
 import org.philimone.hds.explorer.model.Member;
 import org.philimone.hds.explorer.model.User;
+import org.philimone.hds.explorer.model.Visit;
 import org.philimone.hds.explorer.model.followup.TrackingSubjectList;
 import org.philimone.hds.explorer.settings.RequestCodes;
 
@@ -56,11 +56,13 @@ public class MemberDetailsActivity extends AppCompatActivity {
 
     private Household household;
     private Member member;
+    private Visit visit;
     private boolean isNewTempMember;
     private List<FormDataLoader> formDataLoaders = new ArrayList<>();
 
     private Box<Member> boxMembers;
     private Box<Household> boxHousehold;
+    private Box<Visit> boxVisits;
     private Box<CollectedData> boxCollectedData;
     private Box<TrackingSubjectList> boxTrackingSubjectList;
 
@@ -71,8 +73,8 @@ public class MemberDetailsActivity extends AppCompatActivity {
 
     private int requestCode;
 
-    private CollectedData autoHighlightCollectedData;
-    private boolean autoClickCollectData;
+    private CollectedData collectedDataToEdit;
+    private boolean callOnCollectData;
 
     //public static final int REQUEST_CODE_ADD_NEW_MEMBER = 10; /* Member Requests will be from 10 to 19 */
     //public static final int REQUEST_CODE_EDIT_NEW_MEMBER = 11;
@@ -94,6 +96,7 @@ public class MemberDetailsActivity extends AppCompatActivity {
     private void readIntentData() {
         long householdId = getIntent().getExtras().getLong("household");
         long memberId = getIntent().getExtras().getLong("member");
+        long visitId = getIntent().getExtras().getLong("visit");
         this.requestCode = getIntent().getExtras().getInt("request_code");
 
         try {
@@ -108,17 +111,23 @@ public class MemberDetailsActivity extends AppCompatActivity {
             Log.d("intent-error", ex.getMessage());
         }
 
+        try {
+            this.visit = boxVisits.get(visitId);
+        } catch (Exception ex) {
+            Log.d("intent-error", ex.getMessage());
+        }
+
         if (getIntent().getExtras().containsKey("tracking_subject_id")) {
             this.trackingSubject = boxTrackingSubjectList.get(getIntent().getExtras().getLong("tracking_subject_id"));
         }
 
-        if (getIntent().getExtras().containsKey("odk-form-select")) {
-            long collectedDataId = getIntent().getExtras().getLong("odk-form-select");
-            this.autoHighlightCollectedData = boxCollectedData.get(collectedDataId);
+        if (getIntent().getExtras().containsKey("odk-form-edit")) {
+            long collectedDataId = getIntent().getExtras().getLong("odk-form-edit");
+            this.collectedDataToEdit = boxCollectedData.get(collectedDataId);
         }
 
         if (getIntent().getExtras().containsKey("odk-form-collect")) {
-            this.autoClickCollectData = true;
+            this.callOnCollectData = true;
         }
     }
 
@@ -148,6 +157,7 @@ public class MemberDetailsActivity extends AppCompatActivity {
         this.boxCollectedData = ObjectBoxDatabase.get().boxFor(CollectedData.class);
         this.boxHousehold = ObjectBoxDatabase.get().boxFor(Household.class);
         this.boxMembers = ObjectBoxDatabase.get().boxFor(Member.class);
+        this.boxVisits = ObjectBoxDatabase.get().boxFor(Visit.class);
         this.boxTrackingSubjectList = ObjectBoxDatabase.get().boxFor(TrackingSubjectList.class);
     }
 
@@ -215,9 +225,9 @@ public class MemberDetailsActivity extends AppCompatActivity {
 
             boolean isTracking = requestCode == RequestCodes.MEMBER_DETAILS_FROM_TRACKING_LIST_DETAILS;
 
-            fragmentAdapter = new MemberDetailsFragmentAdapter(this.getSupportFragmentManager(), this.getLifecycle(), household, member, loggedUser, trackingSubject, tabTitles);
-            fragmentAdapter.setAutoHighlightCollectedData(autoHighlightCollectedData);
-            fragmentAdapter.setAutoClickCollectData(autoClickCollectData);
+            fragmentAdapter = new MemberDetailsFragmentAdapter(this.getSupportFragmentManager(), this.getLifecycle(), household, member, visit, loggedUser, trackingSubject, tabTitles);
+            fragmentAdapter.setCollectedDataToEdit(collectedDataToEdit);
+            fragmentAdapter.setCallOnCollectData(callOnCollectData);
             memberDetailsTabViewPager.setAdapter(fragmentAdapter);
             fragmentAdapter.setFragmentEditListener(new MemberEditFragment.EditListener() {
                 @Override
@@ -229,9 +239,20 @@ public class MemberDetailsActivity extends AppCompatActivity {
 
             fragmentAdapter.setFragmentCollectListener(new CollectedDataFragment.CollectedDataFragmentListener() {
                 @Override
-                public void onCollectDataBackClicked() {
-                    autoClickCollectData = false;
+                public void afterExternalCallOnCollectDataFinished() {
+                    callOnCollectData = false;
                     onBackPressed();
+                }
+
+                @Override
+                public void afterExternalCallCollectedDataToEditFinished() {
+                    collectedDataToEdit = null;
+                    onBackPressed();
+                }
+
+                @Override
+                public void afterInternalCollectDataFinished() {
+
                 }
             });
 
@@ -242,7 +263,7 @@ public class MemberDetailsActivity extends AppCompatActivity {
                 tab.setText(fragmentAdapter.getTitle(position));
             }).attach();
 
-            if (autoHighlightCollectedData != null) {
+            if (collectedDataToEdit != null) {
                 this.memberDetailsTabLayout.getTabAt(2).select();
             }
         }

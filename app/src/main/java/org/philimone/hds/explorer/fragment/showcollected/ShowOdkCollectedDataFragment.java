@@ -11,6 +11,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -76,6 +78,11 @@ public class ShowOdkCollectedDataFragment extends Fragment {
     private Box<Module> boxModules;
     private Box<Dataset> boxDatasets;
     private List<String> selectedModules = new ArrayList<>();
+
+    private ActivityResultLauncher<Intent> onFormEditLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+       //after calling details activity to edit a collected odk form
+       reloadCollectedData();
+    });
 
     public ShowOdkCollectedDataFragment() {
         // Required empty public constructor
@@ -292,11 +299,11 @@ public class ShowOdkCollectedDataFragment extends Fragment {
 
             Intent intent = new Intent(ShowOdkCollectedDataFragment.this.getContext(), RegionDetailsActivity.class);
             intent.putExtra("region", region.id);
-            intent.putExtra("odk-form-select", collectedData.id);
+            intent.putExtra("odk-form-edit", collectedData.id);
 
             showLoadingDialog(null, false);
 
-            startActivity(intent);
+            onFormEditLauncher.launch(intent);
         }
     }
 
@@ -319,11 +326,11 @@ public class ShowOdkCollectedDataFragment extends Fragment {
 
             Intent intent = new Intent(ShowOdkCollectedDataFragment.this.getContext(), HouseholdDetailsActivity.class);
             intent.putExtra("household", household.id);
-            intent.putExtra("odk-form-select", collectedData.id);
+            intent.putExtra("odk-form-edit", collectedData.id);
 
             showLoadingDialog(null, false);
 
-            startActivity(intent);
+            onFormEditLauncher.launch(intent);
         }
     }
 
@@ -346,11 +353,11 @@ public class ShowOdkCollectedDataFragment extends Fragment {
 
             Intent intent = new Intent(ShowOdkCollectedDataFragment.this.getContext(), MemberDetailsActivity.class);
             intent.putExtra("member", member.id);
-            intent.putExtra("odk-form-select", collectedData.id);
+            intent.putExtra("odk-form-edit", collectedData.id);
 
             showLoadingDialog(null, false);
 
-            startActivity(intent);
+            onFormEditLauncher.launch(intent);
         }
     }
 

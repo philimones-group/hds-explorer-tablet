@@ -11,6 +11,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.philimone.hds.explorer.R;
+import org.philimone.hds.explorer.adapter.model.VisitCollectedDataItem;
+import org.philimone.hds.explorer.model.CollectedData;
 import org.philimone.hds.explorer.model.CoreCollectedData;
 import org.philimone.hds.explorer.model.CoreFormExtension;
 import org.philimone.hds.explorer.model.enums.CoreFormEntity;
@@ -30,9 +32,9 @@ public class CoreCollectedExpandableAdapter extends BaseExpandableListAdapter im
 
     private Context mContext;
     private List<CoreFormEntity> groupItems;
-    private List<List<CoreCollectedData>> childItems;
+    private List<List<VisitCollectedDataItem>> childItems;
 
-    public CoreCollectedExpandableAdapter(Context mContext, LinkedHashMap<CoreFormEntity, List<CoreCollectedData>> collectionMap) {
+    public CoreCollectedExpandableAdapter(Context mContext, LinkedHashMap<CoreFormEntity, List<VisitCollectedDataItem>> collectionMap) {
         this.mContext = mContext;
         this.groupItems = new ArrayList<>();
         this.childItems = new ArrayList<>();
@@ -114,8 +116,8 @@ public class CoreCollectedExpandableAdapter extends BaseExpandableListAdapter im
             rowView = inflater.inflate(R.layout.core_form_group_child_item, parent, false);
         }
 
-        CoreCollectedData cd = (CoreCollectedData) getChild(groupPosition, childPosition);
-        CoreFormExtension formExtension = cd.extension.getTarget();
+        VisitCollectedDataItem cd = (VisitCollectedDataItem) getChild(groupPosition, childPosition);
+        CoreFormExtension formExtension = cd.getExtension();
 
         TextView txtItem1 = rowView.findViewById(R.id.txtItem1);
         TextView txtItem2 = rowView.findViewById(R.id.txtItem2);
@@ -123,19 +125,18 @@ public class CoreCollectedExpandableAdapter extends BaseExpandableListAdapter im
         TextView txtItem4 = rowView.findViewById(R.id.txtItem4);
         Button button = rowView.findViewById(R.id.btnItemInfo);
         CheckBox chkProcessed = rowView.findViewById(R.id.chkProcessed);
-
         button.setVisibility(View.GONE);
         chkProcessed.setVisibility(View.GONE);
-        txtItem3.setVisibility(formExtension==null ? View.GONE : View.VISIBLE);
-        txtItem4.setVisibility(formExtension==null ? View.GONE : View.VISIBLE);
+
+        txtItem3.setVisibility(formExtension!=null || cd.isOdkCollectedData() ? View.VISIBLE : View.GONE);
+        txtItem4.setVisibility(formExtension!=null || cd.isOdkCollectedData() ? View.VISIBLE : View.GONE);
 
         String createdDate = cd.createdDate==null ? "" : StringUtil.format(cd.createdDate, "yyyy-MM-dd HH:mm:ss");
-        String updatedDate = cd.updatedDate==null ? "" : StringUtil.format(cd.updatedDate, "yyyy-MM-dd HH:mm:ss");
-        String uploadedDate = cd.uploadedDate==null ? "" : StringUtil.format(cd.uploadedDate, "yyyy-MM-dd HH:mm:ss");
-        String code = StringUtil.isBlank(cd.formEntityCode) ? "" : cd.formEntityCode + " - ";
+        //String updatedDate = cd.updatedDate==null ? "" : StringUtil.format(cd.updatedDate, "yyyy-MM-dd HH:mm:ss");
+        //String uploadedDate = cd.uploadedDate==null ? "" : StringUtil.format(cd.uploadedDate, "yyyy-MM-dd HH:mm:ss");
+        //String code = StringUtil.isBlank(cd.formEntityCode) ? "" : cd.formEntityCode + " - ";
 
         txtItem1.setText(cd.formEntityName);
-        //txtItem2.setText(code + this.mContext.getString(cd.formEntity.name));
         txtItem2.setText(createdDate);
 
         if (formExtension != null) {
@@ -143,7 +144,7 @@ public class CoreCollectedExpandableAdapter extends BaseExpandableListAdapter im
             if (formExtension.enabled){
                 String message = "";
 
-                if (cd.extensionCollected) {
+                if (cd.isExtensionCollected()) {
                     message = mContext.getString(R.string.core_form_group_item_extension_collected_lbl);
                 } else if(formExtension.required){
                     message = mContext.getString(R.string.core_form_group_item_extension_not_collected_lbl);
@@ -159,6 +160,12 @@ public class CoreCollectedExpandableAdapter extends BaseExpandableListAdapter im
             }
         }
 
+        if (cd.isOdkCollectedData()) {
+            CollectedData collectedData = cd.getOdkCollectedData();
+
+            txtItem3.setText(mContext.getString(collectedData.recordEntity.name)+":");
+            txtItem4.setText(cd.odkForm.formName);
+        }
 
         return rowView;
     }
@@ -196,6 +203,8 @@ public class CoreCollectedExpandableAdapter extends BaseExpandableListAdapter im
                 return R.mipmap.nui_changehoh_icon_dark;
             case INCOMPLETE_VISIT:
                 return R.mipmap.nui_member_incomplete_icon_dark;
+            case EXTRA_FORM:
+                return R.mipmap.nui_form2_white_icon_dark;
 
         }
 

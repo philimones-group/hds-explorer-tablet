@@ -6,10 +6,8 @@ import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Lifecycle;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
-import org.philimone.hds.explorer.data.FormDataLoader;
 import org.philimone.hds.explorer.fragment.CollectedDataFragment;
 import org.philimone.hds.explorer.fragment.ExternalDatasetsFragment;
-import org.philimone.hds.explorer.fragment.household.details.HouseholdEditFragment;
 import org.philimone.hds.explorer.fragment.region.details.RegionChildsFragment;
 import org.philimone.hds.explorer.fragment.region.details.RegionEditFragment;
 import org.philimone.hds.explorer.model.CollectedData;
@@ -56,12 +54,16 @@ public class RegionDetailsFragmentAdapter extends FragmentStateAdapter {
 
     }
 
-    public void setAutoHighlightCollectedData(CollectedData autoHighlightCollectedData) {
-        this.fragCollected.setAutoHighlightCollectedData(autoHighlightCollectedData);
+    public void setCollectedDataToEdit(CollectedData collectedData) {
+        this.fragCollected.setExternalCollectedDataToEdit(collectedData);
     }
 
     public void setFragmentEditListener(RegionEditFragment.EditListener listener) {
         this.fragEdit.setEditListener(listener);
+    }
+
+    public void setFragmentCollectListener(CollectedDataFragment.CollectedDataFragmentListener listener){
+        this.fragCollected.setCollectedDataFragmentListener(listener);
     }
 
     public String getTitle(int position) {

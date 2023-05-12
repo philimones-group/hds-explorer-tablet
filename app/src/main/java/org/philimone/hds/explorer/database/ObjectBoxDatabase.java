@@ -6,6 +6,7 @@ import android.util.Log;
 import org.philimone.hds.explorer.BuildConfig;
 import org.philimone.hds.explorer.model.MyObjectBox;
 import io.objectbox.BoxStore;
+import io.objectbox.android.Admin;
 import io.objectbox.android.AndroidObjectBrowser;
 
 /*
@@ -19,7 +20,7 @@ public class ObjectBoxDatabase {
         boxStore = MyObjectBox.builder().androidContext(context.getApplicationContext()).build();
 
         if (BuildConfig.DEBUG) {
-            boolean started = new AndroidObjectBrowser(boxStore).start(context);
+            boolean started = new Admin(boxStore).start(context);
             Log.i("ObjectBrowser", "Started: " + started);
         }
     }

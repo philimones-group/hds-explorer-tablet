@@ -3,6 +3,7 @@ package org.philimone.hds.explorer.model;
 import org.philimone.hds.explorer.model.converters.StringCollectionConverter;
 import org.philimone.hds.explorer.model.converters.VisitLocationItemConverter;
 import org.philimone.hds.explorer.model.converters.VisitReasonConverter;
+import org.philimone.hds.explorer.model.enums.SubjectEntity;
 import org.philimone.hds.explorer.model.enums.VisitLocationItem;
 import org.philimone.hds.explorer.model.enums.VisitReason;
 
@@ -17,9 +18,10 @@ import io.objectbox.annotation.Id;
 import io.objectbox.annotation.Index;
 import io.objectbox.annotation.Unique;
 import io.objectbox.relation.ToOne;
+import mz.betainteractive.utilities.ReflectionUtils;
 
 @Entity
-public class Visit implements CoreEntity {
+public class Visit implements CoreEntity, FormSubject {
 
     @Id
     public long id;
@@ -74,6 +76,21 @@ public class Visit implements CoreEntity {
     @Override
     public long getId() {
         return this.id;
+    }
+
+    @Override
+    public String getCode() {
+        return this.code;
+    }
+
+    @Override
+    public SubjectEntity getTableName() {
+        return SubjectEntity.VISIT;
+    }
+
+    @Override
+    public String getValueByName(String fieldName) {
+        return ReflectionUtils.getValueByName(this, fieldName);
     }
 
     @Override

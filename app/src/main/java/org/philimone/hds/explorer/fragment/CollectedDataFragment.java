@@ -38,7 +38,7 @@ import org.philimone.hds.explorer.model.Module;
 import org.philimone.hds.explorer.model.Region;
 import org.philimone.hds.explorer.model.Region_;
 import org.philimone.hds.explorer.model.User;
-import org.philimone.hds.explorer.model.enums.FormType;
+import org.philimone.hds.explorer.model.Visit;
 import org.philimone.hds.explorer.model.followup.TrackingSubjectList;
 import org.philimone.hds.explorer.utilities.FormGroupUtilities;
 import org.philimone.hds.explorer.widget.DialogFactory;
@@ -47,7 +47,6 @@ import org.philimone.hds.explorer.widget.FormSelectorDialog;
 import org.philimone.hds.explorer.widget.LoadingDialog;
 import org.philimone.hds.explorer.widget.RecyclerListView;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -81,6 +80,8 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
     private FormSubject subject;
     private User loggedUser;
 
+    private Visit visit;
+
     private List<FormDataLoader> formDataLoaders = new ArrayList<>();
     private FormDataLoader lastLoadedForm;
     private FormUtilities formUtilities;
@@ -100,8 +101,9 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
     private TrackingSubjectList trackingSubject;
     private SubjectMode subjectMode;
 
-    private CollectedData autoHighlightCollectedData;
-    private boolean autoClickCollectData;
+    private CollectedData collectedDataToEdit;
+    private boolean externalCallOnCollectData;
+    private boolean externalCallCollectedDataToEdit;
 
     private List<String> selectedModules = new ArrayList<>();
 
@@ -165,6 +167,10 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
         this.collectedDataFragmentListener = collectedDataFragmentListener;
     }
 
+    public void setVisit(Visit visit) {
+        this.visit = visit;
+    }
+
     private void initializeDataloaders() {
         //get all visible forms for this subject
         Region region = null;
@@ -214,7 +220,7 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
 
     }
 
-    private void loadMappingDataValues(FormDataLoader formDataLoader, TrackingSubjectList trackingSubject, FormGroupInstance formGroupInstance) {
+    private void loadMappingDataValues(FormDataLoader formDataLoader, Visit visit, TrackingSubjectList trackingSubject, FormGroupInstance formGroupInstance) {
         //get all visible forms for this subject
         Region region = null;
         Household household = null;
@@ -223,14 +229,14 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
 
         if (subject instanceof Region){
             region = (Region) subject;
-            loadFormValues(formDataLoader, null, null, region, trackingSubject, formGroupInstance);
+            loadFormValues(formDataLoader, null, null, region, null, trackingSubject, formGroupInstance);
         }
 
         if (subject instanceof Household){
             household = (Household) subject;
             region = this.boxRegions.query(Region_.code.equal(household.region)).build().findFirst();
 
-            loadFormValues(formDataLoader, household, null, region, trackingSubject, formGroupInstance);
+            loadFormValues(formDataLoader, household, null, region, visit, trackingSubject, formGroupInstance);
         }
 
         if (subject instanceof Member){
@@ -238,7 +244,7 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
             household = this.boxHouseholds.query(Household_.code.equal(member.householdCode)).build().findFirst();;
             region = this.boxRegions.query(Region_.code.equal(household.region)).build().findFirst();
 
-            loadFormValues(formDataLoader, household, member, region, trackingSubject, formGroupInstance);
+            loadFormValues(formDataLoader, household, member, region, visit, trackingSubject, formGroupInstance);
         }
 
     }
@@ -251,7 +257,7 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
         return FormDataLoader.getFormLoadersList(boxForms, loggedUser, filters);
     }
 
-    private void loadFormValues(FormDataLoader loader, Household household, Member member, Region region, TrackingSubjectList trackingSubjectItem, FormGroupInstance formGroupInstance){
+    private void loadFormValues(FormDataLoader loader, Household household, Member member, Region region, Visit visit, TrackingSubjectList trackingSubjectItem, FormGroupInstance formGroupInstance){
         if (household != null){
             loader.loadHouseholdValues(household);
         }
@@ -263,6 +269,9 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
         }
         if (region != null){
             loader.loadRegionValues(region);
+        }
+        if (visit != null) {
+            loader.loadVisitValues(visit);
         }
         if (formGroupInstance != null) {
             loader.loadFormGroupValues(formGroupInstance);
@@ -318,17 +327,30 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
 
         this.showCollectedData();
 
-        if (autoClickCollectData) {
+        Log.d("externalOnCollect", externalCallOnCollectData+"");
+        Log.d("collectedDataEdit", collectedDataToEdit+"");
+        if (externalCallOnCollectData) {
             this.onCollectData();
+        } else if (collectedDataToEdit != null) {
+            //reopen / edit
+            CollectedDataAdapter adapter = (CollectedDataAdapter) this.lvCollectedForms.getAdapter();
+            int position = adapter.getPositionOf(collectedDataToEdit);
+            if (position >= 0) {
+                onCollectedDataItemClicked(position);
+            }
         }
     }
 
-    public void setAutoHighlightCollectedData(CollectedData autoHighlightCollectedData) {
-        this.autoHighlightCollectedData = autoHighlightCollectedData;
+    public void setInternalCollectedDataToEdit(CollectedData collectedData) {
+        this.collectedDataToEdit = collectedData;
+    }
+    public void setExternalCollectedDataToEdit(CollectedData collectedData) {
+        this.collectedDataToEdit = collectedData;
+        this.externalCallCollectedDataToEdit = collectedData != null;
     }
 
-    public void setAutoClickCollectData(boolean autoClickCollectData) {
-        this.autoClickCollectData = autoClickCollectData;
+    public void setExternalCallOnCollectData(boolean externalCallOnCollectData) {
+        this.externalCallOnCollectData = externalCallOnCollectData;
     }
 
     /*
@@ -354,8 +376,8 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
         CollectedDataAdapter adapter = new CollectedDataAdapter(this.getContext(), cdl);
         this.lvCollectedForms.setAdapter(adapter);
 
-        if (autoHighlightCollectedData != null) {
-            setHighlight(autoHighlightCollectedData, adapter);
+        if (collectedDataToEdit != null) { //highlight collected data to edit
+            highlightCollectedData(collectedDataToEdit, adapter);
         }
 
         //Update FormGroupPanel if is visible
@@ -470,6 +492,18 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
         }
     }
 
+    public void onEditCollectedData(CollectedData collectedData) {
+
+       if (collectedDataToEdit != null) {
+            //reopen / edit
+            CollectedDataAdapter adapter = (CollectedDataAdapter) this.lvCollectedForms.getAdapter();
+            int position = adapter.getPositionOf(collectedDataToEdit);
+            if (position >= 0) {
+                onCollectedDataItemClicked(position);
+            }
+        }
+    }
+
     private void buildFormSelectorDialog(List<FormDataLoader> loaders) {
 
         //remove all formGroupExclusive Forms
@@ -488,17 +522,24 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
 
             @Override
             public void onCancelClicked() {
-                onFormSelectorBackClicked();
+                onFormSelectorCancelClicked();
             }
         }).show();
     }
 
-    private void onFormSelectorBackClicked() {
+    private void onFormSelectorCancelClicked() {
 
-        if (autoClickCollectData) {
-            //if we opened collect data function specifically - perform a backpress on master activity (A Entity Details)
+        if (externalCallOnCollectData) {
+            //if we opened onCollectData from a External Activity not the same that has this Fragment
             if (collectedDataFragmentListener != null) {
-                collectedDataFragmentListener.onCollectDataBackClicked();
+                this.externalCallOnCollectData = false;
+                collectedDataFragmentListener.afterExternalCallOnCollectDataFinished();
+            }
+        } else if (externalCallCollectedDataToEdit) {
+            //if we opened a form to edit from a External Activity not the same that has this Fragment
+            if (collectedDataFragmentListener != null) {
+                this.externalCallCollectedDataToEdit = false;
+                collectedDataFragmentListener.afterExternalCallCollectedDataToEditFinished();
             }
         }
     }
@@ -609,17 +650,7 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
         Log.d("removed-fgi", listDelete.size()+"");
     }
 
-    public void setHighlight(CollectedData collectedData) {
-        CollectedDataAdapter adapter = (CollectedDataAdapter) this.lvCollectedForms.getAdapter();
-
-        int position = adapter.getPositionOf(collectedData);
-        if (position >= 0) {
-            adapter.setHighlightedIndex(position);
-            this.lvCollectedForms.scrollToPosition(position);
-        }
-    }
-
-    public void setHighlight(CollectedData collectedData, CollectedDataAdapter adapter) {
+    public void highlightCollectedData(CollectedData collectedData, CollectedDataAdapter adapter) {
         int position = adapter.getPositionOf(collectedData);
         if (position >= 0) {
             adapter.setHighlightedIndex(position);
@@ -672,8 +703,10 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
             collectedData.formGroupName = formLoadData.formGroupName;
             collectedData.formGroupInstanceUuid = formLoadData.formGroupInstanceUuid;
 
+            collectedData.visitId = visit != null ? visit.id : 0;
+
             this.boxCollectedData.put(collectedData);
-            Log.d("inserting", "new collected data");
+            Log.d("inserting", "new collected data - visit.id = "+collectedData.visitId);
         }else{ //update
             collectedData.setFormId(formId);
             collectedData.setFormUri(contentUri.toString());
@@ -748,6 +781,8 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
             collectedData.formGroupName = formLoadData.formGroupName;
             collectedData.formGroupInstanceUuid = formLoadData.formGroupInstanceUuid;
 
+            collectedData.visitId = visit != null ? visit.id : 0;
+
             this.boxCollectedData.put(collectedData);
             Log.d("inserting", "new collected data");
         }else{ //update
@@ -820,8 +855,30 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
     private void onFinishedOdkDataCollection(OdkFormLoadData formLoadData){
         showCollectedData();
 
-        if (formLoadData.isFormGroupLoad == false) { //normal odk collection
-            onFormSelectorBackClicked(); //try to back from the EntityDetails panel - if is autoCollectDataClicked
+        if (!formLoadData.isFormGroupLoad) { //normal odk collection - form group after collecting odk they remain showing dialog
+
+            if (externalCallOnCollectData) {
+                ////if we opened onCollectData from a External Activity not the same that has this Fragment
+                if (collectedDataFragmentListener != null) {
+                    this.externalCallOnCollectData = false;
+                    collectedDataFragmentListener.afterExternalCallOnCollectDataFinished();
+                }
+            } else if (externalCallCollectedDataToEdit) {
+                //if we opened a form to edit from a External Activity not the same that has this Fragment
+                if (collectedDataFragmentListener != null) {
+                    this.externalCallCollectedDataToEdit = false;
+                    collectedDataFragmentListener.afterExternalCallCollectedDataToEditFinished();
+                }
+            } else {
+                //its a normal data collection (called from EntityDetails button onCollectData or by selecting a collected data in the list) from an Activity that has this Fragment
+                if (collectedDataFragmentListener != null) {
+                    this.externalCallOnCollectData = false;
+                    this.externalCallCollectedDataToEdit = false;
+                    
+                    collectedDataFragmentListener.afterInternalCollectDataFinished();
+                }
+            }
+
         }
     }
 
@@ -869,7 +926,7 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
             //get the collected data only if is one form per session
             CollectedData collectedData = form.multiCollPerSession ? null : getCollectedData(formDataLoader);
 
-            loadMappingDataValues(formDataLoader, trackingSubject, formGroupInstance);
+            loadMappingDataValues(formDataLoader, CollectedDataFragment.this.visit, trackingSubject, formGroupInstance);
             //reload timestamp constants
             formDataLoader.reloadTimestampConstants();
 
@@ -951,6 +1008,10 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
     }
 
     public interface CollectedDataFragmentListener {
-        void onCollectDataBackClicked();
+        void afterExternalCallOnCollectDataFinished();
+
+        void afterExternalCallCollectedDataToEditFinished();
+
+        void afterInternalCollectDataFinished();
     }
 }

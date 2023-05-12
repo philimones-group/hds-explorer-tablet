@@ -115,7 +115,8 @@ public class HouseholdDetailsActivity extends AppCompatActivity implements House
 
     private FormUtilities odkFormUtilities;
 
-    private CollectedData autoHighlightCollectedData;
+    private CollectedData collectedDataToEdit;
+    private boolean callOnCollectData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -171,29 +172,33 @@ public class HouseholdDetailsActivity extends AppCompatActivity implements House
             long regionId = getIntent().getExtras().getLong("region");
             this.region = boxRegions.get(regionId);
         } catch (Exception ex){
-            ex.printStackTrace();
+            Log.d("read-intent-error", "regionId -> " + ex.getMessage());
         }
 
         try{
             long householdId = getIntent().getExtras().getLong("household");
             this.household = boxHouseholds.get(householdId);
         }catch (Exception ex){
-            ex.printStackTrace();
+            Log.d("read-intent-error", "householdId -> " + ex.getMessage());
         }
 
         try{
             this.requestCode = getIntent().getExtras().getInt("request_code");
         }catch (Exception ex){
-            ex.printStackTrace();
+            Log.d("read-intent-error", "requestCode -> " + ex.getMessage());
         }
 
         if (getIntent().getExtras().containsKey("tracking_subject_id")) {
             this.trackingSubject = boxTrackingSubjectList.get(getIntent().getExtras().getLong("tracking_subject_id"));
         }
 
-        if (getIntent().getExtras().containsKey("odk-form-select")) {
-            long collectedDataId = getIntent().getExtras().getLong("odk-form-select");
-            this.autoHighlightCollectedData = boxCollectedData.get(collectedDataId);
+        if (getIntent().getExtras().containsKey("odk-form-edit")) {
+            long collectedDataId = getIntent().getExtras().getLong("odk-form-edit");
+            this.collectedDataToEdit = boxCollectedData.get(collectedDataId);
+        }
+
+        if (getIntent().getExtras().containsKey("odk-form-collect")) {
+            this.callOnCollectData = true;
         }
     }
 
@@ -299,12 +304,34 @@ public class HouseholdDetailsActivity extends AppCompatActivity implements House
             boolean isTracking = requestCode == RequestCodes.HOUSEHOLD_DETAILS_FROM_TRACKING_LIST_DETAILS;
 
             fragmentAdapter = new HouseholdDetailsFragmentAdapter(this.getSupportFragmentManager(), this.getLifecycle(), household, loggedUser, this.trackingSubject, tabTitles);
-            fragmentAdapter.setAutoHighlightCollectedData(autoHighlightCollectedData);
+            fragmentAdapter.setCollectedDataToEdit(collectedDataToEdit);
             fragmentAdapter.setFragmentEditListener(new HouseholdEditFragment.EditListener() {
                 @Override
                 public void onUpdate() {
                     displayHouseholdDetails();
                 }
+            });
+
+            fragmentAdapter.setFragmentCollectListener(new CollectedDataFragment.CollectedDataFragmentListener() {
+                @Override
+                public void afterExternalCallOnCollectDataFinished() {
+                    callOnCollectData = false;
+                    onBackPressed();
+                }
+
+                @Override
+                public void afterExternalCallCollectedDataToEditFinished() {
+                    collectedDataToEdit = null;
+                    onBackPressed();
+                }
+
+                @Override
+                public void afterInternalCollectDataFinished() {
+                    if (hdetailsMode == HouseholdDetailsMode.VISIT_MODE) {
+                        householdVisitFragment.loadDataToListViews();
+                    }
+                }
+
             });
 
 
@@ -316,7 +343,7 @@ public class HouseholdDetailsActivity extends AppCompatActivity implements House
                 tab.setText(fragmentAdapter.getTitle(position));
             }).attach();
 
-            if (autoHighlightCollectedData != null) {
+            if (collectedDataToEdit != null) {
                 this.householdDetailsTabLayout.getTabAt(2).select();
             }
         }
@@ -457,6 +484,7 @@ public class HouseholdDetailsActivity extends AppCompatActivity implements House
         btHouseDetailsCreateVisit.setVisibility(View.VISIBLE);
         btHouseDetailsFinishVisit.setVisibility(View.GONE);
         btHouseDetailsOpenVisit.setVisibility(recentlyCreatedVisit ? View.VISIBLE : View.GONE);
+        btHouseDetailsCollectData.setVisibility(View.VISIBLE);
 
         mainPanelTabsLayout.setVisibility(View.VISIBLE);
         mainPanelVisitLayout.setVisibility(View.GONE);
@@ -477,6 +505,7 @@ public class HouseholdDetailsActivity extends AppCompatActivity implements House
         btHouseDetailsCreateVisit.setVisibility(View.GONE);
         btHouseDetailsFinishVisit.setVisibility(View.VISIBLE);
         btHouseDetailsOpenVisit.setVisibility(View.GONE);
+        btHouseDetailsCollectData.setVisibility(View.GONE);
 
         mainPanelTabsLayout.setVisibility(View.GONE);
         mainPanelVisitLayout.setVisibility(View.VISIBLE);
@@ -507,6 +536,7 @@ public class HouseholdDetailsActivity extends AppCompatActivity implements House
         btHouseDetailsCreateVisit.setVisibility(View.GONE);
         btHouseDetailsFinishVisit.setVisibility(View.VISIBLE);
         btHouseDetailsOpenVisit.setVisibility(View.GONE);
+        btHouseDetailsCollectData.setVisibility(View.VISIBLE);
 
         mainPanelTabsLayout.setVisibility(View.GONE);
         mainPanelVisitLayout.setVisibility(View.VISIBLE);
@@ -525,6 +555,7 @@ public class HouseholdDetailsActivity extends AppCompatActivity implements House
         btHouseDetailsCreateVisit.setVisibility(View.GONE);
         btHouseDetailsFinishVisit.setVisibility(View.GONE);
         btHouseDetailsOpenVisit.setVisibility(View.GONE);
+        btHouseDetailsCollectData.setVisibility(View.VISIBLE);
 
         mainPanelTabsLayout.setVisibility(View.VISIBLE);
         mainPanelVisitLayout.setVisibility(View.GONE);
@@ -592,6 +623,7 @@ public class HouseholdDetailsActivity extends AppCompatActivity implements House
 
             //finish visit mode
             this.visit = null;
+            this.fragmentAdapter.getFragmentCollected().setVisit(null);
             setHouseholdMode();
         }
 
@@ -727,5 +759,26 @@ public class HouseholdDetailsActivity extends AppCompatActivity implements House
     @Override
     public void updateHouseholdDetails() {
         displayHouseholdDetails();
+    }
+
+    @Override
+    public void onVisitCollectData(Visit visit) {
+        if (fragmentAdapter != null) {
+            CollectedDataFragment collectedDataFragment = this.fragmentAdapter.getFragmentCollected();
+            collectedDataFragment.setVisit(visit);
+
+            collectedDataFragment.onCollectData();
+        }
+    }
+
+    @Override
+    public void onVisitEditData(Visit visit, CollectedData collectedData) {
+        if (fragmentAdapter != null) {
+            CollectedDataFragment collectedDataFragment = this.fragmentAdapter.getFragmentCollected();
+            collectedDataFragment.setVisit(visit);
+            collectedDataFragment.setInternalCollectedDataToEdit(collectedData);
+
+            collectedDataFragment.onEditCollectedData(collectedData);
+        }
     }
 }

@@ -1,22 +1,18 @@
 package org.philimone.hds.explorer.main;
 
-import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import org.philimone.hds.explorer.R;
-import org.philimone.hds.explorer.adapter.model.TrackingSubjectItem;
 import org.philimone.hds.explorer.data.FormDataLoader;
 import org.philimone.hds.explorer.database.Bootstrap;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
 import org.philimone.hds.explorer.database.Queries;
 import org.philimone.hds.explorer.fragment.CollectedDataFragment;
 import org.philimone.hds.explorer.fragment.ExternalDatasetsFragment;
-import org.philimone.hds.explorer.fragment.household.details.HouseholdEditFragment;
 import org.philimone.hds.explorer.fragment.region.details.RegionChildsFragment;
 import org.philimone.hds.explorer.fragment.region.details.RegionEditFragment;
 import org.philimone.hds.explorer.fragment.region.details.adapter.RegionDetailsFragmentAdapter;
@@ -70,7 +66,8 @@ public class RegionDetailsActivity extends AppCompatActivity {
     private Box<TrackingSubjectList> boxTrackingSubjectList;
 
     private TrackingSubjectList trackingSubject;
-    private CollectedData autoHighlightCollectedData;
+    private CollectedData collectedDataToEdit;
+    private boolean callOnCollectData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,9 +93,13 @@ public class RegionDetailsActivity extends AppCompatActivity {
             this.trackingSubject = boxTrackingSubjectList.get(getIntent().getExtras().getLong("tracking_subject_id"));
         }
 
-        if (getIntent().getExtras().containsKey("odk-form-select")) {
-            long collectedDataId = getIntent().getExtras().getLong("odk-form-select");
-            this.autoHighlightCollectedData = boxCollectedData.get(collectedDataId);
+        if (getIntent().getExtras().containsKey("odk-form-edit")) {
+            long collectedDataId = getIntent().getExtras().getLong("odk-form-edit");
+            this.collectedDataToEdit = boxCollectedData.get(collectedDataId);
+        }
+
+        if (getIntent().getExtras().containsKey("odk-form-collect")) {
+            this.callOnCollectData = true;
         }
     }
 
@@ -190,12 +191,31 @@ public class RegionDetailsActivity extends AppCompatActivity {
             boolean isTracking = activityRequestCode == RequestCodes.REGION_DETAILS_FROM_TRACKING_LIST_DETAILS;
 
             fragmentAdapter = new RegionDetailsFragmentAdapter(this.getSupportFragmentManager(), this.getLifecycle(), region, loggedUser, this.trackingSubject, tabTitles);
-            fragmentAdapter.setAutoHighlightCollectedData(autoHighlightCollectedData);
+            fragmentAdapter.setCollectedDataToEdit(collectedDataToEdit);
             fragmentAdapter.setFragmentEditListener(new RegionEditFragment.EditListener() {
                 @Override
                 public void onUpdate() {
                     setRegionData();
                     reloadFragmentsData();
+                }
+            });
+
+            fragmentAdapter.setFragmentCollectListener(new CollectedDataFragment.CollectedDataFragmentListener() {
+                @Override
+                public void afterExternalCallOnCollectDataFinished() {
+                    callOnCollectData = false;
+                    onBackPressed();
+                }
+
+                @Override
+                public void afterExternalCallCollectedDataToEditFinished() {
+                    collectedDataToEdit = null;
+                    onBackPressed();
+                }
+
+                @Override
+                public void afterInternalCollectDataFinished() {
+
                 }
             });
 
@@ -207,7 +227,7 @@ public class RegionDetailsActivity extends AppCompatActivity {
                 tab.setText(fragmentAdapter.getTitle(position));
             }).attach();
 
-            if (autoHighlightCollectedData != null) {
+            if (collectedDataToEdit != null) {
                 this.regionDetailsTabLayout.getTabAt(2).select();
             }
         }

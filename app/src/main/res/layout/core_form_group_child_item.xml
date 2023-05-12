@@ -45,17 +45,18 @@
             android:text="Large Text"
             android:textColor="#444"
             android:textStyle="bold"
-            android:textSize="14sp" />
+            android:textSize="14sp"
+            android:maxLines="1"/>
         
         <TextView
             android:id="@+id/txtItem2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Medium Text"
-            android:singleLine="true"
-            android:textColor="#444"
             android:gravity="center_vertical"
-            android:textSize="@dimen/member_item_text_2_size" />
+            android:text="Medium Text"
+            android:textColor="#444"
+            android:textSize="@dimen/member_item_text_2_size"
+            android:maxLines="1" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -71,7 +72,8 @@
                 android:singleLine="true"
                 android:textColor="#444"
                 android:textSize="@dimen/member_item_text_3_size"
-                android:textStyle="bold"/>
+                android:textStyle="bold"
+                android:maxLines="1" />
 
             <TextView
                 android:id="@+id/txtItem4"
@@ -80,13 +82,11 @@
                 android:layout_marginLeft="5dp"
                 android:gravity="left|top"
                 android:text="Medium Text"
-                android:singleLine="true"
                 android:textColor="#444"
                 android:textSize="@dimen/member_item_text_3_size"
-                android:textStyle="bold"/>
+                android:textStyle="bold"
+                android:maxLines="1" />
         </LinearLayout>
-
-
         
     </LinearLayout>
 

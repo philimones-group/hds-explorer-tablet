@@ -8,17 +8,15 @@ import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Lifecycle;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
-import org.philimone.hds.explorer.adapter.CollectedDataAdapter;
-import org.philimone.hds.explorer.data.FormDataLoader;
 import org.philimone.hds.explorer.fragment.CollectedDataFragment;
 import org.philimone.hds.explorer.fragment.ExternalDatasetsFragment;
-import org.philimone.hds.explorer.fragment.household.details.HouseholdEditFragment;
 import org.philimone.hds.explorer.fragment.member.details.MemberDetailsFragment;
 import org.philimone.hds.explorer.fragment.member.details.MemberEditFragment;
 import org.philimone.hds.explorer.model.CollectedData;
 import org.philimone.hds.explorer.model.Household;
 import org.philimone.hds.explorer.model.Member;
 import org.philimone.hds.explorer.model.User;
+import org.philimone.hds.explorer.model.Visit;
 import org.philimone.hds.explorer.model.followup.TrackingSubjectList;
 
 import java.util.ArrayList;
@@ -34,12 +32,14 @@ public class MemberDetailsFragmentAdapter extends FragmentStateAdapter {
     private MemberEditFragment fragEdit;
     private Household household;
     private Member member;
+    private Visit visit;
     private User user;
 
-    public MemberDetailsFragmentAdapter(@NonNull FragmentManager fragmentManager, @NonNull Lifecycle lifecycle, Household household, Member member, User user, TrackingSubjectList trackingSubject, List<String> titles) {
+    public MemberDetailsFragmentAdapter(@NonNull FragmentManager fragmentManager, @NonNull Lifecycle lifecycle, Household household, Member member, Visit visit, User user, TrackingSubjectList trackingSubject, List<String> titles) {
         super(fragmentManager, lifecycle);
         this.household = household;
         this.member = member;
+        this.visit = visit;
         this.user = user;
         this.tabTitles.addAll(titles);
 
@@ -47,6 +47,8 @@ public class MemberDetailsFragmentAdapter extends FragmentStateAdapter {
         this.fragDatasets = ExternalDatasetsFragment.newInstance(this.member);
         this.fragCollected = CollectedDataFragment.newInstance(this.member, this.user, trackingSubject);
         this.fragEdit = MemberEditFragment.newInstance(fragmentManager, this.household, this.member, this.user);
+
+        this.fragCollected.setVisit(visit);
     }
 
     @NonNull
@@ -71,12 +73,12 @@ public class MemberDetailsFragmentAdapter extends FragmentStateAdapter {
         this.fragCollected.setCollectedDataFragmentListener(listener);
     }
 
-    public void setAutoHighlightCollectedData(CollectedData autoHighlightCollectedData) {
-        this.fragCollected.setAutoHighlightCollectedData(autoHighlightCollectedData);
+    public void setCollectedDataToEdit(CollectedData collectedData) {
+        this.fragCollected.setExternalCollectedDataToEdit(collectedData);
     }
 
-    public void setAutoClickCollectData(boolean autoClickCollectData) {
-        this.fragCollected.setAutoClickCollectData(autoClickCollectData);
+    public void setCallOnCollectData(boolean callOnCollectData) {
+        this.fragCollected.setExternalCallOnCollectData(callOnCollectData);
     }
 
     public String getTitle(int position) {

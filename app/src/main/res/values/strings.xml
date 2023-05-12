@@ -144,6 +144,7 @@
     <string name="core_entity_changehoh_lbl">Change Head of Household</string>
     <string name="core_entity_member_not_visited_lbl">Member Not Visited Form</string>
     <string name="core_entity_visit_lbl">Visit Registration</string>
+    <string name="core_entity_extra_form_lbl">Other Forms (ODK)</string>
     <string name="core_entity_edit_region_lbl">Edit Region</string>
     <string name="core_entity_edit_household_lbl">Edit Household</string>
     <string name="core_entity_edit_member_lbl">Edit Member</string>
@@ -159,9 +160,11 @@
     <string name="core_form_group_item_extension_collected_lbl">Collected</string>
     <string name="core_form_group_item_extension_not_required_lbl">Not Required</string>
 
+    <string name="form_subject_user_lbl">User</string>
     <string name="form_subject_region_lbl">Region</string>
     <string name="form_subject_household_lbl">Household</string>
     <string name="form_subject_member_lbl">Member</string>
+    <string name="form_subject_visit_lbl">Visit</string>
 
     <string name="form_util_extension_collect_lbl">Form Extension</string>
     <string name="form_util_extension_collect_optional_lbl">Do you want to collect more details about "%1$s" using the Form Extension?</string>
@@ -612,6 +615,7 @@
     <string name="loading_dialog_region_details_lbl">Loading Region Details...</string>
     <string name="loading_dialog_odk_load_lbl">Loading ODK Form...</string>
     <string name="loading_dialog_odk_reload_lbl">Reloading ODK Form...</string>
+    <string name="loading_dialog_extra_forms_load_lbl">Loading Extra Forms List...</string>
     <string name="loading_dialog_filter_name_hint_lbl">Insert Form Name here</string>
 
     <!-- GPS Maps -->

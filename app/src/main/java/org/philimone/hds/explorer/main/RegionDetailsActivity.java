@@ -145,8 +145,10 @@ public class RegionDetailsActivity extends AppCompatActivity {
     }
 
     private void enableButtonsByFormLoaders() {
-        boolean hasForms = this.formDataLoaders.size()>0;
-        this.btRegionDetailsCollectData.setEnabled(hasForms);
+        if (this.fragmentAdapter.getFragmentCollected() != null) {
+            boolean hasForms = this.fragmentAdapter.getFragmentCollected().getFormDataLoaders().size() > 0;
+            this.btRegionDetailsCollectData.setEnabled(hasForms);
+        }
     }
 
     private void setRegionData(){

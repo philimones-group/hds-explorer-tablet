@@ -16,7 +16,7 @@ android {
         applicationId "org.philimone.hds.explorer"
         minSdkVersion 21
         targetSdkVersion 33
-        versionCode 240
+        versionCode 243
         versionName "1.0.1 build ${versionCode}"
         archivesBaseName = "$applicationName-v$versionName"
 

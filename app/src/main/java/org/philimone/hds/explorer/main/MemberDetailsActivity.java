@@ -210,8 +210,10 @@ public class MemberDetailsActivity extends AppCompatActivity {
     }
 
     private void enableButtonsByFormLoaders() {
-        boolean hasForms = this.fragmentAdapter.getFragmentCollected().getFormDataLoaders().size()>0;
-        this.btMemDetailsCollectData.setEnabled(hasForms);
+        if (this.fragmentAdapter.getFragmentCollected() != null) {
+            boolean hasForms = this.fragmentAdapter.getFragmentCollected().getFormDataLoaders().size() > 0;
+            this.btMemDetailsCollectData.setEnabled(hasForms);
+        }
     }
 
     private void initFragments() {

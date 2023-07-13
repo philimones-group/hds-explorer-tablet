@@ -62,6 +62,9 @@ public class Member implements CoreEntity, FormSubject, Serializable {
     public String spouseCode;
     public String spouseName;
 
+    public String education;
+    public String religion;
+
     /**
      * Current HouseHold Status
      */

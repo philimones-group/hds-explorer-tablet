@@ -61,6 +61,7 @@
     <string name="sync_modules_lbl">Modules</string>
     <string name="sync_forms_lbl">Formulaires ODK</string>
     <string name="sync_coreforms_exts_lbl">Extension de Formulaires HDS</string>
+    <string name="sync_coreformsoptions_lbl">Options de formulaires HDS</string>
     <string name="sync_users_lbl">Utilisateurs</string>
     <string name="sync_datasets_lbl">Ensembles de données</string>
     <string name="sync_datasets_csv_lbl">Ensembles de données CSV/ZIP</string>
@@ -278,6 +279,8 @@
     <string name="member_details_member_endtype_lbl">État actuel:</string>
     <string name="member_details_father_lbl">Père:</string>
     <string name="member_details_mother_lbl">Mère:</string>
+    <string name="member_details_education_lbl">Éducation:</string>
+    <string name="member_details_religion_lbl">Religion:</string>
     <string name="member_details_forms_spouse_lbl">Conjoint:</string>
     <string name="member_details_bt_openform_lbl">Recueil des données</string>
     <string name="member_details_bt_back_lbl">Retourner</string>

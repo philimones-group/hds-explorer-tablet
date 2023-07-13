@@ -14,6 +14,7 @@ import org.philimone.hds.explorer.model.ApplicationParam;
 import org.philimone.hds.explorer.model.ApplicationParam_;
 import org.philimone.hds.explorer.model.CollectedData;
 import org.philimone.hds.explorer.model.CoreCollectedData;
+import org.philimone.hds.explorer.model.CoreFormColumnOptions;
 import org.philimone.hds.explorer.model.CoreFormExtension;
 import org.philimone.hds.explorer.model.Dataset;
 import org.philimone.hds.explorer.model.Death;
@@ -128,6 +129,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 	private Box<Form> boxForms;
 	private Box<FormGroupMapping> boxFormGroupMappings;
 	private Box<CoreFormExtension> boxCoreFormsExts;
+	private Box<CoreFormColumnOptions> boxCoreFormsOpts;
 	private Box<FormGroupInstance> boxFormGroupInstances;
 	private Box<User> boxUsers;
 	private Box<Round> boxRounds;
@@ -176,6 +178,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 		this.boxForms = ObjectBoxDatabase.get().boxFor(Form.class);
 		this.boxFormGroupMappings = ObjectBoxDatabase.get().boxFor(FormGroupMapping.class);
 		this.boxCoreFormsExts = ObjectBoxDatabase.get().boxFor(CoreFormExtension.class);
+		this.boxCoreFormsOpts = ObjectBoxDatabase.get().boxFor(CoreFormColumnOptions.class);
 		this.boxFormGroupInstances = ObjectBoxDatabase.get().boxFor(FormGroupInstance.class);
 		this.boxUsers = ObjectBoxDatabase.get().boxFor(User.class);
 		this.boxDatasets = ObjectBoxDatabase.get().boxFor(Dataset.class);
@@ -248,6 +251,9 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 				break;
 			case CORE_FORMS_EXT:
 				builder.append(" " + mContext.getString(R.string.sync_coreforms_exts_lbl));
+				break;
+			case CORE_FORMS_OPTIONS:
+				builder.append(" " + mContext.getString(R.string.sync_coreformsoptions_lbl));
 				break;
 			case DATASETS:
 				builder.append(" " + mContext.getString(R.string.sync_datasets_lbl));
@@ -340,6 +346,10 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 					case CORE_FORMS_EXT:
 						boxCoreFormsExts.removeAll();
 						processUrl(baseurl + API_PATH + "/coreforms/zip", "coreforms.zip");
+						break;
+					case CORE_FORMS_OPTIONS:
+						boxCoreFormsOpts.removeAll();
+						processUrl(baseurl + API_PATH + "/coreformsoptions/zip", "coreformsoptions.zip");
 						break;
 					case DATASETS:
 						deleteExternalDatasetFiles();
@@ -674,6 +684,8 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 					processFormsParams(parser);
 				} else if (name.equalsIgnoreCase("coreformexts")) {
 					processCoreFormsExtParams(parser);
+				} else if (name.equalsIgnoreCase("coreformsoptions")) {
+					processCoreFormsOptionsParams(parser);
 				} else if (name.equalsIgnoreCase("datasets")) {
 					processDatasetsParams(parser);
 				} else if (name.equalsIgnoreCase("trackinglists")) {
@@ -1191,6 +1203,94 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 		entity = SyncEntity.FORMS;
 
 		updateSyncReport(SyncEntity.FORMS, new Date(), SyncStatus.STATUS_SYNCED);
+	}
+
+	private void processCoreFormsOptionsParams(XmlPullParser parser) throws Exception {
+
+		//clear sync_report
+		updateSyncReport(SyncEntity.CORE_FORMS_OPTIONS, null, SyncStatus.STATUS_NOT_SYNCED);
+
+		List<CoreFormColumnOptions> values = new ArrayList<>();
+		int count = 0;
+		values.clear();
+
+		parser.nextTag(); //<coreformoption>
+		while (notEndOfTag("coreformsoptions", parser)) {
+			count++;
+
+			CoreFormColumnOptions table = new CoreFormColumnOptions();
+
+			parser.nextTag(); //process formName
+			if (!isEmptyTag("formName", parser)) {
+				parser.next();
+				table.formName = parser.getText();
+				parser.nextTag(); //process </formName>
+				//Log.d(count+"-formName", "value="+ table.formName);
+			}else{
+				table.formName = "";
+				parser.nextTag();
+			}
+
+			parser.nextTag(); //process columnName
+			if (!isEmptyTag("columnName", parser)) {
+				parser.next();
+				table.columnName = parser.getText();
+				parser.nextTag(); //process </columnName>
+				//Log.d(count+"-columnName", "value="+ parser.getText());
+			}else{
+				table.columnName = "";
+				parser.nextTag();
+			}
+
+			parser.nextTag(); //process optionValue
+			if (!isEmptyTag("optionValue", parser)) {
+				parser.next();
+				table.optionValue = parser.getText();
+				parser.nextTag(); //process </optionValue>
+				//Log.d(count+"-optionValue", "value="+ parser.getText());
+			}else{
+				table.optionValue = "";
+				parser.nextTag();
+			}
+
+			parser.nextTag(); //process optionLabel
+			if (!isEmptyTag("optionLabel", parser)) {
+				parser.next();
+				table.optionLabel = parser.getText();
+				parser.nextTag(); //process </optionLabel>
+				//Log.d(count+"-optionLabel", "value="+ parser.getText());
+			}else{
+				table.optionLabel = "";
+				parser.nextTag();
+			}
+
+			parser.nextTag(); //process optionLabelCode
+			if (!isEmptyTag("optionLabelCode", parser)) {
+				parser.next();
+				table.optionLabelCode = parser.getText();
+				parser.nextTag(); //process </optionLabelCode>
+				//Log.d(count+"-optionLabelCode", "value="+ parser.getText());
+			}else{
+				table.optionLabelCode = "";
+				parser.nextTag();
+			}
+
+			parser.nextTag();
+			parser.next();
+
+			//Log.d("form ", ""+table.formName);
+
+			values.add(table);
+		}
+
+		boxCoreFormsOpts.put(values);
+		savedValues.put(entity, count); //publish progress is a bit slow - its not reporting well the numbers
+		publishProgress(count);
+
+		state = SyncState.SAVING;
+		entity = SyncEntity.CORE_FORMS_OPTIONS;
+
+		updateSyncReport(SyncEntity.CORE_FORMS_OPTIONS, new Date(), SyncStatus.STATUS_SYNCED);
 	}
 
 	private void processCoreFormsExtParams(XmlPullParser parser) throws Exception {
@@ -2226,6 +2326,26 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
                 parser.nextTag();
             }
 
+			parser.nextTag(); //process <education>
+			if (!isEmptyTag("education", parser)) {
+				parser.next();
+				table.education = parser.getText();
+				parser.nextTag(); //process </education>
+			}else{
+				table.education = "";
+				parser.nextTag();
+			}
+
+			parser.nextTag(); //process <religion>
+			if (!isEmptyTag("religion", parser)) {
+				parser.next();
+				table.religion = parser.getText();
+				parser.nextTag(); //process </religion>
+			}else{
+				table.religion = "";
+				parser.nextTag();
+			}
+			
             parser.nextTag(); //process <householdCode>
             if (!isEmptyTag("householdCode", parser)) {
                 parser.next();
@@ -3465,6 +3585,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 				case MODULES: 		 downloadedEntity = mContext.getString(R.string.sync_modules_lbl);   break;
 				case FORMS: 		 downloadedEntity = mContext.getString(R.string.sync_forms_lbl);     break;
 				case CORE_FORMS_EXT: downloadedEntity = mContext.getString(R.string.sync_coreforms_exts_lbl);     break;
+				case CORE_FORMS_OPTIONS: downloadedEntity = mContext.getString(R.string.sync_coreformsoptions_lbl);     break;
 				case DATASETS: 		 downloadedEntity = mContext.getString(R.string.sync_datasets_lbl); 	break;
 				case DATASETS_CSV_FILES: downloadedEntity = mContext.getString(R.string.sync_datasets_csv_lbl); 	break;
 				case TRACKING_LISTS: downloadedEntity = mContext.getString(R.string.sync_tracking_lists_lbl);	break;
@@ -3509,6 +3630,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 				case MODULES: 		 downloadedEntity = mContext.getString(R.string.sync_modules_lbl);   break;
 				case FORMS: 		 downloadedEntity = mContext.getString(R.string.sync_forms_lbl);     break;
 				case CORE_FORMS_EXT: downloadedEntity = mContext.getString(R.string.sync_coreforms_exts_lbl);     break;
+				case CORE_FORMS_OPTIONS: downloadedEntity = mContext.getString(R.string.sync_coreformsoptions_lbl);     break;
 				case DATASETS: 		 downloadedEntity = mContext.getString(R.string.sync_datasets_lbl); 	break;
 				case TRACKING_LISTS: downloadedEntity = mContext.getString(R.string.sync_tracking_lists_lbl);	break;
 				case USERS: 		 downloadedEntity = mContext.getString(R.string.sync_users_lbl); 	break;

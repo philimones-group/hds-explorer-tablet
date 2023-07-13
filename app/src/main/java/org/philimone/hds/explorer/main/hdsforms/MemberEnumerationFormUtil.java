@@ -343,6 +343,8 @@ public class MemberEnumerationFormUtil extends FormUtil<Member> {
         ColumnValue colName = collectedValues.get("name"); //not blank
         ColumnValue colGender = collectedValues.get("gender"); //not blank
         ColumnValue colDob = collectedValues.get("dob"); //date cannot be in future + head min age
+        ColumnValue colEducation = collectedValues.get("education");
+        ColumnValue colReligion = collectedValues.get("religion");
         ColumnValue colHeadRelationshipType = collectedValues.get("headRelationshipType"); //not blank
         ColumnValue colResidencyStartDate = collectedValues.get("residencyStartDate"); //not null cannot be in the future nor before dob
         ColumnValue colCollectedBy = collectedValues.get("collectedBy");
@@ -360,6 +362,8 @@ public class MemberEnumerationFormUtil extends FormUtil<Member> {
         String name = colName.getValue();
         Gender gender = Gender.getFrom(colGender.getValue());
         Date dob = colDob.getDateValue();
+        String education = colEducation.getValue();
+        String religion = colReligion.getValue();
         HeadRelationshipType headRelationshipType = HeadRelationshipType.getFrom(colHeadRelationshipType.getValue());
         Date residencyStartDate = colResidencyStartDate.getDateValue();
 
@@ -377,6 +381,8 @@ public class MemberEnumerationFormUtil extends FormUtil<Member> {
         member.maritalStatus = MaritalStatus.SINGLE; //always single
         //member.spouseCode = null;
         //member.spouseName = null;
+        member.education = education;
+        member.religion = religion;
         member.householdCode = householdCode;
         member.householdName = householdName;
         member.startType = ResidencyStartType.ENUMERATION;
@@ -470,6 +476,8 @@ public class MemberEnumerationFormUtil extends FormUtil<Member> {
         ColumnValue colName = collectedValues.get("name"); //not blank
         ColumnValue colGender = collectedValues.get("gender"); //not blank
         ColumnValue colDob = collectedValues.get("dob"); //date cannot be in future + head min age
+        ColumnValue colEducation = collectedValues.get("education");
+        ColumnValue colReligion = collectedValues.get("religion");
         ColumnValue colHeadRelationshipType = collectedValues.get("headRelationshipType"); //not blank
         ColumnValue colResidencyStartDate = collectedValues.get("residencyStartDate"); //not null cannot be in the future nor before dob
         ColumnValue colCollectedBy = collectedValues.get("collectedBy");
@@ -487,6 +495,8 @@ public class MemberEnumerationFormUtil extends FormUtil<Member> {
         String name = colName.getValue();
         Gender gender = Gender.getFrom(colGender.getValue());
         Date dob = colDob.getDateValue();
+        String education = colEducation.getValue();
+        String religion = colReligion.getValue();
         HeadRelationshipType headRelationshipType = HeadRelationshipType.getFrom(colHeadRelationshipType.getValue());
         Date residencyStartDate = colResidencyStartDate.getDateValue();
 
@@ -504,6 +514,9 @@ public class MemberEnumerationFormUtil extends FormUtil<Member> {
         member.maritalStatus = MaritalStatus.SINGLE; //always single
         //member.spouseCode = null;
         //member.spouseName = null;
+        member.education = education;
+        member.religion = religion;
+        member.education =
         member.householdCode = householdCode;
         member.householdName = householdName;
         member.startType = ResidencyStartType.ENUMERATION;
@@ -577,7 +590,7 @@ public class MemberEnumerationFormUtil extends FormUtil<Member> {
 
     @Override
     public String onFormCallMethod(String methodExpression, String[] args) {
-        return null;
+        return handleMethodExecution(methodExpression, args);
     }
 
     @Override
@@ -756,4 +769,23 @@ public class MemberEnumerationFormUtil extends FormUtil<Member> {
         dialog.show();
     }
 
+    String handleMethodExecution(String methodExpression, String[] args) {
+        Log.d("methodcall", ""+methodExpression);
+
+        if (methodExpression.startsWith("calculateAge")){
+
+            Date dobDate = StringUtil.toDateYMD(args[0]);
+            int age = -1;
+
+            if (dobDate != null) {
+                age = GeneralUtil.getAge(dobDate);
+            }
+            Log.d("args", args[0]+", age="+age);
+
+            return "'"+age+"'";
+
+        }
+
+        return "'CALC ERROR!!!'";
+    }
 }

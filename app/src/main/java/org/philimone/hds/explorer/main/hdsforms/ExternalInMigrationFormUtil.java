@@ -186,6 +186,8 @@ public class ExternalInMigrationFormUtil extends FormUtil<Inmigration> {
             preloadedMap.put("memberGender", returningMember.gender.code);
             preloadedMap.put("memberDob", StringUtil.formatYMD(returningMember.dob));
             preloadedMap.put("originCode", returningMember.householdCode); //but I dont think we need this since the member is coming from outside the dss
+            preloadedMap.put("education", returningMember.education);
+            preloadedMap.put("religion", returningMember.religion);
         }
 
         preloadedMap.put("destinationCode", household.code);
@@ -399,6 +401,8 @@ public class ExternalInMigrationFormUtil extends FormUtil<Inmigration> {
         ColumnValue colMemberName = collectedValues.get("memberName"); //not blank
         ColumnValue colMemberGender = collectedValues.get("memberGender"); //not blank
         ColumnValue colMemberDob = collectedValues.get("memberDob"); //date cannot be in future + head min age
+        ColumnValue colEducation = collectedValues.get("education");
+        ColumnValue colReligion = collectedValues.get("religion");
         ColumnValue colHeadRelationshipType = collectedValues.get("headRelationshipType"); //not blank
         ColumnValue colMigrationType = collectedValues.get("migrationType");
         ColumnValue colExtMigrationType = collectedValues.get("extMigrationType");
@@ -422,6 +426,8 @@ public class ExternalInMigrationFormUtil extends FormUtil<Inmigration> {
         String memberName = colMemberName.getValue();
         Gender memberGender = Gender.getFrom(colMemberGender.getValue());
         Date memberDob = colMemberDob.getDateValue();
+        String education = colEducation.getValue();
+        String religion = colReligion.getValue();
         HeadRelationshipType headRelationshipType = HeadRelationshipType.getFrom(colHeadRelationshipType.getValue());
         InMigrationType migrationType = InMigrationType.getFrom(colMigrationType.getValue());
         ExternalInMigrationType extMigrationType = ExternalInMigrationType.getFrom(colExtMigrationType.getValue());
@@ -469,6 +475,9 @@ public class ExternalInMigrationFormUtil extends FormUtil<Inmigration> {
         member.endType = ResidencyEndType.NOT_APPLICABLE;
         member.endDate = null;
 
+        member.education = education;
+        member.religion = religion;
+
         member.headRelationshipType = headRelationshipType;
         member.gpsNull = household.gpsNull;
         member.gpsAccuracy = household.gpsAccuracy;
@@ -514,7 +523,6 @@ public class ExternalInMigrationFormUtil extends FormUtil<Inmigration> {
         inmigration.collectedId = collectedValues.get(HForm.COLUMN_ID).getValue();
         inmigration.recentlyCreated = true;
         inmigration.recentlyCreatedUri = result.getFilename();
-
 
         //save data
         boxMembers.put(member);
@@ -565,6 +573,8 @@ public class ExternalInMigrationFormUtil extends FormUtil<Inmigration> {
         ColumnValue colMemberGender = collectedValues.get("memberGender"); //not blank
         ColumnValue colMemberDob = collectedValues.get("memberDob"); //date cannot be in future + head min age
         ColumnValue colHeadRelationshipType = collectedValues.get("headRelationshipType"); //not blank
+        ColumnValue colEducation = collectedValues.get("education");
+        ColumnValue colReligion = collectedValues.get("religion");
         ColumnValue colMigrationType = collectedValues.get("migrationType");
         ColumnValue colExtMigrationType = collectedValues.get("extMigrationType");
         ColumnValue colOriginCode = collectedValues.get("originCode");
@@ -587,6 +597,8 @@ public class ExternalInMigrationFormUtil extends FormUtil<Inmigration> {
         String memberName = colMemberName.getValue();
         Gender memberGender = Gender.getFrom(colMemberGender.getValue());
         Date memberDob = colMemberDob.getDateValue();
+        String education = colEducation.getValue();
+        String religion = colReligion.getValue();
         HeadRelationshipType headRelationshipType = HeadRelationshipType.getFrom(colHeadRelationshipType.getValue());
         InMigrationType migrationType = InMigrationType.getFrom(colMigrationType.getValue());
         ExternalInMigrationType extMigrationType = ExternalInMigrationType.getFrom(colExtMigrationType.getValue());
@@ -627,6 +639,9 @@ public class ExternalInMigrationFormUtil extends FormUtil<Inmigration> {
         member.endDate = null;
         member.headRelationshipType = headRelationshipType;
         member.modules.addAll(StringCollectionConverter.getCollectionFrom(colModules.getValue()));
+
+        member.education = education;
+        member.religion = religion;
 
         //Residency - read last created residency
         Residency residency = savedResidency;
@@ -695,7 +710,7 @@ public class ExternalInMigrationFormUtil extends FormUtil<Inmigration> {
 
     @Override
     public String onFormCallMethod(String methodExpression, String[] args) {
-        return null;
+        return handleMethodExecution(methodExpression, args);
     }
 
     @Override
@@ -923,4 +938,23 @@ public class ExternalInMigrationFormUtil extends FormUtil<Inmigration> {
         dialog.show();
     }
 
+    String handleMethodExecution(String methodExpression, String[] args) {
+        Log.d("methodcall", ""+methodExpression);
+
+        if (methodExpression.startsWith("calculateAge")){
+
+            Date dobDate = StringUtil.toDateYMD(args[0]);
+            int age = -1;
+
+            if (dobDate != null) {
+                age = GeneralUtil.getAge(dobDate);
+            }
+            Log.d("args", args[0]+", age="+age);
+
+            return "'"+age+"'";
+
+        }
+
+        return "'CALC ERROR!!!'";
+    }
 }

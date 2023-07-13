@@ -170,6 +170,8 @@ public class InternalInMigrationFormUtil extends FormUtil<Inmigration> {
             preloadedMap.put("memberCode", this.selectedMember.code);
             preloadedMap.put("memberName", this.selectedMember.name);
             //preloadedMap.put("headRelationshipType", "");
+            preloadedMap.put("education", this.selectedMember.education);
+            preloadedMap.put("religion", this.selectedMember.religion);
             preloadedMap.put("migrationType", InMigrationType.INTERNAL.code);
             preloadedMap.put("originCode", this.selectedMemberResidency.householdCode);
             preloadedMap.put("destinationCode", household.code);
@@ -324,7 +326,8 @@ public class InternalInMigrationFormUtil extends FormUtil<Inmigration> {
         ColumnValue colMigrationDate = collectedValues.get("migrationDate"); //not null cannot be in the future nor before dob
         ColumnValue colMigrationReason = collectedValues.get("migrationReason");
         ColumnValue colMigrationReasonOther = collectedValues.get("migrationReasonOther");
-
+        ColumnValue colEducation = collectedValues.get("education");
+        ColumnValue colReligion = collectedValues.get("religion");
         ColumnValue colCollectedBy = collectedValues.get("collectedBy");
         ColumnValue colCollectedDate = collectedValues.get("collectedDate");
         ColumnValue colModules = collectedValues.get("modules");
@@ -339,6 +342,8 @@ public class InternalInMigrationFormUtil extends FormUtil<Inmigration> {
         Date migrationDate = colMigrationDate.getDateValue();
         String migrationReason = colMigrationReason.getValue();
         String migrationReasonOther = colMigrationReasonOther.getValue();
+        String education = colEducation.getValue();
+        String religion = colReligion.getValue();
 
         //update member, create/update residency, headrelationship, create inmigration
 
@@ -405,6 +410,8 @@ public class InternalInMigrationFormUtil extends FormUtil<Inmigration> {
         selectedMember.startDate = migrationDate;
         selectedMember.endType = ResidencyEndType.NOT_APPLICABLE;
         selectedMember.endDate = null;
+        selectedMember.education = education;
+        selectedMember.religion = religion;
         selectedMember.headRelationshipType = headRelationshipType;
         selectedMember.gpsNull = household.gpsNull;
         selectedMember.gpsAccuracy = household.gpsAccuracy;
@@ -462,7 +469,8 @@ public class InternalInMigrationFormUtil extends FormUtil<Inmigration> {
         ColumnValue colMigrationDate = collectedValues.get("migrationDate"); //not null cannot be in the future nor before dob
         ColumnValue colMigrationReason = collectedValues.get("migrationReason");
         ColumnValue colMigrationReasonOther = collectedValues.get("migrationReasonOther");
-
+        ColumnValue colEducation = collectedValues.get("education");
+        ColumnValue colReligion = collectedValues.get("religion");
         ColumnValue colCollectedBy = collectedValues.get("collectedBy");
         ColumnValue colCollectedDate = collectedValues.get("collectedDate");
         ColumnValue colModules = collectedValues.get("modules");
@@ -477,6 +485,8 @@ public class InternalInMigrationFormUtil extends FormUtil<Inmigration> {
         Date migrationDate = colMigrationDate.getDateValue();
         String migrationReason = colMigrationReason.getValue();
         String migrationReasonOther = colMigrationReasonOther.getValue();
+        String education = colEducation.getValue();
+        String religion = colReligion.getValue();
 
         //update member, create/update residency, headrelationship, create inmigration
 
@@ -535,6 +545,8 @@ public class InternalInMigrationFormUtil extends FormUtil<Inmigration> {
         selectedMember.endType = ResidencyEndType.NOT_APPLICABLE;
         selectedMember.endDate = null;
         selectedMember.headRelationshipType = headRelationshipType;
+        selectedMember.education = education;
+        selectedMember.religion = religion;
         this.boxMembers.put(selectedMember);
 
         //save core collected data
@@ -572,7 +584,7 @@ public class InternalInMigrationFormUtil extends FormUtil<Inmigration> {
 
     @Override
     public String onFormCallMethod(String methodExpression, String[] args) {
-        return null;
+        return handleMethodExecution(methodExpression, args);
     }
 
     @Override
@@ -641,6 +653,24 @@ public class InternalInMigrationFormUtil extends FormUtil<Inmigration> {
         }
 
         executeCollectForm();
+    }
+
+    String handleMethodExecution(String methodExpression, String[] args) {
+        Log.d("methodcall", ""+methodExpression);
+
+        if (methodExpression.startsWith("getMemberAge")){
+            //get current member age
+            int age = -1;
+            if (this.selectedMember != null) {
+                age = GeneralUtil.getAge(this.selectedMember.dob);
+            }
+            Log.d("noargs", "age="+age);
+
+            return "'"+age+"'";
+
+        }
+
+        return "'CALC ERROR!!!'";
     }
 
 }

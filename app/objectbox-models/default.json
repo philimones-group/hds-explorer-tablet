@@ -862,7 +862,7 @@
     },
     {
       "id": "12:5667991198190393360",
-      "lastPropertyId": "37:1060339163764572441",
+      "lastPropertyId": "39:5518022156419366831",
       "name": "Member",
       "properties": [
         {
@@ -1076,6 +1076,16 @@
           "indexId": "89:5863625788014765223",
           "type": 9,
           "flags": 2080
+        },
+        {
+          "id": "38:1705648487545366043",
+          "name": "education",
+          "type": 9
+        },
+        {
+          "id": "39:5518022156419366831",
+          "name": "religion",
+          "type": 9
         }
       ],
       "relations": []
@@ -2365,9 +2375,48 @@
         }
       ],
       "relations": []
+    },
+    {
+      "id": "31:8066769467112968593",
+      "lastPropertyId": "6:5977451817658166873",
+      "name": "CoreFormColumnOptions",
+      "properties": [
+        {
+          "id": "1:9116225534681746213",
+          "name": "id",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:3328035240972851471",
+          "name": "formName",
+          "type": 9
+        },
+        {
+          "id": "3:7406510797295545970",
+          "name": "columnName",
+          "type": 9
+        },
+        {
+          "id": "4:187507946130009207",
+          "name": "optionValue",
+          "type": 9
+        },
+        {
+          "id": "5:2559536422477563254",
+          "name": "optionLabel",
+          "type": 9
+        },
+        {
+          "id": "6:5977451817658166873",
+          "name": "optionLabelCode",
+          "type": 9
+        }
+      ],
+      "relations": []
     }
   ],
-  "lastEntityId": "30:705738454573743021",
+  "lastEntityId": "31:8066769467112968593",
   "lastIndexId": "112:8524751376140357902",
   "lastRelationId": "0:0",
   "lastSequenceId": "0:0",

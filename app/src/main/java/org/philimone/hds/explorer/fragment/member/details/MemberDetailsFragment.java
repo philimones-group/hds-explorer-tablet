@@ -12,6 +12,8 @@ import androidx.fragment.app.Fragment;
 
 import org.philimone.hds.explorer.R;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
+import org.philimone.hds.explorer.model.CoreFormColumnOptions;
+import org.philimone.hds.explorer.model.CoreFormColumnOptions_;
 import org.philimone.hds.explorer.model.Dataset;
 import org.philimone.hds.explorer.model.Form;
 import org.philimone.hds.explorer.model.Member;
@@ -39,6 +41,9 @@ public class MemberDetailsFragment extends Fragment {
     private TextView mbDetailsEndDate;
     private TextView mbDetailsFather;
     private TextView mbDetailsMother;
+    private TextView mbDetailsEducation;
+    private TextView mbDetailsReligion;
+
     private TextView mbDetailsSpouse;
 
     private Member member;
@@ -48,6 +53,7 @@ public class MemberDetailsFragment extends Fragment {
     private Box<Member> boxMembers;
     private Box<Form> boxForms;
     private Box<Dataset> boxDatasets;
+    private Box<CoreFormColumnOptions> boxCoreFormColumnOptions;
 
     public MemberDetailsFragment() {
         // Required empty public constructor
@@ -95,6 +101,8 @@ public class MemberDetailsFragment extends Fragment {
         mbDetailsEndDate = (TextView) view.findViewById(R.id.mbDetailsEndDate);
         mbDetailsFather = (TextView) view.findViewById(R.id.mbDetailsFather);
         mbDetailsMother = (TextView) view.findViewById(R.id.mbDetailsMother);
+        mbDetailsEducation = (TextView) view.findViewById(R.id.mbDetailsEducation);
+        mbDetailsReligion = (TextView) view.findViewById(R.id.mbDetailsReligion);
         mbDetailsSpouse = (TextView) view.findViewById(R.id.mbDetailsSpouse);
 
         this.loadingDialog = new LoadingDialog(this.getContext());
@@ -109,6 +117,7 @@ public class MemberDetailsFragment extends Fragment {
         this.boxForms = ObjectBoxDatabase.get().boxFor(Form.class);
         this.boxDatasets = ObjectBoxDatabase.get().boxFor(Dataset.class);
         this.boxRegions = ObjectBoxDatabase.get().boxFor(Region.class);
+        this.boxCoreFormColumnOptions = ObjectBoxDatabase.get().boxFor(CoreFormColumnOptions.class);
 //        this.boxHouseholds = ObjectBoxDatabase.get().boxFor(Household.class);
         this.boxMembers = ObjectBoxDatabase.get().boxFor(Member.class);
     }
@@ -124,6 +133,8 @@ public class MemberDetailsFragment extends Fragment {
         mbDetailsEndDate.setText("");
         mbDetailsFather.setText("");
         mbDetailsMother.setText("");
+        mbDetailsEducation.setText("");
+        mbDetailsReligion.setText("");
         mbDetailsSpouse.setText("");
     }
 
@@ -133,6 +144,8 @@ public class MemberDetailsFragment extends Fragment {
         mbDetailsEndDate.setText(getEndDateMsg(member));
         mbDetailsFather.setText(getParentName(member.getFatherName()));
         mbDetailsMother.setText(getParentName(member.getMotherName()));
+        mbDetailsEducation.setText(getEducationLabel(member.education));
+        mbDetailsReligion.setText(getReligionLabel(member.religion));
         mbDetailsSpouse.setText(getSpouseName(member.getSpouseName()));
     }
 
@@ -180,4 +193,19 @@ public class MemberDetailsFragment extends Fragment {
         }
     }
 
+    private String getEducationLabel(String code) {
+        CoreFormColumnOptions option = boxCoreFormColumnOptions.query(CoreFormColumnOptions_.columnName.equal("education").and(CoreFormColumnOptions_.optionValue.equal(code))).build().findFirst();
+        if (option != null) {
+            return option.optionLabel;
+        }
+        return "";
+    }
+
+    private String getReligionLabel(String code) {
+        CoreFormColumnOptions option = boxCoreFormColumnOptions.query(CoreFormColumnOptions_.columnName.equal("religion").and(CoreFormColumnOptions_.optionValue.equal(code))).build().findFirst();
+        if (option != null) {
+            return option.optionLabel;
+        }
+        return "";
+    }
 }

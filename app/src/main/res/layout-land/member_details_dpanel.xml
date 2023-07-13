@@ -156,7 +156,7 @@
                     android:layout_height="wrap_content"
                     android:textSize="@dimen/member_details_info_gender_layout_txtsize"
                     android:textColor="@color/nui_color_text_darkgray"
-                    android:text="@string/member_details_mother_lbl"/>
+                    android:text="@string/member_details_education_lbl"/>
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -164,8 +164,32 @@
                     android:textSize="@dimen/member_details_info_gender_layout_txtsize"
                     android:textColor="@color/nui_color_text_darkgray"
                     android:textStyle="bold"
-                    android:text="Desconhecida"
+                    android:text="Primary School"
                     android:id="@+id/mbDetailsMother" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:layout_marginLeft="@dimen/member_filter_xdata_margin_left"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="@dimen/member_details_txtview_width"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/member_details_info_gender_layout_txtsize"
+                    android:textColor="@color/nui_color_text_darkgray"
+                    android:text="@string/member_details_religion_lbl"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/member_details_info_gender_layout_txtsize"
+                    android:textColor="@color/nui_color_text_darkgray"
+                    android:textStyle="bold"
+                    android:text="Christian"
+                    android:id="@+id/mbDetailsReligion" />
             </LinearLayout>
 
         </LinearLayout>

@@ -14,6 +14,8 @@ import org.philimone.hds.explorer.model.CollectedData_;
 import org.philimone.hds.explorer.model.CoreCollectedData;
 import org.philimone.hds.explorer.model.CoreCollectedData_;
 import org.philimone.hds.explorer.model.CoreEntity;
+import org.philimone.hds.explorer.model.CoreFormColumnOptions;
+import org.philimone.hds.explorer.model.CoreFormColumnOptions_;
 import org.philimone.hds.explorer.model.CoreFormExtension;
 import org.philimone.hds.explorer.model.CoreFormExtension_;
 import org.philimone.hds.explorer.model.Household;
@@ -27,11 +29,13 @@ import org.philimone.hds.explorer.widget.DialogFactory;
 import org.philimone.hds.forms.listeners.FormCollectionListener;
 import org.philimone.hds.forms.main.FormFragment;
 import org.philimone.hds.forms.model.CollectedDataMap;
+import org.philimone.hds.forms.model.Column;
 import org.philimone.hds.forms.model.ColumnValue;
 import org.philimone.hds.forms.model.HForm;
 import org.philimone.hds.forms.model.PreloadMap;
 import org.philimone.hds.forms.model.RepeatColumnValue;
 import org.philimone.hds.forms.parsers.ExcelFormParser;
+import org.philimone.hds.forms.parsers.form.model.FormOptions;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -45,6 +49,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import io.objectbox.Box;
+import io.objectbox.BoxStore;
 import io.objectbox.query.QueryBuilder;
 import mz.betainteractive.odk.FormUtilities;
 import mz.betainteractive.odk.listener.OdkFormResultListener;
@@ -176,6 +181,11 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
     private void readCollectedDataForEdit() {
         this.collectedData = this.boxCoreCollectedData.query(CoreCollectedData_.formEntityId.equal(this.entity.getId()).and(CoreCollectedData_.collectedId.equal(this.entity.getCollectedId()))).build().findFirst();
         Log.d("found-collected", ""+this.collectedData);
+
+        if (this.collectedData.uploaded && !collectedData.uploadedWithError) {
+            //make the form readonly
+            this.form.setReadonly(true);
+        }
     }
 
     protected void initBoxes(){
@@ -606,86 +616,112 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
     /* statics */
     protected static HForm getVisitForm(Context context) {
         InputStream inputStream = context.getResources().openRawResource(R.raw.visit_form);
-        HForm form = new ExcelFormParser(inputStream).getForm();
+        HForm form = retrieveForm(inputStream);
         return form;
     }
 
     protected static HForm getMemberEnuForm(Context context) {
         InputStream inputStream = context.getResources().openRawResource(R.raw.member_enu_form);
-        HForm form = new ExcelFormParser(inputStream).getForm();
+        HForm form = retrieveForm(inputStream);
         return form;
     }
 
     protected static HForm getRegionForm(Context context) {
         InputStream inputStream = context.getResources().openRawResource(R.raw.region_form);
-        HForm form = new ExcelFormParser(inputStream).getForm();
+        HForm form = retrieveForm(inputStream);
         return form;
     }
 
     protected static HForm getHouseholdForm(Context context) {
         InputStream inputStream = context.getResources().openRawResource(R.raw.household_form);
-        HForm form = new ExcelFormParser(inputStream).getForm();
+        HForm form = retrieveForm(inputStream);
         return form;
     }
 
     protected static HForm getPreHouseholdForm(Context context) {
         InputStream inputStream = context.getResources().openRawResource(R.raw.pre_registration_household_form);
-        HForm form = new ExcelFormParser(inputStream).getForm();
+        HForm form = retrieveForm(inputStream);
         return form;
     }
 
     protected static HForm getMaritalRelationshipForm(Context context) {
         InputStream inputStream = context.getResources().openRawResource(R.raw.marital_relationship_form);
-        HForm form = new ExcelFormParser(inputStream).getForm();
+        HForm form = retrieveForm(inputStream);
         return form;
     }
 
     protected static HForm getExternalInMigrationForm(Context context) {
         InputStream inputStream = context.getResources().openRawResource(R.raw.ext_inmigration_form);
-        HForm form = new ExcelFormParser(inputStream).getForm();
+        HForm form = retrieveForm(inputStream);
         return form;
     }
 
     protected static HForm getInMigrationForm(Context context) {
         InputStream inputStream = context.getResources().openRawResource(R.raw.inmigration_form);
-        HForm form = new ExcelFormParser(inputStream).getForm();
+        HForm form = retrieveForm(inputStream);
         return form;
     }
 
     protected static HForm getOutmigrationForm(Context context) {
         InputStream inputStream = context.getResources().openRawResource(R.raw.outmigration_form);
-        HForm form = new ExcelFormParser(inputStream).getForm();
+        HForm form = retrieveForm(inputStream);
         return form;
     }
 
     protected static HForm getPregnancyRegistrationForm(Context context) {
         InputStream inputStream = context.getResources().openRawResource(R.raw.pregnancy_registration_form);
-        HForm form = new ExcelFormParser(inputStream).getForm();
+        HForm form = retrieveForm(inputStream);
         return form;
     }
 
     protected static HForm getPregnancyOutcomeForm(Context context) {
         InputStream inputStream = context.getResources().openRawResource(R.raw.pregnancy_outcome_form);
-        HForm form = new ExcelFormParser(inputStream).getForm();
+        HForm form = retrieveForm(inputStream);
         return form;
     }
 
     protected static HForm getDeathForm(Context context) {
         InputStream inputStream = context.getResources().openRawResource(R.raw.death_form);
-        HForm form = new ExcelFormParser(inputStream).getForm();
+        HForm form = retrieveForm(inputStream);
         return form;
     }
 
     protected static HForm getChangeHeadForm(Context context) {
         InputStream inputStream = context.getResources().openRawResource(R.raw.change_head_form);
-        HForm form = new ExcelFormParser(inputStream).getForm();
+        HForm form = retrieveForm(inputStream);
         return form;
     }
 
     protected static HForm getIncompleteVisitForm(Context context) {
         InputStream inputStream = context.getResources().openRawResource(R.raw.incomplete_form);
-        HForm form = new ExcelFormParser(inputStream).getForm();
+        HForm form = retrieveForm(inputStream);
         return form;
+    }
+
+    protected static HForm retrieveForm(InputStream inputStream) {
+        HForm form = new ExcelFormParser(inputStream).getForm();
+
+        importOptions(form);
+
+        return form;
+    }
+
+    private static void importOptions(HForm form) {
+        Box<CoreFormColumnOptions> boxCoreFormOptions = ObjectBoxDatabase.get().boxFor(CoreFormColumnOptions.class);
+        boolean formHasCustomOptions = boxCoreFormOptions.query(CoreFormColumnOptions_.formName.equal(form.getFormId())).build().count() > 0;
+
+        if (formHasCustomOptions) {
+            //map options <column, option, label, labelcode>
+            List<CoreFormColumnOptions> list = boxCoreFormOptions.query(CoreFormColumnOptions_.formName.equal(form.getFormId())).order(CoreFormColumnOptions_.id).build().find();
+
+            for (CoreFormColumnOptions opt : list) {
+                Column column = form.getColumn(opt.columnName);
+                if (column != null) {
+                    //column.getTypeOptions().put(opt.optionValue, new FormOptions.OptionValue(opt.optionLabel, false, ""));
+                    column.addTypeOptions(opt.optionValue, opt.optionLabel, false, "");
+                }
+            }
+        }
     }
 
 

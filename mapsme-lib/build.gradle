@@ -1,7 +1,7 @@
 apply plugin: 'com.android.library'
 
 android {
-
+  namespace "com.mapwithme.maps.api"
   // Define these properties in the gradle.properties file in the root project folder
   compileSdkVersion 30
 

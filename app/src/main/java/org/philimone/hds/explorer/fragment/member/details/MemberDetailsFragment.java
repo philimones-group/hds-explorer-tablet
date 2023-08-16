@@ -193,18 +193,22 @@ public class MemberDetailsFragment extends Fragment {
         }
     }
 
-    private String getEducationLabel(String code) {
-        CoreFormColumnOptions option = boxCoreFormColumnOptions.query(CoreFormColumnOptions_.columnName.equal("education").and(CoreFormColumnOptions_.optionValue.equal(code))).build().findFirst();
-        if (option != null) {
-            return option.optionLabel;
+    private String getEducationLabel(String educationCode) {
+        if (!StringUtil.isBlank(educationCode)) {
+            CoreFormColumnOptions option = boxCoreFormColumnOptions.query(CoreFormColumnOptions_.columnName.equal("education").and(CoreFormColumnOptions_.optionValue.equal(educationCode))).build().findFirst();
+            if (option != null) {
+                return option.optionLabel;
+            }
         }
         return "";
     }
 
-    private String getReligionLabel(String code) {
-        CoreFormColumnOptions option = boxCoreFormColumnOptions.query(CoreFormColumnOptions_.columnName.equal("religion").and(CoreFormColumnOptions_.optionValue.equal(code))).build().findFirst();
-        if (option != null) {
-            return option.optionLabel;
+    private String getReligionLabel(String religionCode) {
+        if (!StringUtil.isBlank(religionCode)) {
+            CoreFormColumnOptions option = boxCoreFormColumnOptions.query(CoreFormColumnOptions_.columnName.equal("religion").and(CoreFormColumnOptions_.optionValue.equal(religionCode))).build().findFirst();
+            if (option != null) {
+                return option.optionLabel;
+            }
         }
         return "";
     }

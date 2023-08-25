@@ -367,7 +367,7 @@ public class HouseholdDetailsActivity extends AppCompatActivity implements House
 
     private void initializeButtons() {
         if (this.fragmentAdapter != null) {
-            if (this.fragmentAdapter.getFragmentCollected() != null) {
+            if (this.fragmentAdapter != null && this.fragmentAdapter.getFragmentCollected() != null) {
                 boolean hasForms = this.fragmentAdapter.getFragmentCollected().getFormDataLoaders().size() > 0;
                 this.btHouseDetailsCollectData.setEnabled(hasForms);
             }
@@ -625,7 +625,7 @@ public class HouseholdDetailsActivity extends AppCompatActivity implements House
 
             //finish visit mode
             this.visit = null;
-            if (this.fragmentAdapter.getFragmentCollected() != null) {
+            if (this.fragmentAdapter != null && this.fragmentAdapter.getFragmentCollected() != null) {
                 this.fragmentAdapter.getFragmentCollected().setVisit(null);
             }
             setHouseholdMode();

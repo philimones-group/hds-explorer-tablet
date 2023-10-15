@@ -129,6 +129,8 @@
     <string name="server_sync_offline_mode_msg_lbl">Le panneau est en mode hors ligne, pour pouvoir synchroniser les données, veuillez vous connecter à nouveau.</string>
     <string name="server_sync_offline_mode_continue_title_lbl">Impossible de se connecter au serveur</string>
     <string name="server_sync_offline_mode_continue_msg_lbl">Une erreur s\'est produite lors de la tentative de synchronisation des données du serveur. Veuillez réessayer ou continuer en mode hors ligne.\n\nVoulez-vous ouvrir le panneau de synchronisation en mode hors ligne?</string>
+    <string name="server_sync_warning_upload_required_lbl">Avertissement : Envoi des Données Requis</string>
+    <string name="server_sync_warning_upload_required_msg_lbl">Avant de synchroniser les données depuis le serveur vers votre appareil mobile, \nVeuillez vous assurer que toutes les données collectées localement ont été correctement envoyées au serveur. \nNe pas le faire pourrait entraîner la perte de données non synchronisées.</string>
 
     <string name="core_entity_region_lbl">Enregistrement d\'un nouveau région</string>
     <string name="core_entity_household_lbl">Enregistrement d\'un nouveau ménage</string>
@@ -594,9 +596,11 @@
     <string name="show_collected_data_total_cores_lbl">Total des formulaires de base recueillis:</string>
     <string name="show_collected_data_total_odks_lbl">Total des formulaires ODK recueillis:</string>
     <string name="show_collected_data_total_lbl">%1s Formulaires</string>
-    <string name="show_collected_data_tab_core_forms_lbl">Maisons récemment visitées</string>
-    <string name="show_collected_data_tab_odk_forms_lbl">Formulaires ODK récents</string>
+    <string name="show_collected_data_tab_visit_forms_lbl">Ménages visités</string>
+    <string name="show_collected_data_tab_core_forms_lbl">Base Formulaires</string>
+    <string name="show_collected_data_tab_odk_forms_lbl">Formulaires ODK</string>
     <string name="show_collected_data_btn_update_lbl">Mise à jour des listes</string>
+    <string name="show_collected_data_btn_delete_lbl">Supprimer des Données.</string>
     <string name="show_collected_data_list_filter_hint_lbl">Code/Nom/Autres détails</string>
 
     <string name="form_group_selector_uuid_lbl">UUID</string>

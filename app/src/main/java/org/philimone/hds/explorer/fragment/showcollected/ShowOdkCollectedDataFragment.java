@@ -185,6 +185,8 @@ public class ShowOdkCollectedDataFragment extends Fragment {
     private void showCollectedData() {
         //this.showProgress(true);
 
+        if (this.lvCollectedForms == null) return;
+
         List<CollectedData> list = getAllCollectedData();
         List<Form> forms = this.boxForms.getAll();
         List<CoreFormExtension> coreforms = this.boxCoreForms.getAll();

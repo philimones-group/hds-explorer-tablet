@@ -40,6 +40,9 @@ public class MaritalRelationship implements CoreEntity {
 
     public Date endDate;
 
+    @Index
+    public String visitCode;
+
     @Unique
     public String collectedId;
 

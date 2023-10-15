@@ -129,6 +129,8 @@
     <string name="server_sync_offline_mode_msg_lbl">O painel está no modo offline, para poder sincronizar dados, faça login novamente</string>
     <string name="server_sync_offline_mode_continue_title_lbl">Não foi possível conectar ao servidor</string>
     <string name="server_sync_offline_mode_continue_msg_lbl">Ocorreu um erro ao tentar sincronizar os dados do servidor, tente novamente ou continue no modo offline\n\nDeseja abrir o painel de sincronização no modo offline?</string>
+    <string name="server_sync_warning_upload_required_lbl">Aviso: Dados não enviados</string>
+    <string name="server_sync_warning_upload_required_msg_lbl">Antes de sincronizar os dados do servidor para o seu dispositivo móvel, \nPor favor, assegure-se de que todos os dados coletados foram enviados com sucesso para o servidor. \nNão fazê-lo pode resultar na perda de dados não sincronizados.</string>
 
     <string name="core_entity_region_lbl">Registo de Nova Região</string>
     <string name="core_entity_household_lbl">Registo de Novo Agregado</string>
@@ -592,9 +594,11 @@
     <string name="show_collected_data_total_cores_lbl">Total de Formulários Core colectados:</string>
     <string name="show_collected_data_total_odks_lbl">Total de Formulários ODK colectados:</string>
     <string name="show_collected_data_total_lbl">%1s Formulários</string>
-    <string name="show_collected_data_tab_core_forms_lbl">Casas Visitadas recentemente</string>
-    <string name="show_collected_data_tab_odk_forms_lbl">Formulários ODK recentes</string>
+    <string name="show_collected_data_tab_visit_forms_lbl">Casas Visitadas</string>
+    <string name="show_collected_data_tab_core_forms_lbl">Formulários Core</string>
+    <string name="show_collected_data_tab_odk_forms_lbl">Formulários ODK</string>
     <string name="show_collected_data_btn_update_lbl">Actualizar Listas</string>
+    <string name="show_collected_data_btn_delete_lbl">Apagar Dados</string>
     <string name="show_collected_data_list_filter_hint_lbl">Código/Nome/Outros detalhes</string>
 
     <string name="form_group_selector_uuid_lbl">UUID</string>

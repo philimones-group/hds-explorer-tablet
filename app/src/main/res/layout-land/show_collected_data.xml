@@ -197,7 +197,7 @@
                         <com.google.android.material.tabs.TabItem
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/show_collected_data_tab_core_forms_lbl" />
+                            android:text="@string/show_collected_data_tab_visit_forms_lbl" />
 
                         <com.google.android.material.tabs.TabItem
                             android:layout_width="wrap_content"
@@ -246,7 +246,7 @@
             android:layout_weight="0"
             android:gravity="center"
             android:orientation="vertical"
-            android:visibility="visible">
+            android:visibility="gone">
 
             <Button
                 android:id="@+id/btShowCollectedUpdate"

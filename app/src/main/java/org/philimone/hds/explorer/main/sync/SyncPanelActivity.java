@@ -1,6 +1,7 @@
 package org.philimone.hds.explorer.main.sync;
 
 import android.os.Bundle;
+import android.text.Html;
 
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
@@ -71,9 +72,16 @@ public class SyncPanelActivity extends AppCompatActivity {
         SyncFragmentsAdapter adapter = new SyncFragmentsAdapter(this.getSupportFragmentManager(),  this.getLifecycle(), list);
         syncViewPager.setAdapter(adapter);
 
-        List<String> tabTitles = new ArrayList<>();
+        List<CharSequence> tabTitles = new ArrayList<>();
         tabTitles.add(getString(R.string.server_sync_download_lbl));
-        tabTitles.add(getString(R.string.server_sync_upload_lbl));
+
+        long count = syncUploadPanel.getTotalNotUploaded();
+
+        if (count == 0) {
+            tabTitles.add(getString(R.string.server_sync_upload_lbl));
+        } else {
+            tabTitles.add(Html.fromHtml(getString(R.string.server_sync_upload_lbl) + " <b>("+count+")</b>"));
+        }
 
         //create on change tab listener
         this.syncTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
@@ -112,7 +120,6 @@ public class SyncPanelActivity extends AppCompatActivity {
             this.syncDownloadPanel.readPreferences();
         }
     }
-
     class SyncFragmentsAdapter extends FragmentStateAdapter {
 
         private final List<Fragment> fragments = new ArrayList<>();

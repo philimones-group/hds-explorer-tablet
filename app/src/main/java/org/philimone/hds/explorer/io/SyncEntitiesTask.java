@@ -465,9 +465,12 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 	}
 
 	private void deleteAllCoreCollectedData() {
+		List<CoreCollectedData> uploadedDataList = new ArrayList<>();
 
 		for (CoreCollectedData cdata : this.boxCoreCollectedData.getAll()) {
 			if (cdata.uploaded) {
+
+				uploadedDataList.add(cdata);
 
 				try {
 					new File(cdata.formFilename).delete();
@@ -477,7 +480,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 			}
 		}
 
-		this.boxCoreCollectedData.removeAll();
+		this.boxCoreCollectedData.remove(uploadedDataList); //only remove uploaded core collected data
 	}
 
 	private void deleteFormGroupInstances() {

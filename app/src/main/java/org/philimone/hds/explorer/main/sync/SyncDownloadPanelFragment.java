@@ -32,6 +32,8 @@ import org.philimone.hds.explorer.database.ObjectBoxDatabase;
 import org.philimone.hds.explorer.database.Queries;
 import org.philimone.hds.explorer.io.SyncEntitiesTask;
 import org.philimone.hds.explorer.io.SyncEntityResult;
+import org.philimone.hds.explorer.model.CoreCollectedData;
+import org.philimone.hds.explorer.model.CoreCollectedData_;
 import org.philimone.hds.explorer.model.SyncReport;
 import org.philimone.hds.explorer.model.enums.SyncEntity;
 import org.philimone.hds.explorer.model.enums.SyncStatus;
@@ -91,6 +93,7 @@ public class SyncDownloadPanelFragment extends Fragment implements SyncPanelItem
     private List<Synchronizer> synchronizerAllList = new ArrayList<>();
 
     private Box<SyncReport> boxSyncReports;
+    private Box<CoreCollectedData> boxCoreCollectedData;
 
     public SyncDownloadPanelFragment() {
         // Required empty public constructor
@@ -155,6 +158,7 @@ public class SyncDownloadPanelFragment extends Fragment implements SyncPanelItem
 
     private void initBoxes(){
         this.boxSyncReports = ObjectBoxDatabase.get().boxFor(SyncReport.class);
+        this.boxCoreCollectedData = ObjectBoxDatabase.get().boxFor(CoreCollectedData.class);
     }
 
     private void initialize(View view) {
@@ -265,11 +269,28 @@ public class SyncDownloadPanelFragment extends Fragment implements SyncPanelItem
             return;
         }
 
+        //check if there is data to upload? - ask: do you want to proceed
+        if (hasDataToUpload()){
+            DialogFactory.createMessageInfo(this.getContext(), R.string.server_sync_warning_upload_required_lbl, R.string.server_sync_warning_upload_required_msg_lbl, new DialogFactory.OnClickListener() {
+                @Override
+                public void onClicked(DialogFactory.Buttons clickedButton) {
+
+                }
+            }).show();
+        } else {
+            executeSyncAllData();
+        }
+    }
+
+    private void executeSyncAllData(){
         this.synchronizerAllList.clear();
         this.clickedSyncFragment = null;
 
-
         syncAllData();
+    }
+
+    private boolean hasDataToUpload(){
+        return this.boxCoreCollectedData.query(CoreCollectedData_.uploaded.equal(false)).build().count() > 0;
     }
 
     private void syncAllData() {
@@ -380,11 +401,19 @@ public class SyncDownloadPanelFragment extends Fragment implements SyncPanelItem
         }
 
         if (syncPanelItem.equals(this.householdsDatasetsSyncFragment)){
-            syncHouseholdDatasets();
+            if (hasDataToUpload()){
+                DialogFactory.createMessageInfo(this.getContext(), R.string.server_sync_warning_upload_required_lbl, R.string.server_sync_warning_upload_required_msg_lbl, clickedButton -> { }).show();
+            } else {
+                syncHouseholdDatasets();
+            }
         }
 
         if (syncPanelItem.equals(this.demographicsEventsSyncFragment)){
-            syncDemographicsEvents();
+            if (hasDataToUpload()){
+                DialogFactory.createMessageInfo(this.getContext(), R.string.server_sync_warning_upload_required_lbl, R.string.server_sync_warning_upload_required_msg_lbl, clickedButton -> { }).show();
+            } else {
+                syncDemographicsEvents();
+            }
         }
 
         this.clickedSyncFragment = null;

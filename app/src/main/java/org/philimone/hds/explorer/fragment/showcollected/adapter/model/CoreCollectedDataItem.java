@@ -21,6 +21,7 @@ public class CoreCollectedDataItem {
     public Region region;
     public Household household;
     public Member member;
+    public boolean selected;
     public List<CoreFormEntity> collectedForms = new ArrayList<>();
 
     public CoreCollectedDataItem(CoreCollectedData collectedData, Household household, List<CoreFormEntity> collectedForms) {
@@ -74,5 +75,9 @@ public class CoreCollectedDataItem {
         }
 
         return "";
+    }
+
+    public CoreCollectedData getCollectedData() {
+        return collectedData;
     }
 }

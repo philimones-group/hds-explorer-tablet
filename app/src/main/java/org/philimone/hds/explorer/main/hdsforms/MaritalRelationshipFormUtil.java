@@ -483,6 +483,8 @@ public class MaritalRelationshipFormUtil extends FormUtil<MaritalRelationship> {
             spouseB.maritalStatus = MaritalStatus.getFrom(endRelationType.code);
         }
 
+        maritalRelationship.visitCode = visitCode;
+
         //save data
         boxMaritalRelationships.put(maritalRelationship);
         boxMembers.put(spouseA, spouseB);
@@ -492,7 +494,7 @@ public class MaritalRelationshipFormUtil extends FormUtil<MaritalRelationship> {
         collectedData = new CoreCollectedData();
         collectedData.visitId = visit.id;
         collectedData.formEntity = CoreFormEntity.MARITAL_RELATIONSHIP;
-        collectedData.formEntityId = maritalRelationship.id;
+        collectedData.formEntityId = spouseA.id;
         collectedData.formEntityCode = spouseA.code;
         collectedData.formEntityName = spouseA.name + " -> " + spouseB.name;
         collectedData.formUuid = result.getFormUuid();
@@ -573,13 +575,15 @@ public class MaritalRelationshipFormUtil extends FormUtil<MaritalRelationship> {
             spouseB.maritalStatus = MaritalStatus.getFrom(endRelationType.code);
         }
 
+        maritalRelationship.visitCode = visitCode;
+
         //save data
         boxMaritalRelationships.put(maritalRelationship);
         boxMembers.put(spouseA, spouseB);
 
         //save core collected data
         collectedData.visitId = visit.id;
-        collectedData.formEntityId = maritalRelationship.id;
+        collectedData.formEntityId = spouseA.id;
         collectedData.formEntityCode = spouseA.code;
         collectedData.formEntityName = spouseA.name + " -> " + spouseB.name;
         collectedData.updatedDate = new Date();

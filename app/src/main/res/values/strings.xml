@@ -129,6 +129,8 @@
     <string name="server_sync_offline_mode_msg_lbl">You are currently in offline mode, to be able to sync login again</string>
     <string name="server_sync_offline_mode_continue_title_lbl">Can\'t connect to the Server</string>
     <string name="server_sync_offline_mode_continue_msg_lbl">An issue occurred while trying to login to the server, try again or continue to offline mode\n\nDo you want to open Synchronization panel in offline mode?</string>
+    <string name="server_sync_warning_upload_required_lbl">Warning: Data Upload Required</string>
+    <string name="server_sync_warning_upload_required_msg_lbl">Before synchronizing data from the server to your mobile device, \nPlease ensure that all locally collected data has been successfully uploaded to the server. \nFailing to do so may result in the loss of unsynchronized data.</string>
 
     <string name="core_entity_region_lbl">Region Registration</string>
     <string name="core_entity_household_lbl">Household Registration</string>
@@ -589,15 +591,20 @@
     <string name="survey_search_by_datasets_btn_lbl">Search By Datasets</string>
     <string name="survey_sync_data_sharing_btn_lbl">Data Sharing Synchronization</string>
 
-    <string name="show_collected_data_title_lbl">Show Collected Forms Data</string>
+    <string name="show_collected_data_title_lbl">Show Collected Forms</string>
     <string name="show_collected_data_modules_lbl">Modules:</string>
     <string name="show_collected_data_total_cores_lbl">Total Core Forms Collected:</string>
     <string name="show_collected_data_total_odks_lbl">Total Odk Forms Collected:</string>
     <string name="show_collected_data_total_lbl">%1s Forms</string>
-    <string name="show_collected_data_tab_core_forms_lbl">Recently Visited Households</string>
-    <string name="show_collected_data_tab_odk_forms_lbl">Recently Collected ODK Forms</string>
+    <string name="show_collected_data_tab_visit_forms_lbl">Visited Households</string>
+    <string name="show_collected_data_tab_core_forms_lbl">Core Forms</string>
+    <string name="show_collected_data_tab_odk_forms_lbl">ODK Forms</string>
     <string name="show_collected_data_btn_update_lbl">Update Collected Data</string>
+    <string name="show_collected_data_btn_delete_lbl">Delete Records</string>
     <string name="show_collected_data_list_filter_hint_lbl">Code/Name/Any Subject details</string>
+    <string name="show_collected_data_deletion_warning_title_lbl">**Warning: Data Deletion Caution**</string>
+    <string name="show_collected_data_deletion_warning_msg1_lbl">Please exercise extreme caution when deleting demographics surveillance data. \nDeleting this data may have far-reaching implications and could affect various interconnected datasets.</string>
+    <string name="show_collected_data_deletion_warning_msg2_lbl">Deleting this data will result in the loss of any related dataset to these records.\nDo you want to proceed with the deletion of these records?</string>
 
     <string name="form_group_selector_uuid_lbl">UUID</string>
     <string name="form_group_selector_code_lbl">Code</string>

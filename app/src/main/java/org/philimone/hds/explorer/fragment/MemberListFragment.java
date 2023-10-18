@@ -13,9 +13,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.mapswithme.maps.api.MWMPoint;
-import com.mapswithme.maps.api.MapsWithMeApi;
-
 import org.philimone.hds.explorer.R;
 import org.philimone.hds.explorer.adapter.MemberAdapter;
 import org.philimone.hds.explorer.database.Bootstrap;
@@ -441,86 +438,6 @@ public class MemberListFragment extends Fragment {
             showHouseholdInMap(currentHousehold);
         }else {
             showMembersMap();
-        }
-    }
-
-    private void showHouseholdInMap(Household household){
-        final MWMPoint[] points = new MWMPoint[1];
-
-        if (!household.isGpsNull()){
-            points[0] = new MWMPoint(household.getGpsLatitude(), household.getGpsLongitude(), household.getName());
-
-            MapsWithMeApi.showPointsOnMap(this.getActivity(), getString(R.string.map_households), points);
-        }else{
-            DialogFactory.createMessageInfo(this.getActivity(), R.string.map_gps_not_available_title_lbl, R.string.member_list_gps_not_available_lbl).show();
-        }
-    }
-
-    private void showMembersMap() {
-        MemberAdapter adapter = (MemberAdapter) this.lvMembersList.getAdapter();
-
-        if (adapter==null || adapter.isEmpty()){
-            DialogFactory.createMessageInfo(this.getActivity(), R.string.map_gps_not_available_title_lbl, R.string.member_list_no_members_lbl).show();
-            return;
-        }
-
-        final MWMPoint[] points = new MWMPoint[adapter.getMembers().size()];
-        //organize by households and calculate new coordinates
-        Map<String, List<MWMPoint>> gpsMapHouseMembers = new HashMap<>();
-        boolean hasAnyCoords = false;
-
-        for (int i=0; i < points.length; i++){
-            Member m = adapter.getMembers().get(i);
-            String name = m.getName();
-            if (!m.isGpsNull()) {
-                double lat = m.getGpsLatitude();
-                double lon = m.getGpsLongitude();
-                points[i] = new MWMPoint(lat, lon, name);
-
-                //put point on a java map organized by houseNumber
-                if (gpsMapHouseMembers.containsKey(m.getHouseholdName())){
-                    List<MWMPoint> list = gpsMapHouseMembers.get(m.getHouseholdName());
-                    list.add(points[i]);
-                }else{
-                    List<MWMPoint> list = new ArrayList<MWMPoint>();
-                    list.add(points[i]);
-                    gpsMapHouseMembers.put(m.getHouseholdName(), list);
-                }
-
-                hasAnyCoords = true;
-            }
-        }
-
-        if (!hasAnyCoords){
-            DialogFactory.createMessageInfo(this.getActivity(), R.string.map_gps_not_available_title_lbl, R.string.household_filter_gps_not_available_lbl).show();
-            return;
-        }
-
-        organizeHouseMembersCoordinates(gpsMapHouseMembers);
-
-        MapsWithMeApi.showPointsOnMap(this.getActivity(), getString(R.string.map_members_coordinates), points);
-    }
-
-    private void organizeHouseMembersCoordinates(Map<String, List<MWMPoint>> gpsMapHouseMembers){
-        final double pointRadius = 0.00008; //grads equivalent to 2 meters - 0.0001242
-
-        for (String house : gpsMapHouseMembers.keySet()){
-            List<MWMPoint> list = gpsMapHouseMembers.get(house);
-            int n = list.size();
-            int max_col = (int)(Math.ceil(Math.sqrt(n))) + 1;
-            int max_row = (int) Math.ceil(n/(max_col*1.0));
-
-            int r=0,c=0;
-            for (MWMPoint p : list){
-                p.setLat( p.getLat() + (c * pointRadius) );
-                p.setLon( p.getLon() + (r * pointRadius) );
-
-                c++;
-                if (c == max_col){
-                    c = 0;
-                    r++;
-                }
-            }
         }
     }
 

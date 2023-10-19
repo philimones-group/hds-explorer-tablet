@@ -2,8 +2,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="org.philimone.hds.explorer">
-
     <!-- To auto-complete the email text field in the login form with the user's emails -->
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false" />
+
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
@@ -34,13 +37,16 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-
-        <activity android:name="org.philimone.hds.explorer.io.datasharing.bluetooth.BluetoothDeviceListActivity"
-                  android:theme="@style/appCompatDialogTheme" />
-
+        <activity
+            android:name=".main.maps.MapViewActivity"
+            android:exported="false" />
+        <activity
+            android:name=".io.datasharing.bluetooth.BluetoothDeviceListActivity"
+            android:theme="@style/appCompatDialogTheme" />
         <activity android:name=".main.sync.SyncDataSharingActivity" />
-
-        <activity android:name=".main.SplashScreenActivity" android:exported="true">
+        <activity
+            android:name=".main.SplashScreenActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

@@ -44,14 +44,14 @@ public class GpsNearBySelectorDialog extends DialogFragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.gps_near_by_distance_dialog, container, false);
 
+        getDialog().requestWindowFeature(Window.FEATURE_NO_TITLE);
+
         return view;
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-        getDialog().requestWindowFeature(Window.FEATURE_NO_TITLE);
 
         initialize(view);
     }

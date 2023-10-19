@@ -228,9 +228,9 @@
     <string name="member_list_member_gps_not_available_lbl">Les coordonnées GPS de la maison du membre sélectionné ne sont pas disponibles.</string>
     <string name="member_list_household_not_found_lbl">La maison du membre sélectionné n\'a pas été trouvée dans le système.</string>
     <string name="member_list_bt_show_household_lbl">Voir les détails de la maison</string>
-    <string name="member_list_bt_show_gps_housemembers_lbl">Afficher la carte GPS</string>
+    <string name="member_list_bt_show_gps_map_lbl">Afficher la carte GPS</string>
     <string name="member_list_bt_show_houses_lbl">Afficher la carte GPS des maisons</string>
-    <string name="member_list_bt_show_closest_houses_lbl">Carte des maisons à proximité.</string>
+    <string name="member_list_bt_show_nearby_on_map_lbl">Rechercher maisons prox.</string>
     <string name="member_list_bt_show_closest_members_lbl">Carte des membres à proximité</string>
     <string name="member_list_bt_new_member_collect_lbl">Recueillir Membre Temp.</string>
     <string name="member_list_bt_add_new_member_lbl">Ajouter un nouveau membre</string>

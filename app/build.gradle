@@ -75,6 +75,12 @@ dependencies {
     implementation 'commons-io:commons-io:2.11.0'
     implementation 'org.apache.commons:commons-jexl3:3.2.1'
 
+    //mapbox
+    implementation ('com.mapbox.maps:android:10.16.1'){
+        exclude group: 'group_name', module: 'module_name'
+    }
+    implementation 'com.mapbox.base:annotations:0.8.0'
+
     //deps that were in another tag
     implementation 'androidx.appcompat:appcompat:1.6.1'
     //implementation "androidx.documentfile:documentfile:1.0.1"

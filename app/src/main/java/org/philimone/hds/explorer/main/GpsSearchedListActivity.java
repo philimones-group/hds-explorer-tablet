@@ -9,14 +9,13 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.mapswithme.maps.api.MWMPoint;
-import com.mapswithme.maps.api.MapsWithMeApi;
-
 import org.philimone.hds.explorer.R;
 import org.philimone.hds.explorer.adapter.HouseholdAdapter;
 import org.philimone.hds.explorer.adapter.MemberAdapter;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
 import org.philimone.hds.explorer.database.Queries;
+import org.philimone.hds.explorer.main.maps.MapMarker;
+import org.philimone.hds.explorer.main.maps.MapViewActivity;
 import org.philimone.hds.explorer.model.Household;
 import org.philimone.hds.explorer.model.Member;
 import org.philimone.hds.explorer.widget.RecyclerListView;
@@ -38,8 +37,8 @@ public class GpsSearchedListActivity extends AppCompatActivity {
     private TextView txtDistanceName;
     private TextView txtResults;
 
-    private MWMPoint[] points;
-    private MWMPoint[] points_bak;
+    private ArrayList<MapMarker> points;
+    private ArrayList<MapMarker> points_bak;
     private ArrayList<Member> members;
     private ArrayList<Household> households;
     private Member mainMember;
@@ -65,19 +64,25 @@ public class GpsSearchedListActivity extends AppCompatActivity {
 
     private void initialize() {
 
-        Object[] obj_points = (Object[]) getIntent().getExtras().get("points");
-        Object[] obj_points_bak = (Object[]) getIntent().getExtras().get("points_original");
+        ArrayList<MapMarker> obj_points = getIntent().getParcelableArrayListExtra("points");
+        ArrayList<MapMarker> obj_points_bak = getIntent().getParcelableArrayListExtra("points_original");
         Object obj_members = getIntent().getExtras().get("members");
         Object obj_households = getIntent().getExtras().get("households");
         Object obj_main_member = getIntent().getExtras().get("main_member");
         Object obj_main_household = getIntent().getExtras().get("main_household");
         Object obj_distance = getIntent().getExtras().get("distance");
 
+        this.points = new ArrayList<>();
+        this.points_bak = new ArrayList<>();
 
         this.isMemberMap = obj_main_member != null;
 
-        this.points = convertToMWMPoint(obj_points);
-        this.points_bak = convertToMWMPoint(obj_points_bak);
+        if (obj_points != null) {
+            this.points.addAll(obj_points);
+        }
+        if (obj_points_bak != null) {
+            this.points_bak.addAll(obj_points_bak);
+        }
 
         this.distance = (Distance) obj_distance;
         if (isMemberMap){
@@ -168,16 +173,6 @@ public class GpsSearchedListActivity extends AppCompatActivity {
         txtResults.setText(getString(R.string.gps_searched_list_results_value, getNumberOfResults()));
     }
 
-    private MWMPoint[] convertToMWMPoint(Object[] o_points){
-        if (o_points == null) return new MWMPoint[0];
-
-        MWMPoint[] ps = new MWMPoint[o_points.length];
-        for (int i=0; i<ps.length; i++){
-            ps[i] = (MWMPoint) o_points[i];
-        }
-        return ps;
-    }
-
     private void loadMembers() {
         //create adapter and calculate distances
         ArrayList<String> extras = new ArrayList<>(this.members.size());
@@ -244,12 +239,19 @@ public class GpsSearchedListActivity extends AppCompatActivity {
     private void showMap() {
         if (isMemberMap){
             if (showOriginalMap){
-                MapsWithMeApi.showPointsOnMap(this, getString(R.string.map_closest_members_from_lbl) + " " + mainMember.getCode(), points_bak);
+                visualizeMapBox(getString(R.string.map_closest_members_from_lbl) + " " + mainMember.getCode(), points_bak);
             }else {
-                MapsWithMeApi.showPointsOnMap(this, getString(R.string.map_closest_members_from_lbl) + " " + mainMember.getCode(), points);
+                visualizeMapBox(getString(R.string.map_closest_members_from_lbl) + " " + mainMember.getCode(), points);
             }
         }else{
-            MapsWithMeApi.showPointsOnMap(this, getString(R.string.map_closest_houses_from_lbl) + " " + mainHousehold.getName(), points);
+            visualizeMapBox(getString(R.string.map_closest_houses_from_lbl) + " " + mainHousehold.getName(), points);
         }
+    }
+
+    private void visualizeMapBox(String pageTitle, ArrayList<MapMarker> points) {
+        Intent intent = new Intent(this, MapViewActivity.class);
+        intent.putExtra("pageTitle", pageTitle);
+        intent.putParcelableArrayListExtra("markersList", points);
+        startActivity(intent);
     }
 }

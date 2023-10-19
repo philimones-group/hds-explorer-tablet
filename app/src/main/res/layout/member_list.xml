@@ -121,25 +121,25 @@
                 android:elevation="5dp"/>
 
             <Button
-                android:id="@+id/btMemListShowMmbMap"
+                android:id="@+id/btMemListShowMap"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="5dp"
                 android:textSize="@dimen/member_list_button_textsize"
-                android:text="@string/member_list_bt_show_gps_housemembers_lbl"
+                android:text="@string/member_list_bt_show_gps_map_lbl"
                 android:background="@drawable/nui_btnd_rone_gflat"
                 android:elevation="5dp"/>
 
             <Button
-                android:id="@+id/btMemListShowCollectedData"
+                android:id="@+id/btMemListSearchNearby"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="5dp"
                 android:textSize="@dimen/member_list_button_textsize"
-                android:text="@string/member_list_bt_show_collected_data_lbl"
+                android:text="@string/member_list_bt_show_nearby_on_map_lbl"
                 android:background="@drawable/nui_btnd_rone_gflat"
                 android:elevation="5dp"
-                android:visibility="gone"/>
+                android:visibility="visible"/>
 
         </LinearLayout>
 

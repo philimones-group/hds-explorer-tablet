@@ -228,9 +228,9 @@
     <string name="member_list_member_gps_not_available_lbl">As cooredenadas GPS da casa do membro seleccionado não estão disponíveis</string>
     <string name="member_list_household_not_found_lbl">A casa do membro selecionado não foi encontrada no sistema</string>
     <string name="member_list_bt_show_household_lbl">Ver Detalhes da Casa</string>Nem todos membros foram visitados nesta visita
-    <string name="member_list_bt_show_gps_housemembers_lbl">Mostrar Mapa GPS</string>
+    <string name="member_list_bt_show_gps_map_lbl">Mostrar Mapa GPS</string>
     <string name="member_list_bt_show_houses_lbl">Mostrar Mapa GPS das casas</string>
-    <string name="member_list_bt_show_closest_houses_lbl">Mapa de Casas próx.</string>
+    <string name="member_list_bt_show_nearby_on_map_lbl">Pesquisar casas próx.</string>
     <string name="member_list_bt_show_closest_members_lbl">Mapa de Membros próx.</string>
     <string name="member_list_bt_new_member_collect_lbl">Colher Membro Temp.</string>
     <string name="member_list_bt_add_new_member_lbl">Adicionar Novo Membro</string>

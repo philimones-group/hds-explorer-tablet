@@ -190,7 +190,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
                 android:textSize="18sp"
-                android:text="@string/member_list_bt_show_gps_housemembers_lbl"
+                android:text="@string/member_list_bt_show_gps_map_lbl"
                 android:background="@drawable/nui_btnd_rone_gflat"
                 android:textColor="@color/white"
                 android:elevation="5dp"/>
@@ -204,7 +204,8 @@
                 android:text="@string/member_list_bt_show_houses_lbl"
                 android:background="@drawable/nui_btnd_rone_gflat"
                 android:textColor="@color/white"
-                android:elevation="5dp"/>
+                android:elevation="5dp"
+                android:visibility="gone"/>
 
             <Button
                 android:id="@+id/btGpsListBack"

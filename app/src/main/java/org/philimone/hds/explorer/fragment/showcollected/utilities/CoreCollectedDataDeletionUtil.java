@@ -447,7 +447,9 @@ public class CoreCollectedDataDeletionUtil {
 
     private void removeDeath(Death death) {
         if (death != null) {
-            boxCoreCollectedData.query(CoreCollectedData_.collectedId.equal(death.collectedId)).build().remove();
+            if (death.collectedId != null) {
+                boxCoreCollectedData.query(CoreCollectedData_.collectedId.equal(death.collectedId)).build().remove();
+            }
             boxDeaths.remove(death);
         }
     }
@@ -460,50 +462,66 @@ public class CoreCollectedDataDeletionUtil {
 
     private void removeMaritalRelationships(List<MaritalRelationship> list) {
         for (MaritalRelationship maritalRelationship : list) {
-            boxCoreCollectedData.query(CoreCollectedData_.collectedId.equal(maritalRelationship.collectedId)).build().remove();
+            if (maritalRelationship.collectedId != null) {
+                boxCoreCollectedData.query(CoreCollectedData_.collectedId.equal(maritalRelationship.collectedId)).build().remove();
+            }
             boxMaritalRelationships.remove(maritalRelationship);
         }
     }
 
     private void removeIncompleteVisits(List<IncompleteVisit> list) {
         for (IncompleteVisit item : list) {
-            boxCoreCollectedData.query(CoreCollectedData_.collectedId.equal(item.collectedId)).build().remove();
+            if (item.collectedId != null) {
+                boxCoreCollectedData.query(CoreCollectedData_.collectedId.equal(item.collectedId)).build().remove();
+            }
             boxIncompleteVisits.remove(item);
         }
     }
 
     private void removeInmigrations(List<Inmigration> list) {
         for (Inmigration item : list) {
-            boxCoreCollectedData.query(CoreCollectedData_.collectedId.equal(item.collectedId)).build().remove();
+            if (item.collectedId != null) {
+                boxCoreCollectedData.query(CoreCollectedData_.collectedId.equal(item.collectedId)).build().remove();
+            }
             boxInmigrations.remove(item);
         }
     }
 
     private void removeOutmigrations(List<Outmigration> list) {
         for (Outmigration item : list) {
-            boxCoreCollectedData.query(CoreCollectedData_.collectedId.equal(item.collectedId)).build().remove();
+            if (item.collectedId != null) {
+                boxCoreCollectedData.query(CoreCollectedData_.collectedId.equal(item.collectedId)).build().remove();
+            }
             boxOutmigrations.remove(item);
         }
     }
 
     private void removePregnancyRegs(List<PregnancyRegistration> list) {
         for (PregnancyRegistration item : list) {
-            boxCoreCollectedData.query(CoreCollectedData_.collectedId.equal(item.collectedId)).build().remove();
+            if (item.collectedId != null) {
+                boxCoreCollectedData.query(CoreCollectedData_.collectedId.equal(item.collectedId)).build().remove();
+            }
             boxPregnancyRegistrations.remove(item);
         }
     }
 
     private void removePregnancyOutcomes(List<PregnancyOutcome> list) {
         for (PregnancyOutcome item : list) {
-            this.boxPregnancyChilds.query(PregnancyChild_.outcomeCode.equal(item.code)).build().remove();
-            boxCoreCollectedData.query(CoreCollectedData_.collectedId.equal(item.collectedId)).build().remove();
+            if (item.code != null) {
+                this.boxPregnancyChilds.query(PregnancyChild_.outcomeCode.equal(item.code)).build().remove();
+            }
+            if (item.collectedId != null) {
+                boxCoreCollectedData.query(CoreCollectedData_.collectedId.equal(item.collectedId)).build().remove();
+            }
             boxPregnancyOutcomes.remove(item);
         }
     }
 
     private void removeVisits(List<Visit> list) {
         for (Visit item : list) {
-            boxCoreCollectedData.query(CoreCollectedData_.collectedId.equal(item.collectedId)).build().remove();
+            if (item.collectedId != null) {
+                boxCoreCollectedData.query(CoreCollectedData_.collectedId.equal(item.collectedId)).build().remove();
+            }
             boxVisits.remove(item);
         }
     }

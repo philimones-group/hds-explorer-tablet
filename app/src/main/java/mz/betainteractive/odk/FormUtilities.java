@@ -190,6 +190,30 @@ public class FormUtilities {
         Log.d("odk version", odkStorageType+", ODK v"+versionName);
     }
 
+    public static OdkStorageType getOdkStorageType(Context context) {
+        final int odk_v_1_26_0 = 3713; //scoped storage without projects
+        final int odk_v_1_30_1 = 4094; //last scoped storage with projects
+        final int odk_v_2021_2 = 4242; //scoped storage with projects
+        String versionName = "NONE";
+
+        try {
+            PackageInfo packageInfo = context.getPackageManager().getPackageInfo("org.odk.collect.android", 0);
+            versionName = packageInfo.versionName;
+
+            if (packageInfo.versionCode < odk_v_1_26_0) {
+                return OdkStorageType.ODK_SHARED_FOLDER; //Android/data/odk
+            } else if (packageInfo.versionCode < odk_v_2021_2) {
+                return OdkStorageType.ODK_SCOPED_FOLDER_NO_PROJECTS;
+            } else {
+                return OdkStorageType.ODK_SCOPED_FOLDER_PROJECTS;
+            }
+
+        } catch (PackageManager.NameNotFoundException e) {
+            return OdkStorageType.NO_ODK_INSTALLED;
+        }
+
+    }
+
     public OdkStorageType getOdkStorageType() {
         return this.odkStorageType;
     }

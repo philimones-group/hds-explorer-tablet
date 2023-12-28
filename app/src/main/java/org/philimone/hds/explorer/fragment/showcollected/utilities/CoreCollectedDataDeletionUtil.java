@@ -125,6 +125,7 @@ public class CoreCollectedDataDeletionUtil {
                 case EDITED_REGION: deleteCoreCollectedData(cdata); break;
                 case EDITED_HOUSEHOLD: deleteCoreCollectedData(cdata); break;
                 case EDITED_MEMBER: deleteCoreCollectedData(cdata); break;
+                default: deleteCoreCollectedData(cdata); break;
             }
         }
     }

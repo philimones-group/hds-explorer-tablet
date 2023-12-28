@@ -5,6 +5,7 @@ import android.content.Context;
 import androidx.fragment.app.Fragment;
 
 import org.philimone.hds.explorer.model.CoreCollectedData;
+import org.philimone.hds.explorer.model.CoreEntity;
 import org.philimone.hds.explorer.model.Household;
 import org.philimone.hds.explorer.model.Household_;
 import org.philimone.hds.explorer.model.Visit;
@@ -15,18 +16,18 @@ import org.philimone.hds.forms.model.XmlFormResult;
 
 import mz.betainteractive.odk.FormUtilities;
 
-public class EditCoreExtensionFormUtil extends FormUtil<Household> {
+public class EditCoreExtensionFormUtil extends FormUtil<CoreEntity> {
 
     private Listener listener;
 
-    public EditCoreExtensionFormUtil(Fragment fragment, Context context, HForm hform, CoreCollectedData coreCollectedData, Household existentEntity, FormUtilities odkFormUtilities, Listener listener) {
-        super(fragment, context, hform, existentEntity, odkFormUtilities, null);
+    public EditCoreExtensionFormUtil(Fragment fragment, Context context, HForm hform, CoreCollectedData coreCollectedData, CoreEntity existentEntity, FormUtilities odkFormUtilities, Listener listener) {
+        super(fragment, context, hform, existentEntity, coreCollectedData, odkFormUtilities, null);
 
         this.listener = listener;
 
         //overwrite coreCollectedData
         this.collectedData = coreCollectedData;
-        this.household = existentEntity;
+        //this.household = existentEntity;
     }
 
     @Override

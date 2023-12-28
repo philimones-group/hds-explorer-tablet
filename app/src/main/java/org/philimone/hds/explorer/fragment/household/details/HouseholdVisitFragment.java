@@ -45,11 +45,13 @@ import org.philimone.hds.explorer.model.CollectedData;
 import org.philimone.hds.explorer.model.CollectedData_;
 import org.philimone.hds.explorer.model.CoreCollectedData;
 import org.philimone.hds.explorer.model.CoreCollectedData_;
+import org.philimone.hds.explorer.model.CoreEntity;
 import org.philimone.hds.explorer.model.Death;
 import org.philimone.hds.explorer.model.Form;
 import org.philimone.hds.explorer.model.Form_;
 import org.philimone.hds.explorer.model.HeadRelationship;
 import org.philimone.hds.explorer.model.Household;
+import org.philimone.hds.explorer.model.Household_;
 import org.philimone.hds.explorer.model.IncompleteVisit;
 import org.philimone.hds.explorer.model.Inmigration;
 import org.philimone.hds.explorer.model.MaritalRelationship;
@@ -61,8 +63,11 @@ import org.philimone.hds.explorer.model.PregnancyOutcome;
 import org.philimone.hds.explorer.model.PregnancyRegistration;
 import org.philimone.hds.explorer.model.PregnancyRegistration_;
 import org.philimone.hds.explorer.model.Region;
+import org.philimone.hds.explorer.model.Region_;
 import org.philimone.hds.explorer.model.User;
+import org.philimone.hds.explorer.model.User_;
 import org.philimone.hds.explorer.model.Visit;
+import org.philimone.hds.explorer.model.Visit_;
 import org.philimone.hds.explorer.model.enums.CoreFormEntity;
 import org.philimone.hds.explorer.model.enums.Gender;
 import org.philimone.hds.explorer.model.enums.PregnancyStatus;
@@ -108,6 +113,7 @@ public class HouseholdVisitFragment extends Fragment {
     private User loggedUser;
     private Map<String, Object> visitExtraData = new HashMap<>();
 
+    private Box<User> boxUsers;
     private Box<Region> boxRegions;
     private Box<Household> boxHouseholds;
     private Box<Visit> boxVisits;
@@ -215,6 +221,7 @@ public class HouseholdVisitFragment extends Fragment {
         this.boxCollectedData = ObjectBoxDatabase.get().boxFor(CollectedData.class);
         this.boxCoreCollectedData = ObjectBoxDatabase.get().boxFor(CoreCollectedData.class);
         this.boxForms = ObjectBoxDatabase.get().boxFor(Form.class);
+        this.boxUsers = ObjectBoxDatabase.get().boxFor(User.class);
         this.boxRegions = ObjectBoxDatabase.get().boxFor(Region.class);
         this.boxHouseholds = ObjectBoxDatabase.get().boxFor(Household.class);
         this.boxVisits = ObjectBoxDatabase.get().boxFor(Visit.class);
@@ -708,8 +715,9 @@ public class HouseholdVisitFragment extends Fragment {
             Log.d("edot core odk", coreCollectedData.extensionCollectedUri);
 
             CollectedData odkCollectedData = boxCollectedData.query(CollectedData_.collectedId.equal(coreCollectedData.collectedId).and(CollectedData_.formUri.equal(coreCollectedData.extensionCollectedUri))).build().findFirst();
+            CoreEntity existingEntity = getRecordEntity(odkCollectedData);
 
-            EditCoreExtensionFormUtil formUtil = new EditCoreExtensionFormUtil(this, this.getContext(), null, coreCollectedData, this.household, this.odkFormUtilities, new EditCoreExtensionFormUtil.Listener() {
+            EditCoreExtensionFormUtil formUtil = new EditCoreExtensionFormUtil(this, this.getContext(), null, coreCollectedData, existingEntity, this.odkFormUtilities, new EditCoreExtensionFormUtil.Listener() {
                 @Override
                 public void onFinishedCollecting() {
                     loadDataToListViews();
@@ -1139,6 +1147,19 @@ public class HouseholdVisitFragment extends Fragment {
     }
 
     //endregion
+
+    CoreEntity getRecordEntity(CollectedData odkCollectedData) {
+        CoreEntity entity = null;
+        switch (odkCollectedData.recordEntity) {
+            case REGION: entity = boxRegions.query(Region_.id.equal(odkCollectedData.recordId)).build().findFirst(); break;
+            case HOUSEHOLD: entity = boxHouseholds.query(Household_.id.equal(odkCollectedData.recordId)).build().findFirst(); break;
+            case MEMBER: entity = boxMembers.query(Member_.id.equal(odkCollectedData.recordId)).build().findFirst(); break;
+            case VISIT: entity = boxVisits.query(Visit_.id.equal(odkCollectedData.recordId)).build().findFirst(); break;
+            //case USER: entity = boxUsers.query(User_.id.equal(odkCollectedData.recordId)).build().findFirst(); break;
+        }
+
+        return entity;
+    }
 
     private void showLoadingDialog(String msg, boolean show){
         if (show) {

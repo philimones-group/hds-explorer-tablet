@@ -20,6 +20,7 @@ import org.philimone.hds.explorer.model.CollectedData;
 import org.philimone.hds.explorer.model.CollectedData_;
 import org.philimone.hds.explorer.model.CoreCollectedData;
 import org.philimone.hds.explorer.model.CoreCollectedData_;
+import org.philimone.hds.explorer.model.CoreEntity;
 import org.philimone.hds.explorer.model.CoreFormExtension;
 import org.philimone.hds.explorer.model.Dataset;
 import org.philimone.hds.explorer.model.Dataset_;
@@ -34,11 +35,13 @@ import org.philimone.hds.explorer.model.Form_;
 import org.philimone.hds.explorer.model.Household;
 import org.philimone.hds.explorer.model.Household_;
 import org.philimone.hds.explorer.model.Member;
+import org.philimone.hds.explorer.model.Member_;
 import org.philimone.hds.explorer.model.Module;
 import org.philimone.hds.explorer.model.Region;
 import org.philimone.hds.explorer.model.Region_;
 import org.philimone.hds.explorer.model.User;
 import org.philimone.hds.explorer.model.Visit;
+import org.philimone.hds.explorer.model.Visit_;
 import org.philimone.hds.explorer.model.followup.TrackingSubjectList;
 import org.philimone.hds.explorer.utilities.FormGroupUtilities;
 import org.philimone.hds.explorer.widget.DialogFactory;
@@ -90,6 +93,8 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
     private Box<CollectedData> boxCollectedData;
     private Box<CoreCollectedData> boxCoreCollectedData;
     private Box<Household> boxHouseholds;
+    private Box<Member> boxMembers;
+    private Box<Visit> boxVisits;
     private Box<Region> boxRegions;
     private Box<Form> boxForms;
     private Box<CoreFormExtension> boxCoreFormExtensions;
@@ -161,6 +166,8 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
         this.boxHouseholds = ObjectBoxDatabase.get().boxFor(Household.class);
         this.boxModules = ObjectBoxDatabase.get().boxFor(Module.class);
         this.boxDatasets = ObjectBoxDatabase.get().boxFor(Dataset.class);
+        this.boxMembers = ObjectBoxDatabase.get().boxFor(Member.class);
+        this.boxVisits = ObjectBoxDatabase.get().boxFor(Visit.class);
     }
 
     public void setCollectedDataFragmentListener(CollectedDataFragmentListener collectedDataFragmentListener) {
@@ -400,7 +407,8 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
 
         if (dataItem.isFormExtension()) {
             CoreCollectedData coreCollectedData = boxCoreCollectedData.query(CoreCollectedData_.collectedId.equal(collectedData.collectedId)).build().findFirst();
-            EditCoreExtensionFormUtil formUtil = new EditCoreExtensionFormUtil(this, this.getContext(), null, coreCollectedData, (Household) this.subject, this.formUtilities, new EditCoreExtensionFormUtil.Listener() {
+            CoreEntity existingEntity = getRecordEntity(collectedData);
+            EditCoreExtensionFormUtil formUtil = new EditCoreExtensionFormUtil(this, this.getContext(), null, coreCollectedData, existingEntity, this.formUtilities, new EditCoreExtensionFormUtil.Listener() {
                 @Override
                 public void onFinishedCollecting() {
                     showCollectedData();
@@ -421,6 +429,19 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
         }
 
 
+    }
+
+    private CoreEntity getRecordEntity(CollectedData odkCollectedData) {
+        CoreEntity entity = null;
+        switch (odkCollectedData.recordEntity) {
+            case REGION: entity = boxRegions.query(Region_.id.equal(odkCollectedData.recordId)).build().findFirst(); break;
+            case HOUSEHOLD: entity = boxHouseholds.query(Household_.id.equal(odkCollectedData.recordId)).build().findFirst(); break;
+            case MEMBER: entity = boxMembers.query(Member_.id.equal(odkCollectedData.recordId)).build().findFirst(); break;
+            case VISIT: entity = boxVisits.query(Visit_.id.equal(odkCollectedData.recordId)).build().findFirst(); break;
+            //case USER: entity = boxUsers.query(User_.id.equal(odkCollectedData.recordId)).build().findFirst(); break;
+        }
+
+        return entity;
     }
 
     private Form getFormById(List<Form> forms, String formId){

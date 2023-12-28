@@ -18,11 +18,9 @@ import org.philimone.hds.explorer.model.CoreFormColumnOptions;
 import org.philimone.hds.explorer.model.CoreFormColumnOptions_;
 import org.philimone.hds.explorer.model.CoreFormExtension;
 import org.philimone.hds.explorer.model.CoreFormExtension_;
-import org.philimone.hds.explorer.model.Household;
-import org.philimone.hds.explorer.model.Round;
-import org.philimone.hds.explorer.model.Round_;
-import org.philimone.hds.explorer.model.User;
+import org.philimone.hds.explorer.model.*;
 import org.philimone.hds.explorer.model.enums.CoreFormEntity;
+import org.philimone.hds.explorer.model.enums.SubjectEntity;
 import org.philimone.hds.explorer.model.oldstate.SavedEntityState;
 import org.philimone.hds.explorer.server.settings.generator.CodeGeneratorService;
 import org.philimone.hds.explorer.widget.DialogFactory;
@@ -43,6 +41,7 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -85,6 +84,8 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
     protected Box<CoreFormExtension> boxCoreFormExtension;
     protected Box<CollectedData> boxCollectedData;
     protected Box<Household> boxHouseholds;
+    protected Box<Region> mBoxRegions;
+    protected Box<Member> mBoxMembers;
     protected Box<SavedEntityState> boxSavedEntityStates;
 
     protected FormUtilities odkFormUtilities;
@@ -136,6 +137,33 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
 
         initBoxes();
         readCollectedDataForEdit();
+    }
+
+    protected FormUtil(Fragment fragment, Context context, HForm hform, T existentEntity, CoreCollectedData coreCollectedData, FormUtilities odkFormUtilities, FormUtilListener<T> listener){
+        this.fragment = fragment;
+        this.fragmentManager = fragment.getActivity().getSupportFragmentManager();
+        this.context = context;
+        this.form = hform;
+        this.user = Bootstrap.getCurrentUser();
+        this.codeGenerator = new CodeGeneratorService();
+        this.preloadedMap = new PreloadMap();
+
+        this.currentMode = Mode.EDIT;
+        this.entity = existentEntity;
+
+        //ODK Form Utilities
+        this.odkFormUtilities = odkFormUtilities;
+        this.odkFormUtilities.setOdkFormResultListener(this);
+
+        this.listener = listener;
+
+        initBoxes();
+        //readCollectedDataForEdit();
+        this.collectedData = coreCollectedData;
+        if (this.collectedData.uploaded && !collectedData.uploadedWithError) {
+            //make the form readonly
+            this.form.setReadonly(true);
+        }
     }
 
     protected FormUtil(AppCompatActivity activity, Context context, HForm hform, FormUtilities odkFormUtilities, FormUtilListener<T> listener){
@@ -216,6 +244,9 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
         if (this.boxSavedEntityStates == null) {
             this.boxSavedEntityStates = ObjectBoxDatabase.get().boxFor(SavedEntityState.class);
         }
+
+        this.mBoxRegions = ObjectBoxDatabase.get().boxFor(Region.class);
+        this.mBoxMembers = ObjectBoxDatabase.get().boxFor(Member.class);
     }
 
     protected void initialize() {
@@ -454,8 +485,8 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
             odkCollectedData.setUpdatedBy("");
             odkCollectedData.setSupervisedBy("");
 
-            odkCollectedData.setRecordId(household.getId());
-            odkCollectedData.setRecordEntity(household.getTableName());
+            odkCollectedData.setRecordId(getCurrentRecordId());
+            odkCollectedData.setRecordEntity(getCurrentTablename());
             odkCollectedData.collectedId = this.collectedData.collectedId;
 
             this.boxCollectedData.put(odkCollectedData);
@@ -474,8 +505,8 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
             odkCollectedData.setUpdatedBy(user.getUsername());
             //collectedData.setSupervisedBy("");
 
-            odkCollectedData.setRecordId(household.getId());
-            odkCollectedData.setRecordEntity(household.getTableName());
+            odkCollectedData.setRecordId(getCurrentRecordId());
+            odkCollectedData.setRecordEntity(getCurrentTablename());
             odkCollectedData.collectedId = this.collectedData.collectedId;
 
             this.boxCollectedData.put(odkCollectedData);
@@ -485,6 +516,7 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
         //save corecollecteddata
         this.collectedData.extensionCollected = true;
         this.collectedData.extensionCollectedUri = odkCollectedData.formUri;
+        this.collectedData.extensionCollectedFilepath = odkCollectedData.formXmlPath;
         this.boxCoreCollectedData.put(collectedData);
 
         onFinishedExtensionCollection();
@@ -513,8 +545,8 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
             odkCollectedData.setUpdatedBy("");
             odkCollectedData.setSupervisedBy("");
 
-            odkCollectedData.setRecordId(household.getId());
-            odkCollectedData.setRecordEntity(household.getTableName());
+            odkCollectedData.setRecordId(getCurrentRecordId());
+            odkCollectedData.setRecordEntity(getCurrentTablename());
             odkCollectedData.collectedId = this.collectedData.collectedId;
 
             this.boxCollectedData.put(odkCollectedData);
@@ -541,6 +573,7 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
         //save corecollecteddata
         this.collectedData.extensionCollected = true;
         this.collectedData.extensionCollectedUri = odkCollectedData.formUri;
+        this.collectedData.extensionCollectedFilepath = odkCollectedData.formXmlPath;
         this.boxCoreCollectedData.put(collectedData);
 
         onFinishedExtensionCollection();
@@ -591,8 +624,85 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
     }
     //</editor-fold>
 
+    private SubjectEntity getCurrentTablename() {
+
+        if (this.entity instanceof Death) return SubjectEntity.MEMBER;
+        if (this.entity instanceof HeadRelationship) return SubjectEntity.HOUSEHOLD;
+        if (this.entity instanceof Household) return SubjectEntity.HOUSEHOLD;
+        if (this.entity instanceof IncompleteVisit) return SubjectEntity.MEMBER;
+        if (this.entity instanceof Inmigration) return SubjectEntity.MEMBER;
+        if (this.entity instanceof MaritalRelationship) return SubjectEntity.MEMBER;
+        if (this.entity instanceof Member) return SubjectEntity.MEMBER;
+        if (this.entity instanceof Outmigration) return SubjectEntity.MEMBER;
+        if (this.entity instanceof PregnancyChild) return SubjectEntity.MEMBER;
+        if (this.entity instanceof PregnancyOutcome) return SubjectEntity.MEMBER;
+        if (this.entity instanceof PregnancyRegistration) return SubjectEntity.MEMBER;
+        if (this.entity instanceof Region) return SubjectEntity.REGION;
+        if (this.entity instanceof Visit) return SubjectEntity.HOUSEHOLD;
+
+        return SubjectEntity.INVALID_ENUM;
+    }
+
+    private long getCurrentRecordId() {
+        String code = "";
+        SubjectEntity subject = null;
+
+        if (this.entity instanceof Death) {
+            code = ((Death) this.entity).memberCode;
+            subject = SubjectEntity.MEMBER;
+        } else if (this.entity instanceof HeadRelationship) {
+            code = ((HeadRelationship) this.entity).householdCode;
+            subject = SubjectEntity.HOUSEHOLD;
+        } else if (this.entity instanceof Household) {
+            return this.entity.getId();
+        } else if (this.entity instanceof IncompleteVisit) {
+            return ((IncompleteVisit) this.entity).member.getTargetId();
+        } else if (this.entity instanceof Inmigration) {
+            code = ((Inmigration) this.entity).memberCode;
+            subject = SubjectEntity.MEMBER;
+        } else if (this.entity instanceof MaritalRelationship) {
+            code = ((MaritalRelationship) this.entity).memberA_code;
+            subject = SubjectEntity.MEMBER;
+        } else if (this.entity instanceof Member) {
+            return this.entity.getId();
+        } else if (this.entity instanceof Outmigration) {
+            code = ((Outmigration) this.entity).memberCode;
+            subject = SubjectEntity.MEMBER;
+        } else if (this.entity instanceof PregnancyChild) {
+            PregnancyOutcome outcome = ((PregnancyChild) this.entity).outcome.getTarget();
+            code = outcome.motherCode;
+            subject = SubjectEntity.MEMBER;
+        } else if (this.entity instanceof PregnancyOutcome) {
+            code = ((PregnancyOutcome) this.entity).motherCode;
+            subject = SubjectEntity.MEMBER;
+        } else if (this.entity instanceof PregnancyRegistration) {
+            code = ((PregnancyRegistration) this.entity).motherCode;
+            subject = SubjectEntity.MEMBER;
+        } else if (this.entity instanceof Region) {
+            return this.entity.getId();
+        } else if (this.entity instanceof Visit) {
+            code = ((Visit) this.entity).householdCode;
+            subject = SubjectEntity.HOUSEHOLD;
+        }
+
+          switch (subject) {
+              case REGION:
+                  Region region = this.mBoxRegions.query(Region_.code.equal(code)).build().findFirst();
+                  return Objects.requireNonNull(region).getId();
+              case HOUSEHOLD:
+                  Household hh = this.boxHouseholds.query(Household_.code.equal(code)).build().findFirst();
+                  return Objects.requireNonNull(hh).getId();
+              case MEMBER:
+                  Member member = this.mBoxMembers.query(Member_.code.equal(code)).build().findFirst();
+                  return Objects.requireNonNull(member).getId();
+          }
+
+        return -1;
+    }
+
     private String getFormName(){
 
+        if (this instanceof RegionFormUtil) return this.context.getString(R.string.core_entity_region_lbl);
         if (this instanceof ChangeHeadFormUtil) return this.context.getString(R.string.core_entity_changehoh_lbl);
         if (this instanceof DeathFormUtil) return this.context.getString(R.string.core_entity_death_lbl);
         if (this instanceof ExternalInMigrationFormUtil) return this.context.getString(R.string.core_entity_external_inmigration_lbl);

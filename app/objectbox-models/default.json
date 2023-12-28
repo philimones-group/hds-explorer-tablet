@@ -1919,7 +1919,7 @@
     },
     {
       "id": "23:4611124115189785343",
-      "lastPropertyId": "24:9049047085137235743",
+      "lastPropertyId": "25:6523095298570501568",
       "name": "CoreCollectedData",
       "properties": [
         {
@@ -2028,6 +2028,11 @@
         {
           "id": "24:9049047085137235743",
           "name": "recordType",
+          "type": 9
+        },
+        {
+          "id": "25:6523095298570501568",
+          "name": "extensionCollectedFilepath",
           "type": 9
         }
       ],

@@ -20,6 +20,10 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import mz.betainteractive.io.readers.FileIO;
+import mz.betainteractive.odk.FormUtilities;
+import mz.betainteractive.odk.storage.access.OdkStorageType;
+
 public class SyncUploadEntitiesTask extends AsyncTask<Void, Integer, UploadResponse> {
     private static final String API_PATH = "/api/import";
 
@@ -33,6 +37,7 @@ public class SyncUploadEntitiesTask extends AsyncTask<Void, Integer, UploadRespo
 
     private CoreCollectedData entityToUpload;
 
+    private OdkStorageType odkStorageType;
     private Listener listener;
 
     public SyncUploadEntitiesTask(Context context, String url, String username, String password, CoreCollectedData entityToUpload, Listener listener) {
@@ -44,6 +49,8 @@ public class SyncUploadEntitiesTask extends AsyncTask<Void, Integer, UploadRespo
         this.entityToUpload = entityToUpload;
 
         this.listener = listener;
+
+        this.odkStorageType = FormUtilities.getOdkStorageType(context);
     }
 
     private HttpURLConnection createPostConnection(CoreCollectedData collectedData) {
@@ -123,10 +130,31 @@ public class SyncUploadEntitiesTask extends AsyncTask<Void, Integer, UploadRespo
         return null;
     }
 
+    /*
+    * Create a XML with main tag "data" that has core form xml and odk core extension xml on it
+    * This way we upload directly to the server the core and extension form togheter
+    * */
+    private byte[] getComposedXmlData(CoreCollectedData collectedData) {
+        String coreXmlText = new FileIO(collectedData.formFilename).readFile(); //reads from inner storage - can use File
+        String odkXmlText = FileIO.readFile(mContext, this.odkStorageType, collectedData.extensionCollectedFilepath); //can read from different storage types
+
+        coreXmlText = removeMainTag(coreXmlText);
+        odkXmlText = removeMainTag(odkXmlText);
+
+        String builder = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><data>" + coreXmlText + odkXmlText + "</data>";
+        return builder.getBytes();
+    }
+
+    private String removeMainTag(String xml) {
+        if (xml == null) return null;
+        String mainTagRegex = "<\\?xml[^\\?]*\\?>";
+        return xml.replaceAll(mainTagRegex, "");
+    }
+
     private UploadResponse upload(CoreCollectedData collectedData){
 
         HttpURLConnection connection = createPostConnection(collectedData);
-        byte[] xmlBytes = getXmlData(collectedData);
+        byte[] xmlBytes = getComposedXmlData(collectedData); //getXmlData(collectedData);
         boolean uploaded = false;
         String response = null;
         int responseCode = 0;
@@ -153,7 +181,7 @@ public class SyncUploadEntitiesTask extends AsyncTask<Void, Integer, UploadRespo
                 InputStream input = responseCode==HttpURLConnection.HTTP_OK ? connection.getInputStream() : connection.getErrorStream();
                 BufferedInputStream bis = new BufferedInputStream(input);
                 ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-                byte[] bytes = new byte[1024];
+                byte[] bytes = new byte[2048];
                 int length = 0;
 
                 while (length != -1) {

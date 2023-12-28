@@ -62,6 +62,8 @@ public class CoreCollectedData {
 
     public String extensionCollectedUri;
 
+    public String extensionCollectedFilepath;
+
     public CoreCollectedData() {
         this.createdDate = new Date();
     }

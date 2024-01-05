@@ -34,6 +34,7 @@ public class MemberAdapter extends RecyclerView.Adapter<MemberAdapter.MemberView
     private boolean showHouseholdAndCode = false;
     private boolean showExtraDetails = false;
     private boolean showGender = false;
+    private boolean showAge = false;
     private MemberIcon memberIcon;
 
     public enum MemberIcon {NORMAL_MEMBER_ICON, NORMAL_MEMBER_CHECKED_ICON, NORMAL_HEAD_ICON, NORMAL_SECHEAD_ICON, NORMAL_MEMBER_NEW_ICON, NORMAL_HEAD_NEW_ICON}
@@ -179,6 +180,14 @@ public class MemberAdapter extends RecyclerView.Adapter<MemberAdapter.MemberView
         this.showGender = showGender;
     }
 
+    public boolean isShowAge() {
+        return showAge;
+    }
+
+    public void setShowAge(boolean showAge) {
+        this.showAge = showAge;
+    }
+
     public boolean isEmpty() {
         return this.members.isEmpty();
     }
@@ -226,6 +235,10 @@ public class MemberAdapter extends RecyclerView.Adapter<MemberAdapter.MemberView
 
             if (showGender) {
                 extraCode += (extraCode.isEmpty() ? "  " : " - ") + mContext.getString(R.string.member_details_gender_lbl)+" "+mb.gender.code;
+            }
+
+            if (showAge) {
+                extraCode += ", " + mContext.getString(R.string.member_details_age_lbl)+" "+mb.age;
             }
 
             txtName.setText(mb.getName());

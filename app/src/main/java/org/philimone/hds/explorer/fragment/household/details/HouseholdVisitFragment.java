@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment;
 import io.objectbox.Box;
 import io.objectbox.query.QueryBuilder;
 import mz.betainteractive.odk.FormUtilities;
+import mz.betainteractive.utilities.GeneralUtil;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -41,6 +42,8 @@ import org.philimone.hds.explorer.main.hdsforms.OutmigrationFormUtil;
 import org.philimone.hds.explorer.main.hdsforms.PregnancyOutcomeFormUtil;
 import org.philimone.hds.explorer.main.hdsforms.PregnancyRegistrationFormUtil;
 import org.philimone.hds.explorer.main.hdsforms.VisitFormUtil;
+import org.philimone.hds.explorer.model.ApplicationParam;
+import org.philimone.hds.explorer.model.ApplicationParam_;
 import org.philimone.hds.explorer.model.CollectedData;
 import org.philimone.hds.explorer.model.CollectedData_;
 import org.philimone.hds.explorer.model.CoreCollectedData;
@@ -78,6 +81,7 @@ import org.philimone.hds.explorer.widget.LoadingDialog;
 import org.philimone.hds.explorer.widget.RecyclerListView;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -128,6 +132,7 @@ public class HouseholdVisitFragment extends Fragment {
     private Box<IncompleteVisit> boxIncompleteVisits;
     private Box<CollectedData> boxCollectedData;
     private Box<CoreCollectedData> boxCoreCollectedData;
+    private Box<ApplicationParam> boxAppParams;
     private Box<Form> boxForms;
 
     private HouseholdDetailsListener householdDetailsListener;
@@ -137,6 +142,8 @@ public class HouseholdVisitFragment extends Fragment {
     private VisitEventsMode currentEventMode = VisitEventsMode.HOUSEHOLD_EVENTS;
 
     private boolean respondentNotRegistered = false;
+    private int minimunMotherAge;
+    private int minimunSpouseAge;
 
     private enum VisitEventsMode { HOUSEHOLD_EVENTS, MEMBER_EVENTS, RESPONDENT_NOT_REG_EVENTS}
 
@@ -220,6 +227,7 @@ public class HouseholdVisitFragment extends Fragment {
     private void initBoxes() {
         this.boxCollectedData = ObjectBoxDatabase.get().boxFor(CollectedData.class);
         this.boxCoreCollectedData = ObjectBoxDatabase.get().boxFor(CoreCollectedData.class);
+        this.boxAppParams = ObjectBoxDatabase.get().boxFor(ApplicationParam.class);
         this.boxForms = ObjectBoxDatabase.get().boxFor(Form.class);
         this.boxUsers = ObjectBoxDatabase.get().boxFor(User.class);
         this.boxRegions = ObjectBoxDatabase.get().boxFor(Region.class);
@@ -356,6 +364,37 @@ public class HouseholdVisitFragment extends Fragment {
             onCollectExtraFormClicked();
         });
 
+        this.minimunMotherAge = retrieveMinimumMotherAge();
+        this.minimunSpouseAge = retrieveMinimumSpouseAge();
+
+    }
+
+    private int retrieveMinimumMotherAge() {
+        ApplicationParam param = this.boxAppParams.query().equal(ApplicationParam_.name, ApplicationParam.PARAMS_MIN_AGE_OF_MOTHER, QueryBuilder.StringOrder.CASE_SENSITIVE).build().findFirst();
+
+        if (param != null) {
+            try {
+                return Integer.parseInt(param.value);
+            } catch (Exception ex) {
+
+            }
+        }
+
+        return 12;
+    }
+
+    private int retrieveMinimumSpouseAge() {
+        ApplicationParam param = this.boxAppParams.query().equal(ApplicationParam_.name, ApplicationParam.PARAMS_MIN_AGE_OF_SPOUSE, QueryBuilder.StringOrder.CASE_SENSITIVE).build().findFirst();
+
+        if (param != null) {
+            try {
+                return Integer.parseInt(param.value);
+            } catch (Exception ex) {
+
+            }
+        }
+
+        return 12;
     }
 
     private void onCollectExtraFormClicked() {
@@ -485,20 +524,23 @@ public class HouseholdVisitFragment extends Fragment {
         //disable item selection
         setMainListsSelectable(false);
     }
-    
+
     private void setMemberMode() {
         this.currentEventMode = VisitEventsMode.MEMBER_EVENTS;
         boolean isCensusHousehold = this.household.recentlyCreated;
         boolean notVisited = countCollectedForms(selectedMember)==0;
+        int age = GeneralUtil.getAge(this.selectedMember.dob, new Date());
+        boolean isAtMotherAge = age >= this.minimunMotherAge;
+        boolean isAtSpouseAge = age >= this.minimunMotherAge;
 
         this.btnVisitMemberEnu.setEnabled(false);
-        this.btnVisitBirthReg.setEnabled(this.selectedMember!=null && this.selectedMember.gender== Gender.FEMALE);
-        this.btnVisitPregnancyReg.setEnabled(this.selectedMember!=null && this.selectedMember.gender== Gender.FEMALE);
+        this.btnVisitBirthReg.setEnabled(this.selectedMember!=null && this.selectedMember.gender== Gender.FEMALE && isAtMotherAge);
+        this.btnVisitPregnancyReg.setEnabled(this.selectedMember!=null && this.selectedMember.gender== Gender.FEMALE && isAtMotherAge);
         this.btnVisitExtInmigration.setEnabled(false);
         this.btnVisitIntInmigration.setEnabled(false);
         this.btnVisitOutmigration.setEnabled(true && !isCensusHousehold);
         this.btnVisitDeath.setEnabled(true && !isCensusHousehold);
-        this.btnVisitMaritalRelationship.setEnabled(true);
+        this.btnVisitMaritalRelationship.setEnabled(true && isAtSpouseAge);
         this.btnVisitExtraForm.setEnabled(true); //we need to analyse better this
 
         this.btnVisitChangeHead.setEnabled(false);
@@ -545,6 +587,7 @@ public class HouseholdVisitFragment extends Fragment {
         MemberAdapter adapter = new MemberAdapter(this.getContext(), R.layout.household_visit_member_item, members);
         //adapter.setShowExtraDetails(true);
         adapter.setShowGender(true);
+        adapter.setShowAge(true);
         this.lvHouseholdMembers.setAdapter(adapter);
     }
 
@@ -580,7 +623,8 @@ public class HouseholdVisitFragment extends Fragment {
 
         //group the coreList in Map
         for(CoreCollectedData collectedData : coreList) {
-            mapData.get(collectedData.formEntity).add(new VisitCollectedDataItem(collectedData));
+            FormUtilities.FormStatus collectedDataStatus = odkFormUtilities.isFormFinalized(collectedData.extensionCollectedUri);
+            mapData.get(collectedData.formEntity).add(new VisitCollectedDataItem(collectedData, collectedDataStatus));
         }
         //group the odkList in Map - EXTRA FORMS
         for(CollectedData collectedData : extraList) {

@@ -17,6 +17,7 @@ import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Environment;
+import android.os.ParcelUuid;
 import android.os.storage.StorageManager;
 import android.os.storage.StorageVolume;
 import android.provider.DocumentsContract;
@@ -88,6 +89,10 @@ public class FormUtilities {
     private OdkFormLoadTask currentLoadTask;
     private OnPermissionRequestListener onPermissionRpStateRequestListener;
     private OnPermissionRequestListener onPermissionReadWriteRequestListener;
+
+    public enum FormStatus {
+        FINALIZED, UNFINALIZED, NOT_FOUND
+    }
 
 	public FormUtilities(Fragment fragment, OdkFormResultListener listener) {
 	    this.fragment = fragment;
@@ -579,6 +584,10 @@ public class FormUtilities {
         }
     }
 
+    public void editLastOpenedForm(){
+        odkResultLauncher.launch(new Intent(Intent.ACTION_EDIT, contentUri));
+    }
+
     private void createUnfinishedFormDialog() {
         formUnFinished = true;
 
@@ -766,6 +775,46 @@ public class FormUtilities {
         return null;
     }
 
+    public FormStatus isFormFinalized(String contentUriStr) {
+        ContentResolver resolver = mContext.getContentResolver();
+        Uri contentUri = Uri.parse(contentUriStr);
+        FormStatus formStatus = FormStatus.NOT_FOUND;
+
+        try{
+
+            Cursor cursor = resolver.query(contentUri, new String[] { InstanceProviderAPI.InstanceColumns.STATUS,
+                            InstanceProviderAPI.InstanceColumns.INSTANCE_FILE_PATH,
+                            InstanceProviderAPI.InstanceColumns.DISPLAY_NAME,
+                            InstanceProviderAPI.InstanceColumns.LAST_STATUS_CHANGE_DATE },
+                    InstanceProviderAPI.InstanceColumns.STATUS + "=?",
+                    new String[] { InstanceProviderAPI.STATUS_COMPLETE }, null);
+
+            if (cursor.moveToNext()) {
+                //Log.d("move next", ""+cursor.getString(0));
+                int columnIndex = cursor.getColumnIndex(InstanceProviderAPI.InstanceColumns.STATUS);
+                String status = cursor.getString(columnIndex);
+
+                //guarantee that is a imcomplete form
+                if (InstanceProviderAPI.STATUS_INCOMPLETE.equals(status)) {
+                    formStatus = FormStatus.UNFINALIZED;
+                } else { //its a completed form
+                    formStatus = FormStatus.FINALIZED;
+                }
+
+            } else {
+                //Log.d("move next", "couldnt find executed form");
+                formStatus = FormStatus.NOT_FOUND;
+            }
+
+            cursor.close();
+        }catch(Exception e){
+            System.err.println("Exception while trying to close cursor !");
+            e.printStackTrace();
+        }
+
+        return formStatus;
+    }
+
     class CheckFormStatus extends AsyncTask<Void, Void, Boolean> {
 
         private ContentResolver resolver;
@@ -779,6 +828,7 @@ public class FormUtilities {
         @Override
         protected Boolean doInBackground(Void... arg0) {
 
+            /*
             Cursor cursorx = resolver.query(contentUri, null, null, null,null);
             while (cursorx.moveToNext()) {
                 Log.d("started", "record");
@@ -789,7 +839,7 @@ public class FormUtilities {
                 }
 
                 Log.d("finished", "record");
-            }
+            }*/
 
 
             Cursor cursor = resolver.query(contentUri, new String[] { InstanceProviderAPI.InstanceColumns.STATUS,

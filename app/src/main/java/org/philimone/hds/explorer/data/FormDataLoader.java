@@ -753,7 +753,7 @@ public class FormDataLoader implements Serializable {
 
             //Log.d("forms", ""+user.getModules() +" - " + form.getModules() );
             //Log.d("forms-map", "" + form.formMap );
-            if (StringUtil.containsAny(user.modules, form.modules)){ //if the user has access to module specified on Form
+            if (StringUtil.containsAny(form.modules, user.getSelectedModules())){ //if the user has access to module specified on Form
 
                 FormDataLoader loader = new FormDataLoader(form);
 
@@ -797,7 +797,7 @@ public class FormDataLoader implements Serializable {
 
             //Log.d("forms", ""+user.getModules() +" - " + form.getModules() );
             //Log.d("forms-map", "" + form.formMap );
-            if (StringUtil.containsAny(user.modules, form.modules)){ //if the user has access to module specified on Form
+            if (StringUtil.containsAny(form.modules, user.getSelectedModules())){ //if the user has access to module specified on Form
 
                 FormDataLoader loader = new FormDataLoader(form);
                 /*

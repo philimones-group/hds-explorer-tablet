@@ -52,7 +52,11 @@
     <string name="odk_unfinished_button_save">Enregistrer le formulaire</string>
     <string name="odk_unfinished_form_saved">Le formulaire a été enregistré, mais pas finalisé, il peut être modifié ultérieurement.</string>
     <string name="odk_unfinished_form_not_found">Le formulaire n\'a pas pu être trouvé dans ODK Collect. Veuillez vous assurer qu\'il existe et qu\'il a été écrit correctement.</string>
-
+    <string name="odk_unfinished_extension_msg">Le formulaire d\'extension n\'a pas été finalisé. Ce (%1$s) ne sera pas téléchargé car le formulaire d\'extension correspondant doit être finalisé.\nVeuillez choisir l\'action suivante?</string>
+    <string name="odk_unfinished_extension_button_edit">Modifier le formulaire</string>
+    <string name="odk_unfinished_extension_button_save">Enregistrer le formulaire</string>
+    <string name="odk_unfinished_extension_notfinalized">Non finalisé</string>
+    <string name="odk_unfinished_extension_notfound">Non trouvé</string>
 
     <!-- Sync Tasks -->
     <string name="sync_downloading_lbl">En téléchargeant</string>

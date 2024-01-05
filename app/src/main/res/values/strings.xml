@@ -54,7 +54,11 @@
     <string name="odk_unfinished_button_save">Save Form</string>
     <string name="odk_unfinished_form_saved">The form was saved but is not finalized, can be edited later.</string>
     <string name="odk_unfinished_form_not_found">The form wasn\'t found on ODK Collect. Please, make sure the ODK Form exists.</string>
-
+    <string name="odk_unfinished_extension_msg">The extension form wasn\'t finalized. This (%1$s) won\'t be uploaded because the respective extension form must be finalized.\nPlease choose the next action?</string>
+    <string name="odk_unfinished_extension_button_edit">Edit Form</string>
+    <string name="odk_unfinished_extension_button_save">Save Form</string>
+    <string name="odk_unfinished_extension_notfinalized">Not finalized</string>
+    <string name="odk_unfinished_extension_notfound">Not found</string>
 
     <!-- Sync Tasks -->
     <string name="sync_downloading_lbl">Downloading</string>

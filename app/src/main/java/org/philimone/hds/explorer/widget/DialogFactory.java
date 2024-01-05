@@ -183,6 +183,22 @@ public class DialogFactory extends AppCompatDialog {
         return dialog;
     }
 
+    public static DialogFactory createMessageYN(Context context, @StringRes int titleResId, @StringRes int messageResId, @StringRes int yesTextResId, @StringRes int noTextResId,  OnYesNoClickListener clickListener){
+        DialogFactory dialog = newInstance(context, titleResId, messageResId, false, true, true, false);
+        dialog.dialogYesText = context.getString(yesTextResId);
+        dialog.dialogNoText = context.getString(noTextResId);
+        dialog.yesNoClickListener = clickListener;
+        return dialog;
+    }
+
+    public static DialogFactory createMessageYN(Context context, String title, String message, String yesText, String noText,  OnYesNoClickListener clickListener){
+        DialogFactory dialog = newInstance(context, title, message, false, true, true, false);
+        dialog.dialogYesText = yesText;
+        dialog.dialogNoText = noText;
+        dialog.yesNoClickListener = clickListener;
+        return dialog;
+    }
+
     public static DialogFactory createMessageYNC(Context context, String title, String message, OnYesNoCancelClickListener clickListener){
         DialogFactory dialog = newInstance(context, title, message, false, true, true, true);
         dialog.yesNoCancelClickListener = clickListener;

@@ -526,6 +526,53 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
     public void onFormUnFinalized(OdkFormLoadData formLoadData, Uri contentUri, String formId, String instanceFileUri, String metaInstanceName, Date lastUpdatedDate) {
         Log.d("ext form unfinalized"," "+contentUri);
 
+        buildExtensionFormNotFinalizedDialog(new DialogFactory.OnYesNoClickListener() {
+            @Override
+            public void onYesClicked() {
+                odkFormUtilities.editLastOpenedForm();
+            }
+
+            @Override
+            public void onNoClicked() {
+                //saving
+                saveUnfinalizedForm(contentUri, formId, instanceFileUri, metaInstanceName, lastUpdatedDate);
+                onFinishedExtensionCollection();
+            }
+        });
+
+
+    }
+
+    @Override
+    public void onDeleteForm(OdkFormLoadData formLoadData, Uri contentUri, String instanceFileUri) {
+
+        this.boxCollectedData.query().equal(CollectedData_.formUri, contentUri.toString(), QueryBuilder.StringOrder.CASE_SENSITIVE).build().remove(); //delete where formUri=contentUri
+
+        //delete instanceFileUri - already deleted by removing instance
+        if (instanceFileUri != null) {
+            //odkFormUtilities.deleteInstanceFile(instanceFileUri);
+        }
+
+        //save corecollecteddata
+        this.collectedData.extensionCollected = false;
+        this.collectedData.extensionCollectedUri = null;
+        this.boxCoreCollectedData.put(collectedData);
+
+        onFinishedExtensionCollection();
+    }
+
+    @Override
+    public void onFormLoadError(OdkFormLoadData formLoadData, OdkFormLoadResult result) {
+        onFinishedExtensionCollection();
+    }
+
+    @Override
+    public void onFormInstanceNotFound(OdkFormLoadData formLoadData, final Uri contenUri) {
+        buildDeleteFormInstanceNotFoundDialog(formLoadData, contenUri);
+        onFinishedExtensionCollection();
+    }
+
+    private void saveUnfinalizedForm(Uri contentUri, String formId, String instanceFileUri, String metaInstanceName, Date lastUpdatedDate) {
         //search existing record
         CollectedData odkCollectedData = this.boxCollectedData.query().equal(CollectedData_.formUri, contentUri.toString(), QueryBuilder.StringOrder.CASE_SENSITIVE)
                 .and().equal(CollectedData_.collectedId, this.collectedData.collectedId, QueryBuilder.StringOrder.CASE_SENSITIVE).build().findFirst();
@@ -575,37 +622,6 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
         this.collectedData.extensionCollectedUri = odkCollectedData.formUri;
         this.collectedData.extensionCollectedFilepath = odkCollectedData.formXmlPath;
         this.boxCoreCollectedData.put(collectedData);
-
-        onFinishedExtensionCollection();
-    }
-
-    @Override
-    public void onDeleteForm(OdkFormLoadData formLoadData, Uri contentUri, String instanceFileUri) {
-
-        this.boxCollectedData.query().equal(CollectedData_.formUri, contentUri.toString(), QueryBuilder.StringOrder.CASE_SENSITIVE).build().remove(); //delete where formUri=contentUri
-
-        //delete instanceFileUri - already deleted by removing instance
-        if (instanceFileUri != null) {
-            //odkFormUtilities.deleteInstanceFile(instanceFileUri);
-        }
-
-        //save corecollecteddata
-        this.collectedData.extensionCollected = false;
-        this.collectedData.extensionCollectedUri = null;
-        this.boxCoreCollectedData.put(collectedData);
-
-        onFinishedExtensionCollection();
-    }
-
-    @Override
-    public void onFormLoadError(OdkFormLoadData formLoadData, OdkFormLoadResult result) {
-        onFinishedExtensionCollection();
-    }
-
-    @Override
-    public void onFormInstanceNotFound(OdkFormLoadData formLoadData, final Uri contenUri) {
-        buildDeleteFormInstanceNotFoundDialog(formLoadData, contenUri);
-        onFinishedExtensionCollection();
     }
 
     private void buildDeleteFormInstanceNotFoundDialog(OdkFormLoadData formLoadData, final Uri contenUri){
@@ -622,6 +638,20 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
             }
         }).show();
     }
+
+    private void buildExtensionFormNotFinalizedDialog(DialogFactory.OnYesNoClickListener yesNoClickListener){
+
+        CoreFormExtension extension = this.collectedData.extension.getTarget();
+
+        String title = getContext().getString(R.string.warning_lbl);
+        String form = getContext().getString(extension.formEntity.name);
+        String message = getContext().getString(R.string.odk_unfinished_extension_msg, form);
+        String yes = getContext().getString(R.string.odk_unfinished_extension_button_edit);
+        String no = getContext().getString(R.string.odk_unfinished_extension_button_save);
+
+        DialogFactory.createMessageYN(this.getContext(), title, message, yes, no, yesNoClickListener).show();
+    }
+
     //</editor-fold>
 
     private SubjectEntity getCurrentTablename() {

@@ -373,6 +373,7 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
         List<CollectedDataItem> cdl = new ArrayList<>();
 
         for (CollectedData cd : list){
+            //Log.d("form", cd+", formid="+cd.getFormId()+", hassdl="+hasFormDataLoadersContains(cd.getFormId()));
             if (hasFormDataLoadersContains(cd.getFormId()) || getFormExtensionById(coreforms, cd.getFormId()) != null){
                 Form form = getFormById(forms, cd.getFormId());
                 CoreFormExtension formExtension = form == null ? getFormExtensionById(coreforms, cd.getFormId()) : null;
@@ -486,6 +487,9 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
                                                                 .equal(CollectedData_.recordEntity, subject.getTableName().code, QueryBuilder.StringOrder.CASE_SENSITIVE)
                                                                 .filter((c) -> StringUtil.containsAny(c.formModules, selectedModules))  //filter by module
                                                                 .build().find();
+
+        //Log.d("listed forms: ", "sub-id="+subject+list.size());
+
         return list;
     }
 

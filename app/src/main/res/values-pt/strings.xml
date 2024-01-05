@@ -52,6 +52,11 @@
     <string name="odk_unfinished_button_save">Salvar formulário</string>
     <string name="odk_unfinished_form_saved">O formulário foi salvo, mas não está finalizado, poderá ser editado depois</string>
     <string name="odk_unfinished_form_not_found">O formulário não pôde ser encontrado no ODK Collect. Por favor, certifique-se que ele existe e que foi escrito correctamente.</string>
+    <string name="odk_unfinished_extension_msg">O formulário de extensão não foi finalizado. O (%1$s) não será enviado, pois o formulário de extensão correspondente precisa ser finalizado.\nPor favor, escolha a próxima ação?</string>
+    <string name="odk_unfinished_extension_button_edit">Alterar Formulário</string>
+    <string name="odk_unfinished_extension_button_save">Salvar Formulário</string>
+    <string name="odk_unfinished_extension_notfinalized">Não finalizado</string>
+    <string name="odk_unfinished_extension_notfound">Não encontrado</string>
 
 
     <!-- Sync Tasks -->

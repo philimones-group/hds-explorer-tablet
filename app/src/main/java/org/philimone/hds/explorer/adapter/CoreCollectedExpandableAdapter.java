@@ -26,6 +26,7 @@ import java.util.List;
 import androidx.annotation.DrawableRes;
 import androidx.annotation.StringRes;
 
+import mz.betainteractive.odk.FormUtilities;
 import mz.betainteractive.utilities.StringUtil;
 
 public class CoreCollectedExpandableAdapter extends BaseExpandableListAdapter implements Serializable {
@@ -146,11 +147,20 @@ public class CoreCollectedExpandableAdapter extends BaseExpandableListAdapter im
 
                 if (cd.isExtensionCollected()) {
                     message = mContext.getString(R.string.core_form_group_item_extension_collected_lbl);
+
+                    if (cd.odkFormStatus == FormUtilities.FormStatus.UNFINALIZED) {
+                        message += " (" + mContext.getString(R.string.odk_unfinished_extension_notfinalized) + ")";
+                    } else if (cd.odkFormStatus == FormUtilities.FormStatus.NOT_FOUND) {
+                        message += " (" + mContext.getString(R.string.odk_unfinished_extension_notfound) + ")";
+                    }
+
                 } else if(formExtension.required){
                     message = mContext.getString(R.string.core_form_group_item_extension_not_collected_lbl);
                 } else {
                     message = mContext.getString(R.string.core_form_group_item_extension_not_required_lbl);
                 }
+
+
 
                 txtItem3.setText(mContext.getString(R.string.core_form_group_item_extension_lbl));
                 txtItem4.setText(message);

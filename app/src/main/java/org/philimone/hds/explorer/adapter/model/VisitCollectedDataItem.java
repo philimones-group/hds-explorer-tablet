@@ -7,6 +7,8 @@ import org.philimone.hds.explorer.model.Form;
 
 import java.util.Date;
 
+import mz.betainteractive.odk.FormUtilities;
+
 public class VisitCollectedDataItem {
     private CoreCollectedData coreCollectedData;
     private CollectedData odkCollectedData;
@@ -18,9 +20,9 @@ public class VisitCollectedDataItem {
     public Date updatedDate;
     public boolean uploaded;
     public Date uploadedDate;
+    public FormUtilities.FormStatus odkFormStatus;
 
-
-    public VisitCollectedDataItem(CoreCollectedData collectedData) {
+    public VisitCollectedDataItem(CoreCollectedData collectedData, FormUtilities.FormStatus status) {
         this.coreCollectedData = collectedData;
 
         this.formEntityCode = collectedData.formEntityCode;
@@ -29,6 +31,7 @@ public class VisitCollectedDataItem {
         this.updatedDate = collectedData.updatedDate;
         this.uploaded = collectedData.uploaded;
         this.updatedDate = collectedData.uploadedDate;
+        this.odkFormStatus = status;
     }
 
     public VisitCollectedDataItem(CollectedData collectedData, Form form) {

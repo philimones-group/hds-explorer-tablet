@@ -211,16 +211,20 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
         if (subject instanceof Household){
             household = (Household) subject;
 
-            region = this.boxRegions.query(Region_.code.equal(household.region)).build().findFirst();
+            if (household != null) {
+                region = this.boxRegions.query(Region_.code.equal(household.region)).build().findFirst();
+            }
             this.formDataLoaders = getFormLoaders(FormFilter.HOUSEHOLD);
             //loadFormValues(this.formDataLoaders, household, null, region);
         }
 
         if (subject instanceof Member){
             member = (Member) subject;
-            household = this.boxHouseholds.query(Household_.code.equal(member.householdCode)).build().findFirst();;
-            region = this.boxRegions.query(Region_.code.equal(household.region)).build().findFirst();
+            household = this.boxHouseholds.query(Household_.code.equal(member.householdCode)).build().findFirst();
 
+            if (household != null) {
+                region = this.boxRegions.query(Region_.code.equal(household.region)).build().findFirst();
+            }
             this.formDataLoaders = getFormLoaders(FormFilter.HOUSEHOLD_HEAD, FormFilter.MEMBER);
             //loadFormValues(this.formDataLoaders, household, null, region);
         }

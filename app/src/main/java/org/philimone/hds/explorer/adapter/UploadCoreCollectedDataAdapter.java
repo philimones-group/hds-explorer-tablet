@@ -5,7 +5,6 @@ import android.graphics.Paint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.TextView;
@@ -15,6 +14,8 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import org.philimone.hds.explorer.R;
+import org.philimone.hds.explorer.adapter.model.UploadCollectedDataItem;
+import org.philimone.hds.explorer.fragment.showcollected.adapter.model.CoreCollectedDataItem;
 import org.philimone.hds.explorer.model.CoreCollectedData;
 import org.philimone.hds.explorer.model.enums.CoreFormRecordType;
 
@@ -27,13 +28,13 @@ import mz.betainteractive.utilities.StringUtil;
  * Created by paul on 8/10/16.
  */
 public class CoreCollectedDataAdapter extends RecyclerView.Adapter<CoreCollectedDataAdapter.CoreCollectedDataViewHolder> {
-    private List<CoreCollectedData> collectedDataList;
+    private List<UploadCollectedDataItem> collectedDataList;
     private boolean[] selectedList;
     private boolean multiSelectable = true;
     private Context mContext;
     private OnItemActionListener listener;
 
-    public CoreCollectedDataAdapter(Context context, List<CoreCollectedData> objects, OnItemActionListener listener){
+    public CoreCollectedDataAdapter(Context context, List<UploadCollectedDataItem> objects, OnItemActionListener listener){
         this.collectedDataList = new ArrayList<>();
         this.collectedDataList.addAll(objects);
         this.selectedList = new boolean[objects.size()];
@@ -41,25 +42,26 @@ public class CoreCollectedDataAdapter extends RecyclerView.Adapter<CoreCollected
         this.listener = listener;
     }
 
-    public CoreCollectedDataAdapter(Context context, CoreCollectedData[] objects, OnItemActionListener listener){
+    public CoreCollectedDataAdapter(Context context, UploadCollectedDataItem[] objects, OnItemActionListener listener){
         this.collectedDataList = new ArrayList<>();
-        for (CoreCollectedData cd : objects) this.collectedDataList.add(cd);
+        for (UploadCollectedDataItem cd : objects) this.collectedDataList.add(cd);
         this.selectedList = new boolean[objects.length];
         this.mContext = context;
         this.listener = listener;
     }
 
-    public List<CoreCollectedData> getCollectedDataList(){
+    public List<UploadCollectedDataItem> getCollectedDataList(){
         return this.collectedDataList;
     }
 
-    public CoreCollectedData getItem(int position) {
+    public UploadCollectedDataItem getItem(int position) {
         return collectedDataList.get(position);
     }
 
     public void setCheckedOrUnchecked(int position) {
+        CoreCollectedData cd = collectedDataList.get(position).getCoreCollectedData();
 
-        if (collectedDataList.get(position).uploaded==false || collectedDataList.get(position).uploadedWithError) {
+        if (cd.uploaded==false || cd.uploadedWithError) {
             selectedList[position] = !selectedList[position];
             notifyDataSetChanged();
 
@@ -73,7 +75,8 @@ public class CoreCollectedDataAdapter extends RecyclerView.Adapter<CoreCollected
     public void setAllChecked(boolean checked) {
 
         for (int position = 0; position < selectedList.length; position++) {
-            if (!collectedDataList.get(position).uploaded || collectedDataList.get(position).uploadedWithError) {
+            CoreCollectedData cd = collectedDataList.get(position).getCoreCollectedData();
+            if (!cd.uploaded || cd.uploadedWithError) {
                 selectedList[position] = checked;
             }
         }
@@ -106,8 +109,8 @@ public class CoreCollectedDataAdapter extends RecyclerView.Adapter<CoreCollected
         notifyDataSetChanged();
     }
 
-    public List<CoreCollectedData> getSelectedCollectedData() {
-        List<CoreCollectedData> list = new ArrayList<>();
+    public List<UploadCollectedDataItem> getSelectedCollectedData() {
+        List<UploadCollectedDataItem> list = new ArrayList<>();
 
         for (int i = 0; i < selectedList.length; i++) {
             if (selectedList[i] == true) {
@@ -128,7 +131,7 @@ public class CoreCollectedDataAdapter extends RecyclerView.Adapter<CoreCollected
 
     @Override
     public void onBindViewHolder(@NonNull CoreCollectedDataViewHolder holder, int position) {
-        CoreCollectedData coreCollectedData = getItem(position);
+        UploadCollectedDataItem coreCollectedData = getItem(position);
         holder.setValues(coreCollectedData);
     }
 
@@ -154,7 +157,9 @@ public class CoreCollectedDataAdapter extends RecyclerView.Adapter<CoreCollected
             this.rowView = (ViewGroup) itemView;
         }
 
-        public void setValues(CoreCollectedData cd) {
+        public void setValues(UploadCollectedDataItem dataItem) {
+
+            CoreCollectedData  cd = dataItem.getCoreCollectedData();
 
             TextView txtItem1 = rowView.findViewById(R.id.txtItem1);
             TextView txtItem2 = rowView.findViewById(R.id.txtItem2);

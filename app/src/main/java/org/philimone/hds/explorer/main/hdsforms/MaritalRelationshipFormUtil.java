@@ -494,7 +494,7 @@ public class MaritalRelationshipFormUtil extends FormUtil<MaritalRelationship> {
         collectedData = new CoreCollectedData();
         collectedData.visitId = visit.id;
         collectedData.formEntity = CoreFormEntity.MARITAL_RELATIONSHIP;
-        collectedData.formEntityId = spouseA.id;
+        collectedData.formEntityId = maritalRelationship.id;
         collectedData.formEntityCode = spouseA.code;
         collectedData.formEntityName = spouseA.name + " -> " + spouseB.name;
         collectedData.formUuid = result.getFormUuid();

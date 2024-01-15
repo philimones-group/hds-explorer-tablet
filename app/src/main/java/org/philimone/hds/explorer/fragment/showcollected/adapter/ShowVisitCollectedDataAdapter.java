@@ -220,7 +220,7 @@ public class ShowVisitCollectedDataAdapter extends RecyclerView.Adapter<ShowVisi
             String uploadedDate = cd.uploadedDate==null ? "" : StringUtil.format(cd.uploadedDate, "yyyy-MM-dd HH:mm:ss");
             String code = StringUtil.isBlank(cd.formEntityCode) ? "" : cd.formEntityCode + " - ";
 
-            String name = cd.formEntityName; //hh!=null ? hh.name : mm!=null ? mm.name : rr!=null ? rr.name : "";
+            String name = hh.getName(); //hh!=null ? hh.name : mm!=null ? mm.name : rr!=null ? rr.name : "";
 
 
             txtItem1.setText(name);

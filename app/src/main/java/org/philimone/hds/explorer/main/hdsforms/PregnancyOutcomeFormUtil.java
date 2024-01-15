@@ -565,6 +565,9 @@ public class PregnancyOutcomeFormUtil extends FormUtil<PregnancyOutcome> {
 
             pregnancyOutcome.childs.add(pregnancyChild);
 
+            childMember.endType = ResidencyEndType.NOT_APPLICABLE;
+            childMember.endDate = null;
+
             if (type != PregnancyOutcomeType.LIVEBIRTH) {
                 Death death = new Death();
                 death.visitCode = visitCode;

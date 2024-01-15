@@ -1,6 +1,7 @@
 package org.philimone.hds.explorer.fragment.member.details;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -162,7 +163,7 @@ public class MemberDetailsFragment extends Fragment {
         if (member.getEndType() == ResidencyEndType.EXTERNAL_OUTMIGRATION) return getString(R.string.member_details_endtype_ext_lbl);
         if (member.getEndType() == ResidencyEndType.DEATH) return getString(R.string.member_details_endtype_dth_lbl);
 
-        return member.getEndType().getId();
+        return getString(ResidencyEndType.INVALID_ENUM.name);
     }
 
     private String getEndDateMsg(Member member){

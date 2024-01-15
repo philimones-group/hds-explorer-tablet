@@ -273,7 +273,7 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
 
         if (currentMode == Mode.EDIT) {
             preloadUpdatedValues();
-            FormFragment form = FormFragment.newInstance(this.fragmentManager, this.form, Bootstrap.getInstancesPath(context), user.username, this.entity.getRecentlyCreatedUri(), preloadedMap, postExecution, false, true, this);
+            FormFragment form = FormFragment.newInstance(this.fragmentManager, this.form, Bootstrap.getInstancesPath(context), user.username, this.entity.getRecentlyCreatedUri(), preloadedMap, postExecution, backgroundMode, true, this);
             form.startCollecting();
         }
     }
@@ -373,25 +373,28 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
 
                             //Read Values
                             RepeatColumnValue repeatColumnValue = collectedValues.getRepeatColumn(hdsRepeatGroup);
-                            for (int repeatIndex = 0; repeatIndex < repeatColumnValue.getCount(); repeatIndex++) {
-                                Map<String, String> mapRepeatItem = null;
 
-                                if (repeatIndex >= 0 && repeatIndex < repeatGroupLists.size()) {
-                                    mapRepeatItem = repeatGroupLists.get(repeatIndex);
-                                } else {
-                                    mapRepeatItem = new LinkedHashMap<>();
-                                    repeatGroupLists.add(mapRepeatItem);
+                            if (repeatColumnValue != null) {
+                                for (int repeatIndex = 0; repeatIndex < repeatColumnValue.getCount(); repeatIndex++) {
+                                    Map<String, String> mapRepeatItem = null;
+
+                                    if (repeatIndex >= 0 && repeatIndex < repeatGroupLists.size()) {
+                                        mapRepeatItem = repeatGroupLists.get(repeatIndex);
+                                    } else {
+                                        mapRepeatItem = new LinkedHashMap<>();
+                                        repeatGroupLists.add(mapRepeatItem);
+                                    }
+
+                                    //map the inner method and its value
+                                    String hdsRepeatInnerValue = repeatColumnValue.get(hdsRepeatInnerColumn, repeatIndex).getValue();
+                                    mapRepeatItem.put(odkRepeatInnerColumn, hdsRepeatInnerValue);
+
+                                    //Log.d("mapkv-"+repeatIndex+"-"+odkRepeatInnerColumn, hdsRepeatInnerValue);
                                 }
 
-                                //map the inner method and its value
-                                String hdsRepeatInnerValue = repeatColumnValue.get(hdsRepeatInnerColumn, repeatIndex).getValue();
-                                mapRepeatItem.put(odkRepeatInnerColumn, hdsRepeatInnerValue);
-
-                                //Log.d("mapkv-"+repeatIndex+"-"+odkRepeatInnerColumn, hdsRepeatInnerValue);
+                                //save on filled form to be load to odk
+                                filledForm.putRepeatObjects(odkRepeatGroup, repeatGroupLists);
                             }
-
-                            //save on filled form to be load to odk
-                            filledForm.putRepeatObjects(odkRepeatGroup, repeatGroupLists);
                         }
                     } catch (Exception ex) {
                         ex.printStackTrace();
@@ -732,19 +735,19 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
 
     private String getFormName(){
 
-        if (this instanceof RegionFormUtil) return this.context.getString(R.string.core_entity_region_lbl);
-        if (this instanceof ChangeHeadFormUtil) return this.context.getString(R.string.core_entity_changehoh_lbl);
-        if (this instanceof DeathFormUtil) return this.context.getString(R.string.core_entity_death_lbl);
-        if (this instanceof ExternalInMigrationFormUtil) return this.context.getString(R.string.core_entity_external_inmigration_lbl);
-        if (this instanceof HouseholdFormUtil) return this.context.getString(R.string.core_entity_household_lbl);
-        if (this instanceof IncompleteVisitFormUtil) return this.context.getString(R.string.core_entity_member_not_visited_lbl);
-        if (this instanceof InternalInMigrationFormUtil) return this.context.getString(R.string.core_entity_inmigration_lbl);
-        if (this instanceof MemberEnumerationFormUtil) return this.context.getString(R.string.core_entity_member_enu_lbl);
-        if (this instanceof OutmigrationFormUtil) return this.context.getString(R.string.core_entity_outmigration_lbl);
-        if (this instanceof MaritalRelationshipFormUtil) return this.context.getString(R.string.core_entity_marital_relationship_lbl);
-        if (this instanceof PregnancyRegistrationFormUtil) return this.context.getString(R.string.core_entity_pregnancy_reg_lbl);
-        if (this instanceof PregnancyOutcomeFormUtil) return this.context.getString(R.string.core_entity_pregnancy_out_lbl);
-        if (this instanceof VisitFormUtil) return this.context.getString(R.string.core_entity_visit_lbl);
+        if (this.collectedData.formEntity == CoreFormEntity.REGION) return this.context.getString(R.string.core_entity_region_lbl);
+        if (this.collectedData.formEntity == CoreFormEntity.CHANGE_HOUSEHOLD_HEAD) return this.context.getString(R.string.core_entity_changehoh_lbl);
+        if (this.collectedData.formEntity == CoreFormEntity.DEATH) return this.context.getString(R.string.core_entity_death_lbl);
+        if (this.collectedData.formEntity == CoreFormEntity.EXTERNAL_INMIGRATION) return this.context.getString(R.string.core_entity_external_inmigration_lbl);
+        if (this.collectedData.formEntity == CoreFormEntity.HOUSEHOLD) return this.context.getString(R.string.core_entity_household_lbl);
+        if (this.collectedData.formEntity == CoreFormEntity.INCOMPLETE_VISIT) return this.context.getString(R.string.core_entity_member_not_visited_lbl);
+        if (this.collectedData.formEntity == CoreFormEntity.INMIGRATION) return this.context.getString(R.string.core_entity_inmigration_lbl);
+        if (this.collectedData.formEntity == CoreFormEntity.MEMBER_ENU) return this.context.getString(R.string.core_entity_member_enu_lbl);
+        if (this.collectedData.formEntity == CoreFormEntity.OUTMIGRATION) return this.context.getString(R.string.core_entity_outmigration_lbl);
+        if (this.collectedData.formEntity == CoreFormEntity.MARITAL_RELATIONSHIP) return this.context.getString(R.string.core_entity_marital_relationship_lbl);
+        if (this.collectedData.formEntity == CoreFormEntity.PREGNANCY_REGISTRATION) return this.context.getString(R.string.core_entity_pregnancy_reg_lbl);
+        if (this.collectedData.formEntity == CoreFormEntity.PREGNANCY_OUTCOME) return this.context.getString(R.string.core_entity_pregnancy_out_lbl);
+        if (this.collectedData.formEntity == CoreFormEntity.VISIT) return this.context.getString(R.string.core_entity_visit_lbl);
 
         return null;
     }
@@ -864,6 +867,31 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
         }
     }
 
+    public static HForm getHFormBy(Context context, CoreFormEntity formEntity){
+        switch (formEntity) {
+            case REGION: return getRegionForm(context);
+            case PRE_HOUSEHOLD:
+            case HOUSEHOLD: return getHouseholdForm(context);
+            case MEMBER_ENU: return getMemberEnuForm(context);
+            case HEAD_RELATIONSHIP: break;
+            case MARITAL_RELATIONSHIP: return getMaritalRelationshipForm(context);
+            case INMIGRATION: return getInMigrationForm(context);
+            case EXTERNAL_INMIGRATION: return getExternalInMigrationForm(context);
+            case OUTMIGRATION: return getOutmigrationForm(context);
+            case PREGNANCY_REGISTRATION: return getPregnancyRegistrationForm(context);
+            case PREGNANCY_OUTCOME: return getPregnancyOutcomeForm(context);
+            case DEATH: return getDeathForm(context);
+            case CHANGE_HOUSEHOLD_HEAD: return getChangeHeadForm(context);
+            case INCOMPLETE_VISIT: return getIncompleteVisitForm(context);
+            case VISIT: return getVisitForm(context);
+            case EXTRA_FORM: break;
+            case EDITED_REGION: break;
+            case EDITED_HOUSEHOLD: break;
+            case EDITED_MEMBER: break;
+            case INVALID_ENUM: break;
+        }
 
+        return null;
+    }
 
 }

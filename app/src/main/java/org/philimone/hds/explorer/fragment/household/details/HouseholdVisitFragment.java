@@ -49,20 +49,27 @@ import org.philimone.hds.explorer.model.CollectedData_;
 import org.philimone.hds.explorer.model.CoreCollectedData;
 import org.philimone.hds.explorer.model.CoreCollectedData_;
 import org.philimone.hds.explorer.model.CoreEntity;
+import org.philimone.hds.explorer.model.CoreFormExtension;
 import org.philimone.hds.explorer.model.Death;
+import org.philimone.hds.explorer.model.Death_;
 import org.philimone.hds.explorer.model.Form;
 import org.philimone.hds.explorer.model.Form_;
 import org.philimone.hds.explorer.model.HeadRelationship;
+import org.philimone.hds.explorer.model.HeadRelationship_;
 import org.philimone.hds.explorer.model.Household;
 import org.philimone.hds.explorer.model.Household_;
 import org.philimone.hds.explorer.model.IncompleteVisit;
+import org.philimone.hds.explorer.model.IncompleteVisit_;
 import org.philimone.hds.explorer.model.Inmigration;
+import org.philimone.hds.explorer.model.Inmigration_;
 import org.philimone.hds.explorer.model.MaritalRelationship;
 import org.philimone.hds.explorer.model.MaritalRelationship_;
 import org.philimone.hds.explorer.model.Member;
 import org.philimone.hds.explorer.model.Member_;
 import org.philimone.hds.explorer.model.Outmigration;
+import org.philimone.hds.explorer.model.Outmigration_;
 import org.philimone.hds.explorer.model.PregnancyOutcome;
+import org.philimone.hds.explorer.model.PregnancyOutcome_;
 import org.philimone.hds.explorer.model.PregnancyRegistration;
 import org.philimone.hds.explorer.model.PregnancyRegistration_;
 import org.philimone.hds.explorer.model.Region;
@@ -79,6 +86,7 @@ import org.philimone.hds.explorer.model.enums.temporal.ResidencyEndType;
 import org.philimone.hds.explorer.widget.DialogFactory;
 import org.philimone.hds.explorer.widget.LoadingDialog;
 import org.philimone.hds.explorer.widget.RecyclerListView;
+import org.philimone.hds.forms.model.HForm;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -304,7 +312,7 @@ public class HouseholdVisitFragment extends Fragment {
                     VisitCollectedDataItem dataItem = (VisitCollectedDataItem) adapter.getChild(groupPosition, childPosition);
 
                     if (dataItem.isCoreCollectedData()) {
-                        onVisitCollectedChildLongClicked(dataItem.getCoreCollectedData());
+                        onVisitCollectedChildLongClicked(dataItem);
                     } else {
                         //do nothing
                     }
@@ -752,24 +760,49 @@ public class HouseholdVisitFragment extends Fragment {
         showLoadingDialog(getString(R.string.loading_dialog_extra_forms_load_lbl), true);
     }
 
-    private void onVisitCollectedChildLongClicked(CoreCollectedData coreCollectedData) {
+    private void onVisitCollectedChildLongClicked(VisitCollectedDataItem dataItem) {
+        CoreCollectedData coreCollectedData = dataItem.getCoreCollectedData();
+        CoreFormExtension extension = coreCollectedData != null ? coreCollectedData.extension.getTarget() : null;
+        //1. if extension required && not_collected || not_found -> create new extension
+        //2. if extension required && exists
+
+        if (coreCollectedData != null) {
+            if (dataItem.isExtensionCollected() && dataItem.odkFormStatus != FormUtilities.FormStatus.NOT_FOUND) {
+                //The form exists - so lets edit it
+                Log.d("edit core odk", coreCollectedData.formEntity.code+"");
+                CollectedData odkCollectedData = boxCollectedData.query(CollectedData_.collectedId.equal(coreCollectedData.collectedId).and(CollectedData_.formUri.equal(coreCollectedData.extensionCollectedUri))).build().findFirst();
+                CoreEntity existingEntity = getRecordEntity(coreCollectedData);
+
+                EditCoreExtensionFormUtil formUtil = new EditCoreExtensionFormUtil(this, this.getContext(), null, coreCollectedData, existingEntity, this.odkFormUtilities, () -> {
+                    loadDataToListViews();
+                    updateHouseholdDetails();
+                });
+
+                formUtil.editExtensionForm(odkCollectedData);
+
+            } else if (extension.required){
+                //The form doesnt exists but its required - lets create new form
+
+                HForm hform = FormUtil.getHFormBy(getContext(), coreCollectedData.formEntity);
+                CoreEntity existingEntity = getRecordEntity(coreCollectedData);
+
+                Log.d("create new extension", coreCollectedData.formEntity+", extension=" + extension.extFormId +", entity="+existingEntity);
+
+                EditCoreExtensionFormUtil formUtil = new EditCoreExtensionFormUtil(this, this.getContext(), hform, coreCollectedData, existingEntity, this.odkFormUtilities, () -> {
+                    loadDataToListViews();
+                    updateHouseholdDetails();
+                });
+
+                formUtil.reCollectExtensionForm();
+
+            }
+        }
+
+
         //edit the odk form
         if (coreCollectedData != null && coreCollectedData.extensionCollected) {
             ///edit
-            Log.d("edot core odk", coreCollectedData.extensionCollectedUri);
 
-            CollectedData odkCollectedData = boxCollectedData.query(CollectedData_.collectedId.equal(coreCollectedData.collectedId).and(CollectedData_.formUri.equal(coreCollectedData.extensionCollectedUri))).build().findFirst();
-            CoreEntity existingEntity = getRecordEntity(odkCollectedData);
-
-            EditCoreExtensionFormUtil formUtil = new EditCoreExtensionFormUtil(this, this.getContext(), null, coreCollectedData, existingEntity, this.odkFormUtilities, new EditCoreExtensionFormUtil.Listener() {
-                @Override
-                public void onFinishedCollecting() {
-                    loadDataToListViews();
-                    updateHouseholdDetails();
-                }
-            });
-
-            formUtil.editExtensionForm(odkCollectedData);
 
         }
     }
@@ -1192,14 +1225,30 @@ public class HouseholdVisitFragment extends Fragment {
 
     //endregion
 
-    CoreEntity getRecordEntity(CollectedData odkCollectedData) {
+    CoreEntity getRecordEntity(CoreCollectedData coreCollectedData) {
         CoreEntity entity = null;
-        switch (odkCollectedData.recordEntity) {
-            case REGION: entity = boxRegions.query(Region_.id.equal(odkCollectedData.recordId)).build().findFirst(); break;
-            case HOUSEHOLD: entity = boxHouseholds.query(Household_.id.equal(odkCollectedData.recordId)).build().findFirst(); break;
-            case MEMBER: entity = boxMembers.query(Member_.id.equal(odkCollectedData.recordId)).build().findFirst(); break;
-            case VISIT: entity = boxVisits.query(Visit_.id.equal(odkCollectedData.recordId)).build().findFirst(); break;
-            //case USER: entity = boxUsers.query(User_.id.equal(odkCollectedData.recordId)).build().findFirst(); break;
+
+        switch (coreCollectedData.formEntity) {
+            case EDITED_REGION:
+            case REGION: entity = boxRegions.query(Region_.id.equal(coreCollectedData.formEntityId)).build().findFirst(); break;
+            case PRE_HOUSEHOLD:
+            case EDITED_HOUSEHOLD:
+            case HOUSEHOLD: entity = boxHouseholds.query(Household_.id.equal(coreCollectedData.formEntityId)).build().findFirst(); break;
+            case EDITED_MEMBER:
+            case MEMBER_ENU: entity = boxMembers.query(Member_.id.equal(coreCollectedData.formEntityId)).build().findFirst(); break;
+            case HEAD_RELATIONSHIP:
+            case CHANGE_HOUSEHOLD_HEAD: entity = boxHeadRelationships.query(HeadRelationship_.id.equal(coreCollectedData.formEntityId)).build().findFirst(); break;
+            case MARITAL_RELATIONSHIP: entity = boxMaritalRelationships.query(MaritalRelationship_.id.equal(coreCollectedData.formEntityId)).build().findFirst(); break;
+            case INMIGRATION:
+            case EXTERNAL_INMIGRATION: entity = boxInmigrations.query(Inmigration_.id.equal(coreCollectedData.formEntityId)).build().findFirst(); break;
+            case OUTMIGRATION: entity = boxOutmigrations.query(Outmigration_.id.equal(coreCollectedData.formEntityId)).build().findFirst(); break;
+            case PREGNANCY_REGISTRATION: entity = boxPregnancyRegistrations.query(PregnancyRegistration_.id.equal(coreCollectedData.formEntityId)).build().findFirst(); break;
+            case PREGNANCY_OUTCOME: entity = boxPregnancyOutcomes.query(PregnancyOutcome_.id.equal(coreCollectedData.formEntityId)).build().findFirst(); break;
+            case DEATH: entity = boxDeaths.query(Death_.id.equal(coreCollectedData.formEntityId)).build().findFirst(); break;
+            case INCOMPLETE_VISIT: entity = boxIncompleteVisits.query(IncompleteVisit_.id.equal(coreCollectedData.formEntityId)).build().findFirst(); break;
+            case VISIT: entity = boxVisits.query(Visit_.id.equal(coreCollectedData.formEntityId)).build().findFirst(); break;
+            case EXTRA_FORM: break;
+            case INVALID_ENUM: break;
         }
 
         return entity;

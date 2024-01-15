@@ -775,20 +775,39 @@ public class FormUtilities {
         return null;
     }
 
-    public FormStatus isFormFinalized(String contentUriStr) {
+
+    private Cursor getCursorForInstancesProvider(Uri contentUri) {
         ContentResolver resolver = mContext.getContentResolver();
-        Uri contentUri = Uri.parse(contentUriStr);
+        Cursor cursor = resolver.query(contentUri, new String[] { InstanceProviderAPI.InstanceColumns.STATUS,
+                        InstanceProviderAPI.InstanceColumns.INSTANCE_FILE_PATH,
+                        InstanceProviderAPI.InstanceColumns.DISPLAY_NAME,
+                        InstanceProviderAPI.InstanceColumns.LAST_STATUS_CHANGE_DATE },
+                InstanceProviderAPI.InstanceColumns.STATUS + "=?",
+                new String[] { InstanceProviderAPI.STATUS_COMPLETE }, null);
+
+        return cursor;
+    }
+    public FormStatus isFormFinalized(String contentUriStr) {
         FormStatus formStatus = FormStatus.NOT_FOUND;
 
-        try{
+        if (contentUriStr == null) return formStatus;
 
-            Cursor cursor = resolver.query(contentUri, new String[] { InstanceProviderAPI.InstanceColumns.STATUS,
-                            InstanceProviderAPI.InstanceColumns.INSTANCE_FILE_PATH,
-                            InstanceProviderAPI.InstanceColumns.DISPLAY_NAME,
-                            InstanceProviderAPI.InstanceColumns.LAST_STATUS_CHANGE_DATE },
-                    InstanceProviderAPI.InstanceColumns.STATUS + "=?",
-                    new String[] { InstanceProviderAPI.STATUS_COMPLETE }, null);
+        Uri contentUri = Uri.parse(contentUriStr);
+        Cursor cursor = null;
 
+        try {
+            cursor = getCursorForInstancesProvider(contentUri);
+        } catch (Exception ex) {
+            if (ex.getMessage().contains("AppDependencyComponent.inject(org.odk.collect.android.external.FormsProvider)' on a null object reference")) {
+                try {
+                    cursor = getCursorForInstancesProvider(contentUri);
+                } catch (Exception ex2) {
+                    ex2.printStackTrace();
+                }
+            }
+        }
+
+        if (cursor != null) {
             if (cursor.moveToNext()) {
                 //Log.d("move next", ""+cursor.getString(0));
                 int columnIndex = cursor.getColumnIndex(InstanceProviderAPI.InstanceColumns.STATUS);
@@ -806,14 +825,17 @@ public class FormUtilities {
                 formStatus = FormStatus.NOT_FOUND;
             }
 
-            cursor.close();
-        }catch(Exception e){
-            System.err.println("Exception while trying to close cursor !");
-            e.printStackTrace();
+            try {
+                cursor.close();
+            } catch(Exception e){
+                System.err.println("Exception while trying to close cursor !");
+                e.printStackTrace();
+            }
         }
 
         return formStatus;
     }
+
 
     class CheckFormStatus extends AsyncTask<Void, Void, Boolean> {
 

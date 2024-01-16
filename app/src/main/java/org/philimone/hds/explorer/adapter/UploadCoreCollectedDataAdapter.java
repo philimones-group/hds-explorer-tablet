@@ -15,26 +15,27 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import org.philimone.hds.explorer.R;
 import org.philimone.hds.explorer.adapter.model.UploadCollectedDataItem;
-import org.philimone.hds.explorer.fragment.showcollected.adapter.model.CoreCollectedDataItem;
 import org.philimone.hds.explorer.model.CoreCollectedData;
+import org.philimone.hds.explorer.model.CoreFormExtension;
 import org.philimone.hds.explorer.model.enums.CoreFormRecordType;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import mz.betainteractive.odk.FormUtilities;
 import mz.betainteractive.utilities.StringUtil;
 
 /**
  * Created by paul on 8/10/16.
  */
-public class CoreCollectedDataAdapter extends RecyclerView.Adapter<CoreCollectedDataAdapter.CoreCollectedDataViewHolder> {
+public class UploadCoreCollectedDataAdapter extends RecyclerView.Adapter<UploadCoreCollectedDataAdapter.CoreCollectedDataViewHolder> {
     private List<UploadCollectedDataItem> collectedDataList;
     private boolean[] selectedList;
     private boolean multiSelectable = true;
     private Context mContext;
     private OnItemActionListener listener;
 
-    public CoreCollectedDataAdapter(Context context, List<UploadCollectedDataItem> objects, OnItemActionListener listener){
+    public UploadCoreCollectedDataAdapter(Context context, List<UploadCollectedDataItem> objects, OnItemActionListener listener){
         this.collectedDataList = new ArrayList<>();
         this.collectedDataList.addAll(objects);
         this.selectedList = new boolean[objects.size()];
@@ -42,7 +43,7 @@ public class CoreCollectedDataAdapter extends RecyclerView.Adapter<CoreCollected
         this.listener = listener;
     }
 
-    public CoreCollectedDataAdapter(Context context, UploadCollectedDataItem[] objects, OnItemActionListener listener){
+    public UploadCoreCollectedDataAdapter(Context context, UploadCollectedDataItem[] objects, OnItemActionListener listener){
         this.collectedDataList = new ArrayList<>();
         for (UploadCollectedDataItem cd : objects) this.collectedDataList.add(cd);
         this.selectedList = new boolean[objects.length];
@@ -160,14 +161,17 @@ public class CoreCollectedDataAdapter extends RecyclerView.Adapter<CoreCollected
         public void setValues(UploadCollectedDataItem dataItem) {
 
             CoreCollectedData  cd = dataItem.getCoreCollectedData();
+            CoreFormExtension formExtension = cd.extension.getTarget();
 
             TextView txtItem1 = rowView.findViewById(R.id.txtItem1);
             TextView txtItem2 = rowView.findViewById(R.id.txtItem2);
             TextView txtItem3 = rowView.findViewById(R.id.txtItem3);
+            TextView txtItem4 = rowView.findViewById(R.id.txtItem4);
+            TextView txtItem5 = rowView.findViewById(R.id.txtItem5);
             Button button = rowView.findViewById(R.id.btnItemInfo);
             CheckBox chkProcessed = rowView.findViewById(R.id.chkProcessed);
 
-            int position = collectedDataList.indexOf(cd);
+            int position = collectedDataList.indexOf(dataItem);
             boolean checked = selectedList[position];
             boolean checkable = (cd.uploaded && !cd.uploadedWithError);
 
@@ -195,9 +199,41 @@ public class CoreCollectedDataAdapter extends RecyclerView.Adapter<CoreCollected
                 txtItem2.setPaintFlags(Paint.ANTI_ALIAS_FLAG);
             }
 
+            if (formExtension != null) {
+
+                if (formExtension.enabled){
+                    String message = "";
+
+                    if (dataItem.isExtensionCollected()) {
+                        message = mContext.getString(R.string.core_form_group_item_extension_collected_lbl);
+
+                        if (dataItem.odkFormStatus == FormUtilities.FormStatus.UNFINALIZED) {
+                            message += " (" + mContext.getString(R.string.odk_unfinished_extension_notfinalized) + ")";
+                        } else if (dataItem.odkFormStatus == FormUtilities.FormStatus.NOT_FOUND) {
+                            message += " (" + mContext.getString(R.string.odk_unfinished_extension_notfound) + ")";
+                        }
+
+                    } else if(formExtension.required){
+                        message = mContext.getString(R.string.core_form_group_item_extension_not_collected_lbl);
+                    } else {
+                        message = mContext.getString(R.string.core_form_group_item_extension_not_required_lbl);
+                    }
+
+                    txtItem4.setText(mContext.getString(R.string.core_form_group_item_extension_lbl));
+                    txtItem5.setText(message);
+                } else {
+                    txtItem4.setVisibility(View.GONE);
+                    txtItem5.setVisibility(View.GONE);
+                }
+            }
+
             chkProcessed.setVisibility(checkable ? View.INVISIBLE : View.VISIBLE);
 
-            rowView.setBackgroundColor(checkable ? ContextCompat.getColor(mContext, R.color.zxing_transparent) : ContextCompat.getColor(mContext, R.color.nui_sync_lists_selected_item_color_1));
+            //rowView.setBackgroundColor(checkable ? ContextCompat.getColor(mContext, R.color.zxing_transparent) : ContextCompat.getColor(mContext, R.color.nui_sync_lists_selected_item_color_1));
+
+            if (!dataItem.isFormExtensionValid()){
+                rowView.setBackgroundColor(ContextCompat.getColor(mContext, R.color.nui_sync_lists_selected_item_color_1));
+            }
         }
     }
 }

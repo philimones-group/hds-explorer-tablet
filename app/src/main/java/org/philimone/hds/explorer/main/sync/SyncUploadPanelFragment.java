@@ -5,6 +5,7 @@ import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 import io.objectbox.Box;
 import io.objectbox.query.QueryBuilder;
+import mz.betainteractive.odk.FormUtilities;
 import mz.betainteractive.utilities.StringUtil;
 
 import android.util.Log;
@@ -13,13 +14,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Switch;
 import android.widget.TextView;
 
 import org.philimone.hds.explorer.R;
-import org.philimone.hds.explorer.adapter.CoreCollectedDataAdapter;
+import org.philimone.hds.explorer.adapter.UploadCoreCollectedDataAdapter;
+import org.philimone.hds.explorer.adapter.model.UploadCollectedDataItem;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
 import org.philimone.hds.explorer.io.SyncUploadEntitiesTask;
 import org.philimone.hds.explorer.io.UploadEntityReport;
@@ -42,7 +43,7 @@ import java.util.List;
  * Use the {@link SyncUploadPanelFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class SyncUploadPanelFragment extends Fragment implements SyncUploadEntitiesTask.Listener, CoreCollectedDataAdapter.OnItemActionListener {
+public class SyncUploadPanelFragment extends Fragment implements SyncUploadEntitiesTask.Listener, UploadCoreCollectedDataAdapter.OnItemActionListener {
 
     private String username;
     private String password;
@@ -70,18 +71,23 @@ public class SyncUploadPanelFragment extends Fragment implements SyncUploadEntit
     //private Box<Household> boxHouseholds;
     //private Box<Visit> boxVisits;
 
+    private FormUtilities odkFormUtilities;
+
+    private SyncPanelActivity.SyncFragmentListener syncFragmentListener;
+
     public SyncUploadPanelFragment() {
         // Required empty public constructor
         initBoxes();
     }
 
-    public static SyncUploadPanelFragment newInstance(String username, String password, String serverUrl, boolean connectedToServer) {
+    public static SyncUploadPanelFragment newInstance(String username, String password, String serverUrl, boolean connectedToServer, SyncPanelActivity.SyncFragmentListener syncFragmentListener) {
         SyncUploadPanelFragment fragment = new SyncUploadPanelFragment();
 
         fragment.username = username;
         fragment.password = password;
         fragment.serverUrl = serverUrl;
         fragment.connectedToServer = connectedToServer;
+        fragment.syncFragmentListener = syncFragmentListener;
 
         return fragment;
     }
@@ -89,6 +95,7 @@ public class SyncUploadPanelFragment extends Fragment implements SyncUploadEntit
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        this.odkFormUtilities = new FormUtilities(this, null);
     }
 
     @Override
@@ -133,7 +140,7 @@ public class SyncUploadPanelFragment extends Fragment implements SyncUploadEntit
         this.collectedDataListView.addOnItemClickListener(new RecyclerListView.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position, long id) {
-                CoreCollectedDataAdapter adapter = (CoreCollectedDataAdapter) collectedDataListView.getAdapter();
+                UploadCoreCollectedDataAdapter adapter = (UploadCoreCollectedDataAdapter) collectedDataListView.getAdapter();
                 //check or uncheck
                 adapter.setCheckedOrUnchecked(position);
             }
@@ -184,7 +191,7 @@ public class SyncUploadPanelFragment extends Fragment implements SyncUploadEntit
     }
 
     private void selectAll(boolean isChecked){
-        CoreCollectedDataAdapter adapter = (CoreCollectedDataAdapter) collectedDataListView.getAdapter();
+        UploadCoreCollectedDataAdapter adapter = (UploadCoreCollectedDataAdapter) collectedDataListView.getAdapter();
         if (adapter != null) {
             adapter.setAllChecked(isChecked);
         }
@@ -233,7 +240,14 @@ public class SyncUploadPanelFragment extends Fragment implements SyncUploadEntit
         builder.notEqual(CoreCollectedData_.formEntity, CoreFormEntity.EXTRA_FORM.code, QueryBuilder.StringOrder.CASE_INSENSITIVE);
 
         List<CoreCollectedData> dataList = builder.order(CoreCollectedData_.recordType).order(CoreCollectedData_.createdDate).build().find(); //order by recordType,createDate - first the new records than edit records
-        CoreCollectedDataAdapter adapter = new CoreCollectedDataAdapter(this.getContext(), dataList, this);
+        List<UploadCollectedDataItem> dataItemList = new ArrayList<>();
+
+        for (CoreCollectedData cd : dataList) {
+            FormUtilities.FormStatus odkStatus = odkFormUtilities.isFormFinalized(cd.extensionCollectedUri);
+            dataItemList.add(new UploadCollectedDataItem(cd, odkStatus));
+        }
+
+        UploadCoreCollectedDataAdapter adapter = new UploadCoreCollectedDataAdapter(this.getContext(), dataItemList, this);
 
         this.collectedDataListView.setAdapter(adapter);
     }
@@ -264,7 +278,7 @@ public class SyncUploadPanelFragment extends Fragment implements SyncUploadEntit
             return;
         }
 
-        CoreCollectedDataAdapter adapter = (CoreCollectedDataAdapter) collectedDataListView.getAdapter();
+        UploadCoreCollectedDataAdapter adapter = (UploadCoreCollectedDataAdapter) collectedDataListView.getAdapter();
         int total = adapter.getSelectedCollectedData().size();
 
         this.syncProgressBar.setProgress(0); //this.syncProgressBar.setMin(0);
@@ -272,8 +286,11 @@ public class SyncUploadPanelFragment extends Fragment implements SyncUploadEntit
 
         Log.d("selected", ""+adapter.getSelectedCollectedData().size());
 
-        for (CoreCollectedData collectedData : adapter.getSelectedCollectedData()) {
-            uploadCollectedData(collectedData);
+        for (UploadCollectedDataItem dataItem : adapter.getSelectedCollectedData()) {
+            if (dataItem.isFormExtensionValid()) { //dont upload records with invalid extensions
+                CoreCollectedData collectedData = dataItem.getCoreCollectedData();
+                uploadCollectedData(collectedData);
+            }
         }
 
         adapter.notifyDataSetChanged();
@@ -303,6 +320,10 @@ public class SyncUploadPanelFragment extends Fragment implements SyncUploadEntit
 
         loadCollectedData();
         loadResume();
+
+        if (syncFragmentListener != null) {
+            syncFragmentListener.onSyncFinished("upload-finished");
+        }
     }
 
     @Override

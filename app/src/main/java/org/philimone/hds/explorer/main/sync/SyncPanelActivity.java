@@ -2,6 +2,7 @@ package org.philimone.hds.explorer.main.sync;
 
 import android.os.Bundle;
 import android.text.Html;
+import android.util.Log;
 
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
@@ -32,6 +33,7 @@ public class SyncPanelActivity extends AppCompatActivity {
     private SyncDownloadPanelFragment syncDownloadPanel;
     private SyncUploadPanelFragment syncUploadPanel;
 
+    private SyncFragmentListener syncFragmentListener = action -> SyncPanelActivity.this.onSyncFinished(action);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,8 +64,8 @@ public class SyncPanelActivity extends AppCompatActivity {
     }
 
     private void initFragments(){
-        this.syncDownloadPanel = SyncDownloadPanelFragment.newInstance(this.username, this.password, this.serverUrl, connectedToServer);
-        this.syncUploadPanel = SyncUploadPanelFragment.newInstance(this.username, this.password, this.serverUrl, connectedToServer);
+        this.syncDownloadPanel = SyncDownloadPanelFragment.newInstance(this.username, this.password, this.serverUrl, connectedToServer, syncFragmentListener);
+        this.syncUploadPanel = SyncUploadPanelFragment.newInstance(this.username, this.password, this.serverUrl, connectedToServer, syncFragmentListener);
 
         List<Fragment> list = new ArrayList<>();
         list.add(this.syncDownloadPanel);
@@ -72,16 +74,7 @@ public class SyncPanelActivity extends AppCompatActivity {
         SyncFragmentsAdapter adapter = new SyncFragmentsAdapter(this.getSupportFragmentManager(),  this.getLifecycle(), list);
         syncViewPager.setAdapter(adapter);
 
-        List<CharSequence> tabTitles = new ArrayList<>();
-        tabTitles.add(getString(R.string.server_sync_download_lbl));
-
-        long count = syncUploadPanel.getTotalNotUploaded();
-
-        if (count == 0) {
-            tabTitles.add(getString(R.string.server_sync_upload_lbl));
-        } else {
-            tabTitles.add(Html.fromHtml(getString(R.string.server_sync_upload_lbl) + " <b>("+count+")</b>"));
-        }
+        updateTabTitles();
 
         //create on change tab listener
         this.syncTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
@@ -108,10 +101,25 @@ public class SyncPanelActivity extends AppCompatActivity {
 
         //this will create all fragments
         syncViewPager.setOffscreenPageLimit(list.size());
+    }
 
+    private void updateTabTitles() {
+        List<CharSequence> tabTitles = new ArrayList<>();
+        tabTitles.add(getString(R.string.server_sync_download_lbl));
+
+        long count = syncUploadPanel.getTotalNotUploaded();
+
+        if (count == 0) {
+            tabTitles.add(getString(R.string.server_sync_upload_lbl));
+        } else {
+            tabTitles.add(Html.fromHtml(getString(R.string.server_sync_upload_lbl) + " <b>("+count+")</b>"));
+        }
+Log.d("update-tab", count+"");
         new TabLayoutMediator(syncTabLayout, syncViewPager, (tab, position) -> {
             tab.setText(tabTitles.get(position));
         }).attach();
+
+        syncTabLayout.getTabAt(1).setText(Html.fromHtml(getString(R.string.server_sync_upload_lbl) + " <b>("+count+")</b>"));
     }
 
     private void updateFragments(){
@@ -120,6 +128,13 @@ public class SyncPanelActivity extends AppCompatActivity {
             this.syncDownloadPanel.readPreferences();
         }
     }
+
+    public void onSyncFinished(String action) {
+        if (action.equals("upload-finished")) {
+            updateTabTitles();
+        }
+    }
+
     class SyncFragmentsAdapter extends FragmentStateAdapter {
 
         private final List<Fragment> fragments = new ArrayList<>();
@@ -140,6 +155,10 @@ public class SyncPanelActivity extends AppCompatActivity {
         public int getItemCount() {
             return this.fragments.size();
         }
+    }
+
+    interface SyncFragmentListener {
+        void onSyncFinished(String action);
     }
 
 }

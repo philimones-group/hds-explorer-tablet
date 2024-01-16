@@ -104,7 +104,16 @@ public class ShowCoreCollectedDataFragment extends Fragment {
     private Box<CoreCollectedData> boxCoreCollectedData;
     private Box<Region> boxRegions;
     private Box<Household> boxHouseholds;
+    private Box<Visit> boxVisits;
     private Box<Member> boxMembers;
+    private Box<MaritalRelationship> boxMaritalRelationships;
+    private Box<Inmigration> boxInmigrations;
+    private Box<Outmigration> boxOutmigrations;
+    private Box<PregnancyRegistration> boxPregnancyRegistrations;
+    private Box<PregnancyOutcome> boxPregnancyOutcomes;
+    private Box<Death> boxDeaths;
+    private Box<HeadRelationship> boxHeadRelationships;
+    private Box<IncompleteVisit> boxIncompleteVisits;
 
     private List<String> selectedModules = new ArrayList<>();
 
@@ -153,7 +162,18 @@ public class ShowCoreCollectedDataFragment extends Fragment {
         this.boxCoreCollectedData = ObjectBoxDatabase.get().boxFor(CoreCollectedData.class);
         this.boxRegions = ObjectBoxDatabase.get().boxFor(Region.class);
         this.boxHouseholds = ObjectBoxDatabase.get().boxFor(Household.class);
+        this.boxVisits = ObjectBoxDatabase.get().boxFor(Visit.class);
         this.boxMembers = ObjectBoxDatabase.get().boxFor(Member.class);
+        this.boxMaritalRelationships = ObjectBoxDatabase.get().boxFor(MaritalRelationship.class);
+        this.boxInmigrations = ObjectBoxDatabase.get().boxFor(Inmigration.class);
+        this.boxInmigrations = ObjectBoxDatabase.get().boxFor(Inmigration.class);
+        this.boxOutmigrations = ObjectBoxDatabase.get().boxFor(Outmigration.class);
+        this.boxPregnancyRegistrations = ObjectBoxDatabase.get().boxFor(PregnancyRegistration.class);
+        this.boxPregnancyOutcomes = ObjectBoxDatabase.get().boxFor(PregnancyOutcome.class);
+        this.boxDeaths = ObjectBoxDatabase.get().boxFor(Death.class);
+        this.boxHeadRelationships = ObjectBoxDatabase.get().boxFor(HeadRelationship.class);
+        this.boxMembers = ObjectBoxDatabase.get().boxFor(Member.class);
+        this.boxIncompleteVisits = ObjectBoxDatabase.get().boxFor(IncompleteVisit.class);
     }
 
     private void initialize(View view) {
@@ -311,31 +331,68 @@ public class ShowCoreCollectedDataFragment extends Fragment {
         return list;
     }
 
-    private FormSubject getFormSubject(CoreCollectedData collectedData) {
-
-        switch (collectedData.formEntity) {
-            case REGION:
+    private FormSubject getFormSubject(CoreCollectedData coreCollectedData) {
+        //All Core Forms except Region must go to Household
+        switch (coreCollectedData.formEntity) {
             case EDITED_REGION:
-                return this.boxRegions.query(Region_.id.equal(collectedData.formEntityId)).build().findFirst();
+            case REGION: return boxRegions.query(Region_.id.equal(coreCollectedData.formEntityId)).build().findFirst();
             case PRE_HOUSEHOLD:
-            case HOUSEHOLD:
             case EDITED_HOUSEHOLD:
-            case VISIT:
-            case INCOMPLETE_VISIT:
-            case CHANGE_HOUSEHOLD_HEAD:
-                return boxHouseholds.query(Household_.id.equal(collectedData.formEntityId)).build().findFirst();
+            case HOUSEHOLD: return boxHouseholds.query(Household_.id.equal(coreCollectedData.formEntityId)).build().findFirst();
             case EDITED_MEMBER:
-            case DEATH:
-            case MEMBER_ENU:
-            case INMIGRATION:
-            case OUTMIGRATION:
+            case MEMBER_ENU: {
+                Member member = boxMembers.query(Member_.id.equal(coreCollectedData.formEntityId)).build().findFirst();
+                return boxHouseholds.query(Household_.code.equal(member.householdCode)).build().findFirst();
+            }
             case HEAD_RELATIONSHIP:
-            case PREGNANCY_OUTCOME:
-            case EXTERNAL_INMIGRATION:
-            case MARITAL_RELATIONSHIP:
-            case PREGNANCY_REGISTRATION:
-                return boxMembers.query(Member_.id.equal(collectedData.formEntityId)).build().findFirst();
+            case CHANGE_HOUSEHOLD_HEAD: {
+                HeadRelationship entity = boxHeadRelationships.query(HeadRelationship_.id.equal(coreCollectedData.formEntityId)).build().findFirst();
+                return boxHouseholds.query(Household_.code.equal(entity.householdCode)).build().findFirst();
+            }
+            case MARITAL_RELATIONSHIP: {
+                MaritalRelationship entity = boxMaritalRelationships.query(MaritalRelationship_.id.equal(coreCollectedData.formEntityId)).build().findFirst();
+                Visit visit = boxVisits.query(Visit_.code.equal(entity.visitCode)).build().findFirst();
+                return boxHouseholds.query(Household_.code.equal(visit.householdCode)).build().findFirst();
+            }
+            case INMIGRATION:
+            case EXTERNAL_INMIGRATION: {
+                Inmigration entity = boxInmigrations.query(Inmigration_.id.equal(coreCollectedData.formEntityId)).build().findFirst();
+                return boxHouseholds.query(Household_.code.equal(entity.destinationCode)).build().findFirst();
+            }
+            case OUTMIGRATION: {
+                Outmigration entity = boxOutmigrations.query(Outmigration_.id.equal(coreCollectedData.formEntityId)).build().findFirst();
+                Visit visit = boxVisits.query(Visit_.code.equal(entity.visitCode)).build().findFirst();
+                return boxHouseholds.query(Household_.code.equal(visit.householdCode)).build().findFirst();
+            }
+            case PREGNANCY_REGISTRATION: {
+                PregnancyRegistration entity = boxPregnancyRegistrations.query(PregnancyRegistration_.id.equal(coreCollectedData.formEntityId)).build().findFirst();
+                Visit visit = boxVisits.query(Visit_.code.equal(entity.visitCode)).build().findFirst();
+                return boxHouseholds.query(Household_.code.equal(visit.householdCode)).build().findFirst();
+            }
+            case PREGNANCY_OUTCOME: {
+                PregnancyOutcome entity = boxPregnancyOutcomes.query(PregnancyOutcome_.id.equal(coreCollectedData.formEntityId)).build().findFirst();
+                Visit visit = boxVisits.query(Visit_.code.equal(entity.visitCode)).build().findFirst();
+                return boxHouseholds.query(Household_.code.equal(visit.householdCode)).build().findFirst();
+            }
+            case DEATH: {
+                Death entity = boxDeaths.query(Death_.id.equal(coreCollectedData.formEntityId)).build().findFirst();
+                Visit visit = boxVisits.query(Visit_.code.equal(entity.visitCode)).build().findFirst();
+                return boxHouseholds.query(Household_.code.equal(visit.householdCode)).build().findFirst();
+            }
+            case INCOMPLETE_VISIT: {
+                IncompleteVisit entity = boxIncompleteVisits.query(IncompleteVisit_.id.equal(coreCollectedData.formEntityId)).build().findFirst();
+                Visit visit = entity.visit.getTarget();
+                return boxHouseholds.query(Household_.code.equal(visit.householdCode)).build().findFirst();
+            }
+            case VISIT: {
+                Visit entity = boxVisits.query(Visit_.id.equal(coreCollectedData.formEntityId)).build().findFirst();
+                return boxHouseholds.query(Household_.code.equal(entity.householdCode)).build().findFirst();
+            }
+            case EXTRA_FORM: break;
+            case INVALID_ENUM: break;
 
+            default:
+                throw new IllegalStateException("Unexpected value: " + coreCollectedData.formEntity);
         }
 
         return null;

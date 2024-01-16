@@ -16,6 +16,7 @@ import org.philimone.hds.explorer.data.FormDataLoader;
 import org.philimone.hds.explorer.data.FormFilter;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
 import org.philimone.hds.explorer.main.hdsforms.EditCoreExtensionFormUtil;
+import org.philimone.hds.explorer.main.hdsforms.FormUtil;
 import org.philimone.hds.explorer.model.CollectedData;
 import org.philimone.hds.explorer.model.CollectedData_;
 import org.philimone.hds.explorer.model.CoreCollectedData;
@@ -24,6 +25,8 @@ import org.philimone.hds.explorer.model.CoreEntity;
 import org.philimone.hds.explorer.model.CoreFormExtension;
 import org.philimone.hds.explorer.model.Dataset;
 import org.philimone.hds.explorer.model.Dataset_;
+import org.philimone.hds.explorer.model.Death;
+import org.philimone.hds.explorer.model.Death_;
 import org.philimone.hds.explorer.model.Form;
 import org.philimone.hds.explorer.model.FormGroupInstance;
 import org.philimone.hds.explorer.model.FormGroupInstanceChild;
@@ -32,11 +35,25 @@ import org.philimone.hds.explorer.model.FormGroupInstance_;
 import org.philimone.hds.explorer.model.FormGroupMapping;
 import org.philimone.hds.explorer.model.FormSubject;
 import org.philimone.hds.explorer.model.Form_;
+import org.philimone.hds.explorer.model.HeadRelationship;
+import org.philimone.hds.explorer.model.HeadRelationship_;
 import org.philimone.hds.explorer.model.Household;
 import org.philimone.hds.explorer.model.Household_;
+import org.philimone.hds.explorer.model.IncompleteVisit;
+import org.philimone.hds.explorer.model.IncompleteVisit_;
+import org.philimone.hds.explorer.model.Inmigration;
+import org.philimone.hds.explorer.model.Inmigration_;
+import org.philimone.hds.explorer.model.MaritalRelationship;
+import org.philimone.hds.explorer.model.MaritalRelationship_;
 import org.philimone.hds.explorer.model.Member;
 import org.philimone.hds.explorer.model.Member_;
 import org.philimone.hds.explorer.model.Module;
+import org.philimone.hds.explorer.model.Outmigration;
+import org.philimone.hds.explorer.model.Outmigration_;
+import org.philimone.hds.explorer.model.PregnancyOutcome;
+import org.philimone.hds.explorer.model.PregnancyOutcome_;
+import org.philimone.hds.explorer.model.PregnancyRegistration;
+import org.philimone.hds.explorer.model.PregnancyRegistration_;
 import org.philimone.hds.explorer.model.Region;
 import org.philimone.hds.explorer.model.Region_;
 import org.philimone.hds.explorer.model.User;
@@ -49,6 +66,7 @@ import org.philimone.hds.explorer.widget.FormGroupPanelDialog;
 import org.philimone.hds.explorer.widget.FormSelectorDialog;
 import org.philimone.hds.explorer.widget.LoadingDialog;
 import org.philimone.hds.explorer.widget.RecyclerListView;
+import org.philimone.hds.forms.model.HForm;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -96,6 +114,14 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
     private Box<Member> boxMembers;
     private Box<Visit> boxVisits;
     private Box<Region> boxRegions;
+    private Box<MaritalRelationship> boxMaritalRelationships;
+    private Box<Inmigration> boxInmigrations;
+    private Box<Outmigration> boxOutmigrations;
+    private Box<PregnancyRegistration> boxPregnancyRegistrations;
+    private Box<PregnancyOutcome> boxPregnancyOutcomes;
+    private Box<Death> boxDeaths;
+    private Box<HeadRelationship> boxHeadRelationships;
+    private Box<IncompleteVisit> boxIncompleteVisits;
     private Box<Form> boxForms;
     private Box<CoreFormExtension> boxCoreFormExtensions;
     private Box<FormGroupInstance> boxFormGroupInstances;
@@ -168,6 +194,16 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
         this.boxDatasets = ObjectBoxDatabase.get().boxFor(Dataset.class);
         this.boxMembers = ObjectBoxDatabase.get().boxFor(Member.class);
         this.boxVisits = ObjectBoxDatabase.get().boxFor(Visit.class);
+        this.boxMaritalRelationships = ObjectBoxDatabase.get().boxFor(MaritalRelationship.class);
+        this.boxInmigrations = ObjectBoxDatabase.get().boxFor(Inmigration.class);
+        this.boxInmigrations = ObjectBoxDatabase.get().boxFor(Inmigration.class);
+        this.boxOutmigrations = ObjectBoxDatabase.get().boxFor(Outmigration.class);
+        this.boxPregnancyRegistrations = ObjectBoxDatabase.get().boxFor(PregnancyRegistration.class);
+        this.boxPregnancyOutcomes = ObjectBoxDatabase.get().boxFor(PregnancyOutcome.class);
+        this.boxDeaths = ObjectBoxDatabase.get().boxFor(Death.class);
+        this.boxHeadRelationships = ObjectBoxDatabase.get().boxFor(HeadRelationship.class);
+        this.boxMembers = ObjectBoxDatabase.get().boxFor(Member.class);
+        this.boxIncompleteVisits = ObjectBoxDatabase.get().boxFor(IncompleteVisit.class);
     }
 
     public void setCollectedDataFragmentListener(CollectedDataFragmentListener collectedDataFragmentListener) {
@@ -412,8 +448,9 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
 
         if (dataItem.isFormExtension()) {
             CoreCollectedData coreCollectedData = boxCoreCollectedData.query(CoreCollectedData_.collectedId.equal(collectedData.collectedId)).build().findFirst();
-            CoreEntity existingEntity = getRecordEntity(collectedData);
-            EditCoreExtensionFormUtil formUtil = new EditCoreExtensionFormUtil(this, this.getContext(), null, coreCollectedData, existingEntity, this.formUtilities, new EditCoreExtensionFormUtil.Listener() {
+            HForm hform = FormUtil.getHFormBy(getContext(), coreCollectedData.formEntity);
+            CoreEntity existingEntity = getRecordEntity(coreCollectedData);
+            EditCoreExtensionFormUtil formUtil = new EditCoreExtensionFormUtil(this, this.getContext(), hform, coreCollectedData, existingEntity, this.formUtilities, new EditCoreExtensionFormUtil.Listener() {
                 @Override
                 public void onFinishedCollecting() {
                     showCollectedData();
@@ -436,14 +473,29 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
 
     }
 
-    private CoreEntity getRecordEntity(CollectedData odkCollectedData) {
+    private CoreEntity getRecordEntity(CoreCollectedData coreCollectedData) {
         CoreEntity entity = null;
-        switch (odkCollectedData.recordEntity) {
-            case REGION: entity = boxRegions.query(Region_.id.equal(odkCollectedData.recordId)).build().findFirst(); break;
-            case HOUSEHOLD: entity = boxHouseholds.query(Household_.id.equal(odkCollectedData.recordId)).build().findFirst(); break;
-            case MEMBER: entity = boxMembers.query(Member_.id.equal(odkCollectedData.recordId)).build().findFirst(); break;
-            case VISIT: entity = boxVisits.query(Visit_.id.equal(odkCollectedData.recordId)).build().findFirst(); break;
-            //case USER: entity = boxUsers.query(User_.id.equal(odkCollectedData.recordId)).build().findFirst(); break;
+        switch (coreCollectedData.formEntity) {
+            case EDITED_REGION:
+            case REGION: entity = boxRegions.query(Region_.id.equal(coreCollectedData.formEntityId)).build().findFirst(); break;
+            case PRE_HOUSEHOLD:
+            case EDITED_HOUSEHOLD:
+            case HOUSEHOLD: entity = boxHouseholds.query(Household_.id.equal(coreCollectedData.formEntityId)).build().findFirst(); break;
+            case EDITED_MEMBER:
+            case MEMBER_ENU: entity = boxMembers.query(Member_.id.equal(coreCollectedData.formEntityId)).build().findFirst(); break;
+            case HEAD_RELATIONSHIP:
+            case CHANGE_HOUSEHOLD_HEAD: entity = boxHeadRelationships.query(HeadRelationship_.id.equal(coreCollectedData.formEntityId)).build().findFirst(); break;
+            case MARITAL_RELATIONSHIP: entity = boxMaritalRelationships.query(MaritalRelationship_.id.equal(coreCollectedData.formEntityId)).build().findFirst(); break;
+            case INMIGRATION:
+            case EXTERNAL_INMIGRATION: entity = boxInmigrations.query(Inmigration_.id.equal(coreCollectedData.formEntityId)).build().findFirst(); break;
+            case OUTMIGRATION: entity = boxOutmigrations.query(Outmigration_.id.equal(coreCollectedData.formEntityId)).build().findFirst(); break;
+            case PREGNANCY_REGISTRATION: entity = boxPregnancyRegistrations.query(PregnancyRegistration_.id.equal(coreCollectedData.formEntityId)).build().findFirst(); break;
+            case PREGNANCY_OUTCOME: entity = boxPregnancyOutcomes.query(PregnancyOutcome_.id.equal(coreCollectedData.formEntityId)).build().findFirst(); break;
+            case DEATH: entity = boxDeaths.query(Death_.id.equal(coreCollectedData.formEntityId)).build().findFirst(); break;
+            case INCOMPLETE_VISIT: entity = boxIncompleteVisits.query(IncompleteVisit_.id.equal(coreCollectedData.formEntityId)).build().findFirst(); break;
+            case VISIT: entity = boxVisits.query(Visit_.id.equal(coreCollectedData.formEntityId)).build().findFirst(); break;
+            case EXTRA_FORM: break;
+            case INVALID_ENUM: break;
         }
 
         return entity;

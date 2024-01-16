@@ -95,17 +95,20 @@ public class SyncDownloadPanelFragment extends Fragment implements SyncPanelItem
     private Box<SyncReport> boxSyncReports;
     private Box<CoreCollectedData> boxCoreCollectedData;
 
+    private SyncPanelActivity.SyncFragmentListener syncFragmentListener;
+
     public SyncDownloadPanelFragment() {
         // Required empty public constructor
         initBoxes();
     }
 
-    public static SyncDownloadPanelFragment newInstance(String username, String password, String serverUrl, boolean connectedToServer) {
+    public static SyncDownloadPanelFragment newInstance(String username, String password, String serverUrl, boolean connectedToServer, SyncPanelActivity.SyncFragmentListener fragmentListener) {
         SyncDownloadPanelFragment fragment = new SyncDownloadPanelFragment();
         fragment.username = username;
         fragment.password = password;
         fragment.serverUrl = serverUrl;
         fragment.connectedToServer = connectedToServer;
+        fragment.syncFragmentListener = fragmentListener;
 
         return fragment;
     }

@@ -439,7 +439,12 @@ public class HouseholdDetailsActivity extends AppCompatActivity implements House
     }
 
     private void onCreateVisitClicked() {
-        loadNewVisitForm(false);
+        if (!hasRecentlyCreatedVisit() && this.household.recentlyCreated) { //no visit and its a recently created household
+            loadNewVisitForm(true);
+        } else {
+            loadNewVisitForm(false);
+        }
+
     }
 
     private void onFinishVisitClicked() {
@@ -536,12 +541,12 @@ public class HouseholdDetailsActivity extends AppCompatActivity implements House
         btHouseDetailsOpenVisit.setEnabled(false);
 
         btHouseDetailsCreateVisit.setVisibility(View.GONE);
-        btHouseDetailsFinishVisit.setVisibility(View.VISIBLE);
+        btHouseDetailsFinishVisit.setVisibility(View.GONE);
         btHouseDetailsOpenVisit.setVisibility(View.GONE);
         btHouseDetailsCollectData.setVisibility(View.VISIBLE);
 
-        mainPanelTabsLayout.setVisibility(View.GONE);
-        mainPanelVisitLayout.setVisibility(View.VISIBLE);
+        mainPanelTabsLayout.setVisibility(View.VISIBLE);
+        mainPanelVisitLayout.setVisibility(View.GONE);
 
         initializeButtons();
         displayHouseholdDetails();
@@ -698,6 +703,7 @@ public class HouseholdDetailsActivity extends AppCompatActivity implements House
             @Override
             public void onNewEntityCreated(Household household, Map<String, Object> data) {
                 HouseholdDetailsActivity.this.household = household;
+                displayHouseholdDetails();
                 loadNewVisitForm(true);
             }
 
@@ -754,6 +760,11 @@ public class HouseholdDetailsActivity extends AppCompatActivity implements House
             @Override
             public void onFormCancelled() {
                 HouseholdDetailsActivity.this.visit = null;
+
+                if (newHouseholdCreated) {
+                    //delete the Household
+                    setHouseholdMode();
+                }
             }
         });
 

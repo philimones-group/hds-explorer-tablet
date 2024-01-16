@@ -207,7 +207,8 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
     }
 
     private void readCollectedDataForEdit() {
-        this.collectedData = this.boxCoreCollectedData.query(CoreCollectedData_.formEntityId.equal(this.entity.getId()).and(CoreCollectedData_.collectedId.equal(this.entity.getCollectedId()))).build().findFirst();
+        //this.collectedData = this.boxCoreCollectedData.query(CoreCollectedData_.formEntityId.equal(this.entity.getId()).and(CoreCollectedData_.collectedId.equal(this.entity.getCollectedId()))).build().findFirst();
+        this.collectedData = this.boxCoreCollectedData.query(CoreCollectedData_.formEntityId.equal(this.entity.getId())).build().findFirst();
         Log.d("found-collected", ""+this.collectedData);
 
         if (this.collectedData.uploaded && !collectedData.uploadedWithError) {
@@ -273,7 +274,8 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
 
         if (currentMode == Mode.EDIT) {
             preloadUpdatedValues();
-            FormFragment form = FormFragment.newInstance(this.fragmentManager, this.form, Bootstrap.getInstancesPath(context), user.username, this.entity.getRecentlyCreatedUri(), preloadedMap, postExecution, backgroundMode, true, this);
+            String savedXmlFilename = this.entity.getRecentlyCreatedUri()==null ? this.collectedData.formFilename : this.entity.getRecentlyCreatedUri();
+            FormFragment form = FormFragment.newInstance(this.fragmentManager, this.form, Bootstrap.getInstancesPath(context), user.username, savedXmlFilename, preloadedMap, postExecution, backgroundMode, true, this);
             form.startCollecting();
         }
     }

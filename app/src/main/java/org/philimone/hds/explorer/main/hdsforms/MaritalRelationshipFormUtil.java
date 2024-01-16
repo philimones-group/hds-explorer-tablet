@@ -59,6 +59,7 @@ public class MaritalRelationshipFormUtil extends FormUtil<MaritalRelationship> {
     private MaritalRelationship currentMaritalRelationship; //* if it is a relationship to close *//
     private int minimunSpouseAge;
     private boolean genderChecking;
+    private boolean spouseWillBeUpdated;
 
 
     public MaritalRelationshipFormUtil(Fragment fragment, Context context, Visit visit, Member spouseA, FormUtilities odkFormUtilities, FormUtilListener<MaritalRelationship> listener){
@@ -157,12 +158,15 @@ public class MaritalRelationshipFormUtil extends FormUtil<MaritalRelationship> {
 
     @Override
     protected void preloadUpdatedValues() {
-        preloadedMap.put("memberA", spouseA.code);
-        preloadedMap.put("memberB", spouseB.code);
-        preloadedMap.put("memberA_name", spouseA.name);
-        preloadedMap.put("memberB_name", spouseB.name);
-        preloadedMap.put("memberA_status", spouseA.maritalStatus.code);
-        preloadedMap.put("memberB_status", spouseB.maritalStatus.code);
+        if (spouseWillBeUpdated) {
+            //spouse A dont need to be updated only spouseB
+            //preloadedMap.put("memberA", spouseA.code);
+            preloadedMap.put("memberB", spouseB.code);
+            //preloadedMap.put("memberA_name", spouseA.name);
+            preloadedMap.put("memberB_name", spouseB.name);
+            //preloadedMap.put("memberA_status", spouseA.maritalStatus.code);
+            preloadedMap.put("memberB_status", spouseB.maritalStatus.code);
+        }
     }
 
     @Override
@@ -632,13 +636,13 @@ public class MaritalRelationshipFormUtil extends FormUtil<MaritalRelationship> {
     @Override
     public void collect() {
 
+        //Check if MemberA has a registered marital relationship? - //1. get last marital if still opened  or  //2. select a spouse
+        MaritalRelationship maritalRelationship = getCurrentMaritalRelationship(spouseA);
+        boolean existsRelationshipToClose = maritalRelationship != null && maritalRelationship.endStatus == MaritalEndStatus.NOT_APPLICABLE;
+
         if (currentMode == Mode.CREATE) {
             //1. create a try to close relationship
             //2. create a new relationship
-
-            //Check if MemberA has a registered marital relationship? - //1. get last marital if still opened  or  //2. select a spouse
-            MaritalRelationship maritalRelationship = getCurrentMaritalRelationship(spouseA);
-            boolean existsRelationshipToClose = maritalRelationship != null && maritalRelationship.endStatus == MaritalEndStatus.NOT_APPLICABLE;
 
             //if maritalRelationship is recentlyCreated -> go to edit mode
             if (maritalRelationship != null && maritalRelationship.isRecentlyCreated() ) {
@@ -668,7 +672,12 @@ public class MaritalRelationshipFormUtil extends FormUtil<MaritalRelationship> {
 
             this.currentMaritalRelationship = this.entity;
 
-            checkChangeSpouseDialog();
+            if (this.currentMaritalRelationship.endStatus != MaritalEndStatus.NOT_APPLICABLE) {
+                //is closing a relationship - cannot update the spouses while editing
+                executeCollectForm();
+            } else {
+                checkChangeSpouseDialog();
+            }
         }
 
     }
@@ -714,7 +723,7 @@ public class MaritalRelationshipFormUtil extends FormUtil<MaritalRelationship> {
 
             @Override
             public void onCanceled() {
-
+                spouseWillBeUpdated = false;
             }
         });
 
@@ -739,6 +748,7 @@ public class MaritalRelationshipFormUtil extends FormUtil<MaritalRelationship> {
         DialogFactory.createMessageYN(this.context, R.string.maritalrelationship_spouse_select_update_lbl, R.string.maritalrelationship_spouse_change_lbl, new DialogFactory.OnYesNoClickListener() {
             @Override
             public void onYesClicked() {
+                spouseWillBeUpdated = true;
                 openSpouseFilterDialog();
             }
 

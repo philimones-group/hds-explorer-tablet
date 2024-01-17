@@ -6,7 +6,7 @@
 
     <!-- Copyright    -->
     <string name="copyright_app_name_lbl">HDS Explorer</string>
-    <string name="copyright_app_company_lbl">© 2022 Philimone\'s Group</string>
+    <string name="copyright_app_company_lbl">© 2024 Philimone\'s Group</string>
     <string name="copyright_app_developers_lbl">Developed by Paulo Filimone</string>
 
     <!-- General buttons and Strings-->
@@ -370,6 +370,8 @@
     <string name="household_visit_not_finished_title_lbl">Visit not Finished</string>
     <string name="household_visit_not_finished_msg_lbl">Not all the Members were visited during this Visit\nPlease collect the (Visit Member not Possible) Form\nFor the following Members:\n(%1$s)</string>
     <string name="household_visit_not_finished_msg_ask_lbl">Not all the Members were visited during this Visit,\nMembers: (%1$s)\nCollect the (Visit Member not Possible) Form or mark all as non-visited.\n\nDo you want to mark all these members as non-visited?</string>
+    <string name="household_visit_unfinalized_msg_info_lbl"><p>Extension forms have not been finalized or collected for the following core forms:</p><ul>%1$s</ul>\n<p>Please finalize the extension forms before attempting to upload the collected core forms.</p></string>
+
 
     <string name="gps_title_lbl">GPS Location</string>
     <string name="gps_permissions_error">You must grant Location permissions to be able to use the GPS feature</string>

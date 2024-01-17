@@ -349,44 +349,17 @@ public class ShowCoreCollectedDataFragment extends Fragment {
                 HeadRelationship entity = boxHeadRelationships.query(HeadRelationship_.id.equal(coreCollectedData.formEntityId)).build().findFirst();
                 return boxHouseholds.query(Household_.code.equal(entity.householdCode)).build().findFirst();
             }
-            case MARITAL_RELATIONSHIP: {
-                MaritalRelationship entity = boxMaritalRelationships.query(MaritalRelationship_.id.equal(coreCollectedData.formEntityId)).build().findFirst();
-                Visit visit = boxVisits.query(Visit_.code.equal(entity.visitCode)).build().findFirst();
-                return boxHouseholds.query(Household_.code.equal(visit.householdCode)).build().findFirst();
-            }
+            case MARITAL_RELATIONSHIP:
+            case OUTMIGRATION:
+            case PREGNANCY_REGISTRATION:
+            case PREGNANCY_OUTCOME:
+            case DEATH:
+            case INCOMPLETE_VISIT:
             case INMIGRATION:
-            case EXTERNAL_INMIGRATION: {
-                Inmigration entity = boxInmigrations.query(Inmigration_.id.equal(coreCollectedData.formEntityId)).build().findFirst();
-                return boxHouseholds.query(Household_.code.equal(entity.destinationCode)).build().findFirst();
-            }
-            case OUTMIGRATION: {
-                Outmigration entity = boxOutmigrations.query(Outmigration_.id.equal(coreCollectedData.formEntityId)).build().findFirst();
-                Visit visit = boxVisits.query(Visit_.code.equal(entity.visitCode)).build().findFirst();
-                return boxHouseholds.query(Household_.code.equal(visit.householdCode)).build().findFirst();
-            }
-            case PREGNANCY_REGISTRATION: {
-                PregnancyRegistration entity = boxPregnancyRegistrations.query(PregnancyRegistration_.id.equal(coreCollectedData.formEntityId)).build().findFirst();
-                Visit visit = boxVisits.query(Visit_.code.equal(entity.visitCode)).build().findFirst();
-                return boxHouseholds.query(Household_.code.equal(visit.householdCode)).build().findFirst();
-            }
-            case PREGNANCY_OUTCOME: {
-                PregnancyOutcome entity = boxPregnancyOutcomes.query(PregnancyOutcome_.id.equal(coreCollectedData.formEntityId)).build().findFirst();
-                Visit visit = boxVisits.query(Visit_.code.equal(entity.visitCode)).build().findFirst();
-                return boxHouseholds.query(Household_.code.equal(visit.householdCode)).build().findFirst();
-            }
-            case DEATH: {
-                Death entity = boxDeaths.query(Death_.id.equal(coreCollectedData.formEntityId)).build().findFirst();
-                Visit visit = boxVisits.query(Visit_.code.equal(entity.visitCode)).build().findFirst();
-                return boxHouseholds.query(Household_.code.equal(visit.householdCode)).build().findFirst();
-            }
-            case INCOMPLETE_VISIT: {
-                IncompleteVisit entity = boxIncompleteVisits.query(IncompleteVisit_.id.equal(coreCollectedData.formEntityId)).build().findFirst();
-                Visit visit = entity.visit.getTarget();
-                return boxHouseholds.query(Household_.code.equal(visit.householdCode)).build().findFirst();
-            }
+            case EXTERNAL_INMIGRATION:
             case VISIT: {
-                Visit entity = boxVisits.query(Visit_.id.equal(coreCollectedData.formEntityId)).build().findFirst();
-                return boxHouseholds.query(Household_.code.equal(entity.householdCode)).build().findFirst();
+                Visit visit = boxVisits.query(Visit_.id.equal(coreCollectedData.visitId)).build().findFirst();
+                return boxHouseholds.query(Household_.code.equal(visit.householdCode)).build().findFirst();
             }
             case EXTRA_FORM: break;
             case INVALID_ENUM: break;

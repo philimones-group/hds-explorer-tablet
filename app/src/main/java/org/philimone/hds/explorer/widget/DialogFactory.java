@@ -2,20 +2,20 @@ package org.philimone.hds.explorer.widget;
 
 
 import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
 
-import androidx.annotation.LayoutRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.StringRes;
 import androidx.appcompat.app.AppCompatDialog;
 
+import android.text.Html;
 import android.text.InputType;
+import android.view.Gravity;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import org.philimone.hds.explorer.R;
@@ -58,6 +58,7 @@ public class DialogFactory extends AppCompatDialog {
     private OnYesNoClickListener yesNoClickListener;
     private OnYesNoCancelClickListener yesNoCancelClickListener;
     private OnInputTextListener inputTextListener;
+    private boolean dialogMessageAsHtml;
 
     public DialogFactory(@NonNull Context context) {
         super(context);
@@ -327,7 +328,16 @@ public class DialogFactory extends AppCompatDialog {
 
         if (this.txtDialogTitle != null){
             this.txtDialogTitle.setText(this.dialogTitle);
-            this.txtDialogMessage.setText(this.dialogMessage);
+            if (dialogMessageAsHtml) {
+                txtDialogMessage.setGravity(Gravity.LEFT);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    this.txtDialogMessage.setText(Html.fromHtml(this.dialogMessage, Html.FROM_HTML_MODE_LEGACY));
+                } else {
+                    this.txtDialogMessage.setText(Html.fromHtml(this.dialogMessage));
+                }
+            } else {
+                this.txtDialogMessage.setText(this.dialogMessage);
+            }
         }
 
         if (txtDialogInput != null){
@@ -359,6 +369,14 @@ public class DialogFactory extends AppCompatDialog {
     public void setDialogMessage(String message){
         this.dialogMessage = message;
         setTexts();
+    }
+
+    public boolean isDialogMessageAsHtml() {
+        return dialogMessageAsHtml;
+    }
+
+    public void setDialogMessageAsHtml(boolean dialogMessageAsHtml) {
+        this.dialogMessageAsHtml = dialogMessageAsHtml;
     }
 
     public void setYesText(String text){

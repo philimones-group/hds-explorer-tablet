@@ -4,7 +4,7 @@
 
     <!-- Copyright    -->
     <string name="copyright_app_name_lbl">HDS Explorer</string>
-    <string name="copyright_app_company_lbl">© 2022 Philimone\'s Group</string>
+    <string name="copyright_app_company_lbl">© 2024 Philimone\'s Group</string>
     <string name="copyright_app_developers_lbl">Développé par Paulo Filimone</string>
 
     <!-- General buttons and Strings-->
@@ -368,6 +368,7 @@
     <string name="household_visit_not_finished_title_lbl">Visite inachevée</string>
     <string name="household_visit_not_finished_msg_lbl">Tous les membres n\'ont pas été visités lors de cette visite\nVeuillez connecter le formulaire (Visite incomplète) pour les membres suivants:\n(%1$s)</string>
     <string name="household_visit_not_finished_msg_ask_lbl">Tous les membres n\'ont pas été visités lors de cette visite,\nMembres : (%1$s)\nVous pouvez récupérer le formulaire de visite incomplet ou tout marquer comme non visité.\n\nVoulez-vous marquer tous ces membres comme non visités ?</string>
+    <string name="household_visit_unfinalized_msg_info_lbl"><p>Les formulaires d\'extension n\'ont pas été finalisés ou collectés pour les formulaires principaux suivants :</p><ul>%1$s</ul>\n<p>Veuillez finaliser les formulaires d\'extension avant de tenter de télécharger les formulaires principaux collectés.</p></string>
 
     <string name="gps_title_lbl">Les coordonnées GPS</string>
     <string name="gps_permissions_error">Vous devez disposer des autorisations de localisation pour accéder au GPS</string>

@@ -66,6 +66,10 @@ public class CoreCollectedExpandableAdapter extends BaseExpandableListAdapter im
         return this.childItems.get(groupPosition).get(childPosition);
     }
 
+    public List<List<VisitCollectedDataItem>> getChildItems() {
+        return childItems;
+    }
+
     @Override
     public long getGroupId(int groupPosition) {
         return groupPosition;

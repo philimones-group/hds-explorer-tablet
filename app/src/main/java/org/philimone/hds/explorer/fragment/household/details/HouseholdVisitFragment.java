@@ -206,6 +206,21 @@ public class HouseholdVisitFragment extends Fragment {
         }
 
         setHouseholdMode();
+
+        //check if there is unfinalized form extensions
+        List<CoreCollectedData> unfinalizedList = getUnfinalizedExtensionForms();
+        if (unfinalizedList.size() > 0) {
+            String unlist = "";
+            for (CoreCollectedData cd : unfinalizedList) {
+                unlist += (unlist.isEmpty() ? "" : "\n") + "<li>&nbsp;&nbsp;<b>" + getString(cd.formEntity.name) + " ("+ cd.formEntityCode +")</b></li>";
+            }
+
+            String msg = getString(R.string.household_visit_unfinalized_msg_info_lbl, unlist);
+
+            DialogFactory dialog = DialogFactory.createMessageInfo(getContext(), R.string.info_lbl, msg);
+            dialog.setDialogMessageAsHtml(true);
+            dialog.show();
+        }
     }
 
     @Override
@@ -403,6 +418,22 @@ public class HouseholdVisitFragment extends Fragment {
         }
 
         return 12;
+    }
+
+    private List<CoreCollectedData> getUnfinalizedExtensionForms() {
+        List<CoreCollectedData> list = new ArrayList<>();
+
+        CoreCollectedExpandableAdapter adapter = (CoreCollectedExpandableAdapter) this.elvVisitCollected.getExpandableListAdapter();
+
+        for (List<VisitCollectedDataItem> items : adapter.getChildItems()) {
+            for (VisitCollectedDataItem dataItem : items) {
+                if (dataItem.odkFormStatus != FormUtilities.FormStatus.FINALIZED) { //if is not finalized or not found
+                    list.add(dataItem.getCoreCollectedData());
+                }
+            }
+        }
+
+        return list;
     }
 
     private void onCollectExtraFormClicked() {

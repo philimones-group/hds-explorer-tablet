@@ -14,20 +14,21 @@ import mz.betainteractive.utilities.StringUtil;
 /*
  * The HDS-Explorer Default code generator (different sites can implement they own type of codes)
  */
-public class DefaultSimpleCodeGenerator implements CodeGenerator {
+public class CompoundSimpleCodeGenerator implements CodeGenerator {
     final String REGION_CODE_PATTERN = "^[A-Z0-9]{3}$";
-    final String HOUSEHOLD_CODE_PATTERN = "^[A-Z0-9]{3}[0-9]{6}$";
-    final String MEMBER_CODE_PATTERN = "^[A-Z0-9]{3}[0-9]{9}$";
-    final String VISIT_CODE_PATTERN = "^[A-Z0-9]{3}[0-9]{6}-[0-9]{3}-[0-9]{3}$";
+    final String COMPOUND_CODE_PATTERN = "^[A-Z0-9]{3}[0-9]{6}$";
+    final String HOUSEHOLD_CODE_PATTERN = "^[A-Z0-9]{3}[0-9]{9}$";
+    final String MEMBER_CODE_PATTERN = "^[A-Z0-9]{3}[0-9]{11}$";
+    final String VISIT_CODE_PATTERN = "^[A-Z0-9]{3}[0-9]{9}-[0-9]{3}-[0-9]{3}$";
     final String USER_CODE_PATTERN = "^[A-Z0-9]{3}$";
-    final String PREGNANCY_CODE_PATTERN = "^[A-Z0-9]{3}[0-9]{9}-[0-9]{2}$";
+    final String PREGNANCY_CODE_PATTERN = "^[A-Z0-9]{3}[0-9]{11}-[0-9]{2}$";
 
     final String CHARS_A_TO_Z = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     final String CHARS_1_TO_9 = "123456789";
 
     @Override
     public String getName() {
-        return "Simple Code Scheme Generator (Household w/o user code)";
+        return "Compound Based Code Scheme Generator (Compound w/o user code)";
     }
 
     @Override
@@ -37,7 +38,7 @@ public class DefaultSimpleCodeGenerator implements CodeGenerator {
 
     @Override
     public boolean isLowestRegionCodeValid(String code) {
-        return isRegionCodeValid(code);
+        return !StringUtil.isBlank(code) && code.matches(COMPOUND_CODE_PATTERN);
     }
 
     @Override
@@ -96,12 +97,8 @@ public class DefaultSimpleCodeGenerator implements CodeGenerator {
 
     @Override
     public String generateLowestRegionCode(Region parentRegion, String regionName, List<String> existentCodes) {
-        return generateRegionCode(parentRegion, regionName, existentCodes);
-    }
 
-    @Override
-    public String generateHouseholdCode(String baseCode, List<String> existentCodes) {
-        //Generate codes and try to match the database until u cant
+        String baseCode = parentRegion.code;
 
         if (StringUtil.isBlank(baseCode)) return null;
 
@@ -120,7 +117,7 @@ public class DefaultSimpleCodeGenerator implements CodeGenerator {
     }
 
     @Override
-    public String generateMemberCode(String baseCode, List<String> existentCodes) {
+    public String generateHouseholdCode(String baseCode, List<String> existentCodes) {
         //Generate codes and try to match the database until u cant
 
         if (StringUtil.isBlank(baseCode)) return null;
@@ -129,7 +126,27 @@ public class DefaultSimpleCodeGenerator implements CodeGenerator {
             return baseCode+"001";
         } else {
             for (int i=1; i <= 999; i++){
-                String code = baseCode + String.format("%03d", i);
+                String code = baseCode+ String.format("%03d", i);
+                if (!existentCodes.contains(code)){
+                    return code;
+                }
+            }
+        }
+
+        return baseCode+"ERROR";
+    }
+
+    @Override
+    public String generateMemberCode(String baseCode, List<String> existentCodes) {
+        //Generate codes and try to match the database until u cant
+
+        if (StringUtil.isBlank(baseCode)) return null;
+
+        if (existentCodes.size()==0){
+            return baseCode+"01";
+        } else {
+            for (int i=1; i <= 99; i++){
+                String code = baseCode + String.format("%02d", i);
                 if (!existentCodes.contains(code)){
                     return code;
                 }
@@ -245,22 +262,22 @@ public class DefaultSimpleCodeGenerator implements CodeGenerator {
 
     @Override
     public String getLowestRegionSampleCode() {
-        return getRegionSampleCode();
-    }
-
-    @Override
-    public String getHouseholdSampleCode() {
         return "TXU000001";
     }
 
     @Override
-    public String getMemberSampleCode() {
+    public String getHouseholdSampleCode() {
         return "TXU000001001";
     }
 
     @Override
+    public String getMemberSampleCode() {
+        return "TXU00000100101";
+    }
+
+    @Override
     public String getVisitSampleCode() {
-        return "TXU000001-000-001";
+        return "TXU000001001-000-001";
     }
 
     @Override
@@ -270,6 +287,6 @@ public class DefaultSimpleCodeGenerator implements CodeGenerator {
 
     @Override
     public String getPregnancySampleCode() {
-        return "TXU000001001-01";
+        return "TXU00000100101-01";
     }
 }

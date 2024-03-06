@@ -320,7 +320,7 @@
     <string name="member_details_edit_mother_sex_cant_change_lbl">Cannot change the sex, because this member is a mother of other members.\nChange first the mother of related members</string>
     <string name="member_details_edit_dob_bir_warning_lbl">This Member was registered using a Birth Registration!\nThe residency start date is the same as date of Birth!\n\nAre you sure you want to change its Date of Birth (The birth registration will be affected)?</string>
 
-    <string name="region_details_edit_region_name_lbl">Region Name</string>
+    <string name="region_details_edit_region_name_lbl">Name</string>
     <string name="region_details_edit_button_update_details_lbl">Update Details</string>
     <string name="region_details_edit_cant_update_new_record">Cannot edit/update this Region data because it was recently created.\nTo perform any change you must do it in the Region Form</string>
 
@@ -379,7 +379,7 @@
     <string name="gps_loading_error">Couldn\'t provide GPS Location</string>
     <string name="gps_no_provider_available_error">Providers are disabled. To be able to continue, enable Network or Location provider</string>
 
-    <string name="region_details_tab_details_list_lbl">Region Child\'s List</string>
+    <string name="region_details_tab_details_list_lbl">Sublist</string>
     <string name="region_details_tab_collected_forms_lbl">Collected Forms</string>
     <string name="region_details_tab_datasets_lbl">Extra Details</string>
     <string name="region_details_tab_edit_lbl">Edit Details</string>
@@ -398,6 +398,7 @@
     <string name="household_filter_edit_house_lbl">Edit Household</string>
     <string name="household_filter_clear_lbl">Clear</string>
     <string name="household_filter_show_region_btn_lbl">Show Region</string>
+    <string name="household_filter_show_region_custom_btn_lbl">Show %1$s</string>
     <string name="household_filter_household_not_found_lbl">Households with code like (%1$s) were not found</string>
     <string name="household_filter_head_label">Head:</string>
     <string name="household_filter_new_household_dialog_title_label">Household Registration</string>
@@ -406,10 +407,10 @@
     <string name="household_filter_new_household_dialog_no_label">Add new Household</string>
 
     <!-- New Region -->
-    <string name="new_region_code_err_lbl">The format of the Region Code is incorrect</string>
-    <string name="new_region_code_empty_lbl">The Region Code cannot be empty</string>
-    <string name="new_region_name_empty_lbl">The Region Name cannot be empty</string>
-    <string name="new_region_code_exists_lbl">The Region Code already exists</string>
+    <string name="new_region_code_err_lbl">The format of the %1$s Code is incorrect</string>
+    <string name="new_region_code_empty_lbl">The %1$s Code cannot be empty</string>
+    <string name="new_region_name_empty_lbl">The %1$s Name cannot be empty</string>
+    <string name="new_region_code_exists_lbl">The %1$s Code already exists</string>
 
     <!-- New Household -->
     <string name="new_household_main_dialog_lbl">Add New Household</string>

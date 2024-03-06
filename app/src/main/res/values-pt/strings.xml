@@ -319,7 +319,7 @@
     <string name="member_details_edit_mother_sex_cant_change_lbl">Não será possível alterar o sexo, porque o membro já é Mãe de outros membros no sistema.\nAltere primeiro a Mãe dos membros relacionados</string>
     <string name="member_details_edit_dob_bir_warning_lbl">Este membro foi registado através dum Registo de Nascimento.\nPortanto a data em que começou a residir na casa é a mesma que a data de nascimento!\n\nTem certeza que deseja alterar a data de nascimento (isto afectará  o reg. de nascimento)?</string>
 
-    <string name="region_details_edit_region_name_lbl">Nome da Região</string>
+    <string name="region_details_edit_region_name_lbl">Nome</string>
     <string name="region_details_edit_button_update_details_lbl">Alterar Detalhes</string>
     <string name="region_details_edit_cant_update_new_record">Não será possível actualizar esta Região porque foi criado recentemente.\nPara actualizá -lo, pode fazê-lo no Formulário de Registo de Região</string>
 
@@ -377,7 +377,7 @@
     <string name="gps_loading_error">Não foi possível encontrar coordenadas GPS</string>
     <string name="gps_no_provider_available_error">Provedor de GPS desactivado. Para poder continuar, active a Rede Wifi ou provedor de GPS</string>
 
-    <string name="region_details_tab_details_list_lbl">Lista de sub-regiões</string>
+    <string name="region_details_tab_details_list_lbl">Sublista</string>
     <string name="region_details_tab_collected_forms_lbl">Formulários Colhidos</string>
     <string name="region_details_tab_datasets_lbl">Outros detalhes</string>
     <string name="region_details_tab_edit_lbl">Alterar Detalhes</string>
@@ -396,6 +396,7 @@
     <string name="household_filter_edit_house_lbl">Alterar Nova Casa</string>
     <string name="household_filter_clear_lbl">Limpar</string>
     <string name="household_filter_show_region_btn_lbl">Mostrar Região</string>
+    <string name="household_filter_show_region_custom_btn_lbl">Mostrar %1$s</string>
     <string name="household_filter_household_not_found_lbl">Casas com código (%1$s) não foram encontradas</string>
     <string name="household_filter_head_label">Chefe:</string>
     <string name="household_filter_new_household_dialog_title_label">Registo de um novo Agregado</string>
@@ -404,10 +405,10 @@
     <string name="household_filter_new_household_dialog_no_label">Adicionar novo Agregado</string>
 
     <!-- New Region -->
-    <string name="new_region_code_err_lbl">O código da região está incorrecto!</string>
-    <string name="new_region_code_empty_lbl">O código da região não pode estar vazio</string>
-    <string name="new_region_name_empty_lbl">O nome da região não pode estar vazio</string>
-    <string name="new_region_code_exists_lbl">O código da região introduzido já existe!</string>
+    <string name="new_region_code_err_lbl">O código do/a %1$s está incorrecto!</string>
+    <string name="new_region_code_empty_lbl">O código do/a %1$s não pode estar vazio</string>
+    <string name="new_region_name_empty_lbl">O nome do/a %1$s não pode estar vazio</string>
+    <string name="new_region_code_exists_lbl">O código do/a %1$s introduzido já existe!</string>
     
     <!-- New Household -->
     <string name="new_household_main_dialog_lbl">Adicionar Novo Agregado/Casa</string>

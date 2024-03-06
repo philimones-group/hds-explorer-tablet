@@ -48,6 +48,8 @@ public class RegionDetailsActivity extends AppCompatActivity {
     private TextView txtRdHieararchyName;
     private TextView txtRdRegionName;
     private TextView txtRdRegionCode;
+
+    private TextView txtRdParentHierarchyName;
     private TextView txtRdParent;
 
     private Button btRegionDetailsCollectData;
@@ -118,6 +120,7 @@ public class RegionDetailsActivity extends AppCompatActivity {
         txtRdHieararchyName = (TextView) findViewById(R.id.txtRdHieararchyName);
         txtRdRegionName = (TextView) findViewById(R.id.txtRdRegionName);
         txtRdRegionCode = (TextView) findViewById(R.id.txtRdRegionCode);
+        txtRdParentHierarchyName = (TextView) findViewById(R.id.txtRdParentHierarchyName);
         txtRdParent = (TextView) findViewById(R.id.txtRdParent);
         regionDetailsTabLayout = findViewById(R.id.regionDetailsTabLayout);
         regionDetailsTabViewPager = findViewById(R.id.regionDetailsTabViewPager);
@@ -158,7 +161,9 @@ public class RegionDetailsActivity extends AppCompatActivity {
         String hierarchyName = getHierarchyName(region);
         Region parent = getRegion(region.getParent());
 
-        txtRdHieararchyName.setText(hierarchyName);
+        txtRdParentHierarchyName.setText(getHierarchyName(parent)+":");
+
+        txtRdHieararchyName.setText(hierarchyName+":");
         txtRdRegionName.setText(region.getName());
         txtRdRegionCode.setText(region.getCode());
         txtRdParent.setText(parent != null ? parent.getName() : "");

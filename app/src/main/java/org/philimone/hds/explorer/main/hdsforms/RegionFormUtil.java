@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment;
 
 import org.philimone.hds.explorer.R;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
+import org.philimone.hds.explorer.database.Queries;
 import org.philimone.hds.explorer.model.ApplicationParam;
 import org.philimone.hds.explorer.model.ApplicationParam_;
 import org.philimone.hds.explorer.model.CoreCollectedData;
@@ -36,6 +37,8 @@ public class RegionFormUtil extends FormUtil<Region> {
     private Box<Region> boxRegions;
     private Region parentRegion;
     private Region region;
+
+    private String hierarchyName;
 
     public RegionFormUtil(Fragment fragment, Context context, String parentRegionCode, FormUtilities odkFormUtilities, FormUtilListener<Region> listener){
         super(fragment, context, FormUtil.getRegionForm(context), odkFormUtilities, listener);
@@ -97,9 +100,17 @@ public class RegionFormUtil extends FormUtil<Region> {
     }
 
     @Override
+    protected void initialize() {
+        super.initialize();
+
+        hierarchyName = getHierarchyName(getNextLevel(parentRegion));
+    }
+
+    @Override
     protected void preloadValues() {
         preloadedMap.put("parentCode", parentRegion.code);
         preloadedMap.put("parentName", parentRegion.name);
+        preloadedMap.put("regionLevel", hierarchyName);
         preloadedMap.put("regionName", "");
         preloadedMap.put("regionCode", "");
 
@@ -125,25 +136,25 @@ public class RegionFormUtil extends FormUtil<Region> {
         //String region_gps = collectedValues.get("gps").getValue();
 
         if (StringUtil.isBlank(region_name)){
-            String message = this.context.getString(R.string.new_region_name_empty_lbl);
+            String message = this.context.getString(R.string.new_region_name_empty_lbl, hierarchyName);
             //DialogFactory.createMessageInfo(RegionDetailsActivity.this, R.string.info_lbl, R.string.new_region_code_empty_lbl).show();
             return new ValidationResult(columnRegionName, message);
         }
 
         if (StringUtil.isBlank(region_code)){
-            String message = this.context.getString(R.string.new_region_code_empty_lbl);
+            String message = this.context.getString(R.string.new_region_code_empty_lbl, hierarchyName);
             return new ValidationResult(columnRegionCode, message);
         }
 
         if (isChildAtLowestLevel(this.parentRegion)) {
             if (!codeGenerator.isLowestRegionCodeValid(region_code)){
-                String message = this.context.getString(R.string.new_region_code_err_lbl);
+                String message = this.context.getString(R.string.new_region_code_err_lbl, hierarchyName);
                 //DialogFactory.createMessageInfo(RegionDetailsActivity.this, R.string.info_lbl, R.string.new_region_code_err_lbl).show();
                 return new ValidationResult(columnRegionCode, message);
             }
         } else {
             if (!codeGenerator.isRegionCodeValid(region_code)){
-                String message = this.context.getString(R.string.new_region_code_err_lbl);
+                String message = this.context.getString(R.string.new_region_code_err_lbl, hierarchyName);
                 //DialogFactory.createMessageInfo(RegionDetailsActivity.this, R.string.info_lbl, R.string.new_region_code_err_lbl).show();
                 return new ValidationResult(columnRegionCode, message);
             }
@@ -151,7 +162,7 @@ public class RegionFormUtil extends FormUtil<Region> {
 
         //check if region with code exists
         if (currentMode==Mode.CREATE && boxRegions.query().equal(Region_.code, region_code, QueryBuilder.StringOrder.CASE_SENSITIVE).build().findFirst() != null){
-            String message = this.context.getString(R.string.new_region_code_exists_lbl);
+            String message = this.context.getString(R.string.new_region_code_exists_lbl, hierarchyName);
             //DialogFactory.createMessageInfo(RegionDetailsActivity.this, R.string.info_lbl, R.string.new_region_code_exists_lbl).show();
             return new ValidationResult(columnRegionCode, message);
         }
@@ -339,7 +350,7 @@ public class RegionFormUtil extends FormUtil<Region> {
 
         if (householdLevel == null) return null;
 
-        if (lowest == householdLevel) {
+        if (lowest.equals(householdLevel)) {
             return codeGenerator.generateLowestRegionCode(parentRegion, regionName);
         }
 
@@ -350,11 +361,21 @@ public class RegionFormUtil extends FormUtil<Region> {
         String lowest = getLowestRegionLevel();
         String householdLevel = getNextLevel(parentRegion);
 
-        if (householdLevel != null && lowest == householdLevel) {
+        if (householdLevel != null && lowest.equals(householdLevel)) {
             return true;
         }
 
         return false;
+    }
+
+    private String getHierarchyName(String hierarchyLevel) {
+        ApplicationParam param = Queries.getApplicationParamBy(boxAppParams, hierarchyLevel);
+
+        if (param != null){
+            return param.getValue();
+        }
+
+        return "";
     }
 
 }

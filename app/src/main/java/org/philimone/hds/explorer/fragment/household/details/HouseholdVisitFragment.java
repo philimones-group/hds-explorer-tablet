@@ -427,8 +427,10 @@ public class HouseholdVisitFragment extends Fragment {
 
         for (List<VisitCollectedDataItem> items : adapter.getChildItems()) {
             for (VisitCollectedDataItem dataItem : items) {
-                if (dataItem.getExtension().enabled && dataItem.odkFormStatus != FormUtilities.FormStatus.FINALIZED) { //if is not finalized or not found
-                    list.add(dataItem.getCoreCollectedData());
+                if (dataItem.getExtension() != null) {
+                    if (dataItem.getExtension().enabled && dataItem.odkFormStatus != FormUtilities.FormStatus.FINALIZED) { //if is not finalized or not found
+                        list.add(dataItem.getCoreCollectedData());
+                    }
                 }
             }
         }

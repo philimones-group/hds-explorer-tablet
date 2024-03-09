@@ -38,10 +38,12 @@ import org.philimone.hds.forms.parsers.form.model.FormOptions;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.UUID;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -859,8 +861,20 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
             //map options <column, option, label, labelcode>
             List<CoreFormColumnOptions> list = boxCoreFormOptions.query(CoreFormColumnOptions_.formName.equal(form.getFormId())).order(CoreFormColumnOptions_.id).build().find();
 
+            //clear column options
+            Set<String> columnNames = new HashSet<>();
+            for (CoreFormColumnOptions opt : list) {
+                columnNames.add(opt.columnName);
+            }
+
+            for (String columnName : columnNames) {
+                Column column = form.getColumn(columnName);
+                column.clearTypeOptions();
+            }
+
             for (CoreFormColumnOptions opt : list) {
                 Column column = form.getColumn(opt.columnName);
+
                 if (column != null) {
                     //column.getTypeOptions().put(opt.optionValue, new FormOptions.OptionValue(opt.optionLabel, false, ""));
                     column.addTypeOptions(opt.optionValue, opt.optionLabel, false, "");

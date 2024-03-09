@@ -476,6 +476,9 @@ public class MaritalRelationshipFormUtil extends FormUtil<MaritalRelationship> {
             spouseA.maritalStatus = MaritalStatus.getFrom(startRelationType.code);
             spouseB.maritalStatus = MaritalStatus.getFrom(startRelationType.code);
 
+            spouseA.spouseCode = spouseB.code;
+            spouseB.spouseCode = spouseA.code;
+
         } else if (endRelationType != null) {
             //updates a existing relationship
             maritalRelationship = currentMaritalRelationship;
@@ -485,6 +488,9 @@ public class MaritalRelationshipFormUtil extends FormUtil<MaritalRelationship> {
 
             spouseA.maritalStatus = MaritalStatus.getFrom(endRelationType.code);
             spouseB.maritalStatus = MaritalStatus.getFrom(endRelationType.code);
+
+            spouseA.spouseCode = spouseB.code;
+            spouseB.spouseCode = spouseA.code;
         }
 
         maritalRelationship.visitCode = visitCode;
@@ -569,6 +575,9 @@ public class MaritalRelationshipFormUtil extends FormUtil<MaritalRelationship> {
             spouseA.maritalStatus = MaritalStatus.getFrom(startRelationType.code);
             spouseB.maritalStatus = MaritalStatus.getFrom(startRelationType.code);
 
+            spouseA.spouseCode = spouseB.code;
+            spouseB.spouseCode = spouseA.code;
+
         } else if (endRelationType != null) {
             //updates a existing relationship
 
@@ -577,6 +586,9 @@ public class MaritalRelationshipFormUtil extends FormUtil<MaritalRelationship> {
 
             spouseA.maritalStatus = MaritalStatus.getFrom(endRelationType.code);
             spouseB.maritalStatus = MaritalStatus.getFrom(endRelationType.code);
+
+            spouseA.spouseCode = spouseB.code;
+            spouseB.spouseCode = spouseA.code;
         }
 
         maritalRelationship.visitCode = visitCode;

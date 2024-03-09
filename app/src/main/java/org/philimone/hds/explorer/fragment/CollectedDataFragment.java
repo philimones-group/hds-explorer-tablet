@@ -263,8 +263,33 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
             }
             this.formDataLoaders = getFormLoaders(FormFilter.HOUSEHOLD_HEAD, FormFilter.MEMBER);
             //loadFormValues(this.formDataLoaders, household, null, region);
+            filterForms(member);
         }
 
+    }
+
+    private void filterForms(Member member){
+        List<FormDataLoader> toRemove = new ArrayList<>();
+        for (FormDataLoader loader : this.formDataLoaders){
+            Form form = loader.getForm();
+            Log.d("form", "fminage="+form.minAge+", fmaxge="+form.maxAge+", fg="+form.gender);
+            //age
+            if (!(member.age >= form.minAge && member.age <= form.maxAge)) {
+                toRemove.add(loader);
+                continue;
+            }
+            if (!form.gender.equals("ALL") && !form.gender.equals(member.gender.code)) {
+                toRemove.add(loader);
+                continue;
+            }
+            if (form.isHouseholdHeadForm && !member.isHouseholdHead()) {
+                toRemove.add(loader);
+            }
+        }
+
+        Log.d("removed forms", formDataLoaders.size()+"/"+toRemove.size()+", g="+member.gender+", age="+ member.age);
+
+        this.formDataLoaders.removeAll(toRemove);
     }
 
     private void loadMappingDataValues(FormDataLoader formDataLoader, Visit visit, TrackingSubjectList trackingSubject, FormGroupInstance formGroupInstance) {

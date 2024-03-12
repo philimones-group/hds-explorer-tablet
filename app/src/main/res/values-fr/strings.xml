@@ -528,6 +528,7 @@
     <string name="pregnancy_registration_code_err_lbl">Le code d\'enregistrement de la grossesse est incorrect</string>
     <string name="pregnancy_registration_code_exists_lbl">Code en double, Ce code de grossesse existe déjà!</string>
     <string name="pregnancy_registration_mothercode_empty_lbl">Le code de la mère ne peut pas être vide</string>
+    <string name="pregnancy_registration_recordeddate_not_great_today_lbl">La date d\'enregistrement de la grossesse ne peut pas être dans le futur</string>
     <string name="pregnancy_registration_status_empty_lbl">L\'état de grossesse ne peut être vide</string>
     <string name="pregnancy_registration_eddate_empty_lbl">La date de l\'accouchement probable ne peut pas être vide</string>
     <string name="pregnancy_registration_eddate_not_before_dob_lbl">La date probable de l\'accouchement ne peut être antérieure à la date de naissance.</string>
@@ -540,6 +541,7 @@
     <string name="pregnancy_outcome_mothercode_empty_lbl">Le code de la mère ne peut pas être vide</string>
     <string name="pregnancy_outcome_nroutcomes_empty_lbl">Le nombre de bébés qui naissent ne peut être vide</string>
     <string name="pregnancy_outcome_outcomedate_empty_lbl">La date d\'accouchement ne peut être vide</string>
+    <string name="pregnancy_outcome_outcomedate_not_great_today_lbl">La date d\'accouchement ne peut pas être dans le futur</string>
     <string name="pregnancy_outcome_outcdate_not_before_dob_lbl">La date d\'accouchement ne peut être antérieure à la date de naissance de la mère.</string>
     <string name="pregnancy_outcome_previous_pending_lbl">Cette mère a une grossesse en cours enregistrée dans le système, il est nécessaire d\'enregistrer d\'abord le résultat de la grossesse précédente pour pouvoir enregistrer une nouvelle grossesse.</string>
     <string name="pregnancy_outcome_nroutcomes_title_lbl">Résultat de la grossesse</string>
@@ -758,6 +760,8 @@
     <string name="birthPlace_hospital">Unité sanitaire/Hôpital public</string>
     <string name="birthPlace_traditional_midwife">Au domicile de la sage-femme traditionnelle</string>
     <string name="birthPlace_health_center_clinic">Centre de santé/Clinique privée</string>
+    <string name="birthPlace_on_the_way">En route vers la clinique/l\'hôpital</string>
+    <string name="birthPlace_private_mat_home">=Maternité Privée</string>
     <string name="birthPlace_other">Un autre</string>
 
     <string name="eventType_enumeration">Énumération</string>

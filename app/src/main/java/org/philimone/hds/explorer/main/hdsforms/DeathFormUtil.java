@@ -547,6 +547,7 @@ public class DeathFormUtil extends FormUtil<Death> {
         this.boxDeaths.put(death);
 
         //update member again
+        this.member.ageAtDeath = death.ageAtDeath;
         this.member.endType = ResidencyEndType.DEATH;
         this.member.endDate = deathDate;
         this.boxMembers.put(this.member);
@@ -710,6 +711,7 @@ public class DeathFormUtil extends FormUtil<Death> {
         death.recentlyCreatedUri = result.getFilename();
         this.boxDeaths.put(death);
 
+        this.member.ageAtDeath = death.ageAtDeath;
         this.member.endType = ResidencyEndType.DEATH;
         this.member.endDate = deathDate;
         this.boxMembers.put(this.member);

@@ -528,6 +528,7 @@
     <string name="pregnancy_registration_code_err_lbl">O código do registo de gravidez está incorrecto</string>
     <string name="pregnancy_registration_code_exists_lbl">Código duplicado, Este código da gravidez já existe!</string>
     <string name="pregnancy_registration_mothercode_empty_lbl">O código da mãe não pode estar vazio</string>
+    <string name="pregnancy_registration_recordeddate_not_great_today_lbl">A data do registo da gravidez não pode estar no futuro</string>
     <string name="pregnancy_registration_status_empty_lbl">O estado da gravidez não pode estar vazio</string>
     <string name="pregnancy_registration_eddate_empty_lbl">A data provável do parto não pode estar vazia</string>
     <string name="pregnancy_registration_eddate_not_before_dob_lbl">A data provável do parto não pode ser antes da data de nascimento</string>
@@ -540,6 +541,7 @@
     <string name="pregnancy_outcome_mothercode_empty_lbl">O código da mãe não pode estar vazio</string>
     <string name="pregnancy_outcome_nroutcomes_empty_lbl">O número de bebés nascidos não pode estar vazio</string>
     <string name="pregnancy_outcome_outcomedate_empty_lbl">A data do parto não pode estar vazia</string>
+    <string name="pregnancy_outcome_outcomedate_not_great_today_lbl">A data do parto não pode estar no futuro</string>
     <string name="pregnancy_outcome_outcdate_not_before_dob_lbl">A data do parto não pode ser antes da data de nascimento da mãe</string>
     <string name="pregnancy_outcome_previous_pending_lbl">Esta mãe encontra-se com uma gravidez pendente registada no sistema, é necessário primeiro fazer registo do Resultado da gravidez anterior para poder registar uma nova.</string>
     <string name="pregnancy_outcome_nroutcomes_title_lbl">Resultado da gravidez</string>
@@ -757,6 +759,8 @@
     <string name="birthPlace_hospital">Unidade Sanitária/Hospital Público</string>
     <string name="birthPlace_traditional_midwife">Em casa da parteira tradicional</string>
     <string name="birthPlace_health_center_clinic">Centro de Saúde/Clínica Privada</string>
+    <string name="birthPlace_on_the_way">A caminho da clínica/hospital</string>
+    <string name="birthPlace_private_mat_home">Maternidade Privada</string>
     <string name="birthPlace_other">Outro</string>
 
     <string name="eventType_enumeration">Enumeração</string>

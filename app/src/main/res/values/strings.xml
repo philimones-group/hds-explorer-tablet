@@ -531,6 +531,7 @@
     <string name="pregnancy_registration_code_err_lbl">The format of the Pregnancy Code is incorrect</string>
     <string name="pregnancy_registration_code_exists_lbl">Duplicated Pregnancy Registration, \nThis Pregnancy Code already exists</string>
     <string name="pregnancy_registration_mothercode_empty_lbl">The mother code cannot be empty</string>
+    <string name="pregnancy_registration_recordeddate_not_great_today_lbl">The Recorded date cannot be greater than today</string>
     <string name="pregnancy_registration_status_empty_lbl">The Pregnancy Status cannot be empty</string>
     <string name="pregnancy_registration_eddate_empty_lbl">The estimated date of delivery cannot be empty</string>
     <string name="pregnancy_registration_eddate_not_before_dob_lbl">The estimated date of delivery cannot be before the date of birth of the mother</string>
@@ -543,6 +544,7 @@
     <string name="pregnancy_outcome_mothercode_empty_lbl">The mother code cannot be empty</string>
     <string name="pregnancy_outcome_nroutcomes_empty_lbl">The number of outcomes cannot be empty or equals to zero</string>
     <string name="pregnancy_outcome_outcomedate_empty_lbl">The Outcome date cannot be empty</string>
+    <string name="pregnancy_outcome_outcomedate_not_great_today_lbl">The Outcome date cannot be greater than today</string>
     <string name="pregnancy_outcome_outcdate_not_before_dob_lbl">The outcome date cannot be before the date of birth of the mother</string>
     <string name="pregnancy_outcome_previous_pending_lbl">The Mother specified already has a pending Pregnancy Registration,\nYou must first register the Pregnancy Outcome to register new Pregnancy.</string>
     <string name="pregnancy_outcome_nroutcomes_title_lbl">Pregnancy Outcome</string>
@@ -764,6 +766,8 @@
     <string name="birthPlace_hospital">Hospital</string>
     <string name="birthPlace_traditional_midwife">Traditional Birth Attendants Home</string>
     <string name="birthPlace_health_center_clinic">Health Center or Clinic</string>
+    <string name="birthPlace_on_the_way">On the way to clinic/hospital</string>
+    <string name="birthPlace_private_mat_home">Private maternity home</string>
     <string name="birthPlace_other">Other</string>
 
     <string name="eventType_enumeration">Enumeration</string>

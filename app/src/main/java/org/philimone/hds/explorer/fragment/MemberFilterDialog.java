@@ -435,15 +435,12 @@ public class MemberFilterDialog extends DialogFragment {
                             //Household household, String name, String code, String householdCode, String gender, Integer minAge, Integer maxAge, Boolean isDead, Boolean hasOutmigrated, Boolean liveResident
     private MemberAdapter loadMembersByFilters(String name, String code, String householdCode, String gender, Integer minAge, Integer maxAge, Boolean isDead, Boolean hasOutmigrated, Boolean liveResident) {
 
-        ResidencyEndType endType = null;
+        List<String> endTypes = new ArrayList<>();
 
         if (name == null) name = "";
         if (code == null) code = "";
         if (householdCode == null) householdCode = "";
         if (gender == null) gender = "";
-        if (isDead != null && isDead) endType = ResidencyEndType.DEATH;
-        if (hasOutmigrated != null && hasOutmigrated) endType = ResidencyEndType.EXTERNAL_OUTMIGRATION;
-        if (liveResident != null && liveResident) endType = ResidencyEndType.NOT_APPLICABLE;
 
         //search on database
         QueryBuilder<Member> builder = this.boxMembers.query();
@@ -540,29 +537,20 @@ public class MemberFilterDialog extends DialogFragment {
             //whereClause += DatabaseHelper.Member.COLUMN_GENDER + " = ?";
         }
 
-        if (endType != null && endType==ResidencyEndType.DEATH){
-            if (minAge != null){
-                builder.greaterOrEqual(Member_.ageAtDeath, minAge);
-                //whereClause += DatabaseHelper.Member.COLUMN_AGE_AT_DEATH + " >= ?";
-            }
-            if (maxAge != null){
-                builder.lessOrEqual(Member_.ageAtDeath, maxAge);
-                //whereClause += DatabaseHelper.Member.COLUMN_AGE_AT_DEATH + " <= ?";
-            }
-        }else {
-            if (minAge != null){
-                builder.greaterOrEqual(Member_.age, minAge);
-                //whereClause += DatabaseHelper.Member.COLUMN_AGE + " >= ?";
-            }
-            if (maxAge != null){
-                builder.lessOrEqual(Member_.age, maxAge);
-                //whereClause += DatabaseHelper.Member.COLUMN_AGE + " <= ?";
-            }
-        }
+        //filter age
+        if (minAge != null) builder.greaterOrEqual(Member_.age, minAge);
+        if (maxAge != null) builder.lessOrEqual(Member_.age, maxAge);
 
-        if (endType != null){
-            builder.equal(Member_.endType, endType.code, QueryBuilder.StringOrder.CASE_SENSITIVE);
-            //whereClause += DatabaseHelper.Member.COLUMN_END_TYPE + " = ?";
+        //At at death
+        //if (minAge != null) builder.greaterOrEqual(Member_.ageAtDeath, minAge);
+        //if (maxAge != null) builder.lessOrEqual(Member_.ageAtDeath, maxAge);
+
+        if (isDead != null && isDead) endTypes.add(ResidencyEndType.DEATH.code);
+        if (hasOutmigrated != null && hasOutmigrated) endTypes.add(ResidencyEndType.EXTERNAL_OUTMIGRATION.code);
+        if (liveResident != null && liveResident) endTypes.add(ResidencyEndType.NOT_APPLICABLE.code);
+
+        if (endTypes.size() > 0){
+            builder.in(Member_.endType, endTypes.toArray(new String[0]), QueryBuilder.StringOrder.CASE_SENSITIVE);
         }
 
         if (filterExcludeHousehold != null) {

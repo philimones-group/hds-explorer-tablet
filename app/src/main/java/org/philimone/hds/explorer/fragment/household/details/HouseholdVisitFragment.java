@@ -427,8 +427,9 @@ public class HouseholdVisitFragment extends Fragment {
 
         for (List<VisitCollectedDataItem> items : adapter.getChildItems()) {
             for (VisitCollectedDataItem dataItem : items) {
-                if (dataItem.getExtension() != null) {
-                    if (dataItem.getExtension().enabled && dataItem.odkFormStatus != FormUtilities.FormStatus.FINALIZED) { //if is not finalized or not found
+                if (dataItem != null) {
+                    CoreFormExtension extension = dataItem.getExtension();
+                    if (extension != null && extension.enabled && dataItem.odkFormStatus != FormUtilities.FormStatus.FINALIZED) { //if is not finalized or not found
                         list.add(dataItem.getCoreCollectedData());
                     }
                 }

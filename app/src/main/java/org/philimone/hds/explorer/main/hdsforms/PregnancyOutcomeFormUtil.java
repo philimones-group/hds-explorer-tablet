@@ -317,6 +317,12 @@ public class PregnancyOutcomeFormUtil extends FormUtil<PregnancyOutcome> {
             return new ValidationResult(colOutcomeDate, message);
         }
 
+        //recordedDate cannot be in the future
+        if (outcomeDate.after(new Date())){ //is in the future
+            String message = this.context.getString(R.string.pregnancy_outcome_outcomedate_not_great_today_lbl);
+            return new ValidationResult(colOutcomeDate, message);
+        }
+
         //eddDate cannot be before dob
         if (outcomeDate != null && outcomeDate.before(this.mother.dob)){ //is before dob
             String message = this.context.getString(R.string.pregnancy_outcome_outcdate_not_before_dob_lbl);

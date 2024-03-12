@@ -197,6 +197,12 @@ public class PregnancyRegistrationFormUtil extends FormUtil<PregnancyRegistratio
             return new ValidationResult(colRecordedDate, message);
         }
 
+        //recordedDate cannot be in the future
+        if (recordedDate.after(new Date())){ //is in the future
+            String message = this.context.getString(R.string.pregnancy_registration_recordeddate_not_great_today_lbl);
+            return new ValidationResult(colRecordedDate, message);
+        }
+
         //validate preg status
         if (status == null){
             String message = this.context.getString(R.string.pregnancy_registration_status_empty_lbl);

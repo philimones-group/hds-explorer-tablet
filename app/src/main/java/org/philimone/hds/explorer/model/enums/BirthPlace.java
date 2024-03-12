@@ -13,6 +13,8 @@ public enum BirthPlace {
     HOSPITAL ("HOSPITAL", R.string.birthPlace_hospital),
     TRADITIONAL_MIDWIFE ("TRADITIONAL_MIDWIFE", R.string.birthPlace_traditional_midwife),
     HEALTH_CENTER_CLINIC ("HEALTH_CENTER_CLINIC", R.string.birthPlace_health_center_clinic),
+    ON_THE_WAY ("ON_THE_WAY", R.string.birthPlace_on_the_way),
+    PRIVATE_MAT_HOME ("PRIVATE_MAT_HOME", R.string.birthPlace_private_mat_home),
     OTHER ("OTHER", R.string.birthPlace_other),
     INVALID_ENUM    ( "-1", R.string.invalid_enum_value);
 

@@ -6,6 +6,7 @@ import android.os.Environment;
 import android.os.storage.StorageManager;
 import android.util.Log;
 
+import org.philimone.hds.explorer.BuildConfig;
 import org.philimone.hds.explorer.model.ApplicationParam;
 import org.philimone.hds.explorer.model.ApplicationParam_;
 import org.philimone.hds.explorer.model.SyncReport;
@@ -68,7 +69,10 @@ public class Bootstrap {
 
     private void insertParams(){
         if (boxAppParams.count()==0){
-            boxAppParams.put(new ApplicationParam(ApplicationParam.APP_URL, "string", "https://www.philimones-group.co.mz/hds-explorer-server")); // Server URL hds-explorer-server //https://www.philimones-group.co.mz/hds-explorer/
+
+            String defaultUrl = BuildConfig.HDS_EXPLORER_APP_URL;
+
+            boxAppParams.put(new ApplicationParam(ApplicationParam.APP_URL, "string", defaultUrl)); // Server URL hds-explorer-server
             boxAppParams.put(new ApplicationParam(ApplicationParam.ODK_URL, "string", "https://www.philimones-group.co.mz/odk-aggregate"));        // ODK Aggregate Server URL
             boxAppParams.put(new ApplicationParam(ApplicationParam.REDCAP_URL, "string", "https://www.philimones-group.co.mz/redcap"));            // REDCap Server URL
             boxAppParams.put(new ApplicationParam(ApplicationParam.HFORM_POST_EXECUTION, "string", "false"));            // REDCap Server URL

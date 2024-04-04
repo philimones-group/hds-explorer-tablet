@@ -30,10 +30,14 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.config
             //debuggable true
+            //get the default app url from global gradle properties
+            buildConfigField "String", "HDS_EXPLORER_APP_URL", "\"${project.properties["HDS_EXPLORER_APP_URL"].toString()}\""
         }
         debug {
             signingConfig signingConfigs.config
             debuggable true
+
+            buildConfigField "String", "HDS_EXPLORER_APP_URL", "\"${project.properties["HDS_EXPLORER_APP_URL"].toString()}\""
         }
     }
     productFlavors {

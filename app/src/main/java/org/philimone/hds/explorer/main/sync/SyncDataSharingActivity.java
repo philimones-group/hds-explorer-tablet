@@ -317,7 +317,7 @@ public class SyncDataSharingActivity extends AppCompatActivity implements DataSh
         Log.d("device", "connected "+remoteDevice+ ", server = "+remoteDevice.isServer());
 
         this.connectedDevicesArrayAdapter.addDevice(remoteDevice);
-        this.btShareData.setEnabled(true);
+        this.btShareData.setEnabled(serverStarted); //only server can start sharing data
     }
 
     @Override
@@ -355,7 +355,7 @@ public class SyncDataSharingActivity extends AppCompatActivity implements DataSh
         this.txtSharePercentageMsg.setText("100%");
         this.txtShareProgressMsg.setText(R.string.data_sharing_data_shared_lbl);
 
-        this.btShareData.setEnabled(true);
+        this.btShareData.setEnabled(serverStarted);
     }
 
     private void onFailureDataSharing() {
@@ -364,7 +364,7 @@ public class SyncDataSharingActivity extends AppCompatActivity implements DataSh
         this.txtSharePercentageMsg.setText("0%");
         this.txtShareProgressMsg.setText(R.string.data_sharing_transferring_failure_lbl);
 
-        this.btShareData.setEnabled(true);
+        this.btShareData.setEnabled(serverStarted);
     }
     
     private void updateConnectionAction(@StringRes int text, boolean enableButtons) {

@@ -18,9 +18,12 @@
 package org.philimone.hds.explorer.io.datasharing.bluetooth;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
+import android.Manifest;
 import android.app.Activity;
 import android.bluetooth.BluetoothManager;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -84,7 +87,7 @@ public class BluetoothDeviceListActivity extends AppCompatActivity {
         this.txtPairedDevicesMsg = findViewById(R.id.txtPairedDevicesMsg);
         this.txtNewDevicesMsg = findViewById(R.id.txtNewDevicesMsg);
 
-        btScanDevices.setOnClickListener( v ->  {
+        btScanDevices.setOnClickListener(v -> {
             doDiscovery();
             v.setEnabled(false);
         });
@@ -125,6 +128,10 @@ public class BluetoothDeviceListActivity extends AppCompatActivity {
 
         // Make sure we're not doing discovery anymore
         if (bluetoothAdapter != null) {
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_SCAN) != PackageManager.PERMISSION_GRANTED) {
+                //msg
+                return;
+            }
             bluetoothAdapter.cancelDiscovery();
         }
 
@@ -155,6 +162,10 @@ public class BluetoothDeviceListActivity extends AppCompatActivity {
         if (bluetoothAdapter == null) return;
 
         // Get a set of currently paired devices
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
+            //PERMISSION MSG
+            return;
+        }
         Set<BluetoothDevice> pairedDevices = bluetoothAdapter.getBondedDevices();
 
         // If there are paired devices, add each one to the ArrayAdapter

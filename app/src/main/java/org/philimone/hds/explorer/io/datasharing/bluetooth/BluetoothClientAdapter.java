@@ -1,11 +1,13 @@
 package org.philimone.hds.explorer.io.datasharing.bluetooth;
 
+import android.Manifest;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothManager;
 import android.bluetooth.BluetoothSocket;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -13,12 +15,17 @@ import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
+import org.philimone.hds.explorer.R;
 import org.philimone.hds.explorer.io.datasharing.ClientAdapter;
 import org.philimone.hds.explorer.io.datasharing.ClientAdapterListener;
 import org.philimone.hds.explorer.io.datasharing.SharingDevice;
+import org.philimone.hds.explorer.widget.DialogFactory;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.UUID;
 
 public class BluetoothClientAdapter extends ClientAdapter {
@@ -32,6 +39,7 @@ public class BluetoothClientAdapter extends ClientAdapter {
 
     private ActivityResultLauncher<Intent> enableBluetoothLauncher;
     private ActivityResultLauncher<Intent> devicesListLauncher;
+    private ActivityResultLauncher<String[]> requestPermissions;
     private ClientConnectThread serverScanning;
 
     private ClientAdapterListener listener;
@@ -52,6 +60,28 @@ public class BluetoothClientAdapter extends ClientAdapter {
 
     }
 
+    private void initPermissions() {
+        this.requestPermissions = this.mContext.registerForActivityResult(new ActivityResultContracts.RequestMultiplePermissions(), permissionResults -> {
+            boolean granted = !permissionResults.values().contains(false);
+
+            if (granted) {
+                initScanning();
+            } else {
+                DialogFactory.createMessageInfo(this.mContext, R.string.data_sharing_permissions_title_lbl, R.string.data_sharing_permissions_bluetooth_error).show();
+            }
+        });
+    }
+
+    private void ensurePermissionsGranted(final String... permissions) {
+        boolean denied = Arrays.stream(permissions).anyMatch(permission -> ContextCompat.checkSelfPermission(mContext, permission) == PackageManager.PERMISSION_DENIED);
+
+        if (denied) { //without access
+            requestPermissions.launch(permissions);
+        } else {
+            initScanning();
+        }
+    }
+
     private void initBluetooth() {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
             bluetoothManager = mContext.getSystemService(BluetoothManager.class);
@@ -69,13 +99,15 @@ public class BluetoothClientAdapter extends ClientAdapter {
     }
 
     private void initLaunchers() {
+        initPermissions();
+
         this.enableBluetoothLauncher = this.mContext.registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> onEnableBluetoothResult(result));
 
         this.devicesListLauncher = this.mContext.registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> onDeviceListResult(result));
     }
 
     private void onEnableBluetoothResult(ActivityResult result) {
-        if (result.getResultCode()== Activity.RESULT_OK) {
+        if (result.getResultCode() == Activity.RESULT_OK) {
             //fire connectionListener.deviceEnabled
             listener.onDeviceEnabled(true);
         } else {
@@ -85,7 +117,7 @@ public class BluetoothClientAdapter extends ClientAdapter {
     }
 
     private void onDeviceListResult(ActivityResult result) {
-        if (result.getResultCode()== Activity.RESULT_OK) {
+        if (result.getResultCode() == Activity.RESULT_OK) {
 
             Intent data = result.getData();
 
@@ -128,8 +160,11 @@ public class BluetoothClientAdapter extends ClientAdapter {
 
     @Override
     public void startScanning() {
-        this.devicesListLauncher.launch(new Intent(mContext, BluetoothDeviceListActivity.class));
+        ensurePermissionsGranted(Manifest.permission.BLUETOOTH_CONNECT, Manifest.permission.BLUETOOTH_SCAN);
+    }
 
+    private void initScanning() {
+        this.devicesListLauncher.launch(new Intent(mContext, BluetoothDeviceListActivity.class));
         listener.onScanningDevices();
     }
 
@@ -152,13 +187,17 @@ public class BluetoothClientAdapter extends ClientAdapter {
     }
 
     private class ClientConnectThread extends AsyncTask<Void, Integer, ClientConnectThread.ConnectResult> {
-        private final BluetoothSocket clientSocket;
+        private BluetoothSocket clientSocket;
         private boolean cancel;
 
         private ClientConnectThread(BluetoothDevice bluetoothDevice) {
             BluetoothSocket bSocket = null;
 
             try {
+                if (ActivityCompat.checkSelfPermission(mContext, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
+                    DialogFactory.createMessageInfo(mContext, R.string.data_sharing_permissions_title_lbl, R.string.data_sharing_permissions_bluetooth_error).show();
+                    return;
+                }
                 bSocket = bluetoothDevice.createRfcommSocketToServiceRecord(UUID.fromString(serverDeviceUuid));
             } catch (IOException e) {
                 e.printStackTrace();
@@ -169,6 +208,9 @@ public class BluetoothClientAdapter extends ClientAdapter {
 
         @Override
         protected ConnectResult doInBackground(Void... voids) {
+            if (ActivityCompat.checkSelfPermission(mContext, Manifest.permission.BLUETOOTH_SCAN) != PackageManager.PERMISSION_GRANTED) {
+                return null;
+            }
             bluetoothAdapter.cancelDiscovery();
 
             Log.d("client adapter", "connecting to socket");

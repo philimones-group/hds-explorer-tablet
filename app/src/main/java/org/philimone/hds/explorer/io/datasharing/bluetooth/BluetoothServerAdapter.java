@@ -1,11 +1,13 @@
 package org.philimone.hds.explorer.io.datasharing.bluetooth;
 
+import android.Manifest;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothManager;
 import android.bluetooth.BluetoothServerSocket;
 import android.bluetooth.BluetoothSocket;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -13,11 +15,16 @@ import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
+import org.philimone.hds.explorer.R;
 import org.philimone.hds.explorer.io.datasharing.ServerAdapter;
 import org.philimone.hds.explorer.io.datasharing.ServerAdapterListener;
+import org.philimone.hds.explorer.widget.DialogFactory;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.UUID;
 
 public class BluetoothServerAdapter extends ServerAdapter {
@@ -30,6 +37,8 @@ public class BluetoothServerAdapter extends ServerAdapter {
     private String deviceName;
 
     private ActivityResultLauncher<Intent> enableBluetoothLauncher;
+    private ActivityResultLauncher<String[]> requestPermissions;
+    private ActivityResultLauncher<String[]> requestEnableBtPermissions;
     private ServerListeningTask serverListening;
 
     private ServerAdapterListener listener;
@@ -54,6 +63,48 @@ public class BluetoothServerAdapter extends ServerAdapter {
 
     }
 
+    private void initPermissions() {
+        this.requestPermissions = this.mContext.registerForActivityResult(new ActivityResultContracts.RequestMultiplePermissions(), permissionResults -> {
+            boolean granted = !permissionResults.values().contains(false);
+
+            if (granted) {
+                initServerListening();
+            } else {
+                DialogFactory.createMessageInfo(this.mContext, R.string.data_sharing_permissions_title_lbl, R.string.data_sharing_permissions_bluetooth_error).show();
+            }
+        });
+
+        this.requestEnableBtPermissions = this.mContext.registerForActivityResult(new ActivityResultContracts.RequestMultiplePermissions(), permissionResults -> {
+            boolean granted = !permissionResults.values().contains(false);
+
+            if (granted) {
+                initEnableBt();
+            } else {
+                DialogFactory.createMessageInfo(this.mContext, R.string.data_sharing_permissions_title_lbl, R.string.data_sharing_permissions_bluetooth_error).show();
+            }
+        });
+    }
+
+    private void ensurePermissionsGranted(final String... permissions) {
+        boolean denied = Arrays.stream(permissions).anyMatch(permission -> ContextCompat.checkSelfPermission(mContext, permission) == PackageManager.PERMISSION_DENIED);
+
+        if (denied) { //without access
+            requestPermissions.launch(permissions);
+        } else {
+            initServerListening();
+        }
+    }
+
+    private void ensureEnableBtPermissionsGranted(final String... permissions) {
+        boolean denied = Arrays.stream(permissions).anyMatch(permission -> ContextCompat.checkSelfPermission(mContext, permission) == PackageManager.PERMISSION_DENIED);
+
+        if (denied) { //without access
+            requestEnableBtPermissions.launch(permissions);
+        } else {
+            initEnableBt();
+        }
+    }
+
     private void initBluetooth() {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
             bluetoothManager = mContext.getSystemService(BluetoothManager.class);
@@ -72,10 +123,12 @@ public class BluetoothServerAdapter extends ServerAdapter {
 
     private void initLaunchers() {
         this.enableBluetoothLauncher = this.mContext.registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> onEnableBluetoothResult(result));
+
+        initPermissions();
     }
 
     private void onEnableBluetoothResult(ActivityResult result) {
-        if (result.getResultCode()== Activity.RESULT_OK) {
+        if (result.getResultCode() == Activity.RESULT_OK) {
             //fire connectionListener.deviceEnabled
             listener.onDeviceEnabled(true);
         } else {
@@ -106,12 +159,20 @@ public class BluetoothServerAdapter extends ServerAdapter {
 
     @Override
     public void enable() {
+        ensureEnableBtPermissionsGranted(Manifest.permission.BLUETOOTH_CONNECT);
+    }
+
+    private void initEnableBt() {
         Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
         this.enableBluetoothLauncher.launch(enableBtIntent);
     }
 
     @Override
     public void startListening() {
+        ensurePermissionsGranted(Manifest.permission.BLUETOOTH_CONNECT);
+    }
+
+    private void initServerListening() {
         this.serverListening = new ServerListeningTask();
         this.serverListening.execute();
     }
@@ -132,13 +193,18 @@ public class BluetoothServerAdapter extends ServerAdapter {
     }
 
     private class ServerListeningTask extends AsyncTask<Void, ServerListeningTask.ConnectResult, ServerListeningTask.ConnectResult> {
-        private final BluetoothServerSocket serverSocket;
+        private BluetoothServerSocket serverSocket = null;
         private boolean cancel;
 
         private ServerListeningTask() {
             BluetoothServerSocket tmpSocket = null;
 
             try {
+                if (ActivityCompat.checkSelfPermission(mContext, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
+                    DialogFactory.createMessageInfo(mContext, R.string.data_sharing_permissions_title_lbl, R.string.data_sharing_permissions_bluetooth_error).show();
+                    return;
+                }
+
                 tmpSocket = bluetoothAdapter.listenUsingInsecureRfcommWithServiceRecord(BluetoothServerAdapter.this.getName(), UUID.fromString(getUUID()));
             } catch (IOException e) {
                 e.printStackTrace();

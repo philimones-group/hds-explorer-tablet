@@ -9,6 +9,9 @@
 
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADVERTISE" />
+    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
+    <uses-permission android:name="android.permission.BLUETOOTH_SCAN" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -43,8 +46,8 @@
             android:exported="false" />
         <activity
             android:name=".io.datasharing.bluetooth.BluetoothDeviceListActivity"
-            android:theme="@style/appCompatDialogTheme" />
-        <activity android:name=".main.sync.SyncDataSharingActivity" />
+            android:theme="@style/appCompatDialogTheme" android:exported="true" />
+        <activity android:name=".main.sync.SyncDataSharingActivity" android:exported="true" />
         <activity
             android:name=".main.SplashScreenActivity"
             android:exported="true">

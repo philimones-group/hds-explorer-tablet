@@ -18,10 +18,10 @@ public class CompoundSimpleCodeGenerator implements CodeGenerator {
     final String REGION_CODE_PATTERN = "^[A-Z0-9]{3}$";
     final String COMPOUND_CODE_PATTERN = "^[A-Z0-9]{3}[0-9]{6}$";
     final String HOUSEHOLD_CODE_PATTERN = "^[A-Z0-9]{3}[0-9]{9}$";
-    final String MEMBER_CODE_PATTERN = "^[A-Z0-9]{3}[0-9]{11}$";
+    final String MEMBER_CODE_PATTERN = "^[A-Z0-9]{3}[0-9]{12}$";
     final String VISIT_CODE_PATTERN = "^[A-Z0-9]{3}[0-9]{9}-[0-9]{3}-[0-9]{3}$";
     final String USER_CODE_PATTERN = "^[A-Z0-9]{3}$";
-    final String PREGNANCY_CODE_PATTERN = "^[A-Z0-9]{3}[0-9]{11}-[0-9]{2}$";
+    final String PREGNANCY_CODE_PATTERN = "^[A-Z0-9]{3}[0-9]{12}-[0-9]{2}$";
 
     final String CHARS_A_TO_Z = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     final String CHARS_1_TO_9 = "123456789";
@@ -143,10 +143,10 @@ public class CompoundSimpleCodeGenerator implements CodeGenerator {
         if (StringUtil.isBlank(baseCode)) return null;
 
         if (existentCodes.size()==0){
-            return baseCode+"01";
+            return baseCode+"001";
         } else {
-            for (int i=1; i <= 99; i++){
-                String code = baseCode + String.format("%02d", i);
+            for (int i=1; i <= 999; i++){
+                String code = baseCode + String.format("%03d", i);
                 if (!existentCodes.contains(code)){
                     return code;
                 }
@@ -272,7 +272,7 @@ public class CompoundSimpleCodeGenerator implements CodeGenerator {
 
     @Override
     public String getMemberSampleCode() {
-        return "TXU00000100101";
+        return "TXU000001001001";
     }
 
     @Override
@@ -287,6 +287,6 @@ public class CompoundSimpleCodeGenerator implements CodeGenerator {
 
     @Override
     public String getPregnancySampleCode() {
-        return "TXU00000100101-01";
+        return "TXU000001001001-01";
     }
 }

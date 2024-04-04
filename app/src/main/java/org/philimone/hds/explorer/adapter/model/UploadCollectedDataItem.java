@@ -43,6 +43,8 @@ public class UploadCollectedDataItem {
     public boolean isFormExtensionValid() {
         CoreFormExtension extension = this.coreCollectedData.extension.getTarget();
 
+        if (extension == null) return true;
+
         if (!extension.enabled) {
             return true; //Not Enabled Extension means that FormExtension is Valid (no need for checks)
         }

@@ -195,12 +195,16 @@ public class HouseholdEditFragment extends Fragment implements LocationListener 
 
         if (this.gpsLocationResult != null) {
             //but I believe this should every time be different
-            float acc = (float) (this.household.gpsAccuracy * 1f); //convert double to
-            changed1 = changed1 ||
-                       this.gpsLocationResult.getLatitude()!=this.household.gpsLatitude ||
-                       this.gpsLocationResult.getLongitude()!=this.household.gpsLongitude ||
-                       this.gpsLocationResult.getAltitude()!=this.household.gpsAltitude ||
-                       this.gpsLocationResult.getAccuracy()!=acc;
+            try {
+                float acc = (float) (this.household.gpsAccuracy * 1f); //convert double to
+                changed1 = changed1 ||
+                        this.gpsLocationResult.getLatitude() != this.household.gpsLatitude ||
+                        this.gpsLocationResult.getLongitude() != this.household.gpsLongitude ||
+                        this.gpsLocationResult.getAltitude() != this.household.gpsAltitude ||
+                        this.gpsLocationResult.getAccuracy() != acc;
+            } catch(Exception e){
+                changed1 = true;
+            }
         }
 
         this.btEditUpdateDetails.setEnabled(changed1);

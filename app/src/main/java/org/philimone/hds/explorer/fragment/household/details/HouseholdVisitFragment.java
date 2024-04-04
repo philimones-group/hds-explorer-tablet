@@ -607,11 +607,21 @@ public class HouseholdVisitFragment extends Fragment {
                 break;
             }
         }
+        boolean isPregnant = false;
+
+        if (selectedMember.gender == Gender.FEMALE && isAtMotherAge) {
+            isPregnant = this.boxPregnancyRegistrations.query(PregnancyRegistration_.motherCode.equal(selectedMember.code).and(PregnancyRegistration_.status.equal(PregnancyStatus.PREGNANT.code))).build().count()>0;
+           Log.d("pregnat", ""+isPregnant);
+        }
 
         btnVisitMemberIncomplete.setEnabled(btnVisitMemberIncomplete.isEnabled() && ccdataIncomplete == null);
         btnVisitMaritalRelationship.setEnabled(btnVisitMaritalRelationship.isEnabled() && hasMaritalRelationship == false);
-        btnVisitPregnancyReg.setEnabled(btnVisitPregnancyReg.isEnabled() && ccdataPregnancy == null);
-        btnVisitBirthReg.setEnabled(btnVisitBirthReg.isEnabled() && ccdataPOutcome == null);
+        btnVisitPregnancyReg.setEnabled(btnVisitPregnancyReg.isEnabled() && ccdataPregnancy == null && !isPregnant);
+        btnVisitBirthReg.setEnabled((btnVisitBirthReg.isEnabled() && ccdataPOutcome == null));
+
+        if (isPregnant){
+            btnVisitPregnancyReg.setEnabled(false);
+        }
 
         setMainListsSelectable(true);
     }
@@ -627,7 +637,7 @@ public class HouseholdVisitFragment extends Fragment {
                                                       .build().find();
 
         MemberAdapter adapter = new MemberAdapter(this.getContext(), R.layout.household_visit_member_item, members);
-        //adapter.setShowExtraDetails(true);
+        adapter.setShowExtraDetails(true);
         adapter.setShowGender(true);
         adapter.setShowAge(true);
         this.lvHouseholdMembers.setAdapter(adapter);

@@ -296,6 +296,7 @@ public class PregnancyRegistrationFormUtil extends FormUtil<PregnancyRegistratio
         PregnancyRegistration pregnancy = new PregnancyRegistration();
         pregnancy.visitCode = visitCode;
         pregnancy.code = code;
+        pregnancy.status = status;
         pregnancy.motherCode = mother.code;
         pregnancy.recordedDate = recordedDate;
         pregnancy.pregMonths = pregMonths;
@@ -369,6 +370,7 @@ public class PregnancyRegistrationFormUtil extends FormUtil<PregnancyRegistratio
         PregnancyRegistration pregnancy = this.entity;
         pregnancy.visitCode = visitCode;
         pregnancy.code = code;
+        pregnancy.status = status;
         pregnancy.motherCode = mother.code;
         pregnancy.recordedDate = recordedDate;
         pregnancy.pregMonths = pregMonths;

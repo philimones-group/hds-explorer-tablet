@@ -233,14 +233,6 @@ public class MemberAdapter extends RecyclerView.Adapter<MemberAdapter.MemberView
 
             extraCode += endType;
 
-            if (showGender) {
-                extraCode += (extraCode.isEmpty() ? "  " : " - ") + mContext.getString(R.string.member_details_gender_lbl)+" "+mb.gender.code;
-            }
-
-            if (showAge) {
-                extraCode += ", " + mContext.getString(R.string.member_details_age_lbl)+" "+mb.age;
-            }
-
             txtName.setText(mb.getName());
             txtCode.setText(mb.getCode()+extraCode);
 
@@ -264,6 +256,12 @@ public class MemberAdapter extends RecyclerView.Adapter<MemberAdapter.MemberView
 
             if (txtExtra != null) {
                 txtExtra.setText(mb.getHouseholdCode() +" -> "+mb.getHouseholdName());
+            }
+
+            if (showExtraDetails && (showGender && showAge)) {
+                String maritalText = mContext.getString(R.string.relationship_type_title_abbrv_lbl) + ": " + mContext.getString(mb.maritalStatus.name);
+                String text = mContext.getString(R.string.member_details_gender_lbl)+" "+mb.gender.code + ", " + mContext.getString(R.string.member_details_age_lbl)+" "+mb.age + ", " +maritalText;
+                txtExtra.setText(text);
             }
 
             if (MemberAdapter.this.extras != null && position < MemberAdapter.this.extras.size()){

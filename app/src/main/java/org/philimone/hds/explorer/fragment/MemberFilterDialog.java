@@ -569,7 +569,7 @@ public class MemberFilterDialog extends DialogFragment {
 
         Log.d("sql", builder.toString());
 
-        List<Member> members = builder.build().find();
+        List<Member> members = builder.build().find(0, 20000);
 
         MemberAdapter currentAdapter = new MemberAdapter(this.getActivity(), members);
 

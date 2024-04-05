@@ -1,38 +1,50 @@
 package org.philimone.hds.explorer.adapter;
 
 import android.content.Context;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.CheckBox;
+import android.widget.EditText;
+import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
 import org.philimone.hds.explorer.R;
 import org.philimone.hds.explorer.adapter.model.HierarchyItem;
+import org.philimone.hds.explorer.model.CollectedDataCursor;
 import org.philimone.hds.explorer.model.Region;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class RegionExpandableListAdapter extends BaseExpandableListAdapter implements Serializable {
 
     private Context mContext;
+    private ExpandableListView mListView;
     private ArrayList<HierarchyItem> groupItems;
     private HashMap<HierarchyItem, ArrayList<Region>> originalRegionCollection; /* will hold all dataset */
     private HashMap<HierarchyItem, ArrayList<Region>> regionCollection;
     private Listener listener;
+    private Map<HierarchyItem, String> savedSearchedText;
 
 
-    public RegionExpandableListAdapter(Context mContext, ArrayList<HierarchyItem> groupItems, HashMap<HierarchyItem, ArrayList<Region>> regionCollection) {
+    public RegionExpandableListAdapter(Context mContext, ExpandableListView listView, ArrayList<HierarchyItem> groupItems, HashMap<HierarchyItem, ArrayList<Region>> regionCollection) {
         this.mContext = mContext;
+        this.mListView = listView;
         this.groupItems = new ArrayList<>();
         this.regionCollection = new HashMap<>();
         this.originalRegionCollection = new HashMap<>();
+        this.savedSearchedText = new HashMap<>();
 
         this.groupItems.addAll(groupItems);
         this.regionCollection.putAll(regionCollection);
@@ -72,7 +84,8 @@ public class RegionExpandableListAdapter extends BaseExpandableListAdapter imple
     @Override
     public Object getChild(int groupPosition, int childPosition) {
         HierarchyItem group = groupItems.get(groupPosition);
-        return regionCollection.get(group).get(childPosition);
+        Region region = regionCollection.get(group).get(childPosition);
+        return region;
     }
 
     @Override
@@ -111,29 +124,91 @@ public class RegionExpandableListAdapter extends BaseExpandableListAdapter imple
 
     @Override
     public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
-        if (convertView==null) {
-            LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        HierarchyItem itemGroup = groupItems.get(groupPosition);
+        ArrayList<Region> regions = this.regionCollection.get(itemGroup);
+        Region region = regions.get(childPosition);
+        boolean isSearchRegion = region.id==0;
+
+        LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        if (isSearchRegion){
+            Log.d("convertview", "child");
+            convertView = inflater.inflate(R.layout.region_child_search_item, parent, false);
+        } else {
             convertView = inflater.inflate(R.layout.region_child_item, parent, false);
         }
 
-        TextView txtChildRegionName = (TextView) convertView.findViewById(R.id.txtChildRegionName);
-        TextView txtChildRegionCode = (TextView) convertView.findViewById(R.id.txtChildRegionCode);
-        RadioButton chkRegionSelected = (RadioButton) convertView.findViewById(R.id.chkRegionSelected);
-        ImageView iconView = convertView.findViewById(R.id.iconView);
-        ImageView iconNewView = convertView.findViewById(R.id.iconNewView);
+        /*if (isSearchRegion && regions.size() < 5) {
+            convertView.setVisibility(View.GONE);
+            return convertView;
+        }*/
 
-        HierarchyItem itemGroup = groupItems.get(groupPosition);
-        Region region = this.regionCollection.get(itemGroup).get(childPosition);
+        if (!isSearchRegion) {
+            TextView txtChildRegionName = (TextView) convertView.findViewById(R.id.txtChildRegionName);
+            TextView txtChildRegionCode = (TextView) convertView.findViewById(R.id.txtChildRegionCode);
+            RadioButton chkRegionSelected = (RadioButton) convertView.findViewById(R.id.chkRegionSelected);
+            ImageView iconView = convertView.findViewById(R.id.iconView);
+            ImageView iconNewView = convertView.findViewById(R.id.iconNewView);
 
-        iconView.setVisibility(region.isRecentlyCreated() ? View.GONE : View.VISIBLE);
-        iconNewView.setVisibility(region.isRecentlyCreated() ? View.VISIBLE : View.GONE);
+            iconView.setVisibility(region.isRecentlyCreated() ? View.GONE : View.VISIBLE);
+            iconNewView.setVisibility(region.isRecentlyCreated() ? View.VISIBLE : View.GONE);
 
-        txtChildRegionName.setText(region.getName());
-        txtChildRegionCode.setText(region.getCode() );
-        chkRegionSelected.setChecked(region.isSelected());
+            txtChildRegionName.setText(region.getName());
+            txtChildRegionCode.setText(region.getCode());
+            chkRegionSelected.setChecked(region.isSelected());
+        } else {
+            EditText txtSearch = convertView.findViewById(R.id.txtRegionFilterCode);
 
+            if (txtSearch != null) {
+                //set last saved text
+                String savedText = this.savedSearchedText.get(itemGroup);
+                if (savedText != null) {
+                    txtSearch.setText(savedText);
+                    txtSearch.requestFocus();
+                }
+                txtSearch.addTextChangedListener(new TextWatcher() {
+                    @Override
+                    public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
+                    @Override
+                    public void onTextChanged(CharSequence s, int start, int before, int count) { }
+                    @Override
+                    public void afterTextChanged(Editable s) {
+                        String searchTxt = s.toString();
+
+                        Log.d("toggle", "search region like " + searchTxt);
+                        filterRegionsBy(itemGroup, groupPosition, searchTxt);
+                    }
+                });
+            }
+        }
 
         return convertView;
+    }
+
+    private void filterRegionsBy(HierarchyItem itemGroup, int groupPosition, String searchTxt) {
+
+        this.savedSearchedText.put(itemGroup, searchTxt);
+
+        ArrayList<Region> list = this.regionCollection.get(itemGroup);
+        Region region0 = list.get(0);
+        list.clear();
+        list.add(region0);
+
+        searchTxt = searchTxt.toLowerCase();
+        ArrayList<Region> originalList = originalRegionCollection.get(itemGroup);
+        for (Region region : originalList) {
+
+            if (region.code == null || region.name == null) continue;
+
+            String code = region.code.toLowerCase();
+            String name = region.name.toLowerCase();
+            if (code.contains(searchTxt) || name.contains(searchTxt) || searchTxt.isEmpty()) {
+                list.add(region);
+            }
+        }
+
+        notifyDataSetChanged();
+        this.mListView.smoothScrollToPositionFromTop(groupPosition,0, 0);
+
     }
 
     @Override
@@ -145,10 +220,10 @@ public class RegionExpandableListAdapter extends BaseExpandableListAdapter imple
         HierarchyItem item = this.groupItems.get(groupPosition);
         Region region = this.regionCollection.get(item).get(childPosition);
 
+        //unselect all regions of this hierarchy level and then select the region
         for (Region r : this.regionCollection.get(item)){
             r.setSelected(false);
         }
-
         region.setSelected(true);
 
         //get all parents of this region and set them selected=true (retro cascade select)
@@ -203,10 +278,14 @@ public class RegionExpandableListAdapter extends BaseExpandableListAdapter imple
         ArrayList<Region> currentList = this.regionCollection.get(nextItem);
         currentList.clear();
 
-        for (Region r : originalList){ //fill new list with filtered content
-            if (r.getParent().equals(parentRegion.getCode())){ //check if the parent is the clicked region
-                currentList.add(r);
-                r.setSelected(false);
+        //fill new list with filtered content
+        for (Region r : originalList){
+            if (r.getParent() != null) {
+                //check if the parent is the clicked region or if is the search region
+                if (r.getParent().equals(parentRegion.getCode()) || r.id == 0) {
+                    currentList.add(r);
+                    r.setSelected(false);
+                }
             }
         }
 

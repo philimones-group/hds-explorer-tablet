@@ -180,6 +180,7 @@ public class HouseholdEditFragment extends Fragment implements LocationListener 
         });
 
         this.txtEditName.setText(household.name);
+        clearGpsData();
         showGpsData(this.household);
 
         btEditUpdateDetails.setEnabled(false);
@@ -389,6 +390,13 @@ public class HouseholdEditFragment extends Fragment implements LocationListener 
         }
     }
 
+    private void clearGpsData() {
+        this.txtGpsLatitude.setText("");
+        this.txtGpsLongitude.setText("");
+        this.txtGpsAltitude.setText("");
+        this.txtGpsAccuracy.setText("");
+    }
+
     private void showGpsData(Household household) {
         if (this.household.gpsLatitude != null) {
             this.txtGpsLatitude.setText(Location.convert(this.household.gpsLatitude, Location.FORMAT_DEGREES));
@@ -404,6 +412,7 @@ public class HouseholdEditFragment extends Fragment implements LocationListener 
 
         this.gpsLocationResult = location;
 
+        clearGpsData();
         showGpsResults();
 
         onFormContentChanges();

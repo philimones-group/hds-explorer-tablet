@@ -388,6 +388,7 @@
     <string name="household_filter_code_lbl">Código da casa</string>
     <string name="household_filter_code_hint_lbl">Código da casa</string>
     <string name="household_filter_search_lbl">Procurar casa</string>
+    <string name="household_filter_search_region_lbl">Pesquisar</string>
     <string name="household_filter_gpsmap_lbl">Mapa GPS</string>
     <string name="household_filter_gps_not_available_title_lbl">Não será possível visualizar o mapa</string>
     <string name="household_filter_gps_not_available_lbl">As coordenadas GPS das casas não estão disponíveis</string>
@@ -469,6 +470,7 @@
     <string name="new_member_dialog_household_head_updated_lbl">Informações acerca do Agregado foram actualizadas!</string>
 
     <string name="relationship_type_title_lbl">Estado Civil do Membro</string>
+    <string name="relationship_type_title_abbrv_lbl">EC</string>
     <string name="relationship_type_question_lbl">Escolha o Estado Civil?</string>
     <string name="relationship_type_select_btn_lbl">Seleccionar</string>
 

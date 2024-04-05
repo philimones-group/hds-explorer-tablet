@@ -387,6 +387,7 @@
     <string name="household_filter_code_lbl">Code de la Agrégat</string>
     <string name="household_filter_code_hint_lbl">Code de la Agrégat</string>
     <string name="household_filter_search_lbl">Recherche de Agrégat</string>
+    <string name="household_filter_search_region_lbl">Recherche</string>
     <string name="household_filter_gpsmap_lbl">Carte GPS</string>
     <string name="household_filter_gps_not_available_title_lbl">Impossible d\'afficher la carte</string>
     <string name="household_filter_gps_not_available_lbl">Les coordonnées GPS des Agrégats ne sont pas disponibles</string>
@@ -469,6 +470,7 @@
     <string name="new_member_dialog_household_head_updated_lbl">Les informations sur le ménage ont été mises à jour!</string>
 
     <string name="relationship_type_title_lbl">État civil du membre</string>
+    <string name="relationship_type_title_abbrv_lbl">ÉC</string>
     <string name="relationship_type_question_lbl">Choisissez votre état civil?</string>
     <string name="relationship_type_select_btn_lbl">Sélectionner</string>
 

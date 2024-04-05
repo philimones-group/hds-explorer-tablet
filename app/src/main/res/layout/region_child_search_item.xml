@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/MainLinearLayout"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:background="?android:attr/selectableItemBackground"
+    android:layoutDirection="ltr">
+
+    <ImageView
+        android:id="@+id/iconView"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_gravity="center"
+        android:layout_marginLeft="25dp"
+        android:layout_marginRight="8dp"
+        android:visibility="gone"
+        android:src="@mipmap/nui_region_red_icon" />
+
+    <EditText
+        android:id="@+id/txtRegionFilterCode"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_margin="5dp"
+        android:paddingStart="55dp"
+        android:paddingEnd="20dp"
+        android:gravity="center_vertical"
+        android:background="@drawable/nui_txtbox_rone_wb_search"
+        android:hint="@string/household_filter_search_region_lbl"
+        android:singleLine="true"
+        android:textSize="@dimen/household_filter_textsize" />
+
+</LinearLayout>

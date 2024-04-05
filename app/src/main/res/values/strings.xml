@@ -390,6 +390,7 @@
     <string name="household_filter_code_lbl">Household Code</string>
     <string name="household_filter_code_hint_lbl">Household Code</string>
     <string name="household_filter_search_lbl">Search House</string>
+    <string name="household_filter_search_region_lbl">Search</string>
     <string name="household_filter_gpsmap_lbl">View GPS Map</string>
     <string name="household_filter_gps_not_available_title_lbl">Cannot view GPS Map</string>
     <string name="household_filter_gps_not_available_lbl">GPS locations for the households are not available</string>
@@ -472,6 +473,7 @@
     <string name="new_member_dialog_household_head_updated_lbl">The information of Household is updated!</string>
 
     <string name="relationship_type_title_lbl">Member Marital Status</string>
+    <string name="relationship_type_title_abbrv_lbl">MS</string>
     <string name="relationship_type_question_lbl">Select the Marital Status?</string>
     <string name="relationship_type_select_btn_lbl">Select</string>
 
@@ -710,6 +712,8 @@
     <string name="data_sharing_transferring_data_lbl">Transferring shared datasets records</string>
     <string name="data_sharing_transferring_failure_lbl">An error occured while trying to share datasets</string>
     <string name="data_sharing_data_shared_lbl">Datasets shared successfully</string>
+    <string name="data_sharing_permissions_title_lbl">Data sharing permissions</string>
+    <string name="data_sharing_permissions_bluetooth_error">You must grant Bluetooth Device permissions to be able to use the Data Sharing feature</string>
 
     <!--  Data sharing - Bluetooth Devices List -->
     <string name="data_sharing_devlist_scanning_lbl">Scanning for devices...</string>

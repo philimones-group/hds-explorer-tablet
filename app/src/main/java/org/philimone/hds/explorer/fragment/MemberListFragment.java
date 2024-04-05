@@ -1,7 +1,10 @@
 package org.philimone.hds.explorer.fragment;
 
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -804,8 +807,14 @@ public class MemberListFragment extends Fragment {
             builder.in(Member_.endType, endTypes.toArray(new String[0]), QueryBuilder.StringOrder.CASE_SENSITIVE);
         }
 
-        List<String> smodules = new ArrayList<>(currentUser.getSelectedModules());
-        List<Member> members = builder.filter((member) -> StringUtil.containsAny(member.modules, smodules)).build().find(); //filters user search by module
+        //only one module is selected on login
+        String module = currentUser.getSelectedModules().stream().findFirst().get();
+        if (module != null) {
+            builder.contains(Member_.modules, module, QueryBuilder.StringOrder.CASE_SENSITIVE);
+        }
+
+        //Limit for now to 20000 - in the next version implement live data - implement the filter at that time
+        List<Member> members = builder.build().find(0, 20000);
 
         MemberAdapter currentAdapter = new MemberAdapter(this.getActivity(), members);
         currentAdapter.setShowHouseholdHeadIcon(true);

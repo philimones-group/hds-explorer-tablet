@@ -573,6 +573,7 @@ public class HouseholdFilterFragment extends Fragment implements RegionExpandabl
     private void expandRegionGroup(int groupPosition){
         if (groupPosition != -1){
             this.expListRegions.expandGroup(groupPosition);
+            this.expListRegions.smoothScrollToPositionFromTop(groupPosition, 0, 200);
         }
     }
 
@@ -600,27 +601,31 @@ public class HouseholdFilterFragment extends Fragment implements RegionExpandabl
 
             for (Region region : regions){
                 if (region.getLevel().equals(item.getLevel())){ //Filter Here
-
                     if (region.getLevel().equals(lastRegionLevel)) {
-
                         //filter according to the selected user modules
                         //Log.d("test-"+lastRegionLevel, region.name+", contains "+StringUtil.containsAny(region.modules, smodules)+", rmodules="+region.modules+", smodules="+smodules);
                         if (StringUtil.containsAny(region.modules, smodules)) {
                             list.add(region);
                         }
-
                     } else {
                         list.add(region); //not at last level, just add
                     }
-
                 }
             }
+
+            //Add fake region to be SearchBox
+            Region region = new Region();
+            region.id = 0;
+            region.code  = "SEARCH";
+            region.parent = list.get(0).getParent();
+
+            list.add(0, region);
 
             hierarchies.add(item);
             regionCollection.put(item, list);
         }
 
-        this.regionAdapter = new RegionExpandableListAdapter(this.mContext, hierarchies, regionCollection);
+        this.regionAdapter = new RegionExpandableListAdapter(this.mContext, this.expListRegions, hierarchies, regionCollection);
         this.regionAdapter.setListener(this);
         this.expListRegions.setAdapter(regionAdapter);
     }

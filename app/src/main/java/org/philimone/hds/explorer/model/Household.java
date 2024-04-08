@@ -1,6 +1,10 @@
 package org.philimone.hds.explorer.model;
 
+import org.philimone.hds.explorer.model.converters.HouseholdStatusConverter;
+import org.philimone.hds.explorer.model.converters.MemberStatusConverter;
 import org.philimone.hds.explorer.model.converters.StringCollectionConverter;
+import org.philimone.hds.explorer.model.enums.HouseholdStatus;
+import org.philimone.hds.explorer.model.enums.MemberStatus;
 import org.philimone.hds.explorer.model.enums.SubjectEntity;
 
 import java.io.Serializable;
@@ -54,6 +58,9 @@ public class Household implements CoreEntity, FormSubject, Serializable {
     public Double sinLatitude;
     public Double cosLongitude;
     public Double sinLongitude;
+
+    @Convert(converter = HouseholdStatusConverter.class, dbType = String.class)
+    public HouseholdStatus status;
 
     @Unique
     public String collectedId;

@@ -507,4 +507,9 @@ public class StringUtil {
             return null;
         }
     }
+
+    public static Boolean getBooleanValue(String booleanValue) {
+        if (booleanValue == null) return null;
+        return booleanValue.equalsIgnoreCase("true") || booleanValue.equalsIgnoreCase("yes");
+    }
 }

@@ -12,11 +12,16 @@ import org.philimone.hds.explorer.model.CoreCollectedData_;
 import org.philimone.hds.explorer.model.Household;
 import org.philimone.hds.explorer.model.Member;
 import org.philimone.hds.explorer.model.Member_;
+import org.philimone.hds.explorer.model.Residency;
+import org.philimone.hds.explorer.model.Residency_;
 import org.philimone.hds.explorer.model.Visit;
 import org.philimone.hds.explorer.model.Visit_;
 import org.philimone.hds.explorer.model.enums.CoreFormEntity;
+import org.philimone.hds.explorer.model.enums.HouseholdStatus;
+import org.philimone.hds.explorer.model.enums.NoVisitReason;
 import org.philimone.hds.explorer.model.enums.VisitLocationItem;
 import org.philimone.hds.explorer.model.enums.VisitReason;
+import org.philimone.hds.explorer.model.enums.temporal.ResidencyEndType;
 import org.philimone.hds.explorer.widget.DialogFactory;
 import org.philimone.hds.forms.main.FormFragment;
 import org.philimone.hds.forms.model.CollectedDataMap;
@@ -25,8 +30,11 @@ import org.philimone.hds.forms.model.HForm;
 import org.philimone.hds.forms.model.ValidationResult;
 import org.philimone.hds.forms.model.XmlFormResult;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -42,11 +50,16 @@ public class VisitFormUtil extends FormUtil<Visit> {
     //private Box<Household> boxHouseholds;
     private Box<Visit> boxVisits;
     private Box<Member> boxMembers;
+    private Box<Residency> boxResidencies;
 
     //private Household household;
     private Member respondentMember;
     private boolean newHouseholdCreated;
     private boolean respondentNotRegistered = false;
+    private boolean respondentExists;
+    private boolean respondentResident = true;
+
+    private static List<NoVisitReason> householdStatuses = Arrays.asList(NoVisitReason.HOUSE_OCCUPIED, NoVisitReason.HOUSE_VACANT, NoVisitReason.HOUSE_ABANDONED, NoVisitReason.HOUSE_DESTROYED, NoVisitReason.HOUSE_NOT_FOUND);
 
     public VisitFormUtil(Fragment fragment, Context context, Household household, boolean newHouseholdCreated, FormUtilities odkFormUtilities, FormUtilListener<Visit> listener){
         super(fragment, context, FormUtil.getVisitForm(context), odkFormUtilities, listener);
@@ -113,6 +126,7 @@ public class VisitFormUtil extends FormUtil<Visit> {
         //this.boxHouseholds = ObjectBoxDatabase.get().boxFor(Household.class);
         this.boxVisits = ObjectBoxDatabase.get().boxFor(Visit.class);
         this.boxMembers = ObjectBoxDatabase.get().boxFor(Member.class);
+        this.boxResidencies = ObjectBoxDatabase.get().boxFor(Residency.class);
 
     }
 
@@ -123,9 +137,14 @@ public class VisitFormUtil extends FormUtil<Visit> {
         preloadedMap.put("householdCode", household.code);
         preloadedMap.put("visitDate", StringUtil.format(new Date(), "yyyy-MM-dd"));
         preloadedMap.put("roundNumber", currentRound.roundNumber+""); //get round number
+        preloadedMap.put("respondentExists", respondentNotRegistered ? "" : respondentExists+"");
+        preloadedMap.put("respondentResident", respondentResident+"");
         preloadedMap.put("respondentCode", respondentMember==null ? "" : respondentMember.code);
+        preloadedMap.put("respondentName", respondentMember==null ? "" : respondentMember.name);
 
         if (newHouseholdCreated) {
+            preloadedMap.put("respondentExists", "false");
+            preloadedMap.put("visitPossible", "true");
             preloadedMap.put("visitReason", "NEW_HOUSE");
             preloadedMap.put("visitLocation", "HOME");
             //No need for GPS in this cases - and also whenever  its HOME doesnt need GPS, if its not will be inserted
@@ -149,7 +168,13 @@ public class VisitFormUtil extends FormUtil<Visit> {
         ColumnValue colVisitDate = collectedValues.get("visitDate"); //check date in future / in past
         ColumnValue colRoundNumber = collectedValues.get("roundNumber"); //not blank
         ColumnValue colVisitReason = collectedValues.get("visitReason"); //not blank
+        ColumnValue colVisitPossible = collectedValues.get("visitPossible");
+        ColumnValue colvisitNotPossibleReason = collectedValues.get("visitNotPossibleReason");
+        ColumnValue colRespondentExists = collectedValues.get("respondentExists");
+        ColumnValue colRespondentResident = collectedValues.get("respondentResident");
+        ColumnValue colRespondentRelationship = collectedValues.get("respondentRelationship");
         ColumnValue colRespondentCode = collectedValues.get("respondentCode"); //optional blank (NOR NEW_HOUSE)
+        ColumnValue colRespondentName = collectedValues.get("respondentName");
         ColumnValue colHasInterpreter = collectedValues.get("hasInterpreter"); //not blank if (NOT NEW_HOUSE)
         ColumnValue colInterpreterName = collectedValues.get("interpreterName"); //not blank if hasInterpreter
         ColumnValue colVisitLocation = collectedValues.get("visitLocation"); //not blank
@@ -158,9 +183,17 @@ public class VisitFormUtil extends FormUtil<Visit> {
         String visit_code = colCode.getValue();
         String household_code = colHouseholdCode.getValue();
         VisitReason visit_reason = VisitReason.getFrom(colVisitReason.getValue());
+        Boolean visitPossible = StringUtil.getBooleanValue(colVisitPossible.getValue());
+        NoVisitReason visitNotPossibleReason = NoVisitReason.getFrom(colvisitNotPossibleReason.getValue());
+        Boolean _respondentExists = StringUtil.getBooleanValue(colRespondentExists.getValue());
+        Boolean respondentResident = StringUtil.getBooleanValue(colRespondentResident.getValue());
+        String respondentRelationship = colRespondentRelationship.getValue();
+        String respondentName = colRespondentName.getValue();
         boolean hasInterpreter = colHasInterpreter.getValue()!=null && colHasInterpreter.getValue().equalsIgnoreCase("true");
         VisitLocationItem visit_location = VisitLocationItem.getFrom(colVisitLocation.getValue());
         Date visitDate = colVisitDate.getDateValue();
+
+        _respondentExists = _respondentExists != null && _respondentExists;
 
         if (!codeGenerator.isVisitCodeValid(visit_code)){
             String message = this.context.getString(R.string.new_visit_code_err_lbl);
@@ -194,7 +227,7 @@ public class VisitFormUtil extends FormUtil<Visit> {
             return new ValidationResult(colVisitReason, message);
         }
 
-        if (visit_reason != VisitReason.NEW_HOUSEHOLD && StringUtil.isBlank(colRespondentCode.getValue())){
+        if (visit_reason != VisitReason.NEW_HOUSEHOLD && _respondentExists && StringUtil.isBlank(colRespondentCode.getValue())){
             String message = this.context.getString(R.string.new_visit_respondent_empty_lbl);
             return new ValidationResult(colRespondentCode, message);
         }
@@ -210,12 +243,12 @@ public class VisitFormUtil extends FormUtil<Visit> {
             return new ValidationResult(colInterpreterName, message);
         }
 
-        if (StringUtil.isBlank(colVisitLocation.getValue())){
+        if (visitPossible && StringUtil.isBlank(colVisitLocation.getValue())){
             String message = this.context.getString(R.string.new_visit_location_empty_lbl);
             return new ValidationResult(colVisitLocation, message);
         }
 
-        if (visit_location == VisitLocationItem.OTHER_PLACE && StringUtil.isBlank(colVisitLocationOther.getValue())){
+        if (visitPossible && visit_location == VisitLocationItem.OTHER_PLACE && StringUtil.isBlank(colVisitLocationOther.getValue())){
             String message = this.context.getString(R.string.new_visit_location_other_empty_lbl);
             return new ValidationResult(colVisitLocationOther, message);
         }
@@ -244,7 +277,12 @@ public class VisitFormUtil extends FormUtil<Visit> {
         ColumnValue colVisitDate = collectedValues.get("visitDate");
         ColumnValue colRoundNumber = collectedValues.get("roundNumber");
         ColumnValue colVisitReason = collectedValues.get("visitReason");
+        ColumnValue colVisitPossible = collectedValues.get("visitPossible");
+        ColumnValue colvisitNotPossibleReason = collectedValues.get("visitNotPossibleReason");
+        ColumnValue colRespondentResident = collectedValues.get("respondentResident");
+        ColumnValue colRespondentRelationship = collectedValues.get("respondentRelationship");
         ColumnValue colRespondentCode = collectedValues.get("respondentCode");
+        ColumnValue colRespondentName = collectedValues.get("respondentName");
         ColumnValue colHasInterpreter = collectedValues.get("hasInterpreter");
         ColumnValue colInterpreterName = collectedValues.get("interpreterName");
         ColumnValue colVisitLocation = collectedValues.get("visitLocation");
@@ -268,7 +306,12 @@ public class VisitFormUtil extends FormUtil<Visit> {
         visit.visitDate = colVisitDate.getDateValue();
         visit.roundNumber = colRoundNumber.getIntegerValue();
         visit.visitReason = VisitReason.getFrom(colVisitReason.getValue());
+        visit.visitPossible = StringUtil.getBooleanValue(colVisitPossible.getValue());;
+        visit.visitNotPossibleReason = NoVisitReason.getFrom(colvisitNotPossibleReason.getValue());
+        visit.respondentResident = StringUtil.getBooleanValue(colRespondentResident.getValue());
+        visit.respondentRelationship = colRespondentRelationship.getValue();
         visit.respondentCode = colRespondentCode.getValue();
+        visit.respondentName = colRespondentName.getValue();
         visit.hasInterpreter = Boolean.getBoolean(colHasInterpreter.getValue());
         visit.interpreterName = colInterpreterName.getValue();
         visit.visitLocation = VisitLocationItem.getFrom(colVisitLocation.getValue());
@@ -283,6 +326,11 @@ public class VisitFormUtil extends FormUtil<Visit> {
         visit.recentlyCreatedUri = result.getFilename();
 
         boxVisits.put(visit);
+
+        if (visit.visitNotPossibleReason!=null && householdStatuses.contains(visit.visitNotPossibleReason)){
+            this.household.status = HouseholdStatus.getFrom(visit.visitNotPossibleReason.code);
+            this.boxHouseholds.put(this.household);
+        }
 
         if (currentMode == Mode.CREATE) {
             collectedData = new CoreCollectedData();
@@ -308,7 +356,11 @@ public class VisitFormUtil extends FormUtil<Visit> {
         this.entity = visit;
 
         if (currentMode == Mode.CREATE) {
-            this.collectExtensionForm(collectedValues);
+            if (visit.visitPossible) {
+                this.collectExtensionForm(collectedValues);
+            } else {
+                onFinishedExtensionCollection();
+            }
         } else {
             onFinishedExtensionCollection();
         }
@@ -362,6 +414,7 @@ public class VisitFormUtil extends FormUtil<Visit> {
             @Override
             public void onSelectedMember(Member member) {
                 respondentMember = member;
+                evaluateRespondentResident();
                 executeCollectForm();
             }
 
@@ -371,12 +424,13 @@ public class VisitFormUtil extends FormUtil<Visit> {
             }
         });
 
-        filterDialog.enableButton(MemberFilterDialog.Buttons.BUTTON_1, R.string.new_visit_respondent_not_reg_lbl, new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //respondent not yet registered - set as unknown
-                onRespondentNotYetRegistered();
-            }
+        filterDialog.enableButton(MemberFilterDialog.Buttons.BUTTON_1, R.string.new_visit_respondent_not_reg_lbl, v -> {
+            //respondent not yet registered - set as unknown
+            onRespondentNotYetRegistered();
+        });
+
+        filterDialog.enableButton(MemberFilterDialog.Buttons.BUTTON_2, R.string.new_visit_respondent_not_resident_lbl, v -> {
+            onRespondentNotResident();
         });
 
         filterDialog.setCancelable(true);
@@ -387,13 +441,32 @@ public class VisitFormUtil extends FormUtil<Visit> {
 
     }
 
+    private void evaluateRespondentResident(){
+        //this.household
+        String memberCode = this.respondentMember.code;
+        this.respondentResident = this.boxResidencies.query(Residency_.householdCode.equal(this.household.code)
+                                                           .and(Residency_.memberCode.equal(memberCode))
+                                                           .and(Residency_.endType.equal(ResidencyEndType.NOT_APPLICABLE.code))).build().count()>0;
+        this.respondentExists = true;
+
+    }
+
     private void onRespondentNotYetRegistered() {
         this.respondentMember = Member.getUnknownIndividual();
         this.respondentNotRegistered = true;
+        this.respondentExists = true;
 
         DialogFactory.createMessageInfo(this.context, R.string.new_visit_respondent_not_reg_lbl, R.string.new_visit_respondent_not_reg_continue_lbl, clickedButton -> {
             executeCollectForm();
         }).show();
+    }
+
+    private void onRespondentNotResident() {
+        this.respondentMember = null;
+        this.respondentResident = false;
+        this.respondentExists = false;
+
+        executeCollectForm();
     }
 
     private void updateNewHouseholdCoreCollectedData(Visit visit) {

@@ -3,12 +3,14 @@ package org.philimone.hds.explorer.model;
 import org.philimone.hds.explorer.model.converters.GenderConverter;
 import org.philimone.hds.explorer.model.converters.HeadRelationshipTypeConverter;
 import org.philimone.hds.explorer.model.converters.MaritalStatusConverter;
+import org.philimone.hds.explorer.model.converters.MemberStatusConverter;
 import org.philimone.hds.explorer.model.converters.ResidencyEndTypeConverter;
 import org.philimone.hds.explorer.model.converters.ResidencyStartTypeConverter;
 import org.philimone.hds.explorer.model.converters.StringCollectionConverter;
 import org.philimone.hds.explorer.model.enums.Gender;
 import org.philimone.hds.explorer.model.enums.HeadRelationshipType;
 import org.philimone.hds.explorer.model.enums.MaritalStatus;
+import org.philimone.hds.explorer.model.enums.MemberStatus;
 import org.philimone.hds.explorer.model.enums.SubjectEntity;
 import org.philimone.hds.explorer.model.enums.temporal.ResidencyEndType;
 import org.philimone.hds.explorer.model.enums.temporal.ResidencyStartType;
@@ -104,6 +106,9 @@ public class Member implements CoreEntity, FormSubject, Serializable {
     public Double sinLatitude;
     public Double cosLongitude;
     public Double sinLongitude;
+
+    @Convert(converter = MemberStatusConverter.class, dbType = String.class)
+    public MemberStatus status;
 
     @Unique
     public String collectedId;

@@ -429,6 +429,7 @@
     <string name="new_visit_select_respondent_lbl">Sélectionnez le répondant</string>
     <string name="new_visit_respondent_not_reg_lbl">Répondant non enregistré</string>
     <string name="new_visit_respondent_not_reg_continue_lbl">Le répondant n\'est pas encore enregistré dans le système. \nVeuillez passer au formulaire de visite et ensuite enregistrer le nouveau membre qui sera le répondant!</string>
+    <string name="new_visit_respondent_not_resident_lbl">Répondant non-résident</string>
     <string name="new_visit_code_err_lbl">Le code de visite est incorrect!</string>
     <string name="new_visit_code_household_err_lbl">Le code de visite saisi ne correspond pas à la maison sélectionnée!</string>
     <string name="new_visit_code_exists_lbl">Le code de visite saisi existe déjà!</string>
@@ -810,6 +811,15 @@
     <string name="visitReason_dataclean">Correction des erreurs</string>
     <string name="visitReason_other">Autres raisons</string>
 
+    <string name="noVisitReason_hh_occupied">Ménage habité</string>
+    <string name="noVisitReason_hh_notfound">Ménage non trouvé</string>
+    <string name="noVisitReason_hh_destroyed">Ménage détruit</string>
+    <string name="noVisitReason_hh_abandoned">Ménage abandonné</string>
+    <string name="noVisitReason_hh_vacant">Ménage inhabité</string>
+    <string name="noVisitReason_no_respondent">Pas d\'informateur</string>
+    <string name="noVisitReason_refuse">Refuse de répondre</string>
+    <string name="noVisitReason_other">Autre raison</string>
+
     <string name="incompleteVisitReason_unavail_today">Non disponible aujourd\'hui</string>
     <string name="incompleteVisitReason_unavail_round">Non disponible pour ce tour (temporairement absent, en raison d\'études, de travail, etc.)</string>
     <string name="incompleteVisitReason_unwilling">Ne souhaite pas participer à ce tour</string>
@@ -818,5 +828,16 @@
     <string name="incompleteVisitReason_withdrew">A rejeté/retiré le consentement</string>
     <string name="incompleteVisitReason_dead">Décédé</string>
     <string name="incompleteVisitReason_other">Autre</string>
+
+    <string name="householdStatus_occupied">Ménage habité</string>
+    <string name="householdStatus_notfound">Ménage non trouvé</string>
+    <string name="householdStatus_destroyed">Ménage détruit</string>
+    <string name="householdStatus_abandoned">Ménage abandonné</string>
+    <string name="householdStatus_vacant">Ménage inhabité</string>
+    <string name="householdStatus_other">Autre raison</string>
+
+    <string name="memberStatus_active">Actif</string>
+    <string name="memberStatus_inactive">Inactif</string>
+    <string name="memberStatus_not_found">Membre non trouvé</string>
 
 </resources>

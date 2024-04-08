@@ -106,6 +106,7 @@ public class CoreCollectedDataDeletionUtil {
 
     private void deleteCoreCollectedDataList(List<CoreCollectedData> coreCollectedDataList){
         for (CoreCollectedData cdata : coreCollectedDataList) {
+            if (cdata.collectedId == null) continue;
 
             switch (cdata.formEntity) {
                 case REGION: deleteRegion(cdata); break;

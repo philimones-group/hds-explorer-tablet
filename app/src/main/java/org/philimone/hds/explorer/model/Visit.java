@@ -1,8 +1,10 @@
 package org.philimone.hds.explorer.model;
 
+import org.philimone.hds.explorer.model.converters.NoVisitReasonConverter;
 import org.philimone.hds.explorer.model.converters.StringCollectionConverter;
 import org.philimone.hds.explorer.model.converters.VisitLocationItemConverter;
 import org.philimone.hds.explorer.model.converters.VisitReasonConverter;
+import org.philimone.hds.explorer.model.enums.NoVisitReason;
 import org.philimone.hds.explorer.model.enums.SubjectEntity;
 import org.philimone.hds.explorer.model.enums.VisitLocationItem;
 import org.philimone.hds.explorer.model.enums.VisitReason;
@@ -38,6 +40,11 @@ public class Visit implements CoreEntity, FormSubject {
     @Convert(converter = VisitReasonConverter.class, dbType = String.class)
     public VisitReason visitReason;
 
+    public Boolean visitPossible;
+
+    @Convert(converter = NoVisitReasonConverter.class, dbType = String.class)
+    public NoVisitReason visitNotPossibleReason;
+
     @Convert(converter = VisitLocationItemConverter.class, dbType = String.class)
     public VisitLocationItem visitLocation;
 
@@ -46,9 +53,12 @@ public class Visit implements CoreEntity, FormSubject {
     public Integer roundNumber;
 
     //public ToOne<Member> respondent;
+    public Boolean respondentResident;
+    public String respondentRelationship;
 
     @Index
     public String respondentCode;
+    public String respondentName;
 
     public Boolean hasInterpreter;
 

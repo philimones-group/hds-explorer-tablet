@@ -660,7 +660,12 @@ public class HouseholdDetailsActivity extends AppCompatActivity implements House
                 @Override
                 public void onEntityEdited(Visit entity, Map<String, Object> data) {
                     HouseholdDetailsActivity.this.visit = entity;
-                    setVisitMode();
+                    if (entity.visitPossible) {
+                        setVisitMode();
+                    } else {
+                        setHouseholdMode();
+                        HouseholdDetailsActivity.this.visit = null;
+                    }
                 }
 
                 @Override
@@ -749,7 +754,13 @@ public class HouseholdDetailsActivity extends AppCompatActivity implements House
             public void onNewEntityCreated(Visit entity, Map<String, Object> data) {
                 HouseholdDetailsActivity.this.visit = entity;
                 visitExtraData.putAll(data);
-                setVisitMode();
+
+                if (entity.visitPossible) {
+                    setVisitMode();
+                } else {
+                    setHouseholdMode();
+                    HouseholdDetailsActivity.this.visit = null;
+                }
             }
 
             @Override

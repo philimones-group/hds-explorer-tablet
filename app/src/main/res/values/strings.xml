@@ -429,9 +429,10 @@
     <string name="new_household_code_exists_lbl">The Household Code already exists</string>
 
     <!-- New Visit -->
-    <string name="new_visit_select_respondent_lbl">Select Interviewee</string>
+    <string name="new_visit_select_respondent_lbl">Select Respondent</string>
     <string name="new_visit_respondent_not_reg_lbl">Respondent not yet registered</string>
     <string name="new_visit_respondent_not_reg_continue_lbl">The respodent is not yet registered in the system.\nPlease continue to fill the Visit Form Registration after that register the new Member that will become the respondent!</string>
+    <string name="new_visit_respondent_not_resident_lbl">Non-Resident respondent</string>
     <string name="new_visit_code_err_lbl">The format of the Visit Code is incorrect</string>
     <string name="new_visit_code_household_err_lbl">The Visit code doesn\'t reflect the selected household</string>
     <string name="new_visit_code_exists_lbl">The Visit Code already exists</string>
@@ -818,6 +819,15 @@
     <string name="visitReason_dataclean">Data Cleaning</string>
     <string name="visitReason_other">Other</string>
 
+    <string name="noVisitReason_hh_occupied">Inhabited Household</string>
+    <string name="noVisitReason_hh_notfound">Household not found</string>
+    <string name="noVisitReason_hh_destroyed">Destroyed Household</string>
+    <string name="noVisitReason_hh_abandoned">Abandoned Household</string>
+    <string name="noVisitReason_hh_vacant">Uninhabited Household</string>
+    <string name="noVisitReason_no_respondent">No informant</string>
+    <string name="noVisitReason_refuse">Refuses to answer</string>
+    <string name="noVisitReason_other">Other</string>
+
     <string name="incompleteVisitReason_unavail_today">Not available today</string>
     <string name="incompleteVisitReason_unavail_round">Not available this round (temporarily out of the area – away for school, work)</string>
     <string name="incompleteVisitReason_unwilling">Unwilling to participate this round</string>
@@ -827,4 +837,15 @@
     <string name="incompleteVisitReason_dead">Dead</string>
     <string name="incompleteVisitReason_other">Other</string>
 
+    <string name="householdStatus_occupied">Inhabited Household</string>
+    <string name="householdStatus_notfound">Household not found</string>
+    <string name="householdStatus_destroyed">Destroyed Household</string>
+    <string name="householdStatus_abandoned">Abandoned Household</string>
+    <string name="householdStatus_vacant">Uninhabited Household</string>
+    <string name="householdStatus_other">Other</string>
+
+    <string name="memberStatus_active">Active</string>
+    <string name="memberStatus_inactive">Inactive</string>
+    <string name="memberStatus_not_found">Member not found</string>
+    
 </resources>

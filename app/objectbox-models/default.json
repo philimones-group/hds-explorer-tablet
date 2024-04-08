@@ -693,7 +693,7 @@
     },
     {
       "id": "11:1466558823270581169",
-      "lastPropertyId": "31:348059865063500687",
+      "lastPropertyId": "32:1271613943955176026",
       "name": "Household",
       "properties": [
         {
@@ -856,13 +856,18 @@
           "id": "31:348059865063500687",
           "name": "preRegistered",
           "type": 1
+        },
+        {
+          "id": "32:1271613943955176026",
+          "name": "status",
+          "type": 9
         }
       ],
       "relations": []
     },
     {
       "id": "12:5667991198190393360",
-      "lastPropertyId": "39:5518022156419366831",
+      "lastPropertyId": "40:6283340205906828226",
       "name": "Member",
       "properties": [
         {
@@ -1085,6 +1090,11 @@
         {
           "id": "39:5518022156419366831",
           "name": "religion",
+          "type": 9
+        },
+        {
+          "id": "40:6283340205906828226",
+          "name": "status",
           "type": 9
         }
       ],
@@ -1538,7 +1548,7 @@
     },
     {
       "id": "19:1493713431233179094",
-      "lastPropertyId": "19:6837984206923714506",
+      "lastPropertyId": "24:4848364250644436439",
       "name": "Visit",
       "properties": [
         {
@@ -1643,6 +1653,31 @@
         {
           "id": "19:6837984206923714506",
           "name": "nonVisitedMembers",
+          "type": 9
+        },
+        {
+          "id": "20:8389582427910958762",
+          "name": "visitPossible",
+          "type": 1
+        },
+        {
+          "id": "21:2755911592188724205",
+          "name": "visitNotPossibleReason",
+          "type": 9
+        },
+        {
+          "id": "22:5988381992129111353",
+          "name": "respondentResident",
+          "type": 1
+        },
+        {
+          "id": "23:7283696725128322431",
+          "name": "respondentRelationship",
+          "type": 9
+        },
+        {
+          "id": "24:4848364250644436439",
+          "name": "respondentName",
           "type": 9
         }
       ],

@@ -141,12 +141,12 @@ public class SyncUploadEntitiesTask extends AsyncTask<Void, Integer, UploadRespo
         coreXmlText = removeMainTag(coreXmlText);
         odkXmlText = removeMainTag(odkXmlText);
 
-        String builder = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><data>" + coreXmlText + odkXmlText + "</data>";
+        String builder = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><xdata>" + coreXmlText + odkXmlText + "</xdata>";
         return builder.getBytes();
     }
 
     private String removeMainTag(String xml) {
-        if (xml == null) return null;
+        if (xml == null) return "";
         String mainTagRegex = "<\\?xml[^\\?]*\\?>";
         return xml.replaceAll(mainTagRegex, "");
     }

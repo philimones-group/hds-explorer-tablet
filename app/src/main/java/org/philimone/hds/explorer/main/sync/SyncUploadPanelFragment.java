@@ -28,6 +28,7 @@ import org.philimone.hds.explorer.io.UploadEntityResult;
 import org.philimone.hds.explorer.io.UploadResponse;
 import org.philimone.hds.explorer.model.CoreCollectedData;
 import org.philimone.hds.explorer.model.CoreCollectedData_;
+import org.philimone.hds.explorer.model.Visit;
 import org.philimone.hds.explorer.model.enums.CoreFormEntity;
 import org.philimone.hds.explorer.widget.DialogFactory;
 import org.philimone.hds.explorer.widget.RecyclerListView;
@@ -69,7 +70,7 @@ public class SyncUploadPanelFragment extends Fragment implements SyncUploadEntit
     private Box<CoreCollectedData> boxCoreCollectedData;
     //private Box<Region> boxRegions;
     //private Box<Household> boxHouseholds;
-    //private Box<Visit> boxVisits;
+    private Box<Visit> boxVisits;
 
     private FormUtilities odkFormUtilities;
 
@@ -111,7 +112,7 @@ public class SyncUploadPanelFragment extends Fragment implements SyncUploadEntit
     private void initBoxes() {
         this.boxCoreCollectedData = ObjectBoxDatabase.get().boxFor(CoreCollectedData.class);
         //this.boxRegions = ObjectBoxDatabase.get().boxFor(Region.class);
-        //this.boxVisits = ObjectBoxDatabase.get().boxFor(Visit.class);
+        this.boxVisits = ObjectBoxDatabase.get().boxFor(Visit.class);
         //this.boxHouseholds = ObjectBoxDatabase.get().boxFor(Household.class);
     }
 
@@ -244,7 +245,7 @@ public class SyncUploadPanelFragment extends Fragment implements SyncUploadEntit
 
         for (CoreCollectedData cd : dataList) {
             FormUtilities.FormStatus odkStatus = odkFormUtilities.isFormFinalized(cd.extensionCollectedUri);
-            dataItemList.add(new UploadCollectedDataItem(cd, odkStatus));
+            dataItemList.add(new UploadCollectedDataItem(boxVisits, cd, odkStatus));
         }
 
         UploadCoreCollectedDataAdapter adapter = new UploadCoreCollectedDataAdapter(this.getContext(), dataItemList, this);

@@ -17,6 +17,7 @@ import java.nio.file.Paths;
 
 import mz.betainteractive.odk.storage.access.OdkStorageType;
 import mz.betainteractive.odk.storage.access.anthonymandra.framework.XDocumentFile;
+import mz.betainteractive.utilities.StringUtil;
 
 public class FileIO {
     private String filename;
@@ -58,6 +59,7 @@ public class FileIO {
     }
 
     public static String readFile(Context mContext, OdkStorageType odkStorageType, String uriFilename) {
+        if (StringUtil.isBlank(uriFilename)) return null;
 
         InputStream inputStream = null;
 

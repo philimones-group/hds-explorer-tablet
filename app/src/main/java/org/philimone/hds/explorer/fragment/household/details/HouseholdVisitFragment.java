@@ -1047,12 +1047,14 @@ public class HouseholdVisitFragment extends Fragment {
                 selectedMember = null;
                 loadDataToListViews();
                 updateHouseholdDetails();
+                setHouseholdMode();
             }
 
             @Override
             public void onEntityEdited(Outmigration outmigration, Map<String, Object> data) {
                 loadDataToListViews();
                 updateHouseholdDetails();
+                setHouseholdMode();
             }
 
             @Override
@@ -1205,12 +1207,14 @@ public class HouseholdVisitFragment extends Fragment {
                 selectedMember = null;
                 loadDataToListViews();
                 updateHouseholdDetails();
+                setHouseholdMode();
             }
 
             @Override
             public void onEntityEdited(Death death, Map<String, Object> data) {
                 loadDataToListViews();
                 updateHouseholdDetails();
+                setHouseholdMode();
             }
 
             @Override

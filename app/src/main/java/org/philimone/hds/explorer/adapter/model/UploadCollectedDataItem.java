@@ -3,7 +3,11 @@ package org.philimone.hds.explorer.adapter.model;
 import org.philimone.hds.explorer.model.CollectedData;
 import org.philimone.hds.explorer.model.CoreCollectedData;
 import org.philimone.hds.explorer.model.CoreFormExtension;
+import org.philimone.hds.explorer.model.Visit;
+import org.philimone.hds.explorer.model.Visit_;
+import org.philimone.hds.explorer.model.enums.CoreFormEntity;
 
+import io.objectbox.Box;
 import mz.betainteractive.odk.FormUtilities;
 
 public class UploadCollectedDataItem {
@@ -12,7 +16,10 @@ public class UploadCollectedDataItem {
 
     public FormUtilities.FormStatus odkFormStatus;
 
-    public UploadCollectedDataItem(CoreCollectedData collectedData, FormUtilities.FormStatus status) {
+    private Box<Visit> boxVisits;
+
+    public UploadCollectedDataItem(Box<Visit> visitBox, CoreCollectedData collectedData, FormUtilities.FormStatus status) {
+        this.boxVisits = visitBox;
         this.coreCollectedData = collectedData;
         this.odkFormStatus = status;
     }
@@ -58,6 +65,11 @@ public class UploadCollectedDataItem {
         }
 
         if (extension.required) {
+            if (extension.formEntity== CoreFormEntity.VISIT) {
+                boolean isVisitNotPossible = boxVisits.query(Visit_.collectedId.equal(coreCollectedData.collectedId).and(Visit_.visitPossible.equal(false))).build().count()>0;
+                return isVisitNotPossible;
+            }
+
             return false; //dont upload because extension is not collected.
         }
 

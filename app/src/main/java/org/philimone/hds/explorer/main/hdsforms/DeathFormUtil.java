@@ -70,6 +70,7 @@ public class DeathFormUtil extends FormUtil<Death> {
     private final Visit visit;
     private final Member member;
     private Boolean isHouseholdHead = false;
+    private Boolean isLastMemberOfHousehold = false;
     private Member newHeadMember;
     private Member previousNewHeadMember;
     private HeadRelationshipType previousNewHeadRelationshipType;
@@ -284,16 +285,17 @@ public class DeathFormUtil extends FormUtil<Death> {
     protected void preloadValues() {
         //member_details_unknown_lbl
 
-        if (this.householdResidents != null) {
+        if (this.householdResidents != null && newHeadMember != null) {
             reorderWithHeadAsFirst(this.householdResidents, newHeadMember);
         }
 
         preloadedMap.put("visitCode", this.visit.code);
         preloadedMap.put("memberCode", this.member.code);
         preloadedMap.put("memberName", this.member.name);
-        preloadedMap.put("isHouseholdHead", this.isHouseholdHead.toString().toUpperCase());
+        preloadedMap.put("isHouseholdHead", this.isHouseholdHead+"");
+        preloadedMap.put("isLastMember", this.isLastMemberOfHousehold+"");
 
-        if (isHouseholdHead){
+        if (isHouseholdHead && newHeadMember != null){
             preloadedMap.put("newHeadCode", this.newHeadMember.code);
             preloadedMap.put("newHeadName", this.newHeadMember.name);
 
@@ -317,7 +319,7 @@ public class DeathFormUtil extends FormUtil<Death> {
     protected void preloadUpdatedValues() {
         if (newHeadChanged()) {
 
-            if (this.householdResidents != null) {
+            if (this.householdResidents != null && newHeadMember != null) {
                 reorderWithHeadAsFirst(this.householdResidents, newHeadMember);
             }
 
@@ -571,10 +573,14 @@ public class DeathFormUtil extends FormUtil<Death> {
             this.boxMaritalRelationships.put(this.memberMaritalRelationship);
 
             this.member.maritalStatus = MaritalStatus.WIDOWED;
-            this.spouseMember.maritalStatus = MaritalStatus.WIDOWED;
-            this.boxMembers.put(this.member, this.spouseMember);
+            this.boxMembers.put(this.member);
 
-            affectedMembers = addAffectedMembers(affectedMembers, this.spouseMember.code);
+            if (this.spouseMember != null) {
+                this.spouseMember.maritalStatus = MaritalStatus.WIDOWED;
+                this.boxMembers.put(this.spouseMember);
+            }
+
+            affectedMembers = addAffectedMembers(affectedMembers, this.spouseMember==null ? "" : this.spouseMember.code);
         }
         //close previous head relationships again
         if (isHouseholdHead && headMemberHeadRelationships != null && headMemberHeadRelationships.size()>0){
@@ -735,10 +741,14 @@ public class DeathFormUtil extends FormUtil<Death> {
             this.boxMaritalRelationships.put(this.memberMaritalRelationship);
 
             this.member.maritalStatus = MaritalStatus.WIDOWED;
-            this.spouseMember.maritalStatus = MaritalStatus.WIDOWED;
-            this.boxMembers.put(this.member, this.spouseMember);
+            this.boxMembers.put(this.member);
 
-            affectedMembers = addAffectedMembers(affectedMembers, this.spouseMember.code);
+            if (this.spouseMember != null) {
+                this.spouseMember.maritalStatus = MaritalStatus.WIDOWED;
+                this.boxMembers.put(this.spouseMember);
+            }
+
+            affectedMembers = addAffectedMembers(affectedMembers, this.spouseMember==null ? "" : this.spouseMember.code);
         }
         //close previous head relationships
         String savedOldHeadRelationships = "";
@@ -825,6 +835,7 @@ public class DeathFormUtil extends FormUtil<Death> {
     }
 
     private String addAffectedMembers(String members, String memberCode) {
+        if (StringUtil.isBlank(memberCode)) return members;
         if (StringUtil.isBlank(members)) {
             members = memberCode;
         } else {
@@ -847,16 +858,16 @@ public class DeathFormUtil extends FormUtil<Death> {
 
     @Override
     public void collect() {
-
+        this.isLastMemberOfHousehold = isTheOnlyHouseholdMember(member.code, household.code);
         if (currentMode == Mode.CREATE) {
-            if (isHouseholdHead && !isTheOnlyHouseholdMember(member.code, household.code)) {
+            if (isHouseholdHead && !isLastMemberOfHousehold) {
                 //death of head of household - search for new head of household
                 openNewHouseholdHeadFilterDialog();
             } else {
                 executeCollectForm();
             }
         } else if (currentMode == Mode.EDIT) {
-            if (isHouseholdHead && !isTheOnlyHouseholdMember(member.code, household.code)) {
+            if (isHouseholdHead && !isLastMemberOfHousehold) {
                 //ask if wants to change the head
                 checkChangeNewHouseholdHeadDialog();
             } else {

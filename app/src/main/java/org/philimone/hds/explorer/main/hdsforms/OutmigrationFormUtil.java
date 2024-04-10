@@ -472,6 +472,12 @@ public class OutmigrationFormUtil extends FormUtil<Outmigration> {
                 return;
             }
 
+            //check if Member is a head of household of another household and Check if is the last individual in the household
+            if (isHeadOfHousehold(member.code, household.code) && !isTheOnlyHouseholdMember(member.code, household.code)) { //yet still
+                DialogFactory.createMessageInfo(this.context, R.string.error_lbl, this.context.getString(R.string.outmigration_is_head_of_household_lbl)).show();
+                return;
+            }
+
             executeCollectForm();
         } else if (currentMode == Mode.EDIT) {
             executeCollectForm();

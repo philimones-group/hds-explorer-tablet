@@ -572,6 +572,10 @@ public class MemberFilterDialog extends DialogFragment {
         List<Member> members = builder.build().find(0, 20000);
 
         MemberAdapter currentAdapter = new MemberAdapter(this.getActivity(), members);
+        currentAdapter.setShowHouseholdAndCode(true);
+        currentAdapter.setShowExtraDetails(true);
+        currentAdapter.setShowMemberDetails(true);
+        currentAdapter.setShowEndTypeCode(true);
 
         return currentAdapter;
     }

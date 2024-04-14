@@ -6,9 +6,13 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.StringRes;
 import androidx.fragment.app.Fragment;
 
 import org.philimone.hds.explorer.R;
@@ -27,6 +31,7 @@ import org.philimone.hds.explorer.model.enums.temporal.ResidencyEndType;
 import org.philimone.hds.explorer.widget.LoadingDialog;
 import org.philimone.hds.explorer.widget.RecyclerListView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import io.objectbox.Box;
@@ -39,6 +44,7 @@ import io.objectbox.query.QueryBuilder;
  */
 public class HouseholdMembersFragment extends Fragment {
 
+    private Spinner membersListSpinner;
     private RecyclerListView lvHouseholdMembers;
     private LoadingDialog loadingDialog;
 
@@ -50,6 +56,8 @@ public class HouseholdMembersFragment extends Fragment {
     private Box<Member> boxMembers;
     private Box<Form> boxForms;
     private Box<Dataset> boxDatasets;
+
+
 
     public HouseholdMembersFragment() {
         // Required empty public constructor
@@ -103,7 +111,10 @@ public class HouseholdMembersFragment extends Fragment {
     }
 
     private void initialize(View view) {
+        membersListSpinner = view.findViewById(R.id.membersListSpinner);
         lvHouseholdMembers = view.findViewById(R.id.lvHouseholdMembers);
+
+        this.loadingDialog = new LoadingDialog(this.getContext());
 
         lvHouseholdMembers.addOnItemClickListener(new RecyclerListView.OnItemClickListener() {
             @Override
@@ -117,9 +128,26 @@ public class HouseholdMembersFragment extends Fragment {
             }
         });
 
-        this.loadingDialog = new LoadingDialog(this.getContext());
+        membersListSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                try {
+                    MembersListSpinnerItem item = (MembersListSpinnerItem) parent.getAdapter().getItem(position);
+                    onMembersListSelected(item.type);
+                }catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
 
-        this.showHouseholdMembers();
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        loadSpinners();
+
+        this.showHouseholdResidents();
     }
 
     private void initBoxes() {
@@ -130,6 +158,15 @@ public class HouseholdMembersFragment extends Fragment {
         this.boxRegions = ObjectBoxDatabase.get().boxFor(Region.class);
         this.boxHouseholds = ObjectBoxDatabase.get().boxFor(Household.class);
         this.boxMembers = ObjectBoxDatabase.get().boxFor(Member.class);
+    }
+
+    private void loadSpinners() {
+        List<MembersListSpinnerItem> list = new ArrayList<>();
+        list.add(new MembersListSpinnerItem(MembersListType.RESIDENTS));
+        list.add(new MembersListSpinnerItem(MembersListType.EXITED_AND_RESIDENTS));
+
+        ArrayAdapter<MembersListSpinnerItem> adapter = new ArrayAdapter<>(this.getContext(), R.layout.household_members_spinner_item, R.id.txtMembersListItem, list);
+        membersListSpinner.setAdapter(adapter);
     }
 
     private void onMemberClicked(int position) {
@@ -157,14 +194,34 @@ public class HouseholdMembersFragment extends Fragment {
         return region;
     }
 
-    private void showHouseholdMembers(){
+    private void onMembersListSelected(MembersListType type) {
+        switch (type){
+            case RESIDENTS: showHouseholdResidents(); break;
+            case EXITED_AND_RESIDENTS: showHouseholdResidentsAndExited();
+        }
+    }
+
+    private void showHouseholdResidents(){
         List<Member> members = this.boxMembers.query().equal(Member_.householdCode, household.getCode(), QueryBuilder.StringOrder.CASE_SENSITIVE)
                                                       .equal(Member_.endType, ResidencyEndType.NOT_APPLICABLE.code, QueryBuilder.StringOrder.CASE_SENSITIVE)
                                                       .build().find();
 
         MemberAdapter adapter = new MemberAdapter(this.getContext(), members);
         adapter.setShowHouseholdHeadIcon(true);
-        //adapter.setShowExtraDetails(true);
+        adapter.setShowExtraDetails(true);
+        adapter.setShowMemberDetails(true);
+        this.lvHouseholdMembers.setAdapter(adapter);
+    }
+
+    private void showHouseholdResidentsAndExited(){
+        List<Member> members = this.boxMembers.query().equal(Member_.householdCode, household.getCode(), QueryBuilder.StringOrder.CASE_SENSITIVE)
+                .build().find();
+
+        MemberAdapter adapter = new MemberAdapter(this.getContext(), members);
+        adapter.setShowHouseholdHeadIcon(true);
+        adapter.setShowExtraDetails(true);
+        adapter.setShowMemberDetails(true);
+        adapter.setShowResidencyStatus(true);
         this.lvHouseholdMembers.setAdapter(adapter);
     }
 
@@ -178,7 +235,7 @@ public class HouseholdMembersFragment extends Fragment {
     }
 
     public void reloadMembers() {
-        this.showHouseholdMembers();
+        this.showHouseholdResidents();
     }
 
     class MemberSelectedTask  extends AsyncTask<Void, Void, Void> {
@@ -210,6 +267,30 @@ public class HouseholdMembersFragment extends Fragment {
             showLoadingDialog(null, false);
 
             startActivity(intent);
+        }
+    }
+
+    private enum MembersListType {
+        RESIDENTS (R.string.household_details_members_list_type_residents_lbl),
+        EXITED_AND_RESIDENTS (R.string.household_details_members_list_type_exited_n_residents_lbl);
+
+        @StringRes int name;
+
+        MembersListType(@StringRes int name){
+            this.name = name;
+        }
+    }
+
+    class MembersListSpinnerItem {
+        public MembersListType type;
+
+        public MembersListSpinnerItem(MembersListType type) {
+            this.type = type;
+        }
+
+        @Override
+        public String toString() {
+            return getString(type.name);
         }
     }
 }

@@ -552,49 +552,6 @@ public class MemberListFragment extends Fragment {
         }
     }
 
-    private void onShowCollectedData(){
-        showProgress(true);
-        Map<Member, Integer> mapMembers = new HashMap<>();
-
-        List<Member> members = new ArrayList<>();
-        ArrayList<String> extras = new ArrayList<>();
-
-        //load collected data
-        List<CollectedData> list = this.boxCollectedData.query().equal(CollectedData_.recordEntity, Member.getEmptyMember().getTableName().code, QueryBuilder.StringOrder.CASE_SENSITIVE).build().find(); //only collected data from members
-        List<Form> forms = boxForms.getAll();
-
-        for (CollectedData cd : list){
-            Member member = Queries.getMemberById(this.boxMembers, cd.getRecordId());
-            if (member != null){
-                Integer value = mapMembers.get(member);
-                if (value==null){
-                    mapMembers.put(member, 1);
-                }else{
-                    mapMembers.put(member, ++value);
-                }
-            }
-        }
-
-        String extraText = getString(R.string.member_list_item_extra_collected_lbl);
-
-        for (Member m : mapMembers.keySet()){
-            members.add(m);
-            extras.add(extraText.replace("#", ""+mapMembers.get(m)));
-        }
-
-        mapMembers.clear();
-
-        //put on list
-        MemberAdapter adapter = new MemberAdapter(this.getActivity(), members, extras);
-        adapter.setShowHouseholdAndCode(true);
-        adapter.setShowHouseholdHeadIcon(true);
-        //adapter.setMemberIcon(MemberAdapter.MemberIcon.NORMAL_HEAD_ICON);
-        this.lvMembersList.setAdapter(adapter);
-
-
-        showProgress(false);
-    }
-
     private void onMemberLongClicked(int position) {
         MemberAdapter adapter = (MemberAdapter) this.lvMembersList.getAdapter();
 
@@ -818,8 +775,7 @@ public class MemberListFragment extends Fragment {
 
         MemberAdapter currentAdapter = new MemberAdapter(this.getActivity(), members);
         currentAdapter.setShowHouseholdHeadIcon(true);
-        currentAdapter.setShowExtraDetails(true);
-
+        
         return currentAdapter;
 
     }

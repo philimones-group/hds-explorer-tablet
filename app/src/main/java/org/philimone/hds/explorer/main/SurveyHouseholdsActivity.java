@@ -238,6 +238,11 @@ public class SurveyHouseholdsActivity extends AppCompatActivity implements House
 
         @Override
         protected void onPostExecute(MemberAdapter adapter) {
+
+            adapter.setShowExtraDetails(true);
+            adapter.setShowHouseholdAndCode(false);
+            adapter.setShowMemberDetails(true);
+
             memberListFragment.setCurrentHouseld(household);
             memberListFragment.setMemberAdapter(adapter);
             memberListFragment.showProgress(false);

@@ -182,6 +182,11 @@ public class SurveyMembersActivity extends AppCompatActivity implements MemberFi
 
         @Override
         protected void onPostExecute(MemberAdapter adapter) {
+            adapter.setShowEndTypeCode(true);
+            adapter.setShowMemberDetails(true);
+            adapter.setShowHouseholdAndCode(true);
+            adapter.setShowExtraDetails(true);
+
             memberListFragment.setMemberAdapter(adapter);
             memberListFragment.showProgress(false);
 

@@ -328,6 +328,10 @@
     <string name="household_details_tab_datasets_lbl">Outros detalhes</string>
     <string name="household_details_tab_edit_lbl">Alterar detalhes</string>
     <string name="household_details_tab_visit_lbl">Visita</string>
+    <string name="household_details_members_list_type_residents_lbl">Residentes do Agregado</string>
+    <string name="household_details_members_list_type_exited_n_residents_lbl">Todos os Membros do Agregado</string>
+    <string name="household_details_members_item_status_lbl">Estado:</string>
+    <string name="household_details_members_item_since_lbl">Data:</string>
     <string name="household_details_head_name_lbl">Chefe:</string>
     <string name="household_details_head_code_lbl">Código:</string>
     <string name="household_details_region_lbl">Localização:</string>

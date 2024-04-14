@@ -25,12 +25,27 @@
             android:textColor="@color/nui_color_text_red"
             android:visibility="gone"/>
 
+        <Spinner
+            android:id="@+id/membersListSpinner"
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="15dp"
+            android:paddingStart="10dp"
+            android:background="@drawable/nui_spinner_rone_wbevel"
+            android:spinnerMode="dropdown"
+            android:dropDownVerticalOffset="55dp"/>
 
         <LinearLayout
             android:id="@+id/layout_hh_xdata"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginBottom="4dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="10dp"
             android:background="@drawable/nui_list_rborder_panel"
             android:orientation="vertical">
 

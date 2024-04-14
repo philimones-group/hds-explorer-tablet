@@ -75,7 +75,6 @@ import org.philimone.hds.explorer.model.PregnancyRegistration_;
 import org.philimone.hds.explorer.model.Region;
 import org.philimone.hds.explorer.model.Region_;
 import org.philimone.hds.explorer.model.User;
-import org.philimone.hds.explorer.model.User_;
 import org.philimone.hds.explorer.model.Visit;
 import org.philimone.hds.explorer.model.Visit_;
 import org.philimone.hds.explorer.model.enums.CoreFormEntity;
@@ -638,8 +637,7 @@ public class HouseholdVisitFragment extends Fragment {
 
         MemberAdapter adapter = new MemberAdapter(this.getContext(), R.layout.household_visit_member_item, members);
         adapter.setShowExtraDetails(true);
-        adapter.setShowGender(true);
-        adapter.setShowAge(true);
+        adapter.setShowMemberDetails(true);
         this.lvHouseholdMembers.setAdapter(adapter);
     }
 

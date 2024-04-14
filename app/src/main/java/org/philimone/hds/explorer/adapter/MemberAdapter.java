@@ -2,7 +2,6 @@ package org.philimone.hds.explorer.adapter;
 
 import android.content.Context;
 import android.graphics.Typeface;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,24 +16,29 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import org.philimone.hds.explorer.R;
 import org.philimone.hds.explorer.model.Member;
+import org.philimone.hds.explorer.model.enums.temporal.ResidencyEndType;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+
+import mz.betainteractive.utilities.StringUtil;
 
 public class MemberAdapter extends RecyclerView.Adapter<MemberAdapter.MemberViewHolder> {
 
     private List<Member> members;
     private List<Boolean> checkableMembers;
-    private List<Boolean> supervisedMembers;
-    private List<String> extras;
+    private List<String> externalDataList;
     private Context mContext;
     private @LayoutRes int layoutResourceId;
     private int selectedIndex = -1;
     private boolean showHouseholdHeadIcon = true;
     private boolean showHouseholdAndCode = false;
+    private boolean showExternalData = false;
     private boolean showExtraDetails = false;
-    private boolean showGender = false;
-    private boolean showAge = false;
+    private boolean showMemberDetails = false;
+    boolean showEndTypeCode = false; //put as general variable
+    boolean showResidencyStatus = false; //put as general variable
     private MemberIcon memberIcon;
 
     public enum MemberIcon {NORMAL_MEMBER_ICON, NORMAL_MEMBER_CHECKED_ICON, NORMAL_HEAD_ICON, NORMAL_SECHEAD_ICON, NORMAL_MEMBER_NEW_ICON, NORMAL_HEAD_NEW_ICON}
@@ -79,34 +83,19 @@ public class MemberAdapter extends RecyclerView.Adapter<MemberAdapter.MemberView
     }
 
     /**
-     * Adapter of a List View Item for members (name, code, checkbox and different icon for supervised member are displayed)
-     * @param context
-     * @param objects
-     * @param checks
-     * @param supervisionList
-     */
-    public MemberAdapter(Context context, List<Member> objects, List<Boolean> checks, List<Boolean> supervisionList){
-        this(context, objects, checks);
-
-        if (supervisionList != null){
-            this.supervisedMembers = new ArrayList<>();
-            this.supervisedMembers.addAll(supervisionList);
-        }
-    }
-
-    /**
      * Adapter of a List View Item for members (name, perm-id, extra text view and a large sized icon are displayed)
      * @param context
      * @param objects
-     * @param extras
+     * @param externalDataList
      */
-    public MemberAdapter(Context context, List<Member> objects, ArrayList<String> extras){
+    public MemberAdapter(Context context, List<Member> objects, ArrayList<String> externalDataList){
         this.members = new ArrayList<>();
         this.members.addAll(objects);
 
-        if (extras != null){
-            this.extras = new ArrayList<>();
-            this.extras.addAll(extras);
+        if (externalDataList != null){
+            this.externalDataList = new ArrayList<>();
+            this.externalDataList.addAll(externalDataList);
+            this.showExternalData = true;
         }
 
         this.showHouseholdHeadIcon = true;
@@ -172,20 +161,28 @@ public class MemberAdapter extends RecyclerView.Adapter<MemberAdapter.MemberView
         this.showExtraDetails = showExtraDetails;
     }
 
-    public boolean isShowGender() {
-        return showGender;
+    public boolean isShowMemberDetails() {
+        return showMemberDetails;
     }
 
-    public void setShowGender(boolean showGender) {
-        this.showGender = showGender;
+    public void setShowMemberDetails(boolean showGender) {
+        this.showMemberDetails = showGender;
     }
 
-    public boolean isShowAge() {
-        return showAge;
+    public boolean isShowEndTypeCode() {
+        return showEndTypeCode;
     }
 
-    public void setShowAge(boolean showAge) {
-        this.showAge = showAge;
+    public void setShowEndTypeCode(boolean showEndTypeCode) {
+        this.showEndTypeCode = showEndTypeCode;
+    }
+
+    public boolean isShowResidencyStatus() {
+        return showResidencyStatus;
+    }
+
+    public void setShowResidencyStatus(boolean showResidencyStatus) {
+        this.showResidencyStatus = showResidencyStatus;
     }
 
     public boolean isEmpty() {
@@ -223,49 +220,53 @@ public class MemberAdapter extends RecyclerView.Adapter<MemberAdapter.MemberView
             TextView txtExtra = mainView.findViewById(R.id.txtMemberItemExtras);
             CheckBox chkVBprocessed = mainView.findViewById(R.id.chkProcessed);
             int position = MemberAdapter.this.getPosition(mb);
-
-            String endType = "";
-            String extraCode = "";
-            switch (mb.endType){
-                case DEATH: endType = " - DTH"; break;
-                case EXTERNAL_OUTMIGRATION: endType = " - EXT"; break;
-            }
-
-            extraCode += endType;
-
-            txtName.setText(mb.getName());
-            txtCode.setText(mb.getCode()+extraCode);
-
             memberIcon = MemberIcon.NORMAL_MEMBER_ICON;
 
-            if (showHouseholdAndCode){
-                txtCode.setText(mb.getHouseholdName() +" -> "+mb.getCode()+endType);
+            String nameText = mb.getName();
+            String codeText = mb.getCode();
+            String extrasText = "";
+            String endTypeText = "";
+            String memberDetailsText = "";
+
+            if (showEndTypeCode) {
+                switch (mb.endType) {
+                    case DEATH:
+                        endTypeText = " - DTH";
+                        break;
+                    case EXTERNAL_OUTMIGRATION:
+                        endTypeText = " - EXT";
+                        break;
+                }
+                codeText += endTypeText;
             }
+
+            if (showHouseholdAndCode){
+                codeText = mb.getHouseholdName() +" -> "+mb.getCode()+endTypeText;
+            }
+
+            if (showMemberDetails) {
+                String maritalText = mContext.getString(R.string.relationship_type_title_abbrv_lbl) + ": " + mContext.getString(mb.maritalStatus.name);
+                memberDetailsText = mContext.getString(R.string.member_details_gender_lbl)+" "+mb.gender.code + ", " + mContext.getString(R.string.member_details_age_lbl)+" "+mb.age + ", " +maritalText;
+                extrasText = memberDetailsText;
+            }
+
+            if (showExternalData){
+                extrasText = externalDataList.get(position);
+            }
+
+            if (showResidencyStatus) {
+                nameText = mb.getName();
+                codeText = mb.getCode() + "  [" + memberDetailsText + "]";
+                extrasText = mContext.getString(R.string.household_details_members_item_status_lbl) + " "+ getEndTypeMsg(mb) + ", ";
+                extrasText += mContext.getString(R.string.household_details_members_item_since_lbl) + " " + getEndDateMsg(mb);
+            }
+
+            txtName.setText(nameText);
+            txtCode.setText(codeText);
+            txtExtra.setText(extrasText);
 
             if (chkVBprocessed != null && checkableMembers != null){
                 chkVBprocessed.setChecked(checkableMembers.get(position));
-            }
-
-            if (supervisedMembers != null && position < supervisedMembers.size()){
-                if (supervisedMembers.get(position)==true){
-                    //txtName.setTypeface(null, Typeface.BOLD);
-                    //iconView.setImageResource(R.mipmap.nui_member_red_chk_icon);
-                    memberIcon = MemberIcon.NORMAL_MEMBER_CHECKED_ICON;
-                }
-            }
-
-            if (txtExtra != null) {
-                txtExtra.setText(mb.getHouseholdCode() +" -> "+mb.getHouseholdName());
-            }
-
-            if (showExtraDetails && (showGender && showAge)) {
-                String maritalText = mContext.getString(R.string.relationship_type_title_abbrv_lbl) + ": " + mContext.getString(mb.maritalStatus.name);
-                String text = mContext.getString(R.string.member_details_gender_lbl)+" "+mb.gender.code + ", " + mContext.getString(R.string.member_details_age_lbl)+" "+mb.age + ", " +maritalText;
-                txtExtra.setText(text);
-            }
-
-            if (MemberAdapter.this.extras != null && position < MemberAdapter.this.extras.size()){
-                txtExtra.setText(extras.get(position));
             }
 
             if (showHouseholdHeadIcon){
@@ -305,10 +306,10 @@ public class MemberAdapter extends RecyclerView.Adapter<MemberAdapter.MemberView
                 }
             }
 
-            if (endType != null && !endType.isEmpty()){
+            if (showEndTypeCode){
                 //paint with a color
-                txtCode.setTypeface(null, Typeface.BOLD);
-                mainView.setBackgroundColor(mContext.getResources().getColor(R.color.nui_lists_item_special_textcolor));
+                //txtCode.setTypeface(null, Typeface.BOLD);
+                //mainView.setBackgroundColor(mContext.getResources().getColor(R.color.nui_lists_item_special_textcolor));
             }
 
             if (selectedIndex == position){
@@ -334,5 +335,22 @@ public class MemberAdapter extends RecyclerView.Adapter<MemberAdapter.MemberView
 
             txtExtra.setVisibility(showExtraDetails ? View.VISIBLE : View.GONE);
         }
+    }
+
+    private String getEndTypeMsg(Member member){
+        if (member.getEndType() == ResidencyEndType.NOT_APPLICABLE) return mContext.getString(R.string.member_details_endtype_na_lbl);
+        if (member.getEndType() == ResidencyEndType.EXTERNAL_OUTMIGRATION) return mContext.getString(R.string.member_details_endtype_ext_lbl);
+        if (member.getEndType() == ResidencyEndType.DEATH) return mContext.getString(R.string.member_details_endtype_dth_lbl);
+
+        return mContext.getString(ResidencyEndType.INVALID_ENUM.name);
+    }
+
+    private String getEndDateMsg(Member member){
+        Date date = member.getEndDate();
+        if (member.getEndType() == ResidencyEndType.NOT_APPLICABLE) {
+            date = member.getStartDate();
+        }
+
+        return StringUtil.formatYMD(date);
     }
 }

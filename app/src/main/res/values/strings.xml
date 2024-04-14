@@ -329,6 +329,10 @@
     <string name="household_details_tab_datasets_lbl">Extra Details</string>
     <string name="household_details_tab_edit_lbl">Edit Details</string>
     <string name="household_details_tab_visit_lbl">Current Visit</string>
+    <string name="household_details_members_list_type_residents_lbl">Household Current Residents</string>
+    <string name="household_details_members_list_type_exited_n_residents_lbl">All Household Members</string>
+    <string name="household_details_members_item_status_lbl">Status:</string>
+    <string name="household_details_members_item_since_lbl">Since:</string>
     <string name="household_details_head_name_lbl">Head:</string>
     <string name="household_details_head_code_lbl">Code:</string>
     <string name="household_details_region_lbl">Located Region:</string>

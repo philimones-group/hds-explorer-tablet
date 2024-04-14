@@ -327,6 +327,10 @@
     <string name="household_details_tab_datasets_lbl">Autres détails</string>
     <string name="household_details_tab_edit_lbl">Changer les détails</string>
     <string name="household_details_tab_visit_lbl">Visite</string>
+    <string name="household_details_members_list_type_residents_lbl">Résidents du Agrégat</string>
+    <string name="household_details_members_list_type_exited_n_residents_lbl">Tous les Membres du Agrégat</string>
+    <string name="household_details_members_item_status_lbl">Statut:</string>
+    <string name="household_details_members_item_since_lbl">Depuis:</string>
     <string name="household_details_head_name_lbl">Chef:</string>
     <string name="household_details_head_code_lbl">Code:</string>
     <string name="household_details_region_lbl">Emplacement:</string>

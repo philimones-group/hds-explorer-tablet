@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
+
+    <ImageView
+        android:id="@+id/iconView"
+        android:layout_width="35dp"
+        android:layout_height="45dp"
+        android:layout_gravity="center"
+        android:layout_marginLeft="15dp"
+        android:src="@mipmap/nui_lists_members_red_icon" />
+
+    <TextView
+        android:id="@+id/txtMembersListItem"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:paddingStart="5dp"
+        android:textColor="@color/nui_color_text_adgray"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:text="Resident Members"/>
+
+</LinearLayout>
+

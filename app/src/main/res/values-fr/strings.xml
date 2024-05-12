@@ -617,6 +617,9 @@
     <string name="show_collected_data_btn_update_lbl">Mise à jour des listes</string>
     <string name="show_collected_data_btn_delete_lbl">Supprimer des Données.</string>
     <string name="show_collected_data_list_filter_hint_lbl">Code/Nom/Autres détails</string>
+    <string name="show_collected_data_deletion_warning_title_lbl">**Attention : Précaution lors de la suppression des données**</string>
+    <string name="show_collected_data_deletion_warning_msg1_lbl">Veuillez faire preuve d\'une extrême prudence lors de la suppression des données de surveillance démographique. \nLa suppression de ces données peut avoir des implications importantes et pourrait affecter divers ensembles de données interconnectés.</string>
+    <string name="show_collected_data_deletion_warning_msg2_lbl">La suppression de ces données entraînera la perte de tout ensemble de données associé à ces enregistrements.\nSouhaitez-vous procéder à la suppression de ces enregistrements ?</string>
 
     <string name="form_group_selector_uuid_lbl">UUID</string>
     <string name="form_group_selector_code_lbl">Code</string>
@@ -712,6 +715,8 @@
     <string name="data_sharing_transferring_data_lbl">Transfert d\'ensembles de données partagés</string>
     <string name="data_sharing_transferring_failure_lbl">Une erreur s\'est produite lors de la tentative de partage des ensembles de données</string>
     <string name="data_sharing_data_shared_lbl">Ensembles de données partagés avec succès</string>
+    <string name="data_sharing_permissions_title_lbl">Autorisations de partage de données</string>
+    <string name="data_sharing_permissions_bluetooth_error">Vous devez accorder les autorisations de périphérique Bluetooth pour pouvoir utiliser la fonction de partage de données</string>
 
     <!--  Data sharing - Bluetooth Devices List -->
     <string name="data_sharing_devlist_scanning_lbl">Recherche d\'appareils...</string>

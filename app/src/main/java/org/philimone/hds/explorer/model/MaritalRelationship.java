@@ -30,6 +30,10 @@ public class MaritalRelationship implements CoreEntity {
     @Index
     public String memberB_code;
 
+    public Boolean isPolygamic;
+
+    public String polygamicId;
+
     @Convert(converter = MaritalStartStatusConverter.class, dbType = String.class)
     public MaritalStartStatus startStatus;
 

@@ -286,7 +286,7 @@
     <string name="member_details_member_endtype_lbl">Estado actual:</string>
     <string name="member_details_father_lbl">Pai:</string>
     <string name="member_details_mother_lbl">Mãe:</string>
-    <string name="member_details_education_lbl">Nivel de Educação:</string>
+    <string name="member_details_education_lbl">Nível de Educação:</string>
     <string name="member_details_religion_lbl">Religião:</string>
     <string name="member_details_forms_spouse_lbl">Cônjuge:</string>
     <string name="member_details_bt_openform_lbl">Colher Dados</string>
@@ -616,6 +616,9 @@
     <string name="show_collected_data_btn_update_lbl">Actualizar Listas</string>
     <string name="show_collected_data_btn_delete_lbl">Apagar Dados</string>
     <string name="show_collected_data_list_filter_hint_lbl">Código/Nome/Outros detalhes</string>
+    <string name="show_collected_data_deletion_warning_title_lbl">**Aviso: Cuidado ao Apagar Dados**</string>
+    <string name="show_collected_data_deletion_warning_msg1_lbl">Por favor, tenha extrema cautela ao apagar dados de vigilância demográfica. \nExcluir esses dados pode ter implicações de longo alcance e pode afetar vários conjuntos de dados interconectados.</string>
+    <string name="show_collected_data_deletion_warning_msg2_lbl">A exclusão desses dados resultará na perda de qualquer conjunto de dados relacionado a esses registros.\nDeseja prosseguir com a exclusão desses registros?</string>
 
     <string name="form_group_selector_uuid_lbl">UUID</string>
     <string name="form_group_selector_code_lbl">Código</string>
@@ -705,12 +708,14 @@
     <string name="data_sharing_device_not_found_lbl">Dispositivo Bluetooth não foi encontrado</string>
     <string name="data_sharing_server_listening_lbl">O servidor esta aguardando dispositivos</string>
     <string name="data_sharing_server_stopped_listening_lbl">O servidor terminou a leitura de dispositivos</string>
-    <string name="data_sharing_device_connection_failure_lbl">Não foi possivel conectar-se ao dispositivo Bluetooth</string>
+    <string name="data_sharing_device_connection_failure_lbl">Não foi possível conectar-se ao dispositivo Bluetooth</string>
     <string name="data_sharing_scan_for_servers_lbl">Procurando dispositivos servidores</string>
     <string name="data_sharing_scanning_stopped_lbl">Procura de dispositivos terminada</string>
     <string name="data_sharing_transferring_data_lbl">Sincronizando registos de dados partilhados</string>
     <string name="data_sharing_transferring_failure_lbl">Ocorreu um erro ao tentar partilhar os dados</string>
     <string name="data_sharing_data_shared_lbl">Registos de dados partilhados com sucesso</string>
+    <string name="data_sharing_permissions_title_lbl">Permissões de compartilhamento de dados</string>
+    <string name="data_sharing_permissions_bluetooth_error">Você deve conceder permissões de dispositivo Bluetooth para poder usar o recurso de compartilhamento de dados</string>
 
     <!--  Data sharing - Bluetooth Devices List -->
     <string name="data_sharing_devlist_scanning_lbl">Procurando dispositivos...</string>
@@ -718,7 +723,7 @@
     <string name="data_sharing_devlist_none_paired_lbl">Nenhum dispositivo foi emparelhado</string>
     <string name="data_sharing_devlist_none_found_lbl">Nenhum dispositivo foi encontrado</string>
     <string name="data_sharing_devlist_title_paired_devices_lbl">Dispositivos emparelhados</string>
-    <string name="data_sharing_devlist_title_other_devices_lbl">Dispositivos disponiveis</string>
+    <string name="data_sharing_devlist_title_other_devices_lbl">Dispositivos disponíveis</string>
     <string name="data_sharing_devlist_button_scan_lbl">Procurar por dispositivos</string>
 
     <!-- barcode scanner -->

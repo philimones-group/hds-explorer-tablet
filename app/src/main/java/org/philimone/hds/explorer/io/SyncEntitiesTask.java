@@ -87,6 +87,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import io.objectbox.Box;
+import io.objectbox.query.Query;
 import io.objectbox.query.QueryBuilder;
 import mz.betainteractive.io.writers.ZipMaker;
 import mz.betainteractive.utilities.StringUtil;
@@ -378,15 +379,10 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 						processUrl(baseurl + API_PATH + "/regions/zip", "regions.zip");
 						break;
 					case HOUSEHOLDS:
-						this.boxHouseholds.removeAll();
+						deleteAllHouseholds();
 						processUrl(baseurl + API_PATH + "/households/zip", "households.zip");
 						break;
 					case MEMBERS:
-						this.boxMembers.removeAll();
-						this.boxCollectedData.removeAll();
-						deleteAllCoreCollectedData();
-						this.boxSavedEntityStates.removeAll();
-						deleteFormGroupInstances();
 						//remove related to members
 						boxDeaths.removeAll();
 						boxIncompleteVisits.removeAll();
@@ -394,18 +390,27 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 						boxOutmigrations.removeAll();
 						boxPregnancyChilds.removeAll();
 						boxPregnancyOuts.removeAll();
+
+						this.boxCollectedData.removeAll();
+						deleteAllCoreCollectedData();
+						this.boxSavedEntityStates.removeAll();
+						deleteFormGroupInstances();
+						deleteAllMembers();
+
 						processUrl(baseurl + API_PATH + "/members/zip", "members.zip");
 						break;
 					case RESIDENCIES:
-						this.boxResidencies.removeAll();
+						deleteAllResidencies();
 						processUrl(baseurl + API_PATH + "/residencies/zip", "residencies.zip");
 						break;
 					case VISITS:
-						this.boxVisits.removeAll();
+						boxPregnancyOuts.removeAll();
+						boxIncompleteVisits.removeAll();
+						deleteAllVisits();
 						processUrl(baseurl + API_PATH + "/visits/zip", "visits.zip");
 						break;
 					case HEAD_RELATIONSHIPS:
-						this.boxHeadRelationships.removeAll();
+						deleteAllHeadRelationships();
 						processUrl(baseurl + API_PATH + "/hrelationships/zip", "hrelationships.zip");
 						break;
 					case MARITAL_RELATIONSHIPS:
@@ -462,6 +467,293 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 		boolean result = zipMaker.makeZip();
 
 		Log.d("backup core forms", backupFilename + " created="+result);
+	}
+
+	private void deleteAllMembers(){
+		try {
+			this.boxMembers.removeAll();
+			return;
+		} catch (io.objectbox.exception.DbException ex) {
+			Log.d("db-remove-all", "ex: "+ex.getMessage());
+		}
+
+		Log.d("reading all", "members");
+		boolean finalized = false;
+		long total = this.boxMembers.count();
+		long[] not_processed = {total};
+		Log.d("finished reading all", ""+total);
+
+		while (!finalized) {
+			ObjectBoxDatabase.get().runInTx(() -> {
+
+				long offset = 0;
+				long max = 2000;
+				long readed = -1;
+				Query build = this.boxMembers.query().build();
+
+				while (readed != 0) {
+					long[] ids = build.findIds(offset, max);
+					readed = ids.length;
+					this.boxMembers.remove(ids);
+					offset += readed;
+					not_processed[0] -= readed;
+					Log.d("removing", offset + "/" + not_processed[0] + "-" + readed);
+
+					if (offset % 50000 == 0) {
+						break;
+					}
+				}
+			});
+
+			finalized = not_processed[0]<=0;
+			Log.d("finalized", ""+finalized);
+		}
+	}
+
+	private void deleteAllResidencies(){
+		try {
+			this.boxResidencies.removeAll();
+			return;
+		} catch (io.objectbox.exception.DbException ex) {
+			Log.d("db-remove-all", "ex: "+ex.getMessage());
+		}
+
+		Log.d("reading all", "members");
+		boolean finalized = false;
+		long total = this.boxResidencies.count();
+		long[] not_processed = {total};
+		Log.d("finished reading all", ""+total);
+
+		while (!finalized) {
+			ObjectBoxDatabase.get().runInTx(() -> {
+
+				long offset = 0;
+				long max = 2000;
+				long readed = -1;
+				Query build = this.boxResidencies.query().build();
+
+				while (readed != 0) {
+					long[] ids = build.findIds(offset, max);
+					readed = ids.length;
+					this.boxResidencies.remove(ids);
+					offset += readed;
+					not_processed[0] -= readed;
+					Log.d("removing", offset + "/" + not_processed[0] + "-" + readed);
+
+					if (offset % 50000 == 0) {
+						break;
+					}
+				}
+			});
+
+			finalized = not_processed[0]<=0;
+			Log.d("finalized", ""+finalized);
+		}
+	}
+
+	private void deleteAllHeadRelationships(){
+		try {
+			this.boxHeadRelationships.removeAll();
+			return;
+		} catch (io.objectbox.exception.DbException ex) {
+			Log.d("db-remove-all", "ex: "+ex.getMessage());
+		}
+
+		Log.d("reading all", "members");
+		boolean finalized = false;
+		long total = this.boxHeadRelationships.count();
+		long[] not_processed = {total};
+		Log.d("finished reading all", ""+total);
+
+		while (!finalized) {
+			ObjectBoxDatabase.get().runInTx(() -> {
+
+				long offset = 0;
+				long max = 2000;
+				long readed = -1;
+				Query build = this.boxHeadRelationships.query().build();
+
+				while (readed != 0) {
+					long[] ids = build.findIds(offset, max);
+					readed = ids.length;
+					this.boxHeadRelationships.remove(ids);
+					offset += readed;
+					not_processed[0] -= readed;
+					Log.d("removing", offset + "/" + not_processed[0] + "-" + readed);
+
+					if (offset % 50000 == 0) {
+						break;
+					}
+				}
+			});
+
+			finalized = not_processed[0]<=0;
+			Log.d("finalized", ""+finalized);
+		}
+	}
+
+	private void deleteAllVisits(){
+		try {
+			this.boxVisits.removeAll();
+			return;
+		} catch (io.objectbox.exception.DbException ex) {
+			Log.d("db-remove-all", "ex: "+ex.getMessage());
+		}
+
+		Log.d("reading all", "members");
+		boolean finalized = false;
+		long total = this.boxVisits.count();
+		long[] not_processed = {total};
+		Log.d("finished reading all", ""+total);
+
+		while (!finalized) {
+			ObjectBoxDatabase.get().runInTx(() -> {
+
+				long offset = 0;
+				long max = 2000;
+				long readed = -1;
+				Query build = this.boxVisits.query().build();
+
+				while (readed != 0) {
+					long[] ids = build.findIds(offset, max);
+					readed = ids.length;
+					this.boxVisits.remove(ids);
+					offset += readed;
+					not_processed[0] -= readed;
+					Log.d("removing", offset + "/" + not_processed[0] + "-" + readed);
+
+					if (offset % 50000 == 0) {
+						break;
+					}
+				}
+			});
+
+			finalized = not_processed[0]<=0;
+			Log.d("finalized", ""+finalized);
+		}
+	}
+
+	private void deleteAllHouseholds(){
+		try {
+			this.boxHouseholds.removeAll();
+			return;
+		} catch (io.objectbox.exception.DbException ex) {
+			Log.d("db-remove-all", "ex: "+ex.getMessage());
+		}
+
+		Log.d("reading all", "members");
+		boolean finalized = false;
+		long total = this.boxHouseholds.count();
+		long[] not_processed = {total};
+		Log.d("finished reading all", ""+total);
+
+		while (!finalized) {
+			ObjectBoxDatabase.get().runInTx(() -> {
+
+				long offset = 0;
+				long max = 2000;
+				long readed = -1;
+				Query build = this.boxHouseholds.query().build();
+
+				while (readed != 0) {
+					long[] ids = build.findIds(offset, max);
+					readed = ids.length;
+					this.boxHouseholds.remove(ids);
+					offset += readed;
+					not_processed[0] -= readed;
+					Log.d("removing", offset + "/" + not_processed[0] + "-" + readed);
+
+					if (offset % 50000 == 0) {
+						break;
+					}
+				}
+			});
+
+			finalized = not_processed[0]<=0;
+			Log.d("finalized", ""+finalized);
+		}
+	}
+
+	private void deleteAllInmigrations(){
+		try {
+			this.boxInmigrations.removeAll();
+			return;
+		} catch (io.objectbox.exception.DbException ex) {
+			Log.d("db-remove-all", "ex: "+ex.getMessage());
+		}
+
+		Log.d("reading all", "members");
+		boolean finalized = false;
+		long total = this.boxInmigrations.count();
+		long[] not_processed = {total};
+		Log.d("finished reading all", ""+total);
+
+		while (!finalized) {
+			ObjectBoxDatabase.get().runInTx(() -> {
+
+				long offset = 0;
+				long max = 2000;
+				long readed = -1;
+				Query build = this.boxInmigrations.query().build();
+
+				while (readed != 0) {
+					long[] ids = build.findIds(offset, max);
+					readed = ids.length;
+					this.boxInmigrations.remove(ids);
+					offset += readed;
+					not_processed[0] -= readed;
+					Log.d("removing", offset + "/" + not_processed[0] + "-" + readed);
+
+					if (offset % 50000 == 0) {
+						break;
+					}
+				}
+			});
+
+			finalized = not_processed[0]<=0;
+			Log.d("finalized", ""+finalized);
+		}
+	}
+
+	private void deleteAllOutmigrations(){
+		try {
+			this.boxOutmigrations.removeAll();
+			return;
+		} catch (io.objectbox.exception.DbException ex) {
+			Log.d("db-remove-all", "ex: "+ex.getMessage());
+		}
+
+		Log.d("reading all", "members");
+		boolean finalized = false;
+		long total = this.boxOutmigrations.count();
+		long[] not_processed = {total};
+		Log.d("finished reading all", ""+total);
+
+		while (!finalized) {
+			ObjectBoxDatabase.get().runInTx(() -> {
+
+				long offset = 0;
+				long max = 2000;
+				long readed = -1;
+				Query build = this.boxOutmigrations.query().build();
+
+				while (readed != 0) {
+					long[] ids = build.findIds(offset, max);
+					readed = ids.length;
+					this.boxOutmigrations.remove(ids);
+					offset += readed;
+					not_processed[0] -= readed;
+					Log.d("removing", offset + "/" + not_processed[0] + "-" + readed);
+
+					if (offset % 50000 == 0) {
+						break;
+					}
+				}
+			});
+
+			finalized = not_processed[0]<=0;
+			Log.d("finalized", ""+finalized);
+		}
 	}
 
 	private void deleteAllCoreCollectedData() {
@@ -3124,6 +3416,26 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 				parser.nextTag();
 			}else{
 				table.memberB_code = "";
+				parser.nextTag();
+			}
+
+			parser.nextTag(); //isPolygamic
+			if (!isEmptyTag("isPolygamic", parser)) {
+				parser.next();
+				table.isPolygamic = Boolean.parseBoolean(parser.getText());
+				parser.nextTag();
+			}else{
+				table.isPolygamic = false;
+				parser.nextTag();
+			}
+
+			parser.nextTag(); //polygamicId
+			if (!isEmptyTag("polygamicId", parser)) {
+				parser.next();
+				table.polygamicId = parser.getText();
+				parser.nextTag();
+			}else{
+				table.polygamicId = "";
 				parser.nextTag();
 			}
 

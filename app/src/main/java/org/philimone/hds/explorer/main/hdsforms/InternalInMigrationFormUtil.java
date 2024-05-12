@@ -44,6 +44,7 @@ import org.philimone.hds.forms.model.XmlFormResult;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import io.objectbox.Box;
@@ -273,7 +274,7 @@ public class InternalInMigrationFormUtil extends FormUtil<Inmigration> {
         }
 
         //check if Member is a head of household of another household
-        if (isHeadOfHouseholdSomewhere(memberCode)) {
+        if (isHeadOfHouseholdSomewhere(memberCode) && !isTheOnlyHouseholdMember(memberCode, originCode)) {
             String message = this.context.getString(R.string.internal_inmigration_is_head_of_household_lbl);
             return new ValidationResult(colMemberCode, message);
         }
@@ -289,6 +290,17 @@ public class InternalInMigrationFormUtil extends FormUtil<Inmigration> {
                 .build().count();
 
         return count > 0;
+    }
+
+    private boolean isTheOnlyHouseholdMember(String memberCode, String householdCode){
+
+        List<Residency> houseResidents = boxResidencies.query(Residency_.householdCode.equal(householdCode).and(Residency_.endType.equal(ResidencyEndType.NOT_APPLICABLE.code))).orderDesc(Residency_.startDate).build().find();
+
+        if (houseResidents.size()==1 && !StringUtil.isBlank(memberCode) && memberCode.equals(houseResidents.get(0).memberCode)) {
+            return true; //the only one living in the household
+        }
+
+        return false;
     }
 
     @Override

@@ -508,6 +508,13 @@
     <string name="maritalrelationship_cp1_current_dont_exists_lbl">Cannot close the Marital Relationship because no relationship record were found for member A and B.</string>
     <string name="maritalrelationship_cp2_already_closed_lbl">Cannot close the Marital Relationship because its already closed with type [%1$s]</string>
     <string name="maritalrelationship_cp3_dates_overlap_lbl">Cannot close the Marital Relationship because the endDate cannot be before or equal to the startDate</string>
+    <string name="maritalrelationship_dialog_title_lbl">Marital Relationship</string>
+    <string name="maritalrelationship_dialog_item_end_relationship_btn_lbl">End Relationship</string>
+    <string name="maritalrelationship_dialog_selected_spouse_lbl">Selected Spouse</string>
+    <string name="maritalrelationship_dialog_husband_spouse_lbl">Husband (Spouse)</string>
+    <string name="maritalrelationship_dialog_husband_relationships_lbl">Husband Relationships</string>
+    <string name="maritalrelationship_dialog_add_wife_lbl">Add another wife (Polygamic)</string>
+    <string name="maritalrelationship_dialog_new_rel_lbl">Register new Marital Relationship</string>
 
     <string name="incomplete_visit_visit_code_empty">The Visit Code cannot be empty</string>
     <string name="incomplete_visit_member_code_empty">The Member Code cannot be empty</string>
@@ -852,5 +859,5 @@
     <string name="memberStatus_active">Active</string>
     <string name="memberStatus_inactive">Inactive</string>
     <string name="memberStatus_not_found">Member not found</string>
-    
+
 </resources>

@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/MainLinearLayout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="5dp"
+    android:layout_marginBottom="5dp"
+    android:background="?android:attr/selectableItemBackground"
+    android:orientation="horizontal" >
+
+    <ImageView
+        android:id="@+id/iconView"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_gravity="center"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:src="@mipmap/nui_marital_relationship_icon_dark" />
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_gravity="center"
+        android:layout_marginRight="10dp"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/txtMemberItemName"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center|left"
+            android:gravity="left|center_horizontal"
+            android:text="Large Text"
+            android:singleLine="true"
+            android:textSize="@dimen/member_item_text_1_size"
+            android:textStyle="bold"
+            android:textColor="@color/nui_member_item_textcolor" />
+        
+        <TextView
+            android:id="@+id/txtMemberItemCode"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:singleLine="true"
+            android:text="Medium Text"
+            android:textSize="@dimen/member_item_text_2_size"
+            android:textColor="@color/nui_member_item_textcolor" />
+
+        <TextView
+            android:id="@+id/txtMemberItemExtras"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:singleLine="true"
+            android:text="Medium Text"
+            android:textSize="@dimen/member_item_text_3_size"
+            android:textStyle="bold"
+            android:textColor="@color/nui_member_item_textcolor" />
+        
+    </LinearLayout>
+
+    <!-- Buttons -->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="0"
+        android:layout_marginRight="10dp"
+        android:orientation="vertical" >
+
+        <Button
+            android:id="@+id/btnVisitMaritalRelationship"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="@drawable/nui_btnd_rone_dgbevel"
+            android:paddingTop="@dimen/household_visit_button_padding_top"
+            android:paddingBottom="@dimen/household_visit_button_padding_bottom"
+            android:paddingStart="40dp"
+            android:paddingEnd="40dp"
+            android:maxLines="2"
+            android:text="@string/maritalrelationship_dialog_item_end_relationship_btn_lbl"
+            android:textSize="14sp"
+            android:textAlignment="center"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+</LinearLayout>

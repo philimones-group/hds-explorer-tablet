@@ -572,7 +572,7 @@ public class HouseholdVisitFragment extends Fragment {
         boolean notVisited = countCollectedForms(selectedMember)==0;
         int age = GeneralUtil.getAge(this.selectedMember.dob, new Date());
         boolean isAtMotherAge = age >= this.minimunMotherAge;
-        boolean isAtSpouseAge = age >= this.minimunMotherAge;
+        boolean isAtSpouseAge = age >= this.minimunSpouseAge;
 
         this.btnVisitMemberEnu.setEnabled(false);
         this.btnVisitBirthReg.setEnabled(this.selectedMember!=null && this.selectedMember.gender== Gender.FEMALE && isAtMotherAge);
@@ -614,7 +614,7 @@ public class HouseholdVisitFragment extends Fragment {
         }
 
         btnVisitMemberIncomplete.setEnabled(btnVisitMemberIncomplete.isEnabled() && ccdataIncomplete == null);
-        btnVisitMaritalRelationship.setEnabled(btnVisitMaritalRelationship.isEnabled() && hasMaritalRelationship == false);
+        btnVisitMaritalRelationship.setEnabled(btnVisitMaritalRelationship.isEnabled()); // && hasMaritalRelationship == false);
         btnVisitPregnancyReg.setEnabled(btnVisitPregnancyReg.isEnabled() && ccdataPregnancy == null && !isPregnant);
         btnVisitBirthReg.setEnabled((btnVisitBirthReg.isEnabled() && ccdataPOutcome == null));
 

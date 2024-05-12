@@ -10,6 +10,7 @@ import com.google.gson.Gson;
 import org.philimone.hds.explorer.R;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
 import org.philimone.hds.explorer.database.Queries;
+import org.philimone.hds.explorer.fragment.MaritalRelationshipDialog;
 import org.philimone.hds.explorer.fragment.MemberFilterDialog;
 import org.philimone.hds.explorer.model.ApplicationParam;
 import org.philimone.hds.explorer.model.ApplicationParam_;
@@ -24,6 +25,7 @@ import org.philimone.hds.explorer.model.Visit;
 import org.philimone.hds.explorer.model.enums.CoreFormEntity;
 import org.philimone.hds.explorer.model.enums.Gender;
 import org.philimone.hds.explorer.model.enums.MaritalEndStatus;
+import org.philimone.hds.explorer.model.enums.MaritalEventType;
 import org.philimone.hds.explorer.model.enums.MaritalStartStatus;
 import org.philimone.hds.explorer.model.enums.MaritalStatus;
 import org.philimone.hds.explorer.model.oldstate.SavedEntityState;
@@ -61,6 +63,12 @@ public class MaritalRelationshipFormUtil extends FormUtil<MaritalRelationship> {
     private boolean genderChecking;
     private boolean spouseWillBeUpdated;
 
+    private MaritalEventType eventType = MaritalEventType.START; /* default is starting event */
+    private boolean isPolygamicRelationship = false;
+    private String polygamicId; /* the first MaritalRelationship uuid */
+    private boolean mainIsPolygamicRelationship;
+
+    private MaritalRelationshipDialog maritalRelationshipDialog;
 
     public MaritalRelationshipFormUtil(Fragment fragment, Context context, Visit visit, Member spouseA, FormUtilities odkFormUtilities, FormUtilListener<MaritalRelationship> listener){
         super(fragment, context, FormUtil.getMaritalRelationshipForm(context), odkFormUtilities, listener);
@@ -75,13 +83,15 @@ public class MaritalRelationshipFormUtil extends FormUtil<MaritalRelationship> {
     public MaritalRelationshipFormUtil(Fragment fragment, Context context, Visit visit, MaritalRelationship relationshipToEdit, FormUtilities odkFormUtilities, FormUtilListener<MaritalRelationship> listener){
         super(fragment, context, FormUtil.getMaritalRelationshipForm(context), relationshipToEdit, odkFormUtilities, listener);
 
-        this.visit = visit;
 
+        this.visit = visit;
         initBoxes();
         initialize();
 
         this.spouseA = boxMembers.query().equal(Member_.code, relationshipToEdit.memberA_code, QueryBuilder.StringOrder.CASE_SENSITIVE).build().findFirst();
         this.spouseB = boxMembers.query().equal(Member_.code, relationshipToEdit.memberB_code, QueryBuilder.StringOrder.CASE_SENSITIVE).build().findFirst();
+
+        this.mainIsPolygamicRelationship = boxMaritalRelationships.query(MaritalRelationship_.polygamicId.equal(relationshipToEdit.collectedId)).build().count()>0;
 
         readSavedEntityState();
     }
@@ -154,6 +164,9 @@ public class MaritalRelationshipFormUtil extends FormUtil<MaritalRelationship> {
         preloadedMap.put("memberB_name", spouseB.name);
         preloadedMap.put("memberA_status", spouseA.maritalStatus.code);
         preloadedMap.put("memberB_status", spouseB.maritalStatus.code);
+        preloadedMap.put("eventType", eventType.code);
+        preloadedMap.put("isPolygamic", isPolygamicRelationship +"");
+        preloadedMap.put("polygamicId", polygamicId==null ? "" : polygamicId);
     }
 
     @Override
@@ -179,6 +192,8 @@ public class MaritalRelationshipFormUtil extends FormUtil<MaritalRelationship> {
         ColumnValue colMemberB_name = collectedValues.get("memberB_name");
         ColumnValue colMemberA_status = collectedValues.get("memberA_status");
         ColumnValue colMemberB_status = collectedValues.get("memberB_status");
+        ColumnValue colIsPolygamic = collectedValues.get("isPolygamic");
+        ColumnValue colPolygamicId = collectedValues.get("polygamicId");
         ColumnValue colRelationshipType = collectedValues.get("relationshipType");
         ColumnValue colEventDate = collectedValues.get("eventDate");
         ColumnValue colCollectedBy = collectedValues.get("collectedBy");
@@ -192,6 +207,8 @@ public class MaritalRelationshipFormUtil extends FormUtil<MaritalRelationship> {
         String memberB_name = colMemberB_name.getValue();
         MaritalStatus memberA_status = MaritalStatus.getFrom(colMemberA_status.getValue());
         MaritalStatus memberB_status = MaritalStatus.getFrom(colMemberB_status.getValue());
+        Boolean isPolygamic = Boolean.parseBoolean(colIsPolygamic.getValue());
+        String polygamicId = colPolygamicId.getValue();
         MaritalStartStatus startRelationType = MaritalStartStatus.getFrom(colRelationshipType.getValue());
         MaritalEndStatus endRelationType = MaritalEndStatus.getFrom(colRelationshipType.getValue());
         Date eventDate = colEventDate.getDateValue();
@@ -305,21 +322,25 @@ public class MaritalRelationshipFormUtil extends FormUtil<MaritalRelationship> {
             //New Relationship
             if (startRelationType != null) {
                 //P1. Check If P.Relationship of A and B are closed
-                if (previousRelA != null && previousRelA.endStatus==MaritalEndStatus.NOT_APPLICABLE){
+                //If is a polygamic relationship and A/B is a MALE dont need to check if is closed
+                boolean isMalePolygamyA = spouseA.gender==Gender.MALE && isPolygamic;
+                boolean isMalePolygamyB = spouseB.gender==Gender.MALE && isPolygamic;
+
+                if (previousRelA != null && previousRelA.endStatus==MaritalEndStatus.NOT_APPLICABLE && !isMalePolygamyA){
                     String message = this.context.getString(R.string.maritalrelationship_p1_previous_not_closed_lbl, "A");
                     return new ValidationResult(colMemberA, message);
                 }
-                if (previousRelB != null && previousRelB.endStatus==MaritalEndStatus.NOT_APPLICABLE){
+                if (previousRelB != null && previousRelB.endStatus==MaritalEndStatus.NOT_APPLICABLE && !isMalePolygamyB){
                     String message = this.context.getString(R.string.maritalrelationship_p1_previous_not_closed_lbl, "B");
                     return new ValidationResult(colMemberB, message);
                 }
 
                 //P2. Check If endDate of P.Relationship is not before new startDate
-                if (previousRelA != null && eventDate.compareTo(previousRelA.endDate)<=0){
+                if (previousRelA != null && previousRelA.endDate != null && eventDate.compareTo(previousRelA.endDate)<=0 && !isMalePolygamyA){
                     String message = this.context.getString(R.string.maritalrelationship_p2_previous_enddate_overlap_lbl, "A");
                     return new ValidationResult(colMemberA, message);
                 }
-                if (previousRelB != null && eventDate.compareTo(previousRelB.endDate)<=0){
+                if (previousRelB != null && previousRelB.endDate != null && eventDate.compareTo(previousRelB.endDate)<=0 && !isMalePolygamyB){
                     String message = this.context.getString(R.string.maritalrelationship_p2_previous_enddate_overlap_lbl, "B");
                     return new ValidationResult(colMemberB, message);
                 }
@@ -356,21 +377,24 @@ public class MaritalRelationshipFormUtil extends FormUtil<MaritalRelationship> {
             //New Relationship
             if (startRelationType != null) {
                 //P1. Check If P.Relationship of A and B are closed
-                if (previousRelA != null && previousRelA.endStatus==MaritalEndStatus.NOT_APPLICABLE){
+                boolean isMalePolygamyA = spouseA.gender==Gender.MALE && (isPolygamic || mainIsPolygamicRelationship);
+                boolean isMalePolygamyB = spouseB.gender==Gender.MALE && (isPolygamic || mainIsPolygamicRelationship);
+
+                if (previousRelA != null && previousRelA.endStatus==MaritalEndStatus.NOT_APPLICABLE && !isMalePolygamyA){
                     String message = this.context.getString(R.string.maritalrelationship_p1_previous_not_closed_lbl, "A");
                     return new ValidationResult(colMemberA, message);
                 }
-                if (previousRelB != null && previousRelB.endStatus==MaritalEndStatus.NOT_APPLICABLE){
+                if (previousRelB != null && previousRelB.endStatus==MaritalEndStatus.NOT_APPLICABLE && !isMalePolygamyA){
                     String message = this.context.getString(R.string.maritalrelationship_p1_previous_not_closed_lbl, "B");
                     return new ValidationResult(colMemberB, message);
                 }
 
                 //P2. Check If endDate of P.Relationship is not before new startDate
-                if (previousRelA != null && eventDate.compareTo(previousRelA.endDate)<=0){
+                if (previousRelA != null && previousRelA.endDate != null && eventDate.compareTo(previousRelA.endDate)<=0 && !isMalePolygamyA){
                     String message = this.context.getString(R.string.maritalrelationship_p2_previous_enddate_overlap_lbl, "A");
                     return new ValidationResult(colMemberA, message);
                 }
-                if (previousRelB != null && eventDate.compareTo(previousRelB.endDate)<=0){
+                if (previousRelB != null && previousRelB.endDate != null && eventDate.compareTo(previousRelB.endDate)<=0 && !isMalePolygamyA){
                     String message = this.context.getString(R.string.maritalrelationship_p2_previous_enddate_overlap_lbl, "B");
                     return new ValidationResult(colMemberB, message);
                 }
@@ -432,6 +456,8 @@ public class MaritalRelationshipFormUtil extends FormUtil<MaritalRelationship> {
         //ColumnValue colMemberB_name = collectedValues.get("memberB_name");
         //ColumnValue colMemberA_status = collectedValues.get("memberA_status");
         //ColumnValue colMemberB_status = collectedValues.get("memberB_status");
+        ColumnValue colIsPolygamic = collectedValues.get("isPolygamic");
+        ColumnValue colPolygamicId = collectedValues.get("polygamicId");
         ColumnValue colRelationshipType = collectedValues.get("relationshipType");
         ColumnValue colEventDate = collectedValues.get("eventDate");
         ColumnValue colCollectedBy = collectedValues.get("collectedBy");
@@ -445,6 +471,8 @@ public class MaritalRelationshipFormUtil extends FormUtil<MaritalRelationship> {
         //String memberB_name = colMemberB_name.getValue();
         //MaritalStatus memberA_status = MaritalStatus.getFrom(colMemberA_status.getValue());
         //MaritalStatus memberB_status = MaritalStatus.getFrom(colMemberB_status.getValue());
+        Boolean isPolygamic = Boolean.parseBoolean(colIsPolygamic.getValue());
+        String polygamicId = colPolygamicId.getValue();
         MaritalStartStatus startRelationType = MaritalStartStatus.getFrom(colRelationshipType.getValue());
         MaritalEndStatus endRelationType = MaritalEndStatus.getFrom(colRelationshipType.getValue());
         Date eventDate = colEventDate.getDateValue();
@@ -468,6 +496,8 @@ public class MaritalRelationshipFormUtil extends FormUtil<MaritalRelationship> {
             maritalRelationship.startDate = eventDate;
             maritalRelationship.endStatus = MaritalEndStatus.NOT_APPLICABLE;
             maritalRelationship.endDate = null;
+            maritalRelationship.isPolygamic = isPolygamic;
+            maritalRelationship.polygamicId = polygamicId;
 
             maritalRelationship.collectedId = collectedValues.get(HForm.COLUMN_ID).getValue();
             maritalRelationship.recentlyCreated = true;
@@ -477,7 +507,9 @@ public class MaritalRelationshipFormUtil extends FormUtil<MaritalRelationship> {
             spouseB.maritalStatus = MaritalStatus.getFrom(startRelationType.code);
 
             spouseA.spouseCode = spouseB.code;
+            spouseA.spouseName = spouseB.name;
             spouseB.spouseCode = spouseA.code;
+            spouseB.spouseName = spouseA.name;
 
         } else if (endRelationType != null) {
             //updates a existing relationship
@@ -490,7 +522,9 @@ public class MaritalRelationshipFormUtil extends FormUtil<MaritalRelationship> {
             spouseB.maritalStatus = MaritalStatus.getFrom(endRelationType.code);
 
             spouseA.spouseCode = spouseB.code;
+            spouseA.spouseName = spouseB.name;
             spouseB.spouseCode = spouseA.code;
+            spouseB.spouseName = spouseA.name;
         }
 
         maritalRelationship.visitCode = visitCode;
@@ -532,6 +566,8 @@ public class MaritalRelationshipFormUtil extends FormUtil<MaritalRelationship> {
         //ColumnValue colMemberB_name = collectedValues.get("memberB_name");
         //ColumnValue colMemberA_status = collectedValues.get("memberA_status");
         //ColumnValue colMemberB_status = collectedValues.get("memberB_status");
+        ColumnValue colIsPolygamic = collectedValues.get("isPolygamic");
+        ColumnValue colPolygamicId = collectedValues.get("polygamicId");
         ColumnValue colRelationshipType = collectedValues.get("relationshipType");
         ColumnValue colEventDate = collectedValues.get("eventDate");
         ColumnValue colCollectedBy = collectedValues.get("collectedBy");
@@ -545,6 +581,8 @@ public class MaritalRelationshipFormUtil extends FormUtil<MaritalRelationship> {
         //String memberB_name = colMemberB_name.getValue();
         //MaritalStatus memberA_status = MaritalStatus.getFrom(colMemberA_status.getValue());
         //MaritalStatus memberB_status = MaritalStatus.getFrom(colMemberB_status.getValue());
+        Boolean isPolygamic = Boolean.parseBoolean(colIsPolygamic.getValue());
+        String polygamicId = colPolygamicId.getValue();
         MaritalStartStatus startRelationType = MaritalStartStatus.getFrom(colRelationshipType.getValue());
         MaritalEndStatus endRelationType = MaritalEndStatus.getFrom(colRelationshipType.getValue());
         Date eventDate = colEventDate.getDateValue();
@@ -576,7 +614,9 @@ public class MaritalRelationshipFormUtil extends FormUtil<MaritalRelationship> {
             spouseB.maritalStatus = MaritalStatus.getFrom(startRelationType.code);
 
             spouseA.spouseCode = spouseB.code;
+            spouseA.spouseName = spouseB.name;
             spouseB.spouseCode = spouseA.code;
+            spouseB.spouseName = spouseA.name;
 
         } else if (endRelationType != null) {
             //updates a existing relationship
@@ -588,7 +628,9 @@ public class MaritalRelationshipFormUtil extends FormUtil<MaritalRelationship> {
             spouseB.maritalStatus = MaritalStatus.getFrom(endRelationType.code);
 
             spouseA.spouseCode = spouseB.code;
+            spouseA.spouseName = spouseB.name;
             spouseB.spouseCode = spouseA.code;
+            spouseB.spouseName = spouseA.name;
         }
 
         maritalRelationship.visitCode = visitCode;
@@ -598,8 +640,6 @@ public class MaritalRelationshipFormUtil extends FormUtil<MaritalRelationship> {
         boxMembers.put(spouseA, spouseB);
 
         //save core collected data
-        collectedData.visitId = visit.id;
-        collectedData.formEntityId = spouseA.id;
         collectedData.formEntityCode = spouseA.code;
         collectedData.formEntityName = spouseA.name + " -> " + spouseB.name;
         collectedData.updatedDate = new Date();
@@ -616,6 +656,8 @@ public class MaritalRelationshipFormUtil extends FormUtil<MaritalRelationship> {
     protected void onFinishedExtensionCollection() {
         if (listener != null) {
             if (currentMode == Mode.CREATE) {
+                updateMaritalRelationshipDialog();
+
                 listener.onNewEntityCreated(this.entity, new HashMap<>());
             } else if (currentMode == Mode.EDIT) {
                 listener.onEntityEdited(this.entity, new HashMap<>());
@@ -636,6 +678,8 @@ public class MaritalRelationshipFormUtil extends FormUtil<MaritalRelationship> {
     }
 
     private MaritalRelationship getCurrentMaritalRelationship(Member mSpouseA) {
+        if (mSpouseA == null) return null;
+
         MaritalRelationship maritalRelationship = boxMaritalRelationships.query().equal(MaritalRelationship_.memberA_code, mSpouseA.code, QueryBuilder.StringOrder.CASE_SENSITIVE)
                 .or()
                 .equal(MaritalRelationship_.memberB_code, mSpouseA.code, QueryBuilder.StringOrder.CASE_SENSITIVE)
@@ -645,37 +689,65 @@ public class MaritalRelationshipFormUtil extends FormUtil<MaritalRelationship> {
         return maritalRelationship;
     }
 
+    private boolean isCurrentlyMarried(Member member) {
+        MaritalRelationship maritalRelationship = getCurrentMaritalRelationship(member);
+        return maritalRelationship != null && maritalRelationship.endStatus == MaritalEndStatus.NOT_APPLICABLE;
+    }
+
     @Override
     public void collect() {
 
-        //Check if MemberA has a registered marital relationship? - //1. get last marital if still opened  or  //2. select a spouse
-        MaritalRelationship maritalRelationship = getCurrentMaritalRelationship(spouseA);
-        boolean existsRelationshipToClose = maritalRelationship != null && maritalRelationship.endStatus == MaritalEndStatus.NOT_APPLICABLE;
-
         if (currentMode == Mode.CREATE) {
-            //1. create a try to close relationship
+            //1. selected member, spouseA can be male or female, spouseA should be husband and spouseB the female counterpart
             //2. create a new relationship
 
+            Member selectedSpouse = spouseA;
+            //Check if MemberA has a registered marital relationship? - //1. get last marital if still opened  or  //2. select a spouse
+            MaritalRelationship maritalRelationship = getCurrentMaritalRelationship(selectedSpouse);
+            boolean isCurrentlyMarried = maritalRelationship != null && maritalRelationship.endStatus == MaritalEndStatus.NOT_APPLICABLE;
+
             //if maritalRelationship is recentlyCreated -> go to edit mode
-            if (maritalRelationship != null && maritalRelationship.isRecentlyCreated() ) {
+            /*if (maritalRelationship != null && maritalRelationship.isRecentlyCreated() ) {
                 //There is a recently created Marital Relationship for this member, To Edit the Relationship use the collected list in the right panel and select the form
                 DialogFactory.createMessageInfo(this.context, R.string.relationship_type_title_lbl, R.string.maritalrelationship_recently_created_error_lbl).show();
                 return;
-            }
+            }*/
 
-            if (existsRelationshipToClose) {
-                this.currentMaritalRelationship = maritalRelationship;
-            }
-
-            if (existsRelationshipToClose) {
+            if (isCurrentlyMarried) {
+                //this.currentMaritalRelationship = maritalRelationship;
                 //if its about to close a relationship pull in the same order it was registered
                 this.spouseA = boxMembers.query().equal(Member_.code, maritalRelationship.memberA_code, QueryBuilder.StringOrder.CASE_SENSITIVE).build().findFirst();
                 this.spouseB = boxMembers.query().equal(Member_.code, maritalRelationship.memberB_code, QueryBuilder.StringOrder.CASE_SENSITIVE).build().findFirst();
+                //reOrderSpouse();
 
-                executeCollectForm();
+                //show MaritalRelationship dialog
+                //wife (selected member)
+                openMaritalRelationshipDialog(selectedSpouse, isCurrentlyMarried, spouseA, spouseB);
+
             } else {
                 //a new relationship will be created - then - select spouse B
-                openSpouseFilterDialog();
+                //Not married
+                openSpouseFilterDialog(new SpouseFilterListener() {
+                    @Override
+                    public void onSelectedSpouse(Member member) {
+                        Log.d("selected-spouse", ""+member.getCode()+", "+member.gender);
+                        spouseB = member;
+                        boolean memberMarried = isCurrentlyMarried(member);
+                        //reOrderSpouse();
+
+                        if (memberMarried) {
+                            //show MaritalRelationship dialog
+                            openMaritalRelationshipDialog(selectedSpouse, isCurrentlyMarried, spouseA, spouseB);
+                        } else {
+                            executeNewRegularRelationship();
+                        }
+                    }
+
+                    @Override
+                    public void onCanceled() {
+                        spouseWillBeUpdated = false;
+                    }
+                });
             }
 
         } else if (currentMode == Mode.EDIT) {
@@ -692,6 +764,62 @@ public class MaritalRelationshipFormUtil extends FormUtil<MaritalRelationship> {
             }
         }
 
+    }
+
+    private void openMaritalRelationshipDialog(Member selectedSpouse, boolean isCurrentlyMarried, Member mSpouseA, Member mSpouseB) {
+        this.spouseA = mSpouseA;
+        this.spouseB = mSpouseB;
+
+        this.maritalRelationshipDialog = MaritalRelationshipDialog.newInstance(this.fragmentManager, selectedSpouse, isCurrentlyMarried, this.spouseA, this.spouseB, new MaritalRelationshipDialog.MrDialogListener() {
+            @Override
+            public void onEndingRelationship(MaritalRelationship maritalRelationship) {
+                executeEndingRelationship(maritalRelationship);
+            }
+
+            @Override
+            public void onAddNewPolygamicRelationship(MaritalRelationship mainMaritalRelationship, Member mSpouseA, Member mSpouseB) {
+                executeNewPolygamicRelationship(mainMaritalRelationship, mSpouseA, mSpouseB);
+            }
+
+            @Override
+            public void onCanceled() {
+
+            }
+        });
+        maritalRelationshipDialog.setGenderChecking(genderChecking);
+        maritalRelationshipDialog.setFilterHouseholdCode(visit.householdCode);
+        maritalRelationshipDialog.setFilterMinimunSpouseAge(minimunSpouseAge);
+        maritalRelationshipDialog.show();
+    }
+
+    private void executeNewRegularRelationship() {
+        eventType = MaritalEventType.START;
+        isPolygamicRelationship = false;
+        polygamicId = null;
+
+        executeCollectForm();
+    }
+
+    private void executeNewPolygamicRelationship(MaritalRelationship mainMaritalRelationship, Member mSpouseA, Member mSpouseB){
+        eventType = MaritalEventType.START;
+        this.spouseA = mSpouseA;
+        this.spouseB = mSpouseB;
+        isPolygamicRelationship = true;
+        polygamicId = mainMaritalRelationship.collectedId;
+
+        executeCollectForm();
+    }
+
+    private void executeEndingRelationship(MaritalRelationship maritalRelationship) {
+        eventType = MaritalEventType.END;
+
+        currentMaritalRelationship = maritalRelationship;
+
+        this.spouseA = boxMembers.query().equal(Member_.code, maritalRelationship.memberA_code, QueryBuilder.StringOrder.CASE_SENSITIVE).build().findFirst();
+        this.spouseB = boxMembers.query().equal(Member_.code, maritalRelationship.memberB_code, QueryBuilder.StringOrder.CASE_SENSITIVE).build().findFirst();
+        reOrderSpouse();
+
+        executeCollectForm();
     }
 
     private int retrieveMinimumSpouseAge() {
@@ -722,26 +850,24 @@ public class MaritalRelationshipFormUtil extends FormUtil<MaritalRelationship> {
         return true;
     }
 
-    private void openSpouseFilterDialog(){
+    private void openSpouseFilterDialog(SpouseFilterListener listener){
 
         MemberFilterDialog dialog = MemberFilterDialog.newInstance(this.fragmentManager, context.getString(R.string.maritalrelationship_spouse_select_lbl), true, new MemberFilterDialog.Listener() {
             @Override
             public void onSelectedMember(Member member) {
-                Log.d("selected-spouse", ""+member.getCode());
-
-                spouseB = member;
-                executeCollectForm();
+                listener.onSelectedSpouse(member);
             }
 
             @Override
             public void onCanceled() {
-                spouseWillBeUpdated = false;
+                listener.onCanceled();
             }
         });
 
         if (genderChecking) {
             if (spouseA.gender == Gender.MALE){
                 dialog.setGenderFemaleOnly();
+                dialog.addFilterExcludeMarried();
             } else {
                 dialog.setGenderMaleOnly();
             }
@@ -761,7 +887,21 @@ public class MaritalRelationshipFormUtil extends FormUtil<MaritalRelationship> {
             @Override
             public void onYesClicked() {
                 spouseWillBeUpdated = true;
-                openSpouseFilterDialog();
+                openSpouseFilterDialog(new SpouseFilterListener() {
+                    @Override
+                    public void onSelectedSpouse(Member member) {
+                        Log.d("selected-spouse", ""+member.getCode());
+
+                        spouseB = member;
+                        reOrderSpouse();
+                        executeCollectForm();
+                    }
+
+                    @Override
+                    public void onCanceled() {
+                        spouseWillBeUpdated = false;
+                    }
+                });
             }
 
             @Override
@@ -773,4 +913,26 @@ public class MaritalRelationshipFormUtil extends FormUtil<MaritalRelationship> {
 
     }
 
+    private void reOrderSpouse(){
+        //male as A, B as female
+        if (spouseA != null && spouseB != null) {
+            if (spouseA.gender == Gender.FEMALE) {
+                Member temp = this.spouseA;
+                this.spouseA = this.spouseB;
+                this.spouseB = temp;
+            }
+        }
+    }
+
+    private void updateMaritalRelationshipDialog(){
+        if (this.maritalRelationshipDialog != null) {
+            this.maritalRelationshipDialog.loadHusbandRelationships();
+        }
+    }
+
+    private interface SpouseFilterListener {
+        void onSelectedSpouse(Member member);
+
+        void onCanceled();
+    }
 }

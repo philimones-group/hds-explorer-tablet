@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginStart="10dp"
+    android:layout_marginEnd="10dp"
+    android:orientation="vertical"
+    android:background="@color/white"
+    tools:context=".fragment.MaritalRelationshipDialog">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <!-- Dialog Header -->
+        <LinearLayout
+            android:id="@+id/dialogHeaderLayout"
+            android:layout_width="match_parent"
+            android:layout_height="57dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            android:background="@drawable/nui_dialog_border_thin"
+            android:orientation="horizontal"
+            android:elevation="5dp">
+
+            <ImageView
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
+                android:layout_gravity="center"
+                android:alpha="0.75"
+                android:background="@mipmap/nui_member_red_filled_icon"
+                android:contentDescription="TODO" />
+
+            <TextView
+                android:id="@+id/txtDialogTitle"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:layout_marginLeft="10dp"
+                android:gravity="center_vertical"
+                android:text="@string/maritalrelationship_dialog_title_lbl"
+                android:textSize="18sp"
+                android:textColor="@color/nui_color_text_red"
+                android:textStyle="bold" />
+
+            <Button
+                android:id="@+id/btDialogClose"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginEnd="10dp"
+                android:layout_gravity="center"
+                android:background="@drawable/nui_btnd_dialog_close"
+                />
+
+        </LinearLayout>
+
+        <!-- Spouses -->
+        <LinearLayout
+            android:id="@+id/dialogSpousesLayout"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="10dp"
+            app:layout_constraintTop_toBottomOf="@id/dialogHeaderLayout"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            android:orientation="vertical">
+
+            <!-- spouses -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/mf_margin_left"
+                android:layout_marginTop="@dimen/mf_margin_top"
+                android:layout_marginRight="@dimen/mf_margin_right"
+                android:gravity="top"
+                android:orientation="vertical">
+
+                <!-- Spouse -->
+                <LinearLayout
+                    android:id="@+id/layoutSelectedSpouse"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginBottom="10dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/member_filter_textlabel_margin_left"
+                        android:text="@string/maritalrelationship_dialog_selected_spouse_lbl"
+                        android:textColor="@color/nui_color_text_red"
+                        android:textSize="@dimen/member_filter_textsize"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/txtMarSelectedSpouse"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/member_filter_textbox_size"
+                        android:background="@drawable/nui_txtbox_rone_wbevel"
+                        android:gravity="center_vertical"
+                        android:text="TANYA MARIAH GEORGE JACOBSON"
+                        android:textColor="@color/nui_color_text_darkgray"
+                        android:paddingLeft="20dp"
+                        android:textSize="@dimen/member_filter_textsize" />
+                </LinearLayout>
+
+                <!-- Husband -->
+                <LinearLayout
+                    android:id="@+id/layoutHusband"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginBottom="20dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/member_filter_textlabel_margin_left"
+                        android:text="@string/maritalrelationship_dialog_husband_spouse_lbl"
+                        android:textColor="@color/nui_color_text_red"
+                        android:textSize="@dimen/member_filter_textsize"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/txtMarHusbandSpouse"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/member_filter_textbox_size"
+                        android:background="@drawable/nui_txtbox_rone_wbevel"
+                        android:gravity="center_vertical"
+                        android:paddingLeft="20dp"
+                        android:text="PAULO ROBERTO FILIMONE JR"
+                        android:textColor="@color/nui_color_text_darkgray"
+                        android:textSize="@dimen/member_filter_textsize" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <!-- List -->
+        <LinearLayout
+            android:id="@+id/dialogListLayout"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintTop_toBottomOf="@id/dialogSpousesLayout"
+            app:layout_constraintBottom_toTopOf="@id/dialogButtonsLayout"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            android:orientation="vertical"
+            android:paddingTop="5dp"
+            android:paddingRight="5dp"
+            android:paddingBottom="5dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="@dimen/mf_margin_left"
+                android:layout_marginRight="@dimen/mf_margin_right"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/member_filter_textlabel_margin_left"
+                    android:text="@string/maritalrelationship_dialog_husband_relationships_lbl"
+                    android:textColor="@color/nui_color_text_red"
+                    android:textSize="@dimen/member_filter_textsize"
+                    android:textStyle="bold" />
+
+                <org.philimone.hds.explorer.widget.RecyclerListView
+                    android:id="@+id/lvMembersList"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/nui_list_rborder_panel"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="10dp"
+                    app:layout_constraintHeight_default="spread" />
+
+                <RelativeLayout
+                    android:id="@+id/progressBarLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="10dp"
+                    android:visibility="gone">
+
+                    <ProgressBar
+                        style="?android:attr/progressBarStyleLarge"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:layout_centerVertical="true" />
+
+                </RelativeLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <!-- Buttons -->
+        <LinearLayout
+            android:id="@+id/dialogButtonsLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/fagm_margin_left"
+            android:layout_marginTop="@dimen/fagm_margin_top"
+            android:layout_marginRight="@dimen/fagm_margin_right"
+            android:layout_marginBottom="@dimen/fagm_margin_bottom"
+            app:layout_constraintTop_toBottomOf="@id/dialogListLayout"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            android:paddingBottom="5dp"
+            android:paddingTop="5dp"
+            android:orientation="vertical">
+
+            <Button
+                android:id="@+id/btMarNewPolygamic"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:layout_weight="1"
+                android:background="@drawable/nui_btnd_rone_gflat"
+                android:text="@string/maritalrelationship_dialog_add_wife_lbl"
+                android:textSize="@dimen/member_filter_button_textsize" />
+
+            <Button
+                android:id="@+id/btMarNewRelationship"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:layout_marginTop="5dp"
+                android:layout_weight="1"
+                android:background="@drawable/nui_btnd_rone_dgbevel"
+                android:text="@string/maritalrelationship_dialog_new_rel_lbl"
+                android:textSize="@dimen/member_filter_button_textsize" />
+
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</RelativeLayout>

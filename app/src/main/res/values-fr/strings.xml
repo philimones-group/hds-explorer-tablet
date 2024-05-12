@@ -505,6 +505,14 @@
     <string name="maritalrelationship_cp1_current_dont_exists_lbl">Il n\'est pas possible de résilier/clôturer l\'enregistrement de l\'union conjugale car aucun enregistrement antérieur n\'a été trouvé pour les membres A et B.</string>
     <string name="maritalrelationship_cp2_already_closed_lbl">Impossible de résilier/fermer le dossier d\'union conjugale car il est résilié avec le type [%1$s]</string>
     <string name="maritalrelationship_cp3_dates_overlap_lbl">Impossible de mettre fin/fermer le dossier d\'union conjugale car la date de fin ne peut pas être inférieure ou égale à la date de début de la relation</string>
+    <string name="maritalrelationship_dialog_title_lbl">Relation Maritale</string>
+    <string name="maritalrelationship_dialog_item_end_relationship_btn_lbl">Terminer la Relation</string>
+    <string name="maritalrelationship_dialog_selected_spouse_lbl">Conjoint Sélectionné</string>
+    <string name="maritalrelationship_dialog_husband_spouse_lbl">Mari (Conjoint)</string>
+    <string name="maritalrelationship_dialog_husband_relationships_lbl">Relations du Mari</string>
+    <string name="maritalrelationship_dialog_add_wife_lbl">Ajouter une autre épouse (Polygame)</string>
+    <string name="maritalrelationship_dialog_new_rel_lbl">Enregistrer une nouvelle Relation Maritale</string>
+
 
     <string name="incomplete_visit_visit_code_empty">Le code de visite ne peut pas être vide</string>
     <string name="incomplete_visit_member_code_empty">Le code membre ne peut pas être vide</string>

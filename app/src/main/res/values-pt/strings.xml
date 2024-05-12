@@ -479,7 +479,7 @@
     <string name="relationship_type_question_lbl">Escolha o Estado Civil?</string>
     <string name="relationship_type_select_btn_lbl">Seleccionar</string>
 
-    <string name="maritalrelationship_recently_created_error_lbl">Já existe um registo de estado civil recentemente criado para este membro.\n, Um novo registo não pode ser criado apenas pode editar o existente.\n(Para editar/alterar use a lista à direita do painel)</string>
+    <string name="maritalrelationship_recently_created_error_lbl">Já existe um registo de união marital recentemente criado para este membro.\n, Um novo registo não pode ser criado apenas pode editar o existente.\n(Para editar/alterar use a lista à direita do painel)</string>
     <string name="maritalrelationship_spouse_select_lbl">Seleccione o cônjuge deste Membro?</string>
     <string name="maritalrelationship_spouse_select_update_lbl">Actualização do cônjuge deste Membro?</string>
     <string name="maritalrelationship_spouse_exists_lbl">O Membro encontra-se numa relação conjugal e seu cônjuge está registado no sistema?</string>
@@ -505,6 +505,14 @@
     <string name="maritalrelationship_cp1_current_dont_exists_lbl">Não é possível terminar/fechar registo de união marital porque não foram encontrados registos anteriores para os membro A e B.</string>
     <string name="maritalrelationship_cp2_already_closed_lbl">Não é possível terminar/fechar registo de união marital porque o mesmo se encontra terminado com o tipo [%1$s]</string>
     <string name="maritalrelationship_cp3_dates_overlap_lbl">Não é possível terminar/fechar registo de união marital porque a data de término não pode ser menor ou igual a data de início do relacionamento</string>
+    <string name="maritalrelationship_dialog_title_lbl">Registos de união marital</string>
+    <string name="maritalrelationship_dialog_item_end_relationship_btn_lbl">Terminar Relação</string>
+    <string name="maritalrelationship_dialog_selected_spouse_lbl">Cônjuge Selecionado</string>
+    <string name="maritalrelationship_dialog_husband_spouse_lbl">Marido (Cônjuge)</string>
+    <string name="maritalrelationship_dialog_husband_relationships_lbl">Relações maritais do Marido</string>
+    <string name="maritalrelationship_dialog_add_wife_lbl">Adicionar outra esposa (Poligâmia)</string>
+    <string name="maritalrelationship_dialog_new_rel_lbl">Registrar nova união marital</string>
+
 
     <string name="incomplete_visit_visit_code_empty">O código da visita não pode estar vazio</string>
     <string name="incomplete_visit_member_code_empty">O código do membro não pode estar vazio</string>

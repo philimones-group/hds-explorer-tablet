@@ -78,6 +78,9 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login);
+
+        initBoxes();
+
         // Set up the login form.
         txtUsername = (AutoCompleteTextView) findViewById(R.id.login_username_txt);
         txtPassword = (EditText) findViewById(R.id.login_password_txt);
@@ -129,9 +132,6 @@ public class LoginActivity extends AppCompatActivity {
 
         
         updateView();
-
-        initBoxes();
-
     }
 
     @Override
@@ -143,6 +143,15 @@ public class LoginActivity extends AppCompatActivity {
 
     private void updateView() {
         txtCopyrightAppName.setText(getString(R.string.app_name)+" v"+ BuildConfig.VERSION_NAME);
+
+        //set username and password for debug/tests purpose automatically, taken from global gradle properties file
+        if (BuildConfig.DEBUG) {
+            String username = BuildConfig.HDS_EXPLORER_USERNAME;
+            String password = BuildConfig.HDS_EXPLORER_PASSWORD;
+
+            txtUsername.setText(username);
+            txtPassword.setText(password);
+        }
     }
 
     private void initBoxes(){

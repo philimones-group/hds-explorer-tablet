@@ -634,6 +634,7 @@
     <string name="loading_dialog_member_details_lbl">A carregar Detalhes do Membro...</string>
     <string name="loading_dialog_household_details_lbl">A carregar Detalhes da Casa...</string>
     <string name="loading_dialog_region_details_lbl">A Carregar Detalhes da Região...</string>
+    <string name="loading_dialog_form_load_lbl">A Carregar Formulário...</string>
     <string name="loading_dialog_odk_load_lbl">A Carregar Formulário ODK...</string>
     <string name="loading_dialog_odk_reload_lbl">A Recarregar Formulário ODK...</string>
     <string name="loading_dialog_extra_forms_load_lbl">A Carregar lista de formulários...</string>

@@ -635,6 +635,7 @@
     <string name="loading_dialog_member_details_lbl">En chargeant les détails du membre...</string>
     <string name="loading_dialog_household_details_lbl">En Chargeant les détails de la Maison...</string>
     <string name="loading_dialog_region_details_lbl">En chargeant les détails de la région...</string>
+    <string name="loading_dialog_form_load_lbl">En chargeant du formulaire...</string>
     <string name="loading_dialog_odk_load_lbl">En chargeant le formulaire ODK...</string>
     <string name="loading_dialog_odk_reload_lbl">En rechargeant le formulaire ODK…</string>
     <string name="loading_dialog_extra_forms_load_lbl">En chargeant de la liste des formulaires...</string>

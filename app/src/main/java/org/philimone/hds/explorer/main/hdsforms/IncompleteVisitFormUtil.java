@@ -13,6 +13,7 @@ import org.philimone.hds.explorer.model.Death;
 import org.philimone.hds.explorer.model.Household_;
 import org.philimone.hds.explorer.model.IncompleteVisit;
 import org.philimone.hds.explorer.model.Member;
+import org.philimone.hds.explorer.model.Member_;
 import org.philimone.hds.explorer.model.Visit;
 import org.philimone.hds.explorer.model.enums.CoreFormEntity;
 import org.philimone.hds.explorer.model.enums.IncompleteVisitReason;
@@ -58,7 +59,7 @@ public class IncompleteVisitFormUtil extends FormUtil<IncompleteVisit> {
         initialize();
 
         this.currentIncompleteVisit = incompleteVisitToEdit;
-        this.member = incompleteVisitToEdit.member.getTarget();
+        this.member = this.boxMembers.query(Member_.code.equal(incompleteVisitToEdit.memberCode)).build().findFirst();
     }
 
     public static IncompleteVisitFormUtil newInstance(Mode openMode, Fragment fragment, Context context, Visit visit, Member member, IncompleteVisit incompleteVisitToEdit, FormUtilities odkFormUtilities, FormUtilListener<IncompleteVisit> listener) {
@@ -204,8 +205,9 @@ public class IncompleteVisitFormUtil extends FormUtil<IncompleteVisit> {
 
         IncompleteVisit incompleteVisit = new IncompleteVisit();
 
-        incompleteVisit.visit.setTarget(this.visit);
-        incompleteVisit.member.setTarget(this.member);
+        incompleteVisit.visitCode = this.visit.code;
+        //incompleteVisit.member.setTarget(this.member);
+        incompleteVisit.memberCode = this.member.code;
         incompleteVisit.reason = reason;
         incompleteVisit.reasonOther = reason==IncompleteVisitReason.OTHER ? reasonOther : null;
         incompleteVisit.collectedId = collectedValues.get(HForm.COLUMN_ID).getValue();

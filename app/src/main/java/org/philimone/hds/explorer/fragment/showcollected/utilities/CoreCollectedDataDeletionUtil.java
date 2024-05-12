@@ -351,7 +351,7 @@ public class CoreCollectedDataDeletionUtil {
             List<Death> listDths = boxDeaths.query(Death_.visitCode.equal(visit.code)).build().find();
             removeDeaths(listDths);
 
-            List<IncompleteVisit> listIncs = boxIncompleteVisits.query(IncompleteVisit_.visitId.equal(visit.id)).build().find();
+            List<IncompleteVisit> listIncs = boxIncompleteVisits.query(IncompleteVisit_.visitCode.equal(visit.code)).build().find();
             removeIncompleteVisits(listIncs);
 
             List<Inmigration> listImgs = boxInmigrations.query(Inmigration_.visitCode.equal(visit.code)).build().find();
@@ -415,7 +415,7 @@ public class CoreCollectedDataDeletionUtil {
             List<MaritalRelationship> listmrs = boxMaritalRelationships.query(MaritalRelationship_.memberA_code.equal(member.code).or(MaritalRelationship_.memberB_code.equal(member.code))).build().find();
             removeMaritalRelationships(listmrs);
 
-            List<IncompleteVisit> listivs = boxIncompleteVisits.query(IncompleteVisit_.memberId.equal(member.id)).build().find();
+            List<IncompleteVisit> listivs = boxIncompleteVisits.query(IncompleteVisit_.memberCode.equal(member.code)).build().find();
             removeIncompleteVisits(listivs);
 
             List<Inmigration> listimgs = boxInmigrations.query(Inmigration_.memberCode.equal(member.code)).build().find();

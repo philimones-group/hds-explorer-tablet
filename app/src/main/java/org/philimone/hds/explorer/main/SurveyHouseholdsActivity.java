@@ -99,6 +99,7 @@ public class SurveyHouseholdsActivity extends AppCompatActivity implements House
     public void onHouseholdClick(Household household) {
         MemberSearchTask task = new MemberSearchTask(household, null, null, null, household.getCode());
         task.execute();
+        memberListFragment.showProgress(true);
     }
 
     @Override
@@ -247,6 +248,8 @@ public class SurveyHouseholdsActivity extends AppCompatActivity implements House
             memberListFragment.setMemberAdapter(adapter);
             memberListFragment.showProgress(false);
             memberListFragment.setButtonEnabled(true, MemberListFragment.Buttons.SHOW_HOUSEHOLD);
+
+            //showLoadingDialog("", false);
         }
     }
 

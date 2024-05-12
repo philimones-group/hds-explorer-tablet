@@ -15,9 +15,11 @@ public class IncompleteVisit implements CoreEntity {
     @Id
     public long id;
 
-    public ToOne<Visit> visit;
+    @Index
+    public String visitCode;
 
-    public ToOne<Member> member;
+    @Index
+    public String memberCode;
 
     @Convert(converter = IncompleteVisitReasonConverter.class, dbType = String.class)
     public IncompleteVisitReason reason;

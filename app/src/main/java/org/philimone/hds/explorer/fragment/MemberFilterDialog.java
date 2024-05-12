@@ -22,6 +22,7 @@ import org.philimone.hds.explorer.adapter.MemberAdapter;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
 import org.philimone.hds.explorer.model.Member;
 import org.philimone.hds.explorer.model.Member_;
+import org.philimone.hds.explorer.model.enums.MaritalStatus;
 import org.philimone.hds.explorer.model.enums.temporal.ResidencyEndType;
 import org.philimone.hds.explorer.widget.NumberPicker;
 import org.philimone.hds.explorer.widget.RecyclerListView;
@@ -77,6 +78,7 @@ public class MemberFilterDialog extends DialogFragment {
     private String filterExcludeHousehold;
     private String filterExcludeMember;
     private List<String> filterExcludeMembers;
+    private boolean filterExcludeMarried;
 
     private Map<Buttons, CustomButton> enabledButtons = new HashMap<>();
 
@@ -408,6 +410,10 @@ public class MemberFilterDialog extends DialogFragment {
         //this.filterExcludeMember = memberCode;
     }
 
+    public void addFilterExcludeMarried(){
+        this.filterExcludeMarried = true;
+    }
+
     public void setFilterStatus(StatusFilter filter, boolean exclusiveSelection) {
         switch (filter){
             case EMPTY: this.filterStatus = 0; break;
@@ -567,6 +573,11 @@ public class MemberFilterDialog extends DialogFragment {
             }
         }
 
+        if (filterExcludeMarried) {
+            builder.notEqual(Member_.maritalStatus, MaritalStatus.MARRIED.code, QueryBuilder.StringOrder.CASE_SENSITIVE);
+            builder.notEqual(Member_.maritalStatus, MaritalStatus.LIVING_TOGHETER.code, QueryBuilder.StringOrder.CASE_SENSITIVE);
+        }
+
         Log.d("sql", builder.toString());
 
         List<Member> members = builder.build().find(0, 20000);
@@ -582,6 +593,7 @@ public class MemberFilterDialog extends DialogFragment {
 
     private void showProgress(final boolean show) {
         //lvMembersList.setAdapter(null);
+        lvMembersList.setVisibility(show ? View.GONE : View.VISIBLE);
         progressBarLayout.setVisibility(show ? View.VISIBLE : View.GONE);
     }
 

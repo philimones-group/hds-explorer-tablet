@@ -24,6 +24,7 @@ import org.philimone.hds.explorer.model.enums.SubjectEntity;
 import org.philimone.hds.explorer.model.oldstate.SavedEntityState;
 import org.philimone.hds.explorer.server.settings.generator.CodeGeneratorService;
 import org.philimone.hds.explorer.widget.DialogFactory;
+import org.philimone.hds.explorer.widget.LoadingDialog;
 import org.philimone.hds.forms.listeners.FormCollectionListener;
 import org.philimone.hds.forms.main.FormFragment;
 import org.philimone.hds.forms.model.CollectedDataMap;
@@ -46,6 +47,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 
+import androidx.annotation.StringRes;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -97,6 +99,8 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
     
     protected FormUtilListener<T> listener;
 
+    protected LoadingDialog loadingDialog;
+
     /* Load a Creator */
 
     /* Load a Editor */
@@ -117,6 +121,8 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
         this.odkFormUtilities.setOdkFormResultListener(this);
 
         this.listener = listener;
+
+        this.loadingDialog = new LoadingDialog(context);
     }
 
     protected FormUtil(Fragment fragment, Context context, HForm hform, T existentEntity, FormUtilities odkFormUtilities, FormUtilListener<T> listener){
@@ -139,6 +145,8 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
 
         initBoxes();
         readCollectedDataForEdit();
+
+        this.loadingDialog = new LoadingDialog(context);
     }
 
     protected FormUtil(Fragment fragment, Context context, HForm hform, T existentEntity, CoreCollectedData coreCollectedData, FormUtilities odkFormUtilities, FormUtilListener<T> listener){
@@ -166,6 +174,8 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
             //make the form readonly
             this.form.setReadonly(true);
         }
+
+        this.loadingDialog = new LoadingDialog(context);
     }
 
     protected FormUtil(AppCompatActivity activity, Context context, HForm hform, FormUtilities odkFormUtilities, FormUtilListener<T> listener){
@@ -184,6 +194,8 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
         this.odkFormUtilities.setOdkFormResultListener(this);
 
         this.listener = listener;
+
+        this.loadingDialog = new LoadingDialog(context);
     }
 
     protected FormUtil(AppCompatActivity activity, Context context, HForm hform, T existentEntity, FormUtilities odkFormUtilities, FormUtilListener<T> listener){
@@ -203,6 +215,8 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
         this.odkFormUtilities.setOdkFormResultListener(this);
 
         this.listener = listener;
+
+        this.loadingDialog = new LoadingDialog(context);
 
         initBoxes();
         readCollectedDataForEdit();
@@ -261,6 +275,24 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
         return context;
     }
 
+    private void showLoadingDialog(String msg, boolean show){
+        if (show) {
+            this.loadingDialog.setMessage(msg);
+            this.loadingDialog.show();
+        } else {
+            this.loadingDialog.dismiss();
+        }
+    }
+
+    private void showLoadingDialog(@StringRes int msgResId, boolean show){
+        showLoadingDialog(this.context.getString(msgResId), show);
+    }
+
+    @Override
+    public void onFormLoaded(Object[] data) {
+        showLoadingDialog("", false);
+    }
+
     protected abstract void preloadValues();
 
     protected abstract void preloadUpdatedValues();
@@ -269,12 +301,14 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
 
     protected void executeCollectForm() {
         if (currentMode == Mode.CREATE) {
+            showLoadingDialog(R.string.loading_dialog_form_load_lbl, true);
             preloadValues();
             FormFragment form = FormFragment.newInstance(this.fragmentManager, this.form, Bootstrap.getInstancesPath(context), user.username, preloadedMap, postExecution, backgroundMode, resumeMode, this);
             form.startCollecting();
         }
 
         if (currentMode == Mode.EDIT) {
+            showLoadingDialog(R.string.loading_dialog_form_load_lbl, true);
             preloadUpdatedValues();
             String savedXmlFilename = this.entity.getRecentlyCreatedUri()==null ? this.collectedData.formFilename : this.entity.getRecentlyCreatedUri();
             FormFragment form = FormFragment.newInstance(this.fragmentManager, this.form, Bootstrap.getInstancesPath(context), user.username, savedXmlFilename, preloadedMap, postExecution, backgroundMode, true, this);
@@ -693,7 +727,8 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
         } else if (this.entity instanceof Household) {
             return this.entity.getId();
         } else if (this.entity instanceof IncompleteVisit) {
-            return ((IncompleteVisit) this.entity).member.getTargetId();
+            code = ((IncompleteVisit) this.entity).memberCode;
+            subject = SubjectEntity.MEMBER;
         } else if (this.entity instanceof Inmigration) {
             code = ((Inmigration) this.entity).memberCode;
             subject = SubjectEntity.MEMBER;

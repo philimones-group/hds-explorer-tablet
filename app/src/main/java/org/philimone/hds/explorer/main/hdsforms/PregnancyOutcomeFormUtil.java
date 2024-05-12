@@ -500,7 +500,6 @@ public class PregnancyOutcomeFormUtil extends FormUtil<PregnancyOutcome> {
         PregnancyOutcome pregnancyOutcome = new PregnancyOutcome();
         pregnancyOutcome.code = pregnancyRegistration.code;
         pregnancyOutcome.visitCode = visit.code;
-        pregnancyOutcome.visit.setTarget(visit);
         pregnancyOutcome.motherCode = mother.code;
         pregnancyOutcome.fatherCode = father.code;
         //pregnancyOutcome.mother.setTarget(mother);

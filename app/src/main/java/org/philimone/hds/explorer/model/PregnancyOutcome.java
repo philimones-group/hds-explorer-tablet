@@ -44,8 +44,6 @@ public class PregnancyOutcome implements CoreEntity {
 
     public String birthPlaceOther;
 
-    public ToOne<Visit> visit;
-
     @Index
     public String visitCode;
 

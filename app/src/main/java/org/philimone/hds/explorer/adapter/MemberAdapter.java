@@ -217,6 +217,7 @@ public class MemberAdapter extends RecyclerView.Adapter<MemberAdapter.MemberView
             ImageView iconView = mainView.findViewById(R.id.iconView);
             TextView txtName = mainView.findViewById(R.id.txtMemberItemName);
             TextView txtCode = mainView.findViewById(R.id.txtMemberItemCode);
+            TextView txtMemberItemHousehold = mainView.findViewById(R.id.txtMemberItemHousehold);
             TextView txtExtra = mainView.findViewById(R.id.txtMemberItemExtras);
             CheckBox chkVBprocessed = mainView.findViewById(R.id.chkProcessed);
             int position = MemberAdapter.this.getPosition(mb);
@@ -241,7 +242,15 @@ public class MemberAdapter extends RecyclerView.Adapter<MemberAdapter.MemberView
             }
 
             if (showHouseholdAndCode){
-                codeText = mb.getHouseholdName() +" -> "+mb.getCode()+endTypeText;
+                codeText = mb.getCode() + endTypeText;
+
+                //mb.getHouseholdName()
+                if (txtMemberItemHousehold != null) {
+                    txtMemberItemHousehold.setVisibility(View.VISIBLE);
+                    txtMemberItemHousehold.setText(mb.getHouseholdCode() + " - " + mb.getHouseholdName());
+                }
+
+
             }
 
             if (showMemberDetails) {
@@ -319,7 +328,8 @@ public class MemberAdapter extends RecyclerView.Adapter<MemberAdapter.MemberView
                 mainView.setBackgroundColor(colorB);
                 txtName.setTextColor(colorA);
                 txtCode.setTextColor(colorA);
-                if (txtExtra!=null) txtExtra.setTextColor(colorA);
+                if (txtExtra != null) txtExtra.setTextColor(colorA);
+                if (txtMemberItemHousehold != null) txtMemberItemHousehold.setTextColor(colorA);
             } else {
                 TypedValue colorBvalue = new TypedValue();
                 mContext.getTheme().resolveAttribute(android.R.attr.selectableItemBackground, colorBvalue, true);
@@ -330,7 +340,8 @@ public class MemberAdapter extends RecyclerView.Adapter<MemberAdapter.MemberView
                 mainView.setBackgroundResource(colorB);
                 txtName.setTextColor(colorA);
                 txtCode.setTextColor(colorA);
-                if (txtExtra!=null) txtExtra.setTextColor(colorA);
+                if (txtExtra != null) txtExtra.setTextColor(colorA);
+                if (txtMemberItemHousehold != null) txtMemberItemHousehold.setTextColor(colorA);
             }
 
             txtExtra.setVisibility(showExtraDetails ? View.VISIBLE : View.GONE);

@@ -75,6 +75,7 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
     protected CoreCollectedData collectedData;
     protected CodeGeneratorService codeGenerator;
     protected PreloadMap preloadedMap;
+    protected String formTitle;
 
     protected boolean backgroundMode;
     protected boolean resumeMode;
@@ -303,6 +304,7 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
         if (currentMode == Mode.CREATE) {
             showLoadingDialog(R.string.loading_dialog_form_load_lbl, true);
             preloadValues();
+            this.form.setCustomTitle(this.formTitle);
             FormFragment form = FormFragment.newInstance(this.fragmentManager, this.form, Bootstrap.getInstancesPath(context), user.username, preloadedMap, postExecution, backgroundMode, resumeMode, this);
             form.startCollecting();
         }
@@ -310,6 +312,7 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
         if (currentMode == Mode.EDIT) {
             showLoadingDialog(R.string.loading_dialog_form_load_lbl, true);
             preloadUpdatedValues();
+            this.form.setCustomTitle(this.formTitle);
             String savedXmlFilename = this.entity.getRecentlyCreatedUri()==null ? this.collectedData.formFilename : this.entity.getRecentlyCreatedUri();
             FormFragment form = FormFragment.newInstance(this.fragmentManager, this.form, Bootstrap.getInstancesPath(context), user.username, savedXmlFilename, preloadedMap, postExecution, backgroundMode, true, this);
             form.startCollecting();

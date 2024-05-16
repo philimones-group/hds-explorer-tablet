@@ -311,6 +311,7 @@ public class RegionFormUtil extends FormUtil<Region> {
 
     @Override
     public void collect() {
+        this.formTitle = hierarchyName;
         executeCollectForm();
     }
 

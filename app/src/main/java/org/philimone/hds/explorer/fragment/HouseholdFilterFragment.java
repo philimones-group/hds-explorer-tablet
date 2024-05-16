@@ -400,6 +400,40 @@ public class HouseholdFilterFragment extends Fragment implements RegionExpandabl
     }
 
     private void onAddNewRegionClicked() {
+        if (this.currentRegion != null) {
+            if (this.currentRegion.isRecentlyCreated()) {
+                editNewRegion();
+            } else {
+                addNewRegion();
+            }
+        }
+    }
+
+    private void editNewRegion() {
+        //select parent
+        //call form util
+        //reload filters and select new region
+
+        RegionFormUtil regionFormUtil = new RegionFormUtil(this, this.mContext, this.currentRegion, this.odkFormUtilities, new FormUtilListener<Region>() {
+            @Override
+            public void onNewEntityCreated(Region region, Map<String, Object> data) {
+            }
+
+            @Override
+            public void onEntityEdited(Region region, Map<String, Object> data) {
+                selectRegion(region);
+            }
+
+            @Override
+            public void onFormCancelled() {
+
+            }
+        });
+
+        regionFormUtil.collect();
+    }
+
+    private void addNewRegion() {
         //select parent
         //call form util
         //reload filters and select new region
@@ -586,7 +620,7 @@ public class HouseholdFilterFragment extends Fragment implements RegionExpandabl
         List<String> smodules = new ArrayList<>(loggedUser.getSelectedModules());
 
         List<ApplicationParam> params = boxAppParams.query().startsWith(ApplicationParam_.name, "hierarchy", QueryBuilder.StringOrder.CASE_SENSITIVE).build().find(); //COLUMN_NAME+" like 'hierarchy%'"
-        List<Region> regions = this.boxRegions.query().order(Region_.name).build().find();  //query().filter((r) -> StringUtil.containsAny(r.modules, smodules)).build().find(); //filter by modules
+        List<Region> regions = this.boxRegions.query().order(Region_.code).build().find();  //query().filter((r) -> StringUtil.containsAny(r.modules, smodules)).build().find(); //filter by modules
 
 
         ArrayList<HierarchyItem> hierarchies = new ArrayList<>();
@@ -719,12 +753,13 @@ public class HouseholdFilterFragment extends Fragment implements RegionExpandabl
         boolean lastLevel = region.getLevel().equals(lastRegionLevel);
 
         this.btHouseFilterShowRegion.setEnabled(true);
-        this.btHouseFilterAddRegion.setEnabled(!lastLevel);
+        this.btHouseFilterAddRegion.setEnabled(!lastLevel || region.isRecentlyCreated());
         btHouseFilterSearch.setEnabled(lastLevel);
         btHouseFilterAddNewHousehold.setEnabled(lastLevel);
 
         ApplicationParam param = boxAppParams.query(ApplicationParam_.name.equal(region.level)).build().findFirst();
         this.btHouseFilterShowRegion.setText(getString(R.string.household_filter_show_region_custom_btn_lbl, param.value));
+
     }
 
     private void updateRegionTextViews(Region region){

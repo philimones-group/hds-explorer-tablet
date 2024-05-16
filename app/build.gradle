@@ -32,6 +32,8 @@ android {
             //debuggable true
             //get the default app url from global gradle properties
             buildConfigField "String", "HDS_EXPLORER_APP_URL", "\"${project.properties["HDS_EXPLORER_APP_URL"].toString()}\""
+            buildConfigField "String", "HDS_EXPLORER_USERNAME", "\"\""
+            buildConfigField "String", "HDS_EXPLORER_PASSWORD", "\"\""
         }
         debug {
             signingConfig signingConfigs.config

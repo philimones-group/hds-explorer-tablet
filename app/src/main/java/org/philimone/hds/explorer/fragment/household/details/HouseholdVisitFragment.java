@@ -510,8 +510,8 @@ public class HouseholdVisitFragment extends Fragment {
         this.btnVisitBirthReg.setEnabled(false);
         this.btnVisitPregnancyReg.setEnabled(false);
 
-        this.btnVisitExtInmigration.setEnabled(true && !isCensusHousehold);
-        this.btnVisitIntInmigration.setEnabled(true && !isCensusHousehold);
+        this.btnVisitExtInmigration.setEnabled(true); // && !isCensusHousehold
+        this.btnVisitIntInmigration.setEnabled(true); // && !isCensusHousehold
         this.btnVisitChangeHead.setEnabled(true && !isCensusHousehold);
 
         this.btnVisitOutmigration.setEnabled(false);
@@ -529,7 +529,7 @@ public class HouseholdVisitFragment extends Fragment {
         //disable buttons if already collected and ready to edit
         //ChangeHead - must be collected one per visit
         CoreCollectedData ccdataChangeHead = this.boxCoreCollectedData.query(CoreCollectedData_.visitId.equal(visit.id).and(CoreCollectedData_.formEntity.equal(CoreFormEntity.CHANGE_HOUSEHOLD_HEAD.code))).build().findFirst();
-        btnVisitChangeHead.setEnabled(ccdataChangeHead == null);
+        btnVisitChangeHead.setEnabled(ccdataChangeHead == null && !isCensusHousehold);
 
         Log.d("household-visit"+visit.id, "changehead="+ccdataChangeHead);
 
@@ -547,8 +547,8 @@ public class HouseholdVisitFragment extends Fragment {
         this.btnVisitMemberEnu.setEnabled(true);
         this.btnVisitBirthReg.setEnabled(false);
         this.btnVisitPregnancyReg.setEnabled(false);
-        this.btnVisitExtInmigration.setEnabled(true && !isCensusHousehold);
-        this.btnVisitIntInmigration.setEnabled(true && !isCensusHousehold);
+        this.btnVisitExtInmigration.setEnabled(true); // && !isCensusHousehold
+        this.btnVisitIntInmigration.setEnabled(true); // && !isCensusHousehold
         this.btnVisitOutmigration.setEnabled(false);
         this.btnVisitDeath.setEnabled(false);
         this.btnVisitMaritalRelationship.setEnabled(false);
@@ -579,8 +579,8 @@ public class HouseholdVisitFragment extends Fragment {
         this.btnVisitPregnancyReg.setEnabled(this.selectedMember!=null && this.selectedMember.gender== Gender.FEMALE && isAtMotherAge);
         this.btnVisitExtInmigration.setEnabled(false);
         this.btnVisitIntInmigration.setEnabled(false);
-        this.btnVisitOutmigration.setEnabled(true && !isCensusHousehold);
-        this.btnVisitDeath.setEnabled(true && !isCensusHousehold);
+        this.btnVisitOutmigration.setEnabled(true); // && !isCensusHousehold
+        this.btnVisitDeath.setEnabled(true); // && !isCensusHousehold
         this.btnVisitMaritalRelationship.setEnabled(true && isAtSpouseAge);
         this.btnVisitExtraForm.setEnabled(true); //we need to analyse better this
 

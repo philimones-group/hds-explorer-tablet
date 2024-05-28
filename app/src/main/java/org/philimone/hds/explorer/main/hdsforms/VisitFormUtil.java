@@ -7,6 +7,8 @@ import android.view.View;
 import org.philimone.hds.explorer.R;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
 import org.philimone.hds.explorer.fragment.MemberFilterDialog;
+import org.philimone.hds.explorer.model.ApplicationParam;
+import org.philimone.hds.explorer.model.ApplicationParam_;
 import org.philimone.hds.explorer.model.CoreCollectedData;
 import org.philimone.hds.explorer.model.CoreCollectedData_;
 import org.philimone.hds.explorer.model.Household;
@@ -58,6 +60,7 @@ public class VisitFormUtil extends FormUtil<Visit> {
     private boolean respondentNotRegistered = false;
     private boolean respondentExists;
     private boolean respondentResident = true;
+    private int minimumRespondentAge;
 
     private static List<NoVisitReason> householdStatuses = Arrays.asList(NoVisitReason.HOUSE_OCCUPIED, NoVisitReason.HOUSE_VACANT, NoVisitReason.HOUSE_ABANDONED, NoVisitReason.HOUSE_DESTROYED, NoVisitReason.HOUSE_NOT_FOUND);
 
@@ -128,6 +131,27 @@ public class VisitFormUtil extends FormUtil<Visit> {
         this.boxMembers = ObjectBoxDatabase.get().boxFor(Member.class);
         this.boxResidencies = ObjectBoxDatabase.get().boxFor(Residency.class);
 
+    }
+
+    @Override
+    protected void initialize() {
+        super.initialize();
+
+        this.minimumRespondentAge = retrieveMinimumRespondentAge();
+    }
+
+    private int retrieveMinimumRespondentAge() {
+        ApplicationParam param = this.boxAppParams.query().equal(ApplicationParam_.name, ApplicationParam.PARAMS_MIN_AGE_OF_RESPONDENT, QueryBuilder.StringOrder.CASE_SENSITIVE).build().findFirst();
+
+        if (param != null) {
+            try {
+                return Integer.parseInt(param.value);
+            } catch (Exception ex) {
+
+            }
+        }
+
+        return 12;
     }
 
     @Override
@@ -436,6 +460,7 @@ public class VisitFormUtil extends FormUtil<Visit> {
         filterDialog.setCancelable(true);
         filterDialog.setFilterHouseCode(this.household.code);
         filterDialog.setFilterStatus(MemberFilterDialog.StatusFilter.RESIDENT, true);
+        filterDialog.setFilterMinAge(this.minimumRespondentAge, false);
         filterDialog.setStartSearchOnShow(true);
         filterDialog.show();
 

@@ -108,7 +108,18 @@ public class DefaultSimpleCodeGenerator implements CodeGenerator {
         if (existentCodes.size()==0){
             return baseCode+"000001";
         } else {
-            for (int i=1; i <= 999999; i++){
+            int number = 1;
+            if (CodeGeneratorFactory.INCREMENTAL_RULE == CodeGeneratorIncrementalRule.INCREMENT_LAST_CODE) {
+                try {
+                    String lastCode = existentCodes.get(existentCodes.size() - 1);
+                    String lastCodeNumber = lastCode.replaceFirst(baseCode, "");
+                    number = Integer.parseInt(lastCodeNumber) + 1;
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+
+            for (int i=number; i <= 999999; i++){
                 String code = baseCode+ String.format("%06d", i);
                 if (!existentCodes.contains(code)){
                     return code;
@@ -128,7 +139,18 @@ public class DefaultSimpleCodeGenerator implements CodeGenerator {
         if (existentCodes.size()==0){
             return baseCode+"001";
         } else {
-            for (int i=1; i <= 999; i++){
+            int number = 1;
+            if (CodeGeneratorFactory.INCREMENTAL_RULE == CodeGeneratorIncrementalRule.INCREMENT_LAST_CODE) {
+                try {
+                    String lastCode = existentCodes.get(existentCodes.size() - 1);
+                    String lastCodeNumber = lastCode.replaceFirst(baseCode, "");
+                    number = Integer.parseInt(lastCodeNumber) + 1;
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+
+            for (int i=number; i <= 999; i++){
                 String code = baseCode + String.format("%03d", i);
                 if (!existentCodes.contains(code)){
                     return code;

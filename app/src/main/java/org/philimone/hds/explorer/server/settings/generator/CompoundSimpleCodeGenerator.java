@@ -7,6 +7,7 @@ import org.philimone.hds.explorer.model.Region;
 import org.philimone.hds.explorer.model.Round;
 import org.philimone.hds.explorer.model.User;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import mz.betainteractive.utilities.StringUtil;
@@ -102,12 +103,32 @@ public class CompoundSimpleCodeGenerator implements CodeGenerator {
 
         if (StringUtil.isBlank(baseCode)) return null;
 
-        if (existentCodes.size()==0){
-            return baseCode+"000001";
+        if (existentCodes.size() == 0) {
+            return baseCode + "000001";
         } else {
-            for (int i=1; i <= 999999; i++){
-                String code = baseCode+ String.format("%06d", i);
-                if (!existentCodes.contains(code)){
+            //existentCodes have all ids - so we must filter only Compounds Codes that start with baseCode
+            List<String> listCodes = new ArrayList<>();
+            for (String code : existentCodes) {
+                if (code.startsWith(baseCode)) {
+                    Log.d("adding", ""+code);
+                    listCodes.add(code);
+                }
+            }
+
+            int number = 1;
+            if (CodeGeneratorFactory.INCREMENTAL_RULE == CodeGeneratorIncrementalRule.INCREMENT_LAST_CODE) {
+                try {
+                    String lastCode = listCodes.get(listCodes.size() - 1); Log.d("lastc", ""+lastCode+", "+listCodes.size());
+                    String lastCodeNumber = lastCode.replaceFirst(baseCode, "");
+                    number = Integer.parseInt(lastCodeNumber) + 1;
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+
+            for (int i = number; i <= 999999; i++) {
+                String code = baseCode + String.format("%06d", i);
+                if (!existentCodes.contains(code)) {
                     return code;
                 }
             }
@@ -125,12 +146,24 @@ public class CompoundSimpleCodeGenerator implements CodeGenerator {
         if (existentCodes.size()==0){
             return baseCode+"001";
         } else {
-            for (int i=1; i <= 999; i++){
-                String code = baseCode+ String.format("%03d", i);
-                if (!existentCodes.contains(code)){
+            int number = 1;
+            if (CodeGeneratorFactory.INCREMENTAL_RULE == CodeGeneratorIncrementalRule.INCREMENT_LAST_CODE) {
+                try {
+                    String lastCode = existentCodes.get(existentCodes.size() - 1);
+                    String lastCodeNumber = lastCode.replaceFirst(baseCode, "");
+                    number = Integer.parseInt(lastCodeNumber) + 1;
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+
+            for (int i = number; i <= 999; i++) {
+                String code = baseCode + String.format("%03d", i);
+                if (!existentCodes.contains(code)) {
                     return code;
                 }
             }
+
         }
 
         return baseCode+"ERROR";
@@ -145,9 +178,20 @@ public class CompoundSimpleCodeGenerator implements CodeGenerator {
         if (existentCodes.size()==0){
             return baseCode+"001";
         } else {
-            for (int i=1; i <= 999; i++){
+            int number = 1;
+            if (CodeGeneratorFactory.INCREMENTAL_RULE == CodeGeneratorIncrementalRule.INCREMENT_LAST_CODE) {
+                try {
+                    String lastCode = existentCodes.get(existentCodes.size() - 1);
+                    String lastCodeNumber = lastCode.replaceFirst(baseCode, "");
+                    number = Integer.parseInt(lastCodeNumber) + 1;
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+
+            for (int i = number; i <= 999; i++) {
                 String code = baseCode + String.format("%03d", i);
-                if (!existentCodes.contains(code)){
+                if (!existentCodes.contains(code)) {
                     return code;
                 }
             }

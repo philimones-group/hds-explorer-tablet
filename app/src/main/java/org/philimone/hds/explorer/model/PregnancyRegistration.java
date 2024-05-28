@@ -67,6 +67,14 @@ public class PregnancyRegistration implements CoreEntity {
         return this.id;
     }
 
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
     @Override
     public String getCollectedId() {
         return collectedId;

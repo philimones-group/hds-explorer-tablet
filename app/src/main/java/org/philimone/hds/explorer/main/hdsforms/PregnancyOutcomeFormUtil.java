@@ -328,11 +328,6 @@ public class PregnancyOutcomeFormUtil extends FormUtil<PregnancyOutcome> {
             String message = this.context.getString(R.string.pregnancy_outcome_outcdate_not_before_dob_lbl);
             return new ValidationResult(colOutcomeDate, message);
         }
-        
-        if (pregnancyRegistration != null && pregnancyRegistration.status == PregnancyStatus.PREGNANT){
-            String message = this.context.getString(R.string.pregnancy_outcome_previous_pending_lbl);
-            return new ValidationResult(colCode, message);
-        }
 
         //validate childs
         for (int i = 0; i < repChilds.getCount(); i++) {

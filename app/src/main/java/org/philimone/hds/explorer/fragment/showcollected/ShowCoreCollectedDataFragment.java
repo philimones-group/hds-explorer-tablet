@@ -122,7 +122,6 @@ public class ShowCoreCollectedDataFragment extends Fragment {
     public ShowCoreCollectedDataFragment() {
         // Required empty public constructor
         initBoxes();
-        this.deletionUtil = new CoreCollectedDataDeletionUtil();
         loggedUser = Bootstrap.getCurrentUser();
     }
 
@@ -153,7 +152,7 @@ public class ShowCoreCollectedDataFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        loggedUser = Bootstrap.getCurrentUser();
+        this.deletionUtil = new CoreCollectedDataDeletionUtil(this.getContext());
 
         initialize(view);
     }

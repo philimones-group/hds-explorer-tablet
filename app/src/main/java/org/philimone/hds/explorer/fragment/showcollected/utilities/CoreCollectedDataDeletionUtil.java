@@ -1,9 +1,13 @@
 package org.philimone.hds.explorer.fragment.showcollected.utilities;
 
+import android.content.Context;
+import android.net.Uri;
 import android.util.Log;
 
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
 import org.philimone.hds.explorer.fragment.showcollected.adapter.model.CoreCollectedDataItem;
+import org.philimone.hds.explorer.model.CollectedData;
+import org.philimone.hds.explorer.model.CollectedData_;
 import org.philimone.hds.explorer.model.CoreCollectedData;
 import org.philimone.hds.explorer.model.CoreCollectedData_;
 import org.philimone.hds.explorer.model.Death;
@@ -47,11 +51,14 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import io.objectbox.Box;
+import mz.betainteractive.odk.InstanceProviderAPI;
 import mz.betainteractive.utilities.GeneralUtil;
 
 public class CoreCollectedDataDeletionUtil {
 
+    private final Context mContext;
     private Box<CoreCollectedData> boxCoreCollectedData;
+    private Box<CollectedData> boxCollectedData;
     private Box<Region> boxRegions;
     private Box<Household> boxHouseholds;
     private Box<Member> boxMembers;
@@ -67,12 +74,14 @@ public class CoreCollectedDataDeletionUtil {
     private Box<Residency> boxResidencies;
     private Box<IncompleteVisit> boxIncompleteVisits;
 
-    public CoreCollectedDataDeletionUtil() {
+    public CoreCollectedDataDeletionUtil(Context context) {
+        this.mContext = context;
         this.initBoxes();
     }
 
     private void initBoxes() {
         this.boxCoreCollectedData = ObjectBoxDatabase.get().boxFor(CoreCollectedData.class);
+        this.boxCollectedData = ObjectBoxDatabase.get().boxFor(CollectedData.class);
         this.boxRegions = ObjectBoxDatabase.get().boxFor(Region.class);
         this.boxHouseholds = ObjectBoxDatabase.get().boxFor(Household.class);
         this.boxMembers = ObjectBoxDatabase.get().boxFor(Member.class);
@@ -531,6 +540,7 @@ public class CoreCollectedDataDeletionUtil {
     private void deleteCoreCollectedData(CoreCollectedData cdata) {
         if (cdata != null) {
             deleteXmlFile(cdata);
+            deleteExtensionXml(cdata);
             this.boxCoreCollectedData.remove(cdata);
         }
     }
@@ -541,6 +551,19 @@ public class CoreCollectedDataDeletionUtil {
             } catch (Exception ex) {
                 Log.d("deletion-failed", ""+ex.getLocalizedMessage());
             }
+        }
+    }
+
+    private void deleteExtensionXml(CoreCollectedData cdata) {
+
+        CollectedData odkCollectedData = this.boxCollectedData.query(CollectedData_.collectedId.equal(cdata.collectedId)).build().findFirst();
+
+        if (odkCollectedData != null) {
+            Uri odkContentUri = Uri.parse(odkCollectedData.formUri);
+            //delete odk xml
+            mContext.getContentResolver().delete(odkContentUri, null, null);
+
+            this.boxCollectedData.remove(odkCollectedData);
         }
     }
 

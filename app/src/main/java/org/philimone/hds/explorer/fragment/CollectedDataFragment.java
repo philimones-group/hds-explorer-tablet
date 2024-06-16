@@ -473,16 +473,21 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
 
         if (dataItem.isFormExtension()) {
             CoreCollectedData coreCollectedData = boxCoreCollectedData.query(CoreCollectedData_.collectedId.equal(collectedData.collectedId)).build().findFirst();
-            HForm hform = FormUtil.getHFormBy(getContext(), coreCollectedData.formEntity);
-            CoreEntity existingEntity = getRecordEntity(coreCollectedData);
-            EditCoreExtensionFormUtil formUtil = new EditCoreExtensionFormUtil(this, this.getContext(), hform, coreCollectedData, existingEntity, this.formUtilities, new EditCoreExtensionFormUtil.Listener() {
-                @Override
-                public void onFinishedCollecting() {
-                    showCollectedData();
-                }
-            });
+            if (coreCollectedData != null) {
+                HForm hform = FormUtil.getHFormBy(getContext(), coreCollectedData.formEntity);
+                CoreEntity existingEntity = getRecordEntity(coreCollectedData);
+                EditCoreExtensionFormUtil formUtil = new EditCoreExtensionFormUtil(this, this.getContext(), hform, coreCollectedData, existingEntity, this.formUtilities, new EditCoreExtensionFormUtil.Listener() {
+                    @Override
+                    public void onFinishedCollecting() {
+                        showCollectedData();
+                    }
+                });
 
-            formUtil.editExtensionForm(collectedData);
+                formUtil.editExtensionForm(collectedData);
+            } else {
+                //remove because the CoreCollectedData was deleted it doesnt exists
+                boxCollectedData.remove(collectedData);
+            }
 
         } else {
             FormDataLoader formDataLoader = getFormDataLoader(collectedData);

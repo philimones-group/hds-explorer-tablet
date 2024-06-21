@@ -1,7 +1,9 @@
 package org.philimone.hds.explorer.main;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -17,12 +19,18 @@ import org.philimone.hds.explorer.database.Queries;
 import org.philimone.hds.explorer.main.maps.MapMarker;
 import org.philimone.hds.explorer.main.maps.MapViewActivity;
 import org.philimone.hds.explorer.model.Household;
+import org.philimone.hds.explorer.model.Household_;
 import org.philimone.hds.explorer.model.Member;
+import org.philimone.hds.explorer.model.Member_;
+import org.philimone.hds.explorer.widget.DialogFactory;
 import org.philimone.hds.explorer.widget.RecyclerListView;
 import org.philimone.hds.explorer.widget.member_details.Distance;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import io.objectbox.Box;
 import mz.betainteractive.utilities.math.GpsDistanceCalculator;
@@ -32,22 +40,26 @@ public class GpsSearchedListActivity extends AppCompatActivity {
     private Button btGpsListShowMap;
     private Button btGpsOrigListShowMap;
     private Button btGpsListBack;
+    private View viewListProgressBar;
     private RecyclerListView lvGpsSearchedList;
     private TextView txtHouseholdName;
     private TextView txtDistanceName;
     private TextView txtResults;
 
-    private ArrayList<MapMarker> points;
-    private ArrayList<MapMarker> points_bak;
-    private ArrayList<Member> members;
-    private ArrayList<Household> households;
+    private ArrayList<MapMarker> points = new ArrayList<>();
+    private ArrayList<MapMarker> points_bak = new ArrayList<>();
+    private List<Member> members;
+    private List<Household> households;
     private Member mainMember;
     private Household mainHousehold;
     private Distance distance;
     private boolean isMemberMap;
     private boolean showOriginalMap;
 
+    private boolean initiated = false;
+
     private Box<Household> boxHouseholds;
+    private Box<Member> boxMembers;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,38 +72,11 @@ public class GpsSearchedListActivity extends AppCompatActivity {
 
     private void initBoxes() {
         this.boxHouseholds = ObjectBoxDatabase.get().boxFor(Household.class);
+        this.boxMembers = ObjectBoxDatabase.get().boxFor(Member.class);
     }
 
     private void initialize() {
-
-        ArrayList<MapMarker> obj_points = getIntent().getParcelableArrayListExtra("points");
-        ArrayList<MapMarker> obj_points_bak = getIntent().getParcelableArrayListExtra("points_original");
-        Object obj_members = getIntent().getExtras().get("members");
-        Object obj_households = getIntent().getExtras().get("households");
-        Object obj_main_member = getIntent().getExtras().get("main_member");
-        Object obj_main_household = getIntent().getExtras().get("main_household");
-        Object obj_distance = getIntent().getExtras().get("distance");
-
-        this.points = new ArrayList<>();
-        this.points_bak = new ArrayList<>();
-
-        this.isMemberMap = obj_main_member != null;
-
-        if (obj_points != null) {
-            this.points.addAll(obj_points);
-        }
-        if (obj_points_bak != null) {
-            this.points_bak.addAll(obj_points_bak);
-        }
-
-        this.distance = (Distance) obj_distance;
-        if (isMemberMap){
-            this.members = (ArrayList<Member>) obj_members;
-            this.mainMember = (Member) obj_main_member;
-        }else{
-            this.households = (ArrayList<Household>) obj_households;
-            this.mainHousehold = (Household) obj_main_household;
-        }
+        readIntent();
 
         //load components
         this.txtHouseholdName = (TextView) findViewById(R.id.txtHouseholdName);
@@ -100,35 +85,59 @@ public class GpsSearchedListActivity extends AppCompatActivity {
         this.btGpsListShowMap = (Button) findViewById(R.id.btGpsListShowMap);
         this.btGpsOrigListShowMap = (Button) findViewById(R.id.btGpsOrigListShowMap);
         this.btGpsListBack = (Button) findViewById(R.id.btGpsListBack);
+        this.viewListProgressBar = findViewById(R.id.viewListProgressBar);
         this.lvGpsSearchedList = findViewById(R.id.lvGpsSearchedList);
 
-        this.btGpsListBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                GpsSearchedListActivity.this.onBackPressed();
-            }
+        this.btGpsListBack.setOnClickListener(v -> GpsSearchedListActivity.this.onBackPressed());
+
+        this.btGpsListShowMap.setOnClickListener(v -> {
+            showOriginalMap = false;
+            showMap();
         });
 
-        this.btGpsListShowMap.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showOriginalMap = false;
-                showMap();
-            }
-        });
-
-        this.btGpsOrigListShowMap.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showOriginalMap = true;
-                showMap();
-            }
+        this.btGpsOrigListShowMap.setOnClickListener(v -> {
+            showOriginalMap = true;
+            showMap();
         });
 
         btGpsListShowMap.setEnabled(false);
         btGpsOrigListShowMap.setEnabled(false);
 
-        loadData();
+        this.txtHouseholdName.setText(mainHousehold.getCode()+" - "+mainHousehold.getName());
+        this.txtDistanceName.setText(distance.getLabel());
+        txtResults.setText("");
+    }
+
+    private void readIntent() {
+        Object obj_main_member = getIntent().getExtras().get("main_member");
+        Object obj_main_household = getIntent().getExtras().get("main_household");
+        Object obj_distance = getIntent().getExtras().get("distance");
+
+        if (obj_main_household != null) {
+            this.mainHousehold = (Household) obj_main_household;
+        }
+        if (obj_main_member != null) {
+            this.mainMember = (Member) obj_main_member;
+            this.isMemberMap = true;
+        }
+
+        this.distance = (Distance) obj_distance;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+
+        if (this.initiated == false) {
+            initSearching();
+        }
+
+        this.initiated = true;
+    }
+
+    private void initSearching() {
+        new SearchingLocationsTask(mainHousehold, mainMember, distance).execute();
     }
 
     private void onMemberClicked(int position) {
@@ -156,7 +165,7 @@ public class GpsSearchedListActivity extends AppCompatActivity {
         return isMemberMap ? this.members.size() : this.households.size();
     }
 
-    private void loadData() {
+    private void loadSearchedData() {
         if (isMemberMap){
             loadMembers();
 
@@ -168,8 +177,6 @@ public class GpsSearchedListActivity extends AppCompatActivity {
             this.btGpsListShowMap.setEnabled(true);
         }
 
-        this.txtHouseholdName.setText(mainHousehold.getCode()+" - "+mainHousehold.getName());
-        this.txtDistanceName.setText(distance.getLabel());
         txtResults.setText(getString(R.string.gps_searched_list_results_value, getNumberOfResults()));
     }
 
@@ -196,7 +203,8 @@ public class GpsSearchedListActivity extends AppCompatActivity {
         }
 
         MemberAdapter adapter = new MemberAdapter(this, this.members, extras);
-        adapter.setShowHouseholdAndCode(true);
+        adapter.setShowMemberCodeWithHousehold(true);
+        adapter.setShowExtraDetails(true);
         adapter.setSelectedIndex(0);
         setAdapter(adapter);
     }
@@ -253,5 +261,191 @@ public class GpsSearchedListActivity extends AppCompatActivity {
         intent.putExtra("pageTitle", pageTitle);
         intent.putParcelableArrayListExtra("markersList", points);
         startActivity(intent);
+    }
+
+    private void searchNearbyHouseholds(Household household, Distance gdistance) {
+
+        if (household == null || household.isGpsNull()){
+            DialogFactory.createMessageInfo(this, R.string.map_gps_not_available_title_lbl, R.string.member_list_gps_not_available_lbl).show();
+            return;
+        }
+
+        final double distance = gdistance.getValue();
+        String distanceDescription = gdistance.getLabel();
+
+        final double cur_cos_lat = household.getCosLatitude();
+        final double cur_sin_lat = household.getSinLatitude();
+        final double cur_cos_lng = household.getCosLongitude();
+        final double cur_sin_lng = household.getSinLongitude();
+        final double cur_allowed_distance = Math.cos(distance / 6371); //# This is  200meters
+
+        this.households = this.boxHouseholds.query(Household_.gpsLatitude.notNull().and(Household_.gpsLongitude.notNull()))
+                .filter((h) -> !h.isGpsNull() && ((cur_sin_lat*h.sinLatitude + cur_cos_lat*h.cosLatitude * (h.cosLongitude*cur_cos_lng + h.sinLongitude*cur_sin_lng)) > cur_allowed_distance)  )
+                .build().find();
+
+        if (this.households.size() == 0){
+            DialogFactory.createMessageInfo(this, getString(R.string.info_lbl), getString(R.string.map_no_closest_houses_found_lbl, distanceDescription)).show();
+            return;
+        }
+
+        this.points = new ArrayList<>();
+        boolean hasAnyCoords = false;
+        int i = 0;
+
+        for (Household h : this.households) {
+            if (!h.isGpsNull()) {
+                points.add(new MapMarker(h.gpsLatitude, h.gpsLongitude, h.name, h.code));
+                hasAnyCoords = true;
+            }
+        }
+
+        if (!hasAnyCoords){
+            DialogFactory.createMessageInfo(this, R.string.map_gps_not_available_title_lbl, R.string.household_filter_gps_not_available_lbl).show();
+            return;
+        }
+    }
+
+    private void searchNearbyMembers(Member member, Distance gdistance) {
+
+        if (member == null || member.isGpsNull()){
+            DialogFactory.createMessageInfo(this, R.string.map_gps_not_available_title_lbl, R.string.member_list_member_gps_not_available_lbl).show();
+            return;
+        }
+
+        double distance = gdistance.getValue();
+        String distanceDescription = gdistance.getLabel();
+
+        final double cur_cos_lat = member.getCosLatitude();
+        final double cur_sin_lat = member.getSinLatitude();
+        final double cur_cos_lng = member.getCosLongitude();
+        final double cur_sin_lng = member.getSinLongitude();
+        final double cur_allowed_distance = Math.cos(distance / 6371); //# This is  200meters
+
+        this.members = this.boxMembers.query(Member_.gpsLatitude.notNull().and(Member_.gpsLongitude.notNull()))
+                .filter((m) -> !m.isGpsNull() && ((cur_sin_lat*m.sinLatitude + cur_cos_lat*m.cosLatitude * (m.cosLongitude*cur_cos_lng + m.sinLongitude*cur_sin_lng)) > cur_allowed_distance)  )
+                .build().find();
+
+        if (this.members.size() == 0){
+            DialogFactory.createMessageInfo(this, getString(R.string.info_lbl), getString(R.string.map_no_closest_members_found_lbl, distanceDescription)).show();
+            return;
+        }
+
+        this.points = new ArrayList<>();
+        this.points_bak = new ArrayList<>();
+
+        Map<String, List<MapMarker>> gpsMapHouseMembers = new HashMap<>();
+        boolean hasAnyCoords = false;
+        int i = 0;
+
+        putMainHouseholdOnBegining(member, this.members);
+
+        for (Member m : this.members) {
+            if (!m.isGpsNull()) {
+                MapMarker marker = new MapMarker(m.gpsLatitude, m.gpsLongitude, m.name, m.code);
+                MapMarker marker_bak = new MapMarker(m.gpsLatitude, m.gpsLongitude, m.name, m.code);
+                points.add(marker);
+                points_bak.add(marker_bak);
+
+                //put point on a java map organized by houseNumber
+                if (gpsMapHouseMembers.containsKey(m.getHouseholdName())){
+                    List<MapMarker> list = gpsMapHouseMembers.get(m.getHouseholdName());
+                    list.add(marker);
+                }else{
+                    List<MapMarker> list = new ArrayList<>();
+                    list.add(marker);
+                    gpsMapHouseMembers.put(m.getHouseholdName(), list);
+                }
+
+                hasAnyCoords = true;
+                i++;
+            }
+        }
+
+        if (!hasAnyCoords){
+            DialogFactory.createMessageInfo(this, R.string.map_gps_not_available_title_lbl, R.string.household_filter_gps_not_available_lbl).show();
+            return;
+        }
+
+        organizeHouseMembersCoordinates(gpsMapHouseMembers);
+    }
+
+    private void organizeHouseMembersCoordinates(Map<String, List<MapMarker>> gpsMapHouseMembers){
+        final double pointRadius = 0.00008; //grads equivalent to 2 meters - 0.0001242
+
+        for (String house : gpsMapHouseMembers.keySet()){
+            List<MapMarker> list = gpsMapHouseMembers.get(house);
+            int n = list.size();
+            int max_col = (int)(Math.ceil(Math.sqrt(n))) + 1;
+            int max_row = (int) Math.ceil(n/(max_col*1.0));
+
+            int r=0,c=0;
+            for (MapMarker p : list){
+                p.setGpsLatitude( p.getGpsLatitude() + (c * pointRadius) );
+                p.setGpsLongitude( p.getGpsLongitude() + (r * pointRadius) );
+
+                c++;
+                if (c == max_col){
+                    c = 0;
+                    r++;
+                }
+            }
+        }
+    }
+
+    private void putMainHouseholdOnBegining(Member mainMember, List<Member> members) {
+        List<Member> houseMembers = new ArrayList<>();
+
+        for (Member m : members)
+            if (m.getHouseholdName().equals(mainMember.getHouseholdName()))
+                houseMembers.add(m);
+
+
+        houseMembers.remove(mainMember);
+        houseMembers.add(0, mainMember);
+
+        members.removeAll(houseMembers);
+        members.addAll(0, houseMembers);
+    }
+
+    class SearchingLocationsTask extends AsyncTask<Void, Void, Boolean> {
+        private Household household;
+        private Member member;
+        private Distance distance;
+        public SearchingLocationsTask(Household mainHousehold, Member mainMember, Distance distance) {
+            this.household = mainHousehold;
+            this.member = mainMember;
+            this.distance = distance;
+        }
+
+        @Override
+        protected Boolean doInBackground(Void... voids) {
+
+            //this must end up with loading households, members, points and points_bak variables
+            if (this.member != null) {
+                searchNearbyMembers(this.member, this.distance);
+            } else {
+                searchNearbyHouseholds(this.household, this.distance);
+            }
+
+            return Boolean.TRUE;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+            viewListProgressBar.setVisibility(View.VISIBLE);
+            lvGpsSearchedList.setVisibility(View.GONE);
+        }
+
+        @Override
+        protected void onPostExecute(Boolean aBoolean) {
+            super.onPostExecute(aBoolean);
+
+            viewListProgressBar.setVisibility(View.GONE);
+            lvGpsSearchedList.setVisibility(View.VISIBLE);
+
+            loadSearchedData();
+        }
     }
 }

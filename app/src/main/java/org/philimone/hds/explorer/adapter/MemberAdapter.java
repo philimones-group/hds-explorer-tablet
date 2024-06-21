@@ -34,6 +34,7 @@ public class MemberAdapter extends RecyclerView.Adapter<MemberAdapter.MemberView
     private int selectedIndex = -1;
     private boolean showHouseholdHeadIcon = true;
     private boolean showHouseholdAndCode = false;
+    private boolean showMemberCodeWithHousehold = false;
     private boolean showExternalData = false;
     private boolean showExtraDetails = false;
     private boolean showMemberDetails = false;
@@ -157,6 +158,14 @@ public class MemberAdapter extends RecyclerView.Adapter<MemberAdapter.MemberView
         this.showHouseholdHeadIcon = showHouseholdHeadIcon;
     }
 
+    public boolean isShowMemberCodeWithHousehold() {
+        return showMemberCodeWithHousehold;
+    }
+
+    public void setShowMemberCodeWithHousehold(boolean showMemberCodeWithHousehold) {
+        this.showMemberCodeWithHousehold = showMemberCodeWithHousehold;
+    }
+
     public void setShowExtraDetails(boolean showExtraDetails) {
         this.showExtraDetails = showExtraDetails;
     }
@@ -250,7 +259,6 @@ public class MemberAdapter extends RecyclerView.Adapter<MemberAdapter.MemberView
                     txtMemberItemHousehold.setText(mb.getHouseholdCode() + " - " + mb.getHouseholdName());
                 }
 
-
             }
 
             if (showMemberDetails) {
@@ -268,6 +276,12 @@ public class MemberAdapter extends RecyclerView.Adapter<MemberAdapter.MemberView
                 codeText = mb.getCode() + "  [" + memberDetailsText + "]";
                 extrasText = mContext.getString(R.string.household_details_members_item_status_lbl) + " "+ getEndTypeMsg(mb) + ", ";
                 extrasText += mContext.getString(R.string.household_details_members_item_since_lbl) + " " + getEndDateMsg(mb);
+            }
+
+            if (showMemberCodeWithHousehold) {
+                txtMemberItemHousehold.setVisibility(View.GONE);
+
+                codeText += " -> " + (mb.getHouseholdCode() + " - " + mb.getHouseholdName());
             }
 
             txtName.setText(nameText);

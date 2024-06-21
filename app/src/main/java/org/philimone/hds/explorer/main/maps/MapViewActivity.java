@@ -110,7 +110,7 @@ public class MapViewActivity extends AppCompatActivity {
 
             for (MapMarker marker : this.markersList) {
 
-                Log.d("marker", ""+marker);
+                //Log.d("marker", ""+marker);
 
                 PointAnnotationOptions options = new PointAnnotationOptions();
                 options.withPoint(marker.getPoint());

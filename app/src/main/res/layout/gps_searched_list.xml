@@ -160,6 +160,24 @@
             android:layout_marginRight="10dp"
             android:orientation="vertical">
 
+            <RelativeLayout
+                android:id="@+id/viewListProgressBar"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="15dp"
+                android:background="@drawable/nui_members_list_panel"
+                android:visibility="gone">
+
+                <ProgressBar
+                    style="?android:attr/progressBarStyleLarge"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true"
+                    />
+
+            </RelativeLayout>
+
             <org.philimone.hds.explorer.widget.RecyclerListView
                 android:id="@+id/lvGpsSearchedList"
                 app:layoutManager="LinearLayoutManager"
@@ -167,7 +185,10 @@
                 android:layout_height="match_parent"
                 android:padding="15dp"
                 android:background="@drawable/nui_members_list_panel"
+                android:visibility="visible"
                 />
+
+
 
         </LinearLayout>
 

@@ -216,6 +216,7 @@ public class MemberFilterFragment extends Fragment implements BarcodeScannerActi
         this.nbpMemFilterMaxAge.setValue(120);
         this.chkMemFilter1dt.setChecked(false);
         this.chkMemFilter2om.setChecked(false);
+        this.chkMemFilter3na.setChecked(false);
     }
 
     public void setBarcodeScannerListener(BarcodeScannerActivity.InvokerClickListener listener){

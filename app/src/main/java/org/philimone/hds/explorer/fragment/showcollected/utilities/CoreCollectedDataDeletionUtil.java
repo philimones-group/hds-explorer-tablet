@@ -52,6 +52,7 @@ import java.util.stream.Collectors;
 
 import io.objectbox.Box;
 import mz.betainteractive.odk.InstanceProviderAPI;
+import mz.betainteractive.odk.task.OdkFormLoadResult;
 import mz.betainteractive.utilities.GeneralUtil;
 
 public class CoreCollectedDataDeletionUtil {
@@ -561,9 +562,27 @@ public class CoreCollectedDataDeletionUtil {
         if (odkCollectedData != null) {
             Uri odkContentUri = Uri.parse(odkCollectedData.formUri);
             //delete odk xml
-            mContext.getContentResolver().delete(odkContentUri, null, null);
+            deleteOdkInstance(odkContentUri);
 
             this.boxCollectedData.remove(odkCollectedData);
+        }
+    }
+
+    private void deleteOdkInstance(Uri odkContentUri) {
+        try {
+            mContext.getContentResolver().delete(odkContentUri, null, null);
+        } catch (Exception ex) {
+            if (ex.getMessage().contains("AppDependencyComponent.inject(org.odk.collect.android.external.InstanceProvider)' on a null object reference")) {
+                //try again
+                try {
+                    mContext.getContentResolver().delete(odkContentUri, null, null);
+                } catch (Exception e) {
+                    Log.d("after tried again", e.getMessage());
+                    e.printStackTrace();
+                }
+            } else {
+                ex.printStackTrace();
+            }
         }
     }
 

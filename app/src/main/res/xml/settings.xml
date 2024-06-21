@@ -19,9 +19,11 @@
 
     </PreferenceCategory>
 
+    <!--
     <PreferenceCategory
         android:title="@string/settings_odk_group_lbl"
-        android:key="odk">
+        android:key="odk"
+        >
 
         <EditTextPreference
             android:key="odk-url"
@@ -44,7 +46,7 @@
             android:enabled="true"/>
 
     </PreferenceCategory>
-
+    -->
 
 </PreferenceScreen>
 

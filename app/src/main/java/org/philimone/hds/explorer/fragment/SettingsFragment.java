@@ -70,6 +70,7 @@ public class SettingsFragment extends PreferenceFragment {
             setValueInPreference(prefPostExec, post_exec);
         }
 
+        if (prefAppUrl != null)
         prefAppUrl.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
             @Override
             public boolean onPreferenceChange(Preference preference, Object newValue) {
@@ -80,6 +81,7 @@ public class SettingsFragment extends PreferenceFragment {
             }
         });
 
+        if (prefOdkUrl != null)
         prefOdkUrl.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
             @Override
             public boolean onPreferenceChange(Preference preference, Object newValue) {
@@ -90,6 +92,7 @@ public class SettingsFragment extends PreferenceFragment {
             }
         });
 
+        if (prefRedcapUrl != null)
         prefRedcapUrl.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
             @Override
             public boolean onPreferenceChange(Preference preference, Object newValue) {
@@ -100,6 +103,7 @@ public class SettingsFragment extends PreferenceFragment {
             }
         });
 
+        if (prefPostExec != null)
         prefPostExec.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
             @Override
             public boolean onPreferenceChange(Preference preference, Object newValue) {
@@ -112,15 +116,19 @@ public class SettingsFragment extends PreferenceFragment {
     }
 
     private void setValueInPreference(EditTextPreference pref, String value){
+        if (pref == null) return;
         pref.setText(value);
         pref.setSummary(value);
     }
 
     private void setValueInPreference(CheckBoxPreference pref, boolean value){
+        if (pref == null) return;
         pref.setChecked(value);
     }
 
     private void setValueInDatabase(Preference pref, String newValue){
+        if (pref == null) return;
+
         //pref.setText(newValue);
         //pref.setSummary(newValue);
 

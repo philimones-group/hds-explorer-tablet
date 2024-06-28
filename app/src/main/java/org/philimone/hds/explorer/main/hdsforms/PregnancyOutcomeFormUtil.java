@@ -8,9 +8,11 @@ import androidx.fragment.app.Fragment;
 import org.philimone.hds.explorer.R;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
 import org.philimone.hds.explorer.fragment.MemberFilterDialog;
+import org.philimone.hds.explorer.fragment.showcollected.utilities.CoreCollectedDataDeletionUtil;
 import org.philimone.hds.explorer.model.ApplicationParam;
 import org.philimone.hds.explorer.model.ApplicationParam_;
 import org.philimone.hds.explorer.model.CoreCollectedData;
+import org.philimone.hds.explorer.model.CoreCollectedData_;
 import org.philimone.hds.explorer.model.Death;
 import org.philimone.hds.explorer.model.Death_;
 import org.philimone.hds.explorer.model.HeadRelationship;
@@ -984,7 +986,9 @@ public class PregnancyOutcomeFormUtil extends FormUtil<PregnancyOutcome> {
 
     private void deleteCreatedPregnancy() {
         if (pregnancyRegistrationCreated && pregnancyRegistration != null) {
-            this.boxPregnancyRegistrations.remove(pregnancyRegistration);
+            CoreCollectedData cdata = this.boxCoreCollectedData.query(CoreCollectedData_.collectedId.equal(pregnancyRegistration.collectedId)).build().findFirst();
+
+            new CoreCollectedDataDeletionUtil(context).deleteRecord(cdata);
         }
     }
 

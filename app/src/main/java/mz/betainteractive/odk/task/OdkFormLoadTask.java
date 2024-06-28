@@ -105,7 +105,7 @@ public class OdkFormLoadTask extends AsyncTask<Void, Void, OdkFormLoadResult> {
                 try {
                     cursor = getCursorForFormsProvider(filledForm.getFormName());
                 } catch (Exception ex) {
-                    e.printStackTrace();
+                    ex.printStackTrace();
                     return OdkFormLoadResult.newErrorResult(this.odkFormLoadData, OdkFormLoadResult.Status.ERROR_PROVIDER_NA, openMode);
                 }
 

@@ -68,7 +68,7 @@ public class ShowCollectedDataFragmentAdapter extends FragmentStateAdapter {
 
     @Override
     public boolean containsItem(long itemId) {
-        return itemId >= 0 && itemId <= 1;
+        return itemId >= 0 && itemId <= 2;
     }
 
 

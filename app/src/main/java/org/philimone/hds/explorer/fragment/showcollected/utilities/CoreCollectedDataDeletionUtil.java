@@ -6,6 +6,7 @@ import android.util.Log;
 
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
 import org.philimone.hds.explorer.fragment.showcollected.adapter.model.CoreCollectedDataItem;
+import org.philimone.hds.explorer.fragment.showcollected.adapter.model.OdkCollectedDataItem;
 import org.philimone.hds.explorer.model.CollectedData;
 import org.philimone.hds.explorer.model.CollectedData_;
 import org.philimone.hds.explorer.model.CoreCollectedData;
@@ -114,9 +115,25 @@ public class CoreCollectedDataDeletionUtil {
         deleteCoreCollectedDataList(list);
     }
 
+    public void deleteRecord(CoreCollectedData coreCollectedData) {
+        deleteOneCoreCollectedData(coreCollectedData);
+    }
+
+    public void deleteOdkRecords(List<OdkCollectedDataItem> selectedList) {
+        for (OdkCollectedDataItem dataItem : selectedList) {
+            deleteCollectedData(dataItem.getCollectedData());
+        }
+    }
+
     private void deleteCoreCollectedDataList(List<CoreCollectedData> coreCollectedDataList){
         for (CoreCollectedData cdata : coreCollectedDataList) {
-            if (cdata.collectedId == null) continue;
+            deleteOneCoreCollectedData(cdata);
+        }
+    }
+
+    private void deleteOneCoreCollectedData(CoreCollectedData cdata) {
+        if (cdata != null) {
+            if (cdata.collectedId == null) return;
 
             switch (cdata.formEntity) {
                 case REGION: deleteRegion(cdata); break;
@@ -551,6 +568,21 @@ public class CoreCollectedDataDeletionUtil {
                 new File(cdata.formFilename).delete();
             } catch (Exception ex) {
                 Log.d("deletion-failed", ""+ex.getLocalizedMessage());
+            }
+        }
+    }
+
+    public void deleteCollectedData(CollectedData odkCollectedData) {
+        if (odkCollectedData != null) {
+            try {
+                Uri odkContentUri = Uri.parse(odkCollectedData.formUri);
+                //delete odk xml
+                deleteOdkInstance(odkContentUri);
+
+                this.boxCollectedData.remove(odkCollectedData);
+            } catch (Exception ex) {
+                Log.d("something", "wrong: "+ex.getMessage());
+                ex.printStackTrace();
             }
         }
     }

@@ -83,7 +83,7 @@ public class HouseholdDetailsFragmentAdapter extends FragmentStateAdapter {
 
     @Override
     public boolean containsItem(long itemId) {
-        return itemId >= 0 && itemId <= 2;
+        return itemId >= 0 && itemId <= 3;
     }
 
     public HouseholdMembersFragment getFragmentMembers() {

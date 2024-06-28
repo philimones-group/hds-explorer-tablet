@@ -674,7 +674,7 @@ public class MemberListFragment extends Fragment {
 
         //disable buttons
         this.btMemListShowMap.setEnabled(!value);
-        this.btMemListSearchNearby.setEnabled(!value);
+        this.btMemListSearchNearby.setEnabled(false);
         this.btMemListShowHousehold.setEnabled(false);
 
         if (currentHousehold != null){

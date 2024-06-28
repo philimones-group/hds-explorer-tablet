@@ -225,6 +225,9 @@ public class UploadCoreCollectedDataAdapter extends RecyclerView.Adapter<UploadC
                     txtItem4.setVisibility(View.GONE);
                     txtItem5.setVisibility(View.GONE);
                 }
+            } else {
+                txtItem4.setVisibility(View.GONE);
+                txtItem5.setVisibility(View.GONE);
             }
 
             chkProcessed.setVisibility(checkable ? View.INVISIBLE : View.VISIBLE);

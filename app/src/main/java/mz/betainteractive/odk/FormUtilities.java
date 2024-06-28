@@ -67,6 +67,7 @@ public class FormUtilities {
     private AppCompatActivity activity;
     private OdkFormLoadData formLoadData;
 	private Uri contentUri; /* odk CONTENT_URI of every instance */
+    private String strContentUri;
     private String instanceUri; /* odk instance file uri */
     private boolean formUnFinished;
     private String xmlFilePath;
@@ -92,6 +93,10 @@ public class FormUtilities {
 
     public enum FormStatus {
         FINALIZED, UNFINALIZED, NOT_FOUND
+    }
+    
+    private enum LoadForm {
+        OPEN, REOPEN
     }
 
 	public FormUtilities(Fragment fragment, OdkFormResultListener listener) {
@@ -434,7 +439,7 @@ public class FormUtilities {
             public void onOdkFormLoadFailure(OdkFormLoadResult result) {
                 //Toast.makeText(MainActivity.this, "Cant open ODK Form", 4000);
             	//Log.d("Cant open ODK Form", "odk");
-            	createFormLoadResultErrorDialog(result, loadData);
+            	createFormLoadResultErrorDialog(result, loadData, LoadForm.OPEN, null);
             }
         });
 
@@ -460,7 +465,8 @@ public class FormUtilities {
     public void loadForm(OdkFormLoadData loadData, String contentUriAsString, String instanceXmlUri, final OdkFormResultListener listener){
         this.formId = loadData.formId;
         this.formLoadData = loadData;
-	    this.contentUri = Uri.parse(contentUriAsString);
+        this.strContentUri = contentUriAsString;
+	    this.contentUri = Uri.parse(contentUriAsString);        
         this.metaInstanceName = "";
         this.lastUpdatedDate = null;
         loadData.formInstanceUri = instanceXmlUri;
@@ -478,7 +484,7 @@ public class FormUtilities {
                 if (listener != null){
                     listener.onFormInstanceNotFound(formLoadData, contentUri);
                 }else{
-                    createFormLoadResultErrorDialog(result, loadData);
+                    createFormLoadResultErrorDialog(result, loadData, LoadForm.REOPEN, listener);
                 }
             }
         });
@@ -508,7 +514,7 @@ public class FormUtilities {
         }
     }
 
-    private void createFormLoadResultErrorDialog(OdkFormLoadResult result, OdkFormLoadData loadData) {
+    private void createFormLoadResultErrorDialog(OdkFormLoadResult result, OdkFormLoadData loadData, LoadForm loadFormType, final OdkFormResultListener listener) {
         //xFormNotFound = true;
 
         @StringRes int messageId = R.string.odk_form_load_error_odk_not_installed_lbl;
@@ -527,13 +533,36 @@ public class FormUtilities {
             messageId = R.string.odk_form_load_error_saving_instance_form_lbl;
         }
 
-        DialogFactory.createMessageInfo(this.mContext, R.string.warning_lbl, messageId, new DialogFactory.OnClickListener() {
-            @Override
-            public void onClicked(DialogFactory.Buttons clickedButton) {
-                //xFormNotFound = false;
-                if (formResultListener != null) {
-                    formResultListener.onFormLoadError(loadData, result);
+
+        if (result.getStatus() == OdkFormLoadResult.Status.ERROR_PROVIDER_NA) {
+            //add try again button
+
+            DialogFactory.createMessageYN(this.mContext, R.string.warning_lbl, messageId, R.string.bt_ok_lbl, R.string.bt_try_again_lbl, new DialogFactory.OnYesNoClickListener() {
+                @Override
+                public void onYesClicked() { //NO
+                    //xFormNotFound = false;
+                    if (formResultListener != null) {
+                        formResultListener.onFormLoadError(loadData, result);
+                    }
                 }
+
+                @Override
+                public void onNoClicked() { //Try Again
+                    if (loadFormType == LoadForm.OPEN) {
+                        loadForm(loadData);
+                    } else if (loadFormType == LoadForm.REOPEN) {
+                        loadForm(loadData, strContentUri, loadData.formInstanceUri, listener);
+                    }
+                }
+            }).show();
+
+            return;
+        }
+
+        DialogFactory.createMessageInfo(this.mContext, R.string.warning_lbl, messageId, clickedButton -> {
+            //xFormNotFound = false;
+            if (formResultListener != null) {
+                formResultListener.onFormLoadError(loadData, result);
             }
         }).show();
 

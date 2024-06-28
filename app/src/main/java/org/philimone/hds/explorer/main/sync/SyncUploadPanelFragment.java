@@ -253,7 +253,7 @@ public class SyncUploadPanelFragment extends Fragment implements SyncUploadEntit
         this.collectedDataListView.setAdapter(adapter);
     }
     public long getTotalNotUploaded(){
-        return this.boxCoreCollectedData.query(CoreCollectedData_.uploaded.equal(false)).build().count();
+        return this.boxCoreCollectedData.query(CoreCollectedData_.uploaded.equal(false).or(CoreCollectedData_.uploadedWithError.equal(true))).build().count();
     }
 
     private void loadResume() {

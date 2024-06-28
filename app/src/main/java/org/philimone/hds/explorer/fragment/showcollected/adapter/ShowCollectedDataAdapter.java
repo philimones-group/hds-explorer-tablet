@@ -32,23 +32,26 @@ public class ShowCollectedDataAdapter extends RecyclerView.Adapter<ShowCollected
     private boolean[] selectedList;
     private boolean multiSelectable;
     private Context mContext;
+    private OnItemActionListener listener;
     private User currentUser;
     private String filterText;
 
-    public ShowCollectedDataAdapter(Context context, List<OdkCollectedDataItem> objects){
+    public ShowCollectedDataAdapter(Context context, List<OdkCollectedDataItem> objects, OnItemActionListener listener){
         this.collectedDataList = new ArrayList<>();
         this.collectedDataList.addAll(objects);
         this.selectedList = new boolean[objects.size()];
         this.mContext = context;
         this.currentUser = Bootstrap.getCurrentUser();
+        this.listener = listener;
     }
 
-    public ShowCollectedDataAdapter(Context context, OdkCollectedDataItem[] objects){
+    public ShowCollectedDataAdapter(Context context, OdkCollectedDataItem[] objects, OnItemActionListener listener){
         this.collectedDataList = new ArrayList<>();
         for (OdkCollectedDataItem cd : objects) this.collectedDataList.add(cd);
         this.selectedList = new boolean[objects.length];
         this.mContext = context;
         this.currentUser = Bootstrap.getCurrentUser();
+        this.listener = listener;
     }
 
     /*
@@ -58,12 +61,72 @@ public class ShowCollectedDataAdapter extends RecyclerView.Adapter<ShowCollected
     public void setMultiSelection(boolean value){
         this.multiSelectable = value;
         //update views by enabling first Checkbox
-
-
     }
 
     public List<OdkCollectedDataItem> getCollectedDataList(){
         return this.collectedDataList;
+    }
+
+    public void setCheckedOrUnchecked(int position) {
+        OdkCollectedDataItem dataItem = collectedDataList.get(position);
+        if (!dataItem.isFormExtension()) { /* not uploaded odk forms should be considered */
+            selectedList[position] = !selectedList[position];
+            dataItem.selected = selectedList[position];
+            notifyDataSetChanged();
+
+            if (listener != null) {
+                listener.onCheckedStatusChanged(position, selectedList[position], areAllChecked(), hasAnyChecked());
+            }
+        }
+
+    }
+
+    public void setAllChecked(boolean checked) {
+
+        for (int position = 0; position < selectedList.length; position++) {
+            if (!collectedDataList.get(position).isFormExtension()) {
+                selectedList[position] = checked;
+            }
+        }
+
+        notifyItemRangeChanged(0, selectedList.length);
+
+        if (listener != null) {
+            listener.onCheckedStatusChanged(-1, checked, areAllChecked(), hasAnyChecked());
+        }
+    }
+
+    public boolean areAllChecked(){
+        for (boolean selected : selectedList) {
+            if (!selected) return false;
+        }
+
+        return true;
+    }
+
+    public boolean hasAnyChecked(){
+        for (boolean selected : selectedList) {
+            if (selected) return true;
+        }
+
+        return false;
+    }
+
+    public void setChecked(int position, boolean checked) {
+        selectedList[position] = checked;
+        notifyItemChanged(position);
+    }
+
+    public List<OdkCollectedDataItem> getSelectedCollectedData() {
+        List<OdkCollectedDataItem> list = new ArrayList<>();
+
+        for (int i = 0; i < selectedList.length; i++) {
+            if (selectedList[i] == true) {
+                list.add(collectedDataList.get(i));
+            }
+        }
+
+        return list;
     }
 
     @NonNull
@@ -133,10 +196,12 @@ public class ShowCollectedDataAdapter extends RecyclerView.Adapter<ShowCollected
             TextView txtForm = rowView.findViewById(R.id.txtItem2);
             TextView txtSubject = rowView.findViewById(R.id.txtItem3);
             TextView txtDate = rowView.findViewById(R.id.txtItem4);
-            CheckBox chkProcessed = rowView.findViewById(R.id.chkProcessed);
+            CheckBox chkSelected = rowView.findViewById(R.id.chkSelected);
             ImageView iconView = rowView.findViewById(R.id.iconView);
             ImageView groupIconView = rowView.findViewById(R.id.groupIconView);
             ImageView hdsIconView = rowView.findViewById(R.id.hdsIconView);
+            TextView txtFinalized = rowView.findViewById(R.id.txtFinalized);
+            TextView txtNotFinalized = rowView.findViewById(R.id.txtNotFinalized);
 
             //Member mb = cdi.getMember();
             CollectedData cd = cdi.getCollectedData();
@@ -151,7 +216,11 @@ public class ShowCollectedDataAdapter extends RecyclerView.Adapter<ShowCollected
             txtForm.setText(cd.formGroupCollected ? (formName + " -> " + formGroupName) : formName);
             txtSubject.setText(subjectText);
             txtDate.setText(mContext.getString(R.string.core_entity_updated_date_lbl) + " " +updatedDate);
-            chkProcessed.setChecked(cd.isFormFinalized());
+            txtFinalized.setVisibility(cd.isFormFinalized() ? View.VISIBLE : View.GONE);
+            txtNotFinalized.setVisibility(cd.isFormFinalized() ? View.GONE : View.VISIBLE);
+
+            chkSelected.setChecked(cdi.selected);
+            chkSelected.setEnabled(!cdi.isFormExtension());
 
             iconView.setVisibility(cd.formGroupCollected || cdi.isFormExtension() ? View.GONE : View.VISIBLE);
             groupIconView.setVisibility(cd.formGroupCollected ? View.VISIBLE : View.GONE);
@@ -172,5 +241,14 @@ public class ShowCollectedDataAdapter extends RecyclerView.Adapter<ShowCollected
 
             return "SUBJECT NOT AVAILABLE";
         }
+    }
+
+    public interface OnItemActionListener {
+        public void onInfoButtonClicked(OdkCollectedDataItem collectedData);
+
+        /*
+         * position = -1 - means selectall
+         */
+        void onCheckedStatusChanged(int position, boolean checkedStatus, boolean allChecked, boolean anyChecked);
     }
 }

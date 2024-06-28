@@ -97,7 +97,8 @@
             android:paddingStart="@dimen/show_collected_data_resume_panel_pad_start"
             android:paddingTop="@dimen/show_collected_data_resume_panel_pad_top"
             android:paddingEnd="@dimen/show_collected_data_resume_panel_pad_end"
-            android:paddingBottom="@dimen/show_collected_data_resume_panel_pad_bottom">
+            android:paddingBottom="@dimen/show_collected_data_resume_panel_pad_bottom"
+            android:visibility="gone">
 
             <LinearLayout
                 android:layout_width="0dp"
@@ -164,7 +165,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginLeft="10dp"
-            android:layout_marginTop="-20dp"
+            android:layout_marginTop="5dp"
             android:layout_marginRight="10dp"
             android:layout_marginBottom="10dp"
             android:layout_weight="1"

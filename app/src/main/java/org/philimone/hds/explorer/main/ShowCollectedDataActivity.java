@@ -27,8 +27,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.objectbox.Box;
+import mz.betainteractive.utilities.StringUtil;
 
-public class ShowCollectedDataActivity extends AppCompatActivity {
+public class ShowCollectedDataActivity extends AppCompatActivity implements ShowOdkCollectedDataFragment.ActionListener, ShowCoreCollectedDataFragment.ActionListener, ShowVisitCollectedDataFragment.ActionListener {
 
     private TextView txtShowCollectedDataModules;
     private TextView txtShowCollectedCoreForms;
@@ -59,12 +60,14 @@ public class ShowCollectedDataActivity extends AppCompatActivity {
         initialize();
     }
 
+    /*
     @Override
     protected void onPostResume() {
         super.onPostResume();
 
         showResumeDetails();
     }
+    */
 
     private void initBoxes() {
         this.boxCoreCollectedData = ObjectBoxDatabase.get().boxFor(CoreCollectedData.class);
@@ -97,14 +100,14 @@ public class ShowCollectedDataActivity extends AppCompatActivity {
 
             long count_visit = this.boxCoreCollectedData.query(CoreCollectedData_.formEntity.equal(CoreFormEntity.VISIT.code)).build().count();
             long count_core = this.boxCoreCollectedData.count();
-            long count_odk = this.boxCollectedData.count();
+            long count_odk = this.boxCollectedData.query().filter((c) -> StringUtil.containsAny(c.formModules, user.getSelectedModules())).build().find().size();
 
             List<String> tabTitles = new ArrayList<>();
             tabTitles.add(getString(R.string.show_collected_data_tab_visit_forms_lbl) + (count_visit == 0 ? "" : " ("+ count_visit +")"));
             tabTitles.add(getString(R.string.show_collected_data_tab_core_forms_lbl) + (count_core == 0 ? "" : " ("+ count_core +")"));
             tabTitles.add(getString(R.string.show_collected_data_tab_odk_forms_lbl) + (count_odk == 0 ? "" : " ("+ count_odk +")"));
 
-            fragmentAdapter = new ShowCollectedDataFragmentAdapter(this.getSupportFragmentManager(), this.getLifecycle(), this, tabTitles);
+            fragmentAdapter = new ShowCollectedDataFragmentAdapter(this.getSupportFragmentManager(), this.getLifecycle(), tabTitles, this, this, this);
             collectedDataTabViewPager.setAdapter(fragmentAdapter);
 
             //this will create all fragments
@@ -118,28 +121,37 @@ public class ShowCollectedDataActivity extends AppCompatActivity {
     }
 
     public void showResumeDetails() {
-        //long count_core = this.boxCoreCollectedData.count();
-        //long count_odk = this.boxCollectedData.count();
-        //this.txtShowCollectedCoreForms.setText(count_core + "");
-        //this.txtShowCollectedOdkForms.setText(count_odk + "");
+        refreshTabTitles();
 
+        loadCollectedDataLists();
+    }
+
+    public void refreshTabTitles(){
         long count_visit = this.boxCoreCollectedData.query(CoreCollectedData_.formEntity.equal(CoreFormEntity.VISIT.code)).build().count();
         long count_core = this.boxCoreCollectedData.count();
-        long count_odk = this.boxCollectedData.count();
+        long count_odk = this.boxCollectedData.query().filter((c) -> StringUtil.containsAny(c.formModules, user.getSelectedModules())).build().find().size();
 
+        String visit_label = getString(R.string.show_collected_data_tab_visit_forms_lbl) + (count_visit == 0 ? "" : " ("+ count_visit +")");
+        String core_label = getString(R.string.show_collected_data_tab_core_forms_lbl) + (count_core == 0 ? "" : " ("+ count_core +")");
+        String odk_label = getString(R.string.show_collected_data_tab_odk_forms_lbl) + (count_odk == 0 ? "" : " ("+ count_odk +")");
+
+        collectedDataTabLayout.getTabAt(0).setText(visit_label);
+        collectedDataTabLayout.getTabAt(1).setText(core_label);
+        collectedDataTabLayout.getTabAt(2).setText(odk_label);
+
+        /*
         List<String> tabTitles = new ArrayList<>();
-        tabTitles.add(getString(R.string.show_collected_data_tab_visit_forms_lbl) + (count_visit == 0 ? "" : " ("+ count_visit +")"));
-        tabTitles.add(getString(R.string.show_collected_data_tab_core_forms_lbl) + (count_core == 0 ? "" : " ("+ count_core +")"));
-        tabTitles.add(getString(R.string.show_collected_data_tab_odk_forms_lbl) + (count_odk == 0 ? "" : " ("+ count_odk +")"));
+        tabTitles.add(visit_label);
+        tabTitles.add(core_label);
+        tabTitles.add(odk_label);
 
         if (this.fragmentAdapter != null) {
             this.fragmentAdapter.updateTabTitles(tabTitles);
             this.fragmentAdapter.notifyDataSetChanged();
         }
+         */
 
         this.txtShowCollectedDataModules.setText(user.getSelectedModulesCodes());
-
-        loadCollectedDataLists();
     }
 
     private void loadCollectedDataLists() {
@@ -175,5 +187,31 @@ public class ShowCollectedDataActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onVisitEdited() {
+        showResumeDetails();
+    }
 
+    @Override
+    public void onDeletedOdkForms() {
+        refreshTabTitles();
+        loadOdkCollectedDataList();
+    }
+
+    @Override
+    public void onOdkFormEdited() {
+        //nothing to do its already refreshed
+        refreshTabTitles();
+        loadOdkCollectedDataList();
+    }
+
+    @Override
+    public void onDeletedCoreForms() {
+        showResumeDetails();
+    }
+
+    @Override
+    public void onCoreFormEdited() {
+        showResumeDetails();
+    }
 }

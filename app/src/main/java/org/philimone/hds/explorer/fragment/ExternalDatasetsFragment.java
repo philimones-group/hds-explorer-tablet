@@ -179,15 +179,19 @@ public class ExternalDatasetsFragment extends Fragment {
                                                          .filter((d) -> StringUtil.containsAny(d.modules, selectedModules))  //filter by module
                                                          .build().find();*/
 
-        List<Dataset> datasets = this.boxDatasets.query().equal(Dataset_.tableName, this.subject.getTableName().code, QueryBuilder.StringOrder.CASE_SENSITIVE).build().find();
+        if (this.subject != null) {
+            List<Dataset> datasets = this.boxDatasets.query().equal(Dataset_.tableName, this.subject.getTableName().code, QueryBuilder.StringOrder.CASE_SENSITIVE).build().find();
 
-        datasets.add(0, emptyDataset());
+            datasets.add(0, emptyDataset());
 
-        if (datasets != null && datasets.size() > 0) {
-            //Log.d("datasets", ""+datasets.size());
-            ArrayAdapter<Dataset> adapter = new ArrayAdapter<>(this.getContext(), R.layout.external_datasets_spinner_item, R.id.txtDatasetItem, datasets);
-            datasetsSpinner.setAdapter(adapter);
-            //datasetsSpinner.setSelection(0);
+            if (datasets != null && datasets.size() > 0) {
+                //Log.d("datasets", ""+datasets.size());
+                ArrayAdapter<Dataset> adapter = new ArrayAdapter<>(this.getContext(), R.layout.external_datasets_spinner_item, R.id.txtDatasetItem, datasets);
+                datasetsSpinner.setAdapter(adapter);
+                //datasetsSpinner.setSelection(0);
+            }
+        } else {
+            Log.d("EXTDT-SUBJECT", "NULL");
         }
     }
 

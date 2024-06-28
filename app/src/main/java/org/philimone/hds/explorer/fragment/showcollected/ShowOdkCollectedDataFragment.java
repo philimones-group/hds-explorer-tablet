@@ -3,12 +3,15 @@ package org.philimone.hds.explorer.fragment.showcollected;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -18,12 +21,11 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import org.philimone.hds.explorer.R;
-import org.philimone.hds.explorer.data.FormDataLoader;
-import org.philimone.hds.explorer.data.FormFilter;
 import org.philimone.hds.explorer.database.Bootstrap;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
 import org.philimone.hds.explorer.fragment.showcollected.adapter.ShowCollectedDataAdapter;
 import org.philimone.hds.explorer.fragment.showcollected.adapter.model.OdkCollectedDataItem;
+import org.philimone.hds.explorer.fragment.showcollected.utilities.CoreCollectedDataDeletionUtil;
 import org.philimone.hds.explorer.main.HouseholdDetailsActivity;
 import org.philimone.hds.explorer.main.MemberDetailsActivity;
 import org.philimone.hds.explorer.main.RegionDetailsActivity;
@@ -31,25 +33,24 @@ import org.philimone.hds.explorer.model.CollectedData;
 import org.philimone.hds.explorer.model.CollectedData_;
 import org.philimone.hds.explorer.model.CoreFormExtension;
 import org.philimone.hds.explorer.model.Dataset;
-import org.philimone.hds.explorer.model.Dataset_;
 import org.philimone.hds.explorer.model.Form;
 import org.philimone.hds.explorer.model.FormSubject;
 import org.philimone.hds.explorer.model.Household;
-import org.philimone.hds.explorer.model.Household_;
 import org.philimone.hds.explorer.model.Member;
 import org.philimone.hds.explorer.model.Module;
 import org.philimone.hds.explorer.model.Region;
-import org.philimone.hds.explorer.model.Region_;
 import org.philimone.hds.explorer.model.User;
 import org.philimone.hds.explorer.model.Visit;
+import org.philimone.hds.explorer.widget.DialogFactory;
 import org.philimone.hds.explorer.widget.LoadingDialog;
 import org.philimone.hds.explorer.widget.RecyclerListView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import io.objectbox.Box;
-import mz.betainteractive.odk.FormUtilities;
 import mz.betainteractive.utilities.StringUtil;
 
 /**
@@ -63,9 +64,14 @@ public class ShowOdkCollectedDataFragment extends Fragment {
 
     private RecyclerListView lvCollectedForms;
     private EditText txtCollectedDataFilter;
+    private Button btShowCollectedDelete;
     private LoadingDialog loadingDialog;
 
     private User loggedUser;
+
+    private ActionListener actionListener;
+
+    private CoreCollectedDataDeletionUtil deletionUtil;
 
     private Box<CollectedData> boxCollectedData;
     private Box<Region> boxRegions;
@@ -81,21 +87,39 @@ public class ShowOdkCollectedDataFragment extends Fragment {
 
     private ActivityResultLauncher<Intent> onFormEditLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
        //after calling details activity to edit a collected odk form
-       reloadCollectedData();
+        Log.d("testing", "reloading odk");
+        reloadCollectedData();
+        fireOnFormEdited();
     });
 
     public ShowOdkCollectedDataFragment() {
         // Required empty public constructor
         initBoxes();
     }
+    public ShowOdkCollectedDataFragment(ActionListener listener) {
+        this();
+        this.actionListener = listener;
+    }
 
-    public static ShowOdkCollectedDataFragment newInstance(){
-        ShowOdkCollectedDataFragment fragment = new ShowOdkCollectedDataFragment();
+    public static ShowOdkCollectedDataFragment newInstance(ActionListener listener){
+        ShowOdkCollectedDataFragment fragment = new ShowOdkCollectedDataFragment(listener);
 
         fragment.loggedUser = Bootstrap.getCurrentUser();
         //fragment.initializeDataloaders();
 
         return fragment;
+    }
+
+    private void fireOnFormEdited() {
+        if (this.actionListener != null) {
+            this.actionListener.onOdkFormEdited();
+        }
+    }
+
+    private void fireOnDeletedForms() {
+        if (this.actionListener != null) {
+            this.actionListener.onDeletedOdkForms();
+        }
     }
 
     @Override
@@ -114,6 +138,7 @@ public class ShowOdkCollectedDataFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         loggedUser = Bootstrap.getCurrentUser();
+        this.deletionUtil = new CoreCollectedDataDeletionUtil(this.getContext());
 
         initialize(view);
     }
@@ -139,16 +164,17 @@ public class ShowOdkCollectedDataFragment extends Fragment {
 
         lvCollectedForms = view.findViewById(R.id.lvCollectedForms);
         txtCollectedDataFilter = view.findViewById(R.id.txtCollectedDataFilter);
+        btShowCollectedDelete = view.findViewById(R.id.btShowCollectedDelete);
 
         lvCollectedForms.addOnItemClickListener(new RecyclerListView.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position, long id) {
-                onCollectedDataItemClicked(position);
+                selectItem(position);
             }
 
             @Override
             public void onItemLongClick(View view, int position, long id) {
-
+                onCollectedDataItemClicked(position);
             }
         });
 
@@ -165,7 +191,18 @@ public class ShowOdkCollectedDataFragment extends Fragment {
             }
         });
 
+        this.btShowCollectedDelete.setOnClickListener(v -> {
+            onDeleteSelectedForms();
+        });
+
         this.showCollectedData();
+    }
+
+    private void selectItem(int position) {
+        ShowCollectedDataAdapter adapter = (ShowCollectedDataAdapter) this.lvCollectedForms.getAdapter();
+        if (adapter != null) {
+            adapter.setCheckedOrUnchecked(position);
+        }
     }
 
     private void filterCollectedData(String text){
@@ -198,7 +235,18 @@ public class ShowOdkCollectedDataFragment extends Fragment {
             cdl.add(new OdkCollectedDataItem(cd.getFormId(), getSubject(cd), form, coreform, cd));
         }
 
-        ShowCollectedDataAdapter adapter = new ShowCollectedDataAdapter(this.getContext(), cdl);
+        ShowCollectedDataAdapter adapter = new ShowCollectedDataAdapter(this.getContext(), cdl, new ShowCollectedDataAdapter.OnItemActionListener() {
+            @Override
+            public void onInfoButtonClicked(OdkCollectedDataItem collectedData) {
+                Log.d("collected", ""+collectedData);
+            }
+
+            @Override
+            public void onCheckedStatusChanged(int position, boolean checkedStatus, boolean allChecked, boolean anyChecked) {
+                btShowCollectedDelete.setEnabled(anyChecked);
+            }
+        });
+
         this.lvCollectedForms.setAdapter(adapter);
     }
 
@@ -281,6 +329,69 @@ public class ShowOdkCollectedDataFragment extends Fragment {
             this.loadingDialog.dismiss();
         }
     }
+
+    private void onDeleteSelectedForms() {
+        ShowCollectedDataAdapter adapter = (ShowCollectedDataAdapter) this.lvCollectedForms.getAdapter();
+
+        if (adapter != null) {
+            final List<OdkCollectedDataItem> selectedList = adapter.getSelectedCollectedData();
+
+            if (selectedList.size() > 0) {
+                //display two warnings
+                //You are about to delete 3 records that were recently collected.
+                //You must be cautious while doing this
+
+                DialogFactory yesNoDialog = DialogFactory.createMessageYN(this.getContext(), R.string.show_collected_data_deletion_warning_title_lbl, R.string.show_collected_data_deletion_warning_odk_msg2_lbl, new DialogFactory.OnYesNoClickListener() {
+                    @Override
+                    public void onYesClicked() {
+                        deleteSelectedRecords(selectedList);
+                    }
+
+                    @Override
+                    public void onNoClicked() {
+
+                    }
+                });
+
+                DialogFactory.createMessageInfo(this.getContext(), R.string.show_collected_data_deletion_warning_title_lbl, R.string.show_collected_data_deletion_warning_odk_msg1_lbl, clickedButton -> {
+                    yesNoDialog.show();
+                }).show();
+            }
+        }
+    }
+
+    private void deleteSelectedRecords(List<OdkCollectedDataItem> selectedList) {
+        //showLoadingDialog(getString(R.string.show_collected_data_deletion_loading_lbl), true);
+        //new DeletionTask(selectedList).execute();
+/*
+        ExecutorService executorService = Executors.newSingleThreadExecutor();
+        Handler handler = new Handler(Looper.getMainLooper());
+
+        executorService.execute(new Runnable() {
+            @Override
+            public void run() {
+
+                //background work
+                runOnUiThread
+                new CoreCollectedDataDeletionUtil(getContext()).deleteOdkRecords(selectedList);
+
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        //run ui thread
+                        //reloadCollectedData();
+                        fireOnDeletedForms();
+                    }
+                });
+            }
+        });*/
+
+        getActivity().runOnUiThread(() -> {
+            new CoreCollectedDataDeletionUtil(getContext()).deleteOdkRecords(selectedList);
+        });
+
+        getActivity().runOnUiThread(this::fireOnDeletedForms);
+    }
     
     class ShowRegionTask extends AsyncTask<Void, Void, Void> {
         private Region region;
@@ -330,7 +441,7 @@ public class ShowOdkCollectedDataFragment extends Fragment {
             intent.putExtra("household", household.id);
             intent.putExtra("odk-form-edit", collectedData.id);
 
-            showLoadingDialog(null, false);
+            //showLoadingDialog(null, false);
 
             onFormEditLauncher.launch(intent);
         }
@@ -363,4 +474,30 @@ public class ShowOdkCollectedDataFragment extends Fragment {
         }
     }
 
+    class DeletionTask extends AsyncTask<Void, Void, Void> {
+
+        private List<OdkCollectedDataItem> list;
+
+        public DeletionTask(List<OdkCollectedDataItem> list) {
+            this.list = list;
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            deletionUtil.deleteOdkRecords(list);
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void result) {
+            showLoadingDialog(null, false);
+            fireOnDeletedForms();
+        }
+    }
+
+    public interface ActionListener {
+        void onDeletedOdkForms();
+
+        void onOdkFormEdited();
+    }
 }

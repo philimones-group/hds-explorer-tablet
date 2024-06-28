@@ -14,6 +14,7 @@ import org.philimone.hds.explorer.adapter.model.CollectedDataItem;
 import org.philimone.hds.explorer.adapter.model.FormGroupChildItem;
 import org.philimone.hds.explorer.data.FormDataLoader;
 import org.philimone.hds.explorer.data.FormFilter;
+import org.philimone.hds.explorer.database.Bootstrap;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
 import org.philimone.hds.explorer.main.hdsforms.EditCoreExtensionFormUtil;
 import org.philimone.hds.explorer.main.hdsforms.FormUtil;
@@ -143,13 +144,14 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
     public CollectedDataFragment() {
         // Required empty public constructor
         initBoxes();
+        this.loggedUser = Bootstrap.getCurrentUser();
     }
 
     public static CollectedDataFragment newInstance(FormSubject subject, User user, TrackingSubjectList trackingSubject){
         CollectedDataFragment fragment = new CollectedDataFragment();
         fragment.trackingSubject = trackingSubject;
         fragment.subject = subject;
-        fragment.loggedUser = user;
+        //fragment.loggedUser = user;
 
         fragment.initializeDataloaders();
 
@@ -940,17 +942,15 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
     @Override
     public void onDeleteForm(OdkFormLoadData formLoadData, Uri contentUri, String instanceFileUri) {
 
-        this.boxCollectedData.query().equal(CollectedData_.formUri, contentUri.toString(), QueryBuilder.StringOrder.CASE_SENSITIVE).build().remove(); //delete where formUri=contentUri
+        getActivity().runOnUiThread(()->{
+            this.boxCollectedData.query().equal(CollectedData_.formUri, contentUri.toString(), QueryBuilder.StringOrder.CASE_SENSITIVE).build().remove();
+            // delete also the formGroupInstanceChild
+            this.boxFormGroupInstanceChilds.query(FormGroupInstanceChild_.formInstanceUri.equal(instanceFileUri)).build().remove();
+        });
 
-        //delete the instanceFileUri - already deleted by removing instance
-        if (instanceFileUri != null) {
-            //formUtilities.deleteInstanceFile(instanceFileUri);
-        }
-
-        //delete also the formGroupInstanceChild
-        this.boxFormGroupInstanceChilds.query(FormGroupInstanceChild_.formInstanceUri.equal(instanceFileUri)).build().remove();
-
-        onFinishedOdkDataCollection(formLoadData);
+        getActivity().runOnUiThread(() -> {
+            onFinishedOdkDataCollection(formLoadData);
+        });
     }
 
     @Override
@@ -978,6 +978,7 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
                 //if we opened a form to edit from a External Activity not the same that has this Fragment
                 if (collectedDataFragmentListener != null) {
                     this.externalCallCollectedDataToEdit = false;
+                    Log.d("executed-until", "cdf-afterExtCallEdit");
                     collectedDataFragmentListener.afterExternalCallCollectedDataToEditFinished();
                 }
             } else {

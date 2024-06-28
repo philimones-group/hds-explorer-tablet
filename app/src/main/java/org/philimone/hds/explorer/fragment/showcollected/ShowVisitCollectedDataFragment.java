@@ -11,6 +11,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -64,6 +66,7 @@ public class ShowVisitCollectedDataFragment extends Fragment {
     private FormSubject subject;
     private User loggedUser;
 
+    private ActionListener actionListener;
     private List<FormDataLoader> formDataLoaders = new ArrayList<>();
 
     private Box<CoreCollectedData> boxCoreCollectedData;
@@ -76,17 +79,33 @@ public class ShowVisitCollectedDataFragment extends Fragment {
 
     private List<String> selectedModules = new ArrayList<>();
 
+    private ActivityResultLauncher<Intent> onVisitEditLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+        //after calling details activity to edit a collected odk form
+        fireOnVisitEdited();
+    });
+
     public ShowVisitCollectedDataFragment() {
         // Required empty public constructor
         initBoxes();
         loggedUser = Bootstrap.getCurrentUser();
     }
 
-    public static ShowVisitCollectedDataFragment newInstance(){
-        ShowVisitCollectedDataFragment fragment = new ShowVisitCollectedDataFragment();
+    public ShowVisitCollectedDataFragment(ActionListener listener) {
+        this();
+        this.actionListener = listener;
+    }
+
+    public static ShowVisitCollectedDataFragment newInstance(ActionListener listener){
+        ShowVisitCollectedDataFragment fragment = new ShowVisitCollectedDataFragment(listener);
         fragment.loggedUser = Bootstrap.getCurrentUser();
 
         return fragment;
+    }
+
+    private void fireOnVisitEdited(){
+        if (this.actionListener != null) {
+            this.actionListener.onVisitEdited();
+        }
     }
 
     @Override
@@ -98,7 +117,7 @@ public class ShowVisitCollectedDataFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
 
-        return inflater.inflate(R.layout.show_collected_list, container, false);
+        return inflater.inflate(R.layout.show_visit_collected_list, container, false);
     }
 
     @Override
@@ -205,18 +224,6 @@ public class ShowVisitCollectedDataFragment extends Fragment {
             task.execute();
             showLoadingDialog(getString(R.string.loading_dialog_household_details_lbl), true);
         }
-
-        if (dataItem.member != null) {
-            ShowMemberTask task = new ShowMemberTask(dataItem.member);
-            task.execute();
-            showLoadingDialog(getString(R.string.loading_dialog_member_details_lbl), true);
-        }
-
-        if (dataItem.region != null) {
-            ShowRegionTask task = new ShowRegionTask(dataItem.region);
-            task.execute();
-            showLoadingDialog(getString(R.string.loading_dialog_region_details_lbl), true);
-        }
     }
 
     private List<CoreCollectedDataItem> getAllCollectedData() {
@@ -239,16 +246,6 @@ public class ShowVisitCollectedDataFragment extends Fragment {
             }
         }
 
-        /* This is now part of ShowCoreCollectedData
-        List<CoreCollectedData> listd = this.boxCoreCollectedData.query(CoreCollectedData_.visitId.equal(0)).orderDesc(CoreCollectedData_.createdDate).order(CoreCollectedData_.formEntityCode).build().find();
-        for (CoreCollectedData cdata : listd) {
-            FormSubject subject = getFormSubject(cdata);
-
-            if (subject != null) {
-                list.add(new CoreCollectedDataItem(cdata, subject));
-            }
-        }*/
-
         return list;
     }
 
@@ -261,22 +258,6 @@ public class ShowVisitCollectedDataFragment extends Fragment {
         }
 
         return formEntities;
-    }
-
-    private FormSubject getFormSubject(CoreCollectedData collectedData) {
-
-        switch (collectedData.formEntity) {
-            case REGION:
-            case EDITED_REGION:
-                return this.boxRegions.query(Region_.id.equal(collectedData.formEntityId)).build().findFirst();
-            case PRE_HOUSEHOLD:
-            case HOUSEHOLD:
-            case EDITED_HOUSEHOLD: return boxHouseholds.query(Household_.id.equal(collectedData.formEntityId)).build().findFirst();
-            case EDITED_MEMBER: return boxMembers.query(Member_.id.equal(collectedData.formEntityId)).build().findFirst();
-
-        }
-
-        return null;
     }
 
     private void showLoadingDialog(String msg, boolean show){
@@ -308,55 +289,7 @@ public class ShowVisitCollectedDataFragment extends Fragment {
 
             showLoadingDialog(null, false);
 
-            startActivity(intent);
-        }
-    }
-
-    class ShowMemberTask extends AsyncTask<Void, Void, Void> {
-        private Member member;
-
-        public ShowMemberTask(Member member) {
-            this.member = member;
-        }
-
-        @Override
-        protected Void doInBackground(Void... voids) {
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void result) {
-
-            Intent intent = new Intent(ShowVisitCollectedDataFragment.this.getContext(), MemberDetailsActivity.class);
-            intent.putExtra("member", member.id);
-
-            showLoadingDialog(null, false);
-
-            startActivity(intent);
-        }
-    }
-
-    class ShowRegionTask extends AsyncTask<Void, Void, Void> {
-        private Region region;
-
-        public ShowRegionTask(Region region) {
-            this.region = region;
-        }
-
-        @Override
-        protected Void doInBackground(Void... voids) {
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void result) {
-
-            Intent intent = new Intent(ShowVisitCollectedDataFragment.this.getContext(), RegionDetailsActivity.class);
-            intent.putExtra("region", region.id);
-
-            showLoadingDialog(null, false);
-
-            startActivity(intent);
+            onVisitEditLauncher.launch(intent);
         }
     }
 
@@ -370,5 +303,9 @@ public class ShowVisitCollectedDataFragment extends Fragment {
             this.collectedData = collectedData;
             this.filledForm = filledForm;
         }
+    }
+
+    public interface ActionListener {
+        void onVisitEdited();
     }
 }

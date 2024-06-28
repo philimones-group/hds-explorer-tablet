@@ -20,6 +20,7 @@
     <string name="bt_close_lbl">Fechar</string>
     <string name="bt_enable_lbl">Activar</string>
     <string name="bt_disable_lbl">Desactivar</string>
+    <string name="bt_try_again_lbl">Tentar novamente</string>
     <string name="info_lbl">Info</string>
     <string name="error_lbl">Erro</string>
     <string name="updated_successfully_lbl">Actualizado com sucesso</string>
@@ -623,10 +624,16 @@
     <string name="show_collected_data_tab_odk_forms_lbl">Formulários ODK</string>
     <string name="show_collected_data_btn_update_lbl">Actualizar Listas</string>
     <string name="show_collected_data_btn_delete_lbl">Apagar Dados</string>
+    <string name="show_collected_data_btn_delete_odk_lbl">Apagar Formulários</string>
     <string name="show_collected_data_list_filter_hint_lbl">Código/Nome/Outros detalhes</string>
+    <string name="show_collected_data_odk_item_status_finalized_lbl">Finalizado</string>
+    <string name="show_collected_data_odk_item_status_unfinalized_lbl">Não finalizado</string>
     <string name="show_collected_data_deletion_warning_title_lbl">**Aviso: Cuidado ao Apagar Dados**</string>
     <string name="show_collected_data_deletion_warning_msg1_lbl">Por favor, tenha extrema cautela ao apagar dados de vigilância demográfica. \nExcluir esses dados pode ter implicações de longo alcance e pode afetar vários conjuntos de dados interconectados.</string>
     <string name="show_collected_data_deletion_warning_msg2_lbl">A exclusão desses dados resultará na perda de qualquer conjunto de dados relacionado a esses registros.\nDeseja prosseguir com a exclusão desses registros?</string>
+    <string name="show_collected_data_deletion_warning_odk_msg1_lbl">Por favor, tenha extrema cautela ao apagar os dados dos formulários ODK. \nExcluir esses dados pode ter implicações significativas e pode afetar os conjuntos de dados do programa de pesquisa relacionado.</string>
+    <string name="show_collected_data_deletion_warning_odk_msg2_lbl">A exclusão desses dados resultará na perda de todas as informações coletadas nesta instância do formulário.\nDeseja prosseguir com a exclusão desses formulários?</string>
+    <string name="show_collected_data_deletion_loading_lbl">Apagando dados...</string>
 
     <string name="form_group_selector_uuid_lbl">UUID</string>
     <string name="form_group_selector_code_lbl">Código</string>

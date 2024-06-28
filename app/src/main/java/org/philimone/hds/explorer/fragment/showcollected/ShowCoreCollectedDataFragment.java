@@ -12,12 +12,13 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import org.philimone.hds.explorer.R;
-import org.philimone.hds.explorer.data.FormDataLoader;
 import org.philimone.hds.explorer.database.Bootstrap;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
 import org.philimone.hds.explorer.fragment.showcollected.adapter.ShowCoreCollectedDataAdapter;
@@ -31,7 +32,6 @@ import org.philimone.hds.explorer.model.CollectedData;
 import org.philimone.hds.explorer.model.CoreCollectedData;
 import org.philimone.hds.explorer.model.CoreCollectedData_;
 import org.philimone.hds.explorer.model.Death;
-import org.philimone.hds.explorer.model.Death_;
 import org.philimone.hds.explorer.model.Form;
 import org.philimone.hds.explorer.model.FormSubject;
 import org.philimone.hds.explorer.model.HeadRelationship;
@@ -39,48 +39,27 @@ import org.philimone.hds.explorer.model.HeadRelationship_;
 import org.philimone.hds.explorer.model.Household;
 import org.philimone.hds.explorer.model.Household_;
 import org.philimone.hds.explorer.model.IncompleteVisit;
-import org.philimone.hds.explorer.model.IncompleteVisit_;
 import org.philimone.hds.explorer.model.Inmigration;
-import org.philimone.hds.explorer.model.Inmigration_;
 import org.philimone.hds.explorer.model.MaritalRelationship;
-import org.philimone.hds.explorer.model.MaritalRelationship_;
 import org.philimone.hds.explorer.model.Member;
 import org.philimone.hds.explorer.model.Member_;
-import org.philimone.hds.explorer.model.Module;
 import org.philimone.hds.explorer.model.Outmigration;
-import org.philimone.hds.explorer.model.Outmigration_;
-import org.philimone.hds.explorer.model.PregnancyChild;
-import org.philimone.hds.explorer.model.PregnancyChild_;
 import org.philimone.hds.explorer.model.PregnancyOutcome;
-import org.philimone.hds.explorer.model.PregnancyOutcome_;
 import org.philimone.hds.explorer.model.PregnancyRegistration;
-import org.philimone.hds.explorer.model.PregnancyRegistration_;
 import org.philimone.hds.explorer.model.Region;
 import org.philimone.hds.explorer.model.Region_;
-import org.philimone.hds.explorer.model.Residency;
-import org.philimone.hds.explorer.model.Residency_;
 import org.philimone.hds.explorer.model.User;
 import org.philimone.hds.explorer.model.Visit;
 import org.philimone.hds.explorer.model.Visit_;
-import org.philimone.hds.explorer.model.enums.HeadRelationshipType;
-import org.philimone.hds.explorer.model.enums.MaritalEndStatus;
-import org.philimone.hds.explorer.model.enums.temporal.ExternalInMigrationType;
-import org.philimone.hds.explorer.model.enums.temporal.HeadRelationshipEndType;
-import org.philimone.hds.explorer.model.enums.temporal.HeadRelationshipStartType;
-import org.philimone.hds.explorer.model.enums.temporal.ResidencyEndType;
-import org.philimone.hds.explorer.model.enums.temporal.ResidencyStartType;
 import org.philimone.hds.explorer.widget.DialogFactory;
 import org.philimone.hds.explorer.widget.LoadingDialog;
 import org.philimone.hds.explorer.widget.RecyclerListView;
 
-import java.io.File;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import io.objectbox.Box;
 import mz.betainteractive.odk.model.FilledForm;
-import mz.betainteractive.utilities.GeneralUtil;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -89,7 +68,7 @@ import mz.betainteractive.utilities.GeneralUtil;
  */
 public class ShowCoreCollectedDataFragment extends Fragment {
 
-    private ShowCollectedDataActivity mainActivity;
+    private ActionListener actionListener;
 
     private enum SubjectMode { REGION, HOUSEHOLD, MEMBER };
 
@@ -117,7 +96,10 @@ public class ShowCoreCollectedDataFragment extends Fragment {
 
     private List<String> selectedModules = new ArrayList<>();
 
-    private CoreCollectedDataDeletionUtil deletionUtil;
+    private ActivityResultLauncher<Intent> onFormEditLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+        //after calling details activity to edit a collected odk form
+        fireOnFormEdited();
+    });
 
     public ShowCoreCollectedDataFragment() {
         // Required empty public constructor
@@ -125,15 +107,28 @@ public class ShowCoreCollectedDataFragment extends Fragment {
         loggedUser = Bootstrap.getCurrentUser();
     }
 
-    public static ShowCoreCollectedDataFragment newInstance(){
-        ShowCoreCollectedDataFragment fragment = new ShowCoreCollectedDataFragment();
+    public ShowCoreCollectedDataFragment(ActionListener listener) {
+        this();
+        this.actionListener = listener;
+    }
+
+    public static ShowCoreCollectedDataFragment newInstance(ActionListener listener){
+        ShowCoreCollectedDataFragment fragment = new ShowCoreCollectedDataFragment(listener);
         fragment.loggedUser = Bootstrap.getCurrentUser();
 
         return fragment;
     }
 
-    public void setMainActivity(ShowCollectedDataActivity activity) {
-        this.mainActivity = activity;
+    private void fireOnFormEdited() {
+        if (this.actionListener != null) {
+            this.actionListener.onCoreFormEdited();
+        }
+    }
+
+    private void fireOnDeletedForms() {
+        if (this.actionListener != null) {
+            this.actionListener.onDeletedCoreForms();
+        }
     }
 
     @Override
@@ -151,8 +146,6 @@ public class ShowCoreCollectedDataFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-        this.deletionUtil = new CoreCollectedDataDeletionUtil(this.getContext());
 
         initialize(view);
     }
@@ -188,7 +181,7 @@ public class ShowCoreCollectedDataFragment extends Fragment {
         lvCollectedForms.addOnItemClickListener(new RecyclerListView.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position, long id) {
-                onSelectItem(position);
+                selectItem(position);
             }
 
             @Override
@@ -256,7 +249,7 @@ public class ShowCoreCollectedDataFragment extends Fragment {
         showCollectedData();
     }
 
-    private void onSelectItem(int position) {
+    private void selectItem(int position) {
         ShowCoreCollectedDataAdapter adapter = (ShowCoreCollectedDataAdapter) this.lvCollectedForms.getAdapter();
         adapter.setCheckedOrUnchecked(position);
     }
@@ -312,7 +305,7 @@ public class ShowCoreCollectedDataFragment extends Fragment {
     }
 
     private void deleteSelectedRecords(List<CoreCollectedDataItem> selectedList) {
-        showLoadingDialog("Deleting recently collected data", true);
+        //showLoadingDialog(getString(R.string.show_collected_data_deletion_loading_lbl), true);
         new DeletionTask(selectedList).execute();
     }
 
@@ -399,7 +392,7 @@ public class ShowCoreCollectedDataFragment extends Fragment {
 
             showLoadingDialog(null, false);
 
-            startActivity(intent);
+            onFormEditLauncher.launch(intent);
         }
     }
 
@@ -423,7 +416,7 @@ public class ShowCoreCollectedDataFragment extends Fragment {
 
             showLoadingDialog(null, false);
 
-            startActivity(intent);
+            onFormEditLauncher.launch(intent);
         }
     }
 
@@ -447,7 +440,7 @@ public class ShowCoreCollectedDataFragment extends Fragment {
 
             showLoadingDialog(null, false);
 
-            startActivity(intent);
+            onFormEditLauncher.launch(intent);
         }
     }
 
@@ -461,15 +454,14 @@ public class ShowCoreCollectedDataFragment extends Fragment {
 
         @Override
         protected Void doInBackground(Void... voids) {
-            deletionUtil.deleteRecords(list);
+            new CoreCollectedDataDeletionUtil(getContext()).deleteRecords(list);
             return null;
         }
 
         @Override
         protected void onPostExecute(Void result) {
-            showLoadingDialog(null, false);
-
-            mainActivity.showResumeDetails();
+            //showLoadingDialog(null, false);
+            fireOnDeletedForms();
         }
     }
 
@@ -483,5 +475,11 @@ public class ShowCoreCollectedDataFragment extends Fragment {
             this.collectedData = collectedData;
             this.filledForm = filledForm;
         }
+    }
+
+    public interface ActionListener {
+        void onDeletedCoreForms();
+
+        void onCoreFormEdited();
     }
 }

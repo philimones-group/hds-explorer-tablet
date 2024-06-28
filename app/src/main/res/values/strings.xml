@@ -22,6 +22,7 @@
     <string name="bt_close_lbl">Close</string>
     <string name="bt_enable_lbl">Enable</string>
     <string name="bt_disable_lbl">Disable</string>
+    <string name="bt_try_again_lbl">Try again</string>
     <string name="info_lbl">Info</string>
     <string name="error_lbl">Error</string>
     <string name="updated_successfully_lbl">Updated Successfully</string>
@@ -626,10 +627,16 @@
     <string name="show_collected_data_tab_odk_forms_lbl">ODK Forms</string>
     <string name="show_collected_data_btn_update_lbl">Update Collected Data</string>
     <string name="show_collected_data_btn_delete_lbl">Delete Records</string>
+    <string name="show_collected_data_btn_delete_odk_lbl">Delete Forms</string>
     <string name="show_collected_data_list_filter_hint_lbl">Code/Name/Any Subject details</string>
+    <string name="show_collected_data_odk_item_status_finalized_lbl">Finalized</string>
+    <string name="show_collected_data_odk_item_status_unfinalized_lbl">Not Finalized</string>
     <string name="show_collected_data_deletion_warning_title_lbl">**Warning: Data Deletion Caution**</string>
     <string name="show_collected_data_deletion_warning_msg1_lbl">Please exercise extreme caution when deleting demographics surveillance data. \nDeleting this data may have far-reaching implications and could affect various interconnected datasets.</string>
     <string name="show_collected_data_deletion_warning_msg2_lbl">Deleting this data will result in the loss of any related dataset to these records.\nDo you want to proceed with the deletion of these records?</string>
+    <string name="show_collected_data_deletion_warning_odk_msg1_lbl">Please exercise extreme caution when deleting ODK Forms data. \nDeleting this data may have far-reaching implications and could affect the related research program datasets.</string>
+    <string name="show_collected_data_deletion_warning_odk_msg2_lbl">Deleting this data will result in the loss of all the collected information in this Form instance.\nDo you want to proceed with the deletion of these Forms?</string>
+    <string name="show_collected_data_deletion_loading_lbl">Deleting data...</string>
 
     <string name="form_group_selector_uuid_lbl">UUID</string>
     <string name="form_group_selector_code_lbl">Code</string>

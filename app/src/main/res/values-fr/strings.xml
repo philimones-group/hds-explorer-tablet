@@ -20,6 +20,7 @@
     <string name="bt_close_lbl">Fermer</string>
     <string name="bt_enable_lbl">Activer</string>
     <string name="bt_disable_lbl">Désactiver</string>
+    <string name="bt_try_again_lbl">Réessayer</string>
     <string name="info_lbl">Info</string>
     <string name="error_lbl">Erreur</string>
     <string name="updated_successfully_lbl">Mise à jour réussie</string>
@@ -624,10 +625,16 @@
     <string name="show_collected_data_tab_odk_forms_lbl">Formulaires ODK</string>
     <string name="show_collected_data_btn_update_lbl">Mise à jour des listes</string>
     <string name="show_collected_data_btn_delete_lbl">Supprimer des Données.</string>
+    <string name="show_collected_data_btn_delete_odk_lbl">Supprimer les Formulaires</string>
     <string name="show_collected_data_list_filter_hint_lbl">Code/Nom/Autres détails</string>
+    <string name="show_collected_data_odk_item_status_finalized_lbl">Finalisé</string>
+    <string name="show_collected_data_odk_item_status_unfinalized_lbl">Non finalisé</string>
     <string name="show_collected_data_deletion_warning_title_lbl">**Attention : Précaution lors de la suppression des données**</string>
     <string name="show_collected_data_deletion_warning_msg1_lbl">Veuillez faire preuve d\'une extrême prudence lors de la suppression des données de surveillance démographique. \nLa suppression de ces données peut avoir des implications importantes et pourrait affecter divers ensembles de données interconnectés.</string>
     <string name="show_collected_data_deletion_warning_msg2_lbl">La suppression de ces données entraînera la perte de tout ensemble de données associé à ces enregistrements.\nSouhaitez-vous procéder à la suppression de ces enregistrements ?</string>
+    <string name="show_collected_data_deletion_warning_odk_msg1_lbl">Veuillez faire preuve d\'une extrême prudence lors de la suppression des données des formulaires ODK. \nLa suppression de ces données peut avoir des implications importantes et pourrait affecter les ensembles de données du programme de recherche associé.</string>
+    <string name="show_collected_data_deletion_warning_odk_msg2_lbl">La suppression de ces données entraînera la perte de toutes les informations collectées dans cette instance de formulaire.\nVoulez-vous continuer avec la suppression de ces formulaires?</string>
+    <string name="show_collected_data_deletion_loading_lbl">Suppression des données...</string>
 
     <string name="form_group_selector_uuid_lbl">UUID</string>
     <string name="form_group_selector_code_lbl">Code</string>

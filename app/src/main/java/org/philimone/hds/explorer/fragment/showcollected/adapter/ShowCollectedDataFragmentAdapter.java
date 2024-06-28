@@ -24,19 +24,16 @@ public class ShowCollectedDataFragmentAdapter extends FragmentStateAdapter {
     private ShowOdkCollectedDataFragment fragOdkCollectedData;
     private ShowCoreCollectedDataFragment fragCoreCollectedData;
 
-    private ShowCollectedDataActivity activity;
-
-    public ShowCollectedDataFragmentAdapter(@NonNull FragmentManager fragmentManager, @NonNull Lifecycle lifecycle, ShowCollectedDataActivity activity, List<String> titles) {
+    public ShowCollectedDataFragmentAdapter(@NonNull FragmentManager fragmentManager, @NonNull Lifecycle lifecycle, List<String> titles, ShowVisitCollectedDataFragment.ActionListener visitFragmentListener, ShowCoreCollectedDataFragment.ActionListener coreFragmentListener, ShowOdkCollectedDataFragment.ActionListener odkFragmentListener) {
         super(fragmentManager, lifecycle);
         this.tabTitles.addAll(titles);
 
-        this.activity = activity;
+        this.fragVisitCollectedData = ShowVisitCollectedDataFragment.newInstance(visitFragmentListener);
+        this.fragOdkCollectedData = ShowOdkCollectedDataFragment.newInstance(odkFragmentListener);
+        this.fragCoreCollectedData = ShowCoreCollectedDataFragment.newInstance(coreFragmentListener);
 
-        this.fragVisitCollectedData = ShowVisitCollectedDataFragment.newInstance();
-        this.fragOdkCollectedData = ShowOdkCollectedDataFragment.newInstance();
-        this.fragCoreCollectedData = ShowCoreCollectedDataFragment.newInstance();
-
-        this.fragCoreCollectedData.setMainActivity(activity);
+        //this.fragCoreCollectedData.setMainActivity(activity);
+        //this.fragOdkCollectedData.setMainActivity(activity);
     }
 
     @NonNull

@@ -28,6 +28,7 @@ public class OdkCollectedDataItem implements Serializable {
     private CoreFormExtension formExtension;
     private Region region;
     private CollectedData collectedData;
+    public boolean selected = false;
 
     public OdkCollectedDataItem(String formId, FormSubject subject, Form form, CoreFormExtension coreFormExtension, CollectedData collectedData) {
         this.formId = formId;

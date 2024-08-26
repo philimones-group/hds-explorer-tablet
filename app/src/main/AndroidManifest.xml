@@ -47,6 +47,9 @@
         <activity
             android:name=".io.datasharing.bluetooth.BluetoothDeviceListActivity"
             android:theme="@style/appCompatDialogTheme" android:exported="true" />
+        <activity
+            android:name=".io.datasharing.wifi.TcpIpDeviceListActivity"
+            android:theme="@style/appCompatDialogTheme" android:exported="true" />
         <activity android:name=".main.sync.SyncDataSharingActivity" android:exported="true" />
         <activity
             android:name=".main.SplashScreenActivity"

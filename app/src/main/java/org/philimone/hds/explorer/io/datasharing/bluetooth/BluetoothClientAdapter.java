@@ -163,6 +163,11 @@ public class BluetoothClientAdapter extends ClientAdapter {
         ensurePermissionsGranted(Manifest.permission.BLUETOOTH_CONNECT, Manifest.permission.BLUETOOTH_SCAN);
     }
 
+    @Override
+    public void stopScanning() {
+
+    }
+
     private void initScanning() {
         this.devicesListLauncher.launch(new Intent(mContext, BluetoothDeviceListActivity.class));
         listener.onScanningDevices();
@@ -176,6 +181,10 @@ public class BluetoothClientAdapter extends ClientAdapter {
         new ClientConnectThread(bluetoothDevice).execute();
     }
 
+    private void onBluetoothSocketConnecting(BluetoothDevice device) {
+        listener.onDeviceConnecting();
+    }
+
     private void onBluetoothSocketConnected(BluetoothSocket clientSocket) {
         Log.d("client bluetooth", "client connected");
 
@@ -187,10 +196,14 @@ public class BluetoothClientAdapter extends ClientAdapter {
     }
 
     private class ClientConnectThread extends AsyncTask<Void, Integer, ClientConnectThread.ConnectResult> {
+        private BluetoothDevice bluetoothDevice;
         private BluetoothSocket clientSocket;
         private boolean cancel;
 
+        private final int PROGRESS_CONNECTING = 1;
+
         private ClientConnectThread(BluetoothDevice bluetoothDevice) {
+            this.bluetoothDevice = bluetoothDevice;
             BluetoothSocket bSocket = null;
 
             try {
@@ -198,6 +211,9 @@ public class BluetoothClientAdapter extends ClientAdapter {
                     DialogFactory.createMessageInfo(mContext, R.string.data_sharing_permissions_title_lbl, R.string.data_sharing_permissions_bluetooth_error).show();
                     return;
                 }
+
+                publishProgress(PROGRESS_CONNECTING);
+
                 bSocket = bluetoothDevice.createRfcommSocketToServiceRecord(UUID.fromString(serverDeviceUuid));
             } catch (IOException e) {
                 e.printStackTrace();
@@ -236,6 +252,13 @@ public class BluetoothClientAdapter extends ClientAdapter {
             } else {
                 return new ConnectResult(clientSocket, false);
             }
+        }
+
+        @Override
+        protected void onProgressUpdate(Integer... values) {
+            super.onProgressUpdate(values);
+
+            onBluetoothSocketConnecting(bluetoothDevice);
         }
 
         @Override

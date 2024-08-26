@@ -20,4 +20,6 @@ public abstract class ClientAdapter {
 
     public abstract void startScanning();
 
+    public abstract void stopScanning();
+
 }

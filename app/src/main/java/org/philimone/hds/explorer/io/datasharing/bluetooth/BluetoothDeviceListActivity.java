@@ -39,7 +39,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import org.philimone.hds.explorer.R;
-import org.philimone.hds.explorer.adapter.BluetoothDeviceArrayAdapter;
 
 import java.util.Set;
 

@@ -718,13 +718,18 @@
     <string name="data_sharing_shared_records_lbl">Ensembles de données partagés</string>
     <string name="data_sharing_connected_devices_lbl">Des appareils connectés</string>
     <string name="data_sharing_bt_start_data_sharing_lbl">Démarrer le partage de données</string>
-    <string name="data_sharing_devlist_title_lbl">Analyseur d\'appareils Bluetooth</string>
+    <string name="data_sharing_btt_devlist_title_lbl">Analyseur d\'appareils Bluetooth</string>
+    <string name="data_sharing_tcp_devlist_title_lbl">Scanner de Périphériques Réseau</string>
     <string name="data_sharing_msg_conn_not_init_lbl">Connexion non initialisée</string>
-    <string name="data_sharing_device_disabled_lbl">L\'appareil Bluetooth est désactivé</string>
-    <string name="data_sharing_device_not_found_lbl">Périphérique Bluetooth introuvable</string>
+    <string name="data_sharing_device_btt_disabled_lbl">L\'appareil Bluetooth est désactivé</string>
+    <string name="data_sharing_device_btt_not_found_lbl">Périphérique Bluetooth introuvable</string>
+    <string name="data_sharing_device_tcp_disabled_lbl">Réseau TCP/IP non disponible</string>
+    <string name="data_sharing_device_tcp_not_found_lbl">Appareil TCP/IP non trouvé</string>
+    <string name="data_sharing_device_connecting_lbl">Connexion à l\'appareil serveur...</string>
+    <string name="data_sharing_device_connected_lbl">Appareil connecté</string>
     <string name="data_sharing_server_listening_lbl">Le serveur écoute les périphériques</string>
     <string name="data_sharing_server_stopped_listening_lbl">Le serveur a cessé d\'écouter les périphériques</string>
-    <string name="data_sharing_device_connection_failure_lbl">Impossible de se connecter au périphérique Bluetooth</string>
+    <string name="data_sharing_device_connection_failure_lbl">Impossible de se connecter à l\'appareil distant</string>
     <string name="data_sharing_scan_for_servers_lbl">Recherche de périphériques serveur</string>
     <string name="data_sharing_scanning_stopped_lbl">Recherche de périphériques serveur</string>
     <string name="data_sharing_transferring_data_lbl">Transfert d\'ensembles de données partagés</string>
@@ -740,6 +745,7 @@
     <string name="data_sharing_devlist_none_found_lbl">Aucun périphérique trouvé</string>
     <string name="data_sharing_devlist_title_paired_devices_lbl">Appareils jumelés</string>
     <string name="data_sharing_devlist_title_other_devices_lbl">Autres appareils disponibles</string>
+    <string name="data_sharing_devlist_title_tcp_detected_devices_lbl">Appareils Trouvés</string>
     <string name="data_sharing_devlist_button_scan_lbl">Rechercher des appareils</string>
 
     <!-- barcode scanner -->

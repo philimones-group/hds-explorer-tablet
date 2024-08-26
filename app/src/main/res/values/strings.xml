@@ -720,13 +720,18 @@
     <string name="data_sharing_shared_records_lbl">Shared datasets records</string>
     <string name="data_sharing_connected_devices_lbl">Connected Devices</string>
     <string name="data_sharing_bt_start_data_sharing_lbl">Start Data Sharing</string>
-    <string name="data_sharing_devlist_title_lbl">Bluetooth Devices Scanner</string>
+    <string name="data_sharing_btt_devlist_title_lbl">Bluetooth Devices Scanner</string>
+    <string name="data_sharing_tcp_devlist_title_lbl">Network Devices Scanner</string>
     <string name="data_sharing_msg_conn_not_init_lbl">Connection not Initialized</string>
-    <string name="data_sharing_device_disabled_lbl">Bluetooth device is disabled</string>
-    <string name="data_sharing_device_not_found_lbl">Bluetooth device not found</string>
+    <string name="data_sharing_device_btt_disabled_lbl">Bluetooth device is disabled</string>
+    <string name="data_sharing_device_btt_not_found_lbl">Bluetooth device not found</string>
+    <string name="data_sharing_device_tcp_disabled_lbl">TCP/IP network not available</string>
+    <string name="data_sharing_device_tcp_not_found_lbl">TCP/IP device not found</string>
+    <string name="data_sharing_device_connecting_lbl">Connecting to server device...</string>
+    <string name="data_sharing_device_connected_lbl">Device connected</string>
     <string name="data_sharing_server_listening_lbl">Server is listening for devices</string>
     <string name="data_sharing_server_stopped_listening_lbl">Server stopped listening for devices</string>
-    <string name="data_sharing_device_connection_failure_lbl">Couldn\'t connect to bluetooth device</string>
+    <string name="data_sharing_device_connection_failure_lbl">Couldn\'t connect to remote device</string>
     <string name="data_sharing_scan_for_servers_lbl">Scanning for server devices</string>
     <string name="data_sharing_scanning_stopped_lbl">Stopped scanning for devices</string>
     <string name="data_sharing_transferring_data_lbl">Transferring shared datasets records</string>
@@ -742,6 +747,7 @@
     <string name="data_sharing_devlist_none_found_lbl">No devices found</string>
     <string name="data_sharing_devlist_title_paired_devices_lbl">Paired Devices</string>
     <string name="data_sharing_devlist_title_other_devices_lbl">Other Available Devices</string>
+    <string name="data_sharing_devlist_title_tcp_detected_devices_lbl">Found Devices</string>
     <string name="data_sharing_devlist_button_scan_lbl">Scan for devices</string>
 
     <!-- barcode scanner -->

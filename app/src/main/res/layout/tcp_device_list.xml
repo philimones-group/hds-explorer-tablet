@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@color/white"
-    tools:context=".io.datasharing.bluetooth.BluetoothDeviceListActivity">
+    tools:context=".io.datasharing.wifi.TcpIpDeviceListActivity">
 
     <!-- Dialog Header -->
     <LinearLayout
@@ -33,7 +33,7 @@
             android:layout_height="match_parent"
             android:layout_marginLeft="10dp"
             android:gravity="center_vertical"
-            android:text="@string/data_sharing_btt_devlist_title_lbl"
+            android:text="@string/data_sharing_tcp_devlist_title_lbl"
             android:textSize="18sp"
             android:textColor="@color/nui_color_text_red"
             android:textStyle="bold" />
@@ -51,13 +51,13 @@
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/txtPairedDevices"
+            android:id="@+id/txtFoundDevices"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
             android:layout_marginBottom="5dp"
             android:paddingStart="25dp"
-            android:text="@string/data_sharing_devlist_title_paired_devices_lbl"
+            android:text="@string/data_sharing_devlist_title_tcp_detected_devices_lbl"
             android:textSize="16sp"
             android:textColor="@color/nui_color_text_darkgray"
             android:visibility="visible" />
@@ -71,7 +71,7 @@
             android:background="@drawable/nui_lists_rone_border">
 
             <ListView
-                android:id="@+id/lvPairedDevices"
+                android:id="@+id/lvFoundDevices"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:paddingTop="15dp"
@@ -80,53 +80,24 @@
                 android:paddingEnd="5dp" />
 
             <TextView
-                android:id="@+id/txtPairedDevicesMsg"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:gravity="center"
-                android:text="@string/data_sharing_devlist_none_paired_lbl"
-                android:textColor="@color/nui_color_text_darkgray"
-                android:visibility="visible"/>
-
-        </RelativeLayout>
-
-        <TextView
-            android:id="@+id/txtNewDevices"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="5dp"
-            android:paddingStart="25dp"
-            android:text="@string/data_sharing_devlist_title_other_devices_lbl"
-            android:textSize="16sp"
-            android:textColor="@color/nui_color_text_darkgray"
-            android:visibility="visible" />
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="2"
-            android:layout_marginBottom="10dp"
-            android:background="@drawable/nui_lists_rone_border">
-
-            <ListView
-                android:id="@+id/lvNewDevices"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:paddingTop="15dp"
-                android:paddingBottom="5dp"
-                android:paddingStart="5dp"
-                android:paddingEnd="5dp"/>
-
-            <TextView
-                android:id="@+id/txtNewDevicesMsg"
+                android:id="@+id/txtFoundDevicesMsg"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
                 android:gravity="center"
                 android:text="@string/data_sharing_devlist_none_found_lbl"
                 android:textColor="@color/nui_color_text_darkgray"
-                android:visibility="visible"/>
+                android:visibility="gone" />
+
+            <ProgressBar
+                style="?android:attr/progressBarStyleLarge"
+                android:id="@+id/pbarFoundDevices"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:visibility="gone"
+                />
 
         </RelativeLayout>
 

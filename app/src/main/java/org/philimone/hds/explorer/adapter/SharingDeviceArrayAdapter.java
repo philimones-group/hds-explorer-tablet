@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 
 import org.philimone.hds.explorer.R;
 import org.philimone.hds.explorer.io.datasharing.SharingDevice;
+import org.philimone.hds.explorer.io.datasharing.wifi.TcpIpSharingDevice;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -77,9 +78,17 @@ public class SharingDeviceArrayAdapter extends ArrayAdapter<SharingDevice> {
 
         SharingDevice device = list.get(position);
 
-        txtItem1.setText(device.getName());
-        txtItem2.setText(device.getUsername());
-        txtItem3.setText(device.getAppVersion());
+        if (device instanceof TcpIpSharingDevice) {
+            txtItem1.setText(device.getUsername());
+            txtItem2.setText(device.getUuid());
+            txtItem3.setText(device.getAppVersion());
+        } else {
+            txtItem1.setText(device.getName());
+            txtItem2.setText(device.getUsername());
+            txtItem3.setText(device.getAppVersion());
+        }
+
+
 
         return rowView;
     }

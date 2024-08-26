@@ -4,6 +4,8 @@ public interface ClientAdapterListener {
 
     void onDeviceEnabled(boolean enabled);
 
+    void onDeviceConnecting();
+
     void onDeviceConnected(SharingDevice device);
 
     void onDeviceConnectionFailure();

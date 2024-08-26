@@ -172,6 +172,11 @@ public class BluetoothServerAdapter extends ServerAdapter {
         ensurePermissionsGranted(Manifest.permission.BLUETOOTH_CONNECT);
     }
 
+    @Override
+    public void stopListening() {
+        this.serverListening.cancelThread();
+    }
+
     private void initServerListening() {
         this.serverListening = new ServerListeningTask();
         this.serverListening.execute();

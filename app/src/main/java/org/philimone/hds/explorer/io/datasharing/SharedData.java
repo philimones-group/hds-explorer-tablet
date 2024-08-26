@@ -20,6 +20,18 @@ public class SharedData {
         this.members.addAll(members);
     }
 
+    public List<Region> getRegions() {
+        return regions;
+    }
+
+    public List<Household> getHouseholds() {
+        return households;
+    }
+
+    public List<Member> getMembers() {
+        return members;
+    }
+
     public int countSharedData() {
         return this.households.size() + this.regions.size() + this.members.size();
     }

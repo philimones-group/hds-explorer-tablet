@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -29,13 +30,14 @@ import org.philimone.hds.explorer.io.datasharing.SharedData;
 import org.philimone.hds.explorer.io.datasharing.SharingDevice;
 import org.philimone.hds.explorer.io.datasharing.bluetooth.BluetoothClientAdapter;
 import org.philimone.hds.explorer.io.datasharing.bluetooth.BluetoothServerAdapter;
+import org.philimone.hds.explorer.io.datasharing.wifi.TcpIpClientAdapter;
+import org.philimone.hds.explorer.io.datasharing.wifi.TcpIpServerAdapter;
 import org.philimone.hds.explorer.model.Household;
 import org.philimone.hds.explorer.model.Household_;
 import org.philimone.hds.explorer.model.Member;
 import org.philimone.hds.explorer.model.Region;
 import org.philimone.hds.explorer.model.Region_;
 import org.philimone.hds.explorer.model.User;
-import org.philimone.hds.explorer.widget.DialogFactory;
 
 import java.io.IOException;
 import java.util.Map;
@@ -61,6 +63,8 @@ public class SyncDataSharingActivity extends AppCompatActivity implements DataSh
     private ClientAdapter clientAdapter = null;
     private BluetoothServerAdapter bluetoothServerAdapter = null;
     private BluetoothClientAdapter bluetoothClientAdapter = null;
+    private TcpIpServerAdapter tcpIpServerAdapter = null;
+    private TcpIpClientAdapter tcpIpClientAdapter = null;
 
     private SharingDeviceArrayAdapter connectedDevicesArrayAdapter;
 
@@ -77,14 +81,28 @@ public class SyncDataSharingActivity extends AppCompatActivity implements DataSh
         super.onCreate(savedInstanceState);
         setContentView(R.layout.sync_data_sharing);
 
+        preventStrictModeBlock();
+
         initBoxes();
         initialize();
+    }
+
+    private void preventStrictModeBlock() {
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
     }
 
     private void initBoxes() {
         this.boxRegions = ObjectBoxDatabase.get().boxFor(Region.class);
         this.boxHouseholds = ObjectBoxDatabase.get().boxFor(Household.class);
         this.boxMembers = ObjectBoxDatabase.get().boxFor(Member.class);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+
+        stopDeviceConnections();
     }
 
     private void initialize() {
@@ -148,27 +166,28 @@ public class SyncDataSharingActivity extends AppCompatActivity implements DataSh
     private void initDeviceAdapters() {
         this.bluetoothServerAdapter = new BluetoothServerAdapter(this, getUsername(), this.serverAdapterListener);
         this.bluetoothClientAdapter = new BluetoothClientAdapter(this, getUsername(), this.clientAdapterListener);
+        this.tcpIpServerAdapter = new TcpIpServerAdapter(this, getUsername(), this.serverAdapterListener);
+        this.tcpIpClientAdapter = new TcpIpClientAdapter(this, getUsername(), this.clientAdapterListener);
+    }
+
+    private void stopDeviceConnections() {
+        if (serverAdapter != null) {
+            serverAdapter.stopListening();
+        }
+        if (clientAdapter != null) {
+            clientAdapter.stopScanning();
+        }
     }
 
     private void loadConnectionTypes() {
         this.spnConnections.setAdapter(null);
 
         ConnectionArrayAdapter adapter = new ConnectionArrayAdapter(this);
-        adapter.remove(ConnectionType.TCP_IP); //when implemented this will be removed
         this.spnConnections.setAdapter(adapter);
     }
 
     private void onSelectedConnectionType() {
-        ConnectionType connectionType = getSelectedConnectionType();
-
         enableButtons();
-
-        if (connectionType == ConnectionType.TCP_IP) {
-            btServerStart.setEnabled(false);
-            btClientStart.setEnabled(false);
-
-            //txtConnectionAction.setText("WIFI Connection not implemented yet");
-        }
     }
 
 
@@ -180,7 +199,10 @@ public class SyncDataSharingActivity extends AppCompatActivity implements DataSh
             btClientStart.setEnabled(false);
         } else if (connectionType == ConnectionType.BLUETOOTH) {
             btServerStart.setEnabled(this.bluetoothServerAdapter.isAvailable());
-            btClientStart.setEnabled(this.bluetoothServerAdapter.isAvailable());
+            btClientStart.setEnabled(this.bluetoothClientAdapter.isAvailable());
+        } else if (connectionType == ConnectionType.TCP_IP) {
+            btServerStart.setEnabled(this.tcpIpServerAdapter.isAvailable());
+            btClientStart.setEnabled(this.tcpIpClientAdapter.isAvailable());
         }
     }
 
@@ -222,7 +244,20 @@ public class SyncDataSharingActivity extends AppCompatActivity implements DataSh
                     startServerListening();
                 }
             } else {
-                updateConnectionAction(R.string.data_sharing_device_not_found_lbl, true);
+                updateConnectionAction(R.string.data_sharing_device_btt_not_found_lbl, true);
+                btShareData.setEnabled(false);
+            }
+        } else if (connectionType == ConnectionType.TCP_IP) {
+            this.serverAdapter = this.tcpIpServerAdapter;
+
+            if (serverAdapter.isAvailable()) {
+                if (!serverAdapter.isEnabled()) {
+                    serverAdapter.enable();
+                } else {
+                    startServerListening();
+                }
+            } else {
+                updateConnectionAction(R.string.data_sharing_device_tcp_not_found_lbl, true);
                 btShareData.setEnabled(false);
             }
         }
@@ -242,7 +277,21 @@ public class SyncDataSharingActivity extends AppCompatActivity implements DataSh
                     startClientScanning();
                 }
             } else {
-                updateConnectionAction(R.string.data_sharing_device_not_found_lbl, true);
+                updateConnectionAction(R.string.data_sharing_device_btt_not_found_lbl, true);
+                btShareData.setEnabled(false);
+            }
+        } else if (connectionType == ConnectionType.TCP_IP) {
+            this.clientAdapter = this.tcpIpClientAdapter;
+
+            if (this.clientAdapter.isAvailable()) {
+                if (!this.clientAdapter.isEnabled()) {
+                    this.clientAdapter.enable();
+                } else {
+                    Log.d("tcp/ip", "enabled");
+                    startClientScanning();
+                }
+            } else {
+                updateConnectionAction(R.string.data_sharing_device_tcp_not_found_lbl, true);
                 btShareData.setEnabled(false);
             }
         }
@@ -305,6 +354,10 @@ public class SyncDataSharingActivity extends AppCompatActivity implements DataSh
 
 
         }
+    }
+
+    private void onDeviceConnecting() {
+        updateConnectionAction(R.string.data_sharing_device_connecting_lbl, false);
     }
 
     private void onDeviceConnected(SharingDevice remoteDevice) {
@@ -380,7 +433,12 @@ public class SyncDataSharingActivity extends AppCompatActivity implements DataSh
             if (enabled) {
                 startServerListening();
             } else {
-                updateConnectionAction(R.string.data_sharing_device_disabled_lbl, false);
+                ConnectionType connectionType = getSelectedConnectionType();
+                if (connectionType == ConnectionType.BLUETOOTH) {
+                    updateConnectionAction(R.string.data_sharing_device_btt_disabled_lbl, false);
+                } else if (connectionType == ConnectionType.TCP_IP) {
+                    updateConnectionAction(R.string.data_sharing_device_tcp_disabled_lbl, false);
+                }
             }
         }
 
@@ -408,12 +466,24 @@ public class SyncDataSharingActivity extends AppCompatActivity implements DataSh
             if (enabled) {
                 startClientScanning();
             } else {
-                updateConnectionAction(R.string.data_sharing_device_disabled_lbl, false);
+                ConnectionType connectionType = getSelectedConnectionType();
+
+                if (connectionType == ConnectionType.BLUETOOTH) {
+                    updateConnectionAction(R.string.data_sharing_device_btt_disabled_lbl, false);
+                } else if (connectionType == ConnectionType.TCP_IP) {
+                    updateConnectionAction(R.string.data_sharing_device_tcp_disabled_lbl, false);
+                }
             }
         }
 
         @Override
+        public void onDeviceConnecting() {
+            SyncDataSharingActivity.this.onDeviceConnecting();
+        }
+
+        @Override
         public void onDeviceConnected(SharingDevice device) {
+            updateConnectionAction(R.string.data_sharing_device_connected_lbl, false);
             SyncDataSharingActivity.this.onDeviceConnected(device);
         }
 
@@ -424,7 +494,7 @@ public class SyncDataSharingActivity extends AppCompatActivity implements DataSh
 
         @Override
         public void onScanningDevices() {
-            Log.d("bluetooth-device", "scanning started");
+            Log.d("device", "scanning started");
             updateConnectionAction(R.string.data_sharing_scan_for_servers_lbl, false);
         }
 

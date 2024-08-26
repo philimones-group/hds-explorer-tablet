@@ -137,15 +137,17 @@
                     android:layout_height="wrap_content">
 
                     <ProgressBar
+                        style="?android:attr/progressBarStyleHorizontal"
                         android:id="@+id/pBarShareProgress"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
+                        android:indeterminate="false"
+                        android:indeterminateOnly="false"
                         android:max="100"
                         android:min="0"
-                        android:indeterminateOnly="false"
                         android:mirrorForRtl="true"
                         android:progress="43"
-                        android:progressDrawable="@drawable/nui_sync_progress_tint"/>
+                        android:progressDrawable="@drawable/nui_sync_progress_tint" />
                 </RelativeLayout>
 
             </LinearLayout>

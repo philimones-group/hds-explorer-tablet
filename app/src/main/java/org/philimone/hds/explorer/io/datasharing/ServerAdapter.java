@@ -20,4 +20,6 @@ public abstract class ServerAdapter {
 
     public abstract void startListening();
 
+    public abstract void stopListening();
+
 }

@@ -76,6 +76,10 @@ public class DataSharingTask extends AsyncTask<Void, DataSharingTask.PublishingR
     private static final String PROTOCOL = "data-sharing";
     private static final String TAG_DATA = "data";
     private static final String TAG_DEVICE_INFO = "deviceinfo";
+    private static final String TAG_DEVICE_INFO_UUID = "uuid";
+    private static final String TAG_DEVICE_INFO_NAME = "name";
+    private static final String TAG_DEVICE_INFO_USER = "user";
+    private static final String TAG_DEVICE_INFO_APPVERSION = "appVersion";
     private static final String TAG_SHARED_DATA = "shareddata";
     private static final String TAG_SHARED_DATA_REGIONS = "regions";
     private static final String TAG_SHARED_DATA_HOUSEHOLDS = "households";
@@ -243,12 +247,23 @@ public class DataSharingTask extends AsyncTask<Void, DataSharingTask.PublishingR
 
             String code = command.code;
             String content = "";
+            TaskState taskState = null;
+            Map<String, String> dataInfo = new HashMap<>();
+            SharedData sharedData = null;
 
             switch (command) {
                 case GET_DATA_INFO: content = ""; break;
                 case GET_SHARED_DATA: content = ""; break;
-                case POST_DATA_INFO: content = getDataInfoXML(); break;
-                case POST_SHARED_DATA: content = getSharedDataXML(); break;
+                case POST_DATA_INFO:
+                    dataInfo = createDataInfo();
+                    content = getDataInfoXML();
+                    taskState=TaskState.POST_DATA_INFO;
+                    break;
+                case POST_SHARED_DATA:
+                    sharedData = createSharedData();
+                    content = getSharedDataXML(sharedData);
+                    taskState=TaskState.POST_SHARED_DATA;
+                    break;
             }
 
             String xml = XML_INITIAL_TAG +
@@ -259,6 +274,8 @@ public class DataSharingTask extends AsyncTask<Void, DataSharingTask.PublishingR
             Log.d("xml write", xml);
 
             output.println(xml);
+
+            publishProgress(new PublishingReport(taskState, dataInfo, sharedData));
         }
 
         return false;
@@ -550,7 +567,6 @@ public class DataSharingTask extends AsyncTask<Void, DataSharingTask.PublishingR
         }
 
         parser.nextTag(); //</household>
-        parser.next();
 
         return table;
     }
@@ -568,14 +584,31 @@ public class DataSharingTask extends AsyncTask<Void, DataSharingTask.PublishingR
          */
 
         return "<" + TAG_DEVICE_INFO + ">" +
-                "<uuid />" + //this information is already in the remote device
-                "<name />" + //this information is already in the remote device
-                "<user>" + currentUser.fullName + "</user>" +
-                "<appVersion>" + BuildConfig.VERSION_NAME + "</appVersion>" +
+                "<" + TAG_DEVICE_INFO_UUID + " />" + //this information is already in the remote device
+                "<" + TAG_DEVICE_INFO_NAME + " />" + //this information is already in the remote device
+                "<" + TAG_DEVICE_INFO_USER + ">" + currentUser.fullName + "</" + TAG_DEVICE_INFO_USER + ">" +
+                "<" + TAG_DEVICE_INFO_APPVERSION + ">" + BuildConfig.VERSION_NAME + "</" + TAG_DEVICE_INFO_APPVERSION + ">" +
                "</"+ TAG_DEVICE_INFO + ">" ;
     }
 
-    private String getSharedDataXML() {
+    private Map<String, String> createDataInfo() {
+        Map<String, String> map = new LinkedHashMap<>();
+        map.put(TAG_DEVICE_INFO_UUID, ""); //this information is already in the remote device
+        map.put(TAG_DEVICE_INFO_NAME, ""); //this information is already in the remote device
+        map.put(TAG_DEVICE_INFO_USER, currentUser.fullName);
+        map.put(TAG_DEVICE_INFO_APPVERSION, BuildConfig.VERSION_NAME);
+        return map;
+    }
+
+    private SharedData createSharedData() {
+        List<Region> regions = boxRegions.query(Region_.shareable.equal(true)).build().find();
+        List<Household> households = boxHouseholds.query(Household_.shareable.equal(true)).build().find();
+        List<Member> members = new ArrayList<>();
+
+        return new SharedData(regions, households, members);
+    }
+
+    private String getSharedDataXML(SharedData sharedData) {
 
         /* So far we are sharing recentlyCreated Regions and recentlyCreated preRegistered Households
          * Shared content should not be editable */
@@ -592,8 +625,8 @@ public class DataSharingTask extends AsyncTask<Void, DataSharingTask.PublishingR
          * </members>
          */
 
-        List<Region> regions = boxRegions.query(Region_.shareable.equal(true)).build().find();
-        List<Household> households = boxHouseholds.query(Household_.shareable.equal(true)).build().find();
+        List<Region> regions = sharedData.getRegions();
+        List<Household> households = sharedData.getHouseholds();
 
         String contentRegions = getRegionsXML(regions);
         String contentHouseholds = getHouseholdsXML(households);

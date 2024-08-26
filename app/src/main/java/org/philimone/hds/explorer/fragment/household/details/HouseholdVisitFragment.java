@@ -419,7 +419,7 @@ public class HouseholdVisitFragment extends Fragment {
         return 12;
     }
 
-    private List<CoreCollectedData> getUnfinalizedExtensionForms() {
+    public List<CoreCollectedData> getUnfinalizedExtensionForms() {
         List<CoreCollectedData> list = new ArrayList<>();
 
         CoreCollectedExpandableAdapter adapter = (CoreCollectedExpandableAdapter) this.elvVisitCollected.getExpandableListAdapter();

@@ -582,61 +582,98 @@ public class HouseholdDetailsActivity extends AppCompatActivity implements House
     }
 
     private void finishVisit() {
-        //close visit methods
 
         //finsih the visit in visit fragment
         if (householdVisitFragment != null)  {
-            List<Member> notVisited = householdVisitFragment.getNonVisitedMembers();
-            List<Member> toremove = new ArrayList<>();
-            String nonVisitedAsText = "";
-            List<String> nonVisitedCodesList = new ArrayList<>();
 
-            for (Member member : notVisited) {
-                nonVisitedAsText += nonVisitedAsText.isEmpty() ? member.code : ", "+member.code;
-                nonVisitedCodesList.add(member.code);
+            //Check if there is non collected extension forms
+            ExtensionCollectedValidationResult validationResult1 = validateExtensionCollected();
+            if (validationResult1.foundExtensionNotCollected) {
 
-                if (visit.nonVisitedMembers.contains(member.code)){
-                    toremove.add(member);
-                }
-            }
+                DialogFactory dialog = DialogFactory.createMessageInfo(this, R.string.info_lbl,validationResult1.messageText);
+                dialog.setDialogMessageAsHtml(true);
+                dialog.show();
 
-            //remove all marked as non visited
-            notVisited.removeAll(toremove);
-
-            //Not all of the individuals were visited
-            if (notVisited.size()>0) {
-
-                final String finalList = nonVisitedAsText;
-
-                DialogFactory.createMessageYN(this, getString(R.string.household_visit_not_finished_title_lbl), getString(R.string.household_visit_not_finished_msg_ask_lbl, nonVisitedAsText), new DialogFactory.OnYesNoClickListener() {
-                    @Override
-                    public void onYesClicked() {
-                        markAllAsNonVisited(visit, nonVisitedCodesList, finalList);
-                        finishVisit();
-                    }
-
-                    @Override
-                    public void onNoClicked() {
-                        //just dont do nothing
-                    }
-                }).show();
-
+                //dont finalize visit
                 return;
             }
-            //Log.d("ending visit", "me");
 
-            //close visit - update endtimestamp
-            VisitFormUtil.updateEndTimestamp(this, this.visit.getRecentlyCreatedUri());
+            //Check if there is non visited members
+            NoVisitedValidationResult validationResult2 = validateNonVisitedMembers();
+            if (validationResult2.foundNotVisited) {
 
-            //finish visit mode
-            this.visit = null;
-            if (this.fragmentAdapter != null && this.fragmentAdapter.getFragmentCollected() != null) {
-                this.fragmentAdapter.getFragmentCollected().setVisit(null);
+                DialogFactory.createMessageYN(this, getString(R.string.household_visit_not_finished_title_lbl), getString(R.string.household_visit_not_finished_msg_ask_lbl, validationResult2.nonVisitedAsText), new DialogFactory.OnYesNoClickListener() {
+                    @Override
+                    public void onYesClicked() {
+                        markAllAsNonVisited(visit, validationResult2.nonVisitedCodesList, validationResult2.nonVisitedAsText);
+                        closeVisit();
+                    }
+
+                    @Override
+                    public void onNoClicked() { /* just do nothing - this will not close the visit */ }
+                }).show();
+
+            } else {
+                //closing the visit - if all members were visited
+                closeVisit();
             }
-            setHouseholdMode();
+        }
+    }
+
+    private void closeVisit(){
+        //close visit - update endtimestamp
+        VisitFormUtil.updateEndTimestamp(this, this.visit.getRecentlyCreatedUri());
+
+        //finish visit mode
+        this.visit = null;
+        if (this.fragmentAdapter != null && this.fragmentAdapter.getFragmentCollected() != null) {
+            this.fragmentAdapter.getFragmentCollected().setVisit(null);
+        }
+        setHouseholdMode();
+    }
+
+    private ExtensionCollectedValidationResult validateExtensionCollected(){
+
+        //check if there is unfinalized form extensions
+        List<CoreCollectedData> unfinalizedList = householdVisitFragment.getUnfinalizedExtensionForms();
+        if (unfinalizedList.size() > 0) {
+            String unlist = "";
+            for (CoreCollectedData cd : unfinalizedList) {
+                unlist += (unlist.isEmpty() ? "" : "\n") + "<li>&nbsp;&nbsp;<b>" + getString(cd.formEntity.name) + " ("+ cd.formEntityCode +")</b></li>";
+            }
+
+            String msg = getString(R.string.household_visit_unfinalized_msg_info_lbl, unlist);
+
+            return new ExtensionCollectedValidationResult(true, msg);
         }
 
+        return new ExtensionCollectedValidationResult(false, null);
+    }
 
+    private NoVisitedValidationResult validateNonVisitedMembers() {
+        List<Member> notVisited = householdVisitFragment.getNonVisitedMembers();
+        List<Member> toremove = new ArrayList<>();
+        String nonVisitedAsText = "";
+        List<String> nonVisitedCodesList = new ArrayList<>();
+
+        for (Member member : notVisited) {
+            nonVisitedAsText += nonVisitedAsText.isEmpty() ? member.code : ", "+member.code;
+            nonVisitedCodesList.add(member.code);
+
+            if (visit.nonVisitedMembers.contains(member.code)){
+                toremove.add(member);
+            }
+        }
+
+        //remove all marked as non visited
+        notVisited.removeAll(toremove);
+
+        //Not all of the individuals were visited
+        if (notVisited.size()>0) {
+            return new NoVisitedValidationResult(true, nonVisitedCodesList, nonVisitedAsText);
+        }
+
+        return new NoVisitedValidationResult(false, null, null);
     }
 
     private void markAllAsNonVisited(Visit visit, List<String> nonVisitedMembersCodeList, String nonVisitedMembersAsText) {
@@ -805,6 +842,30 @@ public class HouseholdDetailsActivity extends AppCompatActivity implements House
             collectedDataFragment.setInternalCollectedDataToEdit(collectedData);
 
             collectedDataFragment.onEditCollectedData(collectedData);
+        }
+    }
+
+    //usefull classes
+
+    class ExtensionCollectedValidationResult {
+        public boolean foundExtensionNotCollected;
+        public String messageText;
+
+        public ExtensionCollectedValidationResult(boolean foundExtensionNotCollected, String messageText) {
+            this.foundExtensionNotCollected = foundExtensionNotCollected;
+            this.messageText = messageText;
+        }
+    }
+
+    class NoVisitedValidationResult {
+        public boolean foundNotVisited;
+        public List<String> nonVisitedCodesList;
+        public String nonVisitedAsText = "";
+
+        public NoVisitedValidationResult(boolean foundNotVisited, List<String> nonVisitedCodesList, String nonVisitedAsText) {
+            this.foundNotVisited = foundNotVisited;
+            this.nonVisitedCodesList = nonVisitedCodesList;
+            this.nonVisitedAsText = nonVisitedAsText;
         }
     }
 }

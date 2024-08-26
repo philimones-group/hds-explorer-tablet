@@ -305,6 +305,28 @@ public class CSVReader {
             }
         }
 
+        public Integer getIntegerField(String fieldName) {
+            String value = getField(fieldName);
+
+            try {
+                Integer v = Integer.parseInt(value);
+                return v;
+            } catch (Exception ex) {
+                return null;
+            }
+        }
+
+        public Integer getIntegerField(int index) {
+            String value = getField(index);
+
+            try {
+                Integer v = Integer.parseInt(value);
+                return v;
+            } catch (Exception ex) {
+                return null;
+            }
+        }
+
         public Boolean getBooleanField(String fieldName) {
             String value = getField(fieldName);
 

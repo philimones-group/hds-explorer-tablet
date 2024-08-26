@@ -201,6 +201,8 @@ public class SyncPanelItemFragment extends Fragment implements View.OnClickListe
 
     @Override
     public void onSyncStarted(SyncEntity syncEntity, SyncState syncState, long size) {
+        if (syncEntity == null) return;
+
         int s = (int)size;
 
         Log.d("sync-started", syncEntity.name()+", size="+size+", s="+s);

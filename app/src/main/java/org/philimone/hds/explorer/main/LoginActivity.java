@@ -384,6 +384,11 @@ public class LoginActivity extends AppCompatActivity {
                 return false;
             }
 
+            //demo synchronization - demo will download data from github public repo or any specified source on Global gradle.properties
+            if (mUsername.equals(BuildConfig.HDS_EXPLORER_DEMO_USERNAME) && mPassword.equals(BuildConfig.HDS_EXPLORER_DEMO_PASSWORD)) {
+                return true;
+            }
+
             //http request
             try {
 

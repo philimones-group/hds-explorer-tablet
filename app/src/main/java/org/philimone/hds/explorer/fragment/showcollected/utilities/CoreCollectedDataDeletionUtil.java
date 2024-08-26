@@ -257,16 +257,23 @@ public class CoreCollectedDataDeletionUtil {
             MaritalRelationship maritalRelationship = boxMaritalRelationships.query(MaritalRelationship_.endStatus.equal(MaritalEndStatus.WIDOWED.code).and(MaritalRelationship_.endDate.equal(death.deathDate))
                     .and(MaritalRelationship_.memberA_code.equal(death.memberCode).or(MaritalRelationship_.memberB_code.equal(death.memberCode)))).build().findFirst();
 
-            residency.endType = ResidencyEndType.NOT_APPLICABLE;
-            residency.endDate = null;
-            headRelationship.endType = HeadRelationshipEndType.NOT_APPLICABLE;
-            headRelationship.endDate = null;
-            maritalRelationship.endStatus = MaritalEndStatus.NOT_APPLICABLE;
-            maritalRelationship.endDate = null;
+            if (residency != null) {
+                residency.endType = ResidencyEndType.NOT_APPLICABLE;
+                residency.endDate = null;
+                this.boxResidencies.put(residency);
+            }
 
-            this.boxResidencies.put(residency);
-            this.boxHeadRelationships.put(headRelationship);
-            this.boxMaritalRelationships.put(maritalRelationship);
+            if (headRelationship != null) {
+                headRelationship.endType = HeadRelationshipEndType.NOT_APPLICABLE;
+                headRelationship.endDate = null;
+                this.boxHeadRelationships.put(headRelationship);
+            }
+
+            if (maritalRelationship != null) {
+                maritalRelationship.endStatus = MaritalEndStatus.NOT_APPLICABLE;
+                maritalRelationship.endDate = null;
+                this.boxMaritalRelationships.put(maritalRelationship);
+            }
         }
 
         deleteCoreCollectedData(cdata);
@@ -281,14 +288,17 @@ public class CoreCollectedDataDeletionUtil {
             Residency residency = boxResidencies.query(Residency_.memberCode.equal(outmigration.memberCode).and(Residency_.endDate.equal(outmigration.migrationDate)).and(Residency_.endType.equal(outmigration.migrationType.code))).build().findFirst();
             HeadRelationship headRelationship = boxHeadRelationships.query(HeadRelationship_.memberCode.equal(outmigration.memberCode).and(HeadRelationship_.endDate.equal(outmigration.migrationDate)).and(HeadRelationship_.endType.equal(outmigration.migrationType.code))).build().findFirst();
 
-            residency.endDate = null;
-            residency.endType = ResidencyEndType.NOT_APPLICABLE;
+            if (residency != null) {
+                residency.endDate = null;
+                residency.endType = ResidencyEndType.NOT_APPLICABLE;
+                this.boxResidencies.put(residency);
+            }
 
-            headRelationship.endDate = null;
-            headRelationship.endType = HeadRelationshipEndType.NOT_APPLICABLE;
-
-            this.boxResidencies.put(residency);
-            this.boxHeadRelationships.put(headRelationship);
+            if (headRelationship != null) {
+                headRelationship.endDate = null;
+                headRelationship.endType = HeadRelationshipEndType.NOT_APPLICABLE;
+                this.boxHeadRelationships.put(headRelationship);
+            }
         }
 
         deleteCoreCollectedData(cdata);

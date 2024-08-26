@@ -6,6 +6,7 @@ import android.util.Base64;
 import android.util.Log;
 import android.widget.Toast;
 
+import org.philimone.hds.explorer.BuildConfig;
 import org.philimone.hds.explorer.R;
 import org.philimone.hds.explorer.database.Bootstrap;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
@@ -89,6 +90,7 @@ import java.util.zip.ZipInputStream;
 import io.objectbox.Box;
 import io.objectbox.query.Query;
 import io.objectbox.query.QueryBuilder;
+import mz.betainteractive.io.readers.CSVReader;
 import mz.betainteractive.io.writers.ZipMaker;
 import mz.betainteractive.utilities.StringUtil;
 
@@ -155,6 +157,9 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 
 	private boolean canceled;
 
+	private boolean isDemoDownload;
+	private Map<String, Integer> demoSyncReportMap = new LinkedHashMap<>();
+
 	private StringCollectionConverter stringCollectionConverter = new StringCollectionConverter();
 
 	public SyncEntitiesTask(Context context, SyncEntitiesListener listener, String url, String username, String password, SyncEntity... entityToDownload) {
@@ -166,6 +171,8 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 		this.entities.addAll(Arrays.asList(entityToDownload));
 		this.listener = listener;
 		this.listener.onSyncCreated();
+
+		this.isDemoDownload = (username.equals(BuildConfig.HDS_EXPLORER_DEMO_USERNAME) && password.equals(BuildConfig.HDS_EXPLORER_DEMO_PASSWORD));
 
 		initBoxes();
 	}
@@ -239,6 +246,8 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 
 			break;
 		}
+
+		if (entity == null) return;
 
 		switch (entity) {
 			case PARAMETERS:
@@ -322,6 +331,15 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 
 		try {
 
+			String appUrl = baseurl + API_PATH;
+
+			if (isDemoDownload) {
+				appUrl = BuildConfig.HDS_EXPLORER_DEMO_APP_URL;
+
+				//download syncreport
+				executeDownloadDemoSyncReport(appUrl);
+			}
+
 			for (SyncEntity entity : entities){
 
 				//get record count from the server and trigger onSyncStarted
@@ -329,33 +347,38 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 
 				this.entity = entity;
 
+				String suffixFilePath = "/" + entity.getUrlPath();
+				if (isDemoDownload) {
+					suffixFilePath = "/" + entity.getZipFile();
+				}
+
 				switch (entity) {
 					case PARAMETERS:
 						//deleteAll(ApplicationParam.class);
-						processUrl(baseurl + API_PATH + "/params/zip", "params.zip");
+						processUrl(appUrl + suffixFilePath, "params.zip");
 						break;
 					case MODULES:
 						boxModules.removeAll();
-						processUrl(baseurl + API_PATH + "/modules/zip", "modules.zip");
+						processUrl(appUrl + suffixFilePath, "modules.zip");
 						break;
 					case FORMS:
 						boxFormGroupMappings.removeAll();
 						boxForms.removeAll();
 						deleteFormGroupInstances();
-						processUrl(baseurl + API_PATH + "/forms/zip", "forms.zip");
+						processUrl(appUrl + suffixFilePath, "forms.zip");
 						break;
 					case CORE_FORMS_EXT:
 						boxCoreFormsExts.removeAll();
-						processUrl(baseurl + API_PATH + "/coreforms/zip", "coreforms.zip");
+						processUrl(appUrl + suffixFilePath, "coreforms.zip");
 						break;
 					case CORE_FORMS_OPTIONS:
 						boxCoreFormsOpts.removeAll();
-						processUrl(baseurl + API_PATH + "/coreformsoptions/zip", "coreformsoptions.zip");
+						processUrl(appUrl + suffixFilePath, "coreformsoptions.zip");
 						break;
 					case DATASETS:
 						deleteExternalDatasetFiles();
 						this.boxDatasets.removeAll();
-						processUrl(baseurl + API_PATH + "/datasets/zip", "datasets.zip");
+						processUrl(appUrl + suffixFilePath, "datasets.zip");
 						break;
 					case DATASETS_CSV_FILES:
 						downloadExternalDatasetFiles();
@@ -363,24 +386,24 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 					case TRACKING_LISTS: /*testing*/
 						this.boxTrackingLists.removeAll();
 						this.boxTrackingSubjects.removeAll();
-						processUrl(baseurl + API_PATH + "/trackinglists/zip", "trackinglists.zip");
+						processUrl(appUrl + suffixFilePath, "trackinglists.zip");
 						break;
 					case USERS:
 						this.boxUsers.removeAll();
-						processUrl(baseurl + API_PATH + "/users/zip", "users.zip");
+						processUrl(appUrl + suffixFilePath, "users.zip");
 						break;
 					case ROUNDS:
 						this.boxRounds.removeAll();
-						processUrl(baseurl + API_PATH + "/rounds/zip", "rounds.zip");
+						processUrl(appUrl + suffixFilePath, "rounds.zip");
 						break;
 					case REGIONS:
 						createBackupCoreCollectedData();
 						this.boxRegions.removeAll();
-						processUrl(baseurl + API_PATH + "/regions/zip", "regions.zip");
+						processUrl(appUrl + suffixFilePath, "regions.zip");
 						break;
 					case HOUSEHOLDS:
 						deleteAllHouseholds();
-						processUrl(baseurl + API_PATH + "/households/zip", "households.zip");
+						processUrl(appUrl + suffixFilePath, "households.zip");
 						break;
 					case MEMBERS:
 						//remove related to members
@@ -397,33 +420,33 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 						deleteFormGroupInstances();
 						deleteAllMembers();
 
-						processUrl(baseurl + API_PATH + "/members/zip", "members.zip");
+						processUrl(appUrl + suffixFilePath, "members.zip");
 						break;
 					case RESIDENCIES:
 						deleteAllResidencies();
-						processUrl(baseurl + API_PATH + "/residencies/zip", "residencies.zip");
+						processUrl(appUrl + suffixFilePath, "residencies.zip");
 						break;
 					case VISITS:
 						boxPregnancyOuts.removeAll();
 						boxIncompleteVisits.removeAll();
 						deleteAllVisits();
-						processUrl(baseurl + API_PATH + "/visits/zip", "visits.zip");
+						processUrl(appUrl + suffixFilePath, "visits.zip");
 						break;
 					case HEAD_RELATIONSHIPS:
 						deleteAllHeadRelationships();
-						processUrl(baseurl + API_PATH + "/hrelationships/zip", "hrelationships.zip");
+						processUrl(appUrl + suffixFilePath, "hrelationships.zip");
 						break;
 					case MARITAL_RELATIONSHIPS:
 						this.boxMaritalRelationships.removeAll();
-						processUrl(baseurl + API_PATH + "/mrelationships/zip", "mrelationships.zip");
+						processUrl(appUrl + suffixFilePath, "mrelationships.zip");
 						break;
 					case PREGNANCY_REGISTRATIONS:
 						this.boxPregnancyRegistrations.removeAll();
-						processUrl(baseurl + API_PATH + "/pregnancies/zip", "pregnancies.zip");
+						processUrl(appUrl + suffixFilePath, "pregnancies.zip");
 						break;
 					case DEATHS:
 						this.boxDeaths.removeAll();
-						processUrl(baseurl + API_PATH + "/deaths/zip", "deaths.zip");
+						processUrl(appUrl + suffixFilePath, "deaths.zip");
 						break;
 				}
 
@@ -806,14 +829,47 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 
 	private int getSyncRecordToDownload(SyncEntity entity){
 
-		String result = processUrl(baseurl + API_PATH + "/sync-report/?id=" + entity.name());
+		if (isDemoDownload) {
+			Integer records = demoSyncReportMap.get(entity.name());
+			return records;
+		}
 
+		String result = processUrl(baseurl + API_PATH + "/sync-report/?id=" + entity.name());
 		//Log.d("tag-report", "result="+result);
-		//CHANGE THIS - TO HANDLE ERROS
-		return Integer.parseInt(result);
+
+		try {
+			return Integer.parseInt(result);
+		} catch (Exception ex) {
+
+		}
+		return 1;
+	}
+
+	private void executeDownloadDemoSyncReport(String appUrl) throws Exception {
+		DownloadResponse response = processUrl(appUrl + "/syncreport.csv", "syncreport.csv", false);
+		Log.d("demodown", "syncreport="+response.downloadedFile);
+
+		//process the csv
+		if (response != null && response.downloadedFile != null && response.downloadedFile.exists()) {
+			//read the csv and save it to demoSyncReportMap
+			CSVReader csvReader = new CSVReader(response.downloadedFile, false, ",");
+
+			for (CSVReader.CSVRow row : csvReader.getRows()){
+				Integer id = row.getIntegerField(0);
+				String name = row.getField(1);
+				Integer records = row.getIntegerField(2);
+
+				Log.d("syncreport", ""+name+" == "+records);
+				if (!StringUtil.isBlank(name)){
+					demoSyncReportMap.put(name, records);
+				}
+			}
+		}
 	}
 
 	private void downloadExternalDatasetFiles() throws Exception {
+
+		if (isDemoDownload) return; //skip if is demo download
 
 		List<Dataset> datasets = this.boxDatasets.getAll();
 
@@ -890,8 +946,10 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 	}
 
 	private DownloadResponse processUrl(String strUrl, String exportedFileName, boolean processDataContent) throws Exception {
-		state = SyncState.DOWNLOADING;
-		publishProgress(0);
+		if (entity != null) {
+			state = SyncState.DOWNLOADING;
+			publishProgress(0);
+		}
 
 		String basicAuth = "Basic " + new String(Base64.encode((this.username+":"+this.password).getBytes(),Base64.NO_WRAP ));
 
@@ -916,17 +974,22 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 		Log.d("is", ""+response.getInputStream()+", xml-"+response.isXmlFile()+", zip-"+response.isZipFile());
 
 		//Inform about the download
-		this.listener.onSyncStarted(this.entity, this.state, response.fileSize); //remove KB calc
+		if (this.entity != null) {
+			this.listener.onSyncStarted(this.entity, this.state, response.fileSize); //remove KB calc
+		}
+
 		//save file
 		File downloadedFile = saveFileToStorage(response);
-		InputStream fileInputStream = new FileInputStream(downloadedFile);
+		response.setDownloadedFile(downloadedFile);
 
-		Log.d("tag-d", "processData="+processData+", fis="+fileInputStream);
+		Log.d("tag-d", "processData="+processData+", file="+downloadedFile);
 
 		if (processData){ //is it necessary to process ZIP/XML Files
 
 			//Inform about the saving process
 			this.listener.onSyncStarted(this.entity, SyncState.SAVING, this.entityRecords);
+
+			InputStream fileInputStream = new FileInputStream(downloadedFile);
 
 			if (fileInputStream != null){
 
@@ -1016,7 +1079,9 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 	}
 
 	private File saveFileToStorage(DownloadResponse response) throws Exception {
-		state = SyncState.DOWNLOADING;
+		if (entity != null) {
+			state = SyncState.DOWNLOADING;
+		}
 
 		InputStream content = response.getInputStream();
 
@@ -1032,10 +1097,12 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 			total += len;
 			int perc =  (int) (total); //remove KB Calc /1024
 
-			downloadedValues.put(entity, perc); //publishProgress is a bit slow, ensure this is set here - this code also runs on onProgressUpdate
-			//Log.d("save", ""+entity+", last-value="+perc);
-			publishProgress(perc);
-			//Thread.sleep(200); //REMOVE THIS - IT WAS TOO FAST TO CONTEMPLATE THE PROGRESS
+			if (entity != null) {
+				downloadedValues.put(entity, perc); //publishProgress is a bit slow, ensure this is set here - this code also runs on onProgressUpdate
+				//Log.d("save", ""+entity+", last-value="+perc);
+				publishProgress(perc);
+			}
+
 		}
 
 		fout.close();
@@ -3997,6 +4064,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 		private String fileMimeType;
 		private long fileSize;
 		private String fileName;
+		private File downloadedFile;
 
 		public DownloadResponse(InputStream is, String fileType, String exportedFileName, long fileSize){
 			this.inputStream = is;
@@ -4029,6 +4097,14 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 		public boolean isZipFile(){
 			//return fileMimeType.equalsIgnoreCase(ZIP_MIME_TYPE);
 			return ZIP_MIME_TYPE.startsWith(fileMimeType);
+		}
+
+		public void setDownloadedFile(File downloadedFile) {
+			this.downloadedFile = downloadedFile;
+		}
+
+		public File getDownloadedFile() {
+			return downloadedFile;
 		}
 	}
 

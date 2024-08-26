@@ -77,8 +77,10 @@ public class DeathFormUtil extends FormUtil<Death> {
     private List<HeadRelationship> headMemberHeadRelationships;
     private Residency memberResidency;
     private HeadRelationship memberHeadRelationship;
-    private MaritalRelationship memberMaritalRelationship;
-    private Member spouseMember;
+    //private MaritalRelationship memberMaritalRelationship;
+    private List<MaritalRelationship> memberMaritalRelationships = new ArrayList<>();
+    //private Member spouseMember;
+    private List<Member> spouseMembers = new ArrayList<>();
     private Map<String, String> mapSavedStates = new HashMap<>();
 
     private List<Member> householdResidents;
@@ -167,12 +169,14 @@ public class DeathFormUtil extends FormUtil<Death> {
                                     .and(HeadRelationship_.endType.equal(HeadRelationshipEndType.NOT_APPLICABLE.code)))
                     .orderDesc(HeadRelationship_.startDate)
                     .build().findFirst();
+
             //get current MaritalRelationship
-            this.memberMaritalRelationship = this.boxMaritalRelationships.query(
-                            MaritalRelationship_.endStatus.equal(MaritalEndStatus.NOT_APPLICABLE.code)
-                                    .and(MaritalRelationship_.memberA_code.equal(this.member.code).or(MaritalRelationship_.memberB_code.equal(this.member.code))))
+            this.memberMaritalRelationships = this.boxMaritalRelationships.query(
+                    MaritalRelationship_.endStatus.equal(MaritalEndStatus.NOT_APPLICABLE.code)
+                    .and(MaritalRelationship_.memberA_code.equal(this.member.code).or(MaritalRelationship_.memberB_code.equal(this.member.code))))
                     .orderDesc(MaritalRelationship_.startDate)
-                    .build().findFirst();
+                    .build().find();
+
         } else if (currentMode == Mode.EDIT) {
 
             readSavedEntityState();
@@ -183,9 +187,20 @@ public class DeathFormUtil extends FormUtil<Death> {
         this.minimunHeadAge = retrieveMinimumHeadAge();
 
         //get spouse
-        if (this.memberMaritalRelationship != null) {
+        /*if (this.memberMaritalRelationship != null) {
             String spouseCode = this.memberMaritalRelationship.memberA_code==member.code ? this.memberMaritalRelationship.memberB_code : this.memberMaritalRelationship.memberA_code;
             this.spouseMember = Queries.getMemberByCode(this.boxMembers, spouseCode);
+        }*/
+        
+        if (this.memberMaritalRelationships != null) {
+            for (MaritalRelationship maritalRelationship : this.memberMaritalRelationships) {
+                String spouseCode = maritalRelationship.memberA_code==member.code ? maritalRelationship.memberB_code : maritalRelationship.memberA_code;
+                Member mb = Queries.getMemberByCode(this.boxMembers, spouseCode);
+
+                if (mb != null) {
+                    this.spouseMembers.add(mb);
+                }
+            }
         }
 
         if (isHouseholdHead) { //is death of head of household
@@ -211,7 +226,7 @@ public class DeathFormUtil extends FormUtil<Death> {
         String isHouseholdHeadVar = mapSavedStates.get("isHouseholdHead");
         String memberResidencyId = mapSavedStates.get("memberResidency");
         String memberHeadRelationshipId = mapSavedStates.get("memberHeadRelationship");
-        String memberMaritalRelationshipId = mapSavedStates.get("memberMaritalRelationship");
+        String memberMaritalRelationshipIdList = mapSavedStates.get("memberMaritalRelationshipIdList");
         String headMemberRelationshipIdList = mapSavedStates.get("headMemberRelationshipIdList");
 
         if (newHeadCode != null) {
@@ -229,8 +244,12 @@ public class DeathFormUtil extends FormUtil<Death> {
         if (memberHeadRelationshipId != null) {
             this.memberHeadRelationship = this.boxHeadRelationships.get(Long.parseLong(memberHeadRelationshipId));
         }
-        if (memberMaritalRelationshipId != null) {
-            this.memberMaritalRelationship = this.boxMaritalRelationships.get(Long.parseLong(memberMaritalRelationshipId));
+        if (!StringUtil.isBlank(memberMaritalRelationshipIdList)) {
+            this.memberMaritalRelationships = new ArrayList<>();
+            for (String strId : memberMaritalRelationshipIdList.split(",")) {
+                MaritalRelationship maritalRelationship = this.boxMaritalRelationships.get(Long.parseLong(strId));
+                this.memberMaritalRelationships.add(maritalRelationship);
+            }
         }
         if (!StringUtil.isBlank(headMemberRelationshipIdList)) {
             this.headMemberHeadRelationships = new ArrayList<>();
@@ -567,21 +586,28 @@ public class DeathFormUtil extends FormUtil<Death> {
             this.boxHeadRelationships.put(this.memberHeadRelationship);
         }
         //close memberMaritalRelationship again
-        if (this.memberMaritalRelationship != null){
-            this.memberMaritalRelationship.endStatus = MaritalEndStatus.WIDOWED;
-            this.memberMaritalRelationship.endDate = deathDate;
-            this.boxMaritalRelationships.put(this.memberMaritalRelationship);
+        if (this.memberMaritalRelationships != null) {
+            for (MaritalRelationship maritalRelationship : this.memberMaritalRelationships) {
+                if (maritalRelationship != null) {
+                    maritalRelationship.endStatus = MaritalEndStatus.WIDOWED;
+                    maritalRelationship.endDate = deathDate;
+                    this.boxMaritalRelationships.put(maritalRelationship);
 
-            this.member.maritalStatus = MaritalStatus.WIDOWED;
-            this.boxMembers.put(this.member);
-
-            if (this.spouseMember != null) {
-                this.spouseMember.maritalStatus = MaritalStatus.WIDOWED;
-                this.boxMembers.put(this.spouseMember);
+                    this.member.maritalStatus = MaritalStatus.WIDOWED;
+                    this.boxMembers.put(this.member);
+                }
             }
 
-            affectedMembers = addAffectedMembers(affectedMembers, this.spouseMember==null ? "" : this.spouseMember.code);
+            if (this.spouseMembers != null) {
+                for (Member spouse : this.spouseMembers) {
+                    spouse.maritalStatus = MaritalStatus.WIDOWED;
+                    this.boxMembers.put(spouse);
+
+                    affectedMembers = addAffectedMembers(affectedMembers, spouse.code);
+                }
+            }
         }
+        
         //close previous head relationships again
         if (isHouseholdHead && headMemberHeadRelationships != null && headMemberHeadRelationships.size()>0){
             for (HeadRelationship headRelationship : headMemberHeadRelationships) {
@@ -734,21 +760,31 @@ public class DeathFormUtil extends FormUtil<Death> {
             this.memberHeadRelationship.endDate = deathDate;
             this.boxHeadRelationships.put(this.memberHeadRelationship);
         }
+
         //close memberMaritalRelationship
-        if (this.memberMaritalRelationship != null){
-            this.memberMaritalRelationship.endStatus = MaritalEndStatus.WIDOWED;
-            this.memberMaritalRelationship.endDate = deathDate;
-            this.boxMaritalRelationships.put(this.memberMaritalRelationship);
+        String savedMemberMaritalRelationshipIdList = "";
+        if (this.memberMaritalRelationships != null) {
+            for (MaritalRelationship maritalRelationship : this.memberMaritalRelationships) {
+                if (maritalRelationship != null) {
+                    maritalRelationship.endStatus = MaritalEndStatus.WIDOWED;
+                    maritalRelationship.endDate = deathDate;
+                    this.boxMaritalRelationships.put(maritalRelationship);
 
-            this.member.maritalStatus = MaritalStatus.WIDOWED;
-            this.boxMembers.put(this.member);
+                    //only the spouse that is alive will be WIDOWED
+                    //this.member.maritalStatus = MaritalStatus.WIDOWED;
+                    //this.boxMembers.put(this.member);
 
-            if (this.spouseMember != null) {
-                this.spouseMember.maritalStatus = MaritalStatus.WIDOWED;
-                this.boxMembers.put(this.spouseMember);
+                    savedMemberMaritalRelationshipIdList += (savedMemberMaritalRelationshipIdList.isEmpty() ? "" : ",") + maritalRelationship.id;
+                }
             }
 
-            affectedMembers = addAffectedMembers(affectedMembers, this.spouseMember==null ? "" : this.spouseMember.code);
+            if (this.spouseMembers != null) {
+                for (Member spouse : this.spouseMembers) {
+                    spouse.maritalStatus = MaritalStatus.WIDOWED;
+                    this.boxMembers.put(spouse);
+                    affectedMembers = addAffectedMembers(affectedMembers, spouse.code);
+                }
+            }
         }
         //close previous head relationships
         String savedOldHeadRelationships = "";
@@ -767,11 +803,15 @@ public class DeathFormUtil extends FormUtil<Death> {
         saveStateMap.put("isHouseholdHead", isHouseholdHead+"");
         saveStateMap.put("memberResidency", memberResidency == null ? "" : memberResidency.id+"");
         saveStateMap.put("memberHeadRelationship", memberHeadRelationship == null ? "" : memberHeadRelationship.id+"");
-        saveStateMap.put("memberMaritalRelationship", memberMaritalRelationship == null ? "" : memberMaritalRelationship.id+"");
+        //saveStateMap.put("memberMaritalRelationship", memberMaritalRelationship == null ? "" : memberMaritalRelationship.id+"");
+        saveStateMap.put("memberMaritalRelationshipIdList", savedMemberMaritalRelationshipIdList);
         saveStateMap.put("headMemberRelationshipIdList", savedOldHeadRelationships);
 
         //create new head relationships
         if (isHouseholdHead && newHeadMember != null){
+            //read again the head member because we might have updated the maritalStatus before (if was the spouse of the head)
+            this.newHeadMember = this.boxMembers.get(this.newHeadMember.id);
+
             saveStateMap.put("previousNewHeadCode", newHeadMember.code);
             saveStateMap.put("previousNewHeadRelationshipType", newHeadMember.headRelationshipType.code);
 

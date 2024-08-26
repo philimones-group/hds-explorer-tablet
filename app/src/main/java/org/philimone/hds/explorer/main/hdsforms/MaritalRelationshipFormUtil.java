@@ -599,6 +599,10 @@ public class MaritalRelationshipFormUtil extends FormUtil<MaritalRelationship> {
             this.boxMembers.put(savedSpouseB);
         }
 
+        //refresh
+        spouseA = boxMembers.get(spouseA.id);
+        spouseB = boxMembers.get(spouseB.id);
+
         MaritalRelationship maritalRelationship = this.entity;
 
         if (startRelationType != null){

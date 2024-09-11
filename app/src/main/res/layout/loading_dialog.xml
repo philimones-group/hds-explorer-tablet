@@ -33,6 +33,23 @@
             android:textColor="@color/nui_color_text_red"
             android:textAlignment="center" />
 
+        <Button
+            android:id="@+id/btCancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_gravity="center"
+            android:layout_marginBottom="20dp"
+            android:paddingStart="40dp"
+            android:paddingEnd="40dp"
+            android:text="@string/bt_cancel_lbl"
+            android:textSize="@dimen/column_button_textsize"
+            android:background="@drawable/nui_btnd_rone_dgbevel"
+            android:textColor="@color/white"
+            android:elevation="5dp"
+            android:visibility="gone"
+            />
+
     </LinearLayout>
 
 </RelativeLayout>

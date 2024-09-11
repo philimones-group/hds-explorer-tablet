@@ -660,8 +660,10 @@ public class HouseholdDetailsActivity extends AppCompatActivity implements House
             nonVisitedAsText += nonVisitedAsText.isEmpty() ? member.code : ", "+member.code;
             nonVisitedCodesList.add(member.code);
 
-            if (visit.nonVisitedMembers.contains(member.code)){
-                toremove.add(member);
+            if (visit != null && visit.nonVisitedMembers != null) {
+                if (visit.nonVisitedMembers.contains(member.code)) {
+                    toremove.add(member);
+                }
             }
         }
 
@@ -677,11 +679,12 @@ public class HouseholdDetailsActivity extends AppCompatActivity implements House
     }
 
     private void markAllAsNonVisited(Visit visit, List<String> nonVisitedMembersCodeList, String nonVisitedMembersAsText) {
+        if (visit != null) {
+            visit.nonVisitedMembers.addAll(nonVisitedMembersCodeList);
+            this.boxVisits.put(visit);
 
-        visit.nonVisitedMembers.addAll(nonVisitedMembersCodeList);
-        this.boxVisits.put(visit);
-
-        VisitFormUtil.markAllAsNonVisited(this, this.visit.getRecentlyCreatedUri(), nonVisitedMembersAsText);
+            VisitFormUtil.markAllAsNonVisited(this, this.visit.getRecentlyCreatedUri(), nonVisitedMembersAsText);
+        }
     }
 
     private void openPreviousVisit() {

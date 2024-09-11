@@ -570,6 +570,9 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
     }
 
     private List<CollectedData> getAllCollectedData() {
+
+        if (subject == null) return new ArrayList<CollectedData>();
+
         List<CollectedData> list = this.boxCollectedData.query().equal(CollectedData_.recordId, subject.getId())
                                                                 .and()
                                                                 .equal(CollectedData_.recordEntity, subject.getTableName().code, QueryBuilder.StringOrder.CASE_SENSITIVE)

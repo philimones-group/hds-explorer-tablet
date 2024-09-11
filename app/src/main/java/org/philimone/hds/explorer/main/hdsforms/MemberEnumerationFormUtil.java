@@ -9,11 +9,13 @@ import com.google.gson.Gson;
 
 import org.philimone.hds.explorer.R;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
+import org.philimone.hds.explorer.database.Queries;
 import org.philimone.hds.explorer.fragment.MemberFilterDialog;
 import org.philimone.hds.explorer.model.ApplicationParam;
 import org.philimone.hds.explorer.model.ApplicationParam_;
 import org.philimone.hds.explorer.model.CoreCollectedData;
 import org.philimone.hds.explorer.model.HeadRelationship;
+import org.philimone.hds.explorer.model.HeadRelationship_;
 import org.philimone.hds.explorer.model.Household;
 import org.philimone.hds.explorer.model.Member;
 import org.philimone.hds.explorer.model.Member_;
@@ -59,7 +61,7 @@ public class MemberEnumerationFormUtil extends FormUtil<Member> {
     private Visit visit;
     private Member father;
     private Member mother;
-    private Member head;
+    private Member currentHead;
     private boolean isFirstHouseholdMember;
     private int minimunHeadAge;
     private int minimunFatherAge;
@@ -421,6 +423,7 @@ public class MemberEnumerationFormUtil extends FormUtil<Member> {
         HeadRelationship headRelationship = new HeadRelationship();
         headRelationship.householdCode = householdCode;
         headRelationship.memberCode = member.code;
+        headRelationship.headCode = (headRelationshipType==HeadRelationshipType.HEAD_OF_HOUSEHOLD) ? code : currentHead.code;
         headRelationship.relationshipType = headRelationshipType;
         headRelationship.startType = HeadRelationshipStartType.ENUMERATION;
         headRelationship.startDate = residencyStartDate;
@@ -448,6 +451,7 @@ public class MemberEnumerationFormUtil extends FormUtil<Member> {
         boxCoreCollectedData.put(collectedData);
 
         if (member.isHouseholdHead()) { //head of household
+            household = boxHouseholds.get(household.id);
             household.headCode = member.code;
             household.headName = member.name;
             boxHouseholds.put(household);
@@ -530,7 +534,7 @@ public class MemberEnumerationFormUtil extends FormUtil<Member> {
         member.modules.addAll(StringCollectionConverter.getCollectionFrom(colModules.getValue()));
 
         //Residency
-        Residency residency = savedResidency;
+        Residency residency = boxResidencies.get(savedResidency.id);
         residency.householdCode = householdCode;
         residency.memberCode = member.code;
         residency.startType = ResidencyStartType.ENUMERATION;
@@ -539,9 +543,10 @@ public class MemberEnumerationFormUtil extends FormUtil<Member> {
         residency.endDate = null;
 
         //HeadRelationship
-        HeadRelationship headRelationship = savedHeadRelationship;
+        HeadRelationship headRelationship = boxHeadRelationships.get(savedHeadRelationship.id);
         headRelationship.householdCode = householdCode;
         headRelationship.memberCode = member.code;
+        headRelationship.headCode = (headRelationshipType==HeadRelationshipType.HEAD_OF_HOUSEHOLD) ? code : currentHead.code;
         headRelationship.relationshipType = headRelationshipType;
         headRelationship.startType = HeadRelationshipStartType.ENUMERATION;
         headRelationship.startDate = residencyStartDate;
@@ -560,6 +565,7 @@ public class MemberEnumerationFormUtil extends FormUtil<Member> {
         boxCoreCollectedData.put(collectedData);
 
         if (member.isHouseholdHead()) { //head of household
+            household = boxHouseholds.get(household.id);
             household.headCode = member.code;
             household.headName = member.name;
             boxHouseholds.put(household);
@@ -600,8 +606,9 @@ public class MemberEnumerationFormUtil extends FormUtil<Member> {
         //Is the Father/Mother of this Member known and exists on DSS?
 
         if (currentMode == Mode.CREATE) {
-            checkFatherDialog();
+            checkHeadOfHouseholdDialog();
         } else if (currentMode == Mode.EDIT) {
+            retrieveHeadOfHousehold();
             checkChangeFatherDialog();
         }
 
@@ -647,6 +654,36 @@ public class MemberEnumerationFormUtil extends FormUtil<Member> {
         }
 
         return 12;
+    }
+
+    private void retrieveHeadOfHousehold() {
+        this.currentHead = getHeadOfHousehold();
+    }
+
+    private Member getHeadOfHousehold() {
+
+        HeadRelationship headRelationship = boxHeadRelationships.query(
+                HeadRelationship_.householdCode.equal(household.code)
+                        .and(HeadRelationship_.relationshipType.equal(HeadRelationshipType.HEAD_OF_HOUSEHOLD.code))
+                        .and(HeadRelationship_.endType.equal(HeadRelationshipEndType.NOT_APPLICABLE.code))
+        ).orderDesc(HeadRelationship_.startDate).build().findFirst();
+
+        if (headRelationship != null) {
+            return Queries.getMemberByCode(boxMembers, headRelationship.memberCode);
+        }
+
+        return null;
+    }
+
+    private void checkHeadOfHouseholdDialog() {
+        retrieveHeadOfHousehold();
+
+        if (this.currentHead != null || isFirstHouseholdMember) {
+            checkFatherDialog();
+        } else {
+            //display dialog
+            DialogFactory.createMessageInfo(this.context, R.string.eventType_enumeration, R.string.household_head_dont_exists_lbl).show();
+        }
     }
 
     private void checkFatherDialog(){

@@ -804,7 +804,7 @@ public class HouseholdVisitFragment extends Fragment {
 
     private void onVisitCollectedChildLongClicked(VisitCollectedDataItem dataItem) {
         CoreCollectedData coreCollectedData = dataItem.getCoreCollectedData();
-        CoreFormExtension extension = coreCollectedData != null ? coreCollectedData.extension.getTarget() : null;
+        CoreFormExtension extension = coreCollectedData != null && coreCollectedData.extension != null ? coreCollectedData.extension.getTarget() : null;
         //1. if extension required && not_collected || not_found -> create new extension
         //2. if extension required && exists
 

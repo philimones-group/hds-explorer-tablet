@@ -124,21 +124,23 @@ public class ChangeHeadFormUtil extends FormUtil<HeadRelationship> {
 
         if (currentMode == Mode.CREATE) {
             //get current memberHeadRelationship
-            this.oldHeadMemberRelationship = this.boxHeadRelationships.query(
+            /*this.oldHeadMemberRelationship = this.boxHeadRelationships.query(
                                          HeadRelationship_.householdCode.equal(this.household.code)
                                     .and(HeadRelationship_.relationshipType.equal(HeadRelationshipType.HEAD_OF_HOUSEHOLD.code))
                                     .and(HeadRelationship_.endType.equal(HeadRelationshipEndType.NOT_APPLICABLE.code)))
                     .orderDesc(HeadRelationship_.startDate)
                     .build().findFirst();
 
-            this.oldHeadMember = Queries.getMemberByCode(boxMembers, this.oldHeadMemberRelationship.memberCode);
+            if (this.oldHeadMemberRelationship != null) {
+                this.oldHeadMember = Queries.getMemberByCode(boxMembers, this.oldHeadMemberRelationship.memberCode);
+            }*/
 
             this.oldHeadMemberRelationships = this.boxHeadRelationships.query(
                                          HeadRelationship_.householdCode.equal(this.household.code)
-                                    .and(HeadRelationship_.headCode.equal(this.oldHeadMember.code))
                                     .and(HeadRelationship_.endType.equal(HeadRelationshipEndType.NOT_APPLICABLE.code)))
                     .orderDesc(HeadRelationship_.startDate)
                     .build().find();
+
         } else if (currentMode == Mode.EDIT) {
 
             //oldHeadMember - is the original head member that will be changed     - read from readSavedEntityState
@@ -234,8 +236,12 @@ public class ChangeHeadFormUtil extends FormUtil<HeadRelationship> {
 
         preloadedMap.put("visitCode", this.visit.code);
         preloadedMap.put("householdCode", this.household.code);
-        preloadedMap.put("oldHeadCode", this.oldHeadMember.code);
-        preloadedMap.put("oldHeadName", this.oldHeadMember.name);
+
+        if (this.oldHeadMember != null) {
+            preloadedMap.put("oldHeadCode", this.oldHeadMember.code);
+            preloadedMap.put("oldHeadName", this.oldHeadMember.name);
+        }
+
         preloadedMap.put("newHeadCode", this.newHeadMember.code);
         preloadedMap.put("newHeadName", this.newHeadMember.name);
 
@@ -332,10 +338,10 @@ public class ChangeHeadFormUtil extends FormUtil<HeadRelationship> {
             return new ValidationResult(colVisitCode, message);
         }
 
-        if (StringUtil.isBlank(oldHeadCode)){
+        /*if (StringUtil.isBlank(oldHeadCode)){
             String message = this.context.getString(R.string.changehead_oldhead_code_empty_lbl);
             return new ValidationResult(colOldHeadCode, message);
-        }
+        }*/
 
         if (StringUtil.isBlank(newHeadCode)){
             String message = this.context.getString(R.string.changehead_newhead_code_empty_lbl);
@@ -367,7 +373,42 @@ public class ChangeHeadFormUtil extends FormUtil<HeadRelationship> {
             return new ValidationResult(colNewHeadCode, message);
         }
 
+        //check dates of relationships of new head, old head and members of household - they are the current relationships - endType=NA
+        HeadRelationship newHeadLastRelationship = getLastHeadRelationship(newHeadCode);
+        List<HeadRelationship> lastMembersRelationships = oldHeadMemberRelationships;
+
+        //eventDate vs newHeadLastRelationship.startDate
+        if (newHeadLastRelationship != null && newHeadLastRelationship.startDate != null && eventDate.before(newHeadLastRelationship.startDate)){
+            //The event date cannot be before the [start date] of the [new Head of Household] last Head Relationship record.
+            String message = this.context.getString(R.string.changehead_eventdate_not_before_new_head_hrelationship_startdate_lbl, StringUtil.formatYMD(eventDate), newHeadLastRelationship.startType.code, StringUtil.formatYMD(newHeadLastRelationship.startDate));
+            return new ValidationResult(colEventDate, message);
+        }
+
+        for (HeadRelationship relationship : lastMembersRelationships) {
+            if (relationship != null && relationship.startDate != null && eventDate.before(relationship.startDate)){
+                //The event date cannot be before the [start date] of the Member[??????] last Head Relationship record.
+                String message = this.context.getString(R.string.changehead_eventdate_not_before_member_hrelationship_startdate_lbl, StringUtil.formatYMD(eventDate), relationship.memberCode, relationship.startType.code, StringUtil.formatYMD(relationship.startDate));
+                return new ValidationResult(colEventDate, message);
+            }
+        }
+
         return ValidationResult.noErrors();
+    }
+
+    private HeadRelationship getLastHeadRelationship(String memberCode) {
+        HeadRelationship lastHeadRelationship = this.boxHeadRelationships.query(HeadRelationship_.memberCode.equal(memberCode))
+                .orderDesc(HeadRelationship_.startDate)
+                .build().findFirst();
+
+        return lastHeadRelationship;
+    }
+
+    private Residency getLastResidency(String memberCode) {
+        Residency lastResidency = this.boxResidencies.query(Residency_.memberCode.equal(memberCode))
+                .orderDesc(Residency_.startDate)
+                .build().findFirst();
+
+        return lastResidency;
     }
 
     private boolean isHeadOfHouseholdSomewhere(String memberCode) {
@@ -478,6 +519,7 @@ public class ChangeHeadFormUtil extends FormUtil<HeadRelationship> {
         String savedOldHeadRelationships = "";
         if (oldHeadMemberRelationships != null && oldHeadMemberRelationships.size()>0){
             for (HeadRelationship headRelationship : oldHeadMemberRelationships) {
+                headRelationship = boxHeadRelationships.get(headRelationship.id);
                 headRelationship.endType = HeadRelationshipEndType.CHANGE_OF_HEAD_OF_HOUSEHOLD;
                 headRelationship.endDate = eventDate;
                 this.boxHeadRelationships.put(headRelationship);
@@ -488,8 +530,9 @@ public class ChangeHeadFormUtil extends FormUtil<HeadRelationship> {
 
         //save the new head member previous headRelationshipType
         HashMap<String,String> saveStateMap = new HashMap<>();
-        saveStateMap.put("oldHeadCode", oldHeadMember.code); //the head that is being changsaveStateMap.put("oldHeadMemberRelationshipIdList", savedOldHeadRelationships);ed
-        saveStateMap.put("oldHeadMemberRelationshipId", oldHeadMemberRelationship.id+"");
+        saveStateMap.put("oldHeadCode", oldHeadMember != null ? oldHeadMember.code : ""); //the head that is being chang
+        saveStateMap.put("oldHeadMemberRelationshipIdList", savedOldHeadRelationships);
+        saveStateMap.put("oldHeadMemberRelationshipId", oldHeadMemberRelationship != null ? oldHeadMemberRelationship.id+"" : "");
 
         saveStateMap.put("newHeadPreviousRelationshipType", newHeadMember.headRelationshipType.code);
 
@@ -511,8 +554,10 @@ public class ChangeHeadFormUtil extends FormUtil<HeadRelationship> {
 
             if (headRelationship.memberCode.equals(oldHeadCode)) {
                 //update old head relationship
-                oldHeadMember.headRelationshipType = headRelationship.relationshipType;
-                this.boxMembers.put(oldHeadMember);
+                if (oldHeadMember != null) {
+                    oldHeadMember.headRelationshipType = headRelationship.relationshipType;
+                    this.boxMembers.put(oldHeadMember);
+                }
             }
 
             String newHeadIds = !saveStateMap.containsKey("newHeadRelationshipsList") ? headRelationship.id+"" : saveStateMap.get("newHeadRelationshipsList") + "," + headRelationship.id;
@@ -532,7 +577,7 @@ public class ChangeHeadFormUtil extends FormUtil<HeadRelationship> {
         collectedData.formEntityId = newHeadRelationship.id;
         collectedData.formEntityCode = newHeadMember.code;
         collectedData.formEntityCodes = affectedMembers; //new head code, spouse, head related individuals
-        collectedData.formEntityName = oldHeadMember.name +" -> "+newHeadMember.name;
+        collectedData.formEntityName = (oldHeadMember != null ? oldHeadMember.name : "#") +" -> "+newHeadMember.name;
         collectedData.formUuid = result.getFormUuid();
         collectedData.formFilename = result.getFilename();
         collectedData.createdDate = new Date();
@@ -596,7 +641,7 @@ public class ChangeHeadFormUtil extends FormUtil<HeadRelationship> {
         String affectedMembers = null;
 
         //new head head relationship
-        HeadRelationship newHeadRelationship = this.entity;
+        HeadRelationship newHeadRelationship = boxHeadRelationships.get(this.entity.id);
         newHeadRelationship.householdCode = household.code;
         newHeadRelationship.memberCode = newHeadMember.code;
         newHeadRelationship.headCode = newHeadMember.code;
@@ -615,6 +660,7 @@ public class ChangeHeadFormUtil extends FormUtil<HeadRelationship> {
 
         //close memberHeadRelationship again
         if (this.oldHeadMemberRelationship != null){
+            this.oldHeadMemberRelationship = boxHeadRelationships.get(oldHeadMemberRelationship.id);
             this.oldHeadMemberRelationship.endType = HeadRelationshipEndType.CHANGE_OF_HEAD_OF_HOUSEHOLD;
             this.oldHeadMemberRelationship.endDate = eventDate;
             this.boxHeadRelationships.put(this.oldHeadMemberRelationship);
@@ -623,6 +669,7 @@ public class ChangeHeadFormUtil extends FormUtil<HeadRelationship> {
         String savedOldHeadRelationships = "";
         if (oldHeadMemberRelationships != null && oldHeadMemberRelationships.size()>0){
             for (HeadRelationship headRelationship : oldHeadMemberRelationships) {
+                headRelationship = boxHeadRelationships.get(headRelationship.id);
                 headRelationship.endType = HeadRelationshipEndType.CHANGE_OF_HEAD_OF_HOUSEHOLD;
                 headRelationship.endDate = eventDate;
                 this.boxHeadRelationships.put(headRelationship);
@@ -636,6 +683,7 @@ public class ChangeHeadFormUtil extends FormUtil<HeadRelationship> {
 
             //change the previous new head relationshipType
             String sidsList = mapSavedStates.get("newHeadRelationshipsList");
+            newHeadMemberAboutToChange = boxMembers.get(newHeadMemberAboutToChange.id);
             newHeadMemberAboutToChange.headRelationshipType = newHeadMemberPreviousRelatType;
             //deleting the previous new head relationships and update member
             for (String sid : sidsList.split(",")) {
@@ -646,8 +694,8 @@ public class ChangeHeadFormUtil extends FormUtil<HeadRelationship> {
 
             //save the new head member previous headRelationshipType
             HashMap<String,String> saveStateMap = new HashMap<>();
-            saveStateMap.put("oldHeadCode", oldHeadMember.code); //the head that is being changed
-            saveStateMap.put("oldHeadMemberRelationshipId", oldHeadMemberRelationship.id+"");
+            saveStateMap.put("oldHeadCode", oldHeadMember != null ? oldHeadMember.code : ""); //the head that is being changed
+            saveStateMap.put("oldHeadMemberRelationshipId", oldHeadMemberRelationship != null ? oldHeadMemberRelationship.id+"" : "");
             saveStateMap.put("oldHeadMemberRelationshipIdList", savedOldHeadRelationships);
             saveStateMap.put("newHeadPreviousRelationshipType", newHeadMember.headRelationshipType.code);
 
@@ -669,8 +717,10 @@ public class ChangeHeadFormUtil extends FormUtil<HeadRelationship> {
 
                 if (headRelationship.memberCode.equals(oldHeadCode)) {
                     //update old head relationship
-                    oldHeadMember.headRelationshipType = headRelationship.relationshipType;
-                    this.boxMembers.put(oldHeadMember);
+                    if (oldHeadMember != null) {
+                        oldHeadMember.headRelationshipType = headRelationship.relationshipType;
+                        this.boxMembers.put(oldHeadMember);
+                    }
                 }
 
                 String newHeadIds = !saveStateMap.containsKey("newHeadRelationshipsList") ? headRelationship.id+"" : saveStateMap.get("newHeadRelationshipsList") + "," + headRelationship.id;
@@ -706,8 +756,10 @@ public class ChangeHeadFormUtil extends FormUtil<HeadRelationship> {
 
                 if (headRelationship.memberCode.equals(oldHeadCode)) {
                     //update old head relationship
-                    oldHeadMember.headRelationshipType = headRelationship.relationshipType;
-                    this.boxMembers.put(oldHeadMember);
+                    if (oldHeadMember != null) {
+                        oldHeadMember.headRelationshipType = headRelationship.relationshipType;
+                        this.boxMembers.put(oldHeadMember);
+                    }
                 }
             }
         }
@@ -715,7 +767,7 @@ public class ChangeHeadFormUtil extends FormUtil<HeadRelationship> {
         //save core collected data
         collectedData.visitId = visit.id;
         collectedData.formEntityCodes = affectedMembers; //new head code, spouse, head related individuals
-        collectedData.formEntityName = oldHeadMember.name;
+        collectedData.formEntityName = (oldHeadMember != null ? oldHeadMember.name : "#") +" -> "+newHeadMember.name;
         collectedData.updatedDate = new Date();
         this.boxCoreCollectedData.put(collectedData);
 
@@ -758,10 +810,48 @@ public class ChangeHeadFormUtil extends FormUtil<HeadRelationship> {
     public void collect() {
 
         if (this.currentMode == Mode.CREATE) {
-            //search for new head of household
-            openNewHouseholdHeadFilterDialog();
+            checkHeadOfHouseholdDialog();
         } else if (this.currentMode == Mode.EDIT) {
+            //retrieveHeadOfHousehold();
             checkChangeNewHouseholdHeadDialog();
+        }
+    }
+
+    private void retrieveHeadOfHousehold() {
+        this.oldHeadMemberRelationship = getHeadOfHouseholdRelationship();
+        this.oldHeadMember = getHeadOfHousehold(this.oldHeadMemberRelationship);
+    }
+
+    private HeadRelationship getHeadOfHouseholdRelationship() {
+
+        HeadRelationship headRelationship = boxHeadRelationships.query(
+                HeadRelationship_.householdCode.equal(household.code)
+                        .and(HeadRelationship_.relationshipType.equal(HeadRelationshipType.HEAD_OF_HOUSEHOLD.code))
+                        .and(HeadRelationship_.endType.equal(HeadRelationshipEndType.NOT_APPLICABLE.code))
+        ).orderDesc(HeadRelationship_.startDate).build().findFirst();
+
+        return headRelationship;
+    }
+
+    private Member getHeadOfHousehold(HeadRelationship headRelationship) {
+        if (headRelationship != null) {
+            return Queries.getMemberByCode(boxMembers, headRelationship.memberCode);
+        }
+        return null;
+    }
+
+    private void checkHeadOfHouseholdDialog() {
+        retrieveHeadOfHousehold();
+
+        if (this.oldHeadMember == null) {
+            DialogFactory.createMessageInfo(this.context, R.string.eventType_change_of_hoh, R.string.changehead_head_dont_exists_lbl, new DialogFactory.OnClickListener() {
+                @Override
+                public void onClicked(DialogFactory.Buttons clickedButton) {
+                    openNewHouseholdHeadFilterDialog();
+                }
+            }).show();
+        } else {
+            openNewHouseholdHeadFilterDialog();
         }
     }
 
@@ -802,7 +892,9 @@ public class ChangeHeadFormUtil extends FormUtil<HeadRelationship> {
         dialog.setFilterMinAge(this.minimunHeadAge, true);
         dialog.setFilterHouseCode(visit.householdCode);
         dialog.setFilterStatus(MemberFilterDialog.StatusFilter.RESIDENT, true);
-        dialog.addFilterExcludeMember(this.oldHeadMember);
+        if (this.oldHeadMember != null) {
+            dialog.addFilterExcludeMember(this.oldHeadMember);
+        }
         dialog.setStartSearchOnShow(true);
         dialog.show();
     }

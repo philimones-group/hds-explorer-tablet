@@ -420,8 +420,6 @@ public class MaritalRelationshipFormUtil extends FormUtil<MaritalRelationship> {
             }
         }
 
-
-
         return ValidationResult.noErrors();
     }
 
@@ -595,6 +593,7 @@ public class MaritalRelationshipFormUtil extends FormUtil<MaritalRelationship> {
 
         if (spouseBChanged()) {
             //restore back the previous status of the old spouseB (the one that was substitued)
+            savedSpouseB = boxMembers.get(savedSpouseB.id);
             savedSpouseB.maritalStatus = savedSpouseBstatus;
             this.boxMembers.put(savedSpouseB);
         }
@@ -603,7 +602,7 @@ public class MaritalRelationshipFormUtil extends FormUtil<MaritalRelationship> {
         spouseA = boxMembers.get(spouseA.id);
         spouseB = boxMembers.get(spouseB.id);
 
-        MaritalRelationship maritalRelationship = this.entity;
+        MaritalRelationship maritalRelationship = boxMaritalRelationships.get(this.entity.id);
 
         if (startRelationType != null){
             //creates a new relationship

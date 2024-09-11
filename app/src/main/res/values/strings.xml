@@ -121,16 +121,16 @@
 
     <string name="server_sync_uploaded_date_lbl">Last Uploaded Date:</string>
     <string name="server_sync_upload_successfully_lbl">Uploaded Successfully:</string>
-    <string name="server_sync_upload_werrors_lbl">Uploaded with Validation Errors:</string>
+    <string name="server_sync_upload_werrors_lbl">Records with Validation Errors:</string>
     <string name="server_sync_upload_notuploaded_lbl">Not Uploaded:</string>
     <string name="server_sync_upload_show_not_uploaded_lbl">Show not uploaded forms</string>
     <string name="server_sync_upload_show_uploaded_forms_lbl">Show uploaded forms</string>
-    <string name="server_sync_upload_show_uploaded_werrors_lbl">Show uploaded with errors</string>
+    <string name="server_sync_upload_show_uploaded_werrors_lbl">Show records with errors</string>
     <string name="server_sync_upload_select_all">Select All</string>
     <string name="server_sync_upload_total_lbl">%1$d Forms</string>
     <string name="server_sync_uploading_form_lbl">Uploading %1$s Form</string>
     <string name="server_sync_uploading_finished_lbl">Upload Finished</string>
-    <string name="server_sync_upload_errors_result_lbl">Uploaded with Validation Errors</string>
+    <string name="server_sync_upload_errors_result_lbl">Records with Validation Errors</string>
 
     <string name="server_sync_offline_mode_title_lbl">Can\'t Synchronize</string>
     <string name="server_sync_offline_mode_msg_lbl">You are currently in offline mode, to be able to sync login again</string>
@@ -532,15 +532,21 @@
     <string name="external_inmigration_migrationdate_empty_lbl">The Migration date cannot be empty</string>
     <string name="external_inmigration_migrationdate_not_great_today_lbl">The Migration date cannot be greater than today</string>
     <string name="external_inmigration_migrationdate_not_before_dob_lbl">The Migration date cannot be before the date of birth</string>
+    <string name="external_inmigration_migrationdate_not_before_residency_enddate_lbl">The Migration date [%1$s] cannot be before the [end date] of the last Residency record [%2$s -> %3$s].</string>
+    <string name="external_inmigration_migrationdate_not_before_hrelationship_enddate_lbl">The Migration date [%1$s] cannot be before the [end date] of the last Head Relationship record [%2$s -> %3$s].</string>
     <string name="external_inmigration_death_exists_lbl">Cannot create an Immigration. The selected member is dead</string>
     <string name="external_inmigration_head_relationship_opened_lbl">Cannot create an Immigration. The last Head Relationship of this member is not closed</string>
 
     <string name="internal_inmigration_select_inmig_member_lbl">Select the Immigrating Member?</string>
     <string name="internal_inmigration_select_inmig_no_residency_lbl">The selected Member is not registered in any household. Please contact the Data Managers!</string>
     <string name="internal_inmigration_is_head_of_household_lbl">The selected Member is a Head of another household. Must first end his current Head Relationship to move to another household!</string>
+    <string name="internal_inmigration_migrationdate_not_before_residency_startdate_lbl">The Migration date [%1$s] cannot be before the [start date] of the last Residency record [%2$s -> %3$s].</string>
+    <string name="internal_inmigration_migrationdate_not_before_hrelationship_startdate_lbl">The Migration date [%1$s] cannot be before the [start date] of the last Head Relationship record [%2$s -> %3$s].</string>
 
     <string name="outmigration_death_exists_lbl">Cannot create an Outmigration. The selected member is dead</string>
     <string name="outmigration_is_head_of_household_lbl">The selected Member is a Head of this household. Must first end his current Head Relationship to move to another household!</string>
+    <string name="outmigration_migrationdate_not_before_residency_startdate_lbl">The Outmigration date [%1$s] cannot be before the [start date] of the last Residency record [%2$s -> %3$s].</string>
+    <string name="outmigration_migrationdate_not_before_hrelationship_startdate_lbl">The Outmigration [%1$s] date cannot be before the [start date] of the last Head Relationship record [%2$s -> %3$s].</string>
 
     <!-- pregnancy registration -->
     <string name="pregnancy_registration_code_err_lbl">The format of the Pregnancy Code is incorrect</string>
@@ -584,6 +590,8 @@
     <string name="death_deathdate_empty_lbl">The Date of Death cannot be empty</string>
     <string name="death_deathdate_not_before_dob_lbl">The date of death cannot be before the date of birth</string>
     <string name="death_deathdate_not_great_today_lbl">The date of death cannot be greater than today</string>
+    <string name="death_deathdate_not_before_new_head_hrelationship_startdate_lbl">The date of death [%1$s] cannot be before the [start date] of the [new Head of Household] last Head Relationship record [%2$s -> %3$s].</string>
+    <string name="death_deathdate_not_before_member_hrelationship_startdate_lbl">The date of death [%1$s] cannot be before the [start date] of the Member[%2$s] last Head Relationship record [%3$s -> %4$s].</string>
     <string name="death_new_head_code_empty_lbl">The New Head of Household code cannot be empty</string>
     <string name="death_new_head_select_lbl">Select the new Head of Household</string>
     <string name="death_dialog_change_title_lbl">Update Death Info</string>
@@ -599,8 +607,13 @@
     <string name="changehead_eventdate_empty_lbl">The Date of the event cannot be empty</string>
     <string name="changehead_eventdate_not_before_dob_lbl">The date of the event cannot be before the date of birth of the new head of household</string>
     <string name="changehead_eventdate_not_great_today_lbl">The date of the event cannot be greater than today</string>
+    <string name="changehead_eventdate_not_before_new_head_hrelationship_startdate_lbl">The event date [%1$s] cannot be before the [start date] of the [new Head of Household] last Head Relationship record [%2$s -> %3$s].</string>
+    <string name="changehead_eventdate_not_before_member_hrelationship_startdate_lbl">The event date [%1$s] cannot be before the [start date] of the Member[%2$s] last Head Relationship record [%3$s -> %4$s].</string>
     <string name="changehead_new_head_select_lbl">Select the new Head of Household</string>
     <string name="changehead_new_head_is_head_of_household_lbl">The new Head of Household is a Head of another household. Must first end his current Head Relationship to declare it as head of another!</string>
+    <string name="changehead_head_dont_exists_lbl">This Household doesn\'t have an active Head of Household, a new Head of Household must be selected</string>
+
+    <string name="household_head_dont_exists_lbl">It will not be possible to proceed with the event, because this Household doesn\'t have an active Head of Household</string>
 
     <string-array name="relationship_types_array">
         <item>Single</item>
@@ -660,6 +673,8 @@
     <string name="loading_dialog_odk_reload_lbl">Reloading ODK Form...</string>
     <string name="loading_dialog_extra_forms_load_lbl">Loading Extra Forms List...</string>
     <string name="loading_dialog_filter_name_hint_lbl">Insert Form Name here</string>
+    <string name="loading_dialog_load_data_lbl">Loading data...</string>
+    <string name="loading_dialog_load_lbl">Loading...</string>
 
     <!-- GPS Maps -->
     <string name="map_gps_not_available_title_lbl">Cannot view GPS Map</string>

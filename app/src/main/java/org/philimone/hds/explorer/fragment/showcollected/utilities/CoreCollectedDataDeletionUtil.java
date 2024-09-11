@@ -611,21 +611,23 @@ public class CoreCollectedDataDeletionUtil {
     }
 
     private void deleteOdkInstance(Uri odkContentUri) {
-        try {
-            mContext.getContentResolver().delete(odkContentUri, null, null);
-        } catch (Exception ex) {
-            if (ex.getMessage().contains("AppDependencyComponent.inject(org.odk.collect.android.external.InstanceProvider)' on a null object reference")) {
-                //try again
-                try {
-                    mContext.getContentResolver().delete(odkContentUri, null, null);
-                } catch (Exception e) {
-                    Log.d("after tried again", e.getMessage());
-                    e.printStackTrace();
-                }
-            } else {
+        int errorCount = 0;
+        String messageLike = "AppDependencyComponent.inject(org.odk.collect.android.external.InstanceProvider)' on a null object reference";
+        String errorMessage = null;
+
+        do {
+            errorMessage = null;
+
+            try {
+                mContext.getContentResolver().delete(odkContentUri, null, null);
+            } catch (Exception ex) {
+                errorCount++;
+                errorMessage = ex.getMessage();
+
+                Log.d("dataDeletionUtil", "instanceprovider, error_count="+errorCount+", ex: "+errorMessage);
                 ex.printStackTrace();
             }
-        }
+        } while (errorMessage != null && errorMessage.contains(messageLike) && errorCount < 4);
     }
 
 }

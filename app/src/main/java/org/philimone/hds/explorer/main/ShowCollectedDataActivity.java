@@ -1,9 +1,12 @@
 package org.philimone.hds.explorer.main;
 
+import androidx.annotation.StringRes;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager2.widget.ViewPager2;
 
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -22,6 +25,7 @@ import org.philimone.hds.explorer.model.CoreCollectedData;
 import org.philimone.hds.explorer.model.CoreCollectedData_;
 import org.philimone.hds.explorer.model.User;
 import org.philimone.hds.explorer.model.enums.CoreFormEntity;
+import org.philimone.hds.explorer.widget.LoadingDialog;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,6 +50,10 @@ public class ShowCollectedDataActivity extends AppCompatActivity implements Show
 
     private ShowCollectedDataFragmentAdapter fragmentAdapter;
 
+    private LoadingDialog loadingDialog;
+    private int loadedData = 0; //1+2+3 = 6 means full loaded
+    private int fragmentsCreated = 0;
+
     public ShowCollectedDataActivity() {
         this.initBoxes();
     }
@@ -60,21 +68,13 @@ public class ShowCollectedDataActivity extends AppCompatActivity implements Show
         initialize();
     }
 
-    /*
-    @Override
-    protected void onPostResume() {
-        super.onPostResume();
-
-        showResumeDetails();
-    }
-    */
-
     private void initBoxes() {
         this.boxCoreCollectedData = ObjectBoxDatabase.get().boxFor(CoreCollectedData.class);
         this.boxCollectedData = ObjectBoxDatabase.get().boxFor(CollectedData.class);
     }
 
     private void initialize() {
+
         this.txtShowCollectedDataModules = findViewById(R.id.txtShowCollectedDataModules);
         this.txtShowCollectedCoreForms = findViewById(R.id.txtShowCollectedCoreForms);
         this.txtShowCollectedOdkForms = findViewById(R.id.txtShowCollectedOdkForms);
@@ -82,6 +82,7 @@ public class ShowCollectedDataActivity extends AppCompatActivity implements Show
         this.collectedDataTabViewPager = findViewById(R.id.collectedDataTabViewPager);
         this.btShowCollectedBack = findViewById(R.id.btShowCollectedBack);
         this.btShowCollectedUpdate = findViewById(R.id.btShowCollectedUpdate);
+        this.loadingDialog = new LoadingDialog(this); //findViewById(R.id.loadingProgressBar);
 
         initFragments();
 
@@ -92,6 +93,8 @@ public class ShowCollectedDataActivity extends AppCompatActivity implements Show
         this.btShowCollectedUpdate.setOnClickListener(v -> {
             loadCollectedDataLists();
         });
+
+        showLoadingDialog(R.string.loading_dialog_load_data_lbl, true);
     }
 
     private void initFragments() {
@@ -122,7 +125,6 @@ public class ShowCollectedDataActivity extends AppCompatActivity implements Show
 
     public void showResumeDetails() {
         refreshTabTitles();
-
         loadCollectedDataLists();
     }
 
@@ -139,18 +141,6 @@ public class ShowCollectedDataActivity extends AppCompatActivity implements Show
         collectedDataTabLayout.getTabAt(1).setText(core_label);
         collectedDataTabLayout.getTabAt(2).setText(odk_label);
 
-        /*
-        List<String> tabTitles = new ArrayList<>();
-        tabTitles.add(visit_label);
-        tabTitles.add(core_label);
-        tabTitles.add(odk_label);
-
-        if (this.fragmentAdapter != null) {
-            this.fragmentAdapter.updateTabTitles(tabTitles);
-            this.fragmentAdapter.notifyDataSetChanged();
-        }
-         */
-
         this.txtShowCollectedDataModules.setText(user.getSelectedModulesCodes());
     }
 
@@ -163,6 +153,7 @@ public class ShowCollectedDataActivity extends AppCompatActivity implements Show
     private void loadVisitCollectedDataList() {
         if (this.fragmentAdapter != null) {
             ShowVisitCollectedDataFragment fragment = this.fragmentAdapter.getFragmentVisitCollectedData();
+
             if (fragment != null) {
                 fragment.reloadCollectedData();
             }
@@ -175,6 +166,19 @@ public class ShowCollectedDataActivity extends AppCompatActivity implements Show
             if (fragment != null) {
                 fragment.reloadCollectedData();
             }
+        }
+    }
+
+    private void showLoadingDialog(@StringRes int msgId, boolean show) {
+        showLoadingDialog(getString(msgId), show);
+    }
+
+    private void showLoadingDialog(String msg, boolean show){
+        if (show) {
+            this.loadingDialog.setMessage(msg);
+            this.loadingDialog.show();
+        } else {
+            this.loadingDialog.dismiss();
         }
     }
 
@@ -213,5 +217,56 @@ public class ShowCollectedDataActivity extends AppCompatActivity implements Show
     @Override
     public void onCoreFormEdited() {
         showResumeDetails();
+    }
+
+    @Override
+    public void onCoreFormsLoaded() {
+        loadedData += 1;
+        onDataLoaded();
+    }
+
+    @Override
+    public void onVisitsLoaded() {
+        loadedData += 2;
+        onDataLoaded();
+    }
+
+    @Override
+    public void onOdkFormsLoaded() {
+        loadedData += 3;
+        onDataLoaded();
+    }
+
+    private void onDataLoaded() {
+        Log.d("loading", ""+loadedData);
+        if (loadedData >= 6) {
+            loadedData = 0;
+            showLoadingDialog("", false);
+        }
+    }
+
+    @Override
+    public void onCoreCollectedViewsCreated(ShowCoreCollectedDataFragment fragment) {
+        fragment.reloadCollectedData();
+    }
+
+    @Override
+    public void onOdkCollectedViewsCreated(ShowOdkCollectedDataFragment fragment) {
+        fragment.reloadCollectedData();
+    }
+
+    @Override
+    public void onVisitCollectedViewsCreated(ShowVisitCollectedDataFragment fragment) {
+        fragment.reloadCollectedData();
+    }
+
+    private void onFragmentsCreated() {
+        Log.d("creating-frags", ""+loadedData);
+        if (fragmentsCreated >= 6) {
+            fragmentsCreated = 0;
+            Log.d("fragments", "all created");
+
+            loadCollectedDataLists();
+        }
     }
 }

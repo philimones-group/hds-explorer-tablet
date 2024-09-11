@@ -108,6 +108,17 @@ public class ShowVisitCollectedDataFragment extends Fragment {
         }
     }
 
+    private void fireOnVisitsLoaded() {
+        if (this.actionListener != null) {
+            this.actionListener.onVisitsLoaded();
+        }
+    }
+
+    private void fireOnViewsCreated() {
+        if (this.actionListener != null) {
+            this.actionListener.onVisitCollectedViewsCreated(this);
+        }
+    }
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -116,17 +127,16 @@ public class ShowVisitCollectedDataFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+        View view = inflater.inflate(R.layout.show_visit_collected_list, container, false);
 
-        return inflater.inflate(R.layout.show_visit_collected_list, container, false);
+        return view;
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-        loggedUser = Bootstrap.getCurrentUser();
-
         initialize(view);
+        fireOnViewsCreated();
     }
 
     private void initBoxes() {
@@ -173,7 +183,7 @@ public class ShowVisitCollectedDataFragment extends Fragment {
             }
         });
 
-        this.showCollectedData();
+        //this.showCollectedData();
     }
 
     private void filterCollectedData(String text){
@@ -193,22 +203,7 @@ public class ShowVisitCollectedDataFragment extends Fragment {
     private void showCollectedData() {
         //this.showProgress(true);
 
-        if (this.lvCollectedForms == null) return;
-
-        List<CoreCollectedDataItem> list = getAllCollectedData();
-
-        ShowVisitCollectedDataAdapter adapter = new ShowVisitCollectedDataAdapter(this.getContext(), list, new ShowVisitCollectedDataAdapter.OnItemActionListener() {
-            @Override
-            public void onInfoButtonClicked(CoreCollectedDataItem collectedData) {
-                Log.d("collected", ""+collectedData);
-            }
-
-            @Override
-            public void onCheckedStatusChanged(int position, boolean checkedStatus, boolean allChecked, boolean anyChecked) {
-
-            }
-        });
-        this.lvCollectedForms.setAdapter(adapter);
+        new ShowCollectedDataTask().execute();
     }
 
     public void reloadCollectedData(){
@@ -269,6 +264,40 @@ public class ShowVisitCollectedDataFragment extends Fragment {
         }
     }
 
+    class ShowCollectedDataTask extends AsyncTask<Void, Void, ShowVisitCollectedDataAdapter> {
+
+        @Override
+        protected ShowVisitCollectedDataAdapter doInBackground(Void... voids) {
+            if (lvCollectedForms == null) return null;
+
+            List<CoreCollectedDataItem> list = getAllCollectedData();
+
+            ShowVisitCollectedDataAdapter adapter = new ShowVisitCollectedDataAdapter(getContext(), list, new ShowVisitCollectedDataAdapter.OnItemActionListener() {
+                @Override
+                public void onInfoButtonClicked(CoreCollectedDataItem collectedData) {
+                    Log.d("collected", ""+collectedData);
+                }
+
+                @Override
+                public void onCheckedStatusChanged(int position, boolean checkedStatus, boolean allChecked, boolean anyChecked) {
+
+                }
+            });
+
+            return adapter;
+        }
+
+        @Override
+        protected void onPostExecute(ShowVisitCollectedDataAdapter adapter) {
+            super.onPostExecute(adapter);
+
+            if (adapter != null) {
+                lvCollectedForms.setAdapter(adapter);
+                fireOnVisitsLoaded();
+            }
+        }
+    }
+
     class ShowHouseholdTask extends AsyncTask<Void, Void, Void> {
         private Household household;
 
@@ -307,5 +336,9 @@ public class ShowVisitCollectedDataFragment extends Fragment {
 
     public interface ActionListener {
         void onVisitEdited();
+
+        void onVisitsLoaded();
+
+        void onVisitCollectedViewsCreated(ShowVisitCollectedDataFragment fragment);
     }
 }

@@ -204,11 +204,11 @@ public class SyncUploadEntitiesTask extends AsyncTask<Void, Integer, UploadRespo
             }
 
         } else {
-            response = "Internal Mobile App Error";
+            response = "Internal Mobile App Error, conn="+connection+", bytes="+xmlBytes;
         }
 
         if (responseCode != HttpURLConnection.HTTP_BAD_REQUEST) {
-            response = "Internal Mobile App Error";
+            response = "Internal Mobile App Error, HTTP="+responseCode;
         }
 
         Log.d("response", ""+responseCode+", error: "+response);

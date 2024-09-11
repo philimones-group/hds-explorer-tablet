@@ -197,6 +197,11 @@
                         <com.google.android.material.tabs.TabItem
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:text="@string/show_collected_data_tab_core_forms_lbl" />
+
+                        <com.google.android.material.tabs.TabItem
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
                             android:text="@string/show_collected_data_tab_odk_forms_lbl" />
                     </com.google.android.material.tabs.TabLayout>
 
@@ -209,7 +214,6 @@
                     </androidx.viewpager2.widget.ViewPager2>
 
                 </LinearLayout>
-
 
                 <!-- border of listview -->
                 <View

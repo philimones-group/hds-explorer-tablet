@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment;
 
 import org.philimone.hds.explorer.R;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
+import org.philimone.hds.explorer.database.Queries;
 import org.philimone.hds.explorer.fragment.MemberFilterDialog;
 import org.philimone.hds.explorer.fragment.showcollected.utilities.CoreCollectedDataDeletionUtil;
 import org.philimone.hds.explorer.model.ApplicationParam;
@@ -77,6 +78,7 @@ public class PregnancyOutcomeFormUtil extends FormUtil<PregnancyOutcome> {
     private Visit visit;
     private Member mother;
     private Member father;
+    private Member currentHead;
     private PregnancyRegistration pregnancyRegistration;
     private boolean pregnancyRegistrationCreated;
     private int numberOfOutcomes = 1;
@@ -546,6 +548,7 @@ public class PregnancyOutcomeFormUtil extends FormUtil<PregnancyOutcome> {
             HeadRelationship childHeadRelationship = new HeadRelationship();
             childHeadRelationship.householdCode = household.code;
             childHeadRelationship.memberCode = childCode;
+            childHeadRelationship.headCode = currentHead.code;
             childHeadRelationship.relationshipType = headRelationshipType;
             childHeadRelationship.startType = HeadRelationshipStartType.BIRTH;
             childHeadRelationship.startDate = outcomeDate;
@@ -580,14 +583,17 @@ public class PregnancyOutcomeFormUtil extends FormUtil<PregnancyOutcome> {
                 death.ageAtDeath = 0;
                 this.boxDeaths.put(death);
 
+                childMember = boxMembers.get(childMember.id);
                 childMember.endType = ResidencyEndType.DEATH;
                 childMember.endDate = outcomeDate;
                 this.boxMembers.put(childMember);
 
+                childResidency = boxResidencies.get(childResidency.id);
                 childResidency.endType = ResidencyEndType.DEATH;
                 childResidency.endDate = outcomeDate;
                 this.boxResidencies.put(childResidency);
 
+                childHeadRelationship = boxHeadRelationships.get(childHeadRelationship.id);
                 childHeadRelationship.endType = HeadRelationshipEndType.DEATH;
                 childHeadRelationship.endDate = outcomeDate;
                 this.boxHeadRelationships.put(childHeadRelationship);
@@ -692,7 +698,7 @@ public class PregnancyOutcomeFormUtil extends FormUtil<PregnancyOutcome> {
         pregnancyRegistration.status = PregnancyStatus.DELIVERED;
         this.boxPregnancyRegistrations.put(pregnancyRegistration);
 
-        PregnancyOutcome pregnancyOutcome = this.entity;
+        PregnancyOutcome pregnancyOutcome = boxPregnancyOutcomes.get(this.entity.id);
         pregnancyOutcome.motherCode = mother.code;
         pregnancyOutcome.fatherCode = father.code;
         pregnancyOutcome.outcomeDate = outcomeDate;
@@ -748,6 +754,7 @@ public class PregnancyOutcomeFormUtil extends FormUtil<PregnancyOutcome> {
             HeadRelationship childHeadRelationship = this.boxHeadRelationships.query(HeadRelationship_.memberCode.equal(childCode)).build().findFirst();
             childHeadRelationship.householdCode = household.code;
             childHeadRelationship.memberCode = childCode;
+            childHeadRelationship.headCode = currentHead.code;
             childHeadRelationship.relationshipType = headRelationshipType;
             childHeadRelationship.startType = HeadRelationshipStartType.BIRTH;
             childHeadRelationship.startDate = outcomeDate;
@@ -890,12 +897,43 @@ public class PregnancyOutcomeFormUtil extends FormUtil<PregnancyOutcome> {
         }
 
         if (currentMode == Mode.CREATE) {
-            //1. get the father
-            checkFatherDialog();
+            checkHeadOfHouseholdDialog();
         } else if (currentMode == Mode.EDIT) {
+            retrieveHeadOfHousehold();
             checkChangeFatherDialog();
         }
 
+    }
+
+    private void retrieveHeadOfHousehold() {
+        this.currentHead = getHeadOfHousehold();
+    }
+
+    private Member getHeadOfHousehold() {
+
+        HeadRelationship headRelationship = boxHeadRelationships.query(
+                HeadRelationship_.householdCode.equal(household.code)
+                        .and(HeadRelationship_.relationshipType.equal(HeadRelationshipType.HEAD_OF_HOUSEHOLD.code))
+                        .and(HeadRelationship_.endType.equal(HeadRelationshipEndType.NOT_APPLICABLE.code))
+        ).orderDesc(HeadRelationship_.startDate).build().findFirst();
+
+        if (headRelationship != null) {
+            return Queries.getMemberByCode(boxMembers, headRelationship.memberCode);
+        }
+
+        return null;
+    }
+
+    private void checkHeadOfHouseholdDialog() {
+        retrieveHeadOfHousehold();
+
+        if (this.currentHead != null) {
+            //1. get the father
+            checkFatherDialog();
+        } else {
+            //display dialog
+            DialogFactory.createMessageInfo(this.context, R.string.eventType_birth, R.string.household_head_dont_exists_lbl).show();
+        }
     }
 
     private void checkFatherDialog(){

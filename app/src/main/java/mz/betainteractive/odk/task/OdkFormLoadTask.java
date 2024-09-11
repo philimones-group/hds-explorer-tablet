@@ -94,25 +94,24 @@ public class OdkFormLoadTask extends AsyncTask<Void, Void, OdkFormLoadResult> {
 
         Log.d("get cursor for forms", "");
 
-        try {
-            cursor = getCursorForFormsProvider(filledForm.getFormName());
-        } catch (Exception e) {
-            Log.d("special error", ""+e.getMessage());
+        int errorCount = 0;
+        String messageLike = "AppDependencyComponent.inject(org.odk.collect.android.external.FormsProvider)' on a null object reference";
+        String errorMessage = null;
 
-            if (e.getMessage().contains("AppDependencyComponent.inject(org.odk.collect.android.external.FormsProvider)' on a null object reference")) {
-                //try again
+        do {
+            errorMessage = null;
+            try {
+                cursor = getCursorForFormsProvider(filledForm.getFormName());
+            } catch (Exception e) {
+                errorCount++;
+                errorMessage = e.getMessage();
+                Log.d("special error", "errorCount="+ errorCount + ", message: " + e.getMessage());
 
-                try {
-                    cursor = getCursorForFormsProvider(filledForm.getFormName());
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                    return OdkFormLoadResult.newErrorResult(this.odkFormLoadData, OdkFormLoadResult.Status.ERROR_PROVIDER_NA, openMode);
-                }
-
-            } else {
-                e.printStackTrace();
-                return OdkFormLoadResult.newErrorResult(this.odkFormLoadData, OdkFormLoadResult.Status.ERROR_PROVIDER_NA, openMode);
             }
+        } while (errorMessage != null && errorMessage.contains(messageLike) && errorCount < 3);
+
+        if (errorMessage != null) {
+            return OdkFormLoadResult.newErrorResult(this.odkFormLoadData, OdkFormLoadResult.Status.ERROR_PROVIDER_NA, openMode);
         }
 
         //After trying to get the cursor

@@ -60,7 +60,9 @@ import mz.betainteractive.utilities.StringUtil;
  */
 public class ShowOdkCollectedDataFragment extends Fragment {
 
-    private enum SubjectMode { REGION, HOUSEHOLD, MEMBER };
+    private enum SubjectMode {REGION, HOUSEHOLD, MEMBER}
+
+    ;
 
     private RecyclerListView lvCollectedForms;
     private EditText txtCollectedDataFilter;
@@ -86,7 +88,7 @@ public class ShowOdkCollectedDataFragment extends Fragment {
     private List<String> selectedModules = new ArrayList<>();
 
     private ActivityResultLauncher<Intent> onFormEditLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
-       //after calling details activity to edit a collected odk form
+        //after calling details activity to edit a collected odk form
         Log.d("testing", "reloading odk");
         reloadCollectedData();
         fireOnFormEdited();
@@ -96,12 +98,13 @@ public class ShowOdkCollectedDataFragment extends Fragment {
         // Required empty public constructor
         initBoxes();
     }
+
     public ShowOdkCollectedDataFragment(ActionListener listener) {
         this();
         this.actionListener = listener;
     }
 
-    public static ShowOdkCollectedDataFragment newInstance(ActionListener listener){
+    public static ShowOdkCollectedDataFragment newInstance(ActionListener listener) {
         ShowOdkCollectedDataFragment fragment = new ShowOdkCollectedDataFragment(listener);
 
         fragment.loggedUser = Bootstrap.getCurrentUser();
@@ -122,6 +125,18 @@ public class ShowOdkCollectedDataFragment extends Fragment {
         }
     }
 
+    private void fireOnOdkFormsLoaded() {
+        if (this.actionListener != null) {
+            this.actionListener.onOdkFormsLoaded();
+        }
+    }
+
+    private void fireOnViewsCreated() {
+        if (this.actionListener != null) {
+            this.actionListener.onOdkCollectedViewsCreated(this);
+        }
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -137,10 +152,11 @@ public class ShowOdkCollectedDataFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        loggedUser = Bootstrap.getCurrentUser();
         this.deletionUtil = new CoreCollectedDataDeletionUtil(this.getContext());
 
         initialize(view);
+
+        fireOnViewsCreated();
     }
 
     private void initBoxes() {
@@ -195,7 +211,7 @@ public class ShowOdkCollectedDataFragment extends Fragment {
             onDeleteSelectedForms();
         });
 
-        this.showCollectedData();
+        //this.showCollectedData();
     }
 
     private void selectItem(int position) {
@@ -221,33 +237,7 @@ public class ShowOdkCollectedDataFragment extends Fragment {
      */
     private void showCollectedData() {
         //this.showProgress(true);
-
-        if (this.lvCollectedForms == null) return;
-
-        List<CollectedData> list = getAllCollectedData();
-        List<Form> forms = this.boxForms.getAll();
-        List<CoreFormExtension> coreforms = this.boxCoreForms.getAll();
-        List<OdkCollectedDataItem> cdl = new ArrayList<>();
-
-        for (CollectedData cd : list){
-            Form form = getFormById(forms, cd.getFormId());
-            CoreFormExtension coreform = form==null ? getFormExtensionById(coreforms, cd.getFormId()) : null;
-            cdl.add(new OdkCollectedDataItem(cd.getFormId(), getSubject(cd), form, coreform, cd));
-        }
-
-        ShowCollectedDataAdapter adapter = new ShowCollectedDataAdapter(this.getContext(), cdl, new ShowCollectedDataAdapter.OnItemActionListener() {
-            @Override
-            public void onInfoButtonClicked(OdkCollectedDataItem collectedData) {
-                Log.d("collected", ""+collectedData);
-            }
-
-            @Override
-            public void onCheckedStatusChanged(int position, boolean checkedStatus, boolean allChecked, boolean anyChecked) {
-                btShowCollectedDelete.setEnabled(anyChecked);
-            }
-        });
-
-        this.lvCollectedForms.setAdapter(adapter);
+        new ShowCollectedDataTask().execute();
     }
 
     private FormSubject getSubject(CollectedData collectedData) {
@@ -392,6 +382,50 @@ public class ShowOdkCollectedDataFragment extends Fragment {
 
         getActivity().runOnUiThread(this::fireOnDeletedForms);
     }
+
+    class ShowCollectedDataTask extends AsyncTask<Void, Void, ShowCollectedDataAdapter> {
+
+        @Override
+        protected ShowCollectedDataAdapter doInBackground(Void... voids) {
+
+            if (lvCollectedForms == null) return null;
+
+            List<CollectedData> list = getAllCollectedData();
+            List<Form> forms = boxForms.getAll();
+            List<CoreFormExtension> coreforms = boxCoreForms.getAll();
+            List<OdkCollectedDataItem> cdl = new ArrayList<>();
+
+            for (CollectedData cd : list){
+                Form form = getFormById(forms, cd.getFormId());
+                CoreFormExtension coreform = form==null ? getFormExtensionById(coreforms, cd.getFormId()) : null;
+                cdl.add(new OdkCollectedDataItem(cd.getFormId(), getSubject(cd), form, coreform, cd));
+            }
+
+            ShowCollectedDataAdapter adapter = new ShowCollectedDataAdapter(getContext(), cdl, new ShowCollectedDataAdapter.OnItemActionListener() {
+                @Override
+                public void onInfoButtonClicked(OdkCollectedDataItem collectedData) {
+                    Log.d("collected", ""+collectedData);
+                }
+
+                @Override
+                public void onCheckedStatusChanged(int position, boolean checkedStatus, boolean allChecked, boolean anyChecked) {
+                    btShowCollectedDelete.setEnabled(anyChecked);
+                }
+            });
+
+            return adapter;
+        }
+
+        @Override
+        protected void onPostExecute(ShowCollectedDataAdapter adapter) {
+            super.onPostExecute(adapter);
+
+            if (adapter != null) {
+                lvCollectedForms.setAdapter(adapter);
+                fireOnOdkFormsLoaded();
+            }
+        }
+    }
     
     class ShowRegionTask extends AsyncTask<Void, Void, Void> {
         private Region region;
@@ -499,5 +533,9 @@ public class ShowOdkCollectedDataFragment extends Fragment {
         void onDeletedOdkForms();
 
         void onOdkFormEdited();
+
+        void onOdkFormsLoaded();
+
+        void onOdkCollectedViewsCreated(ShowOdkCollectedDataFragment fragment);
     }
 }

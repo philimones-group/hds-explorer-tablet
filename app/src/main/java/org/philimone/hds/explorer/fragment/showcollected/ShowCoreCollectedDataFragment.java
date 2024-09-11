@@ -114,8 +114,6 @@ public class ShowCoreCollectedDataFragment extends Fragment {
 
     public static ShowCoreCollectedDataFragment newInstance(ActionListener listener){
         ShowCoreCollectedDataFragment fragment = new ShowCoreCollectedDataFragment(listener);
-        fragment.loggedUser = Bootstrap.getCurrentUser();
-
         return fragment;
     }
 
@@ -131,6 +129,18 @@ public class ShowCoreCollectedDataFragment extends Fragment {
         }
     }
 
+    private void fireOnCoreFormsLoaded() {
+        if (this.actionListener != null) {
+            this.actionListener.onCoreFormsLoaded();
+        }
+    }
+
+    private void fireOnViewsCreated() {
+        if (this.actionListener != null) {
+            this.actionListener.onCoreCollectedViewsCreated(this);
+        }
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -139,15 +149,15 @@ public class ShowCoreCollectedDataFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-
-        return inflater.inflate(R.layout.show_core_collected_list, container, false);
+        View view = inflater.inflate(R.layout.show_core_collected_list, container, false);
+        return view;
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
         initialize(view);
+        fireOnViewsCreated();
     }
 
     private void initBoxes() {
@@ -207,7 +217,7 @@ public class ShowCoreCollectedDataFragment extends Fragment {
             onDeleteSelectedRecords();
         });
 
-        this.showCollectedData();
+        //this.showCollectedData();
     }
 
     private void filterCollectedData(String text){
@@ -226,23 +236,7 @@ public class ShowCoreCollectedDataFragment extends Fragment {
      */
     private void showCollectedData() {
         //this.showProgress(true);
-
-        if (this.lvCollectedForms == null) return;
-
-        List<CoreCollectedDataItem> list = getAllCollectedData();
-
-        ShowCoreCollectedDataAdapter adapter = new ShowCoreCollectedDataAdapter(this.getContext(), list, new ShowCoreCollectedDataAdapter.OnItemActionListener() {
-            @Override
-            public void onInfoButtonClicked(CoreCollectedDataItem collectedData) {
-                Log.d("collected", ""+collectedData);
-            }
-
-            @Override
-            public void onCheckedStatusChanged(int position, boolean checkedStatus, boolean allChecked, boolean anyChecked) {
-                btShowCollectedDelete.setEnabled(anyChecked);
-            }
-        });
-        this.lvCollectedForms.setAdapter(adapter);
+        new ShowCollectedDataTask().execute();
     }
 
     public void reloadCollectedData(){
@@ -334,12 +328,17 @@ public class ShowCoreCollectedDataFragment extends Fragment {
             case EDITED_MEMBER:
             case MEMBER_ENU: {
                 Member member = boxMembers.query(Member_.id.equal(coreCollectedData.formEntityId)).build().findFirst();
-                return boxHouseholds.query(Household_.code.equal(member.householdCode)).build().findFirst();
+                if (member != null) {
+                    return boxHouseholds.query(Household_.code.equal(member.householdCode)).build().findFirst();
+                }
+                return null;
             }
             case HEAD_RELATIONSHIP:
             case CHANGE_HOUSEHOLD_HEAD: {
                 HeadRelationship entity = boxHeadRelationships.query(HeadRelationship_.id.equal(coreCollectedData.formEntityId)).build().findFirst();
-                return boxHouseholds.query(Household_.code.equal(entity.householdCode)).build().findFirst();
+                if (entity != null) {
+                    return boxHouseholds.query(Household_.code.equal(entity.householdCode)).build().findFirst();
+                }
             }
             case MARITAL_RELATIONSHIP:
             case OUTMIGRATION:
@@ -351,7 +350,9 @@ public class ShowCoreCollectedDataFragment extends Fragment {
             case EXTERNAL_INMIGRATION:
             case VISIT: {
                 Visit visit = boxVisits.query(Visit_.id.equal(coreCollectedData.visitId)).build().findFirst();
-                return boxHouseholds.query(Household_.code.equal(visit.householdCode)).build().findFirst();
+                if (visit != null) {
+                    return boxHouseholds.query(Household_.code.equal(visit.householdCode)).build().findFirst();
+                }
             }
             case EXTRA_FORM: break;
             case INVALID_ENUM: break;
@@ -369,6 +370,40 @@ public class ShowCoreCollectedDataFragment extends Fragment {
             this.loadingDialog.show();
         } else {
             this.loadingDialog.dismiss();
+        }
+    }
+
+    class ShowCollectedDataTask extends AsyncTask<Void, Void, ShowCoreCollectedDataAdapter> {
+
+        @Override
+        protected ShowCoreCollectedDataAdapter doInBackground(Void... voids) {
+            if (lvCollectedForms == null) return null;
+
+            List<CoreCollectedDataItem> list = getAllCollectedData();
+
+            ShowCoreCollectedDataAdapter adapter = new ShowCoreCollectedDataAdapter(getContext(), list, new ShowCoreCollectedDataAdapter.OnItemActionListener() {
+                @Override
+                public void onInfoButtonClicked(CoreCollectedDataItem collectedData) {
+                    Log.d("collected", ""+collectedData);
+                }
+
+                @Override
+                public void onCheckedStatusChanged(int position, boolean checkedStatus, boolean allChecked, boolean anyChecked) {
+                    btShowCollectedDelete.setEnabled(anyChecked);
+                }
+            });
+
+            return adapter;
+        }
+
+        @Override
+        protected void onPostExecute(ShowCoreCollectedDataAdapter adapter) {
+            super.onPostExecute(adapter);
+
+            if (adapter != null) {
+                lvCollectedForms.setAdapter(adapter);
+                fireOnCoreFormsLoaded();
+            }
         }
     }
 
@@ -481,5 +516,9 @@ public class ShowCoreCollectedDataFragment extends Fragment {
         void onDeletedCoreForms();
 
         void onCoreFormEdited();
+
+        void onCoreFormsLoaded();
+
+        void onCoreCollectedViewsCreated(ShowCoreCollectedDataFragment fragment);
     }
 }

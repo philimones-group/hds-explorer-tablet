@@ -119,16 +119,16 @@
 
     <string name="server_sync_uploaded_date_lbl">Date de la dernière soumission de données:</string>
     <string name="server_sync_upload_successfully_lbl">Envoyé avec succès:</string>
-    <string name="server_sync_upload_werrors_lbl">Envoyé avec des erreurs de validation:</string>
+    <string name="server_sync_upload_werrors_lbl">Enregistrements avec des erreurs de validation:</string>
     <string name="server_sync_upload_notuploaded_lbl">Non envoyé:</string>
     <string name="server_sync_upload_show_not_uploaded_lbl">Afficher les formulaires non envoyés</string>
     <string name="server_sync_upload_show_uploaded_forms_lbl">Afficher les formulaires envoyés</string>
-    <string name="server_sync_upload_show_uploaded_werrors_lbl">Afficher les formulaires soumis avec des erreurs</string>
+    <string name="server_sync_upload_show_uploaded_werrors_lbl">Afficher les enregistrements avec des erreurs</string>
     <string name="server_sync_upload_select_all">Sélectionnez tous</string>
     <string name="server_sync_upload_total_lbl">%1$d Formulaire(s)</string>
     <string name="server_sync_uploading_form_lbl">Envoi du formulaire de %1$s</string>
     <string name="server_sync_uploading_finished_lbl">Finalisation de la soumission des données</string>
-    <string name="server_sync_upload_errors_result_lbl">Envoyé avec des erreurs de validation</string>
+    <string name="server_sync_upload_errors_result_lbl">Enregistrements avec des erreurs de validation</string>
 
     <string name="server_sync_offline_mode_title_lbl">Impossible de synchroniser</string>
     <string name="server_sync_offline_mode_msg_lbl">Le panneau est en mode hors ligne, pour pouvoir synchroniser les données, veuillez vous connecter à nouveau.</string>
@@ -530,15 +530,21 @@
     <string name="external_inmigration_migrationdate_empty_lbl">La date de la migration ne peut être vide</string>
     <string name="external_inmigration_migrationdate_not_great_today_lbl">La date de la migration ne peut être dans le futur</string>
     <string name="external_inmigration_migrationdate_not_before_dob_lbl">La date de la migration ne peut pas être antérieure à la date de naissance</string>
+    <string name="external_inmigration_migrationdate_not_before_residency_enddate_lbl">La date de migration [%1$s] ne peut pas être antérieure à la [date de fin] du dernier enregistrement de résidence [%2$s -> %3$s].</string>
+    <string name="external_inmigration_migrationdate_not_before_hrelationship_enddate_lbl">La date de migration [%1$s] ne peut pas être antérieure à la [date de fin] du dernier enregistrement de relation avec le chef [%2$s -> %3$s].</string>
     <string name="external_inmigration_death_exists_lbl">Il n\'est pas possible d\'immigrer le membre. Le membre sélectionné est enregistré comme décédé</string>
     <string name="external_inmigration_head_relationship_opened_lbl">Il n\'est pas possible d\'immigrer le membre. Le dernier statut de la relation avec le chef de ménage est ouvert.</string>
 
     <string name="internal_inmigration_select_inmig_member_lbl">Sélectionnez le membre qui va immigrer dans cette maison?</string>
     <string name="internal_inmigration_select_inmig_no_residency_lbl">Le membre sélectionné n\'est inscrit dans aucune maison. Veuillez contacter le gestionnaire de données!</string>
     <string name="internal_inmigration_is_head_of_household_lbl">Le membre sélectionné est le chef d\'un autre ménage. Vous devez d\'abord cesser d\'être le chef avant de pouvoir immigrer!</string>
+    <string name="internal_inmigration_migrationdate_not_before_residency_startdate_lbl">La date de migration [%1$s] ne peut pas être antérieure à la [date de début] du dernier enregistrement de résidence [%2$s -> %3$s].</string>
+    <string name="internal_inmigration_migrationdate_not_before_hrelationship_startdate_lbl">La date de migration [%1$s] ne peut pas être antérieure à la [date de début] du dernier enregistrement de relation avec le chef [%2$s -> %3$s].</string>
 
     <string name="outmigration_death_exists_lbl">Il n\'est pas possible d\'émigrer le membre. Le membre sélectionné est enregistré comme décédé</string>
     <string name="outmigration_is_head_of_household_lbl">Le membre sélectionné est le chef de ce ménage. Vous devez d\'abord cesser d\'être le chef avant de pouvoir émigrer!</string>
+    <string name="outmigration_migrationdate_not_before_residency_startdate_lbl">La date d\'émigration [%1$s] ne peut pas être antérieure à la [date de début] du dernier enregistrement de résidence [%2$s -> %3$s].</string>
+    <string name="outmigration_migrationdate_not_before_hrelationship_startdate_lbl">La date d\'émigration [%1$s] ne peut pas être antérieure à la [date de début] du dernier enregistrement de relation avec le chef [%2$s -> %3$s].</string>
 
     <!-- pregnancy registration -->
     <string name="pregnancy_registration_code_err_lbl">Le code d\'enregistrement de la grossesse est incorrect</string>
@@ -582,6 +588,8 @@
     <string name="death_deathdate_empty_lbl">La date du décès ne peut pas être vide</string>
     <string name="death_deathdate_not_before_dob_lbl">La date de décès ne peut être antérieure à la date de naissance.</string>
     <string name="death_deathdate_not_great_today_lbl">La date du décès ne peut pas être dans le futur</string>
+    <string name="death_deathdate_not_before_new_head_hrelationship_startdate_lbl">La date du décès [%1$s] ne peut pas être antérieure à la [date de début] du dernier enregistrement de relation avec le nouveau chef de ménage [%2$s -> %3$s].</string>
+    <string name="death_deathdate_not_before_member_hrelationship_startdate_lbl">La date du décès [%1$s] ne peut pas être antérieure à la [date de début] du dernier enregistrement de relation avec le chef pour le membre [%2$s] [%3$s -> %4$s].</string>
     <string name="death_new_head_code_empty_lbl">Le nouveau code du chef de ménage ne peut pas être vide</string>
     <string name="death_new_head_select_lbl">Sélectionnez le nouveau chef de ménage</string>
     <string name="death_dialog_change_title_lbl">Mise à jour des données</string>
@@ -597,8 +605,13 @@
     <string name="changehead_eventdate_empty_lbl">La date de l\'événement ne peut pas être vide</string>
     <string name="changehead_eventdate_not_before_dob_lbl">La date de l\'événement ne peut être antérieure à la date de naissance</string>
     <string name="changehead_eventdate_not_great_today_lbl">La date de l\'événement ne peut pas être dans le futur</string>
+    <string name="changehead_eventdate_not_before_new_head_hrelationship_startdate_lbl">La date de l\'événement [%1$s] ne peut pas être antérieure à la [date de début] du dernier enregistrement de relation avec le nouveau chef de ménage [%2$s -> %3$s].</string>
+    <string name="changehead_eventdate_not_before_member_hrelationship_startdate_lbl">La date de l\'événement [%1$s] ne peut pas être antérieure à la [date de début] du dernier enregistrement de relation avec le chef pour le membre [%2$s] [%3$s -> %4$s].</string>
     <string name="changehead_new_head_select_lbl">Sélectionnez le nouveau chef de ménage</string>
     <string name="changehead_new_head_is_head_of_household_lbl">Le nouveau chef de ménage est le chef d\'un autre ménage. Vous devez d\'abord cesser d\'être le chef pour devenir le chef de celui-ci!</string>
+    <string name="changehead_head_dont_exists_lbl">Ce ménage n\'a pas de chef de ménage actif, un nouveau chef de ménage doit être sélectionné.</string>
+
+    <string name="household_head_dont_exists_lbl">Il ne sera pas possible de procéder à l\'événement, car ce ménage n\'a pas de chef de ménage actif.</string>
 
     <string-array name="relationship_types_array">
         <item>Célibataire</item>
@@ -658,6 +671,8 @@
     <string name="loading_dialog_odk_reload_lbl">En rechargeant le formulaire ODK…</string>
     <string name="loading_dialog_extra_forms_load_lbl">En chargeant de la liste des formulaires...</string>
     <string name="loading_dialog_filter_name_hint_lbl">Saisissez le nom du formulaire</string>
+    <string name="loading_dialog_load_data_lbl">Chargement des données...</string>
+    <string name="loading_dialog_load_lbl">Chargement...</string>
 
     <!-- GPS Maps -->
     <string name="map_gps_not_available_title_lbl">Impossible d\'afficher la carte</string>

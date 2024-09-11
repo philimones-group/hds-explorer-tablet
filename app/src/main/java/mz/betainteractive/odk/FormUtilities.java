@@ -823,18 +823,25 @@ public class FormUtilities {
 
         Uri contentUri = Uri.parse(contentUriStr);
         Cursor cursor = null;
+        String errorMessage = null;
+        int errorRepeatCount = 0;
+        String errorLike = "AppDependencyComponent.inject(org.odk.collect.android.external.InstanceProvider)' on a null object reference";
 
-        try {
-            cursor = getCursorForInstancesProvider(contentUri);
-        } catch (Exception ex) {
-            if (ex.getMessage().contains("AppDependencyComponent.inject(org.odk.collect.android.external.FormsProvider)' on a null object reference")) {
-                try {
-                    cursor = getCursorForInstancesProvider(contentUri);
-                } catch (Exception ex2) {
-                    ex2.printStackTrace();
-                }
+        //Try to get forms instance provider 4 times
+        do {
+
+            errorMessage = null;
+
+            try {
+                cursor = getCursorForInstancesProvider(contentUri);
+            } catch (Exception ex) {
+                errorRepeatCount++;
+                errorMessage = ex.getMessage();
+
+                Log.d("formutilities", "instanceprovider, error_count="+errorRepeatCount);
+                ex.printStackTrace();
             }
-        }
+        } while (errorMessage != null && errorMessage.contains(errorLike) && errorRepeatCount < 4);
 
         if (cursor != null) {
             if (cursor.moveToNext()) {

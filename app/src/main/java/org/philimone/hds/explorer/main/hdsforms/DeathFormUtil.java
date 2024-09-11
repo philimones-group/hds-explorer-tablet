@@ -67,8 +67,8 @@ public class DeathFormUtil extends FormUtil<Death> {
     private Box<MaritalRelationship> boxMaritalRelationships;
     
     //private Household household;
-    private final Visit visit;
-    private final Member member;
+    private Visit visit;
+    private Member member;
     private Boolean isHouseholdHead = false;
     private Boolean isLastMemberOfHousehold = false;
     private Member newHeadMember;
@@ -439,7 +439,7 @@ public class DeathFormUtil extends FormUtil<Death> {
             return new ValidationResult(colDeathDate, message);
         }
 
-        if (deathDate != null && deathDate.after(new Date())){ //is before dob
+        if (deathDate != null && deathDate.after(new Date())){ //is after today
             String message = this.context.getString(R.string.death_deathdate_not_before_dob_lbl);
             return new ValidationResult(colDeathDate, message);
         }
@@ -451,21 +451,55 @@ public class DeathFormUtil extends FormUtil<Death> {
         }
 
         //other validations
-        /*
         if (isHouseholdHead){
-            Residency residency = this.boxResidencies.query(
-                    Residency_.memberCode.equal(newHeadCode)
-                    .and(Residency_.endType.equal(ResidencyEndType.NOT_APPLICABLE.code))
-                    .and(Residency_.householdCode.notEqual(household.code)))
-                    .orderDesc(Residency_.startDate).build().findFirst();
+            //check dates of relationships of new head, old head and members of household - they are the current relationships - endType=NA
+            HeadRelationship newHeadLastRelationship = getLastHeadRelationship(newHeadCode);
+            List<HeadRelationship> lastMembersRelationships = getLastHeadRelationships(newMemberCodes);
 
-            if (residency != null){
-                String message = "";
+            //deathDate vs newHeadLastRelationship.startDate
+            if (newHeadLastRelationship != null && newHeadLastRelationship.startDate != null && deathDate.before(newHeadLastRelationship.startDate)){
+                //The death date cannot be before the [start date] of the [new Head of Household] last Head Relationship record.
+                String message = this.context.getString(R.string.death_deathdate_not_before_new_head_hrelationship_startdate_lbl, StringUtil.formatYMD(deathDate), newHeadLastRelationship.startType.code, StringUtil.formatYMD(newHeadLastRelationship.startDate));
+                return new ValidationResult(colDeathDate, message);
+            }
+
+            for (HeadRelationship relationship : lastMembersRelationships) {
+                if (relationship != null && relationship.startDate != null && deathDate.before(relationship.startDate)){
+                    //The death date cannot be before the [start date] of the Member[??????] last Head Relationship record.
+                    String message = this.context.getString(R.string.death_deathdate_not_before_member_hrelationship_startdate_lbl, StringUtil.formatYMD(deathDate), relationship.memberCode, relationship.startType.code, StringUtil.formatYMD(relationship.startDate));
+                    return new ValidationResult(colDeathDate, message);
+                }
             }
         }
-        */
 
         return ValidationResult.noErrors();
+    }
+
+    private HeadRelationship getLastHeadRelationship(String memberCode) {
+        HeadRelationship lastHeadRelationship = this.boxHeadRelationships.query(HeadRelationship_.memberCode.equal(memberCode))
+                .orderDesc(HeadRelationship_.startDate)
+                .build().findFirst();
+
+        return lastHeadRelationship;
+    }
+
+    private List<HeadRelationship> getLastHeadRelationships(List<String> memberCodes) {
+        List<HeadRelationship> list = new ArrayList<>();
+
+        for (String memberCode : memberCodes) {
+            HeadRelationship hr = getLastHeadRelationship(memberCode);
+            if (hr != null) list.add(hr);
+        }
+
+        return list;
+    }
+
+    private Residency getLastResidency(String memberCode) {
+        Residency lastResidency = this.boxResidencies.query(Residency_.memberCode.equal(memberCode))
+                .orderDesc(Residency_.startDate)
+                .build().findFirst();
+
+        return lastResidency;
     }
 
     private boolean isTheOnlyHouseholdMember(String memberCode, String householdCode){
@@ -568,6 +602,7 @@ public class DeathFormUtil extends FormUtil<Death> {
         this.boxDeaths.put(death);
 
         //update member again
+        this.member = boxMembers.get(member.id);
         this.member.ageAtDeath = death.ageAtDeath;
         this.member.endType = ResidencyEndType.DEATH;
         this.member.endDate = deathDate;
@@ -575,12 +610,14 @@ public class DeathFormUtil extends FormUtil<Death> {
 
         //close memberResidency again
         if (this.memberResidency != null){
+            this.memberResidency = boxResidencies.get(memberResidency.id);
             this.memberResidency.endType = ResidencyEndType.DEATH;
             this.memberResidency.endDate = deathDate;
             this.boxResidencies.put(this.memberResidency);
         }
         //close memberHeadRelationship again
         if (this.memberHeadRelationship != null){
+            this.memberHeadRelationship = boxHeadRelationships.get(memberHeadRelationship.id);
             this.memberHeadRelationship.endType = HeadRelationshipEndType.DEATH;
             this.memberHeadRelationship.endDate = deathDate;
             this.boxHeadRelationships.put(this.memberHeadRelationship);
@@ -589,10 +626,12 @@ public class DeathFormUtil extends FormUtil<Death> {
         if (this.memberMaritalRelationships != null) {
             for (MaritalRelationship maritalRelationship : this.memberMaritalRelationships) {
                 if (maritalRelationship != null) {
+                    maritalRelationship = boxMaritalRelationships.get(maritalRelationship.id);
                     maritalRelationship.endStatus = MaritalEndStatus.WIDOWED;
                     maritalRelationship.endDate = deathDate;
                     this.boxMaritalRelationships.put(maritalRelationship);
 
+                    this.member = boxMembers.get(member.id);
                     this.member.maritalStatus = MaritalStatus.WIDOWED;
                     this.boxMembers.put(this.member);
                 }
@@ -600,6 +639,7 @@ public class DeathFormUtil extends FormUtil<Death> {
 
             if (this.spouseMembers != null) {
                 for (Member spouse : this.spouseMembers) {
+                    spouse = boxMembers.get(spouse.id);
                     spouse.maritalStatus = MaritalStatus.WIDOWED;
                     this.boxMembers.put(spouse);
 
@@ -611,6 +651,7 @@ public class DeathFormUtil extends FormUtil<Death> {
         //close previous head relationships again
         if (isHouseholdHead && headMemberHeadRelationships != null && headMemberHeadRelationships.size()>0){
             for (HeadRelationship headRelationship : headMemberHeadRelationships) {
+                headRelationship = boxHeadRelationships.get(headRelationship.id);
                 headRelationship.endType = HeadRelationshipEndType.DEATH_OF_HEAD_OF_HOUSEHOLD;
                 headRelationship.endDate = deathDate;
                 this.boxHeadRelationships.put(headRelationship);
@@ -628,6 +669,7 @@ public class DeathFormUtil extends FormUtil<Death> {
                 this.boxHeadRelationships.remove(Long.parseLong(sid));
             }
 
+            previousNewHeadMember = boxMembers.get(previousNewHeadMember.id);
             previousNewHeadMember.headRelationshipType = previousNewHeadRelationshipType;
             this.boxMembers.put(previousNewHeadMember);
 
@@ -743,6 +785,7 @@ public class DeathFormUtil extends FormUtil<Death> {
         death.recentlyCreatedUri = result.getFilename();
         this.boxDeaths.put(death);
 
+        this.member = boxMembers.get(member.id);
         this.member.ageAtDeath = death.ageAtDeath;
         this.member.endType = ResidencyEndType.DEATH;
         this.member.endDate = deathDate;
@@ -750,12 +793,14 @@ public class DeathFormUtil extends FormUtil<Death> {
 
         //close memberResidency
         if (this.memberResidency != null){
+            this.memberResidency = boxResidencies.get(memberResidency.id);
             this.memberResidency.endType = ResidencyEndType.DEATH;
             this.memberResidency.endDate = deathDate;
             this.boxResidencies.put(this.memberResidency);
         }
         //close memberHeadRelationship
         if (this.memberHeadRelationship != null){
+            this.memberHeadRelationship = boxHeadRelationships.get(memberHeadRelationship.id);
             this.memberHeadRelationship.endType = HeadRelationshipEndType.DEATH;
             this.memberHeadRelationship.endDate = deathDate;
             this.boxHeadRelationships.put(this.memberHeadRelationship);
@@ -766,6 +811,7 @@ public class DeathFormUtil extends FormUtil<Death> {
         if (this.memberMaritalRelationships != null) {
             for (MaritalRelationship maritalRelationship : this.memberMaritalRelationships) {
                 if (maritalRelationship != null) {
+                    maritalRelationship = boxMaritalRelationships.get(maritalRelationship.id);
                     maritalRelationship.endStatus = MaritalEndStatus.WIDOWED;
                     maritalRelationship.endDate = deathDate;
                     this.boxMaritalRelationships.put(maritalRelationship);
@@ -780,6 +826,7 @@ public class DeathFormUtil extends FormUtil<Death> {
 
             if (this.spouseMembers != null) {
                 for (Member spouse : this.spouseMembers) {
+                    spouse = boxMembers.get(spouse.id);
                     spouse.maritalStatus = MaritalStatus.WIDOWED;
                     this.boxMembers.put(spouse);
                     affectedMembers = addAffectedMembers(affectedMembers, spouse.code);
@@ -790,6 +837,7 @@ public class DeathFormUtil extends FormUtil<Death> {
         String savedOldHeadRelationships = "";
         if (isHouseholdHead && headMemberHeadRelationships != null && headMemberHeadRelationships.size()>0){
             for (HeadRelationship headRelationship : headMemberHeadRelationships) {
+                headRelationship = boxHeadRelationships.get(headRelationship.id);
                 headRelationship.endType = HeadRelationshipEndType.DEATH_OF_HEAD_OF_HOUSEHOLD;
                 headRelationship.endDate = deathDate;
                 this.boxHeadRelationships.put(headRelationship);
@@ -815,6 +863,7 @@ public class DeathFormUtil extends FormUtil<Death> {
             saveStateMap.put("previousNewHeadCode", newHeadMember.code);
             saveStateMap.put("previousNewHeadRelationshipType", newHeadMember.headRelationshipType.code);
 
+            this.household = boxHouseholds.get(household.id);
             this.household.headCode = newHeadMember.code;
             this.household.headName = newHeadMember.name;
             newHeadMember.headRelationshipType = HeadRelationshipType.HEAD_OF_HOUSEHOLD;

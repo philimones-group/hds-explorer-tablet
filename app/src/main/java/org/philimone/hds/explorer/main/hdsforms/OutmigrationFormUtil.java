@@ -59,6 +59,7 @@ public class OutmigrationFormUtil extends FormUtil<Outmigration> {
     private Member member;
     private Residency currentMemberResidency;
     private HeadRelationship currentMemberHeadRelationship;
+    private Member currentHead;
 
     public OutmigrationFormUtil(Fragment fragment, Context context, Visit visit, Household household, Member member, FormUtilities odkFormUtilities, FormUtilListener<Outmigration> listener){
         super(fragment, context, FormUtil.getOutmigrationForm(context), odkFormUtilities, listener);
@@ -236,7 +237,38 @@ public class OutmigrationFormUtil extends FormUtil<Outmigration> {
             return new ValidationResult(colMemberCode, message);
         }
 
+        //check last residency and head relationship start dates because they are endType=NA
+        Residency lastResidency = currentMemberResidency;
+        HeadRelationship lastRelationship = currentMemberHeadRelationship;
+
+        //migrationDate vs lastResidency.startDate --- the endDate is null right now
+        if (lastResidency != null && lastResidency.startDate != null && migrationDate.before(lastResidency.startDate)){
+            String message = this.context.getString(R.string.outmigration_migrationdate_not_before_residency_startdate_lbl, StringUtil.formatYMD(migrationDate), lastResidency.startType.code, StringUtil.formatYMD(lastResidency.startDate));
+            return new ValidationResult(colMigrationDate, message);
+        }
+        //migrationDate vs lastRelationship.endDate
+        if (lastRelationship != null && lastRelationship.startDate != null && migrationDate.before(lastRelationship.startDate)){
+            String message = this.context.getString(R.string.outmigration_migrationdate_not_before_hrelationship_startdate_lbl, StringUtil.formatYMD(migrationDate), lastRelationship.startType.code, StringUtil.formatYMD(lastRelationship.startDate));
+            return new ValidationResult(colMigrationDate, message);
+        }
+
         return ValidationResult.noErrors();
+    }
+
+    private HeadRelationship getLastHeadRelationship(String memberCode) {
+        HeadRelationship lastHeadRelationship = this.boxHeadRelationships.query(HeadRelationship_.memberCode.equal(memberCode))
+                .orderDesc(HeadRelationship_.startDate)
+                .build().findFirst();
+
+        return lastHeadRelationship;
+    }
+
+    private Residency getLastResidency(String memberCode) {
+        Residency lastResidency = this.boxResidencies.query(Residency_.memberCode.equal(memberCode))
+                .orderDesc(Residency_.startDate)
+                .build().findFirst();
+
+        return lastResidency;
     }
 
     private boolean isHeadOfHousehold(String memberCode, String householdCode) {
@@ -328,6 +360,7 @@ public class OutmigrationFormUtil extends FormUtil<Outmigration> {
         this.boxOutmigrations.put(outmigration);
 
         //Residency - close
+        currentMemberResidency = boxResidencies.get(currentMemberResidency.id);
         currentMemberResidency.endDate = migrationDate;
         currentMemberResidency.endType = ResidencyEndType.EXTERNAL_OUTMIGRATION;
         this.boxResidencies.put(currentMemberResidency);
@@ -338,6 +371,7 @@ public class OutmigrationFormUtil extends FormUtil<Outmigration> {
         this.boxHeadRelationships.put(currentMemberHeadRelationship);
 
         //update member
+        member = boxMembers.get(member.id);
         member.endType = ResidencyEndType.EXTERNAL_OUTMIGRATION;
         member.endDate = migrationDate;
         this.boxMembers.put(member);
@@ -398,7 +432,7 @@ public class OutmigrationFormUtil extends FormUtil<Outmigration> {
         //update member, close residency, close headrelationship, create Outmigration
 
         //Outmigration
-        Outmigration outmigration = this.entity;
+        Outmigration outmigration = boxOutmigrations.get(this.entity.id);
         outmigration.visitCode = visitCode;
         outmigration.migrationType = OutMigrationType.EXTERNAL;
         outmigration.originCode = this.household.code;
@@ -408,21 +442,25 @@ public class OutmigrationFormUtil extends FormUtil<Outmigration> {
         this.boxOutmigrations.put(outmigration);
 
         //Residency - update close
+        currentMemberResidency = boxResidencies.get(currentMemberResidency.id);
         currentMemberResidency.endDate = migrationDate;
         currentMemberResidency.endType = ResidencyEndType.EXTERNAL_OUTMIGRATION;
         this.boxResidencies.put(currentMemberResidency);
 
         //HeadRelationship - update close
+        currentMemberHeadRelationship = boxHeadRelationships.get(currentMemberHeadRelationship.id);
         currentMemberHeadRelationship.endDate = migrationDate;
         currentMemberHeadRelationship.endType = HeadRelationshipEndType.EXTERNAL_OUTMIGRATION;
         this.boxHeadRelationships.put(currentMemberHeadRelationship);
 
         //update member
+        member = boxMembers.get(member.id);
         member.endType = ResidencyEndType.EXTERNAL_OUTMIGRATION;
         member.endDate = migrationDate;
         this.boxMembers.put(member);
 
         //save core collected data
+        collectedData = boxCoreCollectedData.get(collectedData.id);
         collectedData.formEntityCode = member.code;
         collectedData.formEntityName = member.name;
         collectedData.updatedDate = new Date();

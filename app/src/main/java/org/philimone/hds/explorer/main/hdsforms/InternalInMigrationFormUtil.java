@@ -68,6 +68,7 @@ public class InternalInMigrationFormUtil extends FormUtil<Inmigration> {
     private Member selectedMember;
     private Residency selectedMemberResidency;
     private HeadRelationship selectedMemberHeadRelationship;
+    private Member currentHead;
     private boolean isFirstHouseholdMember;
     private int minimunHeadAge;
 
@@ -279,8 +280,41 @@ public class InternalInMigrationFormUtil extends FormUtil<Inmigration> {
             return new ValidationResult(colMemberCode, message);
         }
 
+        //check last residency and head relationship
+        Residency lastResidency = getLastResidency(memberCode);
+        HeadRelationship lastRelationship = getLastHeadRelationship(memberCode);
+
+        //No need to check the lastResidency/HeadRelationship endType because we already filtered the member as NA
+
+        //check dates - for new residency and new head_relationship
+        //migrationDate vs lastResidency.startDate --- the endDate is null right now
+        if (lastResidency != null && lastResidency.startDate != null && migrationDate.before(lastResidency.startDate)){ //is before dob
+            String message = this.context.getString(R.string.internal_inmigration_migrationdate_not_before_residency_startdate_lbl, StringUtil.formatYMD(migrationDate), lastResidency.startType.code, StringUtil.formatYMD(lastResidency.startDate));
+            return new ValidationResult(colMigrationDate, message);
+        }
+        //migrationDate vs lastRelationship.endDate
+        if (lastRelationship != null && lastRelationship.startDate != null && migrationDate.before(lastRelationship.startDate)){ //is before dob
+            String message = this.context.getString(R.string.internal_inmigration_migrationdate_not_before_hrelationship_startdate_lbl, StringUtil.formatYMD(migrationDate), lastRelationship.startType.code, StringUtil.formatYMD(lastRelationship.startDate));
+            return new ValidationResult(colMigrationDate, message);
+        }
 
         return ValidationResult.noErrors();
+    }
+
+    private HeadRelationship getLastHeadRelationship(String memberCode) {
+        HeadRelationship lastHeadRelationship = this.boxHeadRelationships.query(HeadRelationship_.memberCode.equal(memberCode))
+                .orderDesc(HeadRelationship_.startDate)
+                .build().findFirst();
+
+        return lastHeadRelationship;
+    }
+
+    private Residency getLastResidency(String memberCode) {
+        Residency lastResidency = this.boxResidencies.query(Residency_.memberCode.equal(memberCode))
+                .orderDesc(Residency_.startDate)
+                .build().findFirst();
+
+        return lastResidency;
     }
 
     private boolean isHeadOfHouseholdSomewhere(String memberCode) {
@@ -385,6 +419,7 @@ public class InternalInMigrationFormUtil extends FormUtil<Inmigration> {
         this.boxOutmigrations.put(outmigration);
 
         //Residency - close
+        selectedMemberResidency = boxResidencies.get(selectedMemberResidency.id);
         selectedMemberResidency.endDate = GeneralUtil.getDateAdd(migrationDate, -1);
         selectedMemberResidency.endType = ResidencyEndType.INTERNAL_OUTMIGRATION;
         this.boxResidencies.put(selectedMemberResidency);
@@ -400,6 +435,7 @@ public class InternalInMigrationFormUtil extends FormUtil<Inmigration> {
         this.boxResidencies.put(residency);
 
         //HeadRelationship - close
+        selectedMemberHeadRelationship = boxHeadRelationships.get(selectedMemberHeadRelationship.id);
         selectedMemberHeadRelationship.endDate = GeneralUtil.getDateAdd(migrationDate, -1);
         selectedMemberHeadRelationship.endType = HeadRelationshipEndType.INTERNAL_OUTMIGRATION;
         this.boxHeadRelationships.put(selectedMemberHeadRelationship);
@@ -408,6 +444,7 @@ public class InternalInMigrationFormUtil extends FormUtil<Inmigration> {
         HeadRelationship headRelationship = new HeadRelationship();
         headRelationship.householdCode = household.code;
         headRelationship.memberCode = memberCode;
+        headRelationship.headCode = (headRelationshipType==HeadRelationshipType.HEAD_OF_HOUSEHOLD) ? memberCode : currentHead.code;
         headRelationship.relationshipType = headRelationshipType;
         headRelationship.startType = HeadRelationshipStartType.INTERNAL_INMIGRATION;
         headRelationship.startDate = migrationDate;
@@ -416,6 +453,7 @@ public class InternalInMigrationFormUtil extends FormUtil<Inmigration> {
         this.boxHeadRelationships.put(headRelationship);
 
         //update member
+        //selectedMember = boxMembers.get(selectedMember.id);
         selectedMember.householdCode = household.code;
         selectedMember.householdName = household.name;
         selectedMember.startType = ResidencyStartType.INTERNAL_INMIGRATION;
@@ -451,6 +489,7 @@ public class InternalInMigrationFormUtil extends FormUtil<Inmigration> {
         this.boxCoreCollectedData.put(collectedData);
 
         if (selectedMember.isHouseholdHead()) { //head of household
+            household = boxHouseholds.get(household.id);
             household.headCode = selectedMember.code;
             household.headName = selectedMember.name;
             boxHouseholds.put(household);
@@ -514,11 +553,12 @@ public class InternalInMigrationFormUtil extends FormUtil<Inmigration> {
         boxInmigrations.put(inmigration);
 
         //Outmigration - update
-        Outmigration outmigration = savedOutmigration;
+        Outmigration outmigration = boxOutmigrations.get(savedOutmigration.id);
         outmigration.migrationDate = GeneralUtil.getDateAdd(migrationDate, -1);
         this.boxOutmigrations.put(outmigration);
 
         //Residency - update close
+        selectedMemberResidency = boxResidencies.get(selectedMemberResidency.id);
         selectedMemberResidency.endDate = GeneralUtil.getDateAdd(migrationDate, -1);
         selectedMemberResidency.endType = ResidencyEndType.INTERNAL_OUTMIGRATION;
         this.boxResidencies.put(selectedMemberResidency);
@@ -534,6 +574,7 @@ public class InternalInMigrationFormUtil extends FormUtil<Inmigration> {
         this.boxResidencies.put(residency);
 
         //HeadRelationship - update close
+        selectedMemberHeadRelationship = boxHeadRelationships.get(selectedMemberHeadRelationship.id);
         selectedMemberHeadRelationship.endDate = GeneralUtil.getDateAdd(migrationDate, -1);
         selectedMemberHeadRelationship.endType = HeadRelationshipEndType.INTERNAL_OUTMIGRATION;
         this.boxHeadRelationships.put(selectedMemberHeadRelationship);
@@ -542,6 +583,7 @@ public class InternalInMigrationFormUtil extends FormUtil<Inmigration> {
         HeadRelationship headRelationship = savedHeadRelationship;
         headRelationship.householdCode = household.code;
         headRelationship.memberCode = memberCode;
+        headRelationship.headCode = (headRelationshipType==HeadRelationshipType.HEAD_OF_HOUSEHOLD) ? memberCode : currentHead.code;;
         headRelationship.relationshipType = headRelationshipType;
         headRelationship.startType = HeadRelationshipStartType.INTERNAL_INMIGRATION;
         headRelationship.startDate = migrationDate;
@@ -605,9 +647,10 @@ public class InternalInMigrationFormUtil extends FormUtil<Inmigration> {
         //Is the Father/Mother of this Member known and exists on DSS?
 
         if (currentMode == Mode.CREATE) {
-            openInMigratingMemberFilterDialog();
+            checkHeadOfHouseholdDialog();
         } else if (currentMode == Mode.EDIT) {
             selectedMember = this.boxMembers.query(Member_.code.equal(this.entity.memberCode)).build().findFirst();
+            retrieveHeadOfHousehold();
             openInmigrationForm();
         }
 
@@ -625,6 +668,36 @@ public class InternalInMigrationFormUtil extends FormUtil<Inmigration> {
         }
 
         return 12;
+    }
+
+    private void retrieveHeadOfHousehold() {
+        this.currentHead = getHeadOfHousehold();
+    }
+
+    private Member getHeadOfHousehold() {
+
+        HeadRelationship headRelationship = boxHeadRelationships.query(
+                HeadRelationship_.householdCode.equal(household.code)
+                        .and(HeadRelationship_.relationshipType.equal(HeadRelationshipType.HEAD_OF_HOUSEHOLD.code))
+                        .and(HeadRelationship_.endType.equal(HeadRelationshipEndType.NOT_APPLICABLE.code))
+        ).orderDesc(HeadRelationship_.startDate).build().findFirst();
+
+        if (headRelationship != null) {
+            return Queries.getMemberByCode(boxMembers, headRelationship.memberCode);
+        }
+
+        return null;
+    }
+
+    private void checkHeadOfHouseholdDialog() {
+        retrieveHeadOfHousehold();
+
+        if (this.currentHead != null || isFirstHouseholdMember) {
+            openInMigratingMemberFilterDialog();
+        } else {
+            //display dialog
+            DialogFactory.createMessageInfo(this.context, R.string.eventType_internal_inmigration, R.string.household_head_dont_exists_lbl).show();
+        }
     }
 
     private void openInMigratingMemberFilterDialog(){

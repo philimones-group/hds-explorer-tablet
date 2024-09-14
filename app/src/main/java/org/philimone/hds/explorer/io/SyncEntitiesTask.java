@@ -1593,6 +1593,17 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 				parser.nextTag();
 			}
 
+			parser.nextTag(); //process columnCode
+			if (!isEmptyTag("columnCode", parser)) {
+				parser.next();
+				table.columnCode = parser.getText();
+				parser.nextTag(); //process </columnCode>
+				//Log.d(count+"-columnCode", "value="+ parser.getText());
+			}else{
+				table.columnCode = "";
+				parser.nextTag();
+			}
+			
 			parser.nextTag(); //process columnName
 			if (!isEmptyTag("columnName", parser)) {
 				parser.next();

@@ -17,6 +17,7 @@ import org.philimone.hds.explorer.io.SyncEntityReport;
 import org.philimone.hds.explorer.io.SyncEntityResult;
 import org.philimone.hds.explorer.model.enums.SyncState;
 import org.philimone.hds.explorer.model.enums.SyncStatus;
+import org.philimone.hds.explorer.widget.DialogFactory;
 import org.philimone.hds.explorer.widget.SyncResultDialog;
 
 import java.util.List;
@@ -47,6 +48,9 @@ public class SyncPanelItemFragment extends Fragment implements View.OnClickListe
     private SyncResultDialog syncResultDialog;
     private SyncEntityResult syncResult;
 
+    private boolean connectedToServer;
+    private boolean hasDataToUpload;
+
     public SyncPanelItemFragment() {
 
     }
@@ -55,8 +59,10 @@ public class SyncPanelItemFragment extends Fragment implements View.OnClickListe
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.     *
      */
-    public static SyncPanelItemFragment newInstance(String titleText) {
+    public static SyncPanelItemFragment newInstance(String titleText, boolean connectedToServer, boolean hasDataToUpload) {
         SyncPanelItemFragment fragment = new SyncPanelItemFragment();
+        fragment.connectedToServer = connectedToServer;
+        fragment.hasDataToUpload = hasDataToUpload;
 
         fragment.titleText = titleText;
 
@@ -168,14 +174,30 @@ public class SyncPanelItemFragment extends Fragment implements View.OnClickListe
     }
 
     private void onSyncButtonClicked() {
-        //gone to sync and visible stop
-        cleanProgress();
+        //evaluate the sync
+        if (!connectedToServer) { //logged in locally only
+            DialogFactory.createMessageInfo(this.getContext(), R.string.server_sync_offline_mode_title_lbl, R.string.server_sync_offline_mode_msg_lbl).show();
+            return;
+        }
 
+        //check if there is data to upload? - ask: do you want to proceed
+        if (hasDataToUpload){
+            DialogFactory.createMessageInfo(this.getContext(), R.string.server_sync_warning_upload_required_lbl, R.string.server_sync_warning_upload_required_msg_lbl, new DialogFactory.OnClickListener() {
+                @Override
+                public void onClicked(DialogFactory.Buttons clickedButton) {
+
+                }
+            }).show();
+        } else {
+            executeSyncButtonEvent();
+        }
+    }
+
+    private void executeSyncButtonEvent() {
+        cleanProgress();
         this.syncButton.setVisibility(View.GONE);
         this.syncStopButton.setVisibility(View.VISIBLE);
-
         listener.onSyncStartButtonClicked(this);
-
     }
 
     private void onSyncStopButtonClicked() {

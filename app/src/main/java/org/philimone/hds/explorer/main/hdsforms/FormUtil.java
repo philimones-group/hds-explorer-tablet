@@ -59,6 +59,7 @@ import mz.betainteractive.odk.listener.OdkFormResultListener;
 import mz.betainteractive.odk.model.FilledForm;
 import mz.betainteractive.odk.model.OdkFormLoadData;
 import mz.betainteractive.odk.task.OdkFormLoadResult;
+import mz.betainteractive.utilities.ReflectionUtils;
 import mz.betainteractive.utilities.StringUtil;
 
 public abstract class FormUtil<T extends CoreEntity> implements FormCollectionListener, OdkFormResultListener {
@@ -382,6 +383,7 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
     private FilledForm createFilledForm(CoreFormExtension formExtension, CollectedDataMap collectedValues){
         FilledForm filledForm = new FilledForm(formExtension.extFormId);
         Map<String, List<Map<String, String>>> repeatGroups = new LinkedHashMap<>();
+        final String householdPrefix = "Household.";
 
         for (String key : formExtension.columnsMapping.keySet()){
             String value = formExtension.columnsMapping.get(key);
@@ -453,6 +455,13 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
                         filledForm.put(key, columnValue.getValue());
                     }
 
+                } else if (value.startsWith(householdPrefix)) {
+                    //Load data from Household object
+                    String variableName = value.replaceFirst(householdPrefix, "");
+                    if (!StringUtil.isBlank(variableName) && this.household != null) {
+                        String variableValue = ReflectionUtils.getValueByName(this.household, variableName);
+                        filledForm.put(key, variableValue);
+                    }
                 } else { //constant
                     filledForm.put(key, value);
                 }

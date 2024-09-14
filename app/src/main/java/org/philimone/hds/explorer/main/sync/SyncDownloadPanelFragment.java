@@ -117,11 +117,13 @@ public class SyncDownloadPanelFragment extends Fragment implements SyncPanelItem
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        this.settingsSyncFragment = SyncPanelItemFragment.newInstance(getString(R.string.server_sync_bt_settings_lbl));
-        this.datasetsSyncFragment = SyncPanelItemFragment.newInstance(getString(R.string.server_sync_bt_datasets_lbl));
-        this.trackingListsSyncFragment = SyncPanelItemFragment.newInstance(getString(R.string.server_sync_bt_tracking_lists_lbl));
-        this.householdsDatasetsSyncFragment = SyncPanelItemFragment.newInstance(getString(R.string.server_sync_bt_households_datasets_lbl));
-        this.demographicsEventsSyncFragment = SyncPanelItemFragment.newInstance(getString(R.string.server_sync_bt_dssevents_lbl));
+        boolean hasDataToUpload = hasDataToUpload();
+
+        this.settingsSyncFragment = SyncPanelItemFragment.newInstance(getString(R.string.server_sync_bt_settings_lbl), connectedToServer, hasDataToUpload);
+        this.datasetsSyncFragment = SyncPanelItemFragment.newInstance(getString(R.string.server_sync_bt_datasets_lbl), connectedToServer, hasDataToUpload);
+        this.trackingListsSyncFragment = SyncPanelItemFragment.newInstance(getString(R.string.server_sync_bt_tracking_lists_lbl), connectedToServer, hasDataToUpload);
+        this.householdsDatasetsSyncFragment = SyncPanelItemFragment.newInstance(getString(R.string.server_sync_bt_households_datasets_lbl), connectedToServer, hasDataToUpload);
+        this.demographicsEventsSyncFragment = SyncPanelItemFragment.newInstance(getString(R.string.server_sync_bt_dssevents_lbl), connectedToServer, hasDataToUpload);
 
         this.settingsSyncFragment.setListener(this);
         this.datasetsSyncFragment.setListener(this);

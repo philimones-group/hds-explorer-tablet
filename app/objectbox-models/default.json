@@ -2425,7 +2425,7 @@
     },
     {
       "id": "31:8066769467112968593",
-      "lastPropertyId": "6:5977451817658166873",
+      "lastPropertyId": "7:7938750564041081004",
       "name": "CoreFormColumnOptions",
       "properties": [
         {
@@ -2457,6 +2457,11 @@
         {
           "id": "6:5977451817658166873",
           "name": "optionLabelCode",
+          "type": 9
+        },
+        {
+          "id": "7:7938750564041081004",
+          "name": "columnCode",
           "type": 9
         }
       ],

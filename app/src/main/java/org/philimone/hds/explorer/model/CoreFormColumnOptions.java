@@ -11,6 +11,8 @@ public class CoreFormColumnOptions {
 
     public String formName;
 
+    public String columnCode;
+
     public String columnName;
 
     public String optionValue;

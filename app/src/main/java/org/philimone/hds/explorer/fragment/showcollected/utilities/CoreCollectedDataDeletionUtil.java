@@ -240,7 +240,7 @@ public class CoreCollectedDataDeletionUtil {
     }
 
     private void deleteMemberEnumeration(CoreCollectedData cdata) {
-        Member member = boxMembers.query(Member_.id.equal(cdata.formEntityId)).build().findFirst();
+        Member member = boxMembers.get(cdata.formEntityId);
         removeMember(member);
         deleteCoreCollectedData(cdata);
     }
@@ -248,7 +248,7 @@ public class CoreCollectedDataDeletionUtil {
     private void deleteDeath(CoreCollectedData cdata) {
         //removes Residency, HeadRelationship, MaritalRelationship endStatus, and delete Death
 
-        Death death = boxDeaths.query(Death_.id.equal(cdata.formEntityId)).build().findFirst();
+        Death death = boxDeaths.get(cdata.formEntityId);
 
         if (death != null) {
             Residency residency = boxResidencies.query(Residency_.memberCode.equal(death.memberCode).and(Residency_.endDate.equal(death.deathDate)).and(Residency_.endType.equal(ResidencyEndType.DEATH.code))).build().findFirst();
@@ -282,7 +282,7 @@ public class CoreCollectedDataDeletionUtil {
     private void deleteOutmigration(CoreCollectedData cdata) {
         //removes Residency, HeadRelationship endStatus, and delete Outmigration
 
-        Outmigration outmigration = boxOutmigrations.query(Outmigration_.id.equal(cdata.formEntityId)).build().findFirst();
+        Outmigration outmigration = boxOutmigrations.get(cdata.formEntityId);
 
         if (outmigration != null) {
             Residency residency = boxResidencies.query(Residency_.memberCode.equal(outmigration.memberCode).and(Residency_.endDate.equal(outmigration.migrationDate)).and(Residency_.endType.equal(outmigration.migrationType.code))).build().findFirst();
@@ -310,7 +310,7 @@ public class CoreCollectedDataDeletionUtil {
         //will update the Member residency status
         //can update the Household
 
-        Inmigration inmigration = boxInmigrations.query(Inmigration_.id.equal(cdata.formEntityId)).build().findFirst();
+        Inmigration inmigration = boxInmigrations.get(cdata.formEntityId);
 
         if (inmigration != null) {
 

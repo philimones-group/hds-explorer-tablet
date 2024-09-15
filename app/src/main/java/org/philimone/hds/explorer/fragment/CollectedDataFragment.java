@@ -509,23 +509,23 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
         CoreEntity entity = null;
         switch (coreCollectedData.formEntity) {
             case EDITED_REGION:
-            case REGION: entity = boxRegions.query(Region_.id.equal(coreCollectedData.formEntityId)).build().findFirst(); break;
+            case REGION: entity = boxRegions.get(coreCollectedData.formEntityId); break;
             case PRE_HOUSEHOLD:
             case EDITED_HOUSEHOLD:
-            case HOUSEHOLD: entity = boxHouseholds.query(Household_.id.equal(coreCollectedData.formEntityId)).build().findFirst(); break;
+            case HOUSEHOLD: entity = boxHouseholds.get(coreCollectedData.formEntityId); break;
             case EDITED_MEMBER:
-            case MEMBER_ENU: entity = boxMembers.query(Member_.id.equal(coreCollectedData.formEntityId)).build().findFirst(); break;
+            case MEMBER_ENU: entity = boxMembers.get(coreCollectedData.formEntityId); break;
             case HEAD_RELATIONSHIP:
-            case CHANGE_HOUSEHOLD_HEAD: entity = boxHeadRelationships.query(HeadRelationship_.id.equal(coreCollectedData.formEntityId)).build().findFirst(); break;
-            case MARITAL_RELATIONSHIP: entity = boxMaritalRelationships.query(MaritalRelationship_.id.equal(coreCollectedData.formEntityId)).build().findFirst(); break;
+            case CHANGE_HOUSEHOLD_HEAD: entity = boxHeadRelationships.get(coreCollectedData.formEntityId); break;
+            case MARITAL_RELATIONSHIP: entity = boxMaritalRelationships.get(coreCollectedData.formEntityId); break;
             case INMIGRATION:
-            case EXTERNAL_INMIGRATION: entity = boxInmigrations.query(Inmigration_.id.equal(coreCollectedData.formEntityId)).build().findFirst(); break;
-            case OUTMIGRATION: entity = boxOutmigrations.query(Outmigration_.id.equal(coreCollectedData.formEntityId)).build().findFirst(); break;
-            case PREGNANCY_REGISTRATION: entity = boxPregnancyRegistrations.query(PregnancyRegistration_.id.equal(coreCollectedData.formEntityId)).build().findFirst(); break;
-            case PREGNANCY_OUTCOME: entity = boxPregnancyOutcomes.query(PregnancyOutcome_.id.equal(coreCollectedData.formEntityId)).build().findFirst(); break;
-            case DEATH: entity = boxDeaths.query(Death_.id.equal(coreCollectedData.formEntityId)).build().findFirst(); break;
-            case INCOMPLETE_VISIT: entity = boxIncompleteVisits.query(IncompleteVisit_.id.equal(coreCollectedData.formEntityId)).build().findFirst(); break;
-            case VISIT: entity = boxVisits.query(Visit_.id.equal(coreCollectedData.formEntityId)).build().findFirst(); break;
+            case EXTERNAL_INMIGRATION: entity = boxInmigrations.get(coreCollectedData.formEntityId); break;
+            case OUTMIGRATION: entity = boxOutmigrations.get(coreCollectedData.formEntityId); break;
+            case PREGNANCY_REGISTRATION: entity = boxPregnancyRegistrations.get(coreCollectedData.formEntityId); break;
+            case PREGNANCY_OUTCOME: entity = boxPregnancyOutcomes.get(coreCollectedData.formEntityId); break;
+            case DEATH: entity = boxDeaths.get(coreCollectedData.formEntityId); break;
+            case INCOMPLETE_VISIT: entity = boxIncompleteVisits.get(coreCollectedData.formEntityId); break;
+            case VISIT: entity = boxVisits.get(coreCollectedData.formEntityId); break;
             case EXTRA_FORM: break;
             case INVALID_ENUM: break;
         }

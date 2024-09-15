@@ -321,13 +321,13 @@ public class ShowCoreCollectedDataFragment extends Fragment {
         //All Core Forms except Region must go to Household
         switch (coreCollectedData.formEntity) {
             case EDITED_REGION:
-            case REGION: return boxRegions.query(Region_.id.equal(coreCollectedData.formEntityId)).build().findFirst();
+            case REGION: return boxRegions.get(coreCollectedData.formEntityId); //query(Region_.id.equal(coreCollectedData.formEntityId)).build().findFirst();
             case PRE_HOUSEHOLD:
             case EDITED_HOUSEHOLD:
-            case HOUSEHOLD: return boxHouseholds.query(Household_.id.equal(coreCollectedData.formEntityId)).build().findFirst();
+            case HOUSEHOLD: return boxHouseholds.get(coreCollectedData.formEntityId); //query(Household_.id.equal(coreCollectedData.formEntityId)).build().findFirst();
             case EDITED_MEMBER:
             case MEMBER_ENU: {
-                Member member = boxMembers.query(Member_.id.equal(coreCollectedData.formEntityId)).build().findFirst();
+                Member member = boxMembers.get(coreCollectedData.formEntityId); //query(Member_.id.equal(coreCollectedData.formEntityId)).build().findFirst();
                 if (member != null) {
                     return boxHouseholds.query(Household_.code.equal(member.householdCode)).build().findFirst();
                 }
@@ -335,7 +335,7 @@ public class ShowCoreCollectedDataFragment extends Fragment {
             }
             case HEAD_RELATIONSHIP:
             case CHANGE_HOUSEHOLD_HEAD: {
-                HeadRelationship entity = boxHeadRelationships.query(HeadRelationship_.id.equal(coreCollectedData.formEntityId)).build().findFirst();
+                HeadRelationship entity = boxHeadRelationships.get(coreCollectedData.formEntityId); //query(HeadRelationship_.id.equal(coreCollectedData.formEntityId)).build().findFirst();
                 if (entity != null) {
                     return boxHouseholds.query(Household_.code.equal(entity.householdCode)).build().findFirst();
                 }
@@ -349,7 +349,7 @@ public class ShowCoreCollectedDataFragment extends Fragment {
             case INMIGRATION:
             case EXTERNAL_INMIGRATION:
             case VISIT: {
-                Visit visit = boxVisits.query(Visit_.id.equal(coreCollectedData.visitId)).build().findFirst();
+                Visit visit = boxVisits.get(coreCollectedData.visitId); //query(Visit_.id.equal(coreCollectedData.visitId)).build().findFirst();
                 if (visit != null) {
                     return boxHouseholds.query(Household_.code.equal(visit.householdCode)).build().findFirst();
                 }

@@ -65,7 +65,7 @@ public class Queries {
 
     public static Member getMemberById(Box<Member> box, long id){
 
-        Member member = box.query().equal(Member_.id, id).build().findFirst();
+        Member member = box.get(id);
         return member;
     }
 

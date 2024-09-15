@@ -717,6 +717,7 @@ public class InternalInMigrationFormUtil extends FormUtil<Inmigration> {
         });
 
         dialog.setFilterHouseCode(household.getCode());
+        dialog.setFastFilterHousehold(household);
         dialog.setFilterExcludeHousehold(household.code);
         dialog.setFilterStatus(MemberFilterDialog.StatusFilter.RESIDENT, true);
         dialog.setStartSearchOnShow(true);

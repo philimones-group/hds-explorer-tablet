@@ -624,6 +624,8 @@ public class MemberListFragment extends Fragment {
             }
             //whereClause += DatabaseHelper.Member.COLUMN_HOUSEHOLD_CODE + " like ?";
 
+        } else if (household != null) {
+            builder.equal(Member_.householdCode, household.code, QueryBuilder.StringOrder.CASE_SENSITIVE);
         }
         if (!gender.isEmpty()){
             builder.equal(Member_.gender, gender, QueryBuilder.StringOrder.CASE_SENSITIVE);

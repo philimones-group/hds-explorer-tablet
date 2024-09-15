@@ -790,6 +790,7 @@ public class MaritalRelationshipFormUtil extends FormUtil<MaritalRelationship> {
             }
         });
         maritalRelationshipDialog.setGenderChecking(genderChecking);
+        maritalRelationshipDialog.setFastFilterHousehold(household);
         maritalRelationshipDialog.setFilterHouseholdCode(visit.householdCode);
         maritalRelationshipDialog.setFilterMinimunSpouseAge(minimunSpouseAge);
         maritalRelationshipDialog.show();
@@ -878,6 +879,7 @@ public class MaritalRelationshipFormUtil extends FormUtil<MaritalRelationship> {
 
         dialog.setFilterMinAge(this.minimunSpouseAge, true);
         dialog.setFilterHouseCode(visit.householdCode);
+        dialog.setFastFilterHousehold(household);
         dialog.addFilterExcludeMember(this.spouseA);
         dialog.addFilterExcludeMember(this.spouseB);
         dialog.setStartSearchOnShow(true);

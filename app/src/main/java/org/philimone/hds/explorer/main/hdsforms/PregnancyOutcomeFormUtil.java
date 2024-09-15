@@ -995,6 +995,7 @@ public class PregnancyOutcomeFormUtil extends FormUtil<PregnancyOutcome> {
 
         dialog.setGenderMaleOnly();
         dialog.setFilterMinAge(this.minimunFatherAge, true);
+        dialog.setFastFilterHousehold(household);
         dialog.setFilterHouseCode(household.getCode());
         dialog.addFilterExcludeMember(this.mother);
         dialog.setStartSearchOnShow(true);

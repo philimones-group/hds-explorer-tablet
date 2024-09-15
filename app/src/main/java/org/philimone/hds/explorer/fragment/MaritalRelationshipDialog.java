@@ -19,6 +19,7 @@ import androidx.fragment.app.FragmentManager;
 import org.philimone.hds.explorer.R;
 import org.philimone.hds.explorer.adapter.MaritalRelationshipAdapter;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
+import org.philimone.hds.explorer.model.Household;
 import org.philimone.hds.explorer.model.MaritalRelationship;
 import org.philimone.hds.explorer.model.MaritalRelationship_;
 import org.philimone.hds.explorer.model.Member;
@@ -61,6 +62,7 @@ public class MaritalRelationshipDialog extends DialogFragment implements Marital
     private boolean genderChecking;
     private int filterMinimunSpouseAge;
     private String filterHouseholdCode;
+    private Household fastFilterHousehold;
 
     private MrDialogListener listener;
 
@@ -261,6 +263,7 @@ public class MaritalRelationshipDialog extends DialogFragment implements Marital
         }
 
         dialog.setFilterMinAge(this.filterMinimunSpouseAge, true);
+        dialog.setFastFilterHousehold(fastFilterHousehold);
         dialog.setFilterHouseCode(filterHouseholdCode);
         dialog.addFilterExcludeMember(this.spouseA);
         dialog.addFilterExcludeMember(this.spouseB);
@@ -311,6 +314,10 @@ public class MaritalRelationshipDialog extends DialogFragment implements Marital
 
     public void setFilterMinimunSpouseAge(int filterMinimunSpouseAge) {
         this.filterMinimunSpouseAge = filterMinimunSpouseAge;
+    }
+
+    public void setFastFilterHousehold(Household household) {
+        this.fastFilterHousehold = household;
     }
 
     public String getFilterHouseholdCode() {

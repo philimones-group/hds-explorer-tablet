@@ -169,7 +169,6 @@ public class ExternalInMigrationFormUtil extends FormUtil<Inmigration> {
     @Override
     protected void preloadValues() {
         //member_details_unknown_lbl
-
         String memberCode = codeGenerator.generateMemberCode(household);
 
         preloadedMap.put("visitCode", this.visit.code);
@@ -881,6 +880,7 @@ public class ExternalInMigrationFormUtil extends FormUtil<Inmigration> {
         });
 
         dialog.setFilterHouseCode(household.getCode());
+        dialog.setFastFilterHousehold(household);
         dialog.setFilterStatus(MemberFilterDialog.StatusFilter.OUTMIGRATED, true);
         dialog.setStartSearchOnShow(true);
         dialog.show();
@@ -975,6 +975,7 @@ public class ExternalInMigrationFormUtil extends FormUtil<Inmigration> {
 
         dialog.setGenderMaleOnly();
         dialog.setFilterMinAge(this.minimunFatherAge, true);
+        dialog.setFastFilterHousehold(household);
         dialog.setFilterHouseCode(household.getCode());
         dialog.setStartSearchOnShow(true);
         dialog.addFilterExcludeMember(this.returningMember);
@@ -1000,6 +1001,7 @@ public class ExternalInMigrationFormUtil extends FormUtil<Inmigration> {
 
         dialog.setGenderFemaleOnly();
         dialog.setFilterMinAge(this.minimunMotherAge, true);
+        dialog.setFastFilterHousehold(household);
         dialog.setFilterHouseCode(household.getCode());
         dialog.addFilterExcludeMember(this.returningMember);
         dialog.setStartSearchOnShow(true);

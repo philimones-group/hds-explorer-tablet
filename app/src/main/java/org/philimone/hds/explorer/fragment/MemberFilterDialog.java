@@ -20,6 +20,7 @@ import android.widget.TextView;
 import org.philimone.hds.explorer.R;
 import org.philimone.hds.explorer.adapter.MemberAdapter;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
+import org.philimone.hds.explorer.model.Household;
 import org.philimone.hds.explorer.model.Member;
 import org.philimone.hds.explorer.model.Member_;
 import org.philimone.hds.explorer.model.enums.MaritalStatus;
@@ -79,6 +80,7 @@ public class MemberFilterDialog extends DialogFragment {
     private String filterExcludeMember;
     private List<String> filterExcludeMembers;
     private boolean filterExcludeMarried;
+    private Household fastFilterHousehold;
 
     private Map<Buttons, CustomButton> enabledButtons = new HashMap<>();
 
@@ -255,6 +257,8 @@ public class MemberFilterDialog extends DialogFragment {
         initializeSpinners();
 
         updateFilterStatus();
+
+        updateFilterHouseCode();
     }
 
     private void onCustomButtonClick(Buttons button, View v) {
@@ -378,6 +382,10 @@ public class MemberFilterDialog extends DialogFragment {
 
     public void setFilterCode(String filterCode) {
         this.filterCode = filterCode;
+    }
+
+    public void setFastFilterHousehold(Household household) {
+        this.fastFilterHousehold = household;
     }
 
     public void setFilterHouseCode(String filterHouseCode) {
@@ -507,36 +515,42 @@ public class MemberFilterDialog extends DialogFragment {
             //whereClause += DatabaseHelper.Member.COLUMN_CODE + " like ?";            
         }
         if (!householdCode.isEmpty()){
-            TextFilters filter = new TextFilters(householdCode);
-            String text = filter.getFilterText();
-            switch (filter.getFilterType()) {
-                case STARTSWITH:
-                    builder.startsWith(Member_.householdCode, text, QueryBuilder.StringOrder.CASE_INSENSITIVE)
-                            .or().startsWith(Member_.householdName, text, QueryBuilder.StringOrder.CASE_INSENSITIVE);
-                    break;
-                case ENDSWITH:
-                    builder.endsWith(Member_.householdCode, text, QueryBuilder.StringOrder.CASE_INSENSITIVE)
-                            .or().endsWith(Member_.householdName, text, QueryBuilder.StringOrder.CASE_INSENSITIVE)  ;
-                    break;
-                case CONTAINS:
-                    builder.contains(Member_.householdCode, text, QueryBuilder.StringOrder.CASE_INSENSITIVE)
-                            .or().contains(Member_.householdName, text, QueryBuilder.StringOrder.CASE_INSENSITIVE);
-                    break;
-                case MULTIPLE_CONTAINS:
-                    for (String t : filter.getFilterTexts()) {
-                        builder.contains(Member_.householdCode, t, QueryBuilder.StringOrder.CASE_INSENSITIVE)
-                                .or().contains(Member_.householdName, t, QueryBuilder.StringOrder.CASE_INSENSITIVE);
-                    }
-                    break;
-                case NONE:
-                    builder.equal(Member_.householdCode, text, QueryBuilder.StringOrder.CASE_INSENSITIVE)
-                            .or().equal(Member_.householdName, text, QueryBuilder.StringOrder.CASE_INSENSITIVE);
-                    break;
-                case EMPTY:
-                    break;
+
+            //If searching the pre-selected Household use equal to be faster
+            if (filterHouseCodeExclusive || (fastFilterHousehold != null && householdCode.equals(fastFilterHousehold.code))) {
+                builder.equal(Member_.householdCode, householdCode, QueryBuilder.StringOrder.CASE_SENSITIVE);
+            } else {
+
+                TextFilters filter = new TextFilters(householdCode);
+                String text = filter.getFilterText();
+                switch (filter.getFilterType()) {
+                    case STARTSWITH:
+                        builder.startsWith(Member_.householdCode, text, QueryBuilder.StringOrder.CASE_INSENSITIVE)
+                                .or().startsWith(Member_.householdName, text, QueryBuilder.StringOrder.CASE_INSENSITIVE);
+                        break;
+                    case ENDSWITH:
+                        builder.endsWith(Member_.householdCode, text, QueryBuilder.StringOrder.CASE_INSENSITIVE)
+                                .or().endsWith(Member_.householdName, text, QueryBuilder.StringOrder.CASE_INSENSITIVE);
+                        break;
+                    case CONTAINS:
+                        builder.contains(Member_.householdCode, text, QueryBuilder.StringOrder.CASE_INSENSITIVE)
+                                .or().contains(Member_.householdName, text, QueryBuilder.StringOrder.CASE_INSENSITIVE);
+                        break;
+                    case MULTIPLE_CONTAINS:
+                        for (String t : filter.getFilterTexts()) {
+                            builder.contains(Member_.householdCode, t, QueryBuilder.StringOrder.CASE_INSENSITIVE)
+                                    .or().contains(Member_.householdName, t, QueryBuilder.StringOrder.CASE_INSENSITIVE);
+                        }
+                        break;
+                    case NONE:
+                        builder.equal(Member_.householdCode, text, QueryBuilder.StringOrder.CASE_INSENSITIVE)
+                                .or().equal(Member_.householdName, text, QueryBuilder.StringOrder.CASE_INSENSITIVE);
+                        break;
+                    case EMPTY:
+                        break;
+                }
+                //whereClause += DatabaseHelper.Member.COLUMN_HOUSEHOLD_CODE + " like ?";
             }
-            //whereClause += DatabaseHelper.Member.COLUMN_HOUSEHOLD_CODE + " like ?";
-            
         }
         if (!gender.isEmpty()){
             builder.equal(Member_.gender, gender, QueryBuilder.StringOrder.CASE_SENSITIVE);

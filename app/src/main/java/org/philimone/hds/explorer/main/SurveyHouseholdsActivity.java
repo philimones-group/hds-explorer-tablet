@@ -98,7 +98,7 @@ public class SurveyHouseholdsActivity extends AppCompatActivity implements House
     @Override
     public void onHouseholdClick(Household household) {
         memberListFragment.showProgress(true);
-        MemberSearchTask task = new MemberSearchTask(household, null, null, null, household.getCode());
+        MemberSearchTask task = new MemberSearchTask(household, null, null, null, null /*household.getCode()*/);
         task.execute();
 
     }

@@ -458,6 +458,7 @@ public class VisitFormUtil extends FormUtil<Visit> {
         });
 
         filterDialog.setCancelable(true);
+        filterDialog.setFastFilterHousehold(this.household); //to make faster search in this household
         filterDialog.setFilterHouseCode(this.household.code);
         filterDialog.setFilterStatus(MemberFilterDialog.StatusFilter.RESIDENT, true);
         filterDialog.setFilterMinAge(this.minimumRespondentAge, false);

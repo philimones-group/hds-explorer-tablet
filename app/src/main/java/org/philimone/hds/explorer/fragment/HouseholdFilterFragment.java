@@ -146,7 +146,7 @@ public class HouseholdFilterFragment extends Fragment implements RegionExpandabl
             String code = data.getStringExtra("new_household_code");
 
             if (code != null) { //returned the new household code - search it
-                searchHouses(code, false);
+                searchHouses(code, false, false, true);
             }
         }
     });
@@ -232,7 +232,7 @@ public class HouseholdFilterFragment extends Fragment implements RegionExpandabl
             @Override
             public void afterTextChanged(Editable s) {
                 if (s.length()>2 || s.toString().startsWith("#")){
-                    searchHouses(s.toString(), true);
+                    searchHouses(s.toString(), true, false, false);
                 }
             }
         });
@@ -266,9 +266,9 @@ public class HouseholdFilterFragment extends Fragment implements RegionExpandabl
                     String search = (code==null || code.isEmpty()) ? regionCode : code;
 
                     if (StringUtil.isBlank(code)) {
-                        searchHouses(regionCode, false); //search households on that region
+                        searchHouses(regionCode, false, true, false); //search households on that region
                     } else {
-                        searchHouses(code, true); //search using typed text
+                        searchHouses(code, true, false, false); //search using typed text
                     }
 
                 }
@@ -507,7 +507,7 @@ public class HouseholdFilterFragment extends Fragment implements RegionExpandabl
             @Override
             public void onNewEntityCreated(Household household, Map<String, Object> data) {
                 //reload filters and select new region
-                searchHouses(household.code, false);
+                searchHouses(household.code, false, false, true);
             }
 
             @Override
@@ -829,13 +829,13 @@ public class HouseholdFilterFragment extends Fragment implements RegionExpandabl
 
     }
 
-    public void searchHouses(String householdCode, boolean searchBothNameCode){
+    public void searchHouses(String householdCode, boolean searchBothNameCode, boolean searchByRegionCode, boolean searchFullHouseholdCode){
         //showProgress(true);
-        HouseholdSearchTask task = new HouseholdSearchTask(householdCode, searchBothNameCode);
+        HouseholdSearchTask task = new HouseholdSearchTask(householdCode, searchBothNameCode, searchByRegionCode, searchFullHouseholdCode);
         task.execute();
     }
 
-    public HouseholdAdapter loadHouseholdsByFilters(String houseCode, boolean searchNameAndCode) {
+    public HouseholdAdapter loadHouseholdsByFilters(String houseCode, boolean searchNameAndCode, boolean searchByRegionCode, boolean searchFullHouseholdCode) {
         //open loader
         //search
         List<String> smodules = new ArrayList<>(loggedUser.getSelectedModules());
@@ -844,8 +844,18 @@ public class HouseholdFilterFragment extends Fragment implements RegionExpandabl
         if (houseCode.equalsIgnoreCase("#") || houseCode.equalsIgnoreCase("#new")) {
             households = this.boxHouseholds.query(Household_.recentlyCreated.equal(true)).build().find();
         } else {
-            if (searchNameAndCode) {
+            if (searchFullHouseholdCode) {
+                households = this.boxHouseholds.query(Household_.code.equal(houseCode))
+                        .orderDesc(Household_.code) //query by modules
+                        .filter((h) -> StringUtil.containsAny(h.modules, smodules))
+                        .build().find();
+            } else if (searchNameAndCode) {
                 households = this.boxHouseholds.query(Household_.code.startsWith(houseCode).or(Household_.name.contains(houseCode)))
+                        .orderDesc(Household_.code) //query by modules
+                        .filter((h) -> StringUtil.containsAny(h.modules, smodules))
+                        .build().find();
+            } if (searchByRegionCode) {
+                households = this.boxHouseholds.query(Household_.region.equal(houseCode))
                         .orderDesc(Household_.code) //query by modules
                         .filter((h) -> StringUtil.containsAny(h.modules, smodules))
                         .build().find();
@@ -877,15 +887,19 @@ public class HouseholdFilterFragment extends Fragment implements RegionExpandabl
     class HouseholdSearchTask extends AsyncTask<Void, Void, HouseholdAdapter> {
         private String code;
         private boolean searchNameAndCode;
+        private boolean searchByRegionCode;
+        private boolean searchFullHouseholdCode;
 
-        public HouseholdSearchTask(String code, boolean searchNameAndCode) {
+        public HouseholdSearchTask(String code, boolean searchNameAndCode, boolean searchByRegionCode, boolean searchFullHouseholdCode) {
             this.code = code;
             this.searchNameAndCode = searchNameAndCode;
+            this.searchByRegionCode = searchByRegionCode;
+            this.searchFullHouseholdCode = searchFullHouseholdCode;
         }
 
         @Override
         protected HouseholdAdapter doInBackground(Void... params) {
-            return loadHouseholdsByFilters(code, searchNameAndCode);
+            return loadHouseholdsByFilters(code, searchNameAndCode, searchByRegionCode, searchFullHouseholdCode);
         }
 
         @Override

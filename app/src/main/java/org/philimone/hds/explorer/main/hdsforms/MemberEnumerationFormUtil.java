@@ -371,6 +371,7 @@ public class MemberEnumerationFormUtil extends FormUtil<Member> {
 
         Member member = new Member();
         member.code = code;
+        member.prefixCode = codeGenerator.getPrefixCode(member);
         member.name = name;
         member.gender = gender;
         member.dob = dob;

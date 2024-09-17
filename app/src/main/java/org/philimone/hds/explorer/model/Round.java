@@ -20,4 +20,10 @@ public class Round {
 
     public String description;
 
+    public static Round getEmptyRound(int roundNumber) {
+        Round round = new Round();
+        round.roundNumber = roundNumber;
+        return round;
+    }
+
 }

@@ -867,7 +867,7 @@
     },
     {
       "id": "12:5667991198190393360",
-      "lastPropertyId": "40:6283340205906828226",
+      "lastPropertyId": "41:8035522909202246722",
       "name": "Member",
       "properties": [
         {
@@ -1096,6 +1096,13 @@
           "id": "40:6283340205906828226",
           "name": "status",
           "type": 9
+        },
+        {
+          "id": "41:8035522909202246722",
+          "name": "prefixCode",
+          "indexId": "116:1020482705736869746",
+          "type": 9,
+          "flags": 2048
         }
       ],
       "relations": []
@@ -1550,7 +1557,7 @@
     },
     {
       "id": "19:1493713431233179094",
-      "lastPropertyId": "24:4848364250644436439",
+      "lastPropertyId": "25:731618077389395027",
       "name": "Visit",
       "properties": [
         {
@@ -1681,6 +1688,13 @@
           "id": "24:4848364250644436439",
           "name": "respondentName",
           "type": 9
+        },
+        {
+          "id": "25:731618077389395027",
+          "name": "prefixCode",
+          "indexId": "117:1957063151361708542",
+          "type": 9,
+          "flags": 2048
         }
       ],
       "relations": []
@@ -2425,7 +2439,7 @@
     },
     {
       "id": "31:8066769467112968593",
-      "lastPropertyId": "6:5977451817658166873",
+      "lastPropertyId": "7:7938750564041081004",
       "name": "CoreFormColumnOptions",
       "properties": [
         {
@@ -2458,13 +2472,18 @@
           "id": "6:5977451817658166873",
           "name": "optionLabelCode",
           "type": 9
+        },
+        {
+          "id": "7:7938750564041081004",
+          "name": "columnCode",
+          "type": 9
         }
       ],
       "relations": []
     }
   ],
   "lastEntityId": "31:8066769467112968593",
-  "lastIndexId": "115:3402150327573262491",
+  "lastIndexId": "117:1957063151361708542",
   "lastRelationId": "0:0",
   "lastSequenceId": "0:0",
   "modelVersion": 5,

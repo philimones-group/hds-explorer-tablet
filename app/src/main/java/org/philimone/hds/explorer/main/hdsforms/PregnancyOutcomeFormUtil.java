@@ -529,6 +529,7 @@ public class PregnancyOutcomeFormUtil extends FormUtil<PregnancyOutcome> {
 
             //Member
             Member childMember = createNewMember(pregnancyOutcome, childCollectedId, childCode, childName, childGender, headRelationshipType, colModules.getValue());
+            childMember.prefixCode = codeGenerator.getPrefixCode(childMember);
             this.boxMembers.put(childMember);
 
             affectedMembers = addAffectedMembers(affectedMembers, childMember.code);
@@ -720,6 +721,7 @@ public class PregnancyOutcomeFormUtil extends FormUtil<PregnancyOutcome> {
 
             //Member
             Member childMember = this.boxMembers.query(Member_.code.equal(childCode)).build().findFirst();
+            childMember.prefixCode = codeGenerator.getPrefixCode(childMember);
             childMember.name = childName;
             childMember.gender = childGender;
             childMember.dob = pregnancyOutcome.outcomeDate;

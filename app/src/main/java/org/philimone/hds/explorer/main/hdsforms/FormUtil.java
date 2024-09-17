@@ -2,6 +2,7 @@ package org.philimone.hds.explorer.main.hdsforms;
 
 import android.content.Context;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.util.Log;
 
 import org.philimone.hds.explorer.R;
@@ -278,6 +279,7 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
     }
 
     private void showLoadingDialog(String msg, boolean show){
+        Log.d("showloading dialog", show+" - "+msg);
         if (show) {
             this.loadingDialog.setMessage(msg);
             this.loadingDialog.show();
@@ -302,11 +304,21 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
     public abstract void collect();
 
     protected void executeCollectForm() {
+        Log.d("xloading", "creating form");
+        showLoadingDialog(R.string.loading_dialog_form_load_lbl, true);
+
+        new LoadFormFragmentTask().execute();
+
+        /* //WE MOVED THIS TO A THREAD - TO KEEP THE LOADING DIALOG DISPLAYED
         if (currentMode == Mode.CREATE) {
+            Log.d("xloading", "creating form");
             showLoadingDialog(R.string.loading_dialog_form_load_lbl, true);
+            Log.d("xloading", "preloading");
             preloadValues();
             this.form.setCustomTitle(this.formTitle);
+            Log.d("xloading", "creating form fragment");
             FormFragment form = FormFragment.newInstance(this.fragmentManager, this.form, Bootstrap.getInstancesPath(context), user.username, preloadedMap, postExecution, backgroundMode, resumeMode, this);
+            Log.d("xloading", "starting form fragment");
             form.startCollecting();
         }
 
@@ -318,6 +330,7 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
             FormFragment form = FormFragment.newInstance(this.fragmentManager, this.form, Bootstrap.getInstancesPath(context), user.username, savedXmlFilename, preloadedMap, postExecution, backgroundMode, true, this);
             form.startCollecting();
         }
+        */
     }
 
     protected CoreFormExtension getFormExtension(CoreFormEntity formEntity){
@@ -955,6 +968,44 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
         }
 
         return null;
+    }
+
+    class LoadFormFragmentTask extends AsyncTask<Void, Void, Void> {
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            Log.d("xloading", "preloading");
+
+            if (currentMode == Mode.CREATE) {
+                preloadValues();
+                form.setCustomTitle(formTitle);
+            } else if (currentMode == Mode.EDIT) {
+                preloadUpdatedValues();
+                form.setCustomTitle(formTitle);
+            }
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void unused) {
+            super.onPostExecute(unused);
+
+            Log.d("xloading", "creating form fragment");
+
+            if (currentMode == Mode.CREATE) {
+                FormFragment formFragment = FormFragment.newInstance(fragmentManager, form, Bootstrap.getInstancesPath(context), user.username, preloadedMap, postExecution, backgroundMode, resumeMode, FormUtil.this);
+                Log.d("xloading", "starting form fragment");
+                formFragment.startCollecting();
+
+            } else if (currentMode == Mode.EDIT) {
+                String savedXmlFilename = entity.getRecentlyCreatedUri()==null ? collectedData.formFilename : entity.getRecentlyCreatedUri();
+                FormFragment formFragment = FormFragment.newInstance(fragmentManager, form, Bootstrap.getInstancesPath(context), user.username, savedXmlFilename, preloadedMap, postExecution, backgroundMode, true, FormUtil.this);
+                Log.d("xloading", "starting form fragment");
+                formFragment.startCollecting();
+            }
+
+        }
     }
 
 }

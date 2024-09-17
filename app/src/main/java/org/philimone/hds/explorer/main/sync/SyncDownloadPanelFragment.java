@@ -91,6 +91,7 @@ public class SyncDownloadPanelFragment extends Fragment implements SyncPanelItem
     private Button btSyncAllData;
 
     private List<Synchronizer> synchronizerAllList = new ArrayList<>();
+    private List<SyncPanelItemFragment> syncPanelItemFragments;
 
     private Box<SyncReport> boxSyncReports;
     private Box<CoreCollectedData> boxCoreCollectedData;
@@ -100,6 +101,8 @@ public class SyncDownloadPanelFragment extends Fragment implements SyncPanelItem
     public SyncDownloadPanelFragment() {
         // Required empty public constructor
         initBoxes();
+
+        this.syncPanelItemFragments = new ArrayList<>();
     }
 
     public static SyncDownloadPanelFragment newInstance(String username, String password, String serverUrl, boolean connectedToServer, SyncPanelActivity.SyncFragmentListener fragmentListener) {
@@ -130,6 +133,12 @@ public class SyncDownloadPanelFragment extends Fragment implements SyncPanelItem
         this.trackingListsSyncFragment.setListener(this);
         this.householdsDatasetsSyncFragment.setListener(this);
         this.demographicsEventsSyncFragment.setListener(this);
+
+        syncPanelItemFragments.add(this.settingsSyncFragment);
+        syncPanelItemFragments.add(this.datasetsSyncFragment);
+        syncPanelItemFragments.add(this.trackingListsSyncFragment);
+        syncPanelItemFragments.add(this.householdsDatasetsSyncFragment);
+        syncPanelItemFragments.add(this.demographicsEventsSyncFragment);
 
     }
 
@@ -266,6 +275,12 @@ public class SyncDownloadPanelFragment extends Fragment implements SyncPanelItem
 
     }
 
+    public void updateAllPanelItems() {
+        for (SyncPanelItemFragment frag : this.syncPanelItemFragments) {
+            frag.refreshSyncButton();
+        }
+    }
+
     private void onSyncAllData(){
         //Synchronize One by One
 
@@ -315,26 +330,31 @@ public class SyncDownloadPanelFragment extends Fragment implements SyncPanelItem
     }
 
     private void syncSettings() {
+        settingsSyncFragment.cleanProgress();
         SyncEntitiesTask syncEntitiesTask = new SyncEntitiesTask(this.getContext(), this.settingsSyncFragment, serverUrl, username, password, PARAMETERS, MODULES, FORMS, CORE_FORMS_EXT, CORE_FORMS_OPTIONS, USERS);
         syncEntitiesTask.execute();
     }
 
     private void syncDatasets() {
+        datasetsSyncFragment.cleanProgress();
         SyncEntitiesTask syncEntitiesTask = new SyncEntitiesTask(this.getContext(), this.datasetsSyncFragment, serverUrl, username, password, DATASETS, DATASETS_CSV_FILES);
         syncEntitiesTask.execute();
     }
 
     private void syncTrackingLists() {
+        trackingListsSyncFragment.cleanProgress();
         SyncEntitiesTask syncEntitiesTask = new SyncEntitiesTask(this.getContext(), this.trackingListsSyncFragment, serverUrl, username, password, TRACKING_LISTS);
         syncEntitiesTask.execute();
     }
 
     private void syncHouseholdDatasets() {
+        householdsDatasetsSyncFragment.cleanProgress();
         SyncEntitiesTask syncEntitiesTask = new SyncEntitiesTask(this.getContext(), this.householdsDatasetsSyncFragment, serverUrl, username, password, ROUNDS, REGIONS, HOUSEHOLDS, MEMBERS, RESIDENCIES);
         syncEntitiesTask.execute();
     }
 
     private void syncDemographicsEvents() {
+        demographicsEventsSyncFragment.cleanProgress();
         SyncEntitiesTask syncEntitiesTask = new SyncEntitiesTask(this.getContext(), this.demographicsEventsSyncFragment, serverUrl, username, password, VISITS, HEAD_RELATIONSHIPS, MARITAL_RELATIONSHIPS, PREGNANCY_REGISTRATIONS, DEATHS);
         syncEntitiesTask.execute();
     }
@@ -459,6 +479,7 @@ public class SyncDownloadPanelFragment extends Fragment implements SyncPanelItem
         }
 
         showStatus();
+        updateAllPanelItems();
         savePreferences(syncEntityResult);
     }
 

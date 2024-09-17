@@ -28,6 +28,8 @@ public class Household implements CoreEntity, FormSubject, Serializable {
 
     @Id
     public long id;
+    @Index
+    public String prefixCode;
     @Unique
     public String code;
     @Index
@@ -285,6 +287,12 @@ public class Household implements CoreEntity, FormSubject, Serializable {
             sinLongitude = Math.sin(gpsLongitude);
             cosLongitude = Math.cos(gpsLongitude);
         }
+    }
+
+    public static Household getEmptyHousehold(String code){
+        Household h = getEmptyHousehold();
+        h.code = code;
+        return h;
     }
 
     public static Household getEmptyHousehold(){

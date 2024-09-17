@@ -64,6 +64,7 @@ import org.philimone.hds.explorer.model.enums.temporal.ResidencyStartType;
 import org.philimone.hds.explorer.model.followup.TrackingList;
 import org.philimone.hds.explorer.model.followup.TrackingSubjectList;
 import org.philimone.hds.explorer.model.oldstate.SavedEntityState;
+import org.philimone.hds.explorer.server.settings.generator.CodeGeneratorService;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
@@ -162,6 +163,8 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 
 	private StringCollectionConverter stringCollectionConverter = new StringCollectionConverter();
 
+	private CodeGeneratorService codeGeneratorService;
+
 	public SyncEntitiesTask(Context context, SyncEntitiesListener listener, String url, String username, String password, SyncEntity... entityToDownload) {
 		this.baseurl = url;
 		this.username = username;
@@ -208,6 +211,12 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 		this.boxPregnancyChilds = ObjectBoxDatabase.get().boxFor(PregnancyChild.class);
 		this.boxPregnancyOuts = ObjectBoxDatabase.get().boxFor(PregnancyOutcome.class);
 		this.boxSavedEntityStates = ObjectBoxDatabase.get().boxFor(SavedEntityState.class);
+	}
+
+	private void initCodeGeneratorService() {
+		if (this.codeGeneratorService == null) {
+			this.codeGeneratorService = new CodeGeneratorService();
+		}
 	}
 
 	public void setSyncDatabaseListener(SyncEntitiesListener listener){
@@ -1214,6 +1223,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 		publishProgress(count);
 
 		updateSyncReport(SyncEntity.PARAMETERS, new Date(), SyncStatus.STATUS_SYNCED);
+
 	}
 
 	private void processModulesParams(XmlPullParser parser) throws Exception {
@@ -2285,6 +2295,8 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 
 	private void processHouseholds(XmlPullParser parser) throws Exception {
 
+		initCodeGeneratorService();
+
 		//clear sync_report
 		updateSyncReport(SyncEntity.HOUSEHOLDS, null, SyncStatus.STATUS_NOT_SYNCED);
 
@@ -2524,6 +2536,8 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 				parser.nextTag();
 			}
 
+			//Set Household Prefix code
+			table.prefixCode = codeGeneratorService.getPrefixCode(table);
 
 			parser.nextTag(); //last process tag
 			parser.next();
@@ -2940,6 +2954,8 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 				parser.nextTag();
 			}
 
+			//Set Member Prefix code
+			table.prefixCode = codeGeneratorService.getPrefixCode(table);
 
 			parser.nextTag(); //process last tag
 			parser.next();
@@ -3149,6 +3165,8 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 
 	private void processVisits(XmlPullParser parser) throws Exception {
 
+		initCodeGeneratorService();
+
 		//clear sync_report
 		updateSyncReport(SyncEntity.VISITS, null, SyncStatus.STATUS_NOT_SYNCED);
 
@@ -3312,6 +3330,9 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 				table.collectedId = "";
 				parser.nextTag();
 			}
+
+			//Set Household Prefix code
+			table.prefixCode = codeGeneratorService.getPrefixCode(table);
 
 			parser.nextTag(); //last process tag
 			parser.next();

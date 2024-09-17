@@ -326,9 +326,10 @@ public class VisitFormUtil extends FormUtil<Visit> {
         Visit visit = (currentMode==Mode.EDIT) ? entity : new Visit(); //EDIT VS CREATE
 
         visit.code = colCode.getValue();
+        visit.roundNumber = colRoundNumber.getIntegerValue();
+        visit.prefixCode = codeGenerator.getPrefixCode(visit);
         visit.householdCode = colHouseholdCode.getValue();
         visit.visitDate = colVisitDate.getDateValue();
-        visit.roundNumber = colRoundNumber.getIntegerValue();
         visit.visitReason = VisitReason.getFrom(colVisitReason.getValue());
         visit.visitPossible = StringUtil.getBooleanValue(colVisitPossible.getValue());;
         visit.visitNotPossibleReason = NoVisitReason.getFrom(colvisitNotPossibleReason.getValue());

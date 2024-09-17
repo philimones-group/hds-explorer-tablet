@@ -38,6 +38,8 @@ public class Member implements CoreEntity, FormSubject, Serializable {
 
     @Id
     public long id;
+    @Index
+    public String prefixCode;
     @Unique
     public String code;
     public String name;

@@ -27,6 +27,8 @@ public class Visit implements CoreEntity, FormSubject {
 
     @Id
     public long id;
+    @Index
+    public String prefixCode;
     @Unique
     public String code;
 

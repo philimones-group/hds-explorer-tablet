@@ -192,6 +192,7 @@ public class PreHouseholdFormUtil extends FormUtil<Household> {
         Household household = new Household();
 
         household.code = household_code;
+        household.prefixCode = codeGenerator.getPrefixCode(household);
         household.name = household_name;
         household.region = region_code;
 

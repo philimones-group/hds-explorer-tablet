@@ -207,6 +207,7 @@ public class HouseholdFormUtil extends FormUtil<Household> {
         Household household = wasPreRegistered ? this.household : new Household();
         household.region = colRegionCode.getValue();
         household.code = colHouseholdCode.getValue();
+        household.prefixCode = codeGenerator.getPrefixCode(household);
         household.name = colHouseholdName.getValue();
         household.headCode = colHeadCode.getValue();
         household.headName = colHeadName.getValue();

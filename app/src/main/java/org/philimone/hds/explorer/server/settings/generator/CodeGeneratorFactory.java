@@ -11,7 +11,7 @@ import io.objectbox.query.QueryBuilder;
 
 public class CodeGeneratorFactory {
 
-    public static CodeGeneratorIncrementalRule INCREMENTAL_RULE = CodeGeneratorIncrementalRule.FILL_GAPS;
+    public static CodeGeneratorIncrementalRule INCREMENTAL_RULE = CodeGeneratorIncrementalRule.INCREMENT_LAST_CODE;
 
     public static CodeGenerator newInstance(){
         Box<ApplicationParam> box = ObjectBoxDatabase.get().boxFor(ApplicationParam.class);

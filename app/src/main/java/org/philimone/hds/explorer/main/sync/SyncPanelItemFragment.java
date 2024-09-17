@@ -11,7 +11,9 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import org.philimone.hds.explorer.R;
+import org.philimone.hds.explorer.database.ObjectBoxDatabase;
 import org.philimone.hds.explorer.io.SyncEntitiesListener;
+import org.philimone.hds.explorer.model.ApplicationParam;
 import org.philimone.hds.explorer.model.enums.SyncEntity;
 import org.philimone.hds.explorer.io.SyncEntityReport;
 import org.philimone.hds.explorer.io.SyncEntityResult;
@@ -19,6 +21,7 @@ import org.philimone.hds.explorer.model.enums.SyncState;
 import org.philimone.hds.explorer.model.enums.SyncStatus;
 import org.philimone.hds.explorer.widget.DialogFactory;
 import org.philimone.hds.explorer.widget.SyncResultDialog;
+import io.objectbox.Box;
 
 import java.util.List;
 
@@ -51,8 +54,10 @@ public class SyncPanelItemFragment extends Fragment implements View.OnClickListe
     private boolean connectedToServer;
     private boolean hasDataToUpload;
 
-    public SyncPanelItemFragment() {
+    private Box<ApplicationParam> boxParams;
 
+    public SyncPanelItemFragment() {
+        this.boxParams = ObjectBoxDatabase.get().boxFor(ApplicationParam.class);
     }
 
     /**
@@ -105,6 +110,8 @@ public class SyncPanelItemFragment extends Fragment implements View.OnClickListe
         this.syncResultDialog.create();
 
         cleanProgress();
+
+        refreshSyncButton();
     }
 
     @Override
@@ -138,6 +145,10 @@ public class SyncPanelItemFragment extends Fragment implements View.OnClickListe
         this.syncStopButton.setVisibility(View.GONE);
     }
 
+    public void refreshSyncButton(){
+        syncButton.setEnabled(boxParams.count() > 0);
+    }
+
     public void setTitleText(String title){
         this.titleText = title;
 
@@ -151,6 +162,7 @@ public class SyncPanelItemFragment extends Fragment implements View.OnClickListe
             this.syncSyncedDate.setText(statusMessage);
 
             if (status == SyncStatus.STATUS_SYNC_ERROR){
+                Log.d("syncbutton", "error appearing");
                 this.syncErrorIcon.setVisibility(View.VISIBLE);
                 this.syncProgressText.setVisibility(View.GONE);
                 this.syncProgressMessage.setText("");
@@ -194,6 +206,7 @@ public class SyncPanelItemFragment extends Fragment implements View.OnClickListe
     }
 
     private void executeSyncButtonEvent() {
+        Log.d("cleaning", "cleaning and execute");
         cleanProgress();
         this.syncButton.setVisibility(View.GONE);
         this.syncStopButton.setVisibility(View.VISIBLE);
@@ -228,7 +241,9 @@ public class SyncPanelItemFragment extends Fragment implements View.OnClickListe
         int s = (int)size;
 
         Log.d("sync-started", syncEntity.name()+", size="+size+", s="+s);
-        //cleanProgress();
+
+        getActivity().runOnUiThread(() ->  cleanProgress());
+
         this.syncProgressBar.setMax(s);
         //setSyncedDate("");
     }

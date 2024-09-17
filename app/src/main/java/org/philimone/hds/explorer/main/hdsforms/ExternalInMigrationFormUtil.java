@@ -169,7 +169,11 @@ public class ExternalInMigrationFormUtil extends FormUtil<Inmigration> {
     @Override
     protected void preloadValues() {
         //member_details_unknown_lbl
-        String memberCode = codeGenerator.generateMemberCode(household);
+        String memberCode = "";
+
+        if (externalInMigrationType==ExternalInMigrationType.ENTRY){
+            memberCode = codeGenerator.generateMemberCode(household);
+        }
 
         preloadedMap.put("visitCode", this.visit.code);
         preloadedMap.put("memberCode", memberCode);
@@ -480,6 +484,7 @@ public class ExternalInMigrationFormUtil extends FormUtil<Inmigration> {
             member = new Member();
 
             member.code = memberCode;
+            member.prefixCode = codeGenerator.getPrefixCode(member);
             member.name = memberName;
             member.gender = memberGender;
             member.dob = memberDob;

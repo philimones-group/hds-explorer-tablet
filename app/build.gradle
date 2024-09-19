@@ -89,7 +89,7 @@ dependencies {
     implementation 'com.journeyapps:zxing-android-embedded:4.3.0'
     implementation 'com.google.code.gson:gson:2.10.1'
     implementation group: 'org.mindrot', name: 'jbcrypt', version: '0.4'
-    implementation 'commons-io:commons-io:2.15.1'
+    implementation 'commons-io:commons-io:2.16.1'
     implementation 'org.apache.commons:commons-jexl3:3.2.1'
 
     //mapbox

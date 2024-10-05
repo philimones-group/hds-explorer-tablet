@@ -432,6 +432,8 @@ public class PregnancyRegistrationFormUtil extends FormUtil<PregnancyRegistratio
     }
 
     private PregnancyRegistration getLastPregnancyRegistration(Member motherMember){
+        if (motherMember == null) return null;
+
         //def pregnancies = PregnancyRegistration.executeQuery("select p from PregnancyRegistration p where p.mother.code=? order by p.recordedDate desc", [motherCode], [offset:0, max:1])
         PregnancyRegistration pregnancyRegistration = this.boxPregnancyRegistrations.query(PregnancyRegistration_.motherCode.equal(motherMember.code))
                                                                                     .orderDesc(PregnancyRegistration_.recordedDate).build().findFirst();

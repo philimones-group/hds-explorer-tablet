@@ -46,6 +46,7 @@ import org.philimone.hds.explorer.widget.RecyclerListView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import io.objectbox.Box;
 import mz.betainteractive.odk.model.FilledForm;
@@ -245,12 +246,7 @@ public class ShowVisitCollectedDataFragment extends Fragment {
     }
 
     private List<CoreFormEntity> getCollectedFormEntityList(Visit visit) {
-        String[] collectedFormsStr = this.boxCoreCollectedData.query(CoreCollectedData_.visitId.equal(visit.id)).build().property(CoreCollectedData_.formEntity).findStrings();
-        List<CoreFormEntity> formEntities = new ArrayList<>();
-
-        for (String str : collectedFormsStr) {
-            formEntities.add(CoreFormEntity.getFrom(str));
-        }
+        List<CoreFormEntity> formEntities = this.boxCoreCollectedData.query(CoreCollectedData_.visitId.equal(visit.id)).build().find().stream().map(CoreCollectedData::getFormEntity).collect(Collectors.toList());
 
         return formEntities;
     }

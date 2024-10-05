@@ -476,6 +476,8 @@ public class DeathFormUtil extends FormUtil<Death> {
     }
 
     private HeadRelationship getLastHeadRelationship(String memberCode) {
+        if (StringUtil.isBlank(memberCode)) return null;
+
         HeadRelationship lastHeadRelationship = this.boxHeadRelationships.query(HeadRelationship_.memberCode.equal(memberCode))
                 .orderDesc(HeadRelationship_.startDate)
                 .build().findFirst();
@@ -495,6 +497,8 @@ public class DeathFormUtil extends FormUtil<Death> {
     }
 
     private Residency getLastResidency(String memberCode) {
+        if (StringUtil.isBlank(memberCode)) return null;
+
         Residency lastResidency = this.boxResidencies.query(Residency_.memberCode.equal(memberCode))
                 .orderDesc(Residency_.startDate)
                 .build().findFirst();

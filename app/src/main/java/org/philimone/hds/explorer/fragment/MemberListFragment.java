@@ -37,6 +37,7 @@ import org.philimone.hds.explorer.model.Region;
 import org.philimone.hds.explorer.model.Region_;
 import org.philimone.hds.explorer.model.User;
 import org.philimone.hds.explorer.model.enums.temporal.ResidencyEndType;
+import org.philimone.hds.explorer.server.settings.generator.CodeGeneratorService;
 import org.philimone.hds.explorer.widget.DialogFactory;
 import org.philimone.hds.explorer.widget.RecyclerListView;
 import org.philimone.hds.explorer.widget.member_details.Distance;
@@ -84,6 +85,8 @@ public class MemberListFragment extends Fragment {
 
     private User currentUser = Bootstrap.getCurrentUser();
 
+    private CodeGeneratorService codeGeneratorService;
+
     public enum Buttons {
         SHOW_HOUSEHOLD, MEMBERS_MAP, COLLECTED_DATA
     }
@@ -91,6 +94,7 @@ public class MemberListFragment extends Fragment {
     public MemberListFragment() {
         // Required empty public constructor
         lastSearch = new ArrayList<>();
+        codeGeneratorService = new CodeGeneratorService();
     }
 
     @Override
@@ -570,6 +574,11 @@ public class MemberListFragment extends Fragment {
 
             TextFilters filter = new TextFilters(code);
             String text = filter.getFilterText();
+
+            if (codeGeneratorService.isMemberCodeValid(text)) {
+                filter.setFilterType(TextFilters.Filter.NONE);
+            }
+
             switch (filter.getFilterType()) {
                 case STARTSWITH:
                     builder.startsWith(Member_.code, text, QueryBuilder.StringOrder.CASE_INSENSITIVE);
@@ -586,7 +595,7 @@ public class MemberListFragment extends Fragment {
                     }
                     break;
                 case NONE:
-                    builder.equal(Member_.code, text, QueryBuilder.StringOrder.CASE_INSENSITIVE);
+                    builder.equal(Member_.code, text, QueryBuilder.StringOrder.CASE_SENSITIVE);
                     break;
                 case EMPTY:
                     break;
@@ -596,6 +605,13 @@ public class MemberListFragment extends Fragment {
         if (!householdCode.isEmpty()){
             TextFilters filter = new TextFilters(householdCode);
             String text = filter.getFilterText();
+            boolean isCodeExclusive = false;
+
+            if (codeGeneratorService.isHouseholdCodeValid(text)) {
+                filter.setFilterType(TextFilters.Filter.NONE);
+                isCodeExclusive = true;
+            }
+
             switch (filter.getFilterType()) {
                 case STARTSWITH:
                     builder.startsWith(Member_.householdCode, text, QueryBuilder.StringOrder.CASE_INSENSITIVE)
@@ -616,8 +632,13 @@ public class MemberListFragment extends Fragment {
                     }
                     break;
                 case NONE:
-                    builder.equal(Member_.householdCode, text, QueryBuilder.StringOrder.CASE_INSENSITIVE)
-                           .or().equal(Member_.householdName, text, QueryBuilder.StringOrder.CASE_INSENSITIVE);
+
+                    if (isCodeExclusive) {
+                        builder.equal(Member_.householdCode, text, QueryBuilder.StringOrder.CASE_INSENSITIVE);
+                    } else {
+                        builder.equal(Member_.householdCode, text, QueryBuilder.StringOrder.CASE_INSENSITIVE)
+                                .or().equal(Member_.householdName, text, QueryBuilder.StringOrder.CASE_INSENSITIVE);
+                    }
                     break;
                 case EMPTY:
                     break;

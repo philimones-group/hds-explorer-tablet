@@ -25,6 +25,7 @@ import org.philimone.hds.explorer.model.Member;
 import org.philimone.hds.explorer.model.Member_;
 import org.philimone.hds.explorer.model.enums.MaritalStatus;
 import org.philimone.hds.explorer.model.enums.temporal.ResidencyEndType;
+import org.philimone.hds.explorer.server.settings.generator.CodeGeneratorService;
 import org.philimone.hds.explorer.widget.NumberPicker;
 import org.philimone.hds.explorer.widget.RecyclerListView;
 
@@ -97,9 +98,12 @@ public class MemberFilterDialog extends DialogFragment {
 
     private String title;
 
+    private CodeGeneratorService codeGeneratorService;
+
     public MemberFilterDialog(){
         super();
         this.filterExcludeMembers = new ArrayList<>();
+        this.codeGeneratorService = new CodeGeneratorService();
         initBoxes();
     }
     /*
@@ -490,6 +494,11 @@ public class MemberFilterDialog extends DialogFragment {
 
             TextFilters filter = new TextFilters(code);
             String text = filter.getFilterText();
+
+            if (codeGeneratorService.isMemberCodeValid(text)) {
+                filter.setFilterType(TextFilters.Filter.NONE);
+            }
+
             switch (filter.getFilterType()) {
                 case STARTSWITH:
                     builder.startsWith(Member_.code, text, QueryBuilder.StringOrder.CASE_INSENSITIVE);
@@ -523,6 +532,13 @@ public class MemberFilterDialog extends DialogFragment {
 
                 TextFilters filter = new TextFilters(householdCode);
                 String text = filter.getFilterText();
+                boolean isCodeExclusive = false;
+
+                if (codeGeneratorService.isHouseholdCodeValid(text)) {
+                    filter.setFilterType(TextFilters.Filter.NONE);
+                    isCodeExclusive = true;
+                }
+
                 switch (filter.getFilterType()) {
                     case STARTSWITH:
                         builder.startsWith(Member_.householdCode, text, QueryBuilder.StringOrder.CASE_INSENSITIVE)
@@ -543,8 +559,12 @@ public class MemberFilterDialog extends DialogFragment {
                         }
                         break;
                     case NONE:
-                        builder.equal(Member_.householdCode, text, QueryBuilder.StringOrder.CASE_INSENSITIVE)
-                                .or().equal(Member_.householdName, text, QueryBuilder.StringOrder.CASE_INSENSITIVE);
+                        if (isCodeExclusive) {
+                            builder.equal(Member_.householdCode, text, QueryBuilder.StringOrder.CASE_INSENSITIVE);
+                        } else {
+                            builder.equal(Member_.householdCode, text, QueryBuilder.StringOrder.CASE_INSENSITIVE)
+                                    .or().equal(Member_.householdName, text, QueryBuilder.StringOrder.CASE_INSENSITIVE);
+                        }
                         break;
                     case EMPTY:
                         break;

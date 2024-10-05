@@ -396,6 +396,8 @@ public class ChangeHeadFormUtil extends FormUtil<HeadRelationship> {
     }
 
     private HeadRelationship getLastHeadRelationship(String memberCode) {
+        if (StringUtil.isBlank(memberCode)) return null;
+
         HeadRelationship lastHeadRelationship = this.boxHeadRelationships.query(HeadRelationship_.memberCode.equal(memberCode))
                 .orderDesc(HeadRelationship_.startDate)
                 .build().findFirst();
@@ -404,6 +406,8 @@ public class ChangeHeadFormUtil extends FormUtil<HeadRelationship> {
     }
 
     private Residency getLastResidency(String memberCode) {
+        if (StringUtil.isBlank(memberCode)) return null;
+
         Residency lastResidency = this.boxResidencies.query(Residency_.memberCode.equal(memberCode))
                 .orderDesc(Residency_.startDate)
                 .build().findFirst();
@@ -552,12 +556,11 @@ public class ChangeHeadFormUtil extends FormUtil<HeadRelationship> {
             headRelationship.endDate = null;
             this.boxHeadRelationships.put(headRelationship);
 
-            if (headRelationship.memberCode.equals(oldHeadCode)) {
-                //update old head relationship
-                if (oldHeadMember != null) {
-                    oldHeadMember.headRelationshipType = headRelationship.relationshipType;
-                    this.boxMembers.put(oldHeadMember);
-                }
+            Member member = boxMembers.query(Member_.code.equal(headRelationship.memberCode)).build().findFirst();
+            if (member != null) {
+                //update member new relationship
+                member.headRelationshipType = headRelationship.relationshipType;
+                this.boxMembers.put(member);
             }
 
             String newHeadIds = !saveStateMap.containsKey("newHeadRelationshipsList") ? headRelationship.id+"" : saveStateMap.get("newHeadRelationshipsList") + "," + headRelationship.id;
@@ -715,12 +718,11 @@ public class ChangeHeadFormUtil extends FormUtil<HeadRelationship> {
                 headRelationship.endDate = null;
                 this.boxHeadRelationships.put(headRelationship);
 
-                if (headRelationship.memberCode.equals(oldHeadCode)) {
-                    //update old head relationship
-                    if (oldHeadMember != null) {
-                        oldHeadMember.headRelationshipType = headRelationship.relationshipType;
-                        this.boxMembers.put(oldHeadMember);
-                    }
+                Member member = boxMembers.query(Member_.code.equal(headRelationship.memberCode)).build().findFirst();
+                if (member != null) {
+                    //update member new relationship
+                    member.headRelationshipType = headRelationship.relationshipType;
+                    this.boxMembers.put(member);
                 }
 
                 String newHeadIds = !saveStateMap.containsKey("newHeadRelationshipsList") ? headRelationship.id+"" : saveStateMap.get("newHeadRelationshipsList") + "," + headRelationship.id;

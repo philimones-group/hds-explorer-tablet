@@ -72,4 +72,8 @@ public class CoreCollectedData {
         this();
         this.formEntity = formEntity;
     }
+
+    public CoreFormEntity getFormEntity() {
+        return formEntity;
+    }
 }

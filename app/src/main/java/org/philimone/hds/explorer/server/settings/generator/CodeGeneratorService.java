@@ -4,7 +4,6 @@ import android.util.Log;
 
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
 import org.philimone.hds.explorer.model.ApplicationParam;
-import org.philimone.hds.explorer.model.ApplicationParam_;
 import org.philimone.hds.explorer.model.Household;
 import org.philimone.hds.explorer.model.Household_;
 import org.philimone.hds.explorer.model.Member;
@@ -27,7 +26,6 @@ import java.util.stream.Collectors;
 
 import io.objectbox.Box;
 import io.objectbox.query.QueryBuilder;
-import mz.betainteractive.utilities.GeneralUtil;
 
 public class CodeGeneratorService {
 
@@ -87,37 +85,36 @@ public class CodeGeneratorService {
     }
 
     public String generateRegionCode(Region parentRegion, String regionName) {
-        String[] codes = boxRegions.query().order(Region_.code).build().property(Region_.code).findStrings();
-        return codeGenerator.generateRegionCode(parentRegion, regionName, Arrays.asList(codes));
+        List<String> codes = boxRegions.query().order(Region_.code).build().find().stream().map(Region::getCode).collect(Collectors.toList());
+        return codeGenerator.generateRegionCode(parentRegion, regionName, codes);
     }
 
     public String generateLowestRegionCode(Region parentRegion, String regionName) {
-        String[] codes = boxRegions.query().order(Region_.code).build().property(Region_.code).findStrings();
-        return codeGenerator.generateLowestRegionCode(parentRegion, regionName, Arrays.asList(codes));
+        List<String> codes = boxRegions.query(Region_.parent.equal(parentRegion.code)).order(Region_.code)
+                                          .build().find().stream().map(Region::getCode).collect(Collectors.toList());
+
+        return codeGenerator.generateLowestRegionCode(parentRegion, regionName, codes);
     }
 
     public String generateHouseholdCode(Region region, User user) {
         String cbase = codeGenerator.getHouseholdBaseCode(region, user);
 
-        String[] codes = boxHouseholds.query(Household_.prefixCode.equal(cbase)).order(Household_.code).build().property(Household_.code).findStrings();
+        List<String> codes = boxHouseholds.query(Household_.prefixCode.equal(cbase)).order(Household_.code).build().find().stream().map(Household::getCode).collect(Collectors.toList());
 
-        return codeGenerator.generateHouseholdCode(cbase, Arrays.asList(codes));
+        return codeGenerator.generateHouseholdCode(cbase, codes);
     }
 
     public String generateMemberCode(Household household) {
         String cbase = household.code;
-        String[] codes = boxMembers.query(Member_.prefixCode.equal(cbase)).order(Member_.code).build().property(Member_.code).findStrings();
+        List<String> codes = boxMembers.query(Member_.prefixCode.equal(cbase)).order(Member_.code).build().find().stream().map(Member::getCode).collect(Collectors.toList());
 
-        return codeGenerator.generateMemberCode(cbase, Arrays.asList(codes));
+        return codeGenerator.generateMemberCode(cbase, codes);
     }
 
     public String generateMemberCode(Household household, List<String> extraCodes) {
 
         String cbase = household.code;
-        String[] resultCodes = boxMembers.query(Member_.prefixCode.equal(cbase)).order(Member_.code).build().property(Member_.code).findStrings();
-        List<String> codes = Arrays.asList(resultCodes);
-        resultCodes = null;
-
+        List<String> codes = boxMembers.query(Member_.prefixCode.equal(cbase)).order(Member_.code).build().find().stream().map(Member::getCode).collect(Collectors.toList());
         codes.addAll(extraCodes);
 
         return codeGenerator.generateMemberCode(cbase, codes);
@@ -129,9 +126,9 @@ public class CodeGeneratorService {
         Round round = Round.getEmptyRound((int) roundNumber); //boxRounds.query(Round_.roundNumber.equal(roundNumber)).build().findFirst();
         String cbase = codeGenerator.getVisitBaseCode(household, round);
 
-        String[] codes = boxVisits.query(Visit_.prefixCode.equal(cbase)).order(Visit_.code).build().property(Visit_.code).findStrings();
+        List<String> codes = boxVisits.query(Visit_.prefixCode.equal(cbase)).order(Visit_.code).build().find().stream().map(Visit::getCode).collect(Collectors.toList());
 
-        return codeGenerator.generateVisitCode(cbase, Arrays.asList(codes));
+        return codeGenerator.generateVisitCode(cbase, codes);
     }
 
     public String generateUserCode(User user) {
@@ -142,10 +139,10 @@ public class CodeGeneratorService {
     public String generatePregnancyCode(Member mother) {
 
         String cbase = mother.code;
-        String[] codes = boxPregnancies.query(PregnancyRegistration_.motherCode.equal(cbase)).order(PregnancyRegistration_.code)
-                                                 .build().property(PregnancyRegistration_.code).findStrings();
+        List<String> codes = boxPregnancies.query(PregnancyRegistration_.motherCode.equal(cbase)).order(PregnancyRegistration_.code)
+                                                 .build().find().stream().map(PregnancyRegistration::getCode).collect(Collectors.toList());
 
-        return codeGenerator.generatePregnancyCode(cbase, Arrays.asList(codes));
+        return codeGenerator.generatePregnancyCode(cbase, codes);
     }
 
     public String getModuleSampleCode() {

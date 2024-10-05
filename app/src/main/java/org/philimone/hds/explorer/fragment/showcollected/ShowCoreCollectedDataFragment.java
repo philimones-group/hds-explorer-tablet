@@ -299,7 +299,7 @@ public class ShowCoreCollectedDataFragment extends Fragment {
     }
 
     private void deleteSelectedRecords(List<CoreCollectedDataItem> selectedList) {
-        //showLoadingDialog(getString(R.string.show_collected_data_deletion_loading_lbl), true);
+        showLoadingDialog(getString(R.string.show_collected_data_deletion_loading_lbl), true);
         new DeletionTask(selectedList).execute();
     }
 
@@ -495,7 +495,7 @@ public class ShowCoreCollectedDataFragment extends Fragment {
 
         @Override
         protected void onPostExecute(Void result) {
-            //showLoadingDialog(null, false);
+            showLoadingDialog(null, false);
             fireOnDeletedForms();
         }
     }

@@ -595,7 +595,7 @@ public class MemberListFragment extends Fragment {
                     }
                     break;
                 case NONE:
-                    builder.equal(Member_.code, text, QueryBuilder.StringOrder.CASE_SENSITIVE);
+                    builder.equal(Member_.code, text, QueryBuilder.StringOrder.CASE_INSENSITIVE);
                     break;
                 case EMPTY:
                     break;

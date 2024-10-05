@@ -611,6 +611,18 @@ public class CoreCollectedDataDeletionUtil {
     }
 
     private void deleteOdkInstance(Uri odkContentUri) {
+
+        if (true) {
+            //IT WILL NOT DELETE THE ODK RECORD BECAUSE THIS CREATES APP CRASHES WHEN THROWS REMOTE EXCEPTIONS - AND I CANT CATCH IT
+            Log.d("dataDeletionUtil", "disabled-delete-odk-instance = "+odkContentUri);
+            return;
+        }
+
+
+        if (odkContentUri == null) {
+            return;
+        }
+
         int errorCount = 0;
         String messageLike = "AppDependencyComponent.inject(org.odk.collect.android.external.InstanceProvider)' on a null object reference";
         String errorMessage = null;

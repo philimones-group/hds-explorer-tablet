@@ -8,6 +8,8 @@ import org.philimone.hds.explorer.model.Household;
 import org.philimone.hds.explorer.model.Household_;
 import org.philimone.hds.explorer.model.Member;
 import org.philimone.hds.explorer.model.Member_;
+import org.philimone.hds.explorer.model.PregnancyOutcome;
+import org.philimone.hds.explorer.model.PregnancyOutcome_;
 import org.philimone.hds.explorer.model.PregnancyRegistration;
 import org.philimone.hds.explorer.model.PregnancyRegistration_;
 import org.philimone.hds.explorer.model.Region;
@@ -21,6 +23,7 @@ import org.philimone.hds.explorer.model.Visit_;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -37,6 +40,7 @@ public class CodeGeneratorService {
     private Box<Visit> boxVisits;
     private Box<Round> boxRounds;
     private Box<PregnancyRegistration> boxPregnancies;
+    private Box<PregnancyOutcome> boxPregnancyOutcomes;
     private Box<ApplicationParam> boxAppParams;
 
     public CodeGeneratorService() {
@@ -53,6 +57,7 @@ public class CodeGeneratorService {
         this.boxVisits = ObjectBoxDatabase.get().boxFor(Visit.class);
         this.boxRounds = ObjectBoxDatabase.get().boxFor(Round.class);
         this.boxPregnancies = ObjectBoxDatabase.get().boxFor(PregnancyRegistration.class);
+        this.boxPregnancyOutcomes = ObjectBoxDatabase.get().boxFor(PregnancyOutcome.class);
         this.boxAppParams = ObjectBoxDatabase.get().boxFor(ApplicationParam.class);
     }
 

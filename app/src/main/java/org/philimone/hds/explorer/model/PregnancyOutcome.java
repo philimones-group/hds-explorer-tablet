@@ -62,6 +62,10 @@ public class PregnancyOutcome implements CoreEntity {
         return this.id;
     }
 
+    public String getCode() {
+        return code;
+    }
+
     @Override
     public String getCollectedId() {
         return collectedId;

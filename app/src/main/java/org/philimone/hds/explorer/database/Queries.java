@@ -12,6 +12,7 @@ import org.philimone.hds.explorer.model.Member;
 import org.philimone.hds.explorer.model.Member_;
 import org.philimone.hds.explorer.model.Module;
 import org.philimone.hds.explorer.model.Module_;
+import org.philimone.hds.explorer.model.Region;
 import org.philimone.hds.explorer.model.SyncReport;
 import org.philimone.hds.explorer.model.SyncReport_;
 import org.philimone.hds.explorer.model.enums.SyncEntity;
@@ -44,6 +45,19 @@ public class Queries {
         }
 
         return null;
+    }
+
+    public static boolean isRegionHeadSupported(Box<ApplicationParam> box, Region region) {
+        ApplicationParam param = getApplicationParamBy(box, ApplicationParam.PARAMS_SYSTEM_REGION_HEAD_SUPPORT);
+        ApplicationParam paramHead = getApplicationParamBy(box, region != null ? region.getLevelHeadParamName() : "");
+
+        return param != null && "true".equalsIgnoreCase(param.value) && paramHead != null && "true".equalsIgnoreCase(paramHead.value);
+
+    }
+
+    public static boolean isRegionHeadSupported(Box<ApplicationParam> box) {
+        ApplicationParam param = getApplicationParamBy(box, ApplicationParam.PARAMS_SYSTEM_REGION_HEAD_SUPPORT);
+        return param != null && "true".equalsIgnoreCase(param.value);
     }
 
     public static SyncReport getSyncReportBy(Box<SyncReport> box, SyncEntity entity){

@@ -26,6 +26,7 @@ public class ApplicationParam {
     public static final String PARAMS_SYSTEM_LANGUAGE = "hds.explorer.system.language";
     public static final String PARAMS_SYSTEM_CODE_GENERATOR = "hds.explorer.system.codegenerator";
     public static final String PARAMS_SYSTEM_CODE_GENERATOR_INCREMENTAL_RULE = "hds.explorer.system.codegenerator_rules.incremental";
+    public static final String PARAMS_SYSTEM_REGION_HEAD_SUPPORT = "hds.explorer.system.region.head.support";
 
     @Id
     private long id;

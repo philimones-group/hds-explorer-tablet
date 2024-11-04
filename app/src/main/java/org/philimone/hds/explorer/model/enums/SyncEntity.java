@@ -35,6 +35,7 @@ public enum SyncEntity {
     PREGNANCY_OUTCOMES (23, R.string.sync_pregnancy_outcomes_lbl, "pregnancyoutcomes.zip", "pregnancyoutcomes/zip"),
     DEATHS             (24, R.string.sync_deaths_lbl, "deaths.zip", "deaths/zip"),
     INCOMPLETE_VISITS  (25, R.string.sync_incomplete_visits_lbl, "incompletevisits.zip", "incompletevisits/zip"),
+    REGION_HEAD_RELATIONSHIPS (26, R.string.sync_regionheads_lbl, "regionheads.zip", "regionheads/zip"),
     INVALID_ENUM       (-1, -1, "", "");
 
     private int code;

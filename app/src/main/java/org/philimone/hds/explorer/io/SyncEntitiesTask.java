@@ -34,6 +34,7 @@ import org.philimone.hds.explorer.model.PregnancyChild;
 import org.philimone.hds.explorer.model.PregnancyOutcome;
 import org.philimone.hds.explorer.model.PregnancyRegistration;
 import org.philimone.hds.explorer.model.Region;
+import org.philimone.hds.explorer.model.RegionHeadRelationship;
 import org.philimone.hds.explorer.model.Residency;
 import org.philimone.hds.explorer.model.Round;
 import org.philimone.hds.explorer.model.SyncReport;
@@ -59,6 +60,8 @@ import org.philimone.hds.explorer.model.enums.VisitLocationItem;
 import org.philimone.hds.explorer.model.enums.VisitReason;
 import org.philimone.hds.explorer.model.enums.temporal.HeadRelationshipEndType;
 import org.philimone.hds.explorer.model.enums.temporal.HeadRelationshipStartType;
+import org.philimone.hds.explorer.model.enums.temporal.RegionHeadEndType;
+import org.philimone.hds.explorer.model.enums.temporal.RegionHeadStartType;
 import org.philimone.hds.explorer.model.enums.temporal.ResidencyEndType;
 import org.philimone.hds.explorer.model.enums.temporal.ResidencyStartType;
 import org.philimone.hds.explorer.model.followup.TrackingList;
@@ -154,10 +157,12 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 	private Box<Outmigration> boxOutmigrations;
 	private Box<PregnancyChild> boxPregnancyChilds;
 	private Box<PregnancyOutcome> boxPregnancyOuts;
+	private Box<RegionHeadRelationship> boxRegionHeadRelationships;
 	private Box<SavedEntityState> boxSavedEntityStates;
 
 	private boolean canceled;
 
+	private boolean isRegionHeadSupported;
 	private boolean isDemoDownload;
 	private Map<String, Integer> demoSyncReportMap = new LinkedHashMap<>();
 
@@ -210,6 +215,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 		this.boxOutmigrations = ObjectBoxDatabase.get().boxFor(Outmigration.class);
 		this.boxPregnancyChilds = ObjectBoxDatabase.get().boxFor(PregnancyChild.class);
 		this.boxPregnancyOuts = ObjectBoxDatabase.get().boxFor(PregnancyOutcome.class);
+		this.boxRegionHeadRelationships = ObjectBoxDatabase.get().boxFor(RegionHeadRelationship.class);
 		this.boxSavedEntityStates = ObjectBoxDatabase.get().boxFor(SavedEntityState.class);
 	}
 
@@ -316,6 +322,9 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 			case DEATHS:
 				builder.append(" " + mContext.getString(R.string.sync_deaths_lbl));
 				break;
+			case REGION_HEAD_RELATIONSHIPS:
+				builder.append(" " + mContext.getString(R.string.sync_regionheads_lbl));
+				break;
 		}
 
 		if (values.length > 0) {
@@ -350,6 +359,11 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 			}
 
 			for (SyncEntity entity : entities){
+
+				//If Region Head is not supported dont download regionheads
+				if (entity == SyncEntity.REGION_HEAD_RELATIONSHIPS && !Queries.isRegionHeadSupported(boxAppParams)) {
+					continue;
+				}
 
 				//get record count from the server and trigger onSyncStarted
 				executeOnSyncStarted(entity, state);
@@ -456,6 +470,10 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 					case DEATHS:
 						this.boxDeaths.removeAll();
 						processUrl(appUrl + suffixFilePath, "deaths.zip");
+						break;
+					case REGION_HEAD_RELATIONSHIPS:
+						this.boxRegionHeadRelationships.removeAll();
+						processUrl(appUrl + suffixFilePath, "regionheads.zip");
 						break;
 				}
 
@@ -1079,6 +1097,8 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 					processPregnancyRegistrations(parser);
 				} else if (name.equalsIgnoreCase("deaths")) {
 					processDeaths(parser);
+				} else if (name.equalsIgnoreCase("regionheads")) {
+					processRegionHeadRelationships(parser);
 				}
 				break;
 			}
@@ -2259,6 +2279,16 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 				parser.nextTag();
 			}else{
 				table.setParent("");
+				parser.nextTag();
+			}
+
+			parser.nextTag(); //head
+			if (!isEmptyTag("head", parser)) {
+				parser.next();
+				table.headCode = parser.getText();
+				parser.nextTag();
+			}else{
+				table.headCode = "";
 				parser.nextTag();
 			}
 
@@ -3926,6 +3956,108 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 		publishProgress(count);
 
 		updateSyncReport(SyncEntity.DEATHS, new Date(), SyncStatus.STATUS_SYNCED);
+	}
+
+	private void processRegionHeadRelationships(XmlPullParser parser) throws Exception {
+
+		//clear sync_report
+		updateSyncReport(SyncEntity.REGION_HEAD_RELATIONSHIPS, null, SyncStatus.STATUS_NOT_SYNCED);
+
+		List<RegionHeadRelationship> values = new ArrayList<>();
+		int count = 0;
+		values.clear();
+
+		parser.nextTag();
+
+		while (notEndOfTag("regionheads", parser)) {
+			count++;
+
+			RegionHeadRelationship table = new RegionHeadRelationship();
+
+			parser.nextTag(); //regionCode
+			if (!isEmptyTag("regionCode", parser)) {
+				parser.next();
+				table.regionCode = parser.getText();
+				parser.nextTag();
+			}else{
+				table.regionCode = "";
+				parser.nextTag();
+			}
+
+			parser.nextTag(); //headCode
+			if (!isEmptyTag("headCode", parser)) {
+				parser.next();
+				table.headCode = parser.getText();
+				parser.nextTag();
+			}else{
+				table.headCode = "";
+				parser.nextTag();
+			}
+
+			parser.nextTag(); //startType
+			if (!isEmptyTag("startType", parser)) {
+				parser.next();
+				table.startType = RegionHeadStartType.getFrom(parser.getText());
+				parser.nextTag();
+			}else{
+				table.startType = null;
+				parser.nextTag();
+			}
+
+			parser.nextTag(); //startDate
+			if (!isEmptyTag("startDate", parser)) {
+				parser.next();
+				table.startDate = StringUtil.toDate(parser.getText(), "yyyy-MM-dd");
+				parser.nextTag();
+			}else{
+				//table.startDate = false;
+				parser.nextTag();
+			}
+
+			parser.nextTag(); //endType
+			if (!isEmptyTag("endType", parser)) {
+				parser.next();
+				table.endType = RegionHeadEndType.getFrom(parser.getText());
+				parser.nextTag();
+			}else{
+				table.endType = null;
+				parser.nextTag();
+			}
+
+			parser.nextTag(); //endDate
+			if (!isEmptyTag("endDate", parser)) {
+				parser.next();
+				table.endDate = StringUtil.toDate(parser.getText(), "yyyy-MM-dd");
+				parser.nextTag();
+			}else{
+				//table.endDate = false;
+				parser.nextTag();
+			}
+
+			parser.nextTag(); //last process tag
+			parser.next();
+
+			values.add(table);
+
+			//database.insert(table);
+
+			if (count % 500 == 0){
+				this.boxRegionHeadRelationships.put(values); //try with runTx
+				values.clear();
+				savedValues.put(entity, count); //publish progress is a bit slow - its not reporting well the numbers
+				publishProgress(count);
+			}
+
+		}
+
+		if (!values.isEmpty()) {
+			this.boxRegionHeadRelationships.put(values);
+		}
+
+		savedValues.put(entity, count);
+		publishProgress(count);
+
+		updateSyncReport(SyncEntity.REGION_HEAD_RELATIONSHIPS, new Date(), SyncStatus.STATUS_SYNCED);
 	}
 
 	private Map<String,String> convertFormMapTextToMap(String formMapText) {

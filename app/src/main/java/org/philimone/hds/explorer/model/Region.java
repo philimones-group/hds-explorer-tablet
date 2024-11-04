@@ -41,7 +41,11 @@ public class Region implements CoreEntity, FormSubject, Serializable {
     public String code;
     public String name;
     public String level;
+    @Index
     public String parent;
+    @Index
+    public String headCode;
+    public String headName;
 
     @Unique
     public String collectedId;
@@ -93,6 +97,10 @@ public class Region implements CoreEntity, FormSubject, Serializable {
 
     public void setLevel(String level) {
         this.level = level;
+    }
+
+    public String getLevelHeadParamName(){
+        return level + ".head";
     }
 
     public String getParent() {

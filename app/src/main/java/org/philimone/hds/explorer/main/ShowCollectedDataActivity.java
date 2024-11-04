@@ -16,10 +16,12 @@ import com.google.android.material.tabs.TabLayoutMediator;
 import org.philimone.hds.explorer.R;
 import org.philimone.hds.explorer.database.Bootstrap;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
+import org.philimone.hds.explorer.database.Queries;
 import org.philimone.hds.explorer.fragment.showcollected.ShowCoreCollectedDataFragment;
 import org.philimone.hds.explorer.fragment.showcollected.ShowVisitCollectedDataFragment;
 import org.philimone.hds.explorer.fragment.showcollected.ShowOdkCollectedDataFragment;
 import org.philimone.hds.explorer.fragment.showcollected.adapter.ShowCollectedDataFragmentAdapter;
+import org.philimone.hds.explorer.model.ApplicationParam;
 import org.philimone.hds.explorer.model.CollectedData;
 import org.philimone.hds.explorer.model.CoreCollectedData;
 import org.philimone.hds.explorer.model.CoreCollectedData_;
@@ -46,6 +48,8 @@ public class ShowCollectedDataActivity extends AppCompatActivity implements Show
     private User user;
 
     private Box<CoreCollectedData> boxCoreCollectedData;
+    private Box<ApplicationParam> boxAppParams;
+    
     private Box<CollectedData> boxCollectedData;
 
     private ShowCollectedDataFragmentAdapter fragmentAdapter;
@@ -53,6 +57,7 @@ public class ShowCollectedDataActivity extends AppCompatActivity implements Show
     private LoadingDialog loadingDialog;
     private int loadedData = 0; //1+2+3 = 6 means full loaded
     private int fragmentsCreated = 0;
+    private boolean isRegionHeadSupported;
 
     public ShowCollectedDataActivity() {
         this.initBoxes();
@@ -71,6 +76,7 @@ public class ShowCollectedDataActivity extends AppCompatActivity implements Show
     private void initBoxes() {
         this.boxCoreCollectedData = ObjectBoxDatabase.get().boxFor(CoreCollectedData.class);
         this.boxCollectedData = ObjectBoxDatabase.get().boxFor(CollectedData.class);
+        this.boxAppParams = ObjectBoxDatabase.get().boxFor(ApplicationParam.class);
     }
 
     private void initialize() {
@@ -84,6 +90,8 @@ public class ShowCollectedDataActivity extends AppCompatActivity implements Show
         this.btShowCollectedUpdate = findViewById(R.id.btShowCollectedUpdate);
         this.loadingDialog = new LoadingDialog(this); //findViewById(R.id.loadingProgressBar);
 
+        this.isRegionHeadSupported = Queries.isRegionHeadSupported(boxAppParams);
+        
         initFragments();
 
         this.btShowCollectedBack.setOnClickListener(v -> {
@@ -102,7 +110,7 @@ public class ShowCollectedDataActivity extends AppCompatActivity implements Show
         if (fragmentAdapter == null) {
 
             long count_visit = this.boxCoreCollectedData.query(CoreCollectedData_.formEntity.equal(CoreFormEntity.VISIT.code)).build().count();
-            long count_core = this.boxCoreCollectedData.count();
+            long count_core = isRegionHeadSupported ? this.boxCoreCollectedData.count() : this.boxCoreCollectedData.query(CoreCollectedData_.formEntity.notEqual(CoreFormEntity.CHANGE_REGION_HEAD.code)).build().count();
             long count_odk = this.boxCollectedData.query().filter((c) -> StringUtil.containsAny(c.formModules, user.getSelectedModules())).build().find().size();
 
             List<String> tabTitles = new ArrayList<>();
@@ -130,7 +138,7 @@ public class ShowCollectedDataActivity extends AppCompatActivity implements Show
 
     public void refreshTabTitles(){
         long count_visit = this.boxCoreCollectedData.query(CoreCollectedData_.formEntity.equal(CoreFormEntity.VISIT.code)).build().count();
-        long count_core = this.boxCoreCollectedData.count();
+        long count_core = isRegionHeadSupported ? this.boxCoreCollectedData.count() : this.boxCoreCollectedData.query(CoreCollectedData_.formEntity.notEqual(CoreFormEntity.CHANGE_REGION_HEAD.code)).build().count();
         long count_odk = this.boxCollectedData.query().filter((c) -> StringUtil.containsAny(c.formModules, user.getSelectedModules())).build().find().size();
 
         String visit_label = getString(R.string.show_collected_data_tab_visit_forms_lbl) + (count_visit == 0 ? "" : " ("+ count_visit +")");

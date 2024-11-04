@@ -628,7 +628,7 @@ public class HouseholdFilterFragment extends Fragment implements RegionExpandabl
 
         for (ApplicationParam param : params){
 
-            if (param.getValue().isEmpty()) continue;
+            if (param.getValue().isEmpty() || param.getName().endsWith(".head")) continue;
 
             HierarchyItem item = new HierarchyItem(param);
             ArrayList<Region> list = new ArrayList<>();
@@ -680,6 +680,8 @@ public class HouseholdFilterFragment extends Fragment implements RegionExpandabl
         List<ApplicationParam> params = boxAppParams.query().startsWith(ApplicationParam_.name, "hierarchy", QueryBuilder.StringOrder.CASE_SENSITIVE).build().find(); //COLUMN_NAME+" like 'hierarchy%'"
 
         for (ApplicationParam param : params){
+
+            if (param.getName().endsWith(".head")) continue;
 
             if (!param.getValue().isEmpty()) {
                 if (getHierarchyNumber(param.getName()) > getHierarchyNumber(lastRegionLevel)) {

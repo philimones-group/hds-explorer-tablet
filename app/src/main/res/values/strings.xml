@@ -89,6 +89,7 @@
     <string name="sync_pregnancy_outcomes_lbl">Pregnancy Outcomes</string>
     <string name="sync_deaths_lbl">Deaths</string>
     <string name="sync_incomplete_visits_lbl">Incomplete Visits</string>
+    <string name="sync_regionheads_lbl">Region Heads</string>
     <string name="sync_saved_lbl">Saved</string>
     <string name="sync_records_lbl">records</string>
     <string name="sync_successfully_lbl">Data was successfully synchronized.</string>
@@ -154,6 +155,7 @@
     <string name="core_entity_changehoh_lbl">Change Head of Household</string>
     <string name="core_entity_member_not_visited_lbl">Member Not Visited Form</string>
     <string name="core_entity_visit_lbl">Visit Registration</string>
+    <string name="core_entity_changehor_lbl">Change Head of Region</string>
     <string name="core_entity_extra_form_lbl">Other Forms (ODK)</string>
     <string name="core_entity_edit_region_lbl">Edit Region</string>
     <string name="core_entity_edit_household_lbl">Edit Household</string>
@@ -390,6 +392,7 @@
     <string name="region_details_tab_edit_lbl">Edit Details</string>
     <string name="region_details_code_lbl">Code:</string>
     <string name="region_details_parent_lbl">Parent Region:</string>
+    <string name="region_details_bt_changehead_lbl">Change Head of %1$s</string>
 
     <!-- Household Filter -->
     <string name="household_filter_code_lbl">Household Code</string>
@@ -613,6 +616,26 @@
     <string name="changehead_new_head_is_head_of_household_lbl">The new Head of Household is a Head of another household. Must first end his current Head Relationship to declare it as head of another!</string>
     <string name="changehead_head_dont_exists_lbl">This Household doesn\'t have an active Head of Household, a new Head of Household must be selected</string>
 
+    <!-- change region head -->
+    <string name="changeregionhead_dialog_change_title_lbl">Update Data</string>
+    <string name="changeregionhead_dialog_head_change_lbl">Do you want to update the new head of the [%1$s]?</string>
+    <string name="changeregionhead_region_code_empty_lbl">The [%1$s] Code cannot be empty</string>
+    <string name="changeregionhead_oldhead_code_empty_lbl">The Old Head of [%1$s] Code cannot be empty</string>
+    <string name="changeregionhead_newhead_code_empty_lbl">The New Head of [%1$s] Code cannot be empty</string>
+    <string name="changeregionhead_eventdate_empty_lbl">The Date of the event cannot be empty</string>
+    <string name="changeregionhead_eventdate_not_before_dob_lbl">The date of the event cannot be before the date of birth of the new head of [%1$s]</string>
+    <string name="changeregionhead_eventdate_not_great_today_lbl">The date of the event cannot be greater than today</string>
+    <string name="changeregionhead_eventdate_not_before_new_head_hrelationship_startdate_lbl">The event date [%1$s] cannot be before the [start date] of the [new Head of %4$s] last Head record [%2$s -> %3$s].</string>
+    <string name="changeregionhead_eventdate_not_before_lastregion_head_hrelationship_startdate_lbl">The event date [%1$s] cannot be before the [start date] of the Region[%4$s] last Head record [%2$s -> %3$s].</string>
+    <string name="changeregionhead_new_head_select_lbl">Select the new Head of [%1$s]</string>
+    <string name="changeregionhead_new_head_is_head_of_household_lbl">The new Head of [%1$s] is a Head of another [%1$s]. Must first end his current Head Relationship to declare it as head of another!</string>
+    <string name="changeregionhead_head_dont_exists_lbl">This [%1$s] doesn\'t have an active Head of [%1$s], a new Head of [%1$s] must be selected</string>
+    <string name="changeregionhead_set_new_reiong_head_bt_lbl">Set as New %1$s Head</string>
+    <string name="changeregionhead_already_collected_reopen_msg_lbl">There is a recently registered "Change Region Head Form" for this [%1$s] = %2$s.\nPress OK to reopen this registration</string>
+    <string name="changeregionhead_already_collected_reopen_new_visit_msg_lbl">There is a recently registered "Change Region Head Form" for this [%1$s] = %2$s.\nThe registration was done in another Household visit.\nDo you want to update this Form on this Visit?</string>
+    <string name="changeregionhead_already_collected_stop_msg_lbl">There is a recently registered "Change Region Head Form" for this [%1$s] = %2$s.\nCannot proceed because this registration was collected using Region Details Panel.\nTo edit the form go to Region Details).</string>
+    <string name="changeregionhead_already_collected_stop_notvisit_msg_lbl">There is a recently registered "Change Region Head Form" for this [%1$s] = %2$s.\nCannot proceed because this registration was collected using a Household Visit.\nTo edit the form go to Household [code = %3$s].</string>
+
     <string name="household_head_dont_exists_lbl">It will not be possible to proceed with the event, because this Household doesn\'t have an active Head of Household</string>
 
     <string-array name="relationship_types_array">
@@ -826,6 +849,9 @@
     <string name="eventType_new_hoh">New Head of Household</string>
     <string name="eventType_death_of_hoh">Death of Head of Household</string>
     <string name="eventType_change_of_hoh">Change of Head of Household</string>
+    <string name="eventType_new_hor">New Head of Region</string>
+    <string name="eventType_death_of_hor">Death of Head of Region</string>
+    <string name="eventType_change_of_hor">Change of Head of Region</string>
 
     <string name="headRelationshipType_head_of_household">Head of Household</string>
     <string name="headRelationshipType_spouse">Spouse</string>

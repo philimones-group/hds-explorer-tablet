@@ -87,6 +87,7 @@
     <string name="sync_pregnancy_outcomes_lbl">Résultats de grossesses</string>
     <string name="sync_deaths_lbl">Décès</string>
     <string name="sync_incomplete_visits_lbl">Visites incomplètes</string>
+    <string name="sync_regionheads_lbl">Chefs de Région</string>
     <string name="sync_saved_lbl">Sauvé</string>
     <string name="sync_records_lbl">enregistrements</string>
     <string name="sync_successfully_lbl">Les données ont été synchronisées avec succès.</string>
@@ -152,6 +153,7 @@
     <string name="core_entity_changehoh_lbl">Changement du responsable de l\'agrégat</string>
     <string name="core_entity_member_not_visited_lbl">Membre non visité</string>
     <string name="core_entity_visit_lbl">Enregistrement de la visite</string>
+    <string name="core_entity_changehor_lbl">Changer le Chef de Région</string>
     <string name="core_entity_extra_form_lbl">Autres formulaires (ODK)</string>
     <string name="core_entity_edit_region_lbl">Changer la région</string>
     <string name="core_entity_edit_household_lbl">Changer l\'agrégat</string>
@@ -387,6 +389,7 @@
     <string name="region_details_tab_edit_lbl">Changer les détails</string>
     <string name="region_details_code_lbl">Code:</string>
     <string name="region_details_parent_lbl">Région:</string>
+    <string name="region_details_bt_changehead_lbl">Changement de Chef de %1$s</string>
 
     <!-- Household Filter -->
     <string name="household_filter_code_lbl">Code de la Agrégat</string>
@@ -824,6 +827,9 @@
     <string name="eventType_new_hoh">Nouveau chef de ménage</string>
     <string name="eventType_death_of_hoh">Décès du chef de ménage</string>
     <string name="eventType_change_of_hoh">Changement de chef de ménage</string>
+    <string name="eventType_new_hor">Nouveau chef de Région</string>
+    <string name="eventType_death_of_hor">Nouveau chef de Région</string>
+    <string name="eventType_change_of_hor">Changement du chef de Région</string>
 
     <string name="headRelationshipType_head_of_household">Chef de ménage</string>
     <string name="headRelationshipType_spouse">Conjoint</string>

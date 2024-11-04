@@ -25,9 +25,11 @@ import org.philimone.hds.explorer.adapter.CoreCollectedExpandableAdapter;
 import org.philimone.hds.explorer.adapter.MemberAdapter;
 import org.philimone.hds.explorer.adapter.model.VisitCollectedDataItem;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
+import org.philimone.hds.explorer.database.Queries;
 import org.philimone.hds.explorer.listeners.HouseholdDetailsListener;
 import org.philimone.hds.explorer.main.MemberDetailsActivity;
 import org.philimone.hds.explorer.main.hdsforms.ChangeHeadFormUtil;
+import org.philimone.hds.explorer.main.hdsforms.ChangeRegionHeadFormUtil;
 import org.philimone.hds.explorer.main.hdsforms.DeathFormUtil;
 import org.philimone.hds.explorer.main.hdsforms.EditCoreExtensionFormUtil;
 import org.philimone.hds.explorer.main.hdsforms.ExternalInMigrationFormUtil;
@@ -73,6 +75,8 @@ import org.philimone.hds.explorer.model.PregnancyOutcome_;
 import org.philimone.hds.explorer.model.PregnancyRegistration;
 import org.philimone.hds.explorer.model.PregnancyRegistration_;
 import org.philimone.hds.explorer.model.Region;
+import org.philimone.hds.explorer.model.RegionHeadRelationship;
+import org.philimone.hds.explorer.model.RegionHeadRelationship_;
 import org.philimone.hds.explorer.model.Region_;
 import org.philimone.hds.explorer.model.User;
 import org.philimone.hds.explorer.model.Visit;
@@ -115,14 +119,17 @@ public class HouseholdVisitFragment extends Fragment {
     private Button btnVisitExtraForm;
     private Button btnVisitMemberIncomplete;
     private Button btnVisitChangeHead;
+    private Button btnVisitChangeRegionHead;
 
     private LoadingDialog loadingDialog;
 
     private Household household;
+    private Region region;
     private Visit visit;
     private Member selectedMember;
     private User loggedUser;
     private Map<String, Object> visitExtraData = new HashMap<>();
+    private String regionHierarchyName;
 
     private Box<User> boxUsers;
     private Box<Region> boxRegions;
@@ -137,6 +144,7 @@ public class HouseholdVisitFragment extends Fragment {
     private Box<Death> boxDeaths;
     private Box<HeadRelationship> boxHeadRelationships;
     private Box<IncompleteVisit> boxIncompleteVisits;
+    Box<RegionHeadRelationship> boxRegionHeadRelationships;
     private Box<CollectedData> boxCollectedData;
     private Box<CoreCollectedData> boxCoreCollectedData;
     private Box<ApplicationParam> boxAppParams;
@@ -151,6 +159,9 @@ public class HouseholdVisitFragment extends Fragment {
     private boolean respondentNotRegistered = false;
     private int minimunMotherAge;
     private int minimunSpouseAge;
+    private int minimumHeadAge;
+
+    private boolean isRegionHeadSupported;
 
     private enum VisitEventsMode { HOUSEHOLD_EVENTS, MEMBER_EVENTS, RESPONDENT_NOT_REG_EVENTS}
 
@@ -186,6 +197,10 @@ public class HouseholdVisitFragment extends Fragment {
         this.household = household;
         this.visit = visit;
         this.loggedUser = user;
+
+        this.region = boxRegions.query(Region_.code.equal(this.household.region)).build().findFirst();
+        this.regionHierarchyName = getHierarchyName(region);
+        this.isRegionHeadSupported = Queries.isRegionHeadSupported(boxAppParams, region);
 
         if (data != null) {
             this.visitExtraData.putAll(data);
@@ -266,6 +281,7 @@ public class HouseholdVisitFragment extends Fragment {
         this.boxHeadRelationships = ObjectBoxDatabase.get().boxFor(HeadRelationship.class);
         this.boxMembers = ObjectBoxDatabase.get().boxFor(Member.class);
         this.boxIncompleteVisits = ObjectBoxDatabase.get().boxFor(IncompleteVisit.class);
+        this.boxRegionHeadRelationships = ObjectBoxDatabase.get().boxFor(RegionHeadRelationship.class);
     }
 
     private void initialize(View view) {
@@ -277,12 +293,14 @@ public class HouseholdVisitFragment extends Fragment {
         this.btnVisitPregnancyReg = view.findViewById(R.id.btnVisitPregnancyReg);
         this.btnVisitExtInmigration = view.findViewById(R.id.btnVisitExtInmigration);
         this.btnVisitIntInmigration = view.findViewById(R.id.btnVisitIntInmigration);
+
         this.btnVisitOutmigration = view.findViewById(R.id.btnVisitOutmigration);
         this.btnVisitDeath = view.findViewById(R.id.btnVisitDeath);
         this.btnVisitMaritalRelationship = view.findViewById(R.id.btnVisitMaritalRelationship);
         this.btnVisitExtraForm = view.findViewById(R.id.btnVisitExtraForm);
         this.btnVisitMemberIncomplete = view.findViewById(R.id.btnVisitMemberIncomplete);
         this.btnVisitChangeHead = view.findViewById(R.id.btnVisitChangeHead);
+        this.btnVisitChangeRegionHead = view.findViewById(R.id.btnVisitChangeRegionHead);
 
         this.loadingDialog = new LoadingDialog(this.getContext());
 
@@ -382,13 +400,29 @@ public class HouseholdVisitFragment extends Fragment {
             onChangeHeadClicked(null);
         });
 
+        this.btnVisitChangeRegionHead.setOnClickListener(v -> {
+            onChangeRegionHeadClicked(null);
+        });
+
         this.btnVisitExtraForm.setOnClickListener(v -> {
             onCollectExtraFormClicked();
         });
 
         this.minimunMotherAge = retrieveMinimumMotherAge();
         this.minimunSpouseAge = retrieveMinimumSpouseAge();
+        this.minimumHeadAge = retrieveMinimumHeadAge();
+    }
 
+    private String getHierarchyName(Region region){
+        if (region == null) return "";
+
+        ApplicationParam param = Queries.getApplicationParamBy(boxAppParams, region.getLevel() );
+
+        if (param != null){
+            return param.getValue();
+        }
+
+        return "";
     }
 
     private int retrieveMinimumMotherAge() {
@@ -407,6 +441,20 @@ public class HouseholdVisitFragment extends Fragment {
 
     private int retrieveMinimumSpouseAge() {
         ApplicationParam param = this.boxAppParams.query().equal(ApplicationParam_.name, ApplicationParam.PARAMS_MIN_AGE_OF_SPOUSE, QueryBuilder.StringOrder.CASE_SENSITIVE).build().findFirst();
+
+        if (param != null) {
+            try {
+                return Integer.parseInt(param.value);
+            } catch (Exception ex) {
+
+            }
+        }
+
+        return 12;
+    }
+
+    private int retrieveMinimumHeadAge() {
+        ApplicationParam param = this.boxAppParams.query().equal(ApplicationParam_.name, ApplicationParam.PARAMS_MIN_AGE_OF_HEAD, QueryBuilder.StringOrder.CASE_SENSITIVE).build().findFirst();
 
         if (param != null) {
             try {
@@ -573,6 +621,7 @@ public class HouseholdVisitFragment extends Fragment {
         int age = GeneralUtil.getAge(this.selectedMember.dob, new Date());
         boolean isAtMotherAge = age >= this.minimunMotherAge;
         boolean isAtSpouseAge = age >= this.minimunSpouseAge;
+        boolean isAtHeadAge = age >= this.minimumHeadAge;
 
         this.btnVisitMemberEnu.setEnabled(false);
         this.btnVisitBirthReg.setEnabled(this.selectedMember!=null && this.selectedMember.gender== Gender.FEMALE && isAtMotherAge);
@@ -591,6 +640,16 @@ public class HouseholdVisitFragment extends Fragment {
         this.btnVisitMemberIncomplete.setEnabled(notVisited);
         this.btnVisitMemberEnu.setVisibility(View.GONE);
         this.btnVisitMemberIncomplete.setVisibility(View.VISIBLE);
+
+        if (isRegionHeadSupported) {
+            this.btnVisitChangeRegionHead.setText(getString(R.string.changeregionhead_set_new_reiong_head_bt_lbl, regionHierarchyName));
+            this.btnVisitChangeRegionHead.setEnabled(isAtHeadAge);
+            this.btnVisitIntInmigration.setVisibility(View.GONE);
+            this.btnVisitChangeRegionHead.setVisibility(View.VISIBLE);
+        } else {
+            this.btnVisitIntInmigration.setVisibility(View.VISIBLE);
+            this.btnVisitChangeRegionHead.setVisibility(View.GONE);
+        }
 
         //disable buttons if already collected and ready to edit
         //Incomplete, Marital, Pregnancy Reg and Pregnancy Outcome - must be collected one per visit and member
@@ -667,6 +726,11 @@ public class HouseholdVisitFragment extends Fragment {
         mapData.put(CoreFormEntity.DEATH, new ArrayList<VisitCollectedDataItem>());
         mapData.put(CoreFormEntity.CHANGE_HOUSEHOLD_HEAD, new ArrayList<VisitCollectedDataItem>());
         mapData.put(CoreFormEntity.INCOMPLETE_VISIT, new ArrayList<VisitCollectedDataItem>());
+
+        if (isRegionHeadSupported) {
+            mapData.put(CoreFormEntity.CHANGE_REGION_HEAD, new ArrayList<VisitCollectedDataItem>());
+        }
+
         mapData.put(CoreFormEntity.VISIT, new ArrayList<VisitCollectedDataItem>());
 
         mapData.put(CoreFormEntity.EXTRA_FORM, new ArrayList<VisitCollectedDataItem>());
@@ -791,6 +855,10 @@ public class HouseholdVisitFragment extends Fragment {
                 IncompleteVisit incvisit = this.boxIncompleteVisits.get(coreCollectedData.formEntityId);
                 onIncompleteVisitClicked(incvisit);
                 break;
+            case CHANGE_REGION_HEAD:
+                RegionHeadRelationship regionHeadRelationship = this.boxRegionHeadRelationships.get(coreCollectedData.formEntityId);
+                onChangeRegionHeadClicked(regionHeadRelationship);
+                break;
         }
     }
 
@@ -808,7 +876,7 @@ public class HouseholdVisitFragment extends Fragment {
         //1. if extension required && not_collected || not_found -> create new extension
         //2. if extension required && exists
 
-        if (coreCollectedData != null) {
+        if (coreCollectedData != null && extension != null && extension.enabled) {
             if (dataItem.isExtensionCollected() && dataItem.odkFormStatus != FormUtilities.FormStatus.NOT_FOUND) {
                 //The form exists - so lets edit it
                 Log.d("edit core odk", coreCollectedData.formEntity.code+"");
@@ -1247,6 +1315,86 @@ public class HouseholdVisitFragment extends Fragment {
 
             }
         });
+
+        formUtil.collect();
+    }
+
+    private void onChangeRegionHeadClicked(RegionHeadRelationship headRelationship) {
+        Log.d("on-change-region-head", ""+headRelationship);
+
+        if (headRelationship == null) {
+            //Check If another region change head was created on
+
+            RegionHeadRelationship regionHeadRelationship = boxRegionHeadRelationships.query(
+                            RegionHeadRelationship_.regionCode.equal(this.region.code).and(RegionHeadRelationship_.recentlyCreated.equal(true))).orderDesc(RegionHeadRelationship_.startDate)
+                    .build().findFirst();
+
+            if (regionHeadRelationship != null) {
+                CoreCollectedData cdata = boxCoreCollectedData.query(CoreCollectedData_.collectedId.equal(regionHeadRelationship.collectedId)).build().findFirst();
+
+                if (cdata != null) {
+                    String title = getString(R.string.core_entity_changehor_lbl);
+
+                    if (cdata.visitId == 0) {
+                        //collected using region details
+                        String msg = getString(R.string.changeregionhead_already_collected_stop_msg_lbl, regionHierarchyName, region.code);
+                        DialogFactory.createMessageInfo(getContext(), title, msg).show();
+
+                    } else if (cdata.visitId == this.visit.id){
+                        //collected using visit - just reopen
+                        String msg = getString(R.string.changeregionhead_already_collected_reopen_msg_lbl, regionHierarchyName, region.code);
+
+                        DialogFactory.createMessageInfo(getContext(), title, msg, clickedButton -> executeChangeRegionHead(regionHeadRelationship)).show();
+                    } else {
+                        //its another visit
+                        String msg = getString(R.string.changeregionhead_already_collected_reopen_new_visit_msg_lbl, regionHierarchyName, region.code);
+
+                        DialogFactory.createMessageYN(getContext(), title, msg, new DialogFactory.OnYesNoClickListener() {
+                            @Override
+                            public void onYesClicked() {
+                                executeChangeRegionHead(regionHeadRelationship);
+                            }
+
+                            @Override
+                            public void onNoClicked() {
+
+                            }
+                        }).show();
+                    }
+
+                    return;
+                }
+            }
+        }
+
+        executeChangeRegionHead(headRelationship);
+    }
+
+    private void executeChangeRegionHead(RegionHeadRelationship headRelationship) {
+        FormUtil.Mode mode = headRelationship == null ? FormUtil.Mode.CREATE : FormUtil.Mode.EDIT;
+
+        ChangeRegionHeadFormUtil formUtil = ChangeRegionHeadFormUtil.newInstance(mode, this, this.getContext(), this.region, this.visit, this.household, headRelationship, this.odkFormUtilities, new FormUtilListener<RegionHeadRelationship>() {
+            @Override
+            public void onNewEntityCreated(RegionHeadRelationship headRelationship, Map<String, Object> data) {
+                loadDataToListViews();
+                updateHouseholdDetails();
+            }
+
+            @Override
+            public void onEntityEdited(RegionHeadRelationship headRelationship, Map<String, Object> data) {
+                loadDataToListViews();
+                updateHouseholdDetails();
+            }
+
+            @Override
+            public void onFormCancelled() {
+
+            }
+        });
+
+        if (mode == FormUtil.Mode.CREATE) {
+            formUtil.setNewHeadOfRegion(this.selectedMember);
+        }
 
         formUtil.collect();
     }

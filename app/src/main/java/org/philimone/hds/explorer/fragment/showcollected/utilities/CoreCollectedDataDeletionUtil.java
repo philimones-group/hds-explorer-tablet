@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.util.Log;
 
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
+import org.philimone.hds.explorer.database.Queries;
 import org.philimone.hds.explorer.fragment.showcollected.adapter.model.CoreCollectedDataItem;
 import org.philimone.hds.explorer.fragment.showcollected.adapter.model.OdkCollectedDataItem;
 import org.philimone.hds.explorer.model.CollectedData;
@@ -34,6 +35,7 @@ import org.philimone.hds.explorer.model.PregnancyOutcome_;
 import org.philimone.hds.explorer.model.PregnancyRegistration;
 import org.philimone.hds.explorer.model.PregnancyRegistration_;
 import org.philimone.hds.explorer.model.Region;
+import org.philimone.hds.explorer.model.RegionHeadRelationship;
 import org.philimone.hds.explorer.model.Region_;
 import org.philimone.hds.explorer.model.Residency;
 import org.philimone.hds.explorer.model.Residency_;
@@ -43,6 +45,7 @@ import org.philimone.hds.explorer.model.enums.MaritalEndStatus;
 import org.philimone.hds.explorer.model.enums.temporal.ExternalInMigrationType;
 import org.philimone.hds.explorer.model.enums.temporal.HeadRelationshipEndType;
 import org.philimone.hds.explorer.model.enums.temporal.HeadRelationshipStartType;
+import org.philimone.hds.explorer.model.enums.temporal.RegionHeadEndType;
 import org.philimone.hds.explorer.model.enums.temporal.ResidencyEndType;
 import org.philimone.hds.explorer.model.enums.temporal.ResidencyStartType;
 
@@ -75,6 +78,7 @@ public class CoreCollectedDataDeletionUtil {
     private Box<HeadRelationship> boxHeadRelationships;
     private Box<Residency> boxResidencies;
     private Box<IncompleteVisit> boxIncompleteVisits;
+    private Box<RegionHeadRelationship> boxRegionHeadRelationships;
 
     public CoreCollectedDataDeletionUtil(Context context) {
         this.mContext = context;
@@ -101,6 +105,7 @@ public class CoreCollectedDataDeletionUtil {
         this.boxResidencies = ObjectBoxDatabase.get().boxFor(Residency.class);
         this.boxMembers = ObjectBoxDatabase.get().boxFor(Member.class);
         this.boxIncompleteVisits = ObjectBoxDatabase.get().boxFor(IncompleteVisit.class);
+        this.boxRegionHeadRelationships = ObjectBoxDatabase.get().boxFor(RegionHeadRelationship.class);
     }
 
     public void deleteRecords(List<CoreCollectedDataItem> selectedList) {
@@ -149,6 +154,7 @@ public class CoreCollectedDataDeletionUtil {
                 case MEMBER_ENU: deleteMemberEnumeration(cdata); break;
                 case CHANGE_HOUSEHOLD_HEAD: deleteChangeHouseholdHead(cdata); break;
                 case INCOMPLETE_VISIT: deleteIncompleteVisit(cdata); break;
+                case CHANGE_REGION_HEAD: deleteChangeRegionHead(cdata);
                 case PRE_HOUSEHOLD: deletePreHousehold(cdata); break;
                 case EDITED_REGION: deleteCoreCollectedData(cdata); break;
                 case EDITED_HOUSEHOLD: deleteCoreCollectedData(cdata); break;
@@ -159,7 +165,7 @@ public class CoreCollectedDataDeletionUtil {
     }
 
     private void deleteRegion(CoreCollectedData cdata) {
-        Region region = boxRegions.query(Region_.collectedId.equal(cdata.collectedId)).build().findFirst();
+        Region region = boxRegions.get(cdata.formEntityId); //query(Region_.collectedId.equal(cdata.collectedId)).build().findFirst();
 
         if (region != null) {
             removeRegion(region);
@@ -169,7 +175,7 @@ public class CoreCollectedDataDeletionUtil {
     }
 
     private void deleteVisit(CoreCollectedData cdata) {
-        Visit visit = boxVisits.query(Visit_.collectedId.equal(cdata.collectedId)).build().findFirst();
+        Visit visit = boxVisits.get(cdata.formEntityId); //.query(Visit_.collectedId.equal(cdata.collectedId)).build().findFirst();
 
         //delete this first to avoid loops when call removeVisit - that will remove all CoreCollectedData of this visit
         deleteCoreCollectedData(cdata);
@@ -181,7 +187,7 @@ public class CoreCollectedDataDeletionUtil {
 
     private void deleteHousehold(CoreCollectedData cdata) {
 
-        Household household = boxHouseholds.query(Household_.collectedId.equal(cdata.collectedId)).build().findFirst();
+        Household household = boxHouseholds.get(cdata.formEntityId); //.query(Household_.collectedId.equal(cdata.collectedId)).build().findFirst();
 
         deleteCoreCollectedData(cdata);
 
@@ -191,18 +197,46 @@ public class CoreCollectedDataDeletionUtil {
     }
 
     private void deletePreHousehold(CoreCollectedData cdata) {
-        boxHouseholds.query(Household_.collectedId.equal(cdata.collectedId)).build().remove();
+        boxHouseholds.remove(cdata.formEntityId); //.query(Household_.collectedId.equal(cdata.collectedId)).build().remove();
         deleteCoreCollectedData(cdata);
     }
 
     private void deleteIncompleteVisit(CoreCollectedData cdata) {
-        boxIncompleteVisits.query(IncompleteVisit_.collectedId.equal(cdata.collectedId)).build().remove();
+        boxIncompleteVisits.remove(cdata.formEntityId); //.query(IncompleteVisit_.collectedId.equal(cdata.collectedId)).build().remove();
+        deleteCoreCollectedData(cdata);
+    }
+
+    private void deleteChangeRegionHead(CoreCollectedData cdata) {
+        RegionHeadRelationship regionHeadRelationship = boxRegionHeadRelationships.get(cdata.formEntityId);
+
+        if (regionHeadRelationship != null) {
+            Region region = boxRegions.query(Region_.code.equal(regionHeadRelationship.regionCode)).build().findFirst();
+
+
+            RegionHeadRelationship oldHeadRelationship = regionHeadRelationship.oldHeadRelationshipId > 0 ? boxRegionHeadRelationships.get(regionHeadRelationship.oldHeadRelationshipId) : null;
+            Member oldHead = regionHeadRelationship.oldHeadId > 0 ? boxMembers.get(regionHeadRelationship.oldHeadId) : null;
+
+            if (region != null) {
+                region.headCode = oldHead==null ? null : oldHead.code;
+                region.headName = oldHead==null ? null : oldHead.name;
+                boxRegions.put(region);
+            }
+
+            if (oldHeadRelationship != null) {
+                oldHeadRelationship.endType = RegionHeadEndType.NOT_APPLICABLE;
+                oldHeadRelationship.endDate = null;
+                boxRegionHeadRelationships.put(oldHeadRelationship);
+            }
+
+            boxRegionHeadRelationships.remove(regionHeadRelationship);
+        }
+
         deleteCoreCollectedData(cdata);
     }
 
     private void deleteChangeHouseholdHead(CoreCollectedData cdata) {
 
-        HeadRelationship currentHeadRel = boxHeadRelationships.query(HeadRelationship_.collectedId.equal(cdata.collectedId)).build().findFirst();
+        HeadRelationship currentHeadRel = boxHeadRelationships.get(cdata.formEntityId); //.query(HeadRelationship_.collectedId.equal(cdata.collectedId)).build().findFirst();
 
         if (currentHeadRel != null) {
             Household household = boxHouseholds.query(Household_.code.equal(currentHeadRel.householdCode)).build().findFirst();

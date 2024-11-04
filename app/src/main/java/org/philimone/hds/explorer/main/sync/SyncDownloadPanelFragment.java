@@ -60,6 +60,7 @@ import static org.philimone.hds.explorer.model.enums.SyncEntity.MODULES;
 import static org.philimone.hds.explorer.model.enums.SyncEntity.PARAMETERS;
 import static org.philimone.hds.explorer.model.enums.SyncEntity.PREGNANCY_REGISTRATIONS;
 import static org.philimone.hds.explorer.model.enums.SyncEntity.REGIONS;
+import static org.philimone.hds.explorer.model.enums.SyncEntity.REGION_HEAD_RELATIONSHIPS;
 import static org.philimone.hds.explorer.model.enums.SyncEntity.RESIDENCIES;
 import static org.philimone.hds.explorer.model.enums.SyncEntity.ROUNDS;
 import static org.philimone.hds.explorer.model.enums.SyncEntity.SETTINGS;
@@ -349,7 +350,7 @@ public class SyncDownloadPanelFragment extends Fragment implements SyncPanelItem
 
     private void syncHouseholdDatasets() {
         householdsDatasetsSyncFragment.cleanProgress();
-        SyncEntitiesTask syncEntitiesTask = new SyncEntitiesTask(this.getContext(), this.householdsDatasetsSyncFragment, serverUrl, username, password, ROUNDS, REGIONS, HOUSEHOLDS, MEMBERS, RESIDENCIES);
+        SyncEntitiesTask syncEntitiesTask = new SyncEntitiesTask(this.getContext(), this.householdsDatasetsSyncFragment, serverUrl, username, password, ROUNDS, REGIONS, HOUSEHOLDS, MEMBERS, RESIDENCIES, REGION_HEAD_RELATIONSHIPS);
         syncEntitiesTask.execute();
     }
 

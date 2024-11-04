@@ -735,6 +735,7 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
         if (this.entity instanceof PregnancyRegistration) return SubjectEntity.MEMBER;
         if (this.entity instanceof Region) return SubjectEntity.REGION;
         if (this.entity instanceof Visit) return SubjectEntity.HOUSEHOLD;
+        if (this.entity instanceof RegionHeadRelationship) return SubjectEntity.REGION;
 
         return SubjectEntity.INVALID_ENUM;
     }
@@ -780,6 +781,9 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
         } else if (this.entity instanceof Visit) {
             code = ((Visit) this.entity).householdCode;
             subject = SubjectEntity.HOUSEHOLD;
+        } else if (this.entity instanceof RegionHeadRelationship){
+            code = ((RegionHeadRelationship) this.entity).regionCode;
+            subject = SubjectEntity.REGION;
         }
 
           switch (subject) {
@@ -812,6 +816,7 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
         if (this.collectedData.formEntity == CoreFormEntity.PREGNANCY_REGISTRATION) return this.context.getString(R.string.core_entity_pregnancy_reg_lbl);
         if (this.collectedData.formEntity == CoreFormEntity.PREGNANCY_OUTCOME) return this.context.getString(R.string.core_entity_pregnancy_out_lbl);
         if (this.collectedData.formEntity == CoreFormEntity.VISIT) return this.context.getString(R.string.core_entity_visit_lbl);
+        if (this.collectedData.formEntity == CoreFormEntity.CHANGE_REGION_HEAD) return this.context.getString(R.string.core_entity_changehor_lbl);
 
         return null;
     }
@@ -905,6 +910,12 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
         return form;
     }
 
+    protected static HForm getChangeRegionHeadForm(Context context) {
+        InputStream inputStream = context.getResources().openRawResource(R.raw.change_region_head_form);
+        HForm form = retrieveForm(inputStream);
+        return form;
+    }
+
     protected static HForm retrieveForm(InputStream inputStream) {
         HForm form = new ExcelFormParser(inputStream).getForm();
 
@@ -960,6 +971,7 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
             case CHANGE_HOUSEHOLD_HEAD: return getChangeHeadForm(context);
             case INCOMPLETE_VISIT: return getIncompleteVisitForm(context);
             case VISIT: return getVisitForm(context);
+            case CHANGE_REGION_HEAD: return getChangeRegionHeadForm(context);
             case EXTRA_FORM: break;
             case EDITED_REGION: break;
             case EDITED_HOUSEHOLD: break;

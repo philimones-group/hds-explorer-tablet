@@ -85,7 +85,6 @@
 
             </LinearLayout>
 
-
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -114,6 +113,47 @@
 
             </LinearLayout>
 
+            <LinearLayout
+                android:id="@+id/rdDetailsHeadLayout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="@dimen/region_details_txtview_width"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="0dp"
+                    android:text="@string/household_details_head_name_lbl"
+                    android:textColor="#c4daca"
+                    android:textSize="@dimen/member_details_info_gender_layout_txtsize"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/rdDetailsHeadName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="0dp"
+                    android:text="BOB ESPONJA"
+                    android:textColor="#83d34a"
+                    android:textSize="@dimen/member_details_info_gender_layout_txtsize"
+                    android:textStyle="bold"
+                    />
+
+                <TextView
+                    android:id="@+id/rdDetailsHeadCode"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="0dp"
+                    android:layout_marginLeft="4dp"
+                    android:singleLine="true"
+                    android:maxLines="1"
+                    android:text="ACA0100123"
+                    android:textColor="#c4daca"
+                    android:textSize="@dimen/member_details_info_gender_layout_txtsize"
+                    android:textStyle="bold"
+                    />
+
+            </LinearLayout>
 
         </LinearLayout>
 
@@ -198,7 +238,7 @@
 
     <!-- Buttons -->
     <LinearLayout
-        android:id="@+id/hhLayoutButtons"
+        android:id="@+id/rdLayoutButtons"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="0"
@@ -217,6 +257,17 @@
             android:textSize="@dimen/member_details_buttons_textsize"
             android:textStyle="bold"
             android:text="@string/member_details_bt_openform_lbl"
+            android:background="@drawable/nui_btnd_rone_dgbevel"/>
+
+        <Button
+            android:id="@+id/btRegionDetailsChangeHead"
+            android:layout_width="350dp"
+            android:layout_height="@dimen/member_details_edit_bt_height"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="5dp"
+            android:textSize="@dimen/member_details_buttons_textsize"
+            android:textStyle="bold"
+            android:text="@string/region_details_bt_changehead_lbl"
             android:background="@drawable/nui_btnd_rone_dgbevel"/>
 
         <Button

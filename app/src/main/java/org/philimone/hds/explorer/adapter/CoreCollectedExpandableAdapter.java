@@ -217,6 +217,8 @@ public class CoreCollectedExpandableAdapter extends BaseExpandableListAdapter im
                 return R.mipmap.nui_changehoh_icon_dark;
             case INCOMPLETE_VISIT:
                 return R.mipmap.nui_member_incomplete_icon_dark;
+            case CHANGE_REGION_HEAD:
+                return R.mipmap.nui_changehor_icon_dark;
             case EXTRA_FORM:
                 return R.mipmap.nui_form2_white_icon_dark;
 

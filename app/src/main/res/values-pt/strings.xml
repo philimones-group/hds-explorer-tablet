@@ -88,6 +88,7 @@
     <string name="sync_pregnancy_outcomes_lbl">Resultados de Gravidezes</string>
     <string name="sync_deaths_lbl">Mortes</string>
     <string name="sync_incomplete_visits_lbl">Visitas Incompletas</string>
+    <string name="sync_regionheads_lbl">Chefes de Região</string>
     <string name="sync_saved_lbl">Guardado</string>
     <string name="sync_records_lbl">registos</string>
     <string name="sync_successfully_lbl">Os dados foram sincronizados com sucesso.</string>
@@ -153,6 +154,7 @@
     <string name="core_entity_changehoh_lbl">Mudança de Chefe Agregado</string>
     <string name="core_entity_member_not_visited_lbl">Membro não visitado</string>
     <string name="core_entity_visit_lbl">Registo de Visita</string>
+    <string name="core_entity_changehor_lbl">Alterar o Chefe de Região</string>
     <string name="core_entity_extra_form_lbl">Outros Formulários (ODK)</string>
     <string name="core_entity_edit_region_lbl">Alterar Região</string>
     <string name="core_entity_edit_household_lbl">Alterar Agregado</string>
@@ -388,6 +390,7 @@
     <string name="region_details_tab_edit_lbl">Alterar Detalhes</string>
     <string name="region_details_code_lbl">Código:</string>
     <string name="region_details_parent_lbl">Região:</string>
+    <string name="region_details_bt_changehead_lbl">Mudança de Chefe de %1$s</string>
 
     <!-- Household Filter -->
     <string name="household_filter_code_lbl">Código da casa</string>
@@ -823,6 +826,9 @@
     <string name="eventType_new_hoh">Novo Chefe do Agregado</string>
     <string name="eventType_death_of_hoh">Morte do Chefe do Agregado</string>
     <string name="eventType_change_of_hoh">Mudança do Chefe do Agregado</string>
+    <string name="eventType_new_hor">Novo Chefe da Região</string>
+    <string name="eventType_death_of_hor">Morte do Chefe da Região</string>
+    <string name="eventType_change_of_hor">Alteração do Chefe da Região</string>
 
     <string name="headRelationshipType_head_of_household">Chefe do Agregado</string>
     <string name="headRelationshipType_spouse">Esposo/a</string>

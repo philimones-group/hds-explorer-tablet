@@ -21,6 +21,7 @@ import androidx.fragment.app.Fragment;
 import org.philimone.hds.explorer.R;
 import org.philimone.hds.explorer.database.Bootstrap;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
+import org.philimone.hds.explorer.database.Queries;
 import org.philimone.hds.explorer.fragment.showcollected.adapter.ShowCoreCollectedDataAdapter;
 import org.philimone.hds.explorer.fragment.showcollected.adapter.model.CoreCollectedDataItem;
 import org.philimone.hds.explorer.fragment.showcollected.utilities.CoreCollectedDataDeletionUtil;
@@ -28,6 +29,7 @@ import org.philimone.hds.explorer.main.HouseholdDetailsActivity;
 import org.philimone.hds.explorer.main.MemberDetailsActivity;
 import org.philimone.hds.explorer.main.RegionDetailsActivity;
 import org.philimone.hds.explorer.main.ShowCollectedDataActivity;
+import org.philimone.hds.explorer.model.ApplicationParam;
 import org.philimone.hds.explorer.model.CollectedData;
 import org.philimone.hds.explorer.model.CoreCollectedData;
 import org.philimone.hds.explorer.model.CoreCollectedData_;
@@ -47,10 +49,12 @@ import org.philimone.hds.explorer.model.Outmigration;
 import org.philimone.hds.explorer.model.PregnancyOutcome;
 import org.philimone.hds.explorer.model.PregnancyRegistration;
 import org.philimone.hds.explorer.model.Region;
+import org.philimone.hds.explorer.model.RegionHeadRelationship;
 import org.philimone.hds.explorer.model.Region_;
 import org.philimone.hds.explorer.model.User;
 import org.philimone.hds.explorer.model.Visit;
 import org.philimone.hds.explorer.model.Visit_;
+import org.philimone.hds.explorer.model.enums.CoreFormEntity;
 import org.philimone.hds.explorer.widget.DialogFactory;
 import org.philimone.hds.explorer.widget.LoadingDialog;
 import org.philimone.hds.explorer.widget.RecyclerListView;
@@ -69,6 +73,7 @@ import mz.betainteractive.odk.model.FilledForm;
 public class ShowCoreCollectedDataFragment extends Fragment {
 
     private ActionListener actionListener;
+    private boolean isRegionHeadSupported;
 
     private enum SubjectMode { REGION, HOUSEHOLD, MEMBER };
 
@@ -81,6 +86,7 @@ public class ShowCoreCollectedDataFragment extends Fragment {
     private User loggedUser;
 
     private Box<CoreCollectedData> boxCoreCollectedData;
+    private Box<ApplicationParam> boxAppParams;
     private Box<Region> boxRegions;
     private Box<Household> boxHouseholds;
     private Box<Visit> boxVisits;
@@ -93,6 +99,7 @@ public class ShowCoreCollectedDataFragment extends Fragment {
     private Box<Death> boxDeaths;
     private Box<HeadRelationship> boxHeadRelationships;
     private Box<IncompleteVisit> boxIncompleteVisits;
+    private Box<RegionHeadRelationship> boxRegionHeadRelationships;
 
     private List<String> selectedModules = new ArrayList<>();
 
@@ -162,6 +169,7 @@ public class ShowCoreCollectedDataFragment extends Fragment {
 
     private void initBoxes() {
         this.boxCoreCollectedData = ObjectBoxDatabase.get().boxFor(CoreCollectedData.class);
+        this.boxAppParams = ObjectBoxDatabase.get().boxFor(ApplicationParam.class);
         this.boxRegions = ObjectBoxDatabase.get().boxFor(Region.class);
         this.boxHouseholds = ObjectBoxDatabase.get().boxFor(Household.class);
         this.boxVisits = ObjectBoxDatabase.get().boxFor(Visit.class);
@@ -176,6 +184,7 @@ public class ShowCoreCollectedDataFragment extends Fragment {
         this.boxHeadRelationships = ObjectBoxDatabase.get().boxFor(HeadRelationship.class);
         this.boxMembers = ObjectBoxDatabase.get().boxFor(Member.class);
         this.boxIncompleteVisits = ObjectBoxDatabase.get().boxFor(IncompleteVisit.class);
+        this.boxRegionHeadRelationships = ObjectBoxDatabase.get().boxFor(RegionHeadRelationship.class);
     }
 
     private void initialize(View view) {
@@ -218,6 +227,7 @@ public class ShowCoreCollectedDataFragment extends Fragment {
         });
 
         //this.showCollectedData();
+        this.isRegionHeadSupported = Queries.isRegionHeadSupported(boxAppParams);
     }
 
     private void filterCollectedData(String text){
@@ -256,18 +266,17 @@ public class ShowCoreCollectedDataFragment extends Fragment {
             ShowHouseholdTask task = new ShowHouseholdTask(dataItem.household);
             task.execute();
             showLoadingDialog(getString(R.string.loading_dialog_household_details_lbl), true);
-        }
 
-        if (dataItem.member != null) {
+        } else if (dataItem.member != null) {
             ShowMemberTask task = new ShowMemberTask(dataItem.member);
             task.execute();
             showLoadingDialog(getString(R.string.loading_dialog_member_details_lbl), true);
-        }
 
-        if (dataItem.region != null) {
+        } else if (dataItem.region != null) {
             ShowRegionTask task = new ShowRegionTask(dataItem.region);
             task.execute();
             showLoadingDialog(getString(R.string.loading_dialog_region_details_lbl), true);
+
         }
     }
 
@@ -308,6 +317,12 @@ public class ShowCoreCollectedDataFragment extends Fragment {
         List<CoreCollectedData> listc = this.boxCoreCollectedData.query().orderDesc(CoreCollectedData_.createdDate).order(CoreCollectedData_.formEntityCode).build().find();
 
         for (CoreCollectedData cdata : listc) {
+
+            //Ignore Change Region Head if not supported
+            if (!isRegionHeadSupported && cdata.formEntity == CoreFormEntity.CHANGE_REGION_HEAD) {
+                continue;
+            }
+
             //with retaining not uploaded data in the system after an upload - this would generate a bug
             //so we will not put CoreCollectedData here without associated data
             FormSubject subject = getFormSubject(cdata);
@@ -353,6 +368,22 @@ public class ShowCoreCollectedDataFragment extends Fragment {
                 if (visit != null) {
                     return boxHouseholds.query(Household_.code.equal(visit.householdCode)).build().findFirst();
                 }
+            }
+            case CHANGE_REGION_HEAD: {
+                RegionHeadRelationship entity = boxRegionHeadRelationships.get(coreCollectedData.formEntityId);
+                if (entity != null) {
+                    if (coreCollectedData.visitId > 0) {
+                        Visit visit = boxVisits.get(coreCollectedData.visitId);
+                        if (visit != null) {
+                            return boxHouseholds.query(Household_.code.equal(visit.householdCode)).build().findFirst();
+                        } else {
+                            return boxRegions.query(Region_.code.equal(entity.regionCode)).build().findFirst();
+                        }
+                    } else {
+                        return boxRegions.query(Region_.code.equal(entity.regionCode)).build().findFirst();
+                    }
+                }
+                //put visits here - to get household
             }
             case EXTRA_FORM: break;
             case INVALID_ENUM: break;

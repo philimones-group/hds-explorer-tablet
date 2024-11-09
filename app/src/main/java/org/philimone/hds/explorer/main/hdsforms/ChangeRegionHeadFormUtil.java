@@ -432,6 +432,8 @@ public class ChangeRegionHeadFormUtil extends FormUtil<RegionHeadRelationship> {
         String reasonOther = colReasonOther.getValue();
 
         String affectedMembers = null;
+        
+        Date closeEventDate = GeneralUtil.getDateAdd(eventDate, -1);
 
         //new head head relationship
         RegionHeadRelationship newHeadRelationship = new RegionHeadRelationship();
@@ -440,7 +442,7 @@ public class ChangeRegionHeadFormUtil extends FormUtil<RegionHeadRelationship> {
         newHeadRelationship.oldHeadId = oldHeadMember != null ? oldHeadMember.id : 0;
         newHeadRelationship.oldHeadRelationshipId = oldRegionHeadRelationship != null ? oldRegionHeadRelationship.id : 0;
         newHeadRelationship.startType = RegionHeadStartType.NEW_HEAD_OF_REGION;
-        newHeadRelationship.startDate = oldRegionHeadRelationship==null ? eventDate : GeneralUtil.getDateAdd(eventDate, 1);
+        newHeadRelationship.startDate = eventDate;
         newHeadRelationship.endType = RegionHeadEndType.NOT_APPLICABLE;
         newHeadRelationship.endDate = null;
         newHeadRelationship.collectedId = collectedValues.get(HForm.COLUMN_ID).getValue();
@@ -455,7 +457,7 @@ public class ChangeRegionHeadFormUtil extends FormUtil<RegionHeadRelationship> {
         //close memberHeadRelationship
         if (this.oldRegionHeadRelationship != null){
             this.oldRegionHeadRelationship.endType = RegionHeadEndType.CHANGE_OF_HEAD_OF_REGION;
-            this.oldRegionHeadRelationship.endDate = eventDate;
+            this.oldRegionHeadRelationship.endDate = closeEventDate;
             this.boxRegionHeadRelationships.put(this.oldRegionHeadRelationship);
         }
 
@@ -516,12 +518,14 @@ public class ChangeRegionHeadFormUtil extends FormUtil<RegionHeadRelationship> {
 
         String affectedMembers = null;
 
+        Date closeEventDate = GeneralUtil.getDateAdd(eventDate, -1);
+
         //new head head relationship
         RegionHeadRelationship newHeadRelationship = boxRegionHeadRelationships.get(this.entity.id);
         newHeadRelationship.regionCode = region.code;
         newHeadRelationship.headCode = newHeadMember.code;
         newHeadRelationship.startType = RegionHeadStartType.NEW_HEAD_OF_REGION;
-        newHeadRelationship.startDate = oldRegionHeadRelationship==null ? eventDate : GeneralUtil.getDateAdd(eventDate, 1);
+        newHeadRelationship.startDate = eventDate;
         newHeadRelationship.endType = RegionHeadEndType.NOT_APPLICABLE;
         newHeadRelationship.endDate = null;
         //newHeadRelationship.recentlyCreated = true;
@@ -536,7 +540,7 @@ public class ChangeRegionHeadFormUtil extends FormUtil<RegionHeadRelationship> {
         if (this.oldRegionHeadRelationship != null){
             this.oldRegionHeadRelationship = boxRegionHeadRelationships.get(oldRegionHeadRelationship.id);
             this.oldRegionHeadRelationship.endType = RegionHeadEndType.CHANGE_OF_HEAD_OF_REGION;
-            this.oldRegionHeadRelationship.endDate = eventDate;
+            this.oldRegionHeadRelationship.endDate = closeEventDate;
             this.boxRegionHeadRelationships.put(this.oldRegionHeadRelationship);
         }
 

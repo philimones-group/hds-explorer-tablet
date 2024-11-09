@@ -137,6 +137,9 @@
     <string name="server_sync_offline_mode_continue_msg_lbl">Une erreur s\'est produite lors de la tentative de synchronisation des données du serveur. Veuillez réessayer ou continuer en mode hors ligne.\n\nVoulez-vous ouvrir le panneau de synchronisation en mode hors ligne?</string>
     <string name="server_sync_warning_upload_required_lbl">Avertissement : Envoi des Données Requis</string>
     <string name="server_sync_warning_upload_required_msg_lbl">Avant de synchroniser les données depuis le serveur vers votre appareil mobile, \nVeuillez vous assurer que toutes les données collectées localement ont été correctement envoyées au serveur. \nNe pas le faire pourrait entraîner la perte de données non synchronisées.</string>
+    <string name="server_sync_requirements_title_lbl">Exigences du Serveur</string>
+    <string name="server_sync_requirements_not_valid_error_lbl">La version du serveur est invalide.\n\nVeuillez mettre à jour votre serveur vers la version [%1$s] ou ultérieure.</string>
+    <string name="server_sync_requirements_min_version_error_lbl">Le serveur utilise la version [%1$s], qui est antérieure à la version minimale requise.\n\nVeuillez mettre à jour votre serveur vers la version [%2$s] ou ultérieure.</string>
 
     <string name="core_entity_region_lbl">Enregistrement d\'un nouveau région</string>
     <string name="core_entity_household_lbl">Enregistrement d\'un nouveau ménage</string>

@@ -494,6 +494,8 @@ public class ChangeHeadFormUtil extends FormUtil<HeadRelationship> {
 
         String affectedMembers = null;
 
+        Date closeEventDate = GeneralUtil.getDateAdd(eventDate, -1);
+        
         //new head head relationship
         HeadRelationship newHeadRelationship = new HeadRelationship();
         newHeadRelationship.householdCode = household.code;
@@ -501,7 +503,7 @@ public class ChangeHeadFormUtil extends FormUtil<HeadRelationship> {
         newHeadRelationship.headCode = newHeadMember.code;
         newHeadRelationship.relationshipType = HeadRelationshipType.HEAD_OF_HOUSEHOLD;
         newHeadRelationship.startType = HeadRelationshipStartType.NEW_HEAD_OF_HOUSEHOLD;
-        newHeadRelationship.startDate = GeneralUtil.getDateAdd(eventDate, 1);
+        newHeadRelationship.startDate = eventDate;
         newHeadRelationship.endType = HeadRelationshipEndType.NOT_APPLICABLE;
         newHeadRelationship.endDate = null;
         newHeadRelationship.collectedId = collectedValues.get(HForm.COLUMN_ID).getValue();
@@ -516,7 +518,7 @@ public class ChangeHeadFormUtil extends FormUtil<HeadRelationship> {
         //close memberHeadRelationship
         if (this.oldHeadMemberRelationship != null){
             this.oldHeadMemberRelationship.endType = HeadRelationshipEndType.CHANGE_OF_HEAD_OF_HOUSEHOLD;
-            this.oldHeadMemberRelationship.endDate = eventDate;
+            this.oldHeadMemberRelationship.endDate = closeEventDate;
             this.boxHeadRelationships.put(this.oldHeadMemberRelationship);
         }
         //close old head relationships
@@ -525,7 +527,7 @@ public class ChangeHeadFormUtil extends FormUtil<HeadRelationship> {
             for (HeadRelationship headRelationship : oldHeadMemberRelationships) {
                 headRelationship = boxHeadRelationships.get(headRelationship.id);
                 headRelationship.endType = HeadRelationshipEndType.CHANGE_OF_HEAD_OF_HOUSEHOLD;
-                headRelationship.endDate = eventDate;
+                headRelationship.endDate = closeEventDate;
                 this.boxHeadRelationships.put(headRelationship);
 
                 savedOldHeadRelationships += (savedOldHeadRelationships.isEmpty() ? "" : ",") + headRelationship.id;
@@ -551,7 +553,7 @@ public class ChangeHeadFormUtil extends FormUtil<HeadRelationship> {
             headRelationship.headCode = newHeadMember.code;
             headRelationship.relationshipType = HeadRelationshipType.getFrom(newRelationships.get(i));
             headRelationship.startType = HeadRelationshipStartType.NEW_HEAD_OF_HOUSEHOLD;
-            headRelationship.startDate = GeneralUtil.getDateAdd(eventDate, 1);
+            headRelationship.startDate = eventDate;
             headRelationship.endType = HeadRelationshipEndType.NOT_APPLICABLE;
             headRelationship.endDate = null;
             this.boxHeadRelationships.put(headRelationship);
@@ -643,6 +645,8 @@ public class ChangeHeadFormUtil extends FormUtil<HeadRelationship> {
 
         String affectedMembers = null;
 
+        Date closeEventDate = GeneralUtil.getDateAdd(eventDate, -1);
+        
         //new head head relationship
         HeadRelationship newHeadRelationship = boxHeadRelationships.get(this.entity.id);
         newHeadRelationship.householdCode = household.code;
@@ -650,7 +654,7 @@ public class ChangeHeadFormUtil extends FormUtil<HeadRelationship> {
         newHeadRelationship.headCode = newHeadMember.code;
         newHeadRelationship.relationshipType = HeadRelationshipType.HEAD_OF_HOUSEHOLD;
         newHeadRelationship.startType = HeadRelationshipStartType.NEW_HEAD_OF_HOUSEHOLD;
-        newHeadRelationship.startDate = GeneralUtil.getDateAdd(eventDate, 1);
+        newHeadRelationship.startDate = eventDate;
         newHeadRelationship.endType = HeadRelationshipEndType.NOT_APPLICABLE;
         newHeadRelationship.endDate = null;
         //newHeadRelationship.recentlyCreated = true;
@@ -665,7 +669,7 @@ public class ChangeHeadFormUtil extends FormUtil<HeadRelationship> {
         if (this.oldHeadMemberRelationship != null){
             this.oldHeadMemberRelationship = boxHeadRelationships.get(oldHeadMemberRelationship.id);
             this.oldHeadMemberRelationship.endType = HeadRelationshipEndType.CHANGE_OF_HEAD_OF_HOUSEHOLD;
-            this.oldHeadMemberRelationship.endDate = eventDate;
+            this.oldHeadMemberRelationship.endDate = closeEventDate;
             this.boxHeadRelationships.put(this.oldHeadMemberRelationship);
         }
         //close old head relationships again
@@ -674,7 +678,7 @@ public class ChangeHeadFormUtil extends FormUtil<HeadRelationship> {
             for (HeadRelationship headRelationship : oldHeadMemberRelationships) {
                 headRelationship = boxHeadRelationships.get(headRelationship.id);
                 headRelationship.endType = HeadRelationshipEndType.CHANGE_OF_HEAD_OF_HOUSEHOLD;
-                headRelationship.endDate = eventDate;
+                headRelationship.endDate = closeEventDate;
                 this.boxHeadRelationships.put(headRelationship);
 
                 savedOldHeadRelationships += (savedOldHeadRelationships.isEmpty() ? "" : ",") + headRelationship.id;
@@ -713,7 +717,7 @@ public class ChangeHeadFormUtil extends FormUtil<HeadRelationship> {
                 headRelationship.headCode = newHeadMember.code;
                 headRelationship.relationshipType = HeadRelationshipType.getFrom(newRelationships.get(i));
                 headRelationship.startType = HeadRelationshipStartType.NEW_HEAD_OF_HOUSEHOLD;
-                headRelationship.startDate = GeneralUtil.getDateAdd(eventDate, 1);
+                headRelationship.startDate = eventDate;
                 headRelationship.endType = HeadRelationshipEndType.NOT_APPLICABLE;
                 headRelationship.endDate = null;
                 this.boxHeadRelationships.put(headRelationship);
@@ -750,7 +754,7 @@ public class ChangeHeadFormUtil extends FormUtil<HeadRelationship> {
                 headRelationship.headCode = newHeadMember.code;
                 headRelationship.relationshipType = HeadRelationshipType.getFrom(newRelationships.get(rindex));
                 headRelationship.startType = HeadRelationshipStartType.NEW_HEAD_OF_HOUSEHOLD;
-                headRelationship.startDate = GeneralUtil.getDateAdd(eventDate, 1);
+                headRelationship.startDate = eventDate; //GeneralUtil.getDateAdd(eventDate, 1);
                 headRelationship.endType = HeadRelationshipEndType.NOT_APPLICABLE;
                 headRelationship.endDate = null;
 

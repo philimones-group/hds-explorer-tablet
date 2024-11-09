@@ -39,6 +39,8 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
 import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import io.objectbox.Box;
 import io.objectbox.query.QueryBuilder;
@@ -362,7 +364,7 @@ public class LoginActivity extends AppCompatActivity {
      * Represents an asynchronous login task used to authenticate
      * the user.
      */
-    public class SyncLoginTask extends AsyncTask<Void, Void, Boolean> {
+    public class SyncLoginTask extends AsyncTask<Void, Void, SyncLoginResult> {
 
         private final String mUsername;
         private final String mPassword;
@@ -375,18 +377,18 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         @Override
-        protected Boolean doInBackground(Void... params) {
+        protected SyncLoginResult doInBackground(Void... params) {
 
             try {
                 // Simulate network access.
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
-                return false;
+                return new SyncLoginResult(SyncResult.FAILURE, null, null);
             }
 
             //demo synchronization - demo will download data from github public repo or any specified source on Global gradle.properties
             if (mUsername.equals(BuildConfig.HDS_EXPLORER_DEMO_USERNAME) && mPassword.equals(BuildConfig.HDS_EXPLORER_DEMO_PASSWORD)) {
-                return true;
+                return new SyncLoginResult(SyncResult.DEMO, null, null);
             }
 
             //http request
@@ -416,12 +418,13 @@ public class LoginActivity extends AppCompatActivity {
                 if (connection.getResponseCode()==200){
 
                     Scanner scan = new Scanner(connection.getInputStream());
-                    String result = scan.next();
+                    String result = scan.nextLine();
                     scan.close();
 
                     Log.d("result", ""+result);
 
-                    return result != null && result.equals("OK");
+                    //deal with the result here
+                    return new SyncLoginResult(result); // result != null && result.equals("OK");
                 }
 
             } catch (Exception e) {
@@ -429,18 +432,20 @@ public class LoginActivity extends AppCompatActivity {
                 connectionFailure = true;
             }
 
-            return false;
+            return new SyncLoginResult(SyncResult.FAILURE, null, null);
         }
 
         @Override
-        protected void onPostExecute(final Boolean success) {
+        protected void onPostExecute(final SyncLoginResult syncLoginResult) {
             mAuthTask = null;
             showProgress(false);
 
-            if (success) {
-                adminUser = mUsername;
-                adminPassword = mPassword;
-                launchServerSync(true);
+            if (syncLoginResult.result == SyncResult.SUCCESS) {
+                //check the server version
+                executeServerVersionValidation(syncLoginResult);
+
+            } else if (syncLoginResult.result == SyncResult.DEMO) {
+                callLaunchServerSync(); //just go to downloading process
             } else {
 
                 if (connectionFailure && isLocalUser) {
@@ -464,8 +469,6 @@ public class LoginActivity extends AppCompatActivity {
                     txtUsername.setError(getString(R.string.error_incorrect_password));
                     txtUsername.requestFocus();
                 }
-
-
             }
         }
 
@@ -473,6 +476,35 @@ public class LoginActivity extends AppCompatActivity {
         protected void onCancelled() {
             mAuthTask = null;
             showProgress(false);
+        }
+
+        private void callLaunchServerSync() {
+            adminUser = mUsername;
+            adminPassword = mPassword;
+            launchServerSync(true);
+        }
+
+        private void executeServerVersionValidation(SyncLoginResult result) {
+            String minServerVersion = BuildConfig.MINIMUM_SUPPORTED_SERVER_VERSION;
+            String title = getString(R.string.server_sync_requirements_title_lbl);
+            String msg = "";
+
+            if (result.serverVersionCode == null || result.serverVersion == null) {
+                msg = getString(R.string.server_sync_requirements_not_valid_error_lbl, minServerVersion);
+            } else if (result.serverVersionCode > 0) {
+                //check the version against the minimum
+
+                if (BuildConfig.MINIMUM_SUPPORTED_SERVER_VERSION_CODE > result.serverVersionCode) {
+                    msg = getString(R.string.server_sync_requirements_min_version_error_lbl, result.serverVersion, minServerVersion);
+                } else {
+                    callLaunchServerSync();
+                    return;
+                }
+
+            }
+
+            DialogFactory.createMessageInfo(LoginActivity.this, title, msg).show();
+
         }
     }
 
@@ -528,5 +560,53 @@ public class LoginActivity extends AppCompatActivity {
 
 
     }
+
+    class SyncLoginResult {
+        SyncResult result = SyncResult.FAILURE;
+        String serverVersion = null;
+        Integer serverVersionCode = null;
+
+        public SyncLoginResult() {
+        }
+
+        public SyncLoginResult(SyncResult result, String serverVersion, Integer serverVersionCode) {
+            this.result = result;
+            this.serverVersion = serverVersion;
+            this.serverVersionCode = serverVersionCode;
+        }
+
+        public SyncLoginResult(String rawServerVersion) {
+            this.result = SyncResult.SUCCESS;
+            this.setServerVersion(rawServerVersion);
+        }
+
+        public void setServerVersion(String rawServerVersion) {
+            //1.0.10 build 307
+            Log.d("server login response", "version: "+rawServerVersion);
+
+            String regex = "^[0-9]+(\\.[0-9]+)*\\sbuild\\s([0-9]+)$";
+
+            Pattern pattern = Pattern.compile(regex);
+            Matcher matcher = pattern.matcher(rawServerVersion);
+
+            try {
+                if (matcher.matches()) {
+                    String buildNumber = matcher.group(2);
+                    Log.d("server_version", "build number: " + buildNumber + ", versionName: " + rawServerVersion);
+
+                    this.serverVersion = rawServerVersion;
+                    this.serverVersionCode = Integer.parseInt(buildNumber);
+                } else {
+                    Log.d("server_version", "Server version is not supported - dont have versioning on connection response");
+                }
+            } catch (Exception ex) {
+                Log.d("server_version", "cant get server version - "+ex.getMessage());
+
+                ex.printStackTrace();
+            }
+        }
+    }
+
+    enum SyncResult { SUCCESS, DEMO, FAILURE };
 }
 

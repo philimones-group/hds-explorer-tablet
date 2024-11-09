@@ -138,6 +138,9 @@
     <string name="server_sync_offline_mode_continue_msg_lbl">Ocorreu um erro ao tentar sincronizar os dados do servidor, tente novamente ou continue no modo offline\n\nDeseja abrir o painel de sincronização no modo offline?</string>
     <string name="server_sync_warning_upload_required_lbl">Aviso: Dados não enviados</string>
     <string name="server_sync_warning_upload_required_msg_lbl">Antes de sincronizar os dados do servidor para o seu dispositivo móvel, \nPor favor, assegure-se de que todos os dados coletados foram enviados com sucesso para o servidor. \nNão fazê-lo pode resultar na perda de dados não sincronizados.</string>
+    <string name="server_sync_requirements_title_lbl">Requisitos do Servidor</string>
+    <string name="server_sync_requirements_not_valid_error_lbl">A versão do servidor é inválida.\n\nPor favor, atualize o seu servidor para a versão [%1$s] ou posterior.</string>
+    <string name="server_sync_requirements_min_version_error_lbl">O servidor está executando a versão [%1$s], que é mais antiga que a versão mínima exigida.\n\nPor favor, atualize o seu servidor para a versão [%2$s] ou posterior.</string>
 
     <string name="core_entity_region_lbl">Registo de Nova Região</string>
     <string name="core_entity_household_lbl">Registo de Novo Agregado</string>

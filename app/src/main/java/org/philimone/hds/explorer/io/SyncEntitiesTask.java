@@ -322,7 +322,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 			case DEATHS:
 				builder.append(" " + mContext.getString(R.string.sync_deaths_lbl));
 				break;
-			case REGION_HEAD_RELATIONSHIPS:
+			case REGION_HEADS:
 				builder.append(" " + mContext.getString(R.string.sync_regionheads_lbl));
 				break;
 		}
@@ -361,7 +361,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 			for (SyncEntity entity : entities){
 
 				//If Region Head is not supported dont download regionheads
-				if (entity == SyncEntity.REGION_HEAD_RELATIONSHIPS && !Queries.isRegionHeadSupported(boxAppParams)) {
+				if (entity == SyncEntity.REGION_HEADS && !Queries.isRegionHeadSupported(boxAppParams)) {
 					continue;
 				}
 
@@ -471,7 +471,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 						this.boxDeaths.removeAll();
 						processUrl(appUrl + suffixFilePath, "deaths.zip");
 						break;
-					case REGION_HEAD_RELATIONSHIPS:
+					case REGION_HEADS:
 						this.boxRegionHeadRelationships.removeAll();
 						processUrl(appUrl + suffixFilePath, "regionheads.zip");
 						break;
@@ -855,7 +855,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 	}
 
 	private int getSyncRecordToDownload(SyncEntity entity){
-
+Log.d("entity", ""+entity.name());
 		if (isDemoDownload) {
 			Integer records = demoSyncReportMap.get(entity.name());
 			return records;
@@ -3961,7 +3961,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 	private void processRegionHeadRelationships(XmlPullParser parser) throws Exception {
 
 		//clear sync_report
-		updateSyncReport(SyncEntity.REGION_HEAD_RELATIONSHIPS, null, SyncStatus.STATUS_NOT_SYNCED);
+		updateSyncReport(SyncEntity.REGION_HEADS, null, SyncStatus.STATUS_NOT_SYNCED);
 
 		List<RegionHeadRelationship> values = new ArrayList<>();
 		int count = 0;
@@ -4057,7 +4057,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 		savedValues.put(entity, count);
 		publishProgress(count);
 
-		updateSyncReport(SyncEntity.REGION_HEAD_RELATIONSHIPS, new Date(), SyncStatus.STATUS_SYNCED);
+		updateSyncReport(SyncEntity.REGION_HEADS, new Date(), SyncStatus.STATUS_SYNCED);
 	}
 
 	private Map<String,String> convertFormMapTextToMap(String formMapText) {

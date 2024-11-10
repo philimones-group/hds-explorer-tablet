@@ -1,23 +1,12 @@
 package org.philimone.hds.explorer.main.sync;
 
-import android.Manifest;
-import android.app.Activity;
-import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
-import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import io.objectbox.Box;
 import mz.betainteractive.utilities.StringUtil;
 
-import android.os.Environment;
-import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,7 +16,6 @@ import android.widget.Button;
 import com.google.gson.Gson;
 
 import org.philimone.hds.explorer.R;
-import org.philimone.hds.explorer.database.Bootstrap;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
 import org.philimone.hds.explorer.database.Queries;
 import org.philimone.hds.explorer.io.SyncEntitiesTask;
@@ -40,7 +28,6 @@ import org.philimone.hds.explorer.model.enums.SyncStatus;
 import org.philimone.hds.explorer.widget.DialogFactory;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static android.content.Context.MODE_PRIVATE;
@@ -60,7 +47,7 @@ import static org.philimone.hds.explorer.model.enums.SyncEntity.MODULES;
 import static org.philimone.hds.explorer.model.enums.SyncEntity.PARAMETERS;
 import static org.philimone.hds.explorer.model.enums.SyncEntity.PREGNANCY_REGISTRATIONS;
 import static org.philimone.hds.explorer.model.enums.SyncEntity.REGIONS;
-import static org.philimone.hds.explorer.model.enums.SyncEntity.REGION_HEAD_RELATIONSHIPS;
+import static org.philimone.hds.explorer.model.enums.SyncEntity.REGION_HEADS;
 import static org.philimone.hds.explorer.model.enums.SyncEntity.RESIDENCIES;
 import static org.philimone.hds.explorer.model.enums.SyncEntity.ROUNDS;
 import static org.philimone.hds.explorer.model.enums.SyncEntity.SETTINGS;
@@ -350,7 +337,7 @@ public class SyncDownloadPanelFragment extends Fragment implements SyncPanelItem
 
     private void syncHouseholdDatasets() {
         householdsDatasetsSyncFragment.cleanProgress();
-        SyncEntitiesTask syncEntitiesTask = new SyncEntitiesTask(this.getContext(), this.householdsDatasetsSyncFragment, serverUrl, username, password, ROUNDS, REGIONS, HOUSEHOLDS, MEMBERS, RESIDENCIES, REGION_HEAD_RELATIONSHIPS);
+        SyncEntitiesTask syncEntitiesTask = new SyncEntitiesTask(this.getContext(), this.householdsDatasetsSyncFragment, serverUrl, username, password, ROUNDS, REGIONS, HOUSEHOLDS, MEMBERS, RESIDENCIES, REGION_HEADS);
         syncEntitiesTask.execute();
     }
 

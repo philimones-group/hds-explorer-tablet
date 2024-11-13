@@ -175,7 +175,7 @@ public class RegionChildsFragment extends Fragment {
         String lastRegionLevel = "";
 
         for (ApplicationParam param : params){
-            if (!param.getValue().isEmpty() && !param.getValue().endsWith(".head")) {
+            if (!param.getValue().isEmpty() && !param.getName().endsWith(".head")) {
                 if (getHierarchyNumber(param.getName()) > getHierarchyNumber(lastRegionLevel)) {
                     lastRegionLevel = param.getName();
                 }

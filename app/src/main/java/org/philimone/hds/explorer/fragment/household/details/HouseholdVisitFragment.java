@@ -574,6 +574,9 @@ public class HouseholdVisitFragment extends Fragment {
         this.btnVisitMemberEnu.setVisibility(View.VISIBLE);
         this.btnVisitMemberIncomplete.setVisibility(View.GONE);
 
+        this.btnVisitIntInmigration.setVisibility(View.VISIBLE);
+        this.btnVisitChangeRegionHead.setVisibility(View.GONE);
+
         //disable buttons if already collected and ready to edit
         //ChangeHead - must be collected one per visit
         CoreCollectedData ccdataChangeHead = this.boxCoreCollectedData.query(CoreCollectedData_.visitId.equal(visit.id).and(CoreCollectedData_.formEntity.equal(CoreFormEntity.CHANGE_HOUSEHOLD_HEAD.code))).build().findFirst();
@@ -609,6 +612,10 @@ public class HouseholdVisitFragment extends Fragment {
         this.btnVisitMemberIncomplete.setEnabled(false);
         this.btnVisitMemberEnu.setVisibility(View.VISIBLE);
         this.btnVisitMemberIncomplete.setVisibility(View.GONE);
+
+        this.btnVisitIntInmigration.setVisibility(View.VISIBLE);
+        this.btnVisitChangeRegionHead.setVisibility(View.GONE);
+
 
         //disable item selection
         setMainListsSelectable(false);

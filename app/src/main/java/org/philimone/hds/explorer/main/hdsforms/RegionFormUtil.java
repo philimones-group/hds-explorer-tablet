@@ -322,6 +322,8 @@ public class RegionFormUtil extends FormUtil<Region> {
 
         for (ApplicationParam param : params) {
 
+            if (param.getName().endsWith(".head")) continue;
+
             if (!param.getValue().isEmpty()) {
                 String value = param.getName();
                 String strNum = value.replace("hierarchy", "");

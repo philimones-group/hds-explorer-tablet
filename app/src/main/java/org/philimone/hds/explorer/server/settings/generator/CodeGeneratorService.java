@@ -4,6 +4,7 @@ import android.util.Log;
 
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
 import org.philimone.hds.explorer.model.ApplicationParam;
+import org.philimone.hds.explorer.model.ApplicationParam_;
 import org.philimone.hds.explorer.model.Household;
 import org.philimone.hds.explorer.model.Household_;
 import org.philimone.hds.explorer.model.Member;
@@ -20,6 +21,7 @@ import org.philimone.hds.explorer.model.User;
 import org.philimone.hds.explorer.model.User_;
 import org.philimone.hds.explorer.model.Visit;
 import org.philimone.hds.explorer.model.Visit_;
+import org.philimone.hds.explorer.model.enums.RegionLevel;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -43,10 +45,14 @@ public class CodeGeneratorService {
     private Box<PregnancyOutcome> boxPregnancyOutcomes;
     private Box<ApplicationParam> boxAppParams;
 
+    private RegionLevel lowestRegionLevel;
+
     public CodeGeneratorService() {
         initBoxes();
 
         this.codeGenerator =  CodeGeneratorFactory.newInstance();
+
+        this.lowestRegionLevel = getLowestRegionLevel();
     }
 
     private void initBoxes() {
@@ -61,12 +67,32 @@ public class CodeGeneratorService {
         this.boxAppParams = ObjectBoxDatabase.get().boxFor(ApplicationParam.class);
     }
 
-    public boolean isRegionCodeValid(String code) {
-        return codeGenerator.isRegionCodeValid(code);
+    private RegionLevel getLowestRegionLevel() {
+        List<ApplicationParam> params = boxAppParams.query().startsWith(ApplicationParam_.name, "hierarchy", QueryBuilder.StringOrder.CASE_SENSITIVE).build().find(); //COLUMN_NAME+" like 'hierarchy%'"
+        String lowestLevel = null;
+        int lowestLevelNumber = 0;
+
+        for (ApplicationParam param : params) {
+
+            if (param.getName().endsWith(".head")) continue;
+
+            if (!param.getValue().isEmpty()) {
+                String value = param.getName();
+                String strNum = value.replace("hierarchy", "");
+                int num = Integer.parseInt(strNum);
+
+                if (num > lowestLevelNumber) {
+                    lowestLevelNumber = num;
+                    lowestLevel = value;
+                }
+            }
+        }
+
+        return RegionLevel.getFrom(lowestLevel);
     }
 
-    public boolean isLowestRegionCodeValid(String code) {
-        return codeGenerator.isLowestRegionCodeValid(code);
+    public boolean isRegionCodeValid(RegionLevel regionLevel, String code) {
+        return codeGenerator.isRegionCodeValid(lowestRegionLevel, regionLevel, code);
     }
 
     public boolean isHouseholdCodeValid(String code) {
@@ -91,14 +117,7 @@ public class CodeGeneratorService {
 
     public String generateRegionCode(Region parentRegion, String regionName) {
         List<String> codes = boxRegions.query().order(Region_.code).build().find().stream().map(Region::getCode).collect(Collectors.toList());
-        return codeGenerator.generateRegionCode(parentRegion, regionName, codes);
-    }
-
-    public String generateLowestRegionCode(Region parentRegion, String regionName) {
-        List<String> codes = boxRegions.query(Region_.parent.equal(parentRegion.code)).order(Region_.code)
-                                          .build().find().stream().map(Region::getCode).collect(Collectors.toList());
-
-        return codeGenerator.generateLowestRegionCode(parentRegion, regionName, codes);
+        return codeGenerator.generateRegionCode(lowestRegionLevel, parentRegion, regionName, codes);
     }
 
     public String generateHouseholdCode(Region region, User user) {
@@ -154,12 +173,8 @@ public class CodeGeneratorService {
         return codeGenerator.getModuleSampleCode();
     }
 
-    public String getRegionSampleCode() {
-        return codeGenerator.getRegionSampleCode();
-    }
-
-    public String getLowestRegionSampleCode() {
-        return codeGenerator.getLowestRegionSampleCode();
+    public String getRegionSampleCode(RegionLevel regionLevel) {
+        return codeGenerator.getRegionSampleCode(lowestRegionLevel, regionLevel);
     }
 
     public String getHouseholdSampleCode() {
@@ -188,7 +203,7 @@ public class CodeGeneratorService {
         //reduce length and test
         for (int i = code.length()-1; i >= 0; i--) {
             String x = code.substring(0, i);
-            if (isLowestRegionCodeValid(x)) return x;
+            if (isRegionCodeValid(lowestRegionLevel, x)) return x; //check the lowest region level if valid
         }
 
         return code;

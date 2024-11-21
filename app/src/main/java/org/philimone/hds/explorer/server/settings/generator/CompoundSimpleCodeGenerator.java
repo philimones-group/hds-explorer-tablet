@@ -6,6 +6,7 @@ import org.philimone.hds.explorer.model.Household;
 import org.philimone.hds.explorer.model.Region;
 import org.philimone.hds.explorer.model.Round;
 import org.philimone.hds.explorer.model.User;
+import org.philimone.hds.explorer.model.enums.RegionLevel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +17,9 @@ import mz.betainteractive.utilities.StringUtil;
  * The HDS-Explorer Default code generator (different sites can implement they own type of codes)
  */
 public class CompoundSimpleCodeGenerator implements CodeGenerator {
+
+    final String MODULE_CODE_PATTERN = "^MX-[0-9]{3}$";
+    final String TRACKLIST_CODE_PATTERN = "^TR-[0-9]{6}$";
     final String REGION_CODE_PATTERN = "^[A-Z0-9]{3}$";
     final String COMPOUND_CODE_PATTERN = "^[A-Z0-9]{3}[0-9]{6}$";
     final String HOUSEHOLD_CODE_PATTERN = "^[A-Z0-9]{3}[0-9]{9}$";
@@ -33,13 +37,23 @@ public class CompoundSimpleCodeGenerator implements CodeGenerator {
     }
 
     @Override
-    public boolean isRegionCodeValid(String code) {
-        return !StringUtil.isBlank(code) && code.matches(REGION_CODE_PATTERN);
+    public boolean isModuleCodeValid(String code) {
+        return !StringUtil.isBlank(code) && code.matches(MODULE_CODE_PATTERN);
     }
 
     @Override
-    public boolean isLowestRegionCodeValid(String code) {
-        return !StringUtil.isBlank(code) && code.matches(COMPOUND_CODE_PATTERN);
+    public boolean isTrackingListCodeValid(String code) {
+        return false;
+    }
+
+    @Override
+    public boolean isRegionCodeValid(RegionLevel lowestRegionLevel, RegionLevel codeRegionLevel, String code) {
+        //On Compound based code generator the lowestRegionLevel is a Compound with code that differs from other region levels
+        if (lowestRegionLevel == codeRegionLevel) {
+            return !StringUtil.isBlank(code) && code.matches(COMPOUND_CODE_PATTERN);
+        } else {
+            return !StringUtil.isBlank(code) && code.matches(REGION_CODE_PATTERN);
+        }
     }
 
     @Override
@@ -68,7 +82,54 @@ public class CompoundSimpleCodeGenerator implements CodeGenerator {
     }
 
     @Override
-    public String generateRegionCode(Region parentRegion, String regionName, List<String> existentCodes) {
+    public String generateModuleCode(String moduleName, List<String> existentCodes) {
+        //MX-001,MX-002,MX-099
+        String base = "MX-";
+
+        if (existentCodes == null) return base + "001";
+
+        for (int i = 1; i <= 99 ; i++) {
+            String test = base + String.format("%03d", i);
+            if (!existentCodes.contains(test)) {
+                return test;
+            }
+        }
+
+        return null;
+    }
+
+    @Override
+    public String generateTrackingListCode(List<String> existentCodes) {
+        String baseCode = "TR-";
+        if (existentCodes.size()==0){
+            return baseCode + "000001";
+        } else {
+            for (int i=1; i <= 999999; i++){
+                String code = baseCode + String.format("%06d", i);
+                if (!existentCodes.contains(code)){
+                    return code;
+                }
+            }
+        }
+
+        return baseCode + "ERROR";
+    }
+
+    @Override
+    public String generateRegionCode(RegionLevel lowestRegionLevel, Region parentRegion, String regionName, List<String> existentCodes) {
+
+        if (StringUtil.isBlank(regionName)) return null;
+
+        RegionLevel nextLevel = parentRegion == null ? RegionLevel.HIERARCHY_1 : RegionLevel.getFrom(parentRegion.level).nextLevel();
+
+        if (lowestRegionLevel == nextLevel) {
+            return generateCompoundRegionCode(parentRegion, regionName, existentCodes);
+        }
+
+        return generateRegularRegionCode(parentRegion, regionName, existentCodes);
+    }
+
+    public String generateRegularRegionCode(Region parentRegion, String regionName, List<String> existentCodes) {
 
         if (StringUtil.isBlank(regionName)) return null;
 
@@ -83,7 +144,9 @@ public class CompoundSimpleCodeGenerator implements CodeGenerator {
         String a = u.charAt(0)+"";
 
         for (char b : blist){
+            if (b == ' ') continue;
             for (char c : clist){
+                if (c == ' ') continue;
                 String test = a + "" + b + "" + c;
 
                 if (!existentCodes.contains(test)){
@@ -96,8 +159,7 @@ public class CompoundSimpleCodeGenerator implements CodeGenerator {
         return null;
     }
 
-    @Override
-    public String generateLowestRegionCode(Region parentRegion, String regionName, List<String> existentCodes) {
+    public String generateCompoundRegionCode(Region parentRegion, String regionName, List<String> existentCodes) {
 
         String baseCode = parentRegion.code;
 
@@ -120,7 +182,7 @@ public class CompoundSimpleCodeGenerator implements CodeGenerator {
                 try {
                     String lastCode = listCodes.get(listCodes.size() - 1); Log.d("lastc", ""+lastCode+", "+listCodes.size());
                     String lastCodeNumber = lastCode.replaceFirst(baseCode, "");
-                    number = Integer.parseInt(lastCodeNumber) + 1;
+                    number = StringUtil.isBlank(lastCodeNumber) ? number : Integer.parseInt(lastCodeNumber) + 1;
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
@@ -300,13 +362,12 @@ public class CompoundSimpleCodeGenerator implements CodeGenerator {
     }
 
     @Override
-    public String getRegionSampleCode() {
-        return "TXU";
-    }
-
-    @Override
-    public String getLowestRegionSampleCode() {
-        return "TXU000001";
+    public String getRegionSampleCode(RegionLevel lowestRegionLevel, RegionLevel regionLevel) {
+        if (lowestRegionLevel == regionLevel) {
+            return "TXU000001";
+        } else {
+            return "TXU";
+        }
     }
 
     @Override

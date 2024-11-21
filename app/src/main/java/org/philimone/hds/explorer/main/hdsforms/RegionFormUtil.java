@@ -16,6 +16,7 @@ import org.philimone.hds.explorer.model.Region;
 import org.philimone.hds.explorer.model.Region_;
 import org.philimone.hds.explorer.model.converters.StringCollectionConverter;
 import org.philimone.hds.explorer.model.enums.CoreFormEntity;
+import org.philimone.hds.explorer.model.enums.RegionLevel;
 import org.philimone.hds.forms.model.CollectedDataMap;
 import org.philimone.hds.forms.model.ColumnValue;
 import org.philimone.hds.forms.model.HForm;
@@ -39,6 +40,7 @@ public class RegionFormUtil extends FormUtil<Region> {
     private Region region;
 
     private String hierarchyName;
+    private RegionLevel currentRegionLevel;
 
     public RegionFormUtil(Fragment fragment, Context context, String parentRegionCode, FormUtilities odkFormUtilities, FormUtilListener<Region> listener){
         super(fragment, context, FormUtil.getRegionForm(context), odkFormUtilities, listener);
@@ -103,7 +105,9 @@ public class RegionFormUtil extends FormUtil<Region> {
     protected void initialize() {
         super.initialize();
 
-        hierarchyName = getHierarchyName(getNextLevel(parentRegion));
+        this.currentRegionLevel = getNextRegionLevel(parentRegion);
+
+        hierarchyName = getHierarchyName(this.currentRegionLevel.getId());
     }
 
     @Override
@@ -146,19 +150,12 @@ public class RegionFormUtil extends FormUtil<Region> {
             return new ValidationResult(columnRegionCode, message);
         }
 
-        if (isChildAtLowestLevel(this.parentRegion)) {
-            if (!codeGenerator.isLowestRegionCodeValid(region_code)){
-                String message = this.context.getString(R.string.new_region_code_err_lbl, hierarchyName);
-                //DialogFactory.createMessageInfo(RegionDetailsActivity.this, R.string.info_lbl, R.string.new_region_code_err_lbl).show();
-                return new ValidationResult(columnRegionCode, message);
-            }
-        } else {
-            if (!codeGenerator.isRegionCodeValid(region_code)){
-                String message = this.context.getString(R.string.new_region_code_err_lbl, hierarchyName);
-                //DialogFactory.createMessageInfo(RegionDetailsActivity.this, R.string.info_lbl, R.string.new_region_code_err_lbl).show();
-                return new ValidationResult(columnRegionCode, message);
-            }
+        if (!codeGenerator.isRegionCodeValid(currentRegionLevel, region_code)){
+            String message = this.context.getString(R.string.new_region_code_err_lbl, hierarchyName);
+            //DialogFactory.createMessageInfo(RegionDetailsActivity.this, R.string.info_lbl, R.string.new_region_code_err_lbl).show();
+            return new ValidationResult(columnRegionCode, message);
         }
+
 
         //check if region with code exists
         if (currentMode==Mode.CREATE && boxRegions.query().equal(Region_.code, region_code, QueryBuilder.StringOrder.CASE_SENSITIVE).build().findFirst() != null){
@@ -347,15 +344,15 @@ public class RegionFormUtil extends FormUtil<Region> {
         return Region.ALL_HIERARCHIES.get(levelIndex+1);
     }
 
+    private RegionLevel getNextRegionLevel(Region parentRegion) {
+        RegionLevel parentLevel = parentRegion==null ? RegionLevel.HIERARCHY_1 : RegionLevel.getFrom(parentRegion.level);
+        return parentLevel.nextLevel();
+    }
+
     private String generateRegionCode(Region parentRegion, String regionName) {
-        String lowest = getLowestRegionLevel();
         String householdLevel = getNextLevel(parentRegion);
 
         if (householdLevel == null) return null;
-
-        if (lowest.equals(householdLevel)) {
-            return codeGenerator.generateLowestRegionCode(parentRegion, regionName);
-        }
 
         return codeGenerator.generateRegionCode(parentRegion, regionName);
     }

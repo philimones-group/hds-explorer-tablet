@@ -6,6 +6,7 @@ import org.philimone.hds.explorer.model.Household;
 import org.philimone.hds.explorer.model.Region;
 import org.philimone.hds.explorer.model.Round;
 import org.philimone.hds.explorer.model.User;
+import org.philimone.hds.explorer.model.enums.RegionLevel;
 
 import java.util.List;
 
@@ -15,6 +16,9 @@ import mz.betainteractive.utilities.StringUtil;
  * The HDS-Explorer Default code generator (different sites can implement they own type of codes)
  */
 public class DefaultCodeGenerator implements CodeGenerator {
+
+    final String MODULE_CODE_PATTERN = "^MX-[0-9]{3}$";
+    final String TRACKLIST_CODE_PATTERN = "^TR-[0-9]{6}$";
     final String REGION_CODE_PATTERN = "^[A-Z0-9]{3}$";
     final String HOUSEHOLD_CODE_PATTERN = "^[A-Z0-9]{6}[0-9]{3}$";
     final String MEMBER_CODE_PATTERN = "^[A-Z0-9]{6}[0-9]{6}$";
@@ -31,13 +35,19 @@ public class DefaultCodeGenerator implements CodeGenerator {
     }
 
     @Override
-    public boolean isRegionCodeValid(String code) {
-        return !StringUtil.isBlank(code) && code.matches(REGION_CODE_PATTERN);
+    public boolean isModuleCodeValid(String code) {
+        return !StringUtil.isBlank(code) && code.matches(MODULE_CODE_PATTERN);
     }
 
     @Override
-    public boolean isLowestRegionCodeValid(String code) {
-        return isRegionCodeValid(code);
+    public boolean isTrackingListCodeValid(String code) {
+        return false;
+    }
+
+    @Override
+    public boolean isRegionCodeValid(RegionLevel lowestRegionLevel, RegionLevel codeRegionLevel, String code) {
+        //Other implementations of codegenerators can use a different approach to generate region codes - by having different schemes for each level
+        return !StringUtil.isBlank(code) && code.matches(REGION_CODE_PATTERN);
     }
 
     @Override
@@ -66,7 +76,42 @@ public class DefaultCodeGenerator implements CodeGenerator {
     }
 
     @Override
-    public String generateRegionCode(Region parentRegion, String regionName, List<String> existentCodes) {
+    public String generateModuleCode(String moduleName, List<String> existentCodes) {
+        //MX-001,MX-002,MX-099
+        String base = "MX-";
+
+        if (existentCodes == null) return base + "001";
+
+        for (int i = 1; i <= 99 ; i++) {
+            String test = base + String.format("%03d", i);
+            if (!existentCodes.contains(test)) {
+                return test;
+            }
+        }
+
+        return null;
+    }
+
+    @Override
+    public String generateTrackingListCode(List<String> existentCodes) {
+        String baseCode = "TR-";
+        if (existentCodes.size()==0){
+            return baseCode + "000001";
+        } else {
+            for (int i=1; i <= 999999; i++){
+                String code = baseCode + String.format("%06d", i);
+                if (!existentCodes.contains(code)){
+                    return code;
+                }
+            }
+        }
+
+        return baseCode + "ERROR";
+    }
+
+    @Override
+    public String generateRegionCode(RegionLevel lowestRegionLevel, Region parentRegion, String regionName, List<String> existentCodes) {
+        //Other implementations of codegenerators can use a different approach to generate each region level codes
 
         if (StringUtil.isBlank(regionName)) return null;
 
@@ -81,7 +126,10 @@ public class DefaultCodeGenerator implements CodeGenerator {
         String a = u.charAt(0)+"";
 
         for (char b : blist){
+            if (b == ' ') continue;
             for (char c : clist){
+                if (c == ' ') continue;
+
                 String test = a + "" + b + "" + c;
 
                 if (!existentCodes.contains(test)){
@@ -92,11 +140,6 @@ public class DefaultCodeGenerator implements CodeGenerator {
         }
 
         return null;
-    }
-
-    @Override
-    public String generateLowestRegionCode(Region parentRegion, String regionName, List<String> existentCodes) {
-        return generateRegionCode(parentRegion, regionName, existentCodes);
     }
 
     @Override
@@ -261,13 +304,8 @@ public class DefaultCodeGenerator implements CodeGenerator {
     }
 
     @Override
-    public String getRegionSampleCode() {
+    public String getRegionSampleCode(RegionLevel lowestRegionLevel, RegionLevel regionLevel) {
         return "TXU";
-    }
-
-    @Override
-    public String getLowestRegionSampleCode() {
-        return getRegionSampleCode();
     }
 
     @Override

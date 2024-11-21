@@ -316,6 +316,11 @@ public class HouseholdFilterFragment extends Fragment implements RegionExpandabl
             btHouseFilterAddRegion.setOnClickListener(v -> {
                 onAddNewRegionClicked();
             });
+
+            btHouseFilterAddRegion.setOnLongClickListener(v -> {
+                onEditNewRegionClicked();
+                return false;
+            });
         }
 
         this.btHouseFilterAddNewHousehold.setEnabled(false);
@@ -401,10 +406,18 @@ public class HouseholdFilterFragment extends Fragment implements RegionExpandabl
 
     private void onAddNewRegionClicked() {
         if (this.currentRegion != null) {
+            boolean lastLevel = currentRegion.getLevel().equals(lastRegionLevel);
+
+            if (!lastLevel){
+                addNewRegion();
+            }
+        }
+    }
+
+    private void onEditNewRegionClicked(){
+        if (this.currentRegion != null) {
             if (this.currentRegion.isRecentlyCreated()) {
                 editNewRegion();
-            } else {
-                addNewRegion();
             }
         }
     }

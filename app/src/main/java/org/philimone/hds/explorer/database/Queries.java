@@ -33,11 +33,15 @@ import mz.betainteractive.utilities.StringUtil;
 public class Queries {
 
     public static ApplicationParam getApplicationParamBy(Box<ApplicationParam> box, String name){
+        if (name == null) return null;
+
         ApplicationParam param = box.query().equal(ApplicationParam_.name, name, QueryBuilder.StringOrder.CASE_SENSITIVE).build().findFirst();
         return param;
     }
 
     public static String getApplicationParamValue(Box<ApplicationParam> box, String name){
+        if (name == null) return null;
+
         ApplicationParam param = box.query().equal(ApplicationParam_.name, name, QueryBuilder.StringOrder.CASE_SENSITIVE).build().findFirst();
 
         if (param != null){
@@ -66,12 +70,15 @@ public class Queries {
     }
 
     public static Household getHouseholdByCode(Box<Household> box, String code){
+        if (code == null) return null;
+
         Household household = box.query().equal(Household_.code, code, QueryBuilder.StringOrder.CASE_SENSITIVE).build().findFirst();
 
         return household;
     }
 
     public static Member getMemberByCode(Box<Member> box, String code){
+        if (code == null) return null;
 
         Member member = box.query().equal(Member_.code, code, QueryBuilder.StringOrder.CASE_SENSITIVE).build().findFirst();
         return member;
@@ -84,6 +91,7 @@ public class Queries {
     }
 
     public static Death getDeathByCode(Box<Death> box, String code){
+        if (code == null) return null;
 
         Death death = box.query().equal(Death_.memberCode, code, QueryBuilder.StringOrder.CASE_SENSITIVE).build().findFirst();
         return death;

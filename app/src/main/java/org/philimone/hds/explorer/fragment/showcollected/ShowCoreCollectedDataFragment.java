@@ -234,9 +234,13 @@ public class ShowCoreCollectedDataFragment extends Fragment {
         if (text != null){
 
             ShowCoreCollectedDataAdapter adapter = (ShowCoreCollectedDataAdapter) this.lvCollectedForms.getAdapter();
-            adapter.filterSubjects(text);
-            //adapter.notifyDataSetChanged();
-            //this.elvTrackingLists.invalidateViews();
+            if (adapter != null) {
+                adapter.filterSubjects(text);
+
+                //adapter.notifyDataSetChanged();
+                //this.elvTrackingLists.invalidateViews();
+            }
+
         }
     }
 

@@ -264,8 +264,11 @@ public class SyncDownloadPanelFragment extends Fragment implements SyncPanelItem
     }
 
     public void updateAllPanelItems() {
+        boolean hasDataToUpload = hasDataToUpload();
+
         for (SyncPanelItemFragment frag : this.syncPanelItemFragments) {
             frag.refreshSyncButton();
+            frag.setHasDataToUpload(hasDataToUpload);
         }
     }
 

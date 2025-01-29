@@ -74,6 +74,10 @@ public class SyncPanelItemFragment extends Fragment implements View.OnClickListe
         return fragment;
     }
 
+    public void setHasDataToUpload(boolean hasDataToUpload) {
+        this.hasDataToUpload = hasDataToUpload;
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment

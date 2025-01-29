@@ -40,6 +40,7 @@ import org.philimone.hds.forms.parsers.form.model.FormOptions;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -938,9 +939,16 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
                 columnNames.add(opt.columnName);
             }
 
+            //save default column options and clear for updating with options from the server
+            Map<Column, Map<String, FormOptions.OptionValue>> optionsBak = new HashMap<>();
             for (String columnName : columnNames) {
                 Column column = form.getColumn(columnName);
-                column.clearTypeOptions();
+
+                //backup options and clear options
+                if (!column.getTypeOptions().isEmpty()) {
+                    optionsBak.put(column, new HashMap<>(column.getTypeOptions()));
+                    column.clearTypeOptions();
+                }
             }
 
             for (CoreFormColumnOptions opt : list) {
@@ -948,7 +956,15 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
 
                 if (column != null) {
                     //column.getTypeOptions().put(opt.optionValue, new FormOptions.OptionValue(opt.optionLabel, false, ""));
-                    column.addTypeOptions(opt.optionValue, opt.optionLabel, false, "");
+                    String optionLabel = opt.optionLabel;
+
+                    //For options that are default from the app get the label from the XLS Hform
+                    Map<String, FormOptions.OptionValue> options = optionsBak.get(column);
+                    if (options != null && options.containsKey(opt.optionValue)) {
+                        optionLabel = options.get(opt.optionValue).label;
+                    }
+
+                    column.addTypeOptions(opt.optionValue, optionLabel, false, "");
                 }
             }
         }

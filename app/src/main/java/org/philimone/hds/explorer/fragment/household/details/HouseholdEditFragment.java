@@ -7,6 +7,8 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -41,12 +43,7 @@ import org.philimone.hds.explorer.model.enums.CoreFormEntity;
 import org.philimone.hds.explorer.model.enums.CoreFormRecordType;
 import org.philimone.hds.explorer.widget.DialogFactory;
 import org.philimone.hds.explorer.widget.LoadingDialog;
-import org.philimone.hds.forms.model.HForm;
-import org.philimone.hds.forms.model.XmlFormResult;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.PrintStream;
 import java.util.Arrays;
 import java.util.Date;
@@ -55,7 +52,6 @@ import java.util.List;
 import java.util.Map;
 
 import io.objectbox.Box;
-import mz.betainteractive.odk.model.FilledForm;
 import mz.betainteractive.utilities.GeneralUtil;
 import mz.betainteractive.utilities.StringUtil;
 
@@ -73,7 +69,7 @@ public class HouseholdEditFragment extends Fragment implements LocationListener 
     private TextView txtGpsAltitude;
     private TextView txtGpsAccuracy;
     private Button btEditUpdateDetails;
-    private LoadingDialog loadingDialog;
+    private LoadingDialog gpsLoadingDialog;
 
     private Household household;
     private User loggedUser;
@@ -152,7 +148,14 @@ public class HouseholdEditFragment extends Fragment implements LocationListener 
         this.txtGpsAccuracy = view.findViewById(R.id.txtGpsAccuracy);
         this.btEditUpdateDetails = view.findViewById(R.id.btEditUpdateDetails);
 
-        this.loadingDialog = new LoadingDialog(this.getContext());
+        this.gpsLoadingDialog = new LoadingDialog(this.getContext());
+
+        this.gpsLoadingDialog.setListener(new LoadingDialog.Listener() {
+            @Override
+            public void onButtonCancelClicked() {
+                onCancelGpsDetection();
+            }
+        });
 
         this.btEditGetGps.setOnClickListener(v -> {
             onGetGpsClicked();
@@ -179,7 +182,7 @@ public class HouseholdEditFragment extends Fragment implements LocationListener 
             }
         });
 
-        this.txtEditName.setText(household.name);
+        this.txtEditName.setText(household != null ? household.name : "");
         clearGpsData();
         showGpsData(this.household);
 
@@ -360,8 +363,25 @@ public class HouseholdEditFragment extends Fragment implements LocationListener 
 
         this.gpsLocationResult = null;
 
-        showLoadingDialog(R.string.gps_loading_lbl, true);
+        showGpsLoadingDialog(R.string.gps_loading_lbl, true);
         locationManager.requestLocationUpdates(provider, 5, 0, this);
+
+        Handler handler = new Handler(Looper.getMainLooper());
+        handler.postDelayed(() -> {
+            showCancelGpsDetection();
+        }, 20000); //after 20 seconds
+    }
+
+    private void showCancelGpsDetection() {
+        this.gpsLoadingDialog.showCancelButton();
+    }
+
+    private void onCancelGpsDetection() {
+        try {
+            locationManager.removeUpdates(this);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
 
     }
 
@@ -372,12 +392,12 @@ public class HouseholdEditFragment extends Fragment implements LocationListener 
         this.txtGpsAccuracy.setText("");
     }
 
-    private void showLoadingDialog(@StringRes int msgId, boolean show) {
+    private void showGpsLoadingDialog(@StringRes int msgId, boolean show) {
         if (show) {
-            this.loadingDialog.setMessage(msgId);
-            this.loadingDialog.show();
+            this.gpsLoadingDialog.setMessage(msgId);
+            this.gpsLoadingDialog.show();
         } else {
-            this.loadingDialog.dismiss();
+            this.gpsLoadingDialog.dismiss();
         }
     }
 
@@ -408,7 +428,7 @@ public class HouseholdEditFragment extends Fragment implements LocationListener 
 
     @Override
     public void onLocationChanged(Location location) {
-        showLoadingDialog(0, false);
+        showGpsLoadingDialog(0, false);
 
         this.gpsLocationResult = location;
 
@@ -417,7 +437,7 @@ public class HouseholdEditFragment extends Fragment implements LocationListener 
 
         onFormContentChanges();
 
-        showLoadingDialog(0, false);
+        showGpsLoadingDialog(0, false);
     }
 
     @Override
@@ -427,12 +447,12 @@ public class HouseholdEditFragment extends Fragment implements LocationListener 
 
     @Override
     public void onProviderEnabled(String provider) {
-        showLoadingDialog(0, false);
+        showGpsLoadingDialog(0, false);
     }
 
     @Override
     public void onProviderDisabled(String provider) {
-        showLoadingDialog(0, false);
+        showGpsLoadingDialog(0, false);
     }
 
     public interface EditListener {

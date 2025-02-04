@@ -295,6 +295,8 @@
     <string name="member_details_education_lbl">Nível de Educação:</string>
     <string name="member_details_religion_lbl">Religião:</string>
     <string name="member_details_forms_spouse_lbl">Cônjuge:</string>
+    <string name="member_details_phone_primary_lbl">Telefone Principal:</string>
+    <string name="member_details_phone_alternative_lbl">Telefone Alternativo:</string>
     <string name="member_details_bt_openform_lbl">Colher Dados</string>
     <string name="member_details_bt_back_lbl">Voltar</string>
     <string name="member_details_forms_selector_lbl">Seleccionar um Formulário</string>
@@ -314,6 +316,7 @@
     <string name="member_details_edit_member_mother_lbl">Mãe</string>
     <string name="member_details_edit_member_parent_code_lbl">Código:</string>
     <string name="member_details_edit_member_parent_name_lbl">Nome:</string>
+    <string name="member_details_edit_phone_numbers_lbl">Telefones</string>
     <string name="member_details_edit_mother_select_lbl">Alterar a Mãe do membro?</string>
     <string name="member_details_edit_father_select_lbl">Alterar o Pai do membro?</string>
     <string name="member_details_edit_father_unknown_lbl">Definir como Pai Desconhecido</string>
@@ -324,6 +327,7 @@
     <string name="member_details_edit_father_sex_cant_change_lbl">Não será possível alterar o sexo, porque o membro já é Pai de outros membros no sistema.\nAltere primeiro o Pai dos membros relacionados</string>
     <string name="member_details_edit_mother_sex_cant_change_lbl">Não será possível alterar o sexo, porque o membro já é Mãe de outros membros no sistema.\nAltere primeiro a Mãe dos membros relacionados</string>
     <string name="member_details_edit_dob_bir_warning_lbl">Este membro foi registado através dum Registo de Nascimento.\nPortanto a data em que começou a residir na casa é a mesma que a data de nascimento!\n\nTem certeza que deseja alterar a data de nascimento (isto afectará  o reg. de nascimento)?</string>
+    <string name="member_details_edit_member_name_empty_error_lbl">O nome do membro não pode estar vazio</string>
 
     <string name="region_details_edit_region_name_lbl">Nome</string>
     <string name="region_details_edit_button_update_details_lbl">Alterar Detalhes</string>
@@ -469,6 +473,8 @@
     <string name="new_member_residency_startdate_empty_lbl">A data do censo não pode estar vazia</string>
     <string name="new_member_residency_startdate_not_great_today_lbl">A data do censo não pode estar no futuro</string>
     <string name="new_member_residency_startdate_not_before_dob_lbl">A data do censo não pode ser antes da data de nascimento</string>
+    <string name="new_member_phone_primary_invalid_lbl">O número de telefone principal é inválido</string>
+    <string name="new_member_phone_alternative_invalid_lbl">O número de telefone secundário é inválido</string>
     <string name="new_member_title_lbl">Censo: Adicionar novo Membro</string>
     <string name="new_member_collect_lbl">Guardar e Colher Dados</string>
     <string name="new_member_dialog_change_title_lbl">Actualização de dados</string>

@@ -402,6 +402,119 @@
 
             </LinearLayout>
 
+            <!-- Phone numbers -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:layout_marginBottom="20dp"
+                android:orientation="vertical" >
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginBottom="5dp"
+                    android:layout_gravity="center|left"
+                    android:gravity="left|center_horizontal"
+                    android:text="@string/member_details_edit_phone_numbers_lbl"
+                    android:textStyle="bold"
+                    android:textColor="@color/nui_color_text_darkgray"
+                    android:textSize="@dimen/member_details_edit_grouplabel_txtsize" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:background="@drawable/nui_list_rborder_panel"
+                    android:orientation="horizontal">
+
+                    <TableLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginRight="20dp"
+                        android:layout_marginTop="15dp"
+                        android:layout_marginBottom="15dp"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <TableRow
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:layout_marginStart="5dp"
+                                android:gravity="start|center_vertical"
+                                android:text="@string/member_details_phone_primary_lbl"
+                                android:textSize="@dimen/member_details_edit_textview_small_txtsize"
+                                android:textColor="@color/black"
+                                android:textStyle="bold" />
+
+                            <EditText
+                                android:id="@+id/txtEditPhonePrimary"
+                                android:layout_width="0dp"
+                                android:layout_height="40dp"
+                                android:layout_marginStart="5dp"
+                                android:layout_weight="1"
+                                android:gravity="center_vertical"
+                                android:maxLines="1"
+                                android:ellipsize="end"
+                                android:paddingStart="15dp"
+                                android:paddingEnd="15dp"
+                                android:inputType="phone"
+                                android:text="+290875088100"
+                                android:textSize="@dimen/member_details_edit_textview_small_txtsize"
+                                android:textColor="@color/black"
+                                android:background="@drawable/nui_txtbox_rone_wbevel" />
+
+                        </TableRow>
+
+                        <TableRow
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_marginTop="10dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:layout_marginStart="5dp"
+                                android:gravity="start|center_vertical"
+                                android:text="@string/member_details_phone_alternative_lbl"
+                                android:textSize="@dimen/member_details_edit_textview_small_txtsize"
+                                android:textColor="@color/black"
+                                android:textStyle="bold" />
+
+                            <EditText
+                                android:id="@+id/txtEditPhoneAlternative"
+                                android:layout_width="0dp"
+                                android:layout_height="40dp"
+                                android:layout_marginStart="5dp"
+                                android:gravity="start|center_vertical"
+                                android:layout_weight="1"
+                                android:maxLines="1"
+                                android:ellipsize="end"
+                                android:paddingStart="15dp"
+                                android:paddingEnd="15dp"
+                                android:inputType="phone"
+                                android:text="+244236699777"
+                                android:textSize="@dimen/member_details_edit_textview_small_txtsize"
+                                android:textColor="@color/black"
+                                android:background="@drawable/nui_txtbox_rone_wbevel"/>
+
+                        </TableRow>
+
+                    </TableLayout>
+
+
+
+                </LinearLayout>
+
+            </LinearLayout>
+
         </LinearLayout>
 
         <!-- buttons -->

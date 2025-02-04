@@ -69,6 +69,9 @@ public class Member implements CoreEntity, FormSubject, Serializable {
     public String education;
     public String religion;
 
+    public String phonePrimary;
+    public String phoneAlternative;
+
     /**
      * Current HouseHold Status
      */
@@ -350,6 +353,10 @@ public class Member implements CoreEntity, FormSubject, Serializable {
 
     public void setMaritalStatus(MaritalStatus maritalStatus) {
         this.maritalStatus = maritalStatus;
+    }
+
+    public boolean hasPhoneNumbers(){
+        return !StringUtil.isBlank(this.phonePrimary) || !StringUtil.isBlank(this.phoneAlternative);
     }
 
     public String getEntryHousehold() {

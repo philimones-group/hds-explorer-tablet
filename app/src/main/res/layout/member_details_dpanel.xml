@@ -6,24 +6,20 @@
     tools:context=".fragment.household.details.HouseholdMembersFragment">
 
     <!-- List of Members -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="5dp"
-        android:layout_marginLeft="5dp"
-        android:layout_marginRight="5dp"
-        android:orientation="vertical">
 
-        <LinearLayout
+    <TableLayout
             android:id="@+id/layout_md_xdata"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:paddingBottom="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="5dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
             android:background="@drawable/nui_txtbox_rone_wbevel"
             android:orientation="vertical">
 
-            <LinearLayout
+            <TableRow
                 android:layout_width="wrap_content"
                 android:layout_height="26dp"
                 android:layout_marginTop="30dp"
@@ -31,7 +27,7 @@
                 android:orientation="horizontal">
 
                 <TextView
-                    android:layout_width="@dimen/member_details_txtview_width"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="@dimen/member_details_info_gender_layout_txtsize"
                     android:text="@string/member_details_housename_lbl"
@@ -40,14 +36,15 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
                     android:textSize="@dimen/member_details_info_gender_layout_txtsize"
                     android:textStyle="bold"
                     android:textColor="@color/nui_color_text_darkgray"
                     android:text="05-1233-123"
                     android:id="@+id/mbDetailsHouseName" />
-            </LinearLayout>
+            </TableRow>
 
-            <LinearLayout
+            <TableRow
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
@@ -55,7 +52,7 @@
                 android:orientation="horizontal">
 
                 <TextView
-                    android:layout_width="@dimen/member_details_txtview_width"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="@dimen/member_details_info_gender_layout_txtsize"
                     android:textColor="@color/nui_color_text_darkgray"
@@ -64,14 +61,15 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
                     android:textSize="@dimen/member_details_info_gender_layout_txtsize"
                     android:textColor="@color/nui_color_text_darkgray"
                     android:textStyle="bold"
                     android:text="Esta a residir nesta casa"
                     android:id="@+id/mbDetailsEndType" />
-            </LinearLayout>
+            </TableRow>
 
-            <LinearLayout
+            <TableRow
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
@@ -79,7 +77,7 @@
                 android:orientation="horizontal">
 
                 <TextView
-                    android:layout_width="@dimen/member_details_txtview_width"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="@dimen/member_details_info_gender_layout_txtsize"
                     android:textColor="@color/nui_color_text_darkgray"
@@ -88,14 +86,15 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
                     android:textSize="@dimen/member_details_info_gender_layout_txtsize"
                     android:textColor="@color/nui_color_text_darkgray"
                     android:textStyle="bold"
                     android:text="2015-01-01"
                     android:id="@+id/mbDetailsEndDate" />
-            </LinearLayout>
+            </TableRow>
 
-            <LinearLayout
+            <TableRow
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
@@ -103,7 +102,7 @@
                 android:orientation="horizontal">
 
                 <TextView
-                    android:layout_width="@dimen/member_details_txtview_width"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="@dimen/member_details_info_gender_layout_txtsize"
                     android:textColor="@color/nui_color_text_darkgray"
@@ -112,14 +111,15 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
                     android:textSize="@dimen/member_details_info_gender_layout_txtsize"
                     android:textColor="@color/nui_color_text_darkgray"
                     android:textStyle="bold"
                     android:text="AIAI MARIA AI XIHORA MATI"
                     android:id="@+id/mbDetailsSpouse" />
-            </LinearLayout>
+            </TableRow>
 
-            <LinearLayout
+            <TableRow
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
@@ -127,7 +127,7 @@
                 android:orientation="horizontal">
 
                 <TextView
-                    android:layout_width="@dimen/member_details_txtview_width"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="@dimen/member_details_info_gender_layout_txtsize"
                     android:textColor="@color/nui_color_text_darkgray"
@@ -136,14 +136,15 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
                     android:textSize="@dimen/member_details_info_gender_layout_txtsize"
                     android:textColor="@color/nui_color_text_darkgray"
                     android:textStyle="bold"
                     android:text="JOAO MACACO SIMANGO"
                     android:id="@+id/mbDetailsFather" />
-            </LinearLayout>
+            </TableRow>
 
-            <LinearLayout
+            <TableRow
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
@@ -151,7 +152,7 @@
                 android:orientation="horizontal">
 
                 <TextView
-                    android:layout_width="@dimen/member_details_txtview_width"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="@dimen/member_details_info_gender_layout_txtsize"
                     android:textColor="@color/nui_color_text_darkgray"
@@ -160,14 +161,15 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
                     android:textSize="@dimen/member_details_info_gender_layout_txtsize"
                     android:textColor="@color/nui_color_text_darkgray"
                     android:textStyle="bold"
                     android:text="Desconhecida"
                     android:id="@+id/mbDetailsMother" />
-            </LinearLayout>
+            </TableRow>
 
-            <LinearLayout
+            <TableRow
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
@@ -175,7 +177,7 @@
                 android:orientation="horizontal">
 
                 <TextView
-                    android:layout_width="@dimen/member_details_txtview_width"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="@dimen/member_details_info_gender_layout_txtsize"
                     android:textColor="@color/nui_color_text_darkgray"
@@ -184,14 +186,15 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
                     android:textSize="@dimen/member_details_info_gender_layout_txtsize"
                     android:textColor="@color/nui_color_text_darkgray"
                     android:textStyle="bold"
                     android:text="Primary School"
                     android:id="@+id/mbDetailsEducation" />
-            </LinearLayout>
+            </TableRow>
 
-            <LinearLayout
+            <TableRow
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
@@ -199,7 +202,7 @@
                 android:orientation="horizontal">
 
                 <TextView
-                    android:layout_width="@dimen/member_details_txtview_width"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="@dimen/member_details_info_gender_layout_txtsize"
                     android:textColor="@color/nui_color_text_darkgray"
@@ -208,16 +211,70 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
                     android:textSize="@dimen/member_details_info_gender_layout_txtsize"
                     android:textColor="@color/nui_color_text_darkgray"
                     android:textStyle="bold"
                     android:text="Christian"
                     android:id="@+id/mbDetailsReligion" />
-            </LinearLayout>
+            </TableRow>
 
-        </LinearLayout>
+            <TableRow
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_marginLeft="@dimen/member_filter_xdata_margin_left"
+                android:orientation="horizontal">
 
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/member_details_info_gender_layout_txtsize"
+                    android:textColor="@color/nui_color_text_darkgray"
+                    android:text="@string/member_details_phone_primary_lbl"/>
 
-    </LinearLayout>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:textSize="@dimen/member_details_info_gender_layout_txtsize"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:textColor="@android:color/holo_blue_light"
+                    android:textStyle="bold"
+                    android:text="+258893325778"
+                    android:autoLink="phone"
+                    android:id="@+id/mbDetailsPhonePrimary" />
+            </TableRow>
+
+            <TableRow
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_marginLeft="@dimen/member_filter_xdata_margin_left"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/member_details_info_gender_layout_txtsize"
+                    android:textColor="@color/nui_color_text_darkgray"
+                    android:text="@string/member_details_phone_alternative_lbl"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:textColor="@android:color/holo_blue_light"
+                    android:textSize="@dimen/member_details_info_gender_layout_txtsize"
+                    android:textStyle="bold"
+                    android:text="+258816399665"
+                    android:autoLink="phone"
+                    android:id="@+id/mbDetailsPhoneAlternative" />
+            </TableRow>
+
+        </TableLayout>
 
 </FrameLayout>

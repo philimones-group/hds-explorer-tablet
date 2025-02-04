@@ -1,10 +1,13 @@
 package org.philimone.hds.explorer.fragment.member.details;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TableRow;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -44,8 +47,9 @@ public class MemberDetailsFragment extends Fragment {
     private TextView mbDetailsMother;
     private TextView mbDetailsEducation;
     private TextView mbDetailsReligion;
-
     private TextView mbDetailsSpouse;
+    private TextView mbDetailsPhonePrimary;
+    private TextView mbDetailsPhoneAlternative;
 
     private Member member;
     private User loggedUser;
@@ -105,6 +109,8 @@ public class MemberDetailsFragment extends Fragment {
         mbDetailsEducation = (TextView) view.findViewById(R.id.mbDetailsEducation);
         mbDetailsReligion = (TextView) view.findViewById(R.id.mbDetailsReligion);
         mbDetailsSpouse = (TextView) view.findViewById(R.id.mbDetailsSpouse);
+        mbDetailsPhonePrimary = view.findViewById(R.id.mbDetailsPhonePrimary);
+        mbDetailsPhoneAlternative = view.findViewById(R.id.mbDetailsPhoneAlternative);
 
         this.loadingDialog = new LoadingDialog(this.getContext());
 
@@ -137,6 +143,8 @@ public class MemberDetailsFragment extends Fragment {
         mbDetailsEducation.setText("");
         mbDetailsReligion.setText("");
         mbDetailsSpouse.setText("");
+        mbDetailsPhonePrimary.setText("");
+        mbDetailsPhoneAlternative.setText("");
     }
 
     private void setMemberData(){
@@ -148,6 +156,8 @@ public class MemberDetailsFragment extends Fragment {
         mbDetailsEducation.setText(getEducationLabel(member.education));
         mbDetailsReligion.setText(getReligionLabel(member.religion));
         mbDetailsSpouse.setText(getSpouseName(member.getSpouseName()));
+        mbDetailsPhonePrimary.setText(member.phonePrimary);
+        mbDetailsPhoneAlternative.setText(member.phoneAlternative);
     }
 
     public Member getMember() {

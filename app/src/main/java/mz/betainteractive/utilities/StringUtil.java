@@ -1,5 +1,7 @@
 package mz.betainteractive.utilities;
 
+import android.util.Log;
+
 import java.sql.Timestamp;
 import java.text.Normalizer;
 import java.text.ParseException;
@@ -87,6 +89,12 @@ public class StringUtil {
 
     public static boolean isUppercase(String text){
         return text.equals(text.toUpperCase());
+    }
+
+    public static boolean textChanged(String originalText, String updatedText) {
+        originalText = originalText==null ? "" : originalText;
+        updatedText = updatedText==null ? "" : updatedText;
+        return !originalText.equals(updatedText);
     }
 
     //Search if a certain string is inside a text returning percentage

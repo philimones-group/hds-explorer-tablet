@@ -2762,6 +2762,26 @@ Log.d("entity", ""+entity.name());
 				table.religion = "";
 				parser.nextTag();
 			}
+
+			parser.nextTag(); //process <phonePrimary>
+			if (!isEmptyTag("phonePrimary", parser)) {
+				parser.next();
+				table.phonePrimary = parser.getText();
+				parser.nextTag(); //process </phonePrimary>
+			}else{
+				table.phonePrimary = "";
+				parser.nextTag();
+			}
+
+			parser.nextTag(); //process <phoneAlternative>
+			if (!isEmptyTag("phoneAlternative", parser)) {
+				parser.next();
+				table.phoneAlternative = parser.getText();
+				parser.nextTag(); //process </phoneAlternative>
+			}else{
+				table.phoneAlternative = "";
+				parser.nextTag();
+			}
 			
             parser.nextTag(); //process <householdCode>
             if (!isEmptyTag("householdCode", parser)) {

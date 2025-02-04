@@ -79,6 +79,8 @@ public class ExternalInMigrationFormUtil extends FormUtil<Inmigration> {
     private Residency savedResidency;
     private HeadRelationship savedHeadRelationship;
 
+    private final String PHONE_NUMBER_REGEX = "^(\\+?\\d{1,3})?[-.\\s]?\\(?\\d{2,4}\\)?[-.\\s]?\\d{3,5}[-.\\s]?\\d{4,6}$";
+
     public ExternalInMigrationFormUtil(Fragment fragment, Context context, Visit visit, Household household, FormUtilities odkFormUtilities, FormUtilListener<Inmigration> listener){
         super(fragment, context, FormUtil.getExternalInMigrationForm(context), odkFormUtilities, listener);
 
@@ -192,6 +194,11 @@ public class ExternalInMigrationFormUtil extends FormUtil<Inmigration> {
             preloadedMap.put("originCode", returningMember.householdCode); //but I dont think we need this since the member is coming from outside the dss
             preloadedMap.put("education", returningMember.education);
             preloadedMap.put("religion", returningMember.religion);
+            preloadedMap.put("hasPhoneNumbers", this.returningMember.hasPhoneNumbers()+"");
+            if (this.returningMember.hasPhoneNumbers()) {
+                preloadedMap.put("phonePrimary", this.returningMember.phonePrimary);
+                preloadedMap.put("phoneAlternative", this.returningMember.phoneAlternative);
+            }
         }
 
         preloadedMap.put("destinationCode", household.code);
@@ -233,6 +240,9 @@ public class ExternalInMigrationFormUtil extends FormUtil<Inmigration> {
         ColumnValue colMigrationDate = collectedValues.get("migrationDate"); //not null cannot be in the future nor before dob
         ColumnValue colMigrationReason = collectedValues.get("migrationReason");
         ColumnValue colMigrationReasonOther = collectedValues.get("migrationReasonOther");
+        ColumnValue colHasPhoneNumbers = collectedValues.get("hasPhoneNumbers");
+        ColumnValue colPhonePrimary = collectedValues.get("phonePrimary"); //not blank
+        ColumnValue colPhoneAlternative = collectedValues.get("phoneAlternative"); //not blank
 
         //ColumnValue colCollectedBy = collectedValues.get("collectedBy");
         //ColumnValue colCollectedDate = collectedValues.get("collectedDate");
@@ -254,6 +264,9 @@ public class ExternalInMigrationFormUtil extends FormUtil<Inmigration> {
         String originOther = colOriginOther.getValue();
         String destinationCode = colDestinationCode.getValue();
         Date migrationDate = colMigrationDate.getDateValue();
+        Boolean hasPhoneNumbers = StringUtil.getBooleanValue(colHasPhoneNumbers.getValue());
+        String phonePrimary = colPhonePrimary.getValue();
+        String phoneAlternative = colPhoneAlternative.getValue();
 
         //validations
         //memberCode blank/valid
@@ -375,7 +388,25 @@ public class ExternalInMigrationFormUtil extends FormUtil<Inmigration> {
             }
         }
 
+        //validate phone numbers
+        if (hasPhoneNumbers) {
+
+            if (!isValidPhoneNumber(phonePrimary)) {
+                String message = this.context.getString(R.string.new_member_phone_primary_invalid_lbl);
+                return new ValidationResult(colPhonePrimary, message);
+            }
+
+            if (!StringUtil.isBlank(phoneAlternative) && !isValidPhoneNumber(phoneAlternative)) {
+                String message = this.context.getString(R.string.new_member_phone_alternative_invalid_lbl);
+                return new ValidationResult(colPhoneAlternative, message);
+            }
+        }
+
         return ValidationResult.noErrors();
+    }
+
+    private boolean isValidPhoneNumber(String phoneNumber) {
+        return !StringUtil.isBlank(phoneNumber) && phoneNumber.matches(PHONE_NUMBER_REGEX);
     }
 
     private HeadRelationship getLastOpenedHeadRelationship(String memberCode) {
@@ -447,6 +478,9 @@ public class ExternalInMigrationFormUtil extends FormUtil<Inmigration> {
         ColumnValue colMemberDob = collectedValues.get("memberDob"); //date cannot be in future + head min age
         ColumnValue colEducation = collectedValues.get("education");
         ColumnValue colReligion = collectedValues.get("religion");
+        ColumnValue colHasPhoneNumbers = collectedValues.get("hasPhoneNumbers");
+        ColumnValue colPhonePrimary = collectedValues.get("phonePrimary"); //not blank
+        ColumnValue colPhoneAlternative = collectedValues.get("phoneAlternative"); //not blank
         ColumnValue colHeadRelationshipType = collectedValues.get("headRelationshipType"); //not blank
         ColumnValue colMigrationType = collectedValues.get("migrationType");
         ColumnValue colExtMigrationType = collectedValues.get("extMigrationType");
@@ -472,6 +506,9 @@ public class ExternalInMigrationFormUtil extends FormUtil<Inmigration> {
         Date memberDob = colMemberDob.getDateValue();
         String education = colEducation.getValue();
         String religion = colReligion.getValue();
+        Boolean hasPhoneNumbers = StringUtil.getBooleanValue(colHasPhoneNumbers.getValue());
+        String phonePrimary = colPhonePrimary.getValue();
+        String phoneAlternative = colPhoneAlternative.getValue();
         HeadRelationshipType headRelationshipType = HeadRelationshipType.getFrom(colHeadRelationshipType.getValue());
         InMigrationType migrationType = InMigrationType.getFrom(colMigrationType.getValue());
         ExternalInMigrationType extMigrationType = ExternalInMigrationType.getFrom(colExtMigrationType.getValue());
@@ -522,6 +559,8 @@ public class ExternalInMigrationFormUtil extends FormUtil<Inmigration> {
 
         member.education = education;
         member.religion = religion;
+        member.phonePrimary = phonePrimary;
+        member.phoneAlternative = phoneAlternative;
 
         member.headRelationshipType = headRelationshipType;
         member.gpsNull = household.gpsNull;
@@ -621,6 +660,9 @@ public class ExternalInMigrationFormUtil extends FormUtil<Inmigration> {
         ColumnValue colHeadRelationshipType = collectedValues.get("headRelationshipType"); //not blank
         ColumnValue colEducation = collectedValues.get("education");
         ColumnValue colReligion = collectedValues.get("religion");
+        ColumnValue colHasPhoneNumbers = collectedValues.get("hasPhoneNumbers");
+        ColumnValue colPhonePrimary = collectedValues.get("phonePrimary"); //not blank
+        ColumnValue colPhoneAlternative = collectedValues.get("phoneAlternative"); //not blank
         ColumnValue colMigrationType = collectedValues.get("migrationType");
         ColumnValue colExtMigrationType = collectedValues.get("extMigrationType");
         ColumnValue colOriginCode = collectedValues.get("originCode");
@@ -645,6 +687,9 @@ public class ExternalInMigrationFormUtil extends FormUtil<Inmigration> {
         Date memberDob = colMemberDob.getDateValue();
         String education = colEducation.getValue();
         String religion = colReligion.getValue();
+        Boolean hasPhoneNumbers = StringUtil.getBooleanValue(colHasPhoneNumbers.getValue());
+        String phonePrimary = colPhonePrimary.getValue();
+        String phoneAlternative = colPhoneAlternative.getValue();
         HeadRelationshipType headRelationshipType = HeadRelationshipType.getFrom(colHeadRelationshipType.getValue());
         InMigrationType migrationType = InMigrationType.getFrom(colMigrationType.getValue());
         ExternalInMigrationType extMigrationType = ExternalInMigrationType.getFrom(colExtMigrationType.getValue());
@@ -688,6 +733,8 @@ public class ExternalInMigrationFormUtil extends FormUtil<Inmigration> {
 
         member.education = education;
         member.religion = religion;
+        member.phonePrimary = phonePrimary;
+        member.phoneAlternative = phoneAlternative;
 
         //Residency - read last created residency
         Residency residency = savedResidency;

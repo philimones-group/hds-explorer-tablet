@@ -2504,7 +2504,7 @@
     },
     {
       "id": "32:8172509885783218958",
-      "lastPropertyId": "10:1488441766678799263",
+      "lastPropertyId": "12:3990791529372727564",
       "name": "RegionHeadRelationship",
       "properties": [
         {
@@ -2567,13 +2567,25 @@
           "id": "10:1488441766678799263",
           "name": "recentlyCreatedUri",
           "type": 9
+        },
+        {
+          "id": "11:2766892243747730797",
+          "name": "oldHeadId",
+          "indexId": "126:7340697895653967815",
+          "type": 6,
+          "flags": 8
+        },
+        {
+          "id": "12:3990791529372727564",
+          "name": "oldHeadRelationshipId",
+          "type": 6
         }
       ],
       "relations": []
     }
   ],
   "lastEntityId": "32:8172509885783218958",
-  "lastIndexId": "125:4822792107585433919",
+  "lastIndexId": "126:7340697895653967815",
   "lastRelationId": "0:0",
   "lastSequenceId": "0:0",
   "modelVersion": 5,

@@ -71,6 +71,8 @@ public class MemberEnumerationFormUtil extends FormUtil<Member> {
     private Residency savedResidency;
     private HeadRelationship savedHeadRelationship;
 
+    private final String PHONE_NUMBER_REGEX = "^(\\+?\\d{1,3})?[-.\\s]?\\(?\\d{2,4}\\)?[-.\\s]?\\d{3,5}[-.\\s]?\\d{4,6}$";
+
     public MemberEnumerationFormUtil(Fragment fragment, Context context, Visit visit, Household household, FormUtilities odkFormUtilities, FormUtilListener<Member> listener){
         super(fragment, context, FormUtil.getMemberEnuForm(context), odkFormUtilities, listener);
 
@@ -204,6 +206,9 @@ public class MemberEnumerationFormUtil extends FormUtil<Member> {
         ColumnValue colDob = collectedValues.get("dob"); //date cannot be in future + head min age
         ColumnValue colHeadRelationshipType = collectedValues.get("headRelationshipType"); //not blank
         ColumnValue colResidencyStartDate = collectedValues.get("residencyStartDate"); //not null cannot be in the future nor before dob
+        ColumnValue colHasPhoneNumbers = collectedValues.get("hasPhoneNumbers");
+        ColumnValue colPhonePrimary = collectedValues.get("phonePrimary"); //not blank
+        ColumnValue colPhoneAlternative = collectedValues.get("phoneAlternative"); //not blank
         //ColumnValue colCollectedBy = collectedValues.get("collectedBy");
         //ColumnValue colCollectedDate = collectedValues.get("collectedDate");
         //ColumnValue colModules = collectedValues.get("modules");
@@ -221,6 +226,9 @@ public class MemberEnumerationFormUtil extends FormUtil<Member> {
         Date dob = colDob.getDateValue();
         HeadRelationshipType headRelationshipType = HeadRelationshipType.getFrom(colHeadRelationshipType.getValue());
         Date residencyStartDate = colResidencyStartDate.getDateValue();
+        Boolean hasPhoneNumbers = StringUtil.getBooleanValue(colHasPhoneNumbers.getValue());
+        String phonePrimary = colPhonePrimary.getValue();
+        String phoneAlternative = colPhoneAlternative.getValue();
 
         if (!codeGenerator.isMemberCodeValid(code)){
             String message = this.context.getString(R.string.new_member_code_err_lbl);
@@ -304,7 +312,25 @@ public class MemberEnumerationFormUtil extends FormUtil<Member> {
             return new ValidationResult(colResidencyStartDate, message);
         }
 
+        //validate phone numbers
+        if (hasPhoneNumbers) {
+
+            if (!isValidPhoneNumber(phonePrimary)) {
+                String message = this.context.getString(R.string.new_member_phone_primary_invalid_lbl);
+                return new ValidationResult(colPhonePrimary, message);
+            }
+
+            if (!StringUtil.isBlank(phoneAlternative) && !isValidPhoneNumber(phoneAlternative)) {
+                String message = this.context.getString(R.string.new_member_phone_alternative_invalid_lbl);
+                return new ValidationResult(colPhoneAlternative, message);
+            }
+        }
+
         return ValidationResult.noErrors();
+    }
+
+    private boolean isValidPhoneNumber(String phoneNumber) {
+        return !StringUtil.isBlank(phoneNumber) && phoneNumber.matches(PHONE_NUMBER_REGEX);
     }
 
     @Override
@@ -347,6 +373,8 @@ public class MemberEnumerationFormUtil extends FormUtil<Member> {
         ColumnValue colDob = collectedValues.get("dob"); //date cannot be in future + head min age
         ColumnValue colEducation = collectedValues.get("education");
         ColumnValue colReligion = collectedValues.get("religion");
+        ColumnValue colPhonePrimary = collectedValues.get("phonePrimary"); //not blank
+        ColumnValue colPhoneAlternative = collectedValues.get("phoneAlternative"); //not blank
         ColumnValue colHeadRelationshipType = collectedValues.get("headRelationshipType"); //not blank
         ColumnValue colResidencyStartDate = collectedValues.get("residencyStartDate"); //not null cannot be in the future nor before dob
         ColumnValue colCollectedBy = collectedValues.get("collectedBy");
@@ -366,6 +394,8 @@ public class MemberEnumerationFormUtil extends FormUtil<Member> {
         Date dob = colDob.getDateValue();
         String education = colEducation.getValue();
         String religion = colReligion.getValue();
+        String phonePrimary = colPhonePrimary.getValue();
+        String phoneAlternative = colPhoneAlternative.getValue();
         HeadRelationshipType headRelationshipType = HeadRelationshipType.getFrom(colHeadRelationshipType.getValue());
         Date residencyStartDate = colResidencyStartDate.getDateValue();
 
@@ -386,6 +416,8 @@ public class MemberEnumerationFormUtil extends FormUtil<Member> {
         //member.spouseName = null;
         member.education = education;
         member.religion = religion;
+        member.phonePrimary = phonePrimary;
+        member.phoneAlternative = phoneAlternative;
         member.householdCode = householdCode;
         member.householdName = householdName;
         member.startType = ResidencyStartType.ENUMERATION;
@@ -483,6 +515,8 @@ public class MemberEnumerationFormUtil extends FormUtil<Member> {
         ColumnValue colDob = collectedValues.get("dob"); //date cannot be in future + head min age
         ColumnValue colEducation = collectedValues.get("education");
         ColumnValue colReligion = collectedValues.get("religion");
+        ColumnValue colPhonePrimary = collectedValues.get("phonePrimary"); //not blank
+        ColumnValue colPhoneAlternative = collectedValues.get("phoneAlternative"); //not blank
         ColumnValue colHeadRelationshipType = collectedValues.get("headRelationshipType"); //not blank
         ColumnValue colResidencyStartDate = collectedValues.get("residencyStartDate"); //not null cannot be in the future nor before dob
         ColumnValue colCollectedBy = collectedValues.get("collectedBy");
@@ -502,6 +536,8 @@ public class MemberEnumerationFormUtil extends FormUtil<Member> {
         Date dob = colDob.getDateValue();
         String education = colEducation.getValue();
         String religion = colReligion.getValue();
+        String phonePrimary = colPhonePrimary.getValue();
+        String phoneAlternative = colPhoneAlternative.getValue();
         HeadRelationshipType headRelationshipType = HeadRelationshipType.getFrom(colHeadRelationshipType.getValue());
         Date residencyStartDate = colResidencyStartDate.getDateValue();
 
@@ -521,7 +557,8 @@ public class MemberEnumerationFormUtil extends FormUtil<Member> {
         //member.spouseName = null;
         member.education = education;
         member.religion = religion;
-        member.education =
+        member.phonePrimary = phonePrimary;
+        member.phoneAlternative = phoneAlternative;
         member.householdCode = householdCode;
         member.householdName = householdName;
         member.startType = ResidencyStartType.ENUMERATION;

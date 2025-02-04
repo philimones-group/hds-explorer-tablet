@@ -78,6 +78,8 @@ public class MemberEditFragment extends Fragment {
     private TextView txtEditMotherCode;
     private TextView txtEditMotherName;
     private Button btEditMother;
+    private EditText txtEditPhonePrimary;
+    private EditText txtEditPhoneAlternative;
     private Button btEditUpdateDetails;
     private LoadingDialog loadingDialog;
     private DateTimeSelector datePicker;
@@ -102,6 +104,8 @@ public class MemberEditFragment extends Fragment {
     private Box<ApplicationParam> boxAppParams;
 
     private EditListener editListener;
+
+    private final String PHONE_NUMBER_REGEX = "^(\\+?\\d{1,3})?[-.\\s]?\\(?\\d{2,4}\\)?[-.\\s]?\\d{3,5}[-.\\s]?\\d{4,6}$";
 
     public MemberEditFragment() {
         // Required empty public constructor
@@ -174,6 +178,8 @@ public class MemberEditFragment extends Fragment {
         this.txtEditMotherCode = view.findViewById(R.id.txtEditMotherCode);
         this.txtEditMotherName = view.findViewById(R.id.txtEditMotherName);
         this.btEditMother = view.findViewById(R.id.btEditMother);
+        this.txtEditPhonePrimary = view.findViewById(R.id.txtEditPhonePrimary);
+        this.txtEditPhoneAlternative = view.findViewById(R.id.txtEditPhoneAlternative);
         this.btEditUpdateDetails = view.findViewById(R.id.btEditUpdateDetails);
 
         this.loadingDialog = new LoadingDialog(this.getContext());
@@ -221,6 +227,40 @@ public class MemberEditFragment extends Fragment {
             onFormContentChanges();
         });
 
+        this.txtEditPhonePrimary.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                onFormContentChanges();
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
+        this.txtEditPhoneAlternative.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                onFormContentChanges();
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
         btEditUpdateDetails.setEnabled(false);
 
         //get the last CoreCollectedData record of this household - only one can exists per subject
@@ -236,6 +276,8 @@ public class MemberEditFragment extends Fragment {
         this.txtEditFatherName.setText(getParentName(member.fatherName));
         this.txtEditMotherCode.setText(member.motherCode);
         this.txtEditMotherName.setText(getParentName(member.motherName));
+        this.txtEditPhonePrimary.setText(member.phonePrimary);
+        this.txtEditPhoneAlternative.setText(member.phoneAlternative);
     }
 
     private String getParentName(String name){
@@ -249,6 +291,8 @@ public class MemberEditFragment extends Fragment {
     private void onFormContentChanges() {
 
         Gender selectedGender = chkEditGMale.isChecked() ? Gender.MALE : Gender.FEMALE;
+        String editedPhonePrimary = txtEditPhonePrimary.getText().toString();
+        String editedPhoneAlternative = txtEditPhoneAlternative.getText().toString();
 
         //check warning of changing the sex - check if member is male - if is not a father somewhere
         if (selectedGender != member.gender) {
@@ -301,8 +345,13 @@ public class MemberEditFragment extends Fragment {
         }
 
 
-        boolean changed1 = !(this.member.name.equals(this.txtEditName.getText().toString())) || !(this.member.gender==selectedGender) ||
-                           !(selectedFather==null) || !(selectedMother==null) || (selectedDob !=null && !GeneralUtil.dateEquals(selectedDob, member.dob));
+        boolean changed1 = !(this.member.name.equals(this.txtEditName.getText().toString())) ||
+                           !(this.member.gender==selectedGender) ||
+                           !(selectedFather==null) ||
+                           !(selectedMother==null) ||
+                            (selectedDob !=null && !GeneralUtil.dateEquals(selectedDob, member.dob)) ||
+                            (StringUtil.textChanged(this.member.phonePrimary, editedPhonePrimary)) ||
+                            (StringUtil.textChanged(this.member.phoneAlternative, editedPhoneAlternative));
 
 
         this.btEditUpdateDetails.setEnabled(changed1);
@@ -325,6 +374,28 @@ public class MemberEditFragment extends Fragment {
             return;
         }
 
+        String phonePrimary = txtEditPhonePrimary.getText().toString();
+        String phoneAlternative = txtEditPhoneAlternative.getText().toString();
+
+        //validations
+        if (StringUtil.isBlank(this.txtEditName.getText().toString())) {
+            DialogFactory.createMessageInfo(this.getContext(), R.string.member_details_tab_edit_lbl, R.string.member_details_edit_member_name_empty_error_lbl).show();
+            txtEditName.requestFocus();
+            return;
+        }
+
+        if (!StringUtil.isBlank(phonePrimary) && !isValidPhoneNumber(phonePrimary)) {
+            DialogFactory.createMessageInfo(this.getContext(), R.string.member_details_tab_edit_lbl, R.string.new_member_phone_primary_invalid_lbl).show();
+            txtEditPhonePrimary.requestFocus();
+            return;
+        }
+
+        if (!StringUtil.isBlank(phoneAlternative) && !isValidPhoneNumber(phoneAlternative)) {
+            DialogFactory.createMessageInfo(this.getContext(), R.string.member_details_tab_edit_lbl, R.string.new_member_phone_alternative_invalid_lbl).show();
+            txtEditPhoneAlternative.requestFocus();
+            return;
+        }
+
         //persist the changes into the database
         this.member.name = this.txtEditName.getText().toString();
         this.member.gender = chkEditGMale.isChecked() ? Gender.MALE : Gender.FEMALE;
@@ -333,6 +404,8 @@ public class MemberEditFragment extends Fragment {
         this.member.fatherName = txtEditFatherName.getText().toString();
         this.member.motherCode = txtEditMotherCode.getText().toString();
         this.member.motherName = txtEditMotherName.getText().toString();
+        this.member.phonePrimary = txtEditPhonePrimary.getText().toString();
+        this.member.phoneAlternative = txtEditPhoneAlternative.getText().toString();
         this.boxMembers.put(this.member);
 
         updateAffectedRecords(member);
@@ -347,6 +420,8 @@ public class MemberEditFragment extends Fragment {
         mapXml.put("motherName", this.member.motherName);
         mapXml.put("fatherCode", this.member.fatherCode);
         mapXml.put("fatherName", this.member.fatherName);
+        mapXml.put("phonePrimary", this.member.phonePrimary);
+        mapXml.put("phoneAlternative", this.member.phoneAlternative);
         mapXml.put("collectedBy", this.loggedUser.username);
         mapXml.put("collectedDate", StringUtil.format(new Date(), "yyyy-MM-dd HH:mm:ss.SSS"));
 
@@ -415,6 +490,10 @@ public class MemberEditFragment extends Fragment {
             headRelationship.startDate = member.dob;
             this.boxHeadRelationships.put(headRelationship);
         }
+    }
+
+    private boolean isValidPhoneNumber(String phoneNumber) {
+        return !StringUtil.isBlank(phoneNumber) && phoneNumber.matches(PHONE_NUMBER_REGEX);
     }
 
     private void openFatherFilterDialog(){

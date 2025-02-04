@@ -294,6 +294,8 @@
     <string name="member_details_education_lbl">Éducation:</string>
     <string name="member_details_religion_lbl">Religion:</string>
     <string name="member_details_forms_spouse_lbl">Conjoint:</string>
+    <string name="member_details_phone_primary_lbl">Téléphone principal :</string>
+    <string name="member_details_phone_alternative_lbl">Téléphone secondaire :</string>
     <string name="member_details_bt_openform_lbl">Recueil des données</string>
     <string name="member_details_bt_back_lbl">Retourner</string>
     <string name="member_details_forms_selector_lbl">Sélectionnez un formulaire</string>
@@ -313,6 +315,7 @@
     <string name="member_details_edit_member_mother_lbl">Mère</string>
     <string name="member_details_edit_member_parent_code_lbl">Code:</string>
     <string name="member_details_edit_member_parent_name_lbl">Nom:</string>
+    <string name="member_details_edit_phone_numbers_lbl">Numéros de téléphone</string>
     <string name="member_details_edit_mother_select_lbl">Changer la mère du membre?</string>
     <string name="member_details_edit_father_select_lbl">Changer le père du membre?</string>
     <string name="member_details_edit_father_unknown_lbl">Définir comme Père inconnu</string>
@@ -323,6 +326,7 @@
     <string name="member_details_edit_father_sex_cant_change_lbl">Vous ne pouvez pas modifier le sexe car le membre est déjà le père d\'autres membres dans le système. \nModifiez d\'abord le père des membres liés.</string>
     <string name="member_details_edit_mother_sex_cant_change_lbl">Il ne sera pas possible de changer le sexe car le membre est déjà la mère d\'autres membres dans le système.\nChanger d\'abord la mère des membres apparentés</string>
     <string name="member_details_edit_dob_bir_warning_lbl">Ce membre a été inscrit au registre des naissances. \nLa date à laquelle vous avez commencé à vivre dans la maison est donc la même que votre date de naissance!\n\nÊtes-vous sûr de vouloir modifier votre date de naissance (cela affectera votre acte de naissance)?</string>
+    <string name="member_details_edit_member_name_empty_error_lbl">Le nom du membre ne peut pas être vide</string>
 
     <string name="region_details_edit_region_name_lbl">Nom</string>
     <string name="region_details_edit_button_update_details_lbl">Changer les détails</string>
@@ -469,6 +473,8 @@
     <string name="new_member_residency_startdate_empty_lbl">La date du recensement ne peut être vide</string>
     <string name="new_member_residency_startdate_not_great_today_lbl">La date du recensement ne peut pas être dans le futur</string>
     <string name="new_member_residency_startdate_not_before_dob_lbl">La date du recensement ne peut être antérieure à la date de naissance.</string>
+    <string name="new_member_phone_primary_invalid_lbl">Le numéro de téléphone principal est invalide</string>
+    <string name="new_member_phone_alternative_invalid_lbl">Le numéro de téléphone secondaire est invalide</string>
     <string name="new_member_title_lbl">Recensement : Ajouter un nouveau membre</string>
     <string name="new_member_collect_lbl">Sauvegarder et recueillir des données</string>
     <string name="new_member_dialog_change_title_lbl">Mise à jour des données</string>

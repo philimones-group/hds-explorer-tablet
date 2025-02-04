@@ -296,6 +296,8 @@
     <string name="member_details_education_lbl">Education:</string>
     <string name="member_details_religion_lbl">Religion:</string>
     <string name="member_details_forms_spouse_lbl">Spouse:</string>
+    <string name="member_details_phone_primary_lbl">Main Phone:</string>
+    <string name="member_details_phone_alternative_lbl">Secondary Phone:</string>
     <string name="member_details_bt_openform_lbl">Collect Data</string>
     <string name="member_details_bt_back_lbl">Back</string>
     <string name="member_details_forms_selector_lbl">Select a Form</string>
@@ -315,6 +317,7 @@
     <string name="member_details_edit_member_mother_lbl">Mother</string>
     <string name="member_details_edit_member_parent_code_lbl">Code:</string>
     <string name="member_details_edit_member_parent_name_lbl">Name:</string>
+    <string name="member_details_edit_phone_numbers_lbl">Phone Numbers</string>
     <string name="member_details_edit_mother_select_lbl">Update the mother of the Member?</string>
     <string name="member_details_edit_father_select_lbl">Update the father of the Member?</string>
     <string name="member_details_edit_father_unknown_lbl">Set Father as Unknown</string>
@@ -325,6 +328,7 @@
     <string name="member_details_edit_father_sex_cant_change_lbl">Cannot change the sex, because this member is a father of other members.\nChange first the father of related members</string>
     <string name="member_details_edit_mother_sex_cant_change_lbl">Cannot change the sex, because this member is a mother of other members.\nChange first the mother of related members</string>
     <string name="member_details_edit_dob_bir_warning_lbl">This Member was registered using a Birth Registration!\nThe residency start date is the same as date of Birth!\n\nAre you sure you want to change its Date of Birth (The birth registration will be affected)?</string>
+    <string name="member_details_edit_member_name_empty_error_lbl">The Name of the Member cannot be empty</string>
 
     <string name="region_details_edit_region_name_lbl">Name</string>
     <string name="region_details_edit_button_update_details_lbl">Update Details</string>
@@ -472,6 +476,8 @@
     <string name="new_member_residency_startdate_empty_lbl">The Residency start date cannot be empty</string>
     <string name="new_member_residency_startdate_not_great_today_lbl">The Residency start date cannot be greater than today</string>
     <string name="new_member_residency_startdate_not_before_dob_lbl">The Residency start date cannot be before the date of birth</string>
+    <string name="new_member_phone_primary_invalid_lbl">The Primary phone number is invalid</string>
+    <string name="new_member_phone_alternative_invalid_lbl">The Alternative phone number is invalid</string>
     <string name="new_member_title_lbl">Census: Add New Member to Household</string>
     <string name="new_member_collect_lbl">Save and Collect</string>
     <string name="new_member_dialog_change_title_lbl">Update Member Info</string>

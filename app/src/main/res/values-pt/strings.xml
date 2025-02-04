@@ -4,7 +4,7 @@
 
     <!-- Copyright    -->
     <string name="copyright_app_name_lbl">HDS Explorer</string>
-    <string name="copyright_app_company_lbl">© 2024 Philimone\'s Group</string>
+    <string name="copyright_app_company_lbl">© 2025 Philimone\'s Group</string>
     <string name="copyright_app_developers_lbl">Desenvolvido por Paulo Filimone</string>
 
     <!-- General buttons and Strings-->
@@ -63,6 +63,7 @@
     <!-- Sync Tasks -->
     <string name="sync_downloading_lbl">A baixar</string>
     <string name="sync_saving_lbl">A guardar dados</string>
+    <string name="sync_deleting_lbl">Apagando</string>
     <string name="sync_params_lbl">Pârametros</string>
     <string name="sync_modules_lbl">Módulos</string>
     <string name="sync_forms_lbl">Formulários ODK</string>
@@ -90,6 +91,7 @@
     <string name="sync_incomplete_visits_lbl">Visitas Incompletas</string>
     <string name="sync_regionheads_lbl">Chefes de Região</string>
     <string name="sync_saved_lbl">Guardado</string>
+    <string name="sync_deleted_lbl">Apagados</string>
     <string name="sync_records_lbl">registos</string>
     <string name="sync_successfully_lbl">Os dados foram sincronizados com sucesso.</string>
     <string name="sync_failure_file_not_found_lbl">O ficheiro não foi encontrado no servidor para ser baixado.</string>

@@ -27,6 +27,8 @@ import java.util.List;
 
 import androidx.fragment.app.Fragment;
 
+import com.google.android.material.progressindicator.LinearProgressIndicator;
+
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link SyncPanelItemFragment#newInstance} factory method to
@@ -38,7 +40,7 @@ public class SyncPanelItemFragment extends Fragment implements View.OnClickListe
     private Button syncButton;
     private Button syncStopButton;
     private Button syncDetails;
-    private ProgressBar syncProgressBar;
+    private LinearProgressIndicator syncProgressBar;
     private TextView syncProgressText;
     private TextView syncSyncedDate;
     private TextView syncProgressMessage;
@@ -100,7 +102,7 @@ public class SyncPanelItemFragment extends Fragment implements View.OnClickListe
         this.syncButton = (Button) view.findViewById(R.id.syncButton);
         this.syncStopButton = (Button) view.findViewById(R.id.syncButton);
         this.syncDetails = (Button) view.findViewById(R.id.syncDetails);
-        this.syncProgressBar = (ProgressBar) view.findViewById(R.id.syncProgressBar);
+        this.syncProgressBar = view.findViewById(R.id.syncProgressBar);
         this.syncProgressText = (TextView) view.findViewById(R.id.syncProgressText);
         this.syncSyncedDate = (TextView) view.findViewById(R.id.syncEntityMsg);
         this.syncProgressMessage = (TextView) view.findViewById(R.id.syncProgressMessage);
@@ -244,6 +246,12 @@ public class SyncPanelItemFragment extends Fragment implements View.OnClickListe
 
         int s = (int)size;
 
+        if (size == 0) {
+            getActivity().runOnUiThread(() -> this.syncProgressBar.setIndeterminate(true));
+        } else {
+            getActivity().runOnUiThread(() -> this.syncProgressBar.setIndeterminate(false));
+        }
+
         Log.d("sync-started", syncEntity.name()+", size="+size+", s="+s);
 
         getActivity().runOnUiThread(() ->  cleanProgress());
@@ -285,6 +293,8 @@ public class SyncPanelItemFragment extends Fragment implements View.OnClickListe
             syncProgressBar.setMax(100);
             onSyncProgressUpdate(syncProgressBar.getMax(), result);
         }
+
+        getActivity().runOnUiThread(() -> this.syncProgressBar.setIndeterminate(false));
 
         //Make sync button visible
         //this.syncStopButton.setVisibility(View.GONE);

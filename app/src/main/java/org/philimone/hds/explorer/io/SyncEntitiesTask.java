@@ -260,6 +260,9 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 			*/
 
 			break;
+		case DELETING:
+			builder.append(mContext.getString(R.string.sync_deleting_lbl));
+			break;
 		}
 
 		if (entity == null) return;
@@ -331,6 +334,8 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 			String msg = ". " + mContext.getString(R.string.sync_saved_lbl) + " "  + values[0] + " " + mContext.getString(R.string.sync_records_lbl);
 			if (state== SyncState.DOWNLOADING){
 				msg = ". " + mContext.getString(R.string.sync_saved_lbl) + " "  + getInKB(values[0]) + "KB";
+			} else if (state == SyncState.DELETING) {
+				msg = ". " + mContext.getString(R.string.sync_deleted_lbl) + " "  + values[0] + " " + mContext.getString(R.string.sync_records_lbl);
 			}
 
 			builder.append(msg);
@@ -520,6 +525,10 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 	}
 
 	private void deleteAllMembers(){
+		this.state = SyncState.DELETING;
+		this.listener.onSyncStarted(this.entity, SyncState.DELETING, 0);
+		publishProgress(0);
+
 		try {
 			this.boxMembers.removeAll();
 			return;
@@ -532,6 +541,9 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 		long total = this.boxMembers.count();
 		long[] not_processed = {total};
 		Log.d("finished reading all", ""+total);
+
+		int[] processed = {0};
+		this.listener.onSyncStarted(this.entity, SyncState.DELETING, total);
 
 		while (!finalized) {
 			ObjectBoxDatabase.get().runInTx(() -> {
@@ -549,6 +561,11 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 					not_processed[0] -= readed;
 					Log.d("removing", offset + "/" + not_processed[0] + "-" + readed);
 
+					processed[0] += readed;
+					if (processed[0] % 500 == 0){
+						publishProgress(processed[0]);
+					}
+
 					if (offset % 50000 == 0) {
 						break;
 					}
@@ -561,6 +578,10 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 	}
 
 	private void deleteAllResidencies(){
+		this.state = SyncState.DELETING;
+		this.listener.onSyncStarted(this.entity, SyncState.DELETING, 0);
+		publishProgress(0);
+
 		try {
 			this.boxResidencies.removeAll();
 			return;
@@ -573,6 +594,9 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 		long total = this.boxResidencies.count();
 		long[] not_processed = {total};
 		Log.d("finished reading all", ""+total);
+
+		int[] processed = {0};
+		this.listener.onSyncStarted(this.entity, SyncState.DELETING, total);
 
 		while (!finalized) {
 			ObjectBoxDatabase.get().runInTx(() -> {
@@ -590,6 +614,11 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 					not_processed[0] -= readed;
 					Log.d("removing", offset + "/" + not_processed[0] + "-" + readed);
 
+					processed[0] += readed;
+					if (processed[0] % 500 == 0){
+						publishProgress(processed[0]);
+					}
+
 					if (offset % 50000 == 0) {
 						break;
 					}
@@ -602,6 +631,10 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 	}
 
 	private void deleteAllHeadRelationships(){
+		this.state = SyncState.DELETING;
+		this.listener.onSyncStarted(this.entity, SyncState.DELETING, 0);
+		publishProgress(0);
+
 		try {
 			this.boxHeadRelationships.removeAll();
 			return;
@@ -614,6 +647,9 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 		long total = this.boxHeadRelationships.count();
 		long[] not_processed = {total};
 		Log.d("finished reading all", ""+total);
+
+		int[] processed = {0};
+		this.listener.onSyncStarted(this.entity, SyncState.DELETING, total);
 
 		while (!finalized) {
 			ObjectBoxDatabase.get().runInTx(() -> {
@@ -631,6 +667,11 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 					not_processed[0] -= readed;
 					Log.d("removing", offset + "/" + not_processed[0] + "-" + readed);
 
+					processed[0] += readed;
+					if (processed[0] % 500 == 0){
+						publishProgress(processed[0]);
+					}
+
 					if (offset % 50000 == 0) {
 						break;
 					}
@@ -643,6 +684,10 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 	}
 
 	private void deleteAllVisits(){
+		this.state = SyncState.DELETING;
+		this.listener.onSyncStarted(this.entity, SyncState.DELETING, 0);
+		publishProgress(0);
+
 		try {
 			this.boxVisits.removeAll();
 			return;
@@ -655,6 +700,9 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 		long total = this.boxVisits.count();
 		long[] not_processed = {total};
 		Log.d("finished reading all", ""+total);
+
+		int[] processed = {0};
+		this.listener.onSyncStarted(this.entity, SyncState.DELETING, total);
 
 		while (!finalized) {
 			ObjectBoxDatabase.get().runInTx(() -> {
@@ -672,6 +720,11 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 					not_processed[0] -= readed;
 					Log.d("removing", offset + "/" + not_processed[0] + "-" + readed);
 
+					processed[0] += readed;
+					if (processed[0] % 500 == 0){
+						publishProgress(processed[0]);
+					}
+
 					if (offset % 50000 == 0) {
 						break;
 					}
@@ -684,6 +737,10 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 	}
 
 	private void deleteAllHouseholds(){
+		this.state = SyncState.DELETING;
+		this.listener.onSyncStarted(this.entity, SyncState.DELETING, 0);
+		publishProgress(0);
+
 		try {
 			this.boxHouseholds.removeAll();
 			return;
@@ -696,6 +753,9 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 		long total = this.boxHouseholds.count();
 		long[] not_processed = {total};
 		Log.d("finished reading all", ""+total);
+
+		int[] processed = {0};
+		this.listener.onSyncStarted(this.entity, SyncState.DELETING, total);
 
 		while (!finalized) {
 			ObjectBoxDatabase.get().runInTx(() -> {
@@ -713,6 +773,11 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 					not_processed[0] -= readed;
 					Log.d("removing", offset + "/" + not_processed[0] + "-" + readed);
 
+					processed[0] += offset;
+					if (processed[0] % 500 == 0){
+						publishProgress(processed[0]);
+					}
+
 					if (offset % 50000 == 0) {
 						break;
 					}
@@ -725,6 +790,10 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 	}
 
 	private void deleteAllInmigrations(){
+		this.state = SyncState.DELETING;
+		this.listener.onSyncStarted(this.entity, SyncState.DELETING, 0);
+		publishProgress(0);
+
 		try {
 			this.boxInmigrations.removeAll();
 			return;
@@ -737,6 +806,9 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 		long total = this.boxInmigrations.count();
 		long[] not_processed = {total};
 		Log.d("finished reading all", ""+total);
+
+		int[] processed = {0};
+		this.listener.onSyncStarted(this.entity, SyncState.DELETING, total);
 
 		while (!finalized) {
 			ObjectBoxDatabase.get().runInTx(() -> {
@@ -754,6 +826,11 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 					not_processed[0] -= readed;
 					Log.d("removing", offset + "/" + not_processed[0] + "-" + readed);
 
+					processed[0] += readed;
+					if (processed[0] % 500 == 0){
+						publishProgress(processed[0]);
+					}
+
 					if (offset % 50000 == 0) {
 						break;
 					}
@@ -766,6 +843,10 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 	}
 
 	private void deleteAllOutmigrations(){
+		this.state = SyncState.DELETING;
+		this.listener.onSyncStarted(this.entity, SyncState.DELETING, 0);
+		publishProgress(0);
+
 		try {
 			this.boxOutmigrations.removeAll();
 			return;
@@ -778,6 +859,9 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 		long total = this.boxOutmigrations.count();
 		long[] not_processed = {total};
 		Log.d("finished reading all", ""+total);
+
+		int[] processed = {0};
+		this.listener.onSyncStarted(this.entity, SyncState.DELETING, total);
 
 		while (!finalized) {
 			ObjectBoxDatabase.get().runInTx(() -> {
@@ -794,6 +878,11 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 					offset += readed;
 					not_processed[0] -= readed;
 					Log.d("removing", offset + "/" + not_processed[0] + "-" + readed);
+
+					processed[0] += readed;
+					if (processed[0] % 500 == 0){
+						publishProgress(processed[0]);
+					}
 
 					if (offset % 50000 == 0) {
 						break;

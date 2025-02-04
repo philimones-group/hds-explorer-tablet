@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".main.sync.SyncPanelItemFragment">
 
     <LinearLayout
@@ -74,16 +75,19 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <ProgressBar
+                <com.google.android.material.progressindicator.LinearProgressIndicator
                     android:id="@+id/syncProgressBar"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    app:trackThickness="20dp"
+                    app:trackCornerRadius="5dp"
+                    app:trackColor="#ff5a5d5a"
+                    app:indicatorColor="#A37F12"
                     android:max="100"
                     android:min="0"
                     android:indeterminateOnly="false"
                     android:mirrorForRtl="true"
-                    android:progress="43"
-                    android:progressDrawable="@drawable/nui_sync_progress_tint"/>
+                    android:progress="43"/>
             </RelativeLayout>
 
         </LinearLayout>

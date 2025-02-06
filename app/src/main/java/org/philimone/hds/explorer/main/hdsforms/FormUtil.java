@@ -957,14 +957,19 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
                 if (column != null) {
                     //column.getTypeOptions().put(opt.optionValue, new FormOptions.OptionValue(opt.optionLabel, false, ""));
                     String optionLabel = opt.optionLabel;
+                    String optionReadonlyCondition = "";
+                    String optionDisplayCondition = "";
 
                     //For options that are default from the app get the label from the XLS Hform
                     Map<String, FormOptions.OptionValue> options = optionsBak.get(column);
                     if (options != null && options.containsKey(opt.optionValue)) {
-                        optionLabel = options.get(opt.optionValue).label;
+                        FormOptions.OptionValue optionValue = options.get(opt.optionValue);
+                        optionLabel = optionValue.label;
+                        optionReadonlyCondition = optionValue.readonlyCondition;
+                        optionDisplayCondition = optionValue.displayCondition;
                     }
 
-                    column.addTypeOptions(opt.optionValue, optionLabel, false, "");
+                    column.addTypeOptions(opt.optionValue, optionLabel, optionReadonlyCondition, optionDisplayCondition);
                 }
             }
         }

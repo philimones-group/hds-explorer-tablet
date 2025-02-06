@@ -3360,6 +3360,16 @@ Log.d("entity", ""+entity.name());
 				parser.nextTag();
 			}
 
+			parser.nextTag(); //visitReasonOther
+			if (!isEmptyTag("visitReasonOther", parser)) {
+				parser.next();
+				table.visitReasonOther = parser.getText();
+				parser.nextTag();
+			}else{
+				table.visitReasonOther = null;
+				parser.nextTag();
+			}
+
 			parser.nextTag(); //visitLocation
 			if (!isEmptyTag("visitLocation", parser)) {
 				parser.next();

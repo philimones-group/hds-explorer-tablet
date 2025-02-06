@@ -42,10 +42,14 @@ public class Visit implements CoreEntity, FormSubject {
     @Convert(converter = VisitReasonConverter.class, dbType = String.class)
     public VisitReason visitReason;
 
+    public String visitReasonOther;
+
     public Boolean visitPossible;
 
     @Convert(converter = NoVisitReasonConverter.class, dbType = String.class)
     public NoVisitReason visitNotPossibleReason;
+
+    public String otherNotPossibleReason;
 
     @Convert(converter = VisitLocationItemConverter.class, dbType = String.class)
     public VisitLocationItem visitLocation;

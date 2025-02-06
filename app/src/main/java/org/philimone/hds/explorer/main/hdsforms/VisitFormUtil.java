@@ -61,6 +61,7 @@ public class VisitFormUtil extends FormUtil<Visit> {
     private boolean respondentExists;
     private boolean respondentResident = true;
     private int minimumRespondentAge;
+    private boolean gpsRequired;
 
     private static List<NoVisitReason> householdStatuses = Arrays.asList(NoVisitReason.HOUSE_OCCUPIED, NoVisitReason.HOUSE_VACANT, NoVisitReason.HOUSE_ABANDONED, NoVisitReason.HOUSE_DESTROYED, NoVisitReason.HOUSE_NOT_FOUND);
 
@@ -138,6 +139,7 @@ public class VisitFormUtil extends FormUtil<Visit> {
         super.initialize();
 
         this.minimumRespondentAge = retrieveMinimumRespondentAge();
+        this.gpsRequired = retrieveVisitGpsRequiredFlag();
     }
 
     private int retrieveMinimumRespondentAge() {
@@ -154,6 +156,20 @@ public class VisitFormUtil extends FormUtil<Visit> {
         return 12;
     }
 
+    private boolean retrieveVisitGpsRequiredFlag() {
+        ApplicationParam param = this.boxAppParams.query().equal(ApplicationParam_.name, ApplicationParam.PARAMS_SYSTEM_VISIT_GPS_REQUIRED, QueryBuilder.StringOrder.CASE_SENSITIVE).build().findFirst();
+
+        if (param != null) {
+            try {
+                return Boolean.parseBoolean(param.value);
+            } catch (Exception ex) {
+
+            }
+        }
+
+        return false;
+    }
+
     @Override
     protected void preloadValues() {
 
@@ -161,10 +177,13 @@ public class VisitFormUtil extends FormUtil<Visit> {
         preloadedMap.put("householdCode", household.code);
         preloadedMap.put("visitDate", StringUtil.format(new Date(), "yyyy-MM-dd"));
         preloadedMap.put("roundNumber", currentRound.roundNumber+""); //get round number
-        preloadedMap.put("respondentExists", respondentNotRegistered ? "" : respondentExists+"");
+        preloadedMap.put("respondentNotResident", !respondentResident+"");
+        preloadedMap.put("respondentExists", respondentNotRegistered ? "" : respondentExists+"");Log.d("respondentExists", respondentNotRegistered ? "" : respondentExists+"");
         preloadedMap.put("respondentResident", respondentResident+"");
         preloadedMap.put("respondentCode", respondentMember==null ? "" : respondentMember.code);
         preloadedMap.put("respondentName", respondentMember==null ? "" : respondentMember.name);
+
+        preloadedMap.put("gpsRequired", gpsRequired+"");
 
         if (newHouseholdCreated) {
             preloadedMap.put("respondentExists", "false");
@@ -251,7 +270,8 @@ public class VisitFormUtil extends FormUtil<Visit> {
             return new ValidationResult(colVisitReason, message);
         }
 
-        if (visit_reason != VisitReason.NEW_HOUSEHOLD && _respondentExists && StringUtil.isBlank(colRespondentCode.getValue())){
+        if (StringUtil.isBlank(colRespondentCode.getValue()) && _respondentExists && visit_reason != VisitReason.NEW_HOUSEHOLD &&
+            visitNotPossibleReason != NoVisitReason.REFUSE && visitNotPossibleReason != NoVisitReason.NO_RESPONDENT){
             String message = this.context.getString(R.string.new_visit_respondent_empty_lbl);
             return new ValidationResult(colRespondentCode, message);
         }
@@ -301,8 +321,10 @@ public class VisitFormUtil extends FormUtil<Visit> {
         ColumnValue colVisitDate = collectedValues.get("visitDate");
         ColumnValue colRoundNumber = collectedValues.get("roundNumber");
         ColumnValue colVisitReason = collectedValues.get("visitReason");
+        ColumnValue colVisitReasonOther = collectedValues.get("visitReasonOther");
         ColumnValue colVisitPossible = collectedValues.get("visitPossible");
         ColumnValue colvisitNotPossibleReason = collectedValues.get("visitNotPossibleReason");
+        ColumnValue colOtherNotPossibleReason = collectedValues.get("otherNotPossibleReason");
         ColumnValue colRespondentResident = collectedValues.get("respondentResident");
         ColumnValue colRespondentRelationship = collectedValues.get("respondentRelationship");
         ColumnValue colRespondentCode = collectedValues.get("respondentCode");
@@ -331,8 +353,10 @@ public class VisitFormUtil extends FormUtil<Visit> {
         visit.householdCode = colHouseholdCode.getValue();
         visit.visitDate = colVisitDate.getDateValue();
         visit.visitReason = VisitReason.getFrom(colVisitReason.getValue());
+        visit.visitReasonOther = colVisitReasonOther.getValue();
         visit.visitPossible = StringUtil.getBooleanValue(colVisitPossible.getValue());;
         visit.visitNotPossibleReason = NoVisitReason.getFrom(colvisitNotPossibleReason.getValue());
+        visit.otherNotPossibleReason = colOtherNotPossibleReason.getValue();
         visit.respondentResident = StringUtil.getBooleanValue(colRespondentResident.getValue());
         visit.respondentRelationship = colRespondentRelationship.getValue();
         visit.respondentCode = colRespondentCode.getValue();
@@ -518,7 +542,10 @@ public class VisitFormUtil extends FormUtil<Visit> {
 
     public static void updateRespondent(Context context, String xmlSavedFormPath, Member respondentMember) {
         HForm form = getVisitForm(context);
+        FormFragment.updateColumnOnXML(form, xmlSavedFormPath, "respondentExists", "true");
+        FormFragment.updateColumnOnXML(form, xmlSavedFormPath, "respondentResident", "true");
         FormFragment.updateColumnOnXML(form, xmlSavedFormPath, "respondentCode", respondentMember.code);
+        FormFragment.updateColumnOnXML(form, xmlSavedFormPath, "respondentName", respondentMember.name);
     }
 
     public static void markAllAsNonVisited(Context context, String xmlSavedFormPath, String nonVisitedList) {

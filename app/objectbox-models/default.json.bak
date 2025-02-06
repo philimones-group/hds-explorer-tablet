@@ -888,7 +888,7 @@
     },
     {
       "id": "12:5667991198190393360",
-      "lastPropertyId": "41:8035522909202246722",
+      "lastPropertyId": "43:6814987714033432594",
       "name": "Member",
       "properties": [
         {
@@ -1124,6 +1124,16 @@
           "indexId": "116:1020482705736869746",
           "type": 9,
           "flags": 2048
+        },
+        {
+          "id": "42:8581839317326232470",
+          "name": "phonePrimary",
+          "type": 9
+        },
+        {
+          "id": "43:6814987714033432594",
+          "name": "phoneAlternative",
+          "type": 9
         }
       ],
       "relations": []
@@ -1578,7 +1588,7 @@
     },
     {
       "id": "19:1493713431233179094",
-      "lastPropertyId": "25:731618077389395027",
+      "lastPropertyId": "26:5590768382658963654",
       "name": "Visit",
       "properties": [
         {
@@ -1716,6 +1726,11 @@
           "indexId": "117:1957063151361708542",
           "type": 9,
           "flags": 2048
+        },
+        {
+          "id": "26:5590768382658963654",
+          "name": "visitReasonOther",
+          "type": 9
         }
       ],
       "relations": []

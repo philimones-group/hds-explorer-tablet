@@ -20,7 +20,11 @@ android {
         targetSdk 34
         versionCode 324
         versionName "1.0.34 build ${versionCode}"
-        archivesBaseName = "$applicationName-v$versionName"
+
+        def cleanVersionName = versionName.replaceAll('\\s', '_')
+        def buildSite = project.hasProperty("HDS_EXPLORER_SITE") ? "${project.properties["HDS_EXPLORER_SITE"]}" : ""
+
+        archivesBaseName = "$applicationName-v${cleanVersionName}${buildSite ?: ''}"
 
         // Required when setting minSdkVersion to 20 or lower
         //multiDexEnabled true

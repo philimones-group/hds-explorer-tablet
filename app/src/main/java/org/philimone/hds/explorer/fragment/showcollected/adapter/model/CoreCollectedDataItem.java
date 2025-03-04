@@ -53,8 +53,8 @@ public class CoreCollectedDataItem {
         String txtItem2 = "";
         String txtItem3 = updatedDate;
 
-        txtItem1 = household.name;
-        txtItem2 = household.code + " - " + formEntityNameText + " (" + cd.formEntityCode + ")";
+        txtItem1 = getFormNameText() + " - " + this.collectedData.formEntityName;
+        txtItem2 = formEntityNameText + " (" + cd.formEntityCode + ")";
 
 
         Log.d("matching", txtItem1+" ?== "+text);
@@ -62,16 +62,16 @@ public class CoreCollectedDataItem {
         return txtItem1.toLowerCase().matches(text) || txtItem2.toLowerCase().matches(text) || txtItem3.toLowerCase().matches(text);
     }
 
-    private String getFormText(OdkCollectedDataItem cdi) {
+    private String getFormNameText() {
 
-        if (cdi.isRegionItem()) {
-            return cdi.getRegion().code + " -> " + cdi.getRegion().name;
+        if (this.region != null) {
+            return this.region.code + " -> " + this.region.name;
         }
-        if (cdi.isHouseholdItem()) {
-            return cdi.getHousehold().code + " -> " + cdi.getHousehold().name;
+        if (this.household != null) {
+            return this.household.code + " -> " + this.household.name;
         }
-        if (cdi.isMemberItem()) {
-            return cdi.getMember().code + " -> " + cdi.getMember().name;
+        if (this.member != null) {
+            return this.member.code + " -> " + this.member.name;
         }
 
         return "";

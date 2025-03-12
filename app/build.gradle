@@ -18,7 +18,7 @@ android {
         applicationId "org.philimone.hds.explorer"
         minSdk 21
         targetSdk 34
-        versionCode 325
+        versionCode 326
         versionName "1.0.34 build ${versionCode}"
 
         def cleanVersionName = versionName.replaceAll('\\s', '_')
@@ -35,13 +35,13 @@ android {
             signingConfig signingConfigs.config
             //debuggable true
             //get the default app url from global gradle properties
-            buildConfigField "String", "HDS_EXPLORER_APP_URL", "\"${project.properties["HDS_EXPLORER_APP_URL"].toString()}\""
+            buildConfigField "String", "HDS_EXPLORER_APP_URL", "\"${project.hasProperty("HDS_EXPLORER_APP_URL") ? project.properties["HDS_EXPLORER_APP_URL"].toString() : ""}\""
             buildConfigField "String", "HDS_EXPLORER_USERNAME", "\"\""
             buildConfigField "String", "HDS_EXPLORER_PASSWORD", "\"\""
 
-            buildConfigField "String", "HDS_EXPLORER_DEMO_APP_URL", "\"${project.properties["HDS_EXPLORER_DEMO_APP_URL"].toString()}\""
-            buildConfigField "String", "HDS_EXPLORER_DEMO_USERNAME", "\"${project.properties["HDS_EXPLORER_DEMO_USERNAME"].toString()}\""
-            buildConfigField "String", "HDS_EXPLORER_DEMO_PASSWORD", "\"${project.properties["HDS_EXPLORER_DEMO_PASSWORD"].toString()}\""
+            buildConfigField "String", "HDS_EXPLORER_DEMO_APP_URL", "\"${project.hasProperty("HDS_EXPLORER_DEMO_APP_URL") ? project.properties["HDS_EXPLORER_DEMO_APP_URL"].toString() : ""}\""
+            buildConfigField "String", "HDS_EXPLORER_DEMO_USERNAME", "\"${project.hasProperty("HDS_EXPLORER_DEMO_USERNAME") ? project.properties["HDS_EXPLORER_DEMO_USERNAME"].toString() : ""}\""
+            buildConfigField "String", "HDS_EXPLORER_DEMO_PASSWORD", "\"${project.hasProperty("HDS_EXPLORER_DEMO_PASSWORD") ? project.properties["HDS_EXPLORER_DEMO_PASSWORD"].toString() : ""}\""
 
             buildConfigField "String",  "MINIMUM_SUPPORTED_SERVER_VERSION", "\"$appServerVersion\""
             buildConfigField "Integer", "MINIMUM_SUPPORTED_SERVER_VERSION_CODE", "$appServerVersionCode"
@@ -50,13 +50,13 @@ android {
             signingConfig signingConfigs.config
             debuggable true
 
-            buildConfigField "String", "HDS_EXPLORER_APP_URL", "\"${project.properties["HDS_EXPLORER_APP_URL"].toString()}\""
-            buildConfigField "String", "HDS_EXPLORER_USERNAME", "\"${project.properties["HDS_EXPLORER_USERNAME"].toString()}\""
-            buildConfigField "String", "HDS_EXPLORER_PASSWORD", "\"${project.properties["HDS_EXPLORER_PASSWORD"].toString()}\""
+            buildConfigField "String", "HDS_EXPLORER_APP_URL", "\"${project.hasProperty("HDS_EXPLORER_APP_URL") ? project.properties["HDS_EXPLORER_APP_URL"].toString() : ""}\""
+            buildConfigField "String", "HDS_EXPLORER_USERNAME", "\"${project.hasProperty("HDS_EXPLORER_USERNAME") ? project.properties["HDS_EXPLORER_USERNAME"].toString() : ""}\""
+            buildConfigField "String", "HDS_EXPLORER_PASSWORD", "\"${project.hasProperty("HDS_EXPLORER_PASSWORD") ? project.properties["HDS_EXPLORER_PASSWORD"].toString() : ""}\""
 
-            buildConfigField "String", "HDS_EXPLORER_DEMO_APP_URL", "\"${project.properties["HDS_EXPLORER_DEMO_APP_URL"].toString()}\""
-            buildConfigField "String", "HDS_EXPLORER_DEMO_USERNAME", "\"${project.properties["HDS_EXPLORER_DEMO_USERNAME"].toString()}\""
-            buildConfigField "String", "HDS_EXPLORER_DEMO_PASSWORD", "\"${project.properties["HDS_EXPLORER_DEMO_PASSWORD"].toString()}\""
+            buildConfigField "String", "HDS_EXPLORER_DEMO_APP_URL", "\"${project.hasProperty("HDS_EXPLORER_DEMO_APP_URL") ? project.properties["HDS_EXPLORER_DEMO_APP_URL"].toString() : ""}\""
+            buildConfigField "String", "HDS_EXPLORER_DEMO_USERNAME", "\"${project.hasProperty("HDS_EXPLORER_DEMO_USERNAME") ? project.properties["HDS_EXPLORER_DEMO_USERNAME"].toString() : ""}\""
+            buildConfigField "String", "HDS_EXPLORER_DEMO_PASSWORD", "\"${project.hasProperty("HDS_EXPLORER_DEMO_PASSWORD") ? project.properties["HDS_EXPLORER_DEMO_PASSWORD"].toString() : ""}\""
 
             buildConfigField "String",  "MINIMUM_SUPPORTED_SERVER_VERSION", "\"$appServerVersion\""
             buildConfigField "Integer", "MINIMUM_SUPPORTED_SERVER_VERSION_CODE", "$appServerVersionCode"

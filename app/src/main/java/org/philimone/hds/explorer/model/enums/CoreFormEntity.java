@@ -25,6 +25,7 @@ public enum CoreFormEntity {
     INCOMPLETE_VISIT       ("rawIncompleteVisit",      R.string.core_entity_member_not_visited_lbl),
     VISIT                  ("rawVisit",                 R.string.core_entity_visit_lbl),
     CHANGE_REGION_HEAD     ("rawChangeRegionHead",      R.string.core_entity_changehor_lbl),
+    HOUSEHOLD_RELOCATION   ("rawHouseholdRelocation",   R.string.core_entity_household_reloc_lbl),
     EXTRA_FORM             ("extraForm",                R.string.core_entity_extra_form_lbl),
     EDITED_REGION          ("rawEditRegion",            R.string.core_entity_edit_region_lbl),
     EDITED_HOUSEHOLD       ("rawEditHousehold",         R.string.core_entity_edit_household_lbl),

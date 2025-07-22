@@ -159,6 +159,7 @@
     <string name="core_entity_member_not_visited_lbl">Membre non visité</string>
     <string name="core_entity_visit_lbl">Enregistrement de la visite</string>
     <string name="core_entity_changehor_lbl">Changer le Chef de Région</string>
+    <string name="core_entity_household_reloc_lbl">Relocalisation du Ménage</string>
     <string name="core_entity_extra_form_lbl">Autres formulaires (ODK)</string>
     <string name="core_entity_edit_region_lbl">Changer la région</string>
     <string name="core_entity_edit_household_lbl">Changer l\'agrégat</string>
@@ -376,6 +377,7 @@
     <string name="household_visit_bt_extinmig_lbl">Immigration\nExterne</string>
     <string name="household_visit_bt_intinmig_lbl">Immigration\nInterne</string>
     <string name="household_visit_bt_outmig_lbl">Émigration\nExterne</string>
+    <string name="household_visit_bt_hhreloc_lbl">Relocalisation\ndu Ménage</string>
     <string name="household_visit_bt_death_lbl">Enregistrer le décès</string>
     <string name="household_visit_bt_marital_lbl">Registre de\nUnion conjugale</string>
     <string name="household_visit_bt_changehoh_lbl">Changement de \nchef</string>
@@ -420,6 +422,21 @@
     <string name="household_filter_new_household_dialog_message_label">Comment souhaitez-vous enregistrer un nouveau Agrégat?</string>
     <string name="household_filter_new_household_dialog_yes_label">Pré-enregistrement Agrégat</string>
     <string name="household_filter_new_household_dialog_no_label">Ajouter un nouveau Agrégat</string>
+    <string name="household_filter_dialog_select_household_label">Sélectionner Agrégat</string>
+    <string name="household_filter_dialog_change_origin_title_lbl">Mettre à jour le Ménage d\'Origine</string>
+    <string name="household_filter_dialog_origin_change_lbl">Voulez-vous mettre à jour le ménage d\'origine?</string>
+    <string name="household_filter_dialog_select_origin_title_lbl">Sélectionner le Ménage à relocaliser</string>
+    <string name="household_filter_dialog_visit_code_empty_lbl">Le Code de Visite ne peut pas être vide</string>
+    <string name="household_filter_dialog_origin_code_empty_lbl">Le Code du Ménage d\'Origine ne peut pas être vide</string>
+    <string name="household_filter_dialog_dest_code_empty_lbl">Le Code du Ménage de Destination ne peut pas être vide</string>
+    <string name="household_filter_dialog_head_code_empty_lbl">Le Code du Chef de Ménage ne peut pas être vide</string>
+    <string name="household_filter_dialog_head_name_empty_lbl">Le Nom du Chef de Ménage ne peut pas être vide</string>
+    <string name="household_filter_dialog_event_date_empty_lbl">La Date de l\'événement de relocalisation ne peut pas être vide</string>
+    <string name="household_filter_dialog_event_date_not_great_today_lbl">La date de l\'événement de relocalisation ne peut pas être postérieure à aujourd\'hui</string>
+    <string name="household_filter_dialog_reason_empty_lbl">La raison de la relocalisation du ménage ne peut pas être vide</string>
+    <string name="household_filter_dialog_event_date_not_before_dob_lbl">La date de l\'événement ne peut pas être antérieure à la date de naissance des membres</string>
+    <string name="household_filter_dialog_event_date_not_before_member_res_startdate_lbl">La date de l\'événement [%1$s] ne peut pas être antérieure à la [date de début] du dernier enregistrement de résidence du Membre[%2$s] [%3$s -> %4$s].</string>
+    <string name="household_filter_dialog_event_date_not_before_member_hr_startdate_lbl">La date de l\'événement [%1$s] ne peut pas être antérieure à la [date de début] du dernier enregistrement de Relation avec le Chef du Membre[%2$s] [%3$s -> %4$s].</string>
 
     <!-- New Region -->
     <string name="new_region_code_err_lbl">Le code de la %1$s est incorrect!</string>
@@ -624,6 +641,26 @@
     <string name="changehead_new_head_select_lbl">Sélectionnez le nouveau chef de ménage</string>
     <string name="changehead_new_head_is_head_of_household_lbl">Le nouveau chef de ménage est le chef d\'un autre ménage. Vous devez d\'abord cesser d\'être le chef pour devenir le chef de celui-ci!</string>
     <string name="changehead_head_dont_exists_lbl">Ce ménage n\'a pas de chef de ménage actif, un nouveau chef de ménage doit être sélectionné.</string>
+
+    <!-- change region head -->
+    <string name="changeregionhead_dialog_change_title_lbl">Mettre à jour les Données</string>
+    <string name="changeregionhead_dialog_head_change_lbl">Voulez-vous mettre à jour le nouveau chef de [%1$s] ?</string>
+    <string name="changeregionhead_region_code_empty_lbl">Le Code de [%1$s] ne peut pas être vide</string>
+    <string name="changeregionhead_oldhead_code_empty_lbl">Le Code de l\'Ancien Chef de [%1$s] ne peut pas être vide</string>
+    <string name="changeregionhead_newhead_code_empty_lbl">Le Code du Nouveau Chef de [%1$s] ne peut pas être vide</string>
+    <string name="changeregionhead_eventdate_empty_lbl">La Date de l\'événement ne peut pas être vide</string>
+    <string name="changeregionhead_eventdate_not_before_dob_lbl">La date de l\'événement ne peut pas être antérieure à la date de naissance du nouveau chef de [%1$s]</string>
+    <string name="changeregionhead_eventdate_not_great_today_lbl">La date de l\'événement ne peut pas être postérieure à aujourd\'hui</string>
+    <string name="changeregionhead_eventdate_not_before_new_head_hrelationship_startdate_lbl">La date de l\'événement [%1$s] ne peut pas être antérieure à la [date de début] du dernier enregistrement du [nouveau Chef de %4$s] [%2$s -> %3$s].</string>
+    <string name="changeregionhead_eventdate_not_before_lastregion_head_hrelationship_startdate_lbl">La date de l\'événement [%1$s] ne peut pas être antérieure à la [date de début] du dernier enregistrement de Chef de la Région[%4$s] [%2$s -> %3$s].</string>
+    <string name="changeregionhead_new_head_select_lbl">Sélectionnez le nouveau Chef de [%1$s]</string>
+    <string name="changeregionhead_new_head_is_head_of_household_lbl">Le nouveau Chef de [%1$s] est déjà chef d\'un autre [%1$s]. Vous devez d\'abord mettre fin à sa relation actuelle avant de le déclarer chef d\'un autre !</string>
+    <string name="changeregionhead_head_dont_exists_lbl">Ce [%1$s] n\'a pas de Chef actif. Un nouveau Chef de [%1$s] doit être sélectionné</string>
+    <string name="changeregionhead_set_new_reiong_head_bt_lbl">Définir comme Nouveau Chef de %1$s</string>
+    <string name="changeregionhead_already_collected_reopen_msg_lbl">Un formulaire (Changement de Chef de Région) a déjà été enregistré récemment pour ce [%1$s] = %2$s.\nAppuyez sur OK pour rouvrir cet enregistrement</string>
+    <string name="changeregionhead_already_collected_reopen_new_visit_msg_lbl">Un formulaire (Changement de Chef de Région) a déjà été enregistré récemment pour ce [%1$s] = %2$s.\nL\'enregistrement a été effectué lors d\'une autre visite au ménage.\nVoulez-vous le mettre à jour lors de cette visite?</string>
+    <string name="changeregionhead_already_collected_stop_msg_lbl">Un formulaire (Changement de Chef de Région) a déjà été enregistré récemment pour ce [%1$s] = %2$s.\nImpossible de continuer car cet enregistrement a été fait via le Panneau des Détails de la Région.\nPour le modifier, allez dans le Panneau des Détails de la Région.</string>
+    <string name="changeregionhead_already_collected_stop_notvisit_msg_lbl">Un formulaire (Changement de Chef de Région) a déjà été enregistré récemment pour ce [%1$s] = %2$s.\nImpossible de continuer car cet enregistrement a été fait lors d\'une Visite au Ménage.\nPour le modifier, allez au ménage [code = %3$s].</string>
 
     <string name="household_head_dont_exists_lbl">Il ne sera pas possible de procéder à l\'événement, car ce ménage n\'a pas de chef de ménage actif.</string>
 

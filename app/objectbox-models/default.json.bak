@@ -1588,7 +1588,7 @@
     },
     {
       "id": "19:1493713431233179094",
-      "lastPropertyId": "26:5590768382658963654",
+      "lastPropertyId": "27:3459760775263751324",
       "name": "Visit",
       "properties": [
         {
@@ -1730,6 +1730,11 @@
         {
           "id": "26:5590768382658963654",
           "name": "visitReasonOther",
+          "type": 9
+        },
+        {
+          "id": "27:3459760775263751324",
+          "name": "otherNotPossibleReason",
           "type": 9
         }
       ],

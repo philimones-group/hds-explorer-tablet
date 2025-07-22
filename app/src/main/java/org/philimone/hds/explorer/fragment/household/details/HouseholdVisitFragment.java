@@ -36,6 +36,7 @@ import org.philimone.hds.explorer.main.hdsforms.ExternalInMigrationFormUtil;
 import org.philimone.hds.explorer.main.hdsforms.FormUtil;
 import org.philimone.hds.explorer.main.hdsforms.FormUtilListener;
 import org.philimone.hds.explorer.main.hdsforms.HouseholdFormUtil;
+import org.philimone.hds.explorer.main.hdsforms.HouseholdRelocationFormUtil;
 import org.philimone.hds.explorer.main.hdsforms.InternalInMigrationFormUtil;
 import org.philimone.hds.explorer.main.hdsforms.MaritalRelationshipFormUtil;
 import org.philimone.hds.explorer.main.hdsforms.MemberEnumerationFormUtil;
@@ -59,6 +60,7 @@ import org.philimone.hds.explorer.model.Form_;
 import org.philimone.hds.explorer.model.HeadRelationship;
 import org.philimone.hds.explorer.model.HeadRelationship_;
 import org.philimone.hds.explorer.model.Household;
+import org.philimone.hds.explorer.model.HouseholdRelocation;
 import org.philimone.hds.explorer.model.Household_;
 import org.philimone.hds.explorer.model.IncompleteVisit;
 import org.philimone.hds.explorer.model.IncompleteVisit_;
@@ -78,6 +80,8 @@ import org.philimone.hds.explorer.model.Region;
 import org.philimone.hds.explorer.model.RegionHeadRelationship;
 import org.philimone.hds.explorer.model.RegionHeadRelationship_;
 import org.philimone.hds.explorer.model.Region_;
+import org.philimone.hds.explorer.model.Residency;
+import org.philimone.hds.explorer.model.Residency_;
 import org.philimone.hds.explorer.model.User;
 import org.philimone.hds.explorer.model.Visit;
 import org.philimone.hds.explorer.model.Visit_;
@@ -120,6 +124,7 @@ public class HouseholdVisitFragment extends Fragment {
     private Button btnVisitMemberIncomplete;
     private Button btnVisitChangeHead;
     private Button btnVisitChangeRegionHead;
+    private Button btnVisitHouseholdRelocation;
 
     private LoadingDialog loadingDialog;
 
@@ -143,8 +148,10 @@ public class HouseholdVisitFragment extends Fragment {
     private Box<PregnancyOutcome> boxPregnancyOutcomes;
     private Box<Death> boxDeaths;
     private Box<HeadRelationship> boxHeadRelationships;
+    private Box<Residency> boxResidencies;
     private Box<IncompleteVisit> boxIncompleteVisits;
-    Box<RegionHeadRelationship> boxRegionHeadRelationships;
+    private Box<RegionHeadRelationship> boxRegionHeadRelationships;
+    private Box<HouseholdRelocation> boxHouseholdRelocations;
     private Box<CollectedData> boxCollectedData;
     private Box<CoreCollectedData> boxCoreCollectedData;
     private Box<ApplicationParam> boxAppParams;
@@ -279,9 +286,11 @@ public class HouseholdVisitFragment extends Fragment {
         this.boxPregnancyOutcomes = ObjectBoxDatabase.get().boxFor(PregnancyOutcome.class);
         this.boxDeaths = ObjectBoxDatabase.get().boxFor(Death.class);
         this.boxHeadRelationships = ObjectBoxDatabase.get().boxFor(HeadRelationship.class);
+        this.boxResidencies = ObjectBoxDatabase.get().boxFor(Residency.class);
         this.boxMembers = ObjectBoxDatabase.get().boxFor(Member.class);
         this.boxIncompleteVisits = ObjectBoxDatabase.get().boxFor(IncompleteVisit.class);
         this.boxRegionHeadRelationships = ObjectBoxDatabase.get().boxFor(RegionHeadRelationship.class);
+        this.boxHouseholdRelocations = ObjectBoxDatabase.get().boxFor(HouseholdRelocation.class);
     }
 
     private void initialize(View view) {
@@ -301,6 +310,7 @@ public class HouseholdVisitFragment extends Fragment {
         this.btnVisitMemberIncomplete = view.findViewById(R.id.btnVisitMemberIncomplete);
         this.btnVisitChangeHead = view.findViewById(R.id.btnVisitChangeHead);
         this.btnVisitChangeRegionHead = view.findViewById(R.id.btnVisitChangeRegionHead);
+        this.btnVisitHouseholdRelocation = view.findViewById(R.id.btnVisitHouseholdRelocation);
 
         this.loadingDialog = new LoadingDialog(this.getContext());
 
@@ -402,6 +412,10 @@ public class HouseholdVisitFragment extends Fragment {
 
         this.btnVisitChangeRegionHead.setOnClickListener(v -> {
             onChangeRegionHeadClicked(null);
+        });
+
+        this.btnVisitHouseholdRelocation.setOnClickListener(v -> {
+            onHouseholdRelocationClicked(null);
         });
 
         this.btnVisitExtraForm.setOnClickListener(v -> {
@@ -552,6 +566,7 @@ public class HouseholdVisitFragment extends Fragment {
     private void setHouseholdMode() {
         this.currentEventMode = VisitEventsMode.HOUSEHOLD_EVENTS;
         boolean isCensusHousehold = this.household.recentlyCreated;
+        boolean isEmptyHousehold = boxResidencies.query(Residency_.householdCode.equal(household.code).and(Residency_.endType.equal(ResidencyEndType.NOT_APPLICABLE.code))).build().count() == 0;
         clearMemberSelection();
 
         this.btnVisitMemberEnu.setEnabled(true);
@@ -577,6 +592,10 @@ public class HouseholdVisitFragment extends Fragment {
         this.btnVisitIntInmigration.setVisibility(View.VISIBLE);
         this.btnVisitChangeRegionHead.setVisibility(View.GONE);
 
+        this.btnVisitHouseholdRelocation.setEnabled(isEmptyHousehold);
+        this.btnVisitOutmigration.setVisibility(View.GONE);
+        this.btnVisitHouseholdRelocation.setVisibility(View.VISIBLE);
+
         //disable buttons if already collected and ready to edit
         //ChangeHead - must be collected one per visit
         CoreCollectedData ccdataChangeHead = this.boxCoreCollectedData.query(CoreCollectedData_.visitId.equal(visit.id).and(CoreCollectedData_.formEntity.equal(CoreFormEntity.CHANGE_HOUSEHOLD_HEAD.code))).build().findFirst();
@@ -592,7 +611,7 @@ public class HouseholdVisitFragment extends Fragment {
 
         this.currentEventMode = VisitEventsMode.RESPONDENT_NOT_REG_EVENTS;
         boolean isCensusHousehold = this.household.recentlyCreated;
-
+        boolean isEmptyHousehold = boxResidencies.query(Residency_.householdCode.equal(household.code).and(Residency_.endType.equal(ResidencyEndType.NOT_APPLICABLE.code))).build().count() == 0;
         clearMemberSelection();
 
         this.btnVisitMemberEnu.setEnabled(true);
@@ -616,6 +635,9 @@ public class HouseholdVisitFragment extends Fragment {
         this.btnVisitIntInmigration.setVisibility(View.VISIBLE);
         this.btnVisitChangeRegionHead.setVisibility(View.GONE);
 
+        this.btnVisitHouseholdRelocation.setEnabled(isEmptyHousehold);
+        this.btnVisitOutmigration.setVisibility(View.GONE);
+        this.btnVisitHouseholdRelocation.setVisibility(View.VISIBLE);
 
         //disable item selection
         setMainListsSelectable(false);
@@ -657,6 +679,10 @@ public class HouseholdVisitFragment extends Fragment {
             this.btnVisitIntInmigration.setVisibility(View.VISIBLE);
             this.btnVisitChangeRegionHead.setVisibility(View.GONE);
         }
+
+        this.btnVisitHouseholdRelocation.setEnabled(false);
+        this.btnVisitOutmigration.setVisibility(View.VISIBLE);
+        this.btnVisitHouseholdRelocation.setVisibility(View.GONE);
 
         //disable buttons if already collected and ready to edit
         //Incomplete, Marital, Pregnancy Reg and Pregnancy Outcome - must be collected one per visit and member
@@ -728,6 +754,7 @@ public class HouseholdVisitFragment extends Fragment {
         mapData.put(CoreFormEntity.INMIGRATION, new ArrayList<VisitCollectedDataItem>());
         mapData.put(CoreFormEntity.EXTERNAL_INMIGRATION, new ArrayList<VisitCollectedDataItem>());
         mapData.put(CoreFormEntity.OUTMIGRATION, new ArrayList<VisitCollectedDataItem>());
+        mapData.put(CoreFormEntity.HOUSEHOLD_RELOCATION, new ArrayList<VisitCollectedDataItem>());
         mapData.put(CoreFormEntity.PREGNANCY_REGISTRATION, new ArrayList<VisitCollectedDataItem>());
         mapData.put(CoreFormEntity.PREGNANCY_OUTCOME, new ArrayList<VisitCollectedDataItem>());
         mapData.put(CoreFormEntity.DEATH, new ArrayList<VisitCollectedDataItem>());
@@ -865,6 +892,10 @@ public class HouseholdVisitFragment extends Fragment {
             case CHANGE_REGION_HEAD:
                 RegionHeadRelationship regionHeadRelationship = this.boxRegionHeadRelationships.get(coreCollectedData.formEntityId);
                 onChangeRegionHeadClicked(regionHeadRelationship);
+                break;
+            case HOUSEHOLD_RELOCATION:
+                HouseholdRelocation householdRelocation = this.boxHouseholdRelocations.get(coreCollectedData.formEntityId);
+                onHouseholdRelocationClicked(householdRelocation);
                 break;
         }
     }
@@ -1404,6 +1435,43 @@ public class HouseholdVisitFragment extends Fragment {
         }
 
         formUtil.collect();
+    }
+
+    private void onHouseholdRelocationClicked(HouseholdRelocation householdRelocation) {
+        Log.d("on-changehead", ""+householdRelocation);
+
+        FormUtil.Mode mode = householdRelocation == null ? FormUtil.Mode.CREATE : FormUtil.Mode.EDIT;
+
+        HouseholdRelocationFormUtil formUtil = HouseholdRelocationFormUtil.newInstance(mode, this, this.getContext(), this.visit, this.household, householdRelocation, this.odkFormUtilities, new FormUtilListener<HouseholdRelocation>() {
+            @Override
+            public void onNewEntityCreated(HouseholdRelocation relocation, Map<String, Object> data) {
+                loadDataToListViews();
+                updateHouseholdDetails();
+                refreshCurrentMode();
+            }
+
+            @Override
+            public void onEntityEdited(HouseholdRelocation relocation, Map<String, Object> data) {
+                loadDataToListViews();
+                updateHouseholdDetails();
+                refreshCurrentMode();
+            }
+
+            @Override
+            public void onFormCancelled() {
+
+            }
+        });
+
+        formUtil.collect();
+    }
+
+    private void refreshCurrentMode() {
+        switch (this.currentEventMode) {
+            case MEMBER_EVENTS: break;
+            case HOUSEHOLD_EVENTS: setHouseholdMode(); break;
+            case RESPONDENT_NOT_REG_EVENTS: setRespondentNotRegVisitMode(); break;
+        }
     }
 
     public List<Member> getNonVisitedMembers() {

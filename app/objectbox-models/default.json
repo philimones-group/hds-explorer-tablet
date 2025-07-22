@@ -2602,10 +2602,91 @@
         }
       ],
       "relations": []
+    },
+    {
+      "id": "33:2662852511544938909",
+      "lastPropertyId": "12:5911237488680577761",
+      "name": "HouseholdRelocation",
+      "properties": [
+        {
+          "id": "1:8384529102757141478",
+          "name": "id",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:6395256632685955864",
+          "name": "visitCode",
+          "indexId": "127:2621193980673106442",
+          "type": 9,
+          "flags": 2048
+        },
+        {
+          "id": "3:5883884529852878440",
+          "name": "originCode",
+          "indexId": "128:4801390166484457746",
+          "type": 9,
+          "flags": 2048
+        },
+        {
+          "id": "4:8337645347714537421",
+          "name": "destinationCode",
+          "indexId": "129:7342191278972777339",
+          "type": 9,
+          "flags": 2048
+        },
+        {
+          "id": "5:187909621943014161",
+          "name": "headCode",
+          "indexId": "130:622708486943886688",
+          "type": 9,
+          "flags": 2048
+        },
+        {
+          "id": "6:3382415603002798447",
+          "name": "headName",
+          "type": 9
+        },
+        {
+          "id": "7:5208672345970288407",
+          "name": "eventDate",
+          "type": 10
+        },
+        {
+          "id": "8:128988935646650088",
+          "name": "reason",
+          "indexId": "131:5391778219758279911",
+          "type": 9,
+          "flags": 2048
+        },
+        {
+          "id": "9:7641885066700890412",
+          "name": "reasonOther",
+          "type": 9
+        },
+        {
+          "id": "10:8097773734176027325",
+          "name": "collectedId",
+          "indexId": "132:1880481815754780721",
+          "type": 9,
+          "flags": 2080
+        },
+        {
+          "id": "11:7168525907945626400",
+          "name": "recentlyCreated",
+          "type": 1
+        },
+        {
+          "id": "12:5911237488680577761",
+          "name": "recentlyCreatedUri",
+          "type": 9
+        }
+      ],
+      "relations": []
     }
   ],
-  "lastEntityId": "32:8172509885783218958",
-  "lastIndexId": "126:7340697895653967815",
+  "lastEntityId": "33:2662852511544938909",
+  "lastIndexId": "132:1880481815754780721",
   "lastRelationId": "0:0",
   "lastSequenceId": "0:0",
   "modelVersion": 5,

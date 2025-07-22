@@ -161,6 +161,7 @@
     <string name="core_entity_member_not_visited_lbl">Member Not Visited Form</string>
     <string name="core_entity_visit_lbl">Visit Registration</string>
     <string name="core_entity_changehor_lbl">Change Head of Region</string>
+    <string name="core_entity_household_reloc_lbl">Household Relocation</string>
     <string name="core_entity_extra_form_lbl">Other Forms (ODK)</string>
     <string name="core_entity_edit_region_lbl">Edit Region</string>
     <string name="core_entity_edit_household_lbl">Edit Household</string>
@@ -378,6 +379,7 @@
     <string name="household_visit_bt_extinmig_lbl">External\nInMigration</string>
     <string name="household_visit_bt_intinmig_lbl">Internal\nInMigration</string>
     <string name="household_visit_bt_outmig_lbl">OutMigration\nRegistration</string>
+    <string name="household_visit_bt_hhreloc_lbl">Household\nRelocation</string>
     <string name="household_visit_bt_death_lbl">Death\nRegistration</string>
     <string name="household_visit_bt_marital_lbl">Marital\nRelationship</string>
     <string name="household_visit_bt_changehoh_lbl">Change Head\nof Household</string>
@@ -423,6 +425,22 @@
     <string name="household_filter_new_household_dialog_message_label">How do you want to register a new Household?</string>
     <string name="household_filter_new_household_dialog_yes_label">Pre-register Household</string>
     <string name="household_filter_new_household_dialog_no_label">Add new Household</string>
+    <string name="household_filter_dialog_select_household_label">Select Household</string>
+    <string name="household_filter_dialog_change_origin_title_lbl">Update the Origin Household</string>
+    <string name="household_filter_dialog_origin_change_lbl">Do you want to update the origin household?</string>
+    <string name="household_filter_dialog_select_origin_title_lbl">Select Household to relocate</string>
+    <string name="household_filter_dialog_visit_code_empty_lbl">The Visit Code cannot be empty</string>
+    <string name="household_filter_dialog_origin_code_empty_lbl">The Origin Household Code cannot be empty</string>
+    <string name="household_filter_dialog_dest_code_empty_lbl">The Destination Household Code cannot be empty</string>
+    <string name="household_filter_dialog_head_code_empty_lbl">The Head of Household Code cannot be empty</string>
+    <string name="household_filter_dialog_head_name_empty_lbl">The Head of Household Name cannot be empty</string>
+    <string name="household_filter_dialog_event_date_empty_lbl">The Date of the relocation event cannot be empty</string>
+    <string name="household_filter_dialog_event_date_not_great_today_lbl">The date of the relocation event cannot be greater than today</string>
+    <string name="household_filter_dialog_reason_empty_lbl">The reason for relocating the Household cannot be empty</string>
+    <string name="household_filter_dialog_event_date_not_before_dob_lbl">The date of the event cannot be before the date of birth of the members</string>
+    <string name="household_filter_dialog_event_date_not_before_member_res_startdate_lbl">The event date [%1$s] cannot be before the [start date] of the Member[%2$s] last Residency record [%3$s -> %4$s].</string>
+    <string name="household_filter_dialog_event_date_not_before_member_hr_startdate_lbl">The event date [%1$s] cannot be before the [start date] of the Member[%2$s] last Head Relationship record [%3$s -> %4$s].</string>
+
 
     <!-- New Region -->
     <string name="new_region_code_err_lbl">The format of the %1$s Code is incorrect</string>
@@ -642,10 +660,10 @@
     <string name="changeregionhead_new_head_is_head_of_household_lbl">The new Head of [%1$s] is a Head of another [%1$s]. Must first end his current Head Relationship to declare it as head of another!</string>
     <string name="changeregionhead_head_dont_exists_lbl">This [%1$s] doesn\'t have an active Head of [%1$s], a new Head of [%1$s] must be selected</string>
     <string name="changeregionhead_set_new_reiong_head_bt_lbl">Set as New %1$s Head</string>
-    <string name="changeregionhead_already_collected_reopen_msg_lbl">There is a recently registered "Change Region Head Form" for this [%1$s] = %2$s.\nPress OK to reopen this registration</string>
-    <string name="changeregionhead_already_collected_reopen_new_visit_msg_lbl">There is a recently registered "Change Region Head Form" for this [%1$s] = %2$s.\nThe registration was done in another Household visit.\nDo you want to update this Form on this Visit?</string>
-    <string name="changeregionhead_already_collected_stop_msg_lbl">There is a recently registered "Change Region Head Form" for this [%1$s] = %2$s.\nCannot proceed because this registration was collected using Region Details Panel.\nTo edit the form go to Region Details).</string>
-    <string name="changeregionhead_already_collected_stop_notvisit_msg_lbl">There is a recently registered "Change Region Head Form" for this [%1$s] = %2$s.\nCannot proceed because this registration was collected using a Household Visit.\nTo edit the form go to Household [code = %3$s].</string>
+    <string name="changeregionhead_already_collected_reopen_msg_lbl">There is a recently registered (Change Region Head Form) for this [%1$s] = %2$s.\nPress OK to reopen this registration</string>
+    <string name="changeregionhead_already_collected_reopen_new_visit_msg_lbl">There is a recently registered (Change Region Head Form) for this [%1$s] = %2$s.\nThe registration was done in another Household visit.\nDo you want to update this Form on this Visit?</string>
+    <string name="changeregionhead_already_collected_stop_msg_lbl">There is a recently registered (Change Region Head Form) for this [%1$s] = %2$s.\nCannot proceed because this registration was collected using Region Details Panel.\nTo edit the form go to Region Details).</string>
+    <string name="changeregionhead_already_collected_stop_notvisit_msg_lbl">There is a recently registered (Change Region Head Form) for this [%1$s] = %2$s.\nCannot proceed because this registration was collected using a Household Visit.\nTo edit the form go to Household [code = %3$s].</string>
 
     <string name="household_head_dont_exists_lbl">It will not be possible to proceed with the event, because this Household doesn\'t have an active Head of Household</string>
 

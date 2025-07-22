@@ -160,6 +160,7 @@
     <string name="core_entity_member_not_visited_lbl">Membro não visitado</string>
     <string name="core_entity_visit_lbl">Registo de Visita</string>
     <string name="core_entity_changehor_lbl">Alterar o Chefe de Região</string>
+    <string name="core_entity_household_reloc_lbl">Transferência do Agregado</string>
     <string name="core_entity_extra_form_lbl">Outros Formulários (ODK)</string>
     <string name="core_entity_edit_region_lbl">Alterar Região</string>
     <string name="core_entity_edit_household_lbl">Alterar Agregado</string>
@@ -377,6 +378,7 @@
     <string name="household_visit_bt_extinmig_lbl">Imigração\nExterna</string>
     <string name="household_visit_bt_intinmig_lbl">Imigração\nInterna</string>
     <string name="household_visit_bt_outmig_lbl">Emigração\nExterna</string>
+    <string name="household_visit_bt_hhreloc_lbl">Transferência\ndo Agregado</string>
     <string name="household_visit_bt_death_lbl">Registar Morte</string>
     <string name="household_visit_bt_marital_lbl">Registar de\nUnião Marital</string>
     <string name="household_visit_bt_changehoh_lbl">Mudança de\nChefe</string>
@@ -421,6 +423,21 @@
     <string name="household_filter_new_household_dialog_message_label">Como pretende registar o novo Agregado?</string>
     <string name="household_filter_new_household_dialog_yes_label">Pré-registar Agregado</string>
     <string name="household_filter_new_household_dialog_no_label">Adicionar novo Agregado</string>
+    <string name="household_filter_dialog_select_household_label">Selecionar Agregado</string>
+    <string name="household_filter_dialog_change_origin_title_lbl">Atualizar o Agregado de Origem</string>
+    <string name="household_filter_dialog_origin_change_lbl">Deseja atualizar o agregado de origem?</string>
+    <string name="household_filter_dialog_select_origin_title_lbl">Selecionar Agregado para relocalizar</string>
+    <string name="household_filter_dialog_visit_code_empty_lbl">O Código da Visita não pode estar vazio</string>
+    <string name="household_filter_dialog_origin_code_empty_lbl">O Código do Agregado de Origem não pode estar vazio</string>
+    <string name="household_filter_dialog_dest_code_empty_lbl">O Código do Agregado de Destino não pode estar vazio</string>
+    <string name="household_filter_dialog_head_code_empty_lbl">O Código do Chefe do Agregado não pode estar vazio</string>
+    <string name="household_filter_dialog_head_name_empty_lbl">O Nome do Chefe do Agregado não pode estar vazio</string>
+    <string name="household_filter_dialog_event_date_empty_lbl">A Data do evento de relocalização não pode estar vazia</string>
+    <string name="household_filter_dialog_event_date_not_great_today_lbl">A data do evento de relocalização não pode ser superior à data atual</string>
+    <string name="household_filter_dialog_reason_empty_lbl">O motivo da relocalização do agregado não pode estar vazio</string>
+    <string name="household_filter_dialog_event_date_not_before_dob_lbl">A data do evento não pode ser anterior à data de nascimento dos membros</string>
+    <string name="household_filter_dialog_event_date_not_before_member_res_startdate_lbl">A data do evento [%1$s] não pode ser anterior à [data de início] do último registo de residência do Membro[%2$s] [%3$s -> %4$s].</string>
+    <string name="household_filter_dialog_event_date_not_before_member_hr_startdate_lbl">A data do evento [%1$s] não pode ser anterior à [data de início] do último registo de Relação com o Chefe do Membro[%2$s] [%3$s -> %4$s].</string>
 
     <!-- New Region -->
     <string name="new_region_code_err_lbl">O código do/a %1$s está incorrecto!</string>
@@ -623,6 +640,26 @@
     <string name="changehead_new_head_select_lbl">Seleccione o novo chefe do agregado</string>
     <string name="changehead_new_head_is_head_of_household_lbl">O novo chefe do agregado é chefe de um outro agregado. É necessário primeiro deixar de ser o chefe para poder tornar-se chefe neste!</string>
     <string name="changehead_head_dont_exists_lbl">Este Agregado não possui um Chefe do Agregado activo, um novo chefe deve ser selecionado.</string>
+
+    <!-- change region head -->
+    <string name="changeregionhead_dialog_change_title_lbl">Atualizar Dados</string>
+    <string name="changeregionhead_dialog_head_change_lbl">Deseja atualizar o novo chefe de [%1$s]?</string>
+    <string name="changeregionhead_region_code_empty_lbl">O Código de [%1$s] não pode estar vazio</string>
+    <string name="changeregionhead_oldhead_code_empty_lbl">O Código do Antigo Chefe de [%1$s] não pode estar vazio</string>
+    <string name="changeregionhead_newhead_code_empty_lbl">O Código do Novo Chefe de [%1$s] não pode estar vazio</string>
+    <string name="changeregionhead_eventdate_empty_lbl">A Data do evento não pode estar vazia</string>
+    <string name="changeregionhead_eventdate_not_before_dob_lbl">A data do evento não pode ser anterior à data de nascimento do novo chefe de [%1$s]</string>
+    <string name="changeregionhead_eventdate_not_great_today_lbl">A data do evento não pode ser superior à data atual</string>
+    <string name="changeregionhead_eventdate_not_before_new_head_hrelationship_startdate_lbl">A data do evento [%1$s] não pode ser anterior à [data de início] do último registo do [novo Chefe de %4$s] [%2$s -> %3$s].</string>
+    <string name="changeregionhead_eventdate_not_before_lastregion_head_hrelationship_startdate_lbl">A data do evento [%1$s] não pode ser anterior à [data de início] do último registo de Chefe da Região[%4$s] [%2$s -> %3$s].</string>
+    <string name="changeregionhead_new_head_select_lbl">Selecione o novo Chefe de [%1$s]</string>
+    <string name="changeregionhead_new_head_is_head_of_household_lbl">O novo Chefe de [%1$s] é chefe de outro [%1$s]. Primeiro deve terminar a relação atual para o declarar como chefe de outro!</string>
+    <string name="changeregionhead_head_dont_exists_lbl">Este [%1$s] não tem um Chefe ativo. Deve selecionar um novo Chefe de [%1$s]</string>
+    <string name="changeregionhead_set_new_reiong_head_bt_lbl">Definir como Novo Chefe de %1$s</string>
+    <string name="changeregionhead_already_collected_reopen_msg_lbl">Já existe um formulário (Mudança de Chefe da Região) recentemente registado para este [%1$s] = %2$s.\nPressione OK para reabrir este registo</string>
+    <string name="changeregionhead_already_collected_reopen_new_visit_msg_lbl">Já existe um formulário (Mudança de Chefe da Região) recentemente registado para este [%1$s] = %2$s.\nO registo foi feito noutra visita ao agregado.\nDeseja atualizar este formulário nesta visita?</string>
+    <string name="changeregionhead_already_collected_stop_msg_lbl">Já existe um formulário (Mudança de Chefe da Região) recentemente registado para este [%1$s] = %2$s.\nNão é possível continuar, pois este registo foi feito no Painel de Detalhes da Região.\nPara editar o formulário, vá ao Painel de Detalhes da Região.</string>
+    <string name="changeregionhead_already_collected_stop_notvisit_msg_lbl">Já existe um formulário (Mudança de Chefe da Região) recentemente registado para este [%1$s] = %2$s.\nNão é possível continuar, pois este registo foi feito numa Visita ao Agregado.\nPara editar o formulário, vá ao agregado [código = %3$s].</string>
 
     <string name="household_head_dont_exists_lbl">Não será possível prosseguir com o evento, pois este agregado familiar não tem um chefe de família ativo.</string>
 

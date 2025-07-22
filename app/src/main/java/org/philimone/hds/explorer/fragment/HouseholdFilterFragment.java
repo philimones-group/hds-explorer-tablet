@@ -775,6 +775,9 @@ public class HouseholdFilterFragment extends Fragment implements RegionExpandabl
         ApplicationParam param = boxAppParams.query(ApplicationParam_.name.equal(region.level)).build().findFirst();
         this.btHouseFilterShowRegion.setText(getString(R.string.household_filter_show_region_custom_btn_lbl, param.value));
 
+        if (lastLevel) {
+            searchHouses(region.code, false, true, false); //search households on that region
+        }
     }
 
     private void updateRegionTextViews(Region region){

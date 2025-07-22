@@ -13,13 +13,13 @@ android {
             storePassword 'android47jks'
         }
     }
-    compileSdk 34
+    compileSdk 35
     defaultConfig {
         applicationId "org.philimone.hds.explorer"
         minSdk 21
-        targetSdk 34
-        versionCode 326
-        versionName "1.0.34 build ${versionCode}"
+        targetSdk 35
+        versionCode 327
+        versionName "1.0.35 build ${versionCode}"
 
         def cleanVersionName = versionName.replaceAll('\\s', '_')
         def buildSite = project.hasProperty("HDS_EXPLORER_SITE") ? "${project.properties["HDS_EXPLORER_SITE"]}" : ""
@@ -88,18 +88,18 @@ dependencies {
     implementation 'com.android.support:appcompat-v7:34.0.0'
     implementation 'com.android.support:design:34.0.0'
     implementation 'com.android.support:support-v4:34.0.0'
-    implementation 'androidx.viewpager2:viewpager2:1.0.0'
-    implementation 'androidx.fragment:fragment-ktx:1.6.2'
-    implementation 'com.google.android.material:material:1.11.0'
+    implementation 'androidx.viewpager2:viewpager2:1.1.0'
+    implementation 'androidx.fragment:fragment-ktx:1.8.8'
+    implementation 'com.google.android.material:material:1.12.0'
 
     //my deps
     implementation 'org.jdom:jdom2:2.0.6.1'
-    implementation 'com.google.zxing:core:3.5.2'
+    implementation 'com.google.zxing:core:3.5.3'
     //implementation 'com.google.zxing:android-core:3.3.0'
     implementation 'com.journeyapps:zxing-android-embedded:4.3.0'
-    implementation 'com.google.code.gson:gson:2.10.1'
+    implementation 'com.google.code.gson:gson:2.13.1'
     implementation group: 'org.mindrot', name: 'jbcrypt', version: '0.4'
-    implementation 'commons-io:commons-io:2.16.1'
+    implementation 'commons-io:commons-io:2.19.0'
     implementation 'org.apache.commons:commons-jexl3:3.2.1'
 
     //mapbox
@@ -109,10 +109,10 @@ dependencies {
     implementation 'com.mapbox.base:annotations:0.8.0'
 
     //deps that were in another tag
-    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'androidx.appcompat:appcompat:1.7.1'
     //implementation "androidx.documentfile:documentfile:1.0.1"
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
-    implementation "androidx.constraintlayout:constraintlayout-compose:1.0.1"
+    implementation 'androidx.constraintlayout:constraintlayout:2.2.1'
+    implementation "androidx.constraintlayout:constraintlayout-compose:1.1.1"
     implementation project(path: ':hds-forms-lib')
     implementation project(path: ':hds-forms-lib')
     implementation project(path: ':hds-forms-lib')
@@ -122,9 +122,9 @@ dependencies {
 
 
     //to enable java 8 new features on android < 24
-    implementation "androidx.window:window:1.2.0"
-    implementation "androidx.window:window-java:1.2.0"
-    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.0.4'
+    implementation "androidx.window:window:1.4.0"
+    implementation "androidx.window:window-java:1.4.0"
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.1.5'
 
     //projects
     api project(path: ':hds-forms-lib')

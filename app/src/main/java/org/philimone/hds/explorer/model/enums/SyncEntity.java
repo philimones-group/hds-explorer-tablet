@@ -33,9 +33,10 @@ public enum SyncEntity {
     OUTMIGRATIONS      (21, R.string.sync_outmigrations_lbl, "outmigrations.zip", "outmigrations/zip"),
     PREGNANCY_REGISTRATIONS (22, R.string.sync_pregnancy_registrations_lbl, "pregnancyregistrations.zip", "pregnancies/zip"),
     PREGNANCY_OUTCOMES (23, R.string.sync_pregnancy_outcomes_lbl, "pregnancyoutcomes.zip", "pregnancyoutcomes/zip"),
-    DEATHS             (24, R.string.sync_deaths_lbl, "deaths.zip", "deaths/zip"),
-    INCOMPLETE_VISITS  (25, R.string.sync_incomplete_visits_lbl, "incompletevisits.zip", "incompletevisits/zip"),
-    REGION_HEADS (26, R.string.sync_regionheads_lbl, "regionheads.zip", "regionheads/zip"),
+    PREGNANCY_VISITS   (24, R.string.sync_pregnancy_visits_lbl, "pregnancyvisits.zip", "pregnancyvisits/zip"),
+    DEATHS             (25, R.string.sync_deaths_lbl, "deaths.zip", "deaths/zip"),
+    INCOMPLETE_VISITS  (26, R.string.sync_incomplete_visits_lbl, "incompletevisits.zip", "incompletevisits/zip"),
+    REGION_HEADS (27, R.string.sync_regionheads_lbl, "regionheads.zip", "regionheads/zip"),
     INVALID_ENUM       (-1, -1, "", "");
 
     private int code;

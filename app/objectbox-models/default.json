@@ -1825,7 +1825,7 @@
     },
     {
       "id": "21:4385528013949997550",
-      "lastPropertyId": "17:5858247770463033931",
+      "lastPropertyId": "26:6087038116073467639",
       "name": "PregnancyRegistration",
       "properties": [
         {
@@ -1921,6 +1921,51 @@
           "indexId": "93:9135220409454754717",
           "type": 9,
           "flags": 2080
+        },
+        {
+          "id": "18:6382982484297261840",
+          "name": "summary_antepartum_count",
+          "type": 5
+        },
+        {
+          "id": "19:658329417818610620",
+          "name": "summary_postpartum_count",
+          "type": 5
+        },
+        {
+          "id": "20:415542767760873297",
+          "name": "summary_last_visit_status",
+          "type": 9
+        },
+        {
+          "id": "21:3423521693999175138",
+          "name": "summary_last_visit_type",
+          "type": 9
+        },
+        {
+          "id": "22:221300037472000368",
+          "name": "summary_first_visit_date",
+          "type": 10
+        },
+        {
+          "id": "23:7678453820508109790",
+          "name": "summary_has_pregnancy_outcome",
+          "type": 1
+        },
+        {
+          "id": "24:5041066273807792174",
+          "name": "summary_nr_outcomes",
+          "type": 5
+        },
+        {
+          "id": "25:6476242248478211992",
+          "name": "summary_followup_completed",
+          "type": 1
+        },
+        {
+          "id": "26:6087038116073467639",
+          "name": "summary_last_visit_date",
+          "type": 10
         }
       ],
       "relations": []
@@ -2683,10 +2728,245 @@
         }
       ],
       "relations": []
+    },
+    {
+      "id": "34:911145539395431552",
+      "lastPropertyId": "26:3912256084644882406",
+      "name": "PregnancyVisit",
+      "properties": [
+        {
+          "id": "1:1826208788941510708",
+          "name": "id",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:3685230264702468287",
+          "name": "code",
+          "indexId": "133:6847729576737502056",
+          "type": 9,
+          "flags": 2048
+        },
+        {
+          "id": "3:6237658157123006941",
+          "name": "visitCode",
+          "indexId": "134:7080353686404862485",
+          "type": 9,
+          "flags": 2048
+        },
+        {
+          "id": "4:60471566846765457",
+          "name": "motherCode",
+          "indexId": "135:283352291522532033",
+          "type": 9,
+          "flags": 2048
+        },
+        {
+          "id": "5:4124977510985434133",
+          "name": "status",
+          "type": 9
+        },
+        {
+          "id": "6:3930249521512896398",
+          "name": "visitNumber",
+          "type": 5
+        },
+        {
+          "id": "7:3874270327031968658",
+          "name": "visitType",
+          "type": 9
+        },
+        {
+          "id": "8:6782897278179002401",
+          "name": "visitDate",
+          "type": 10
+        },
+        {
+          "id": "9:598402035258221248",
+          "name": "weeksGestation",
+          "type": 5
+        },
+        {
+          "id": "10:6421127826101848949",
+          "name": "prenatalCareReceived",
+          "type": 1
+        },
+        {
+          "id": "11:7489412484348111356",
+          "name": "prenatalCareProvider",
+          "type": 9
+        },
+        {
+          "id": "12:7140066284165730819",
+          "name": "complicationsReported",
+          "type": 1
+        },
+        {
+          "id": "13:3911855443305881033",
+          "name": "complicationDetails",
+          "type": 9
+        },
+        {
+          "id": "14:3748911373719414891",
+          "name": "hasBirthPlan",
+          "type": 1
+        },
+        {
+          "id": "15:1992568544335826016",
+          "name": "expectedBirthPlace",
+          "type": 9
+        },
+        {
+          "id": "16:4992597583181074904",
+          "name": "birthPlaceOther",
+          "type": 9
+        },
+        {
+          "id": "17:4550268672681777216",
+          "name": "transportationPlan",
+          "type": 1
+        },
+        {
+          "id": "18:6984464360645038232",
+          "name": "financialPreparedness",
+          "type": 1
+        },
+        {
+          "id": "19:7218585495233536005",
+          "name": "postpartumComplications",
+          "type": 1
+        },
+        {
+          "id": "20:5508139743170285657",
+          "name": "postpartumComplicationDetails",
+          "type": 9
+        },
+        {
+          "id": "21:3699856944240805055",
+          "name": "breastfeedingStatus",
+          "type": 9
+        },
+        {
+          "id": "22:5585048057264933301",
+          "name": "resumedDailyActivities",
+          "type": 1
+        },
+        {
+          "id": "23:2552935418753146645",
+          "name": "attendedPostpartumCheckup",
+          "type": 1
+        },
+        {
+          "id": "24:5321219956019077309",
+          "name": "collectedId",
+          "indexId": "136:8049452660526309277",
+          "type": 9,
+          "flags": 2080
+        },
+        {
+          "id": "25:7500843504805419179",
+          "name": "recentlyCreated",
+          "type": 1
+        },
+        {
+          "id": "26:3912256084644882406",
+          "name": "recentlyCreatedUri",
+          "type": 9
+        }
+      ],
+      "relations": []
+    },
+    {
+      "id": "35:4792994646347964930",
+      "lastPropertyId": "14:6277006418273172840",
+      "name": "PregnancyVisitChild",
+      "properties": [
+        {
+          "id": "1:2019131073103056226",
+          "name": "id",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:3827859397403262776",
+          "name": "pregnancyCode",
+          "indexId": "137:9050626615849366619",
+          "type": 9,
+          "flags": 2048
+        },
+        {
+          "id": "3:8571914526437060180",
+          "name": "outcomeType",
+          "type": 9
+        },
+        {
+          "id": "4:6300183041053636957",
+          "name": "childCode",
+          "indexId": "138:6676449039338104322",
+          "type": 9,
+          "flags": 2048
+        },
+        {
+          "id": "5:6439229261938059906",
+          "name": "childStatus",
+          "type": 9
+        },
+        {
+          "id": "6:6440497132941078718",
+          "name": "childWeight",
+          "type": 8
+        },
+        {
+          "id": "7:6444781564976675630",
+          "name": "childIllnessSymptoms",
+          "type": 9
+        },
+        {
+          "id": "8:6008637344410899730",
+          "name": "childBreastfeedingStatus",
+          "type": 9
+        },
+        {
+          "id": "9:5752934985941279916",
+          "name": "childImmunizationStatus",
+          "type": 9
+        },
+        {
+          "id": "10:6536383192000587655",
+          "name": "notes",
+          "type": 9
+        },
+        {
+          "id": "11:6399809469882501395",
+          "name": "collectedId",
+          "indexId": "139:7571076719612656888",
+          "type": 9,
+          "flags": 2080
+        },
+        {
+          "id": "12:3963192583990438029",
+          "name": "recentlyCreated",
+          "type": 1
+        },
+        {
+          "id": "13:8234560870062166916",
+          "name": "recentlyCreatedUri",
+          "type": 9
+        },
+        {
+          "id": "14:6277006418273172840",
+          "name": "visitId",
+          "indexId": "140:7833866705014035705",
+          "type": 11,
+          "flags": 520,
+          "relationTarget": "PregnancyVisit"
+        }
+      ],
+      "relations": []
     }
   ],
-  "lastEntityId": "33:2662852511544938909",
-  "lastIndexId": "132:1880481815754780721",
+  "lastEntityId": "35:4792994646347964930",
+  "lastIndexId": "140:7833866705014035705",
   "lastRelationId": "0:0",
   "lastSequenceId": "0:0",
   "modelVersion": 5,

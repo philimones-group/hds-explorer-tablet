@@ -20,6 +20,7 @@ public enum CoreFormEntity {
     OUTMIGRATION           ("rawOutMigration",          R.string.core_entity_outmigration_lbl),
     PREGNANCY_REGISTRATION ("rawPregnancyRegistration", R.string.core_entity_pregnancy_reg_lbl),
     PREGNANCY_OUTCOME      ("rawPregnancyOutcome",      R.string.core_entity_pregnancy_out_lbl),
+    PREGNANCY_VISIT        ("rawPregnancyVisit",        R.string.core_entity_pregnancy_vis_lbl),
     DEATH                  ("rawDeath",                 R.string.core_entity_death_lbl),
     CHANGE_HOUSEHOLD_HEAD  ("rawChangeHead",            R.string.core_entity_changehoh_lbl),
     INCOMPLETE_VISIT       ("rawIncompleteVisit",      R.string.core_entity_member_not_visited_lbl),

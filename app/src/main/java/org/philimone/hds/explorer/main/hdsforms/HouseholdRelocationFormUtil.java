@@ -22,6 +22,7 @@ import org.philimone.hds.explorer.model.Member_;
 import org.philimone.hds.explorer.model.Residency;
 import org.philimone.hds.explorer.model.Residency_;
 import org.philimone.hds.explorer.model.Visit;
+import org.philimone.hds.explorer.model.converters.StringCollectionConverter;
 import org.philimone.hds.explorer.model.enums.CoreFormEntity;
 import org.philimone.hds.explorer.model.enums.HeadRelationshipType;
 import org.philimone.hds.explorer.model.enums.HouseholdRelocationReason;
@@ -61,7 +62,7 @@ public class HouseholdRelocationFormUtil extends FormUtil<HouseholdRelocation> {
     private Household destinationHousehold;
     private Member headMember;
     private Map<String, String> mapSavedStates = new HashMap<>();
-    private final String SAVED_ENTITY_OBJECT_KEY = "householdRelocationFormUtilState";
+    public static final String SAVED_ENTITY_OBJECT_KEY = "householdRelocationFormUtilState";
     private List<Long> oldMembersResidenciesList = new ArrayList<>();
     private List<Long> oldMembersRelationshipsList = new ArrayList<>();
     private List<Long> newMembersResidenciesList = new ArrayList<>();
@@ -523,6 +524,9 @@ public class HouseholdRelocationFormUtil extends FormUtil<HouseholdRelocation> {
         householdRelocation.eventDate = eventDate;
         householdRelocation.reason = HouseholdRelocationReason.getFrom(reason);
         householdRelocation.reasonOther = reasonOther;
+        householdRelocation.collectedId = collectedValues.get(HForm.COLUMN_ID).getValue();
+        householdRelocation.recentlyCreated = true;
+        householdRelocation.recentlyCreatedUri = result.getFilename();
 
         boxHouseholdRelocations.put(householdRelocation);
 

@@ -18,6 +18,8 @@ public interface CodeGenerator {
 
     boolean isRegionCodeValid(RegionLevel lowestRegionLevel, RegionLevel codeRegionLevel, String code);
 
+    boolean isHouseholdBaseCodeValid(String code);
+
     boolean isHouseholdCodeValid(String code);
 
     boolean isMemberCodeValid(String code);

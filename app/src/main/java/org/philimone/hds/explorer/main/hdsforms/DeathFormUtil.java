@@ -452,19 +452,23 @@ public class DeathFormUtil extends FormUtil<Death> {
 
         //other validations
         if (isHouseholdHead){
-            //check dates of relationships of new head, old head and members of household - they are the current relationships - endType=NA
-            HeadRelationship newHeadLastRelationship = getLastHeadRelationship(newHeadCode);
-            List<HeadRelationship> lastMembersRelationships = getLastHeadRelationships(newMemberCodes);
 
-            //deathDate vs newHeadLastRelationship.startDate
-            if (newHeadLastRelationship != null && newHeadLastRelationship.startDate != null && deathDate.before(newHeadLastRelationship.startDate)){
+            //check dates of relationships of new head, old head and members of household - they are the current relationships - endType=NA
+            //HeadRelationship newHeadLastRelationship = getLastHeadRelationship(newHeadCode);
+            //List<HeadRelationship> lastMembersRelationships = getLastHeadRelationships(newMemberCodes);
+
+            //deathDate vs newHeadLastRelationship.startDate - NOT NEEDED BECAUSE THE NEW HEAD IS A MEMBER OF THIS HOUSEHOLD SO ITS CHECKED ON THE FOR LOOP
+            /*
+            if (newHeadLastRelationship != null && newHeadLastRelationship.startDate != null && deathDate.before(newHeadLastRelationship.startDate)) {
                 //The death date cannot be before the [start date] of the [new Head of Household] last Head Relationship record.
                 String message = this.context.getString(R.string.death_deathdate_not_before_new_head_hrelationship_startdate_lbl, StringUtil.formatYMD(deathDate), newHeadLastRelationship.startType.code, StringUtil.formatYMD(newHeadLastRelationship.startDate));
                 return new ValidationResult(colDeathDate, message);
-            }
+            }*/
 
-            for (HeadRelationship relationship : lastMembersRelationships) {
-                if (relationship != null && relationship.startDate != null && deathDate.before(relationship.startDate)){
+            //We are doublechecking relationships start dates of the current members of this household before the death of head of household
+            //headMemberHeadRelationships on both Mode.CREATE or Mode.EDIT are the relationships of the members of this household before the death of the head
+            for (HeadRelationship relationship : headMemberHeadRelationships) {//lastMembersRelationships) {
+                if (relationship != null && relationship.startDate != null && deathDate.before(relationship.startDate)) {
                     //The death date cannot be before the [start date] of the Member[??????] last Head Relationship record.
                     String message = this.context.getString(R.string.death_deathdate_not_before_member_hrelationship_startdate_lbl, StringUtil.formatYMD(deathDate), relationship.memberCode, relationship.startType.code, StringUtil.formatYMD(relationship.startDate));
                     return new ValidationResult(colDeathDate, message);

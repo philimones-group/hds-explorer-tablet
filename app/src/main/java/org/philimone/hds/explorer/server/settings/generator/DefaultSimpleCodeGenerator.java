@@ -51,6 +51,11 @@ public class DefaultSimpleCodeGenerator implements CodeGenerator {
     }
 
     @Override
+    public boolean isHouseholdBaseCodeValid(String code) {
+        return !StringUtil.isBlank(code) && code.matches(REGION_CODE_PATTERN);
+    }
+
+    @Override
     public boolean isHouseholdCodeValid(String code) {
         return !StringUtil.isBlank(code) && code.matches(HOUSEHOLD_CODE_PATTERN);
     }

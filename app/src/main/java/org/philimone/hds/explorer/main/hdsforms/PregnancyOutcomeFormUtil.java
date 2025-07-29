@@ -56,6 +56,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import io.objectbox.Box;
@@ -177,6 +178,14 @@ public class PregnancyOutcomeFormUtil extends FormUtil<PregnancyOutcome> {
         return 12;
     }
 
+    private String getParentName(Member member){
+        if (member.code.equals(Member.getUnknownIndividual().code) || member.name.equals("member.unknown.label")){
+            return this.getContext().getString(R.string.member_details_unknown_lbl);
+        }else {
+            return member.name;
+        }
+    }
+
     @Override
     protected void preloadValues() {
         //member_details_unknown_lbl
@@ -187,7 +196,7 @@ public class PregnancyOutcomeFormUtil extends FormUtil<PregnancyOutcome> {
         preloadedMap.put("motherCode", this.mother.code);
         preloadedMap.put("motherName", this.mother.name);
         preloadedMap.put("fatherCode", this.father.code);
-        preloadedMap.put("fatherName", this.father.name);
+        preloadedMap.put("fatherName", getParentName(this.father));
         preloadedMap.put("numberOfOutcomes", this.numberOfOutcomes+"");
 
         RepeatObject childsRepObj = new RepeatObject();
@@ -214,7 +223,7 @@ public class PregnancyOutcomeFormUtil extends FormUtil<PregnancyOutcome> {
     @Override
     protected void preloadUpdatedValues() {
         preloadedMap.put("fatherCode", this.father.code);
-        preloadedMap.put("fatherName", this.father.name);
+        preloadedMap.put("fatherName", getParentName(this.father));
     }
 
     private boolean areFatherOrMotherHead(){
@@ -899,12 +908,40 @@ public class PregnancyOutcomeFormUtil extends FormUtil<PregnancyOutcome> {
         }
 
         if (currentMode == Mode.CREATE) {
-            checkHeadOfHouseholdDialog();
+            checkPreviousPregnancyOutcomes();
         } else if (currentMode == Mode.EDIT) {
             retrieveHeadOfHousehold();
             checkChangeFatherDialog();
         }
 
+    }
+
+    private void checkPreviousPregnancyOutcomes() {
+        PregnancyOutcome lastPregnancyOutcome = boxPregnancyOutcomes.query(PregnancyOutcome_.motherCode.equal(mother.code)).orderDesc(PregnancyOutcome_.outcomeDate).build().findFirst();
+
+        if (lastPregnancyOutcome != null) {
+            Date currentDate = new Date();
+
+            if (GeneralUtil.getAgeInDays(currentDate, lastPregnancyOutcome.outcomeDate) <= 184) { //less than 6 months
+                //If another is being registered in less than six months
+                //This woman had a previous pregnancy outcome [on DATE]. Are you sure this is a new, separate pregnancy event?
+                String title = getContext().getString(R.string.core_entity_pregnancy_out_lbl);
+                String message = getContext().getString(R.string.pregnancy_registration_warning_close_dates_w_previous_lbl, StringUtil.formatYMD(lastPregnancyOutcome.outcomeDate));
+                DialogFactory.createMessageYN(this.context, title, message, getContext().getString(R.string.bt_yes_lbl), getContext().getString(R.string.bt_cancel_lbl), new DialogFactory.OnYesNoClickListener() {
+                    @Override
+                    public void onYesClicked() {
+                        checkHeadOfHouseholdDialog();
+                    }
+
+                    @Override
+                    public void onNoClicked() {
+                        deleteCreatedPregnancy();
+                    }
+                }).show();
+            }
+        } else {
+            checkHeadOfHouseholdDialog();
+        }
     }
 
     private void retrieveHeadOfHousehold() {

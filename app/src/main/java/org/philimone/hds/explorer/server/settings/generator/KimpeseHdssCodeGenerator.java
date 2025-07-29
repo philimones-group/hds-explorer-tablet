@@ -67,6 +67,11 @@ public class KimpeseHdssCodeGenerator implements CodeGenerator {
     }
 
     @Override
+    public boolean isHouseholdBaseCodeValid(String code) {
+        return !StringUtil.isBlank(code) && code.matches(REGION_LEVEL_6_PATTERN);
+    }
+
+    @Override
     public boolean isHouseholdCodeValid(String code) {
         return !StringUtil.isBlank(code) && code.matches(HOUSEHOLD_CODE_PATTERN);
     }

@@ -57,6 +57,11 @@ public class NavrongoHdssCodeGenerator implements CodeGenerator {
     }
 
     @Override
+    public boolean isHouseholdBaseCodeValid(String code) {
+        return !StringUtil.isBlank(code) && code.matches(COMPOUND_CODE_PATTERN);
+    }
+
+    @Override
     public boolean isHouseholdCodeValid(String code) {
         return !StringUtil.isBlank(code) && code.matches(HOUSEHOLD_CODE_PATTERN);
     }

@@ -20,6 +20,7 @@ public class DefaultCodeGenerator implements CodeGenerator {
     final String MODULE_CODE_PATTERN = "^MX-[0-9]{3}$";
     final String TRACKLIST_CODE_PATTERN = "^TR-[0-9]{6}$";
     final String REGION_CODE_PATTERN = "^[A-Z0-9]{3}$";
+    final String HOUSEHOLD_BASE_CODE_PATTERN = "^[A-Z0-9]{6}$";
     final String HOUSEHOLD_CODE_PATTERN = "^[A-Z0-9]{6}[0-9]{3}$";
     final String MEMBER_CODE_PATTERN = "^[A-Z0-9]{6}[0-9]{6}$";
     final String VISIT_CODE_PATTERN = "^[A-Z0-9]{6}[0-9]{3}-[0-9]{3}-[0-9]{3}$";
@@ -48,6 +49,11 @@ public class DefaultCodeGenerator implements CodeGenerator {
     public boolean isRegionCodeValid(RegionLevel lowestRegionLevel, RegionLevel codeRegionLevel, String code) {
         //Other implementations of codegenerators can use a different approach to generate region codes - by having different schemes for each level
         return !StringUtil.isBlank(code) && code.matches(REGION_CODE_PATTERN);
+    }
+
+    @Override
+    public boolean isHouseholdBaseCodeValid(String code) {
+        return !StringUtil.isBlank(code) && code.matches(HOUSEHOLD_BASE_CODE_PATTERN);
     }
 
     @Override

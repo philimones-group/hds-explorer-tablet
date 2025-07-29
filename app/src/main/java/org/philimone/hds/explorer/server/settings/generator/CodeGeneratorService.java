@@ -95,6 +95,10 @@ public class CodeGeneratorService {
         return codeGenerator.isRegionCodeValid(lowestRegionLevel, regionLevel, code);
     }
 
+    public boolean isHouseholdBaseCodeValid(String regionCode) {
+        return codeGenerator.isHouseholdBaseCodeValid(regionCode);
+    }
+
     public boolean isHouseholdCodeValid(String code) {
         return codeGenerator.isHouseholdCodeValid(code);
     }
@@ -203,7 +207,7 @@ public class CodeGeneratorService {
         //reduce length and test
         for (int i = code.length()-1; i >= 0; i--) {
             String x = code.substring(0, i);
-            if (isRegionCodeValid(lowestRegionLevel, x)) return x; //check the lowest region level if valid
+            if (isHouseholdBaseCodeValid(x)) return x; //check the lowest region level if valid
         }
 
         return code;

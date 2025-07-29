@@ -480,7 +480,8 @@ public class PregnancyRegistrationFormUtil extends FormUtil<PregnancyRegistratio
                     result = StringUtil.formatYMD(eddDate);
                 } else if (pregMonths != null){
                     int pdays = pregMonths*4*7;
-                    Date pdate = GeneralUtil.getDateAdd(recordedDate, -1*pdays);
+                    //Date pdate = GeneralUtil.getDateAdd(recordedDate, -1*pdays);
+                    Date pdate = GeneralUtil.getDateAdd(new Date(), -1*pdays); //calculation is done using today's date, recordedDate is a visitDate
                     eddDate = GeneralUtil.getDateAdd(pdate, 280);
                     result = StringUtil.formatYMD(eddDate);
                 }

@@ -650,10 +650,10 @@ public class ExternalInMigrationFormUtil extends FormUtil<Inmigration> {
 
         ColumnValue colVisitCode = collectedValues.get("visitCode");
         ColumnValue colMemberCode = collectedValues.get("memberCode"); //check if code is valid + check duplicate + member belongs to household
-        ColumnValue colMotherCode = collectedValues.get("motherCode"); //not blank
-        ColumnValue colMotherName = collectedValues.get("motherName");
-        ColumnValue colFatherCode = collectedValues.get("fatherCode"); //not blank
-        ColumnValue colFatherName = collectedValues.get("fatherName");
+        ColumnValue colMotherCode = collectedValues.get("memberMotherCode"); //not blank
+        ColumnValue colMotherName = collectedValues.get("memberMotherName");
+        ColumnValue colFatherCode = collectedValues.get("memberFatherCode"); //not blank
+        ColumnValue colFatherName = collectedValues.get("memberFatherName");
         ColumnValue colMemberName = collectedValues.get("memberName"); //not blank
         ColumnValue colMemberGender = collectedValues.get("memberGender"); //not blank
         ColumnValue colMemberDob = collectedValues.get("memberDob"); //date cannot be in future + head min age

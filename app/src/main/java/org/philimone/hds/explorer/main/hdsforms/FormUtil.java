@@ -227,9 +227,9 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
     }
 
     private void readCollectedDataForEdit() {
-        //this.collectedData = this.boxCoreCollectedData.query(CoreCollectedData_.formEntityId.equal(this.entity.getId()).and(CoreCollectedData_.collectedId.equal(this.entity.getCollectedId()))).build().findFirst();
-        this.collectedData = this.boxCoreCollectedData.query(CoreCollectedData_.formEntityId.equal(this.entity.getId())).build().findFirst();
-        Log.d("found-collected", ""+this.collectedData);
+        this.collectedData = this.boxCoreCollectedData.query(CoreCollectedData_.formEntityId.equal(this.entity.getId()).and(CoreCollectedData_.collectedId.equal(this.entity.getCollectedId()))).build().findFirst();
+        //this.collectedData = this.boxCoreCollectedData.query(CoreCollectedData_.formEntityId.equal(this.entity.getId())).build().findFirst();
+        Log.d("found-collected", "uploaded="+this.collectedData.uploaded+", id="+this.collectedData.id+", feid="+this.collectedData.formEntityId);
 
         if (this.collectedData.uploaded && !collectedData.uploadedWithError) {
             //make the form readonly
@@ -734,6 +734,7 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
         if (this.entity instanceof PregnancyChild) return SubjectEntity.MEMBER;
         if (this.entity instanceof PregnancyOutcome) return SubjectEntity.MEMBER;
         if (this.entity instanceof PregnancyRegistration) return SubjectEntity.MEMBER;
+        if (this.entity instanceof PregnancyVisit) return SubjectEntity.MEMBER;
         if (this.entity instanceof Region) return SubjectEntity.REGION;
         if (this.entity instanceof Visit) return SubjectEntity.HOUSEHOLD;
         if (this.entity instanceof RegionHeadRelationship) return SubjectEntity.REGION;
@@ -778,6 +779,9 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
         } else if (this.entity instanceof PregnancyRegistration) {
             code = ((PregnancyRegistration) this.entity).motherCode;
             subject = SubjectEntity.MEMBER;
+        } else if (this.entity instanceof PregnancyVisit) {
+            code = ((PregnancyVisit) this.entity).motherCode;
+            subject = SubjectEntity.MEMBER;
         } else if (this.entity instanceof Region) {
             return this.entity.getId();
         } else if (this.entity instanceof Visit) {
@@ -820,6 +824,7 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
         if (this.collectedData.formEntity == CoreFormEntity.MARITAL_RELATIONSHIP) return this.context.getString(R.string.core_entity_marital_relationship_lbl);
         if (this.collectedData.formEntity == CoreFormEntity.PREGNANCY_REGISTRATION) return this.context.getString(R.string.core_entity_pregnancy_reg_lbl);
         if (this.collectedData.formEntity == CoreFormEntity.PREGNANCY_OUTCOME) return this.context.getString(R.string.core_entity_pregnancy_out_lbl);
+        if (this.collectedData.formEntity == CoreFormEntity.PREGNANCY_VISIT) return this.context.getString(R.string.core_entity_pregnancy_vis_lbl);
         if (this.collectedData.formEntity == CoreFormEntity.VISIT) return this.context.getString(R.string.core_entity_visit_lbl);
         if (this.collectedData.formEntity == CoreFormEntity.CHANGE_REGION_HEAD) return this.context.getString(R.string.core_entity_changehor_lbl);
         if (this.collectedData.formEntity == CoreFormEntity.HOUSEHOLD_RELOCATION) return this.context.getString(R.string.core_entity_household_reloc_lbl);
@@ -894,6 +899,12 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
 
     protected static HForm getPregnancyOutcomeForm(Context context) {
         InputStream inputStream = context.getResources().openRawResource(R.raw.pregnancy_outcome_form);
+        HForm form = retrieveForm(inputStream);
+        return form;
+    }
+
+    protected static HForm getPregnancyVisitForm(Context context) {
+        InputStream inputStream = context.getResources().openRawResource(R.raw.pregnancy_visit_form);
         HForm form = retrieveForm(inputStream);
         return form;
     }
@@ -999,6 +1010,7 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
             case OUTMIGRATION: return getOutmigrationForm(context);
             case PREGNANCY_REGISTRATION: return getPregnancyRegistrationForm(context);
             case PREGNANCY_OUTCOME: return getPregnancyOutcomeForm(context);
+            case PREGNANCY_VISIT: return getPregnancyVisitForm(context);
             case DEATH: return getDeathForm(context);
             case CHANGE_HOUSEHOLD_HEAD: return getChangeHeadForm(context);
             case INCOMPLETE_VISIT: return getIncompleteVisitForm(context);

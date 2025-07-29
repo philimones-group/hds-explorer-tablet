@@ -33,6 +33,8 @@ import org.philimone.hds.explorer.model.Outmigration;
 import org.philimone.hds.explorer.model.PregnancyChild;
 import org.philimone.hds.explorer.model.PregnancyOutcome;
 import org.philimone.hds.explorer.model.PregnancyRegistration;
+import org.philimone.hds.explorer.model.PregnancyVisit;
+import org.philimone.hds.explorer.model.PregnancyVisitChild;
 import org.philimone.hds.explorer.model.Region;
 import org.philimone.hds.explorer.model.RegionHeadRelationship;
 import org.philimone.hds.explorer.model.Residency;
@@ -40,8 +42,11 @@ import org.philimone.hds.explorer.model.Round;
 import org.philimone.hds.explorer.model.SyncReport;
 import org.philimone.hds.explorer.model.User;
 import org.philimone.hds.explorer.model.Visit;
+import org.philimone.hds.explorer.model.converters.IllnessSymptomsCollectionConverter;
 import org.philimone.hds.explorer.model.converters.MapStringConverter;
 import org.philimone.hds.explorer.model.converters.StringCollectionConverter;
+import org.philimone.hds.explorer.model.enums.BirthPlace;
+import org.philimone.hds.explorer.model.enums.BreastFeedingStatus;
 import org.philimone.hds.explorer.model.enums.CoreFormEntity;
 import org.philimone.hds.explorer.model.enums.EstimatedDateOfDeliveryType;
 import org.philimone.hds.explorer.model.enums.FormCollectType;
@@ -49,10 +54,16 @@ import org.philimone.hds.explorer.model.enums.FormSubjectType;
 import org.philimone.hds.explorer.model.enums.FormType;
 import org.philimone.hds.explorer.model.enums.Gender;
 import org.philimone.hds.explorer.model.enums.HeadRelationshipType;
+import org.philimone.hds.explorer.model.enums.HealthcareProviderType;
+import org.philimone.hds.explorer.model.enums.IllnessSymptoms;
+import org.philimone.hds.explorer.model.enums.ImmunizationStatus;
 import org.philimone.hds.explorer.model.enums.MaritalEndStatus;
 import org.philimone.hds.explorer.model.enums.MaritalStartStatus;
 import org.philimone.hds.explorer.model.enums.MaritalStatus;
+import org.philimone.hds.explorer.model.enums.NewBornStatus;
+import org.philimone.hds.explorer.model.enums.PregnancyOutcomeType;
 import org.philimone.hds.explorer.model.enums.PregnancyStatus;
+import org.philimone.hds.explorer.model.enums.PregnancyVisitType;
 import org.philimone.hds.explorer.model.enums.SyncEntity;
 import org.philimone.hds.explorer.model.enums.SyncState;
 import org.philimone.hds.explorer.model.enums.SyncStatus;
@@ -151,12 +162,14 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 	private Box<HeadRelationship> boxHeadRelationships;
 	private Box<MaritalRelationship> boxMaritalRelationships;
 	private Box<PregnancyRegistration> boxPregnancyRegistrations;
+	private Box<PregnancyVisit> boxPregnancyVisits;
+	private Box<PregnancyVisitChild> boxPregnancyVisitChilds;
 	private Box<Death> boxDeaths;
 	private Box<IncompleteVisit> boxIncompleteVisits;
 	private Box<Inmigration> boxInmigrations;
 	private Box<Outmigration> boxOutmigrations;
 	private Box<PregnancyChild> boxPregnancyChilds;
-	private Box<PregnancyOutcome> boxPregnancyOuts;
+	private Box<PregnancyOutcome> boxPregnancyOutcomes;
 	private Box<RegionHeadRelationship> boxRegionHeadRelationships;
 	private Box<SavedEntityState> boxSavedEntityStates;
 
@@ -209,12 +222,14 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 		this.boxHeadRelationships = ObjectBoxDatabase.get().boxFor(HeadRelationship.class);
 		this.boxMaritalRelationships = ObjectBoxDatabase.get().boxFor(MaritalRelationship.class);
 		this.boxPregnancyRegistrations = ObjectBoxDatabase.get().boxFor(PregnancyRegistration.class);
+		this.boxPregnancyVisits = ObjectBoxDatabase.get().boxFor(PregnancyVisit.class);
+		this.boxPregnancyVisitChilds = ObjectBoxDatabase.get().boxFor(PregnancyVisitChild.class);
 		this.boxDeaths = ObjectBoxDatabase.get().boxFor(Death.class);
 		this.boxIncompleteVisits = ObjectBoxDatabase.get().boxFor(IncompleteVisit.class);
 		this.boxInmigrations = ObjectBoxDatabase.get().boxFor(Inmigration.class);
 		this.boxOutmigrations = ObjectBoxDatabase.get().boxFor(Outmigration.class);
 		this.boxPregnancyChilds = ObjectBoxDatabase.get().boxFor(PregnancyChild.class);
-		this.boxPregnancyOuts = ObjectBoxDatabase.get().boxFor(PregnancyOutcome.class);
+		this.boxPregnancyOutcomes = ObjectBoxDatabase.get().boxFor(PregnancyOutcome.class);
 		this.boxRegionHeadRelationships = ObjectBoxDatabase.get().boxFor(RegionHeadRelationship.class);
 		this.boxSavedEntityStates = ObjectBoxDatabase.get().boxFor(SavedEntityState.class);
 	}
@@ -321,6 +336,12 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 				break;
 			case PREGNANCY_REGISTRATIONS:
 				builder.append(" " + mContext.getString(R.string.sync_pregnancy_registrations_lbl));
+				break;
+			case PREGNANCY_OUTCOMES:
+				builder.append(" " + mContext.getString(R.string.sync_pregnancy_outcomes_lbl));
+				break;
+			case PREGNANCY_VISITS:
+				builder.append(" " + mContext.getString(R.string.sync_pregnancy_visits_lbl));
 				break;
 			case DEATHS:
 				builder.append(" " + mContext.getString(R.string.sync_deaths_lbl));
@@ -440,7 +461,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 						boxInmigrations.removeAll();
 						boxOutmigrations.removeAll();
 						boxPregnancyChilds.removeAll();
-						boxPregnancyOuts.removeAll();
+						boxPregnancyOutcomes.removeAll();
 
 						this.boxCollectedData.removeAll();
 						deleteAllCoreCollectedData();
@@ -455,7 +476,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 						processUrl(appUrl + suffixFilePath, "residencies.zip");
 						break;
 					case VISITS:
-						boxPregnancyOuts.removeAll();
+						boxPregnancyOutcomes.removeAll();
 						boxIncompleteVisits.removeAll();
 						deleteAllVisits();
 						processUrl(appUrl + suffixFilePath, "visits.zip");
@@ -471,6 +492,15 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 					case PREGNANCY_REGISTRATIONS:
 						this.boxPregnancyRegistrations.removeAll();
 						processUrl(appUrl + suffixFilePath, "pregnancies.zip");
+						break;
+					case PREGNANCY_OUTCOMES:
+						this.boxPregnancyOutcomes.removeAll();
+						processUrl(appUrl + suffixFilePath, "pregnancyoutcomes.zip");
+						break;
+					case PREGNANCY_VISITS:
+						this.boxPregnancyVisitChilds.removeAll();
+						this.boxPregnancyVisits.removeAll();
+						processUrl(appUrl + suffixFilePath, "pregnancyvisits.zip");
 						break;
 					case DEATHS:
 						this.boxDeaths.removeAll();
@@ -944,7 +974,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 	}
 
 	private int getSyncRecordToDownload(SyncEntity entity){
-Log.d("entity", ""+entity.name());
+		Log.d("entity", ""+entity.name());
 		if (isDemoDownload) {
 			Integer records = demoSyncReportMap.get(entity.name());
 			return records;
@@ -1184,6 +1214,10 @@ Log.d("entity", ""+entity.name());
 					processMaritalRelationships(parser);
 				} else if (name.equalsIgnoreCase("pregnancyregistrations")) {
 					processPregnancyRegistrations(parser);
+				} else if (name.equalsIgnoreCase("pregnancyoutcomes")) {
+					processPregnancyOutcomes(parser);
+				} else if (name.equalsIgnoreCase("pregnancyvisits")) {
+					processPregnancyVisits(parser);
 				} else if (name.equalsIgnoreCase("deaths")) {
 					processDeaths(parser);
 				} else if (name.equalsIgnoreCase("regionheads")) {
@@ -1251,6 +1285,10 @@ Log.d("entity", ""+entity.name());
 
 	private boolean isEndTag(String element, XmlPullParser parser) throws XmlPullParserException {
 		return (element.equals(parser.getName()) && parser.getEventType() == XmlPullParser.END_TAG);
+	}
+
+	private boolean isStartTag(String element, XmlPullParser parser) throws XmlPullParserException {
+		return (element.equals(parser.getName()) && parser.getEventType() == XmlPullParser.START_TAG);
 	}
 
 	private boolean isEmptyTag(String element, XmlPullParser parser) throws XmlPullParserException {
@@ -3909,6 +3947,98 @@ Log.d("entity", ""+entity.name());
 				parser.nextTag();
 			}
 
+			// summary_antepartum_count
+			parser.nextTag();
+			if (!isEmptyTag("summary_antepartum_count", parser)) {
+				parser.next();
+				table.summary_antepartum_count = Integer.parseInt(parser.getText());
+				parser.nextTag();
+			} else {
+				parser.nextTag();
+			}
+
+			// summary_postpartum_count
+			parser.nextTag();
+			if (!isEmptyTag("summary_postpartum_count", parser)) {
+				parser.next();
+				table.summary_postpartum_count = Integer.parseInt(parser.getText());
+				parser.nextTag();
+			} else {
+				parser.nextTag();
+			}
+
+			// summary_last_visit_status
+			parser.nextTag();
+			if (!isEmptyTag("summary_last_visit_status", parser)) {
+				parser.next();
+				table.summary_last_visit_status = PregnancyStatus.getFrom(parser.getText());
+				parser.nextTag();
+			} else {
+				table.summary_last_visit_status = null;
+				parser.nextTag();
+			}
+
+			// summary_last_visit_type
+			parser.nextTag();
+			if (!isEmptyTag("summary_last_visit_type", parser)) {
+				parser.next();
+				table.summary_last_visit_type = PregnancyVisitType.getFrom(parser.getText());
+				parser.nextTag();
+			} else {
+				table.summary_last_visit_type = null;
+				parser.nextTag();
+			}
+
+			// summary_last_visit_date
+			parser.nextTag();
+			if (!isEmptyTag("summary_last_visit_date", parser)) {
+				parser.next();
+				table.summary_last_visit_date = StringUtil.toDate(parser.getText(), "yyyy-MM-dd");
+				parser.nextTag();
+			} else {
+				parser.nextTag();
+			}
+
+			// summary_first_visit_date
+			parser.nextTag();
+			if (!isEmptyTag("summary_first_visit_date", parser)) {
+				parser.next();
+				table.summary_first_visit_date = StringUtil.toDate(parser.getText(), "yyyy-MM-dd");
+				parser.nextTag();
+			} else {
+				parser.nextTag();
+			}
+
+			// summary_has_pregnancy_outcome
+			parser.nextTag();
+			if (!isEmptyTag("summary_has_pregnancy_outcome", parser)) {
+				parser.next();
+				table.summary_has_pregnancy_outcome = Boolean.parseBoolean(parser.getText());
+				parser.nextTag();
+			} else {
+				parser.nextTag();
+			}
+
+			// summary_nr_outcomes
+			parser.nextTag();
+			if (!isEmptyTag("summary_nr_outcomes", parser)) {
+				parser.next();
+				table.summary_nr_outcomes = Integer.parseInt(parser.getText());
+				parser.nextTag();
+			} else {
+				parser.nextTag();
+			}
+
+			// summary_followup_completed
+			parser.nextTag();
+			if (!isEmptyTag("summary_followup_completed", parser)) {
+				parser.next();
+				table.summary_followup_completed = Boolean.parseBoolean(parser.getText());
+				parser.nextTag();
+			} else {
+				parser.nextTag();
+			}
+
 			parser.nextTag(); //process <collectedId>
 			if (!isEmptyTag("collectedId", parser)) {
 				parser.next();
@@ -3943,6 +4073,274 @@ Log.d("entity", ""+entity.name());
 		publishProgress(count);
 
 		updateSyncReport(SyncEntity.PREGNANCY_REGISTRATIONS, new Date(), SyncStatus.STATUS_SYNCED);
+	}
+
+	private void processPregnancyOutcomes(XmlPullParser parser) throws Exception {
+
+		//clear sync_report
+		updateSyncReport(SyncEntity.PREGNANCY_OUTCOMES, null, SyncStatus.STATUS_NOT_SYNCED);
+
+		List<PregnancyOutcome> values = new ArrayList<>();
+		int count = 0;
+
+		parser.nextTag(); // <pregnancyoutcomes>
+
+		while (notEndOfTag("pregnancyoutcomes", parser)) {
+			count++;
+
+			PregnancyOutcome table = new PregnancyOutcome();
+
+			// <code>
+			parser.nextTag();
+			table.code = readText(parser, "code");
+
+			// <motherCode>
+			parser.nextTag();
+			table.motherCode = readText(parser, "motherCode");
+
+			// <fatherCode>
+			parser.nextTag();
+			table.fatherCode = readText(parser, "fatherCode");
+
+			// <numberOfOutcomes>
+			parser.nextTag();
+			table.numberOfOutcomes = readInteger(parser, "numberOfOutcomes");
+
+			// <numberOfLivebirths>
+			parser.nextTag();
+			table.numberOfLivebirths = readInteger(parser, "numberOfLivebirths");
+
+			// <outcomeDate>
+			parser.nextTag();
+			table.outcomeDate = StringUtil.toDate(readText(parser, "outcomeDate"), "yyyy-MM-dd");
+
+			// <birthPlace>
+			parser.nextTag();
+			table.birthPlace = BirthPlace.getFrom(readText(parser, "birthPlace"));
+
+			// <birthPlaceOther>
+			parser.nextTag();
+			table.birthPlaceOther = readText(parser, "birthPlaceOther");
+
+			// <visitCode>
+			parser.nextTag();
+			table.visitCode = readText(parser, "visitCode");
+
+			// <collectedId>
+			parser.nextTag();
+			table.collectedId = readText(parser, "collectedId");
+
+			// <childs>
+			parser.nextTag(); Log.d("nexttag", parser.getName()+", tg:"+parser.getEventType()+", txt:"+parser.getText()+", colid="+table.collectedId);
+			if (isStartTag("childs", parser)) {
+				parser.nextTag(); // move to first <child> or </childs>
+				while (notEndOfTag("childs", parser)) {
+
+					PregnancyChild child = new PregnancyChild();
+					// <outcomeCode>
+					parser.nextTag(); Log.d("nexttag1", parser.getName()+", tg:"+parser.getEventType()+", txt:"+parser.getText()+", colid="+table.collectedId);
+					child.outcomeCode = readText(parser, "outcomeCode");
+Log.d("read tag2", ""+child.outcomeCode);
+					// <outcomeType>
+					parser.nextTag();
+					child.outcomeType = PregnancyOutcomeType.getFrom(readText(parser, "outcomeType"));
+
+					// <childCode>
+					parser.nextTag();
+					child.childCode = readText(parser, "childCode");
+
+					// <childOrdinalPosition>
+					parser.nextTag();
+					child.childOrdinalPosition = readInteger(parser, "childOrdinalPosition");
+
+					// <childHeadRelationshipType>
+					parser.nextTag();
+					child.childHeadRelationshipType = HeadRelationshipType.getFrom(readText(parser, "childHeadRelationshipType"));
+
+					// Manually add to ObjectBox relation
+					child.outcome.setTarget(table);
+					table.childs.add(child);
+
+					parser.nextTag(); // </child>
+					parser.nextTag(); // <child> or </childs>
+				}
+			}
+
+			values.add(table);
+
+			if (count % 500 == 0) {
+				this.boxPregnancyOutcomes.put(values);
+				values.clear();
+				publishProgress(count);
+			}
+
+			parser.nextTag(); // </pregnancyoutcome>
+			parser.next();    // move to next <pregnancyoutcome> or </pregnancyoutcomes>
+		}
+
+		if (!values.isEmpty()) {
+			this.boxPregnancyOutcomes.put(values);
+		}
+
+		savedValues.put(entity, count);
+		publishProgress(count);
+
+		updateSyncReport(SyncEntity.PREGNANCY_OUTCOMES, new Date(), SyncStatus.STATUS_SYNCED);
+
+	}
+
+	private void processPregnancyVisits(XmlPullParser parser) throws Exception {
+
+		updateSyncReport(SyncEntity.PREGNANCY_VISITS, null, SyncStatus.STATUS_NOT_SYNCED);
+
+		List<PregnancyVisit> values = new ArrayList<>();
+		List<PregnancyVisitChild> allChildren = new ArrayList<>();
+		int count = 0;
+		values.clear();
+
+		parser.nextTag();
+
+		while (notEndOfTag("pregnancyvisits", parser)) {
+			count++;
+
+			PregnancyVisit table = new PregnancyVisit();
+
+			parser.nextTag(); // visitCode
+			table.visitCode = readText(parser, "visitCode");
+
+			parser.nextTag(); // code
+			table.code = readText(parser, "code");
+
+			parser.nextTag(); // motherCode
+			table.motherCode = readText(parser, "motherCode");
+
+			parser.nextTag(); // status
+			table.status = PregnancyStatus.getFrom(readText(parser, "status"));
+
+			parser.nextTag(); // visitNumber
+			table.visitNumber = readInteger(parser, "visitNumber");
+
+			parser.nextTag(); // visitType
+			table.visitType = PregnancyVisitType.getFrom(readText(parser, "visitType"));
+
+			parser.nextTag(); // visitDate
+			table.visitDate = StringUtil.toDate(readText(parser, "visitDate"), "yyyy-MM-dd");
+
+			// Antepartum fields
+			parser.nextTag(); // weeksGestation
+			table.weeksGestation = readInteger(parser, "weeksGestation");
+
+			parser.nextTag(); // prenatalCareReceived
+			table.prenatalCareReceived = readBoolean(parser, "prenatalCareReceived");
+
+			parser.nextTag(); // prenatalCareProvider
+			table.prenatalCareProvider = HealthcareProviderType.getFrom(readText(parser, "prenatalCareProvider"));
+
+			parser.nextTag(); // complicationsReported
+			table.complicationsReported = readBoolean(parser, "complicationsReported");
+
+			parser.nextTag(); // complicationDetails
+			table.complicationDetails = readText(parser, "complicationDetails");
+
+			parser.nextTag(); // hasBirthPlan
+			table.hasBirthPlan = readBoolean(parser, "hasBirthPlan");
+
+			parser.nextTag(); // expectedBirthPlace
+			table.expectedBirthPlace = BirthPlace.getFrom(readText(parser, "expectedBirthPlace"));
+
+			parser.nextTag(); // birthPlaceOther
+			table.birthPlaceOther = readText(parser, "birthPlaceOther");
+
+			parser.nextTag(); // transportationPlan
+			table.transportationPlan = readBoolean(parser, "transportationPlan");
+
+			parser.nextTag(); // financialPreparedness
+			table.financialPreparedness = readBoolean(parser, "financialPreparedness");
+
+			// Postpartum fields
+			parser.nextTag(); // financialPreparedness
+			table.financialPreparedness = readBoolean(parser, "postpartumComplications");
+
+			parser.nextTag(); // postpartumComplicationDetails
+			table.postpartumComplicationDetails = readText(parser, "postpartumComplicationDetails");
+
+			parser.nextTag(); // breastfeedingStatus
+			table.breastfeedingStatus = BreastFeedingStatus.getFrom(readText(parser, "breastfeedingStatus"));
+
+			parser.nextTag(); // resumedDailyActivities
+			table.resumedDailyActivities = readBoolean(parser, "resumedDailyActivities");
+
+			parser.nextTag(); // attendedPostpartumCheckup
+			table.attendedPostpartumCheckup = readBoolean(parser, "attendedPostpartumCheckup");
+
+			parser.nextTag(); // collectedId
+			table.collectedId = readText(parser, "collectedId");
+
+			// Process repeat group <childs>
+			parser.nextTag();
+			if (isStartTag("childs", parser)) {
+				parser.nextTag(); // go into <childs>
+				while (notEndOfTag("childs", parser)) {
+					PregnancyVisitChild child = new PregnancyVisitChild();
+
+					parser.nextTag();
+					child.pregnancyCode = readText(parser, "outcomeCode");
+
+					parser.nextTag(); // outcomeType
+					child.outcomeType = PregnancyOutcomeType.getFrom(readText(parser, "outcomeType"));
+
+					parser.nextTag(); // childCode
+					child.childCode = readText(parser, "childCode");
+
+					parser.nextTag(); // childStatus
+					child.childStatus = NewBornStatus.getFrom(readText(parser, "childStatus"));
+
+					parser.nextTag(); // childWeight
+					child.childWeight = readDouble(parser, "childWeight");
+
+					parser.nextTag(); // childIllnessSymptoms
+					child.childIllnessSymptoms.addAll(IllnessSymptomsCollectionConverter.getCollectionFrom(readText(parser, "childIllnessSymptoms")));
+
+					parser.nextTag(); // childBreastfeedingStatus
+					child.childBreastfeedingStatus = BreastFeedingStatus.getFrom(readText(parser, "childBreastfeedingStatus"));
+
+					parser.nextTag(); // childImmunizationStatus
+					child.childImmunizationStatus = ImmunizationStatus.getFrom(readText(parser, "childImmunizationStatus"));
+
+					parser.nextTag(); // notes
+					child.notes = readText(parser, "notes");
+
+					parser.nextTag(); // </child>
+					parser.nextTag(); // <child> or </childs>
+
+					// Link child to visit
+					child.visit.setTarget(table);
+					table.childs.add(child);
+				}
+
+			}
+
+			values.add(table);
+
+			if (count % 500 == 0){
+				this.boxPregnancyVisits.put(values); //try with runTx
+				values.clear();
+				savedValues.put(entity, count); //publish progress is a bit slow - its not reporting well the numbers
+				publishProgress(count);
+			}
+
+			parser.nextTag(); // </pregnancyvisit>
+			parser.next(); // advance
+		}
+
+		if (!values.isEmpty()) {
+			boxPregnancyVisits.put(values);
+		}
+
+		savedValues.put(entity, count);
+		publishProgress(count);
+
+		updateSyncReport(SyncEntity.PREGNANCY_VISITS, new Date(), SyncStatus.STATUS_SYNCED);
 	}
 
 	private void processDeaths(XmlPullParser parser) throws Exception {
@@ -4177,6 +4575,34 @@ Log.d("entity", ""+entity.name());
 		publishProgress(count);
 
 		updateSyncReport(SyncEntity.REGION_HEADS, new Date(), SyncStatus.STATUS_SYNCED);
+	}
+
+	//Helpers
+	private String readText(XmlPullParser parser, String tag) throws Exception {
+		if (!isEmptyTag(tag, parser)) {
+			parser.next();
+			String val = parser.getText();
+			parser.nextTag();
+			return val;
+		} else {
+			parser.nextTag();
+			return "";
+		}
+	}
+
+	private Integer readInteger(XmlPullParser parser, String tag) throws Exception {
+		String val = readText(parser, tag);
+		return val.isEmpty() ? null : Integer.parseInt(val);
+	}
+
+	private Boolean readBoolean(XmlPullParser parser, String tag) throws Exception {
+		String val = readText(parser, tag);
+		return val.isEmpty() ? null : Boolean.parseBoolean(val);
+	}
+
+	private Double readDouble(XmlPullParser parser, String tag) throws Exception {
+		String val = readText(parser, tag);
+		return val.isEmpty() ? null : Double.parseDouble(val);
 	}
 
 	private Map<String,String> convertFormMapTextToMap(String formMapText) {

@@ -45,7 +45,9 @@ import static org.philimone.hds.explorer.model.enums.SyncEntity.MARITAL_RELATION
 import static org.philimone.hds.explorer.model.enums.SyncEntity.MEMBERS;
 import static org.philimone.hds.explorer.model.enums.SyncEntity.MODULES;
 import static org.philimone.hds.explorer.model.enums.SyncEntity.PARAMETERS;
+import static org.philimone.hds.explorer.model.enums.SyncEntity.PREGNANCY_OUTCOMES;
 import static org.philimone.hds.explorer.model.enums.SyncEntity.PREGNANCY_REGISTRATIONS;
+import static org.philimone.hds.explorer.model.enums.SyncEntity.PREGNANCY_VISITS;
 import static org.philimone.hds.explorer.model.enums.SyncEntity.REGIONS;
 import static org.philimone.hds.explorer.model.enums.SyncEntity.REGION_HEADS;
 import static org.philimone.hds.explorer.model.enums.SyncEntity.RESIDENCIES;
@@ -228,6 +230,8 @@ public class SyncDownloadPanelFragment extends Fragment implements SyncPanelItem
         SyncReport hrelationships = Queries.getSyncReportBy(boxSyncReports, HEAD_RELATIONSHIPS);
         SyncReport mrelationships = Queries.getSyncReportBy(boxSyncReports, MARITAL_RELATIONSHIPS);
         SyncReport pregnancies = Queries.getSyncReportBy(boxSyncReports, PREGNANCY_REGISTRATIONS);
+        SyncReport pregnancyoutcomes = Queries.getSyncReportBy(boxSyncReports, PREGNANCY_OUTCOMES);
+        SyncReport pregnancyvisits = Queries.getSyncReportBy(boxSyncReports, PREGNANCY_VISITS);
         SyncReport deaths = Queries.getSyncReportBy(boxSyncReports, DEATHS);
 
         //setting general status - if one block is bad general is bad
@@ -256,8 +260,8 @@ public class SyncDownloadPanelFragment extends Fragment implements SyncPanelItem
         }
 
         //demographics events
-        if (visits != null || hrelationships != null || mrelationships != null || pregnancies != null || deaths != null) {
-            SyncReport report = getBestReport(visits, hrelationships, mrelationships, pregnancies);
+        if (visits != null || hrelationships != null || mrelationships != null || pregnancies != null || pregnancyoutcomes != null || pregnancyvisits != null || deaths != null) {
+            SyncReport report = getBestReport(visits, hrelationships, mrelationships, pregnancies, pregnancyoutcomes, pregnancyvisits);
             demographicsEventsSyncFragment.setSyncedDate(getStatusMessage(report), report.getStatus());
         }
 
@@ -346,7 +350,7 @@ public class SyncDownloadPanelFragment extends Fragment implements SyncPanelItem
 
     private void syncDemographicsEvents() {
         demographicsEventsSyncFragment.cleanProgress();
-        SyncEntitiesTask syncEntitiesTask = new SyncEntitiesTask(this.getContext(), this.demographicsEventsSyncFragment, serverUrl, username, password, VISITS, HEAD_RELATIONSHIPS, MARITAL_RELATIONSHIPS, PREGNANCY_REGISTRATIONS, DEATHS);
+        SyncEntitiesTask syncEntitiesTask = new SyncEntitiesTask(this.getContext(), this.demographicsEventsSyncFragment, serverUrl, username, password, VISITS, HEAD_RELATIONSHIPS, MARITAL_RELATIONSHIPS, PREGNANCY_REGISTRATIONS, PREGNANCY_OUTCOMES, PREGNANCY_VISITS, DEATHS);
         syncEntitiesTask.execute();
     }
 

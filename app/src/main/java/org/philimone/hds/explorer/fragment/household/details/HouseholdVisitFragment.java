@@ -1,5 +1,7 @@
 package org.philimone.hds.explorer.fragment.household.details;
 
+import static android.view.View.VISIBLE;
+
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -44,6 +46,7 @@ import org.philimone.hds.explorer.main.hdsforms.IncompleteVisitFormUtil;
 import org.philimone.hds.explorer.main.hdsforms.OutmigrationFormUtil;
 import org.philimone.hds.explorer.main.hdsforms.PregnancyOutcomeFormUtil;
 import org.philimone.hds.explorer.main.hdsforms.PregnancyRegistrationFormUtil;
+import org.philimone.hds.explorer.main.hdsforms.PregnancyVisitFormUtil;
 import org.philimone.hds.explorer.main.hdsforms.VisitFormUtil;
 import org.philimone.hds.explorer.model.ApplicationParam;
 import org.philimone.hds.explorer.model.ApplicationParam_;
@@ -76,6 +79,7 @@ import org.philimone.hds.explorer.model.PregnancyOutcome;
 import org.philimone.hds.explorer.model.PregnancyOutcome_;
 import org.philimone.hds.explorer.model.PregnancyRegistration;
 import org.philimone.hds.explorer.model.PregnancyRegistration_;
+import org.philimone.hds.explorer.model.PregnancyVisit;
 import org.philimone.hds.explorer.model.Region;
 import org.philimone.hds.explorer.model.RegionHeadRelationship;
 import org.philimone.hds.explorer.model.RegionHeadRelationship_;
@@ -115,6 +119,7 @@ public class HouseholdVisitFragment extends Fragment {
     private Button btnVisitMemberEnu;
     private Button btnVisitBirthReg;
     private Button btnVisitPregnancyReg;
+    private Button btnVisitPregnancyVisit;
     private Button btnVisitExtInmigration;
     private Button btnVisitIntInmigration;
     private Button btnVisitOutmigration;
@@ -146,6 +151,7 @@ public class HouseholdVisitFragment extends Fragment {
     private Box<Outmigration> boxOutmigrations;
     private Box<PregnancyRegistration> boxPregnancyRegistrations;
     private Box<PregnancyOutcome> boxPregnancyOutcomes;
+    private Box<PregnancyVisit> boxPregnancyVisits;
     private Box<Death> boxDeaths;
     private Box<HeadRelationship> boxHeadRelationships;
     private Box<Residency> boxResidencies;
@@ -284,6 +290,7 @@ public class HouseholdVisitFragment extends Fragment {
         this.boxOutmigrations = ObjectBoxDatabase.get().boxFor(Outmigration.class);
         this.boxPregnancyRegistrations = ObjectBoxDatabase.get().boxFor(PregnancyRegistration.class);
         this.boxPregnancyOutcomes = ObjectBoxDatabase.get().boxFor(PregnancyOutcome.class);
+        this.boxPregnancyVisits = ObjectBoxDatabase.get().boxFor(PregnancyVisit.class);
         this.boxDeaths = ObjectBoxDatabase.get().boxFor(Death.class);
         this.boxHeadRelationships = ObjectBoxDatabase.get().boxFor(HeadRelationship.class);
         this.boxResidencies = ObjectBoxDatabase.get().boxFor(Residency.class);
@@ -300,6 +307,7 @@ public class HouseholdVisitFragment extends Fragment {
         this.btnVisitMemberEnu = view.findViewById(R.id.btnVisitMemberEnu);
         this.btnVisitBirthReg = view.findViewById(R.id.btnVisitBirthReg);
         this.btnVisitPregnancyReg = view.findViewById(R.id.btnVisitPregnancyReg);
+        this.btnVisitPregnancyVisit = view.findViewById(R.id.btnVisitPregnancyVisit);
         this.btnVisitExtInmigration = view.findViewById(R.id.btnVisitExtInmigration);
         this.btnVisitIntInmigration = view.findViewById(R.id.btnVisitIntInmigration);
 
@@ -400,6 +408,10 @@ public class HouseholdVisitFragment extends Fragment {
 
         this.btnVisitBirthReg.setOnClickListener(v -> {
             onPregnancyOutcomeClicked(null);
+        });
+
+        this.btnVisitPregnancyVisit.setOnClickListener(v -> {
+            onPregnancyVisitClicked(null);
         });
 
         this.btnVisitDeath.setOnClickListener(v -> {
@@ -528,7 +540,7 @@ public class HouseholdVisitFragment extends Fragment {
 
         setMemberMode();
 
-        btClearMember.setVisibility(View.VISIBLE);
+        btClearMember.setVisibility(VISIBLE);
     }
 
     private void onMembersLongClick(int position) {
@@ -572,6 +584,7 @@ public class HouseholdVisitFragment extends Fragment {
         this.btnVisitMemberEnu.setEnabled(true);
         this.btnVisitBirthReg.setEnabled(false);
         this.btnVisitPregnancyReg.setEnabled(false);
+        this.btnVisitPregnancyVisit.setEnabled(false);
 
         this.btnVisitExtInmigration.setEnabled(true); // && !isCensusHousehold
         this.btnVisitIntInmigration.setEnabled(true); // && !isCensusHousehold
@@ -583,18 +596,19 @@ public class HouseholdVisitFragment extends Fragment {
         this.btnVisitExtraForm.setEnabled(true);
 
         this.btnVisitPregnancyReg.setVisibility(View.GONE);
-        this.btnVisitChangeHead.setVisibility(View.VISIBLE);
+        this.btnVisitChangeHead.setVisibility(VISIBLE);
 
         this.btnVisitMemberIncomplete.setEnabled(false);
-        this.btnVisitMemberEnu.setVisibility(View.VISIBLE);
+        this.btnVisitMemberEnu.setVisibility(VISIBLE);
         this.btnVisitMemberIncomplete.setVisibility(View.GONE);
 
-        this.btnVisitIntInmigration.setVisibility(View.VISIBLE);
+        this.btnVisitIntInmigration.setVisibility(VISIBLE);
+        this.btnVisitPregnancyVisit.setVisibility(View.GONE);
         this.btnVisitChangeRegionHead.setVisibility(View.GONE);
 
         this.btnVisitHouseholdRelocation.setEnabled(isEmptyHousehold);
         this.btnVisitOutmigration.setVisibility(View.GONE);
-        this.btnVisitHouseholdRelocation.setVisibility(View.VISIBLE);
+        this.btnVisitHouseholdRelocation.setVisibility(VISIBLE);
 
         //disable buttons if already collected and ready to edit
         //ChangeHead - must be collected one per visit
@@ -617,6 +631,7 @@ public class HouseholdVisitFragment extends Fragment {
         this.btnVisitMemberEnu.setEnabled(true);
         this.btnVisitBirthReg.setEnabled(false);
         this.btnVisitPregnancyReg.setEnabled(false);
+        this.btnVisitPregnancyVisit.setEnabled(false);
         this.btnVisitExtInmigration.setEnabled(true); // && !isCensusHousehold
         this.btnVisitIntInmigration.setEnabled(true); // && !isCensusHousehold
         this.btnVisitOutmigration.setEnabled(false);
@@ -626,18 +641,19 @@ public class HouseholdVisitFragment extends Fragment {
 
         this.btnVisitChangeHead.setEnabled(false);
         this.btnVisitPregnancyReg.setVisibility(View.GONE);
-        this.btnVisitChangeHead.setVisibility(View.VISIBLE);
+        this.btnVisitChangeHead.setVisibility(VISIBLE);
 
         this.btnVisitMemberIncomplete.setEnabled(false);
-        this.btnVisitMemberEnu.setVisibility(View.VISIBLE);
+        this.btnVisitMemberEnu.setVisibility(VISIBLE);
         this.btnVisitMemberIncomplete.setVisibility(View.GONE);
 
-        this.btnVisitIntInmigration.setVisibility(View.VISIBLE);
+        this.btnVisitIntInmigration.setVisibility(VISIBLE);
+        this.btnVisitPregnancyVisit.setVisibility(View.GONE);
         this.btnVisitChangeRegionHead.setVisibility(View.GONE);
 
         this.btnVisitHouseholdRelocation.setEnabled(isEmptyHousehold);
         this.btnVisitOutmigration.setVisibility(View.GONE);
-        this.btnVisitHouseholdRelocation.setVisibility(View.VISIBLE);
+        this.btnVisitHouseholdRelocation.setVisibility(VISIBLE);
 
         //disable item selection
         setMainListsSelectable(false);
@@ -653,65 +669,80 @@ public class HouseholdVisitFragment extends Fragment {
         boolean isAtHeadAge = age >= this.minimumHeadAge;
 
         this.btnVisitMemberEnu.setEnabled(false);
-        this.btnVisitBirthReg.setEnabled(this.selectedMember!=null && this.selectedMember.gender== Gender.FEMALE && isAtMotherAge);
-        this.btnVisitPregnancyReg.setEnabled(this.selectedMember!=null && this.selectedMember.gender== Gender.FEMALE && isAtMotherAge);
+        this.btnVisitBirthReg.setEnabled(false);
+        this.btnVisitPregnancyReg.setEnabled(false);
+        this.btnVisitPregnancyVisit.setEnabled(false);
+
+
         this.btnVisitExtInmigration.setEnabled(false);
         this.btnVisitIntInmigration.setEnabled(false);
+        this.btnVisitChangeHead.setEnabled(false);
         this.btnVisitOutmigration.setEnabled(true); // && !isCensusHousehold
         this.btnVisitDeath.setEnabled(true); // && !isCensusHousehold
         this.btnVisitMaritalRelationship.setEnabled(true && isAtSpouseAge);
         this.btnVisitExtraForm.setEnabled(true); //we need to analyse better this
 
-        this.btnVisitChangeHead.setEnabled(false);
-        this.btnVisitPregnancyReg.setVisibility(View.VISIBLE);
+        this.btnVisitExtInmigration.setVisibility(View.GONE);
+        this.btnVisitIntInmigration.setVisibility(View.GONE);
+
+        this.btnVisitPregnancyReg.setVisibility(VISIBLE);
+        this.btnVisitPregnancyVisit.setVisibility(View.VISIBLE); //will be visible when there is a pregnancy registration done
         this.btnVisitChangeHead.setVisibility(View.GONE);
 
         this.btnVisitMemberIncomplete.setEnabled(notVisited);
         this.btnVisitMemberEnu.setVisibility(View.GONE);
-        this.btnVisitMemberIncomplete.setVisibility(View.VISIBLE);
+        this.btnVisitMemberIncomplete.setVisibility(VISIBLE);
 
         if (isRegionHeadSupported) {
             this.btnVisitChangeRegionHead.setText(getString(R.string.changeregionhead_set_new_reiong_head_bt_lbl, regionHierarchyName));
             this.btnVisitChangeRegionHead.setEnabled(isAtHeadAge);
-            this.btnVisitIntInmigration.setVisibility(View.GONE);
-            this.btnVisitChangeRegionHead.setVisibility(View.VISIBLE);
+            //this.btnVisitIntInmigration.setVisibility(View.GONE);
+            this.btnVisitChangeRegionHead.setVisibility(VISIBLE);
         } else {
-            this.btnVisitIntInmigration.setVisibility(View.VISIBLE);
+            this.btnVisitExtInmigration.setVisibility(VISIBLE);
+            //this.btnVisitIntInmigration.setVisibility(VISIBLE);
             this.btnVisitChangeRegionHead.setVisibility(View.GONE);
         }
 
         this.btnVisitHouseholdRelocation.setEnabled(false);
-        this.btnVisitOutmigration.setVisibility(View.VISIBLE);
+        this.btnVisitOutmigration.setVisibility(VISIBLE);
         this.btnVisitHouseholdRelocation.setVisibility(View.GONE);
+
+        this.btnVisitPregnancyVisit.setVisibility(VISIBLE);
 
         //disable buttons if already collected and ready to edit
         //Incomplete, Marital, Pregnancy Reg and Pregnancy Outcome - must be collected one per visit and member
         CoreCollectedData ccdataIncomplete = this.boxCoreCollectedData.query(CoreCollectedData_.visitId.equal(visit.id).and(CoreCollectedData_.formEntity.equal(CoreFormEntity.INCOMPLETE_VISIT.code)).and(CoreCollectedData_.formEntityCode.equal(selectedMember.code))).build().findFirst();
-        CoreCollectedData ccdataPregnancy = this.boxCoreCollectedData.query(CoreCollectedData_.visitId.equal(visit.id).and(CoreCollectedData_.formEntity.equal(CoreFormEntity.PREGNANCY_REGISTRATION.code)).and(CoreCollectedData_.formEntityCode.equal(selectedMember.code))).build().findFirst();
-        CoreCollectedData ccdataPOutcome = this.boxCoreCollectedData.query(CoreCollectedData_.visitId.equal(visit.id).and(CoreCollectedData_.formEntity.equal(CoreFormEntity.PREGNANCY_OUTCOME.code)).and(CoreCollectedData_.formEntityCode.equal(selectedMember.code))).build().findFirst();
-        List<CoreCollectedData> ccdataMaritals = this.boxCoreCollectedData.query(CoreCollectedData_.visitId.equal(visit.id).and(CoreCollectedData_.formEntity.equal(CoreFormEntity.MARITAL_RELATIONSHIP.code))).build().find();
-        boolean hasMaritalRelationship = false;
-        for (CoreCollectedData collectedData : ccdataMaritals) { //all marital relationships registered in this visit
-            long countm = this.boxMaritalRelationships.query(MaritalRelationship_.id.equal(collectedData.formEntityId).and(MaritalRelationship_.memberA_code.equal(selectedMember.code).or(MaritalRelationship_.memberB_code.equal(selectedMember.code)))).build().count();
-            if (countm>0) {
-                hasMaritalRelationship = true;
-                break;
-            }
-        }
-        boolean isPregnant = false;
-
-        if (selectedMember.gender == Gender.FEMALE && isAtMotherAge) {
-            isPregnant = this.boxPregnancyRegistrations.query(PregnancyRegistration_.motherCode.equal(selectedMember.code).and(PregnancyRegistration_.status.equal(PregnancyStatus.PREGNANT.code))).build().count()>0;
-           Log.d("pregnat", ""+isPregnant);
-        }
-
         btnVisitMemberIncomplete.setEnabled(btnVisitMemberIncomplete.isEnabled() && ccdataIncomplete == null);
-        btnVisitMaritalRelationship.setEnabled(btnVisitMaritalRelationship.isEnabled()); // && hasMaritalRelationship == false);
-        btnVisitPregnancyReg.setEnabled(btnVisitPregnancyReg.isEnabled() && ccdataPregnancy == null && !isPregnant);
-        btnVisitBirthReg.setEnabled((btnVisitBirthReg.isEnabled() && ccdataPOutcome == null));
 
-        if (isPregnant){
+        PregnancyRegistration pregnancyReg = this.boxPregnancyRegistrations.query(PregnancyRegistration_.motherCode.equal(selectedMember.code)).orderDesc(PregnancyRegistration_.code).build().findFirst();
+        boolean femaleAtMothersAge = selectedMember.gender == Gender.FEMALE && isAtMotherAge;
+        boolean isPregnant = pregnancyReg != null && pregnancyReg.status == PregnancyStatus.PREGNANT;
+        boolean hasDelivered = pregnancyReg != null && pregnancyReg.status == PregnancyStatus.DELIVERED;
+        Log.d("pregnat", ""+isPregnant);
+
+
+        if (femaleAtMothersAge) {
+            boolean canPregReg = !isPregnant;
+            boolean canBirtReg = true; //allow
+            boolean canPregVis = isPregnant || (hasDelivered && (pregnancyReg.summary_followup_completed == null || !pregnancyReg.summary_followup_completed));
+
+            btnVisitPregnancyReg.setEnabled(canPregReg);
+            btnVisitBirthReg.setEnabled(canBirtReg);
+            btnVisitPregnancyVisit.setEnabled(canPregVis);
+
+            btnVisitPregnancyReg.setVisibility(canPregReg ? View.VISIBLE : View.GONE);
+            //btnVisitPregnancyVisit.setVisibility(canPregVis ? View.VISIBLE : View.GONE);
+            btnVisitBirthReg.setVisibility(View.VISIBLE);
+
+        } else {
             btnVisitPregnancyReg.setEnabled(false);
+            btnVisitBirthReg.setEnabled(false);
+            btnVisitPregnancyVisit.setEnabled(false);
+
+            btnVisitPregnancyReg.setVisibility(View.VISIBLE);
+            btnVisitBirthReg.setVisibility(View.VISIBLE);
+            //btnVisitPregnancyVisit.setVisibility(View.GONE);
         }
 
         setMainListsSelectable(true);
@@ -757,6 +788,7 @@ public class HouseholdVisitFragment extends Fragment {
         mapData.put(CoreFormEntity.HOUSEHOLD_RELOCATION, new ArrayList<VisitCollectedDataItem>());
         mapData.put(CoreFormEntity.PREGNANCY_REGISTRATION, new ArrayList<VisitCollectedDataItem>());
         mapData.put(CoreFormEntity.PREGNANCY_OUTCOME, new ArrayList<VisitCollectedDataItem>());
+        mapData.put(CoreFormEntity.PREGNANCY_VISIT, new ArrayList<VisitCollectedDataItem>());
         mapData.put(CoreFormEntity.DEATH, new ArrayList<VisitCollectedDataItem>());
         mapData.put(CoreFormEntity.CHANGE_HOUSEHOLD_HEAD, new ArrayList<VisitCollectedDataItem>());
         mapData.put(CoreFormEntity.INCOMPLETE_VISIT, new ArrayList<VisitCollectedDataItem>());
@@ -876,6 +908,10 @@ public class HouseholdVisitFragment extends Fragment {
             case PREGNANCY_OUTCOME:
                 PregnancyOutcome pregnancy_outcome = this.boxPregnancyOutcomes.get(coreCollectedData.formEntityId);
                 onPregnancyOutcomeClicked(pregnancy_outcome);
+                break;
+            case PREGNANCY_VISIT:
+                PregnancyVisit pregnancyVisit = this.boxPregnancyVisits.get(coreCollectedData.formEntityId);
+                onPregnancyVisitClicked(pregnancyVisit);
                 break;
             case DEATH:
                 Death death = this.boxDeaths.get(coreCollectedData.formEntityId);
@@ -1229,6 +1265,34 @@ public class HouseholdVisitFragment extends Fragment {
         
     }
 
+    private void onPregnancyVisitClicked(PregnancyVisit pregnancyVisit) {
+        Log.d("on-pregvisit", ""+this.selectedMember);
+
+        FormUtil.Mode mode = pregnancyVisit == null ? FormUtil.Mode.CREATE : FormUtil.Mode.EDIT;
+
+        PregnancyVisitFormUtil formUtil = PregnancyVisitFormUtil.newInstance(mode, this, this.getContext(), this.visit, this.household, this.selectedMember, pregnancyVisit, this.odkFormUtilities, new FormUtilListener<PregnancyVisit>() {
+            @Override
+            public void onNewEntityCreated(PregnancyVisit resPregnancyVisit, Map<String, Object> data) {
+                loadDataToListViews();
+                updateHouseholdDetails();
+            }
+
+            @Override
+            public void onEntityEdited(PregnancyVisit resPregnancyVisit, Map<String, Object> data) {
+                loadDataToListViews();
+                updateHouseholdDetails();
+            }
+
+            @Override
+            public void onFormCancelled() {
+
+            }
+        });
+
+        formUtil.collect();
+
+    }
+
     private void createPregnancyRegistrationForOutcome() {
         Log.d("started ", "pregnancy outcome - preg registration");
         new PregnancyRegistrationFormUtil(this, this.getContext(), this.visit, this.household, this.selectedMember, PregnancyStatus.DELIVERED, this.odkFormUtilities, new FormUtilListener<PregnancyRegistration>() {
@@ -1514,6 +1578,7 @@ public class HouseholdVisitFragment extends Fragment {
             case OUTMIGRATION: entity = boxOutmigrations.get(coreCollectedData.formEntityId); break;
             case PREGNANCY_REGISTRATION: entity = boxPregnancyRegistrations.get(coreCollectedData.formEntityId); break;
             case PREGNANCY_OUTCOME: entity = boxPregnancyOutcomes.get(coreCollectedData.formEntityId); break;
+            case PREGNANCY_VISIT: entity = boxPregnancyVisits.get(coreCollectedData.formEntityId); break;
             case DEATH: entity = boxDeaths.get(coreCollectedData.formEntityId); break;
             case INCOMPLETE_VISIT: entity = boxIncompleteVisits.get(coreCollectedData.formEntityId); break;
             case VISIT: entity = boxVisits.get(coreCollectedData.formEntityId); break;

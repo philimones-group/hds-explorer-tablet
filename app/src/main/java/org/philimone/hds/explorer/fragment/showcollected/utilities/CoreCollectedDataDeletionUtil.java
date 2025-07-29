@@ -4,10 +4,13 @@ import android.content.Context;
 import android.net.Uri;
 import android.util.Log;
 
+import com.google.gson.Gson;
+
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
 import org.philimone.hds.explorer.database.Queries;
 import org.philimone.hds.explorer.fragment.showcollected.adapter.model.CoreCollectedDataItem;
 import org.philimone.hds.explorer.fragment.showcollected.adapter.model.OdkCollectedDataItem;
+import org.philimone.hds.explorer.main.hdsforms.HouseholdRelocationFormUtil;
 import org.philimone.hds.explorer.model.CollectedData;
 import org.philimone.hds.explorer.model.CollectedData_;
 import org.philimone.hds.explorer.model.CoreCollectedData;
@@ -17,6 +20,7 @@ import org.philimone.hds.explorer.model.Death_;
 import org.philimone.hds.explorer.model.HeadRelationship;
 import org.philimone.hds.explorer.model.HeadRelationship_;
 import org.philimone.hds.explorer.model.Household;
+import org.philimone.hds.explorer.model.HouseholdRelocation;
 import org.philimone.hds.explorer.model.Household_;
 import org.philimone.hds.explorer.model.IncompleteVisit;
 import org.philimone.hds.explorer.model.IncompleteVisit_;
@@ -34,6 +38,8 @@ import org.philimone.hds.explorer.model.PregnancyOutcome;
 import org.philimone.hds.explorer.model.PregnancyOutcome_;
 import org.philimone.hds.explorer.model.PregnancyRegistration;
 import org.philimone.hds.explorer.model.PregnancyRegistration_;
+import org.philimone.hds.explorer.model.PregnancyVisit;
+import org.philimone.hds.explorer.model.PregnancyVisitChild;
 import org.philimone.hds.explorer.model.Region;
 import org.philimone.hds.explorer.model.RegionHeadRelationship;
 import org.philimone.hds.explorer.model.Region_;
@@ -41,6 +47,7 @@ import org.philimone.hds.explorer.model.Residency;
 import org.philimone.hds.explorer.model.Residency_;
 import org.philimone.hds.explorer.model.Visit;
 import org.philimone.hds.explorer.model.Visit_;
+import org.philimone.hds.explorer.model.enums.CoreFormEntity;
 import org.philimone.hds.explorer.model.enums.MaritalEndStatus;
 import org.philimone.hds.explorer.model.enums.temporal.ExternalInMigrationType;
 import org.philimone.hds.explorer.model.enums.temporal.HeadRelationshipEndType;
@@ -48,16 +55,23 @@ import org.philimone.hds.explorer.model.enums.temporal.HeadRelationshipStartType
 import org.philimone.hds.explorer.model.enums.temporal.RegionHeadEndType;
 import org.philimone.hds.explorer.model.enums.temporal.ResidencyEndType;
 import org.philimone.hds.explorer.model.enums.temporal.ResidencyStartType;
+import org.philimone.hds.explorer.model.oldstate.SavedEntityState;
+import org.philimone.hds.explorer.model.oldstate.SavedEntityState_;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import io.objectbox.Box;
 import mz.betainteractive.odk.InstanceProviderAPI;
+import mz.betainteractive.odk.model.FilledForm;
 import mz.betainteractive.odk.task.OdkFormLoadResult;
 import mz.betainteractive.utilities.GeneralUtil;
+import mz.betainteractive.utilities.StringUtil;
 
 public class CoreCollectedDataDeletionUtil {
 
@@ -74,11 +88,15 @@ public class CoreCollectedDataDeletionUtil {
     private Box<PregnancyRegistration> boxPregnancyRegistrations;
     private Box<PregnancyOutcome> boxPregnancyOutcomes;
     private Box<PregnancyChild> boxPregnancyChilds;
+    private Box<PregnancyVisit> boxPregnancyVisits;
+    private Box<PregnancyVisitChild> boxPregnancyVisitChilds;
     private Box<Death> boxDeaths;
     private Box<HeadRelationship> boxHeadRelationships;
     private Box<Residency> boxResidencies;
     private Box<IncompleteVisit> boxIncompleteVisits;
     private Box<RegionHeadRelationship> boxRegionHeadRelationships;
+    private Box<HouseholdRelocation> boxHouseholdRelocations;
+    private Box<SavedEntityState> boxSavedEntityStates;
 
     public CoreCollectedDataDeletionUtil(Context context) {
         this.mContext = context;
@@ -100,12 +118,16 @@ public class CoreCollectedDataDeletionUtil {
         this.boxPregnancyRegistrations = ObjectBoxDatabase.get().boxFor(PregnancyRegistration.class);
         this.boxPregnancyOutcomes = ObjectBoxDatabase.get().boxFor(PregnancyOutcome.class);
         this.boxPregnancyChilds  = ObjectBoxDatabase.get().boxFor(PregnancyChild.class);
+        this.boxPregnancyVisits = ObjectBoxDatabase.get().boxFor(PregnancyVisit.class);
+        this.boxPregnancyVisitChilds  = ObjectBoxDatabase.get().boxFor(PregnancyVisitChild.class);
         this.boxDeaths = ObjectBoxDatabase.get().boxFor(Death.class);
         this.boxHeadRelationships = ObjectBoxDatabase.get().boxFor(HeadRelationship.class);
         this.boxResidencies = ObjectBoxDatabase.get().boxFor(Residency.class);
         this.boxMembers = ObjectBoxDatabase.get().boxFor(Member.class);
         this.boxIncompleteVisits = ObjectBoxDatabase.get().boxFor(IncompleteVisit.class);
         this.boxRegionHeadRelationships = ObjectBoxDatabase.get().boxFor(RegionHeadRelationship.class);
+        this.boxHouseholdRelocations = ObjectBoxDatabase.get().boxFor(HouseholdRelocation.class);
+        this.boxSavedEntityStates = ObjectBoxDatabase.get().boxFor(SavedEntityState.class);
     }
 
     public void deleteRecords(List<CoreCollectedDataItem> selectedList) {
@@ -147,9 +169,11 @@ public class CoreCollectedDataDeletionUtil {
                 case MARITAL_RELATIONSHIP: deleteMaritalRelationship(cdata); break;
                 case PREGNANCY_REGISTRATION: deletePregnancyReg(cdata); break;
                 case PREGNANCY_OUTCOME: deletePregnancyOutcome(cdata); break;
+                case PREGNANCY_VISIT: deletePregnancyVisit(cdata); break;
                 case EXTERNAL_INMIGRATION: deleteInmigration(cdata); break;
                 case OUTMIGRATION: deleteOutmigration(cdata); break;
                 case INMIGRATION: deleteInmigration(cdata); break;
+                case HOUSEHOLD_RELOCATION: deleteHouseholdRelocation(cdata);
                 case DEATH: deleteDeath(cdata); break;
                 case MEMBER_ENU: deleteMemberEnumeration(cdata); break;
                 case CHANGE_HOUSEHOLD_HEAD: deleteChangeHouseholdHead(cdata); break;
@@ -273,6 +297,112 @@ public class CoreCollectedDataDeletionUtil {
         //its always better to perform synchronization after deleting records to ensure data integrity
     }
 
+    private void deleteHouseholdRelocation(CoreCollectedData cdata) {
+
+        HouseholdRelocation householdRelocation = boxHouseholdRelocations.get(cdata.formEntityId);
+
+        if (householdRelocation != null) {
+
+            //read saved entity and delete them
+            Map<String, String> mapSavedStates = new HashMap<>();
+            List<Long> oldMembersResidenciesList = new ArrayList<>();
+            List<Long> oldMembersRelationshipsList = new ArrayList<>();
+            List<Long> newMembersResidenciesList = new ArrayList<>();
+            List<Long> newMembersRelationshipsList = new ArrayList<>();
+
+            SavedEntityState savedState = this.boxSavedEntityStates.query(SavedEntityState_.formEntity.equal(CoreFormEntity.HOUSEHOLD_RELOCATION.code)
+                    .and(SavedEntityState_.collectedId.equal(householdRelocation.id))
+                    .and(SavedEntityState_.objectKey.equal(HouseholdRelocationFormUtil.SAVED_ENTITY_OBJECT_KEY))).build().findFirst();
+
+            if (savedState != null) {
+                HashMap map = new Gson().fromJson(savedState.objectGsonValue, HashMap.class);
+                for (Object key : map.keySet()) {
+                    mapSavedStates.put(key.toString(), map.get(key).toString());
+                }
+            }
+
+            String oldResidencyList = mapSavedStates.get("oldMembersResidenciesList");
+            String oldHeadRelatList = mapSavedStates.get("oldMembersRelationshipsList");
+            String newResidencyList = mapSavedStates.get("newMembersResidenciesList");
+            String newHeadRelatList = mapSavedStates.get("newMembersRelationshipsList");
+
+            if (oldResidencyList != null) {
+                for (String strId : oldResidencyList.split(",")) {
+                    if (!StringUtil.isBlank(strId))
+                        oldMembersResidenciesList.add(Long.parseLong(strId));
+                }
+            }
+            if (oldHeadRelatList != null) {
+                for (String strId : oldHeadRelatList.split(",")) {
+                    if (!StringUtil.isBlank(strId))
+                        oldMembersRelationshipsList.add(Long.parseLong(strId));
+                }
+            }
+            if (newResidencyList != null) {
+                for (String strId : newResidencyList.split(",")) {
+                    if (!StringUtil.isBlank(strId))
+                        newMembersResidenciesList.add(Long.parseLong(strId));
+                }
+            }
+            if (newHeadRelatList != null) {
+                for (String strId : newHeadRelatList.split(",")) {
+                    if (!StringUtil.isBlank(strId))
+                        newMembersRelationshipsList.add(Long.parseLong(strId));
+                }
+            }
+
+            //DELETE AND UPDATE RECORDS AFFECTED BY THIS HOUSEHOLD RELOCATION
+            //delete new residencies and relationships
+            boxResidencies.removeByIds(newMembersResidenciesList);
+            boxHeadRelationships.removeByIds(newMembersRelationshipsList);
+
+            //restore old residencies and relationships
+            for (Long id : oldMembersResidenciesList) {
+                Residency obj = boxResidencies.get(id);
+                obj.endType = ResidencyEndType.NOT_APPLICABLE;
+                obj.endDate = null;
+                boxResidencies.put(obj);
+
+                //update member
+                Household household = boxHouseholds.query(Household_.code.equal(obj.householdCode)).build().findFirst();
+                Member member = Queries.getMemberByCode(boxMembers, obj.memberCode);
+                member.householdCode = obj.householdCode;
+                member.householdName = Queries.getHouseholdByCode(boxHouseholds, obj.householdCode).name;
+                member.startType = obj.startType;
+                member.startDate = obj.startDate;
+                member.endType = ResidencyEndType.NOT_APPLICABLE;
+                member.endDate = null;
+                member.gpsNull = household.gpsNull;
+                member.gpsLatitude = household.gpsLatitude;
+                member.gpsLongitude = household.gpsLongitude;
+                member.gpsAltitude = household.gpsAltitude;
+                member.gpsAccuracy = household.gpsAccuracy;
+                member.sinLatitude = household.sinLatitude;
+                member.cosLatitude = household.cosLatitude;
+                member.sinLongitude = household.sinLongitude;
+                member.cosLongitude = household.cosLongitude;
+                boxMembers.put(member);
+            }
+            for (Long id : oldMembersRelationshipsList) {
+                HeadRelationship obj = boxHeadRelationships.get(id);
+                obj.endType = HeadRelationshipEndType.NOT_APPLICABLE;
+                obj.endDate = null;
+                boxHeadRelationships.put(obj);
+
+                Member member = Queries.getMemberByCode(boxMembers, obj.memberCode);
+                member.headRelationshipType = obj.relationshipType;
+                boxMembers.put(member);
+            }
+
+            //delete HouseholdRelocation
+            boxHouseholdRelocations.remove(householdRelocation);
+        }
+
+        deleteCoreCollectedData(cdata);
+
+        //its always better to perform synchronization after deleting records to ensure data integrity
+    }
+
     private void deleteMemberEnumeration(CoreCollectedData cdata) {
         Member member = boxMembers.get(cdata.formEntityId);
         removeMember(member);
@@ -388,6 +518,22 @@ public class CoreCollectedDataDeletionUtil {
             }
 
             this.boxPregnancyOutcomes.remove(outcome);
+        }
+
+        deleteCoreCollectedData(cdata);
+    }
+
+    private void deletePregnancyVisit(CoreCollectedData cdata) {
+        //need to remove childs
+        PregnancyVisit visit = this.boxPregnancyVisits.get(cdata.formEntityId);
+
+        if (visit != null) {
+
+            for (PregnancyVisitChild child : visit.childs) {
+                boxPregnancyVisitChilds.remove(child);
+            }
+
+            this.boxPregnancyVisits.remove(visit);
         }
 
         deleteCoreCollectedData(cdata);

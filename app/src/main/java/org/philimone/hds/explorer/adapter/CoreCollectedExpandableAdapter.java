@@ -211,6 +211,8 @@ public class CoreCollectedExpandableAdapter extends BaseExpandableListAdapter im
                 return R.mipmap.nui_pregnancy_icon_dark;
             case PREGNANCY_OUTCOME:
                 return R.mipmap.nui_baby_icon_dark;
+            case PREGNANCY_VISIT:
+                return R.mipmap.nui_pregnancy_visit_icon_dark;
             case DEATH:
                 return R.mipmap.nui_death_icon_dark;
             case CHANGE_HOUSEHOLD_HEAD:

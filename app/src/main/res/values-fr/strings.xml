@@ -86,6 +86,7 @@
     <string name="sync_outmigrations_lbl">Émigrations</string>
     <string name="sync_pregnancy_registrations_lbl">Grossesses</string>
     <string name="sync_pregnancy_outcomes_lbl">Résultats de grossesses</string>
+    <string name="sync_pregnancy_visits_lbl">Visites de Grossesse</string>
     <string name="sync_deaths_lbl">Décès</string>
     <string name="sync_incomplete_visits_lbl">Visites incomplètes</string>
     <string name="sync_regionheads_lbl">Chefs de Région</string>
@@ -154,6 +155,7 @@
     <string name="core_entity_outmigration_lbl">Enregistrement de sortie (Émigration)</string>
     <string name="core_entity_pregnancy_reg_lbl">Enregistrement de la grossesse</string>
     <string name="core_entity_pregnancy_out_lbl">Enregistrement du résultat de la grossesse</string>
+    <string name="core_entity_pregnancy_vis_lbl">Suivi de la Visite de Grossesse</string>
     <string name="core_entity_death_lbl">Enregistrement de décès</string>
     <string name="core_entity_changehoh_lbl">Changement du responsable de l\'agrégat</string>
     <string name="core_entity_member_not_visited_lbl">Membre non visité</string>
@@ -587,6 +589,7 @@
     <string name="pregnancy_registration_eddate_not_before_dob_lbl">La date probable de l\'accouchement ne peut être antérieure à la date de naissance.</string>
     <string name="pregnancy_registration_previous_pending_lbl">Cette mère a une grossesse en cours enregistrée dans le système, il est nécessaire d\'enregistrer d\'abord le résultat de la grossesse précédente pour pouvoir enregistrer une nouvelle grossesse.</string>
     <string name="pregnancy_registration_mother_age_err_lbl">L\'âge de la mère sélectionnée est inférieur à l\'âge minimum pour avoir un dossier de grossesse.</string>
+    <string name="pregnancy_registration_warning_close_dates_w_previous_lbl">Cette femme a eu un précédent résultat de grossesse le [%1$s].\nÊtes-vous sûr qu’il s’agit d’une nouvelle grossesse distincte ?</string>
 
     <!-- pregnancy outcome -->
     <string name="pregnancy_outcome_code_err_lbl">Le code d\'enregistrement de la grossesse est incorrect</string>
@@ -611,6 +614,15 @@
     <string name="pregnancy_outcome_child_father_change_title_lbl">Mise à jour du résultat de la grossesse?</string>
     <string name="pregnancy_outcome_child_father_exists_lbl">Le père du bébé est-il connu et enregistré dans le système?</string>
     <string name="pregnancy_outcome_child_father_change_lbl">Voulez-vous mettre à jour/changer le père du bébé?</string>
+
+    <!-- pregnancy visit -->
+    <string name="pregnancy_visit_no_registration_or_outcome_err_lbl">Impossible d’enregistrer une visite de suivi de grossesse car il n’existe aucun enregistrement ou résultat de grossesse actif.</string>
+    <string name="pregnancy_visit_no_pregnancy_registration_err_lbl">Impossible d’enregistrer une visite de suivi de grossesse car le code d’enregistrement de la grossesse n’existe pas.</string>
+    <string name="pregnancy_visit_duplicated_visit_number_err_lbl">Impossible d’enregistrer cette visite de grossesse car le numéro de visite est dupliqué.</string>
+    <string name="pregnancy_visit_visitdate_not_before_dob_lbl">La date de la visite ne peut pas être antérieure à la date de naissance de la mère.</string>
+    <string name="pregnancy_visit_visitdate_not_before_outcome_date_lbl">La date de la visite ne peut pas être antérieure à la date de naissance d’un enfant issu du dernier résultat de grossesse.</string>
+    <string name="pregnancy_visit_visitdate_not_before_last_visit_date_lbl">La date de la visite ne peut pas être antérieure à la date de la dernière visite de suivi de grossesse.</string>
+    <string name="pregnancy_visit_status_postpartum_no_outcomes_err_lbl">Il s\'agit d\'une visite post-partum, elle doit donc comporter au moins un enfant (vivant ou décédé).</string>
 
     <!-- death registration -->
     <string name="death_visit_code_empty_lbl">Le code de visite ne peut pas être vide</string>

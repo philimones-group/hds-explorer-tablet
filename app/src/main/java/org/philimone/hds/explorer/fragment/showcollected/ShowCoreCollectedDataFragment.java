@@ -48,6 +48,7 @@ import org.philimone.hds.explorer.model.Member_;
 import org.philimone.hds.explorer.model.Outmigration;
 import org.philimone.hds.explorer.model.PregnancyOutcome;
 import org.philimone.hds.explorer.model.PregnancyRegistration;
+import org.philimone.hds.explorer.model.PregnancyVisit;
 import org.philimone.hds.explorer.model.Region;
 import org.philimone.hds.explorer.model.RegionHeadRelationship;
 import org.philimone.hds.explorer.model.Region_;
@@ -96,6 +97,7 @@ public class ShowCoreCollectedDataFragment extends Fragment {
     private Box<Outmigration> boxOutmigrations;
     private Box<PregnancyRegistration> boxPregnancyRegistrations;
     private Box<PregnancyOutcome> boxPregnancyOutcomes;
+    private Box<PregnancyVisit> boxPregnancyVisits;
     private Box<Death> boxDeaths;
     private Box<HeadRelationship> boxHeadRelationships;
     private Box<IncompleteVisit> boxIncompleteVisits;
@@ -180,6 +182,7 @@ public class ShowCoreCollectedDataFragment extends Fragment {
         this.boxOutmigrations = ObjectBoxDatabase.get().boxFor(Outmigration.class);
         this.boxPregnancyRegistrations = ObjectBoxDatabase.get().boxFor(PregnancyRegistration.class);
         this.boxPregnancyOutcomes = ObjectBoxDatabase.get().boxFor(PregnancyOutcome.class);
+        this.boxPregnancyVisits = ObjectBoxDatabase.get().boxFor(PregnancyVisit.class);
         this.boxDeaths = ObjectBoxDatabase.get().boxFor(Death.class);
         this.boxHeadRelationships = ObjectBoxDatabase.get().boxFor(HeadRelationship.class);
         this.boxMembers = ObjectBoxDatabase.get().boxFor(Member.class);
@@ -364,6 +367,7 @@ public class ShowCoreCollectedDataFragment extends Fragment {
             case OUTMIGRATION:
             case PREGNANCY_REGISTRATION:
             case PREGNANCY_OUTCOME:
+            case PREGNANCY_VISIT:
             case DEATH:
             case INCOMPLETE_VISIT:
             case INMIGRATION:

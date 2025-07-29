@@ -88,6 +88,7 @@
     <string name="sync_outmigrations_lbl">Outmigrations</string>
     <string name="sync_pregnancy_registrations_lbl">Pregnancies</string>
     <string name="sync_pregnancy_outcomes_lbl">Pregnancy Outcomes</string>
+    <string name="sync_pregnancy_visits_lbl">Pregnancy Visits</string>
     <string name="sync_deaths_lbl">Deaths</string>
     <string name="sync_incomplete_visits_lbl">Incomplete Visits</string>
     <string name="sync_regionheads_lbl">Region Heads</string>
@@ -156,6 +157,7 @@
     <string name="core_entity_outmigration_lbl">Outmigration Registration</string>
     <string name="core_entity_pregnancy_reg_lbl">Pregnancy Registration</string>
     <string name="core_entity_pregnancy_out_lbl">Pregnancy Outcome Registration</string>
+    <string name="core_entity_pregnancy_vis_lbl">Pregnancy Visit Follow-up</string>
     <string name="core_entity_death_lbl">Death Registration</string>
     <string name="core_entity_changehoh_lbl">Change Head of Household</string>
     <string name="core_entity_member_not_visited_lbl">Member Not Visited Form</string>
@@ -376,6 +378,7 @@
     <string name="household_visit_bt_enum_lbl">Member\nEnumeration</string>
     <string name="household_visit_bt_birth_lbl">Birth\nRegistration</string>
     <string name="household_visit_bt_pregnancy_lbl">Pregnancy\nRegistration</string>
+    <string name="household_visit_bt_pregnancy_visit_lbl">Pregnancy\nFollow-up</string>
     <string name="household_visit_bt_extinmig_lbl">External\nInMigration</string>
     <string name="household_visit_bt_intinmig_lbl">Internal\nInMigration</string>
     <string name="household_visit_bt_outmig_lbl">OutMigration\nRegistration</string>
@@ -590,6 +593,7 @@
     <string name="pregnancy_registration_eddate_not_before_dob_lbl">The estimated date of delivery cannot be before the date of birth of the mother</string>
     <string name="pregnancy_registration_previous_pending_lbl">The Mother specified already has a pending Pregnancy Registration,\nYou must first register the Pregnancy Outcome to register new Pregnancy.</string>
     <string name="pregnancy_registration_mother_age_err_lbl">The Mother specified is younger than the minimum age required to have a Pregnancy.</string>
+    <string name="pregnancy_registration_warning_close_dates_w_previous_lbl">This woman had a previous pregnancy outcome on [%1$s].\nAre you sure this is a new, separate pregnancy event?</string>
 
     <!-- pregnancy outcome -->
     <string name="pregnancy_outcome_code_err_lbl">The format of the Pregnancy Code is incorrect</string>
@@ -614,6 +618,15 @@
     <string name="pregnancy_outcome_child_father_change_title_lbl">Update Pregnancy Outcome Info?</string>
     <string name="pregnancy_outcome_child_father_exists_lbl">Is the father of this child known and registered in the system?</string>
     <string name="pregnancy_outcome_child_father_change_lbl">Do you want to update the father of this child?</string>
+
+    <!-- pregnancy visit -->
+    <string name="pregnancy_visit_no_registration_or_outcome_err_lbl">Cannot collect a pregnancy follow‑up visit because there is no active pregnancy registration or outcome.</string>
+    <string name="pregnancy_visit_no_pregnancy_registration_err_lbl">Cannot collect a pregnancy follow‑up visit because the pregnancy registration code does not exists.</string>
+    <string name="pregnancy_visit_duplicated_visit_number_err_lbl">Cannot register this Pregnancy Visit because the visit number is duplicated</string>
+    <string name="pregnancy_visit_visitdate_not_before_dob_lbl">The visit date  cannot be before the date of birth of the mother</string>
+    <string name="pregnancy_visit_visitdate_not_before_outcome_date_lbl">The visit date cannot be before the date of birth of any child from the last pregnancy outcome.</string>
+    <string name="pregnancy_visit_visitdate_not_before_last_visit_date_lbl">The visit date cannot be before the date of the last pregnancy follow-up visit.</string>
+    <string name="pregnancy_visit_status_postpartum_no_outcomes_err_lbl">This is a PostPartum Pregnancy Visit so it should have at least 1 child (alive or dead).</string>
 
     <!-- death registration -->
     <string name="death_visit_code_empty_lbl">The Visit Code cannot be empty</string>

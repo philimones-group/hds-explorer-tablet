@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">HDS Explorer</string>
+    <!-- Mapbox Public Token for HDS-Explorer -->
+    <string name="mapbox_access_token">pk.eyJ1IjoicGF1bHBoaWxpbW9uZSIsImEiOiJjbG1rM3BvcDkwYXMxMm5wbDUyNTA1NGlhIn0.HuorKNYmjgPzGbTDYwDu-Q</string>
 
     <!-- Copyright    -->
     <string name="copyright_app_name_lbl">HDS Explorer</string>
@@ -96,8 +98,8 @@
     <string name="sync_successfully_lbl">Les données ont été synchronisées avec succès.</string>
     <string name="sync_failure_file_not_found_lbl">Le fichier à télécharger n\'a pas pu être trouvé sur le serveur.</string>
     <string name="sync_failure_unknown_lbl">Une erreur s\'est produite lors de la tentative de synchronisation des données du serveur.</string>
-    <string name="sync_synchronized_msg_lbl">Total #1 données téléchargé:</string>
-    <string name="sync_downloaded_msg_lbl">Total de #1 données sauvegardées:</string>
+    <string name="sync_synchronized_msg_lbl">Total de %1$s enregistrements synchronisés:</string>
+    <string name="sync_downloaded_msg_lbl">Total de %1$s données téléchargées :</string>
 
     <string name="sync_result_dialog_title">Détails de la synchronisation</string>
     <string name="sync_upload_result_dialog_title">Détails sur la soumission des données</string>
@@ -251,7 +253,7 @@
     <string name="member_list_bt_add_new_member_lbl">Ajouter un nouveau membre</string>
     <string name="member_list_bt_edit_new_member_lbl">Changer le membre</string>
     <string name="member_list_bt_show_collected_data_lbl">Afficher les données recueillies</string>
-    <string name="member_list_item_extra_collected_lbl"># Formulaire(s) recueilli(s)</string>
+    <string name="member_list_item_extra_collected_lbl">%1$d formulaire(s) collecté(s)</string>
     <string name="member_list_select_distance_title_lbl">Recherche de maisons à proximité</string>
     <string name="member_list_select_distance_radius_lbl">Sélectionnez le rayon de recherche</string>
     <string name="member_list_no_members_lbl">La liste des membres/individus est vide.</string>
@@ -376,6 +378,7 @@
     <string name="household_visit_bt_enum_lbl">Inscription de \nNouveau membre</string>
     <string name="household_visit_bt_birth_lbl">Enregistrer\nNaissance</string>
     <string name="household_visit_bt_pregnancy_lbl">Enregistrer\nGrossesse</string>
+    <string name="household_visit_bt_pregnancy_visit_lbl">Suivi\nde Grossesse</string>
     <string name="household_visit_bt_extinmig_lbl">Immigration\nExterne</string>
     <string name="household_visit_bt_intinmig_lbl">Immigration\nInterne</string>
     <string name="household_visit_bt_outmig_lbl">Émigration\nExterne</string>
@@ -389,6 +392,7 @@
     <string name="household_visit_not_finished_msg_lbl">Tous les membres n\'ont pas été visités lors de cette visite\nVeuillez connecter le formulaire (Visite incomplète) pour les membres suivants:\n(%1$s)</string>
     <string name="household_visit_not_finished_msg_ask_lbl">Tous les membres n\'ont pas été visités lors de cette visite,\nMembres : (%1$s)\nVous pouvez récupérer le formulaire de visite incomplet ou tout marquer comme non visité.\n\nVoulez-vous marquer tous ces membres comme non visités ?</string>
     <string name="household_visit_unfinalized_msg_info_lbl"><p>Les formulaires d\'extension n\'ont pas été finalisés ou collectés pour les formulaires principaux suivants :</p><ul>%1$s</ul>\n<p>Veuillez finaliser les formulaires d\'extension avant de tenter de télécharger les formulaires principaux collectés.</p></string>
+
 
     <string name="gps_title_lbl">Les coordonnées GPS</string>
     <string name="gps_permissions_error">Vous devez disposer des autorisations de localisation pour accéder au GPS</string>
@@ -439,6 +443,7 @@
     <string name="household_filter_dialog_event_date_not_before_dob_lbl">La date de l\'événement ne peut pas être antérieure à la date de naissance des membres</string>
     <string name="household_filter_dialog_event_date_not_before_member_res_startdate_lbl">La date de l\'événement [%1$s] ne peut pas être antérieure à la [date de début] du dernier enregistrement de résidence du Membre[%2$s] [%3$s -> %4$s].</string>
     <string name="household_filter_dialog_event_date_not_before_member_hr_startdate_lbl">La date de l\'événement [%1$s] ne peut pas être antérieure à la [date de début] du dernier enregistrement de Relation avec le Chef du Membre[%2$s] [%3$s -> %4$s].</string>
+
 
     <!-- New Region -->
     <string name="new_region_code_err_lbl">Le code de la %1$s est incorrect!</string>
@@ -546,7 +551,6 @@
     <string name="maritalrelationship_dialog_husband_relationships_lbl">Relations du Mari</string>
     <string name="maritalrelationship_dialog_add_wife_lbl">Ajouter une autre épouse (Polygame)</string>
     <string name="maritalrelationship_dialog_new_rel_lbl">Enregistrer une nouvelle Relation Maritale</string>
-
 
     <string name="incomplete_visit_visit_code_empty">Le code de visite ne peut pas être vide</string>
     <string name="incomplete_visit_member_code_empty">Le code membre ne peut pas être vide</string>
@@ -828,7 +832,7 @@
 
     <!-- barcode scanner -->
     <string name="barcode_dialog_ask_scan_title">Scanner le code à barres</string>
-    <string name="barcode_dialog_txt_scan_barcode_lbl">Voulez-vous scanner le code barre pour (#)?</string>
+    <string name="barcode_dialog_txt_scan_barcode_lbl">Voulez-vous scanner le code-barres pour (%1$s) ?</string>
     <string name="barcode_dialog_bt_scan_lbl">Scanner</string>
     <string name="barcode_dialog_bt_scan_barcode_lbl">Scanner le code à barres</string>
     <string name="barcode_dialog_bt_cancel_lbl">Annuler</string>

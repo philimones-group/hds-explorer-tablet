@@ -48,13 +48,7 @@ public class BarcodeScannerActivity extends AppCompatActivity {
 
     private void askForBarcodeScanDialog(){
 
-        String message = getString(R.string.barcode_dialog_txt_scan_barcode_lbl);
-
-        try{
-            message = message.replaceAll("#", textBoxLabel);
-        } catch (Exception ex){
-            ex.printStackTrace();
-        }
+        String message = getString(R.string.barcode_dialog_txt_scan_barcode_lbl, textBoxLabel);
 
         if (askDialog == null) {
             askDialog = DialogFactory.createMessageYN(this, getString(R.string.barcode_dialog_ask_scan_title), message, new DialogFactory.OnYesNoClickListener() {

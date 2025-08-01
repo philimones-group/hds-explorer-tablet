@@ -4131,16 +4131,16 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 			table.collectedId = readText(parser, "collectedId");
 
 			// <childs>
-			parser.nextTag(); Log.d("nexttag", parser.getName()+", tg:"+parser.getEventType()+", txt:"+parser.getText()+", colid="+table.collectedId);
+			parser.nextTag();
 			if (isStartTag("childs", parser)) {
 				parser.nextTag(); // move to first <child> or </childs>
 				while (notEndOfTag("childs", parser)) {
 
 					PregnancyChild child = new PregnancyChild();
 					// <outcomeCode>
-					parser.nextTag(); Log.d("nexttag1", parser.getName()+", tg:"+parser.getEventType()+", txt:"+parser.getText()+", colid="+table.collectedId);
+					parser.nextTag();
 					child.outcomeCode = readText(parser, "outcomeCode");
-Log.d("read tag2", ""+child.outcomeCode);
+
 					// <outcomeType>
 					parser.nextTag();
 					child.outcomeType = PregnancyOutcomeType.getFrom(readText(parser, "outcomeType"));
@@ -4697,10 +4697,10 @@ Log.d("read tag2", ""+child.outcomeCode);
 
 			//Log.d("get-error-msg", errorMessageValues+", "+errorMessageValues.get(entity)+", status="+mapStatuses.get(entity));
 
-			String msg = mContext.getString(R.string.sync_synchronized_msg_lbl);
+			String msg = mContext.getString(R.string.sync_synchronized_msg_lbl, downloadedEntity);
 			String size = (savedValues.get(entity) == null ? "" : savedValues.get(entity).toString());
 			//msg = msg.replace("#2", savedValues.get(entity).toString());
-			msg = msg.replace("#1", downloadedEntity);
+			//msg = msg.replace("#1", downloadedEntity);
 
 			//Log.d("persisted", ""+entity+", size="+size);
 			reports.add(new SyncEntityReport(entity, msg, size, errorMsg, !error));
@@ -4740,9 +4740,9 @@ Log.d("read tag2", ""+child.outcomeCode);
 			String errorMsg = error ? errorMessageValues.get(entity) : "";
 
 			Integer value = downloadedValues.get(entity);
-			String msg = mContext.getString(R.string.sync_downloaded_msg_lbl);
+			String msg = mContext.getString(R.string.sync_downloaded_msg_lbl, downloadedEntity);
 			String size = value == null ? "" : getInKB(value) + " KB";
-			msg = msg.replace("#1", downloadedEntity);
+			//msg = msg.replace("#1", downloadedEntity);
 			//msg = msg.replace("#2", downloadedValues.get(entity).toString());
 			//Log.d("downloaded", ""+entity+", size="+size);
 			reports.add(new SyncEntityReport(entity, msg, size, errorMsg, true));

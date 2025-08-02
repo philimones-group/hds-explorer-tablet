@@ -77,11 +77,12 @@
                     android:layout_height="50dp"
                     android:layout_marginTop="8dp"
                     android:background="@drawable/nui_txtbox_rone_wbevel"
-                    android:inputType="textPassword"
+                    android:inputType="text"
                     android:maxLines="1"
                     android:paddingStart="20dp"
                     android:paddingEnd="20dp"
-                    android:singleLine="true" />
+                    android:singleLine="true"
+                    tools:ignore="SpeakableTextPresentCheck"/>
 
             </LinearLayout>
 

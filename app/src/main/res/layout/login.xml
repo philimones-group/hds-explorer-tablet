@@ -123,7 +123,7 @@
                 android:layout_marginTop="8dip"
                 android:autofillHints="name"
                 android:background="@drawable/nui_txtbox_rone_wbevel"
-                android:inputType="textPassword"
+                android:inputType="text"
                 android:maxLines="1"
                 android:paddingStart="20dip"
                 android:paddingEnd="20dip"

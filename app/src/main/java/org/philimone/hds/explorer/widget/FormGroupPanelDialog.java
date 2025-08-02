@@ -31,7 +31,7 @@ import org.philimone.hds.explorer.model.FormGroupMapping;
 import org.philimone.hds.explorer.model.FormSubject;
 import org.philimone.hds.explorer.model.enums.FormCollectType;
 import org.philimone.hds.explorer.utilities.FormGroupUtilities;
-import org.philimone.hds.forms.utilities.StringTools;
+import mz.betainteractive.utilities.StringUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -273,7 +273,7 @@ public class FormGroupPanelDialog extends DialogFragment {
                 if (trResult.status == FormGroupUtilities.TranslationStatus.SUCCESS) {
 
                     String result = formGroupUtilities.evaluateExpression(expression).toString();
-                    boolean openForm = StringTools.isBlank(result) ? true : result.equalsIgnoreCase("true");
+                    boolean openForm = StringUtil.isBlank(result) ? true : result.equalsIgnoreCase("true");
 
                     if (openForm == false) {
 

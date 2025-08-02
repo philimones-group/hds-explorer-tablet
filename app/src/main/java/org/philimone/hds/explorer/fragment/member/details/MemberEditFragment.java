@@ -43,7 +43,7 @@ import org.philimone.hds.explorer.model.enums.CoreFormRecordType;
 import org.philimone.hds.explorer.model.enums.Gender;
 import org.philimone.hds.explorer.model.enums.temporal.HeadRelationshipStartType;
 import org.philimone.hds.explorer.model.enums.temporal.ResidencyStartType;
-import org.philimone.hds.explorer.widget.DateTimeSelector;
+import org.philimone.hds.forms.widget.dialog.DateTimeSelector;
 import org.philimone.hds.explorer.widget.DialogFactory;
 import org.philimone.hds.explorer.widget.LoadingDialog;
 

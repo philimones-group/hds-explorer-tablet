@@ -26,7 +26,7 @@ import org.philimone.hds.explorer.model.Member_;
 import org.philimone.hds.explorer.model.enums.MaritalStatus;
 import org.philimone.hds.explorer.model.enums.temporal.ResidencyEndType;
 import org.philimone.hds.explorer.server.settings.generator.CodeGeneratorService;
-import org.philimone.hds.explorer.widget.NumberPicker;
+import org.philimone.hds.forms.widget.utilities.NumberPicker;
 import org.philimone.hds.explorer.widget.RecyclerListView;
 
 import java.util.ArrayList;

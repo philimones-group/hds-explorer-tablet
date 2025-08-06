@@ -51,6 +51,7 @@ import java.util.Map;
 import io.objectbox.Box;
 import io.objectbox.query.QueryBuilder;
 import mz.betainteractive.odk.FormUtilities;
+import mz.betainteractive.utilities.DateUtil;
 import mz.betainteractive.utilities.GeneralUtil;
 import mz.betainteractive.utilities.StringUtil;
 
@@ -190,7 +191,7 @@ public class ExternalInMigrationFormUtil extends FormUtil<Inmigration> {
             preloadedMap.put("memberCode", returningMember.code);
             preloadedMap.put("memberName", returningMember.name);
             preloadedMap.put("memberGender", returningMember.gender.code);
-            preloadedMap.put("memberDob", StringUtil.formatYMD(returningMember.dob));
+            preloadedMap.put("memberDob", DateUtil.formatGregorianYMD(returningMember.dob)); //must be gregorian date because its dealing with internal dates
             preloadedMap.put("originCode", returningMember.householdCode); //but I dont think we need this since the member is coming from outside the dss
             preloadedMap.put("education", returningMember.education);
             preloadedMap.put("religion", returningMember.religion);
@@ -1071,7 +1072,7 @@ public class ExternalInMigrationFormUtil extends FormUtil<Inmigration> {
 
         if (methodExpression.startsWith("calculateAge")){
 
-            Date dobDate = StringUtil.toDateYMD(args[0]);
+            Date dobDate = DateUtil.toDateYMD(args[0]); //its gregorian date comes from ColumnView.getValue
             int age = -1;
 
             if (dobDate != null) {

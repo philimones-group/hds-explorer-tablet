@@ -55,6 +55,7 @@ import java.util.Map;
 
 import io.objectbox.Box;
 import io.objectbox.query.QueryBuilder;
+import mz.betainteractive.utilities.DateUtil;
 import mz.betainteractive.utilities.GeneralUtil;
 import mz.betainteractive.utilities.StringUtil;
 
@@ -184,7 +185,7 @@ public class MemberEditFragment extends Fragment {
 
         this.loadingDialog = new LoadingDialog(this.getContext());
 
-        this.datePicker = DateTimeSelector.createDateWidget(this.getContext(), member.dob, (pSelectedDate, selectedDateText) -> {
+        this.datePicker = DateTimeSelector.createDateWidget(this.getContext(), Bootstrap.getSupportedCalendar(), member.dob, (pSelectedDate, selectedDateText) -> {
             txtEditDob.setText(selectedDateText);
             selectedDob = pSelectedDate;
             onFormContentChanges();
@@ -399,7 +400,7 @@ public class MemberEditFragment extends Fragment {
         //persist the changes into the database
         this.member.name = this.txtEditName.getText().toString();
         this.member.gender = chkEditGMale.isChecked() ? Gender.MALE : Gender.FEMALE;
-        this.member.dob = StringUtil.toDateYMD(txtEditDob.getText().toString());
+        this.member.dob = DateUtil.toDateYMD(txtEditDob.getText().toString());
         this.member.fatherCode = txtEditFatherCode.getText().toString();
         this.member.fatherName = txtEditFatherName.getText().toString();
         this.member.motherCode = txtEditMotherCode.getText().toString();
@@ -423,7 +424,7 @@ public class MemberEditFragment extends Fragment {
         mapXml.put("phonePrimary", this.member.phonePrimary);
         mapXml.put("phoneAlternative", this.member.phoneAlternative);
         mapXml.put("collectedBy", this.loggedUser.username);
-        mapXml.put("collectedDate", StringUtil.format(new Date(), "yyyy-MM-dd HH:mm:ss.SSS"));
+        mapXml.put("collectedDate", DateUtil.formatGregorianPrecise(new Date()));
 
         //generate xml and create/overwrite a file
         String xml = XmlCreator.generateXml(CoreFormEntity.EDITED_MEMBER.code, mapXml);

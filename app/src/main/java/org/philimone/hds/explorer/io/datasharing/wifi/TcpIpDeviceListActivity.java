@@ -38,6 +38,7 @@ import java.net.InetAddress;
 import java.util.Date;
 import java.util.List;
 
+import mz.betainteractive.utilities.DateUtil;
 import mz.betainteractive.utilities.StringUtil;
 
 /**
@@ -135,7 +136,7 @@ public class TcpIpDeviceListActivity extends AppCompatActivity {
 
                         @Override
                         public void onServiceResolved(NsdServiceInfo serviceInfo) {
-                            Log.d("NsdHelper", "Resolve Succeeded. [" + (StringUtil.formatPrecise(new Date())) + "] - " + serviceInfo);
+                            Log.d("NsdHelper", "Resolve Succeeded. [" + (DateUtil.formatGregorianPrecise(new Date())) + "] - " + serviceInfo);
                             InetAddress host = null;
                             int port = serviceInfo.getPort();
 

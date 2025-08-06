@@ -107,6 +107,7 @@ import io.objectbox.query.Query;
 import io.objectbox.query.QueryBuilder;
 import mz.betainteractive.io.readers.CSVReader;
 import mz.betainteractive.io.writers.ZipMaker;
+import mz.betainteractive.utilities.DateUtil;
 import mz.betainteractive.utilities.StringUtil;
 
 /**
@@ -536,7 +537,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 
 	private void createBackupCoreCollectedData() {
 		String instancesDir = Bootstrap.getInstancesPath(mContext);
-		String dateStr = StringUtil.formatPrecise(new Date());
+		String dateStr = DateUtil.formatGregorianPrecise(new Date());
 		dateStr = dateStr.replace(" ", "_").replace(":","_");
 		String backupFilename = instancesDir + "backup-core-" + dateStr + ".zip";
 
@@ -2775,7 +2776,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
             parser.nextTag(); //process <dob>
             if (!isEmptyTag("dob", parser)) {
                 parser.next();
-                table.dob = StringUtil.toDate(parser.getText(), "yyyy-MM-dd");
+                table.dob = DateUtil.toDateYMD(parser.getText()); //to gregorian date
                 parser.nextTag(); //process </dob>
             }else{
                 table.dob = null;
@@ -2945,7 +2946,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
             parser.nextTag(); //process <startDate>
             if (!isEmptyTag("startDate", parser)) {
                 parser.next();
-                table.startDate = StringUtil.toDateYMD(parser.getText());
+                table.startDate = DateUtil.toDateYMD(parser.getText()); //to gregorian date
                 parser.nextTag(); //process </startDate>
             }else{
                 table.startDate = null;
@@ -2967,7 +2968,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
                 parser.next();
 				//Log.d("note endDate", parser.getText() + ", " +parser.getPositionDescription());
 				if (parser.getText()!=null){
-					table.endDate = StringUtil.toDateYMD(parser.getText());
+					table.endDate = DateUtil.toDateYMD(parser.getText()); //to gregorian date
 					parser.nextTag(); //process </endDate>
 				}
             }else{
@@ -3009,7 +3010,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 				parser.next();
 				//Log.d("note entryDate", parser.getText() + ", " +parser.getPositionDescription());
 				if (parser.getText()!=null){
-					table.entryDate = StringUtil.toDateYMD(parser.getText());
+					table.entryDate = DateUtil.toDateYMD(parser.getText()); //to gregorian date
 					parser.nextTag(); //process </entryDate>
 				}
 			}else{
@@ -3190,7 +3191,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 			parser.nextTag(); //startDate
 			if (!isEmptyTag("startDate", parser)) {
 				parser.next();
-				table.startDate = StringUtil.toDate(parser.getText(), "yyyy-MM-dd");
+				table.startDate = DateUtil.toDateYMD(parser.getText()); //to gregorian date
 				parser.nextTag();
 			}else{
 				//table.startDate = false;
@@ -3200,7 +3201,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 			parser.nextTag(); //endDate
 			if (!isEmptyTag("endDate", parser)) {
 				parser.next();
-				table.endDate = StringUtil.toDate(parser.getText(), "yyyy-MM-dd");
+				table.endDate = DateUtil.toDateYMD(parser.getText()); //to gregorian date
 				parser.nextTag();
 			}else{
 				//table.endDate = false;
@@ -3289,7 +3290,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 			parser.nextTag(); //startDate
 			if (!isEmptyTag("startDate", parser)) {
 				parser.next();
-				table.startDate = StringUtil.toDate(parser.getText(), "yyyy-MM-dd");
+				table.startDate = DateUtil.toDateYMD(parser.getText()); //to gregorian date
 				parser.nextTag();
 			}else{
 				//table.startDate = false;
@@ -3309,7 +3310,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 			parser.nextTag(); //endDate
 			if (!isEmptyTag("endDate", parser)) {
 				parser.next();
-				table.endDate = StringUtil.toDate(parser.getText(), "yyyy-MM-dd");
+				table.endDate = DateUtil.toDateYMD(parser.getText()); //to gregorian date
 				parser.nextTag();
 			}else{
 				//table.endDate = false;
@@ -3383,7 +3384,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 			parser.nextTag(); //visitDate
 			if (!isEmptyTag("visitDate", parser)) {
 				parser.next();
-				table.visitDate = StringUtil.toDate(parser.getText(), "yyyy-MM-dd");
+				table.visitDate = DateUtil.toDateYMD(parser.getText()); //to gregorian date
 				parser.nextTag();
 			}else{
 				//table.visitDate = false;
@@ -3618,7 +3619,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 			parser.nextTag(); //startDate
 			if (!isEmptyTag("startDate", parser)) {
 				parser.next();
-				table.startDate = StringUtil.toDate(parser.getText(), "yyyy-MM-dd");
+				table.startDate = DateUtil.toDateYMD(parser.getText()); //to gregorian date
 				parser.nextTag();
 			}else{
 				//table.startDate = false;
@@ -3638,7 +3639,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 			parser.nextTag(); //endDate
 			if (!isEmptyTag("endDate", parser)) {
 				parser.next();
-				table.endDate = StringUtil.toDate(parser.getText(), "yyyy-MM-dd");
+				table.endDate = DateUtil.toDateYMD(parser.getText()); //to gregorian date
 				parser.nextTag();
 			}else{
 				//table.endDate = false;
@@ -3740,7 +3741,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 			parser.nextTag(); //startDate
 			if (!isEmptyTag("startDate", parser)) {
 				parser.next();
-				table.startDate = StringUtil.toDate(parser.getText(), "yyyy-MM-dd");
+				table.startDate = DateUtil.toDateYMD(parser.getText()); //to gregorian date
 				parser.nextTag();
 			}else{
 				//table.startDate = false;
@@ -3760,7 +3761,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 			parser.nextTag(); //endDate
 			if (!isEmptyTag("endDate", parser)) {
 				parser.next();
-				table.endDate = StringUtil.toDate(parser.getText(), "yyyy-MM-dd");
+				table.endDate = DateUtil.toDateYMD(parser.getText()); //to gregorian date
 				parser.nextTag();
 			}else{
 				//table.endDate = false;
@@ -3842,7 +3843,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 			parser.nextTag(); //recordedDate
 			if (!isEmptyTag("recordedDate", parser)) {
 				parser.next();
-				table.recordedDate = StringUtil.toDate(parser.getText(), "yyyy-MM-dd");
+				table.recordedDate = DateUtil.toDateYMD(parser.getText()); //to gregorian date
 				parser.nextTag();
 			}else{
 				//table.recordedDate = false;
@@ -3882,7 +3883,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 			parser.nextTag(); //eddDate
 			if (!isEmptyTag("eddDate", parser)) {
 				parser.next();
-				table.eddDate = StringUtil.toDate(parser.getText(), "yyyy-MM-dd");
+				table.eddDate = DateUtil.toDateYMD(parser.getText()); //to gregorian date
 				parser.nextTag();
 			}else{
 				//table.eddDate = false;
@@ -3912,7 +3913,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 			parser.nextTag(); //lmpDate
 			if (!isEmptyTag("lmpDate", parser)) {
 				parser.next();
-				table.lmpDate = StringUtil.toDate(parser.getText(), "yyyy-MM-dd");
+				table.lmpDate = DateUtil.toDateYMD(parser.getText()); //to gregorian date
 				parser.nextTag();
 			}else{
 				//table.lmpDate = false;
@@ -3922,7 +3923,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 			parser.nextTag(); //expectedDeliveryDate
 			if (!isEmptyTag("expectedDeliveryDate", parser)) {
 				parser.next();
-				table.expectedDeliveryDate = StringUtil.toDate(parser.getText(), "yyyy-MM-dd");
+				table.expectedDeliveryDate = DateUtil.toDateYMD(parser.getText()); //to gregorian date
 				parser.nextTag();
 			}else{
 				//table.expectedDeliveryDate = false;
@@ -3995,7 +3996,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 			parser.nextTag();
 			if (!isEmptyTag("summary_last_visit_date", parser)) {
 				parser.next();
-				table.summary_last_visit_date = StringUtil.toDate(parser.getText(), "yyyy-MM-dd");
+				table.summary_last_visit_date = DateUtil.toDateYMD(parser.getText()); //to gregorian date
 				parser.nextTag();
 			} else {
 				parser.nextTag();
@@ -4005,7 +4006,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 			parser.nextTag();
 			if (!isEmptyTag("summary_first_visit_date", parser)) {
 				parser.next();
-				table.summary_first_visit_date = StringUtil.toDate(parser.getText(), "yyyy-MM-dd");
+				table.summary_first_visit_date = DateUtil.toDateYMD(parser.getText()); //to gregorian date
 				parser.nextTag();
 			} else {
 				parser.nextTag();
@@ -4114,7 +4115,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 
 			// <outcomeDate>
 			parser.nextTag();
-			table.outcomeDate = StringUtil.toDate(readText(parser, "outcomeDate"), "yyyy-MM-dd");
+			table.outcomeDate = DateUtil.toDateYMD(readText(parser, "outcomeDate"));
 
 			// <birthPlace>
 			parser.nextTag();
@@ -4226,7 +4227,7 @@ Log.d("read tag2", ""+child.outcomeCode);
 			table.visitType = PregnancyVisitType.getFrom(readText(parser, "visitType"));
 
 			parser.nextTag(); // visitDate
-			table.visitDate = StringUtil.toDate(readText(parser, "visitDate"), "yyyy-MM-dd");
+			table.visitDate = DateUtil.toDateYMD(readText(parser, "visitDate"));
 
 			// Antepartum fields
 			parser.nextTag(); // weeksGestation
@@ -4374,7 +4375,7 @@ Log.d("read tag2", ""+child.outcomeCode);
 			parser.nextTag(); //deathDate
 			if (!isEmptyTag("deathDate", parser)) {
 				parser.next();
-				table.deathDate = StringUtil.toDate(parser.getText(), "yyyy-MM-dd");
+				table.deathDate = DateUtil.toDateYMD(parser.getText()); //to gregorian date
 				parser.nextTag();
 			}else{
 				table.deathDate = null;
@@ -4526,7 +4527,7 @@ Log.d("read tag2", ""+child.outcomeCode);
 			parser.nextTag(); //startDate
 			if (!isEmptyTag("startDate", parser)) {
 				parser.next();
-				table.startDate = StringUtil.toDate(parser.getText(), "yyyy-MM-dd");
+				table.startDate = DateUtil.toDateYMD(parser.getText()); //to gregorian date
 				parser.nextTag();
 			}else{
 				//table.startDate = false;
@@ -4546,7 +4547,7 @@ Log.d("read tag2", ""+child.outcomeCode);
 			parser.nextTag(); //endDate
 			if (!isEmptyTag("endDate", parser)) {
 				parser.next();
-				table.endDate = StringUtil.toDate(parser.getText(), "yyyy-MM-dd");
+				table.endDate = DateUtil.toDateYMD(parser.getText()); //to gregorian date
 				parser.nextTag();
 			}else{
 				//table.endDate = false;

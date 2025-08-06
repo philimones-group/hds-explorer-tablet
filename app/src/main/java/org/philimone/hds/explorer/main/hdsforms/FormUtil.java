@@ -61,6 +61,7 @@ import mz.betainteractive.odk.listener.OdkFormResultListener;
 import mz.betainteractive.odk.model.FilledForm;
 import mz.betainteractive.odk.model.OdkFormLoadData;
 import mz.betainteractive.odk.task.OdkFormLoadResult;
+import mz.betainteractive.utilities.DateUtil;
 import mz.betainteractive.utilities.ReflectionUtils;
 import mz.betainteractive.utilities.StringUtil;
 
@@ -1048,16 +1049,18 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
         protected void onPostExecute(Void unused) {
             super.onPostExecute(unused);
 
+            DateUtil.SupportedCalendar supportedCalendar = Bootstrap.getSupportedCalendar();
+
             Log.d("xloading", "creating form fragment");
 
             if (currentMode == Mode.CREATE) {
-                FormFragment formFragment = FormFragment.newInstance(fragmentManager, form, Bootstrap.getInstancesPath(context), user.username, preloadedMap, postExecution, backgroundMode, resumeMode, FormUtil.this);
+                FormFragment formFragment = FormFragment.newInstance(fragmentManager, form, supportedCalendar, Bootstrap.getInstancesPath(context), user.username, preloadedMap, postExecution, backgroundMode, resumeMode, FormUtil.this);
                 Log.d("xloading", "starting form fragment");
                 formFragment.startCollecting();
 
             } else if (currentMode == Mode.EDIT) {
                 String savedXmlFilename = entity.getRecentlyCreatedUri()==null ? collectedData.formFilename : entity.getRecentlyCreatedUri();
-                FormFragment formFragment = FormFragment.newInstance(fragmentManager, form, Bootstrap.getInstancesPath(context), user.username, savedXmlFilename, preloadedMap, postExecution, backgroundMode, true, FormUtil.this);
+                FormFragment formFragment = FormFragment.newInstance(fragmentManager, form, supportedCalendar, Bootstrap.getInstancesPath(context), user.username, savedXmlFilename, preloadedMap, postExecution, backgroundMode, true, FormUtil.this);
                 Log.d("xloading", "starting form fragment");
                 formFragment.startCollecting();
             }

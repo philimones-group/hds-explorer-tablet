@@ -52,6 +52,7 @@ import java.util.List;
 import java.util.Map;
 
 import io.objectbox.Box;
+import mz.betainteractive.utilities.DateUtil;
 import mz.betainteractive.utilities.GeneralUtil;
 import mz.betainteractive.utilities.StringUtil;
 
@@ -258,7 +259,7 @@ public class HouseholdEditFragment extends Fragment implements LocationListener 
             mapXml.put("gpsAcc", this.household.gpsAccuracy+"");
         }
         mapXml.put("collectedBy", this.loggedUser.username);
-        mapXml.put("collectedDate", StringUtil.format(new Date(), "yyyy-MM-dd HH:mm:ss.SSS"));
+        mapXml.put("collectedDate", DateUtil.formatGregorianPrecise(new Date()));
 
 
         //generate xml and create/overwrite a file

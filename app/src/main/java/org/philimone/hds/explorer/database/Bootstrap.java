@@ -22,6 +22,7 @@ import java.util.stream.Collectors;
 
 import io.objectbox.Box;
 import io.objectbox.query.QueryBuilder;
+import mz.betainteractive.utilities.DateUtil;
 import mz.betainteractive.utilities.StringUtil;
 
 /**
@@ -256,4 +257,7 @@ public class Bootstrap {
         paramBox.put(param);
     }
 
+    public static DateUtil.SupportedCalendar getSupportedCalendar() {
+        return isEthiopianCalendarEnabled ? DateUtil.SupportedCalendar.ETHIOPIAN : DateUtil.SupportedCalendar.GREGORIAN;
+    }
 }

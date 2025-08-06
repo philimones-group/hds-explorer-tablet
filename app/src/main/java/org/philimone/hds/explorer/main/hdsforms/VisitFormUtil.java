@@ -45,6 +45,7 @@ import androidx.fragment.app.Fragment;
 import io.objectbox.Box;
 import io.objectbox.query.QueryBuilder;
 import mz.betainteractive.odk.FormUtilities;
+import mz.betainteractive.utilities.DateUtil;
 import mz.betainteractive.utilities.StringUtil;
 
 public class VisitFormUtil extends FormUtil<Visit> {
@@ -175,7 +176,7 @@ public class VisitFormUtil extends FormUtil<Visit> {
 
         preloadedMap.put("code", codeGenerator.generateVisitCode(household));
         preloadedMap.put("householdCode", household.code);
-        preloadedMap.put("visitDate", StringUtil.format(new Date(), "yyyy-MM-dd"));
+        preloadedMap.put("visitDate", DateUtil.formatGregorianYMD(new Date())); //must be gregorian date
         preloadedMap.put("roundNumber", currentRound.roundNumber+""); //get round number
         preloadedMap.put("respondentNotResident", !respondentResident+"");
         preloadedMap.put("respondentExists", respondentNotRegistered ? "" : respondentExists+"");Log.d("respondentExists", respondentNotRegistered ? "" : respondentExists+"");

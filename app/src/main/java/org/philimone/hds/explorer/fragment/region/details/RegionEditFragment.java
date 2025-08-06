@@ -43,6 +43,7 @@ import java.util.List;
 import java.util.Map;
 
 import io.objectbox.Box;
+import mz.betainteractive.utilities.DateUtil;
 import mz.betainteractive.utilities.GeneralUtil;
 import mz.betainteractive.utilities.StringUtil;
 
@@ -194,7 +195,7 @@ public class RegionEditFragment extends Fragment {
         mapXml.put("regionCode", this.region.code);
         mapXml.put("regionName", this.txtEditName.getText().toString());
         mapXml.put("collectedBy", this.loggedUser.username);
-        mapXml.put("collectedDate", StringUtil.format(new Date(), "yyyy-MM-dd HH:mm:ss.SSS"));
+        mapXml.put("collectedDate", DateUtil.formatGregorianPrecise(new Date()));
 
 
         //generate xml and create/overwrite a file

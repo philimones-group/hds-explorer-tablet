@@ -37,6 +37,7 @@ import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
 import io.objectbox.Box;
+import mz.betainteractive.utilities.DateUtil;
 import mz.betainteractive.utilities.StringUtil;
 
 public class MemberDetailsActivity extends AppCompatActivity {
@@ -75,6 +76,8 @@ public class MemberDetailsActivity extends AppCompatActivity {
 
     private CollectedData collectedDataToEdit;
     private boolean callOnCollectData;
+
+    private DateUtil dateUtil = Bootstrap.getDateUtil();
 
     //public static final int REQUEST_CODE_ADD_NEW_MEMBER = 10; /* Member Requests will be from 10 to 19 */
     //public static final int REQUEST_CODE_EDIT_NEW_MEMBER = 11;
@@ -309,7 +312,7 @@ public class MemberDetailsActivity extends AppCompatActivity {
         mbDetailsCode.setText(member.getCode());
         mbDetailsGender.setText(member.getGender().getId());
         mbDetailsAge.setText(member.getAge()+"");
-        mbDetailsDob.setText(StringUtil.formatYMD(member.dob));
+        mbDetailsDob.setText(dateUtil.formatYMD(member.dob));
 
         if (member.isHouseholdHead()){
             iconView.setImageResource(R.mipmap.nui_member_red_filled_icon);

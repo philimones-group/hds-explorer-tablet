@@ -84,6 +84,8 @@ public class HouseholdEditFragment extends Fragment implements LocationListener 
     private Box<Member> boxMembers;
     private Box<CoreCollectedData> boxCoreCollectedData;
 
+    private DateUtil dateUtil = Bootstrap.getDateUtil();
+
     private ActivityResultLauncher<String[]> requestPermissions;
 
     private EditListener editListener;

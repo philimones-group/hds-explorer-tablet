@@ -15,6 +15,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import org.philimone.hds.explorer.R;
+import org.philimone.hds.explorer.database.Bootstrap;
 import org.philimone.hds.explorer.model.Member;
 import org.philimone.hds.explorer.model.enums.temporal.ResidencyEndType;
 
@@ -22,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import mz.betainteractive.utilities.DateUtil;
 import mz.betainteractive.utilities.StringUtil;
 
 public class MemberAdapter extends RecyclerView.Adapter<MemberAdapter.MemberViewHolder> {
@@ -41,6 +43,8 @@ public class MemberAdapter extends RecyclerView.Adapter<MemberAdapter.MemberView
     boolean showEndTypeCode = false; //put as general variable
     boolean showResidencyStatus = false; //put as general variable
     private MemberIcon memberIcon;
+
+    private DateUtil dateUtil = Bootstrap.getDateUtil();
 
     public enum MemberIcon {NORMAL_MEMBER_ICON, NORMAL_MEMBER_CHECKED_ICON, NORMAL_HEAD_ICON, NORMAL_SECHEAD_ICON, NORMAL_MEMBER_NEW_ICON, NORMAL_HEAD_NEW_ICON}
 
@@ -376,6 +380,6 @@ public class MemberAdapter extends RecyclerView.Adapter<MemberAdapter.MemberView
             date = member.getStartDate();
         }
 
-        return StringUtil.formatYMD(date);
+        return dateUtil.formatYMD(date);
     }
 }

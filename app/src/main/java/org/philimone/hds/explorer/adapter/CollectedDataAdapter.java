@@ -22,6 +22,7 @@ import org.philimone.hds.explorer.model.User;
 import java.util.ArrayList;
 import java.util.List;
 
+import mz.betainteractive.utilities.DateUtil;
 import mz.betainteractive.utilities.StringUtil;
 
 /**
@@ -34,6 +35,7 @@ public class CollectedDataAdapter extends RecyclerView.Adapter<CollectedDataAdap
     private Context mContext;
     private User currentUser;
     private int highlightedIndex = -1;
+    private DateUtil dateUtil = Bootstrap.getDateUtil();
 
     public CollectedDataAdapter(Context context, List<CollectedDataItem> objects){
         this.collectedDataList = new ArrayList<>();
@@ -125,7 +127,7 @@ public class CollectedDataAdapter extends RecyclerView.Adapter<CollectedDataAdap
 
             //Member mb = cdi.getMember();
             CollectedData cd = cdi.getCollectedData();
-            String sdate = StringUtil.format(cd.formLastUpdatedDate, "yyyy-MM-dd HH:mm:ss");
+            String sdate = dateUtil.formatYMDHMS(cd.formLastUpdatedDate);
             String formName = cdi.getFormName(mContext); //cdi.isFormNull() ? cd.getFormId() : cdi.getForm().getFormName());
             String formGroup = cd.formGroupName;
 

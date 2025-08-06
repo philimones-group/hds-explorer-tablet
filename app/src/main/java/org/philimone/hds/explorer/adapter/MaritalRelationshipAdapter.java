@@ -14,6 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import org.philimone.hds.explorer.R;
+import org.philimone.hds.explorer.database.Bootstrap;
 import org.philimone.hds.explorer.fragment.MaritalRelationshipDialog;
 import org.philimone.hds.explorer.model.MaritalRelationship;
 import org.philimone.hds.explorer.model.Member;
@@ -25,6 +26,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import mz.betainteractive.utilities.DateUtil;
 import mz.betainteractive.utilities.StringUtil;
 
 public class MaritalRelationshipAdapter extends RecyclerView.Adapter<MaritalRelationshipAdapter.MaritalRelationshipViewHolder> {
@@ -33,6 +35,8 @@ public class MaritalRelationshipAdapter extends RecyclerView.Adapter<MaritalRela
     private Context mContext;
     private int selectedIndex = -1;
     private Listener listener;
+
+    private DateUtil dateUtil = Bootstrap.getDateUtil();
 
     /**
      * Adapter of a List View Item for members (name and code are displayed)
@@ -141,7 +145,7 @@ public class MaritalRelationshipAdapter extends RecyclerView.Adapter<MaritalRela
             codeText = spouse.getHouseholdName() +" -> "+spouse.getCode()+endTypeText;
             String maritalText = mContext.getString(R.string.relationship_type_title_abbrv_lbl) + ": " + mContext.getString(spouse.maritalStatus.name);
             memberDetailsText = mContext.getString(R.string.member_details_gender_lbl)+" "+spouse.gender.code + ", " + mContext.getString(R.string.member_details_age_lbl)+" "+spouse.age + ", " +maritalText;
-            extrasText = memberDetailsText + " - " + StringUtil.formatYMD(mr.maritalRelationship.startDate);
+            extrasText = memberDetailsText + " - " + dateUtil.formatYMD(mr.maritalRelationship.startDate);
 
             txtName.setText(nameText);
             txtCode.setText(codeText);
@@ -195,7 +199,7 @@ public class MaritalRelationshipAdapter extends RecyclerView.Adapter<MaritalRela
             date = member.getStartDate();
         }
 
-        return StringUtil.formatYMD(date);
+        return dateUtil.formatYMD(date);
     }
 
     public static class MaritalRelationshipItem {

@@ -260,4 +260,8 @@ public class Bootstrap {
     public static DateUtil.SupportedCalendar getSupportedCalendar() {
         return isEthiopianCalendarEnabled ? DateUtil.SupportedCalendar.ETHIOPIAN : DateUtil.SupportedCalendar.GREGORIAN;
     }
+
+    public static DateUtil getDateUtil() {
+        return new DateUtil(getSupportedCalendar());
+    }
 }

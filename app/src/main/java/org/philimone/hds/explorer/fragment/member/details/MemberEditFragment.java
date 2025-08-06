@@ -106,6 +106,8 @@ public class MemberEditFragment extends Fragment {
 
     private EditListener editListener;
 
+    private DateUtil dateUtil = Bootstrap.getDateUtil();
+
     private final String PHONE_NUMBER_REGEX = "^(\\+?\\d{1,3})?[-.\\s]?\\(?\\d{2,4}\\)?[-.\\s]?\\d{3,5}[-.\\s]?\\d{4,6}$";
 
     public MemberEditFragment() {
@@ -272,7 +274,7 @@ public class MemberEditFragment extends Fragment {
         this.txtEditName.setText(member.name);
         this.chkEditGFemale.setChecked(member.gender == Gender.FEMALE);
         this.chkEditGMale.setChecked(member.gender== Gender.MALE);
-        this.txtEditDob.setText(StringUtil.formatYMD(member.dob));
+        this.txtEditDob.setText(dateUtil.formatYMD(member.dob));
         this.txtEditFatherCode.setText(member.fatherCode);
         this.txtEditFatherName.setText(getParentName(member.fatherName));
         this.txtEditMotherCode.setText(member.motherCode);
@@ -339,7 +341,7 @@ public class MemberEditFragment extends Fragment {
                     public void onNoClicked() {
                         //go back to original state
                         selectedDob = null;
-                        txtEditDob.setText(StringUtil.formatYMD(member.dob));
+                        txtEditDob.setText(dateUtil.formatYMD(member.dob));
                     }
                 }).show();
             }

@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment;
 import com.google.gson.Gson;
 
 import org.philimone.hds.explorer.R;
+import org.philimone.hds.explorer.database.Bootstrap;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
 import org.philimone.hds.explorer.database.Queries;
 import org.philimone.hds.explorer.fragment.MemberFilterDialog;
@@ -79,6 +80,8 @@ public class ExternalInMigrationFormUtil extends FormUtil<Inmigration> {
     private Map<String, String> mapSavedStates = new HashMap<>();
     private Residency savedResidency;
     private HeadRelationship savedHeadRelationship;
+
+    private DateUtil dateUtil = Bootstrap.getDateUtil();
 
     private final String PHONE_NUMBER_REGEX = "^(\\+?\\d{1,3})?[-.\\s]?\\(?\\d{2,4}\\)?[-.\\s]?\\d{3,5}[-.\\s]?\\d{4,6}$";
 
@@ -379,12 +382,12 @@ public class ExternalInMigrationFormUtil extends FormUtil<Inmigration> {
             //check dates - for new residency and new head_relationship
             //migrationDate vs lastResidency.endDate
             if (lastResidency != null && lastResidency.endDate != null && migrationDate.before(lastResidency.endDate)){ //is before dob
-                String message = this.context.getString(R.string.external_inmigration_migrationdate_not_before_residency_enddate_lbl, StringUtil.formatYMD(migrationDate), lastResidency.endType.code, StringUtil.formatYMD(lastResidency.endDate));
+                String message = this.context.getString(R.string.external_inmigration_migrationdate_not_before_residency_enddate_lbl, dateUtil.formatYMD(migrationDate), lastResidency.endType.code, dateUtil.formatYMD(lastResidency.endDate));
                 return new ValidationResult(colMigrationDate, message);
             }
             //migrationDate vs lastRelationship.endDate
             if (lastRelationship != null && lastRelationship.endDate != null && migrationDate.before(lastRelationship.endDate)){ //is before dob
-                String message = this.context.getString(R.string.external_inmigration_migrationdate_not_before_hrelationship_enddate_lbl, StringUtil.formatYMD(migrationDate), lastRelationship.endType.code, StringUtil.formatYMD(lastRelationship.endDate));
+                String message = this.context.getString(R.string.external_inmigration_migrationdate_not_before_hrelationship_enddate_lbl, dateUtil.formatYMD(migrationDate), lastRelationship.endType.code, dateUtil.formatYMD(lastRelationship.endDate));
                 return new ValidationResult(colMigrationDate, message);
             }
         }

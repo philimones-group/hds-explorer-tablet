@@ -6,6 +6,7 @@ import android.util.Log;
 import androidx.fragment.app.Fragment;
 
 import org.philimone.hds.explorer.R;
+import org.philimone.hds.explorer.database.Bootstrap;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
 import org.philimone.hds.explorer.database.Queries;
 import org.philimone.hds.explorer.fragment.MemberFilterDialog;
@@ -62,6 +63,7 @@ import java.util.stream.Collectors;
 import io.objectbox.Box;
 import io.objectbox.query.QueryBuilder;
 import mz.betainteractive.odk.FormUtilities;
+import mz.betainteractive.utilities.DateUtil;
 import mz.betainteractive.utilities.GeneralUtil;
 import mz.betainteractive.utilities.StringUtil;
 
@@ -86,6 +88,8 @@ public class PregnancyOutcomeFormUtil extends FormUtil<PregnancyOutcome> {
 
     private int minimunFatherAge;
     private int minimunMotherAge;
+
+    private DateUtil dateUtil = Bootstrap.getDateUtil();
 
     public PregnancyOutcomeFormUtil(Fragment fragment, Context context, Visit visit, Household household, Member mother, PregnancyRegistration pregnancyRegistration, boolean recentlyCreatedForOutcome, FormUtilities odkFormUtilities, FormUtilListener<PregnancyOutcome> listener){
         super(fragment, context, FormUtil.getPregnancyOutcomeForm(context), odkFormUtilities, listener);
@@ -926,7 +930,7 @@ public class PregnancyOutcomeFormUtil extends FormUtil<PregnancyOutcome> {
                 //If another is being registered in less than six months
                 //This woman had a previous pregnancy outcome [on DATE]. Are you sure this is a new, separate pregnancy event?
                 String title = getContext().getString(R.string.core_entity_pregnancy_out_lbl);
-                String message = getContext().getString(R.string.pregnancy_registration_warning_close_dates_w_previous_lbl, StringUtil.formatYMD(lastPregnancyOutcome.outcomeDate));
+                String message = getContext().getString(R.string.pregnancy_registration_warning_close_dates_w_previous_lbl, dateUtil.formatYMD(lastPregnancyOutcome.outcomeDate));
                 DialogFactory.createMessageYN(this.context, title, message, getContext().getString(R.string.bt_yes_lbl), getContext().getString(R.string.bt_cancel_lbl), new DialogFactory.OnYesNoClickListener() {
                     @Override
                     public void onYesClicked() {

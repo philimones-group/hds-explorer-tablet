@@ -53,6 +53,7 @@ import androidx.viewpager2.widget.ViewPager2;
 import io.objectbox.Box;
 import io.objectbox.query.QueryBuilder;
 import mz.betainteractive.odk.FormUtilities;
+import mz.betainteractive.utilities.DateUtil;
 import mz.betainteractive.utilities.StringUtil;
 
 public class HouseholdDetailsActivity extends AppCompatActivity implements HouseholdDetailsListener {
@@ -117,6 +118,8 @@ public class HouseholdDetailsActivity extends AppCompatActivity implements House
 
     private CollectedData collectedDataToEdit;
     private boolean callOnCollectData;
+
+    private DateUtil dateUtil = Bootstrap.getDateUtil();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -399,7 +402,7 @@ public class HouseholdDetailsActivity extends AppCompatActivity implements House
         hhDetailsHeadCode.setText(household.getHeadCode());
         hhDetailsRegionLabel.setText(hierarchyName+":");
         hhDetailsRegionValue.setText(region==null ? "" : region.getName());
-        hhDetailsVisitDateValue.setText(lastVisit==null ? "None" : StringUtil.formatYMD(lastVisit.visitDate));
+        hhDetailsVisitDateValue.setText(lastVisit==null ? "None" : dateUtil.formatYMD(lastVisit.visitDate));
         //if (this.householdMembersFragment == null) {
         //    this.householdMembersFragment.updateHouseholdMembers();
         //}

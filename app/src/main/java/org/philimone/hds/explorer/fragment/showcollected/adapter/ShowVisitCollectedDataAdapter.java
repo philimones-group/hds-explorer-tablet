@@ -14,6 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import org.philimone.hds.explorer.R;
+import org.philimone.hds.explorer.database.Bootstrap;
 import org.philimone.hds.explorer.fragment.showcollected.adapter.model.CoreCollectedDataItem;
 import org.philimone.hds.explorer.model.CoreCollectedData;
 import org.philimone.hds.explorer.model.Household;
@@ -24,6 +25,7 @@ import org.philimone.hds.explorer.model.enums.CoreFormRecordType;
 import java.util.ArrayList;
 import java.util.List;
 
+import mz.betainteractive.utilities.DateUtil;
 import mz.betainteractive.utilities.StringUtil;
 
 /**
@@ -36,6 +38,8 @@ public class ShowVisitCollectedDataAdapter extends RecyclerView.Adapter<ShowVisi
     private Context mContext;
     private OnItemActionListener listener;
     private String filterText;
+
+    private DateUtil dateUtil = Bootstrap.getDateUtil();
 
     public ShowVisitCollectedDataAdapter(Context context, List<CoreCollectedDataItem> objects, OnItemActionListener listener){
         this.collectedDataList = new ArrayList<>();
@@ -215,9 +219,9 @@ public class ShowVisitCollectedDataAdapter extends RecyclerView.Adapter<ShowVisi
                 }
             });
 
-            String createdDate = cd.createdDate==null ? "" : StringUtil.format(cd.createdDate, "yyyy-MM-dd HH:mm:ss");
-            String updatedDate = cd.updatedDate==null ? createdDate : StringUtil.format(cd.updatedDate, "yyyy-MM-dd HH:mm:ss");
-            String uploadedDate = cd.uploadedDate==null ? "" : StringUtil.format(cd.uploadedDate, "yyyy-MM-dd HH:mm:ss");
+            String createdDate = cd.createdDate==null ? "" : dateUtil.formatYMDHMS(cd.createdDate);
+            String updatedDate = cd.updatedDate==null ? createdDate : dateUtil.formatYMDHMS(cd.updatedDate);
+            String uploadedDate = cd.uploadedDate==null ? "" : dateUtil.formatYMDHMS(cd.uploadedDate);
             String code = StringUtil.isBlank(cd.formEntityCode) ? "" : cd.formEntityCode + " - ";
 
             String name = hh.getName(); //hh!=null ? hh.name : mm!=null ? mm.name : rr!=null ? rr.name : "";

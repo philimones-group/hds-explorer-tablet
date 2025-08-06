@@ -74,6 +74,8 @@ public class RegionEditFragment extends Fragment {
 
     private EditListener editListener;
 
+    private DateUtil dateUtil = Bootstrap.getDateUtil();
+
     public RegionEditFragment() {
         // Required empty public constructor
 

@@ -5,6 +5,7 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 import io.objectbox.Box;
+import mz.betainteractive.utilities.DateUtil;
 import mz.betainteractive.utilities.StringUtil;
 
 import android.util.Log;
@@ -16,6 +17,7 @@ import android.widget.Button;
 import com.google.gson.Gson;
 
 import org.philimone.hds.explorer.R;
+import org.philimone.hds.explorer.database.Bootstrap;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
 import org.philimone.hds.explorer.database.Queries;
 import org.philimone.hds.explorer.io.SyncEntitiesTask;
@@ -85,6 +87,8 @@ public class SyncDownloadPanelFragment extends Fragment implements SyncPanelItem
 
     private Box<SyncReport> boxSyncReports;
     private Box<CoreCollectedData> boxCoreCollectedData;
+
+    private DateUtil dateUtil = Bootstrap.getDateUtil();
 
     private SyncPanelActivity.SyncFragmentListener syncFragmentListener;
 
@@ -184,11 +188,11 @@ public class SyncDownloadPanelFragment extends Fragment implements SyncPanelItem
         String statusMessage = getString(R.string.server_sync_status_notsynced_lbl);
 
         if (report.getStatus()== SyncStatus.STATUS_SYNCED){
-            statusMessage = getString(R.string.server_sync_status_synced_lbl) + " " + StringUtil.format(report.getDate(), "yyyy-MM-dd HH:mm:ss");
+            statusMessage = getString(R.string.server_sync_status_synced_lbl) + " " + dateUtil.formatYMDHMS(report.getDate()); //, "yyyy-MM-dd HH:mm:ss");
         }
 
         if (report.getStatus()==SyncStatus.STATUS_SYNC_ERROR){
-            statusMessage = getString(R.string.server_sync_status_sync_error_lbl) + " " + StringUtil.format(report.getDate(), "yyyy-MM-dd HH:mm:ss");
+            statusMessage = getString(R.string.server_sync_status_sync_error_lbl) + " " + dateUtil.formatYMDHMS(report.getDate()); //, "yyyy-MM-dd HH:mm:ss");
         }
 
         return statusMessage;

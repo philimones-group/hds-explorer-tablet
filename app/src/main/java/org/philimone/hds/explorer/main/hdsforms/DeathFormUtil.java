@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment;
 import com.google.gson.Gson;
 
 import org.philimone.hds.explorer.R;
+import org.philimone.hds.explorer.database.Bootstrap;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
 import org.philimone.hds.explorer.database.Queries;
 import org.philimone.hds.explorer.fragment.MemberFilterDialog;
@@ -54,6 +55,7 @@ import java.util.stream.Collectors;
 import io.objectbox.Box;
 import io.objectbox.query.QueryBuilder;
 import mz.betainteractive.odk.FormUtilities;
+import mz.betainteractive.utilities.DateUtil;
 import mz.betainteractive.utilities.GeneralUtil;
 import mz.betainteractive.utilities.StringUtil;
 
@@ -85,6 +87,8 @@ public class DeathFormUtil extends FormUtil<Death> {
 
     private List<Member> householdResidents;
     private int minimunHeadAge;
+
+    private DateUtil dateUtil = Bootstrap.getDateUtil();
 
     public DeathFormUtil(Fragment fragment, Context context, Visit visit, Household household, Member member, FormUtilities odkFormUtilities, FormUtilListener<Death> listener){
         super(fragment, context, FormUtil.getDeathForm(context), odkFormUtilities, listener);
@@ -470,7 +474,7 @@ public class DeathFormUtil extends FormUtil<Death> {
             for (HeadRelationship relationship : headMemberHeadRelationships) {//lastMembersRelationships) {
                 if (relationship != null && relationship.startDate != null && deathDate.before(relationship.startDate)) {
                     //The death date cannot be before the [start date] of the Member[??????] last Head Relationship record.
-                    String message = this.context.getString(R.string.death_deathdate_not_before_member_hrelationship_startdate_lbl, StringUtil.formatYMD(deathDate), relationship.memberCode, relationship.startType.code, StringUtil.formatYMD(relationship.startDate));
+                    String message = this.context.getString(R.string.death_deathdate_not_before_member_hrelationship_startdate_lbl, dateUtil.formatYMD(deathDate), relationship.memberCode, relationship.startType.code, dateUtil.formatYMD(relationship.startDate));
                     return new ValidationResult(colDeathDate, message);
                 }
             }

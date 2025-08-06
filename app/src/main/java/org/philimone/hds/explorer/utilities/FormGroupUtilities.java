@@ -34,6 +34,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import io.objectbox.Box;
+import mz.betainteractive.utilities.DateUtil;
 import mz.betainteractive.utilities.GeneralUtil;
 import mz.betainteractive.utilities.StringUtil;
 
@@ -45,6 +46,7 @@ public class FormGroupUtilities {
     private User currentUser;
 
     private JexlEngine scriptEngine;
+    private DateUtil dateUtil = Bootstrap.getDateUtil();
 
     public FormGroupUtilities(Context context) {
         this.mContext = context;

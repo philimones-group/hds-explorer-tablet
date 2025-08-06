@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment;
 import com.google.gson.Gson;
 
 import org.philimone.hds.explorer.R;
+import org.philimone.hds.explorer.database.Bootstrap;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
 import org.philimone.hds.explorer.database.Queries;
 import org.philimone.hds.explorer.fragment.MemberFilterDialog;
@@ -50,6 +51,7 @@ import java.util.Map;
 import io.objectbox.Box;
 import io.objectbox.query.QueryBuilder;
 import mz.betainteractive.odk.FormUtilities;
+import mz.betainteractive.utilities.DateUtil;
 import mz.betainteractive.utilities.GeneralUtil;
 import mz.betainteractive.utilities.StringUtil;
 
@@ -76,6 +78,8 @@ public class InternalInMigrationFormUtil extends FormUtil<Inmigration> {
     private Residency savedResidency;
     private HeadRelationship savedHeadRelationship;
     private Outmigration savedOutmigration;
+
+    private DateUtil dateUtil = Bootstrap.getDateUtil();
 
     private final String PHONE_NUMBER_REGEX = "^(\\+?\\d{1,3})?[-.\\s]?\\(?\\d{2,4}\\)?[-.\\s]?\\d{3,5}[-.\\s]?\\d{4,6}$";
 
@@ -302,12 +306,12 @@ public class InternalInMigrationFormUtil extends FormUtil<Inmigration> {
         //check dates - for new residency and new head_relationship
         //migrationDate vs lastResidency.startDate --- the endDate is null right now
         if (lastResidency != null && lastResidency.startDate != null && migrationDate.before(lastResidency.startDate)){ //is before dob
-            String message = this.context.getString(R.string.internal_inmigration_migrationdate_not_before_residency_startdate_lbl, StringUtil.formatYMD(migrationDate), lastResidency.startType.code, StringUtil.formatYMD(lastResidency.startDate));
+            String message = this.context.getString(R.string.internal_inmigration_migrationdate_not_before_residency_startdate_lbl, dateUtil.formatYMD(migrationDate), lastResidency.startType.code, dateUtil.formatYMD(lastResidency.startDate));
             return new ValidationResult(colMigrationDate, message);
         }
         //migrationDate vs lastRelationship.endDate
         if (lastRelationship != null && lastRelationship.startDate != null && migrationDate.before(lastRelationship.startDate)){ //is before dob
-            String message = this.context.getString(R.string.internal_inmigration_migrationdate_not_before_hrelationship_startdate_lbl, StringUtil.formatYMD(migrationDate), lastRelationship.startType.code, StringUtil.formatYMD(lastRelationship.startDate));
+            String message = this.context.getString(R.string.internal_inmigration_migrationdate_not_before_hrelationship_startdate_lbl, dateUtil.formatYMD(migrationDate), lastRelationship.startType.code, dateUtil.formatYMD(lastRelationship.startDate));
             return new ValidationResult(colMigrationDate, message);
         }
 

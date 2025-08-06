@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment;
 import com.google.gson.Gson;
 
 import org.philimone.hds.explorer.R;
+import org.philimone.hds.explorer.database.Bootstrap;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
 import org.philimone.hds.explorer.database.Queries;
 import org.philimone.hds.explorer.fragment.MemberFilterDialog;
@@ -41,6 +42,7 @@ import java.util.Map;
 import io.objectbox.Box;
 import io.objectbox.query.QueryBuilder;
 import mz.betainteractive.odk.FormUtilities;
+import mz.betainteractive.utilities.DateUtil;
 import mz.betainteractive.utilities.GeneralUtil;
 import mz.betainteractive.utilities.StringUtil;
 
@@ -61,6 +63,8 @@ public class ChangeRegionHeadFormUtil extends FormUtil<RegionHeadRelationship> {
 
     private int minimunHeadAge;
     private String regionHierarchyName;
+
+    private DateUtil dateUtil = Bootstrap.getDateUtil();
 
     public ChangeRegionHeadFormUtil(Fragment fragment, Context context, Region region, Visit visit, Household household, FormUtilities odkFormUtilities, FormUtilListener<RegionHeadRelationship> listener){
         super(fragment, context, FormUtil.getChangeRegionHeadForm(context), odkFormUtilities, listener);
@@ -322,7 +326,7 @@ public class ChangeRegionHeadFormUtil extends FormUtil<RegionHeadRelationship> {
         RegionHeadRelationship newHeadLastRelationship = getLastRegionHeadRelationshipByHeadCode(newHeadCode);
         if (newHeadLastRelationship != null && newHeadLastRelationship.startDate != null && eventDate.before(newHeadLastRelationship.startDate)){
             //The event date cannot be before the [start date] of the [new Head of Region] last Head Relationship record.
-            String message = this.context.getString(R.string.changeregionhead_eventdate_not_before_new_head_hrelationship_startdate_lbl, StringUtil.formatYMD(eventDate), newHeadLastRelationship.startType.code, StringUtil.formatYMD(newHeadLastRelationship.startDate), regionHierarchyName);
+            String message = this.context.getString(R.string.changeregionhead_eventdate_not_before_new_head_hrelationship_startdate_lbl, dateUtil.formatYMD(eventDate), newHeadLastRelationship.startType.code, dateUtil.formatYMD(newHeadLastRelationship.startDate), regionHierarchyName);
             return new ValidationResult(colEventDate, message);
         }
 
@@ -330,7 +334,7 @@ public class ChangeRegionHeadFormUtil extends FormUtil<RegionHeadRelationship> {
         RegionHeadRelationship regionHeadLastRelationship = getLastRegionHeadRelationshipByRegionCode(regionCode);
         if (regionHeadLastRelationship != null && regionHeadLastRelationship.startDate != null && eventDate.before(regionHeadLastRelationship.startDate)){
             //The event date cannot be before the [start date] of the [new Head of Region] last Head Relationship record.
-            String message = this.context.getString(R.string.changeregionhead_eventdate_not_before_lastregion_head_hrelationship_startdate_lbl, StringUtil.formatYMD(eventDate), regionHeadLastRelationship.startType.code, StringUtil.formatYMD(regionHeadLastRelationship.startDate), regionHierarchyName);
+            String message = this.context.getString(R.string.changeregionhead_eventdate_not_before_lastregion_head_hrelationship_startdate_lbl, dateUtil.formatYMD(eventDate), regionHeadLastRelationship.startType.code, dateUtil.formatYMD(regionHeadLastRelationship.startDate), regionHierarchyName);
             return new ValidationResult(colEventDate, message);
         }
 

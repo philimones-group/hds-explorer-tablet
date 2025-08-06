@@ -22,6 +22,7 @@ import java.util.stream.Collectors;
 
 import io.objectbox.Box;
 import io.objectbox.query.QueryBuilder;
+import mz.betainteractive.utilities.StringUtil;
 
 /**
  * Created by paul on 5/26/16.
@@ -40,6 +41,8 @@ public class Bootstrap {
     private static String absoluteBasePath;
     private static String absoluteFormsPath;
     private static String absoluteInstancesPath;
+
+    public static boolean isEthiopianCalendarEnabled = false;
 
     private Box<ApplicationParam> boxAppParams;
     private Box<SyncReport> boxSyncReports;
@@ -60,7 +63,22 @@ public class Bootstrap {
         insertSyncReports();
         insertParams();
         initializePaths(this.mContext);
+        loadParameters();
         fixDatasets();
+    }
+
+    public static void loadParameters() {
+        Box<ApplicationParam> paramBox = ObjectBoxDatabase.get().boxFor(ApplicationParam.class);
+
+        //Load parameters to static variables
+        ApplicationParam param1 = paramBox.query().equal(ApplicationParam_.name, ApplicationParam.PARAMS_SYSTEM_USE_ETHIOPIAN_CALENDAR, QueryBuilder.StringOrder.CASE_SENSITIVE).build().findFirst();
+
+        //parameter ethiopian calendar
+        isEthiopianCalendarEnabled = false;
+        if (param1 != null) {
+            Boolean value = StringUtil.getBooleanValue(param1.getValue());
+            isEthiopianCalendarEnabled = value != null ? value : false;
+        }
     }
 
     private void fixDatasets() {

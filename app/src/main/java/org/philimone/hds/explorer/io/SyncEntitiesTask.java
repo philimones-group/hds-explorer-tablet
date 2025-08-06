@@ -1371,6 +1371,8 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 
 		updateSyncReport(SyncEntity.PARAMETERS, new Date(), SyncStatus.STATUS_SYNCED);
 
+		//Load system parameters after sync
+		Bootstrap.loadParameters();
 	}
 
 	private void processModulesParams(XmlPullParser parser) throws Exception {

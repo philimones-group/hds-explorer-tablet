@@ -381,6 +381,8 @@ public class ChangeHeadFormUtil extends FormUtil<HeadRelationship> {
         HeadRelationship newHeadLastRelationship = getLastHeadRelationship(newHeadCode);
         List<HeadRelationship> lastMembersRelationships = oldHeadMemberRelationships;
 
+        newHeadLastRelationship = currentMode==Mode.EDIT ? getLastHeadRelationship(newHeadCode, newHeadLastRelationship) : newHeadLastRelationship; //when editing the newHeadLastRelationship is the last created by this event
+
         //eventDate vs newHeadLastRelationship.startDate
         if (newHeadLastRelationship != null && newHeadLastRelationship.startDate != null && eventDate.before(newHeadLastRelationship.startDate)){
             //The event date cannot be before the [start date] of the [new Head of Household] last Head Relationship record.
@@ -403,6 +405,16 @@ public class ChangeHeadFormUtil extends FormUtil<HeadRelationship> {
         if (StringUtil.isBlank(memberCode)) return null;
 
         HeadRelationship lastHeadRelationship = this.boxHeadRelationships.query(HeadRelationship_.memberCode.equal(memberCode))
+                .orderDesc(HeadRelationship_.startDate)
+                .build().findFirst();
+
+        return lastHeadRelationship;
+    }
+
+    private HeadRelationship getLastHeadRelationship(String memberCode, HeadRelationship excludeHeadRelationship) {
+        if (StringUtil.isBlank(memberCode)) return null;
+
+        HeadRelationship lastHeadRelationship = this.boxHeadRelationships.query(HeadRelationship_.memberCode.equal(memberCode).and(HeadRelationship_.id.notEqual(excludeHeadRelationship.id)))
                 .orderDesc(HeadRelationship_.startDate)
                 .build().findFirst();
 

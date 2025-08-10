@@ -301,16 +301,18 @@ public class InternalInMigrationFormUtil extends FormUtil<Inmigration> {
         Residency lastResidency = getLastResidency(memberCode);
         HeadRelationship lastRelationship = getLastHeadRelationship(memberCode);
 
-        //No need to check the lastResidency/HeadRelationship endType because we already filtered the member as NA
+        //Ensure that you are testing the last Residency and Head Relationship
+        lastResidency = currentMode==Mode.EDIT ? getLastResidency(memberCode, lastResidency) : lastResidency; //when editing the lastResidency is the last created by this event
+        lastRelationship = currentMode==Mode.EDIT ? getLastHeadRelationship(memberCode, lastRelationship) : lastRelationship; //when editing the lastRelationship is the last created by this event
 
         //check dates - for new residency and new head_relationship
         //migrationDate vs lastResidency.startDate --- the endDate is null right now
-        if (lastResidency != null && lastResidency.startDate != null && migrationDate.before(lastResidency.startDate)){ //is before dob
+        if (lastResidency != null && lastResidency.startDate != null && migrationDate.before(lastResidency.startDate)){ //is before lastres.startdate
             String message = this.context.getString(R.string.internal_inmigration_migrationdate_not_before_residency_startdate_lbl, dateUtil.formatYMD(migrationDate), lastResidency.startType.code, dateUtil.formatYMD(lastResidency.startDate));
             return new ValidationResult(colMigrationDate, message);
         }
         //migrationDate vs lastRelationship.endDate
-        if (lastRelationship != null && lastRelationship.startDate != null && migrationDate.before(lastRelationship.startDate)){ //is before dob
+        if (lastRelationship != null && lastRelationship.startDate != null && migrationDate.before(lastRelationship.startDate)){ //is before lasthead.startdate
             String message = this.context.getString(R.string.internal_inmigration_migrationdate_not_before_hrelationship_startdate_lbl, dateUtil.formatYMD(migrationDate), lastRelationship.startType.code, dateUtil.formatYMD(lastRelationship.startDate));
             return new ValidationResult(colMigrationDate, message);
         }
@@ -346,10 +348,30 @@ public class InternalInMigrationFormUtil extends FormUtil<Inmigration> {
         return lastHeadRelationship;
     }
 
+    private HeadRelationship getLastHeadRelationship(String memberCode, HeadRelationship excludeHeadRelationship) {
+        if (StringUtil.isBlank(memberCode)) return null;
+
+        HeadRelationship lastHeadRelationship = this.boxHeadRelationships.query(HeadRelationship_.memberCode.equal(memberCode).and(HeadRelationship_.id.notEqual(excludeHeadRelationship.id)))
+                .orderDesc(HeadRelationship_.startDate)
+                .build().findFirst();
+
+        return lastHeadRelationship;
+    }
+
     private Residency getLastResidency(String memberCode) {
         if (StringUtil.isBlank(memberCode)) return null;
 
         Residency lastResidency = this.boxResidencies.query(Residency_.memberCode.equal(memberCode))
+                .orderDesc(Residency_.startDate)
+                .build().findFirst();
+
+        return lastResidency;
+    }
+
+    private Residency getLastResidency(String memberCode, Residency excludeResidency) {
+        if (StringUtil.isBlank(memberCode)) return null;
+
+        Residency lastResidency = this.boxResidencies.query(Residency_.memberCode.equal(memberCode).and(Residency_.id.notEqual(excludeResidency.id)))
                 .orderDesc(Residency_.startDate)
                 .build().findFirst();
 

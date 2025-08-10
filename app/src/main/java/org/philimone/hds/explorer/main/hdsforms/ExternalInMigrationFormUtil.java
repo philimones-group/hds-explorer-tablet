@@ -363,6 +363,20 @@ public class ExternalInMigrationFormUtil extends FormUtil<Inmigration> {
             return new ValidationResult(colMemberCode, message);
         }
 
+        //validate phone numbers
+        if (hasPhoneNumbers) {
+
+            if (!isValidPhoneNumber(phonePrimary)) {
+                String message = this.context.getString(R.string.new_member_phone_primary_invalid_lbl);
+                return new ValidationResult(colPhonePrimary, message);
+            }
+
+            if (!StringUtil.isBlank(phoneAlternative) && !isValidPhoneNumber(phoneAlternative)) {
+                String message = this.context.getString(R.string.new_member_phone_alternative_invalid_lbl);
+                return new ValidationResult(colPhoneAlternative, message);
+            }
+        }
+
         //Validate previous residencies and relationships
         //XEN-ENTRY - is the first entry there is no check on previous data
         //XEN-REENTRY - Must check dates
@@ -371,6 +385,8 @@ public class ExternalInMigrationFormUtil extends FormUtil<Inmigration> {
             //check Member last closed headtype status - if returning to DSS
             Residency lastResidency = getLastResidency(memberCode);
             HeadRelationship lastRelationship = getLastHeadRelationship(memberCode);
+            lastResidency = currentMode==Mode.EDIT ? getLastResidency(memberCode, lastResidency) : lastResidency; //when editing the lastResidency is the last created by this event
+            lastRelationship = currentMode==Mode.EDIT ? getLastHeadRelationship(memberCode, lastRelationship) : lastRelationship; //when editing the lastRelationship is the last created by this event
 
             //No need to check the lastResidency endType because we already filtered the member as EXT
 
@@ -392,19 +408,6 @@ public class ExternalInMigrationFormUtil extends FormUtil<Inmigration> {
             }
         }
 
-        //validate phone numbers
-        if (hasPhoneNumbers) {
-
-            if (!isValidPhoneNumber(phonePrimary)) {
-                String message = this.context.getString(R.string.new_member_phone_primary_invalid_lbl);
-                return new ValidationResult(colPhonePrimary, message);
-            }
-
-            if (!StringUtil.isBlank(phoneAlternative) && !isValidPhoneNumber(phoneAlternative)) {
-                String message = this.context.getString(R.string.new_member_phone_alternative_invalid_lbl);
-                return new ValidationResult(colPhoneAlternative, message);
-            }
-        }
 
         return ValidationResult.noErrors();
     }
@@ -434,6 +437,16 @@ public class ExternalInMigrationFormUtil extends FormUtil<Inmigration> {
         return lastHeadRelationship;
     }
 
+    private HeadRelationship getLastHeadRelationship(String memberCode, HeadRelationship excludeHeadRelationship) {
+        if (StringUtil.isBlank(memberCode)) return null;
+
+        HeadRelationship lastHeadRelationship = this.boxHeadRelationships.query(HeadRelationship_.memberCode.equal(memberCode).and(HeadRelationship_.id.notEqual(excludeHeadRelationship.id)))
+                .orderDesc(HeadRelationship_.startDate)
+                .build().findFirst();
+
+        return lastHeadRelationship;
+    }
+
     private Residency getLastResidency(String memberCode) {
         if (StringUtil.isBlank(memberCode)) return null;
 
@@ -443,7 +456,17 @@ public class ExternalInMigrationFormUtil extends FormUtil<Inmigration> {
 
         return lastResidency;
     }
-    
+
+    private Residency getLastResidency(String memberCode, Residency excludeResidency) {
+        if (StringUtil.isBlank(memberCode)) return null;
+
+        Residency lastResidency = this.boxResidencies.query(Residency_.memberCode.equal(memberCode).and(Residency_.id.notEqual(excludeResidency.id)))
+                .orderDesc(Residency_.startDate)
+                .build().findFirst();
+
+        return lastResidency;
+    }
+
     @Override
     public void onBeforeFormFinished(HForm form, CollectedDataMap collectedValues) {
         //using it to update collectedHouseholdId, collectedMemberId

@@ -304,7 +304,7 @@ public class HouseholdEditFragment extends Fragment implements LocationListener 
     }
 
     private String generateXmlFilename(CoreFormEntity entity, String code) {
-        String dateTmsp = StringUtil.format(new Date(), "yyyy-MM-dd_HH_mm_ss");
+        String dateTmsp = dateUtil.formatYMDHMS(new Date(), true);
         return Bootstrap.getInstancesPath(this.getContext()) + entity.code + "_" + code + "_" + dateTmsp + ".xml";
     }
 

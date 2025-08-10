@@ -122,7 +122,7 @@ public class FormGroupUtilities {
 
     private String generateCode(String formId, String subjectCode){
         //20220802-122459.600
-        String timestamp = StringUtil.format(new Date(), "yyyyMMdd-HHmmss.SSS");
+        String timestamp = dateUtil.formatSpecialCode(new Date()); //format(new Date(), "yyyyMMdd-HHmmss.SSS");
 
         return formId + "_" +subjectCode + "_" + currentUser.getCode() + "_" + timestamp;
     }

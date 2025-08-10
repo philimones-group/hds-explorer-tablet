@@ -235,7 +235,7 @@ public class RegionEditFragment extends Fragment {
     }
 
     private String generateXmlFilename(CoreFormEntity entity, String code) {
-        String dateTmsp = StringUtil.format(new Date(), "yyyy-MM-dd_HH_mm_ss");
+        String dateTmsp = dateUtil.formatYMDHMS(new Date(), true); //"yyyy-MM-dd_HH_mm_ss");
         return Bootstrap.getInstancesPath(this.getContext()) + entity.code + "_" + code + "_" + dateTmsp + ".xml";
     }
 

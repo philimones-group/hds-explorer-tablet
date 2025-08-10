@@ -402,7 +402,7 @@ public class MemberEditFragment extends Fragment {
         //persist the changes into the database
         this.member.name = this.txtEditName.getText().toString();
         this.member.gender = chkEditGMale.isChecked() ? Gender.MALE : Gender.FEMALE;
-        this.member.dob = DateUtil.toDateYMD(txtEditDob.getText().toString());
+        this.member.dob = selectedDob != null ? selectedDob : this.member.dob; //DateUtil.toDateYMD(txtEditDob.getText().toString());
         this.member.fatherCode = txtEditFatherCode.getText().toString();
         this.member.fatherName = txtEditFatherName.getText().toString();
         this.member.motherCode = txtEditMotherCode.getText().toString();
@@ -418,7 +418,7 @@ public class MemberEditFragment extends Fragment {
         mapXml.put("code", this.member.code);
         mapXml.put("name", this.member.name);
         mapXml.put("gender", this.member.gender.code);
-        mapXml.put("dob", this.txtEditDob.getText().toString());
+        mapXml.put("dob", DateUtil.formatGregorianYMD(this.member.dob)); //this.txtEditDob.getText().toString());
         mapXml.put("motherCode", this.member.motherCode);
         mapXml.put("motherName", this.member.motherName);
         mapXml.put("fatherCode", this.member.fatherCode);
@@ -599,7 +599,7 @@ public class MemberEditFragment extends Fragment {
     }
 
     private String generateXmlFilename(CoreFormEntity entity, String code) {
-        String dateTmsp = StringUtil.format(new Date(), "yyyy-MM-dd_HH_mm_ss");
+        String dateTmsp = dateUtil.formatYMDHMS(new Date(), true); //"yyyy-MM-dd_HH_mm_ss");
         return Bootstrap.getInstancesPath(this.getContext()) + entity.code + "_" + code + "_" + dateTmsp + ".xml";
     }
 

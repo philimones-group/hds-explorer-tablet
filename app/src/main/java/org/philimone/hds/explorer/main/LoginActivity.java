@@ -587,7 +587,7 @@ public class LoginActivity extends AppCompatActivity {
             //1.0.10 build 307
             Log.d("server login response", "version: "+rawServerVersion);
 
-            String regex = "^[0-9]+(\\.[0-9]+)*\\sbuild\\s([0-9]+)$";
+            String regex = "^[0-9]+(\\.[0-9]+)*\\sbuild\\s([0-9]+)(?:\\s\\S+)?$";
 
             Pattern pattern = Pattern.compile(regex);
             Matcher matcher = pattern.matcher(rawServerVersion);

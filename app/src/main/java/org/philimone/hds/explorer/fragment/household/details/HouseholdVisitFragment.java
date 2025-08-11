@@ -581,34 +581,43 @@ public class HouseholdVisitFragment extends Fragment {
         boolean isEmptyHousehold = boxResidencies.query(Residency_.householdCode.equal(household.code).and(Residency_.endType.equal(ResidencyEndType.NOT_APPLICABLE.code))).build().count() == 0;
         clearMemberSelection();
 
+        //Row 1
         this.btnVisitMemberEnu.setEnabled(true);
+        this.btnVisitMemberIncomplete.setEnabled(false);
         this.btnVisitBirthReg.setEnabled(false);
         this.btnVisitPregnancyReg.setEnabled(false);
-        this.btnVisitPregnancyVisit.setEnabled(false);
-
-        this.btnVisitExtInmigration.setEnabled(true); // && !isCensusHousehold
-        this.btnVisitIntInmigration.setEnabled(true); // && !isCensusHousehold
         this.btnVisitChangeHead.setEnabled(true && !isCensusHousehold);
-
+        //Row 2
+        this.btnVisitExtInmigration.setEnabled(true); // && !isCensusHousehold
+        this.btnVisitChangeRegionHead.setEnabled(false);
+        this.btnVisitIntInmigration.setEnabled(true); // && !isCensusHousehold
+        this.btnVisitPregnancyVisit.setEnabled(false);
         this.btnVisitOutmigration.setEnabled(false);
+        this.btnVisitHouseholdRelocation.setEnabled(isEmptyHousehold);
+        //Row 3
         this.btnVisitDeath.setEnabled(false);
         this.btnVisitMaritalRelationship.setEnabled(false);
         this.btnVisitExtraForm.setEnabled(true);
 
-        this.btnVisitPregnancyReg.setVisibility(View.GONE);
-        this.btnVisitChangeHead.setVisibility(VISIBLE);
 
-        this.btnVisitMemberIncomplete.setEnabled(false);
+        //Row 1 - Visibility
         this.btnVisitMemberEnu.setVisibility(VISIBLE);
         this.btnVisitMemberIncomplete.setVisibility(View.GONE);
-
+        this.btnVisitBirthReg.setVisibility(VISIBLE);
+        this.btnVisitPregnancyReg.setVisibility(View.GONE);
+        this.btnVisitChangeHead.setVisibility(VISIBLE);
+        //Row 2 - Visibility
+        this.btnVisitExtInmigration.setVisibility(VISIBLE);
+        this.btnVisitChangeRegionHead.setVisibility(View.GONE);
         this.btnVisitIntInmigration.setVisibility(VISIBLE);
         this.btnVisitPregnancyVisit.setVisibility(View.GONE);
-        this.btnVisitChangeRegionHead.setVisibility(View.GONE);
-
-        this.btnVisitHouseholdRelocation.setEnabled(isEmptyHousehold);
         this.btnVisitOutmigration.setVisibility(View.GONE);
         this.btnVisitHouseholdRelocation.setVisibility(VISIBLE);
+        //Row 3 - Visibility is always visible
+        this.btnVisitDeath.setVisibility(VISIBLE);
+        this.btnVisitMaritalRelationship.setVisibility(VISIBLE);
+        this.btnVisitExtraForm.setVisibility(VISIBLE);
+
 
         //disable buttons if already collected and ready to edit
         //ChangeHead - must be collected one per visit
@@ -628,32 +637,42 @@ public class HouseholdVisitFragment extends Fragment {
         boolean isEmptyHousehold = boxResidencies.query(Residency_.householdCode.equal(household.code).and(Residency_.endType.equal(ResidencyEndType.NOT_APPLICABLE.code))).build().count() == 0;
         clearMemberSelection();
 
+        //Row 1
         this.btnVisitMemberEnu.setEnabled(true);
+        this.btnVisitMemberIncomplete.setEnabled(false);
         this.btnVisitBirthReg.setEnabled(false);
         this.btnVisitPregnancyReg.setEnabled(false);
-        this.btnVisitPregnancyVisit.setEnabled(false);
+        this.btnVisitChangeHead.setEnabled(false);
+        //Row 2
         this.btnVisitExtInmigration.setEnabled(true); // && !isCensusHousehold
+        this.btnVisitChangeRegionHead.setEnabled(false);
         this.btnVisitIntInmigration.setEnabled(true); // && !isCensusHousehold
+        this.btnVisitPregnancyVisit.setEnabled(false);
         this.btnVisitOutmigration.setEnabled(false);
+        this.btnVisitHouseholdRelocation.setEnabled(false);
+        //Row 3
         this.btnVisitDeath.setEnabled(false);
         this.btnVisitMaritalRelationship.setEnabled(false);
         this.btnVisitExtraForm.setEnabled(false); //we need to analyse better this
 
-        this.btnVisitChangeHead.setEnabled(false);
-        this.btnVisitPregnancyReg.setVisibility(View.GONE);
-        this.btnVisitChangeHead.setVisibility(VISIBLE);
-
-        this.btnVisitMemberIncomplete.setEnabled(false);
+        //Row 1 - Visibility
         this.btnVisitMemberEnu.setVisibility(VISIBLE);
         this.btnVisitMemberIncomplete.setVisibility(View.GONE);
-
+        this.btnVisitBirthReg.setVisibility(VISIBLE);
+        this.btnVisitPregnancyReg.setVisibility(View.GONE);
+        this.btnVisitChangeHead.setVisibility(VISIBLE);
+        //Row 2 - Visibility
+        this.btnVisitExtInmigration.setVisibility(VISIBLE);
+        this.btnVisitChangeRegionHead.setVisibility(View.GONE);
         this.btnVisitIntInmigration.setVisibility(VISIBLE);
         this.btnVisitPregnancyVisit.setVisibility(View.GONE);
-        this.btnVisitChangeRegionHead.setVisibility(View.GONE);
-
-        this.btnVisitHouseholdRelocation.setEnabled(isEmptyHousehold);
         this.btnVisitOutmigration.setVisibility(View.GONE);
         this.btnVisitHouseholdRelocation.setVisibility(VISIBLE);
+        //Row 3 - Visibility is always visible
+        this.btnVisitDeath.setVisibility(VISIBLE);
+        this.btnVisitMaritalRelationship.setVisibility(VISIBLE);
+        this.btnVisitExtraForm.setVisibility(VISIBLE);
+
 
         //disable item selection
         setMainListsSelectable(false);
@@ -668,47 +687,45 @@ public class HouseholdVisitFragment extends Fragment {
         boolean isAtSpouseAge = age >= this.minimunSpouseAge;
         boolean isAtHeadAge = age >= this.minimumHeadAge;
 
+        //Row 1
         this.btnVisitMemberEnu.setEnabled(false);
+        this.btnVisitMemberIncomplete.setEnabled(notVisited);
         this.btnVisitBirthReg.setEnabled(false);
         this.btnVisitPregnancyReg.setEnabled(false);
-        this.btnVisitPregnancyVisit.setEnabled(false);
-
-
-        this.btnVisitExtInmigration.setEnabled(false);
-        this.btnVisitIntInmigration.setEnabled(false);
         this.btnVisitChangeHead.setEnabled(false);
+        //Row 2
+        this.btnVisitExtInmigration.setEnabled(false);
+        this.btnVisitChangeRegionHead.setEnabled(isAtHeadAge);
+        this.btnVisitIntInmigration.setEnabled(false);
+        this.btnVisitPregnancyVisit.setEnabled(false);
         this.btnVisitOutmigration.setEnabled(true); // && !isCensusHousehold
+        this.btnVisitHouseholdRelocation.setEnabled(false);
+        //Row 3
         this.btnVisitDeath.setEnabled(true); // && !isCensusHousehold
         this.btnVisitMaritalRelationship.setEnabled(true && isAtSpouseAge);
         this.btnVisitExtraForm.setEnabled(true); //we need to analyse better this
 
-        this.btnVisitExtInmigration.setVisibility(View.GONE);
-        this.btnVisitIntInmigration.setVisibility(View.GONE);
-
-        this.btnVisitPregnancyReg.setVisibility(VISIBLE);
-        this.btnVisitPregnancyVisit.setVisibility(View.VISIBLE); //will be visible when there is a pregnancy registration done
-        this.btnVisitChangeHead.setVisibility(View.GONE);
-
-        this.btnVisitMemberIncomplete.setEnabled(notVisited);
+        //Row 1 - Visibility
         this.btnVisitMemberEnu.setVisibility(View.GONE);
         this.btnVisitMemberIncomplete.setVisibility(VISIBLE);
+        this.btnVisitBirthReg.setVisibility(VISIBLE);
+        this.btnVisitPregnancyReg.setVisibility(VISIBLE);
+        this.btnVisitChangeHead.setVisibility(View.GONE);
+        //Row 2 - Visibility
+        this.btnVisitExtInmigration.setVisibility(isRegionHeadSupported ? View.GONE : VISIBLE);
+        this.btnVisitChangeRegionHead.setVisibility(isRegionHeadSupported ? View.VISIBLE : View.GONE);
+        this.btnVisitIntInmigration.setVisibility(View.GONE);
+        this.btnVisitPregnancyVisit.setVisibility(VISIBLE);
+        this.btnVisitOutmigration.setVisibility(VISIBLE);
+        this.btnVisitHouseholdRelocation.setVisibility(View.GONE);
+        //Row 3 - Visibility is always visible
+        this.btnVisitDeath.setVisibility(VISIBLE);
+        this.btnVisitMaritalRelationship.setVisibility(VISIBLE);
+        this.btnVisitExtraForm.setVisibility(VISIBLE);
 
         if (isRegionHeadSupported) {
             this.btnVisitChangeRegionHead.setText(getString(R.string.changeregionhead_set_new_reiong_head_bt_lbl, regionHierarchyName));
-            this.btnVisitChangeRegionHead.setEnabled(isAtHeadAge);
-            //this.btnVisitIntInmigration.setVisibility(View.GONE);
-            this.btnVisitChangeRegionHead.setVisibility(VISIBLE);
-        } else {
-            this.btnVisitExtInmigration.setVisibility(VISIBLE);
-            //this.btnVisitIntInmigration.setVisibility(VISIBLE);
-            this.btnVisitChangeRegionHead.setVisibility(View.GONE);
         }
-
-        this.btnVisitHouseholdRelocation.setEnabled(false);
-        this.btnVisitOutmigration.setVisibility(VISIBLE);
-        this.btnVisitHouseholdRelocation.setVisibility(View.GONE);
-
-        this.btnVisitPregnancyVisit.setVisibility(VISIBLE);
 
         //disable buttons if already collected and ready to edit
         //Incomplete, Marital, Pregnancy Reg and Pregnancy Outcome - must be collected one per visit and member
@@ -730,19 +747,10 @@ public class HouseholdVisitFragment extends Fragment {
             btnVisitPregnancyReg.setEnabled(canPregReg);
             btnVisitBirthReg.setEnabled(canBirtReg);
             btnVisitPregnancyVisit.setEnabled(canPregVis);
-
-            btnVisitPregnancyReg.setVisibility(canPregReg ? View.VISIBLE : View.GONE);
-            //btnVisitPregnancyVisit.setVisibility(canPregVis ? View.VISIBLE : View.GONE);
-            btnVisitBirthReg.setVisibility(View.VISIBLE);
-
         } else {
             btnVisitPregnancyReg.setEnabled(false);
             btnVisitBirthReg.setEnabled(false);
             btnVisitPregnancyVisit.setEnabled(false);
-
-            btnVisitPregnancyReg.setVisibility(View.VISIBLE);
-            btnVisitBirthReg.setVisibility(View.VISIBLE);
-            //btnVisitPregnancyVisit.setVisibility(View.GONE);
         }
 
         setMainListsSelectable(true);

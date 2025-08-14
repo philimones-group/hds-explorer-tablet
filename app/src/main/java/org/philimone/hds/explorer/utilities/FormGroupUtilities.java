@@ -34,6 +34,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import io.objectbox.Box;
+import mz.betainteractive.utilities.DateUtil;
 import mz.betainteractive.utilities.GeneralUtil;
 import mz.betainteractive.utilities.StringUtil;
 
@@ -45,6 +46,7 @@ public class FormGroupUtilities {
     private User currentUser;
 
     private JexlEngine scriptEngine;
+    private DateUtil dateUtil = Bootstrap.getDateUtil();
 
     public FormGroupUtilities(Context context) {
         this.mContext = context;
@@ -120,7 +122,7 @@ public class FormGroupUtilities {
 
     private String generateCode(String formId, String subjectCode){
         //20220802-122459.600
-        String timestamp = StringUtil.format(new Date(), "yyyyMMdd-HHmmss.SSS");
+        String timestamp = dateUtil.formatSpecialCode(new Date()); //format(new Date(), "yyyyMMdd-HHmmss.SSS");
 
         return formId + "_" +subjectCode + "_" + currentUser.getCode() + "_" + timestamp;
     }

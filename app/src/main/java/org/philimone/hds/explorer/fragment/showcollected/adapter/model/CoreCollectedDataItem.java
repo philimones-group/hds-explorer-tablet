@@ -3,6 +3,7 @@ package org.philimone.hds.explorer.fragment.showcollected.adapter.model;
 import android.util.Log;
 
 import org.philimone.hds.explorer.R;
+import org.philimone.hds.explorer.database.Bootstrap;
 import org.philimone.hds.explorer.model.CollectedData;
 import org.philimone.hds.explorer.model.CoreCollectedData;
 import org.philimone.hds.explorer.model.FormSubject;
@@ -14,6 +15,7 @@ import org.philimone.hds.explorer.model.enums.CoreFormEntity;
 import java.util.ArrayList;
 import java.util.List;
 
+import mz.betainteractive.utilities.DateUtil;
 import mz.betainteractive.utilities.StringUtil;
 
 public class CoreCollectedDataItem {
@@ -22,6 +24,7 @@ public class CoreCollectedDataItem {
     public Household household;
     public Member member;
     public boolean selected;
+    private DateUtil dateUtil = Bootstrap.getDateUtil();
     public List<CoreFormEntity> collectedForms = new ArrayList<>();
 
     public CoreCollectedDataItem(CoreCollectedData collectedData, Household household, List<CoreFormEntity> collectedForms) {
@@ -46,8 +49,8 @@ public class CoreCollectedDataItem {
 
     public boolean contentMatches(String text, String formEntityNameText) {
         CoreCollectedData cd = collectedData;
-        String createdDate = cd.createdDate==null ? "" : StringUtil.format(cd.createdDate, "yyyy-MM-dd HH:mm:ss");
-        String updatedDate = cd.updatedDate==null ? createdDate : StringUtil.format(cd.updatedDate, "yyyy-MM-dd HH:mm:ss");
+        String createdDate = cd.createdDate==null ? "" : dateUtil.formatYMDHMS(cd.createdDate); //, "yyyy-MM-dd HH:mm:ss");
+        String updatedDate = cd.updatedDate==null ? createdDate : dateUtil.formatYMDHMS(cd.updatedDate); //, "yyyy-MM-dd HH:mm:ss");
 
         String txtItem1 = "";
         String txtItem2 = "";

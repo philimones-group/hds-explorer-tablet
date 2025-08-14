@@ -52,6 +52,7 @@ import java.util.List;
 import java.util.Map;
 
 import io.objectbox.Box;
+import mz.betainteractive.utilities.DateUtil;
 import mz.betainteractive.utilities.GeneralUtil;
 import mz.betainteractive.utilities.StringUtil;
 
@@ -82,6 +83,8 @@ public class HouseholdEditFragment extends Fragment implements LocationListener 
     private Box<Household> boxHouseholds;
     private Box<Member> boxMembers;
     private Box<CoreCollectedData> boxCoreCollectedData;
+
+    private DateUtil dateUtil = Bootstrap.getDateUtil();
 
     private ActivityResultLauncher<String[]> requestPermissions;
 
@@ -258,7 +261,7 @@ public class HouseholdEditFragment extends Fragment implements LocationListener 
             mapXml.put("gpsAcc", this.household.gpsAccuracy+"");
         }
         mapXml.put("collectedBy", this.loggedUser.username);
-        mapXml.put("collectedDate", StringUtil.format(new Date(), "yyyy-MM-dd HH:mm:ss.SSS"));
+        mapXml.put("collectedDate", DateUtil.formatGregorianPrecise(new Date()));
 
 
         //generate xml and create/overwrite a file
@@ -301,7 +304,7 @@ public class HouseholdEditFragment extends Fragment implements LocationListener 
     }
 
     private String generateXmlFilename(CoreFormEntity entity, String code) {
-        String dateTmsp = StringUtil.format(new Date(), "yyyy-MM-dd_HH_mm_ss");
+        String dateTmsp = dateUtil.formatYMDHMS(new Date(), true);
         return Bootstrap.getInstancesPath(this.getContext()) + entity.code + "_" + code + "_" + dateTmsp + ".xml";
     }
 

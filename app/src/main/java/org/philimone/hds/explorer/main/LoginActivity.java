@@ -9,6 +9,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.text.method.PasswordTransformationMethod;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
@@ -89,6 +90,8 @@ public class LoginActivity extends AppCompatActivity {
         txtCopyrightAppName = (TextView) findViewById(R.id.txtCopyrightAppName);
         txtCopyrightCompany = (TextView) findViewById(R.id.txtCopyrightAppName);
         txtCopyrightDevs = (TextView) findViewById(R.id.txtCopyrightDevs);
+
+        txtPassword.setTransformationMethod(new PasswordTransformationMethod());
 
         Button btLogin = (Button) findViewById(R.id.login_button);
         btLogin.setOnClickListener(new OnClickListener() {
@@ -584,7 +587,7 @@ public class LoginActivity extends AppCompatActivity {
             //1.0.10 build 307
             Log.d("server login response", "version: "+rawServerVersion);
 
-            String regex = "^[0-9]+(\\.[0-9]+)*\\sbuild\\s([0-9]+)$";
+            String regex = "^[0-9]+(\\.[0-9]+)*\\sbuild\\s([0-9]+)(?:\\s\\S+)?$";
 
             Pattern pattern = Pattern.compile(regex);
             Matcher matcher = pattern.matcher(rawServerVersion);

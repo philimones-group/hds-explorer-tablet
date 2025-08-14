@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import org.philimone.hds.explorer.R;
 import org.philimone.hds.explorer.adapter.model.FormGroupChildItem;
 import org.philimone.hds.explorer.data.FormDataLoader;
+import org.philimone.hds.explorer.database.Bootstrap;
 import org.philimone.hds.explorer.model.CollectedData;
 import org.philimone.hds.explorer.model.Form;
 import org.philimone.hds.explorer.model.FormGroupMapping;
@@ -23,6 +24,7 @@ import org.philimone.hds.explorer.model.enums.FormType;
 import java.util.ArrayList;
 import java.util.List;
 
+import mz.betainteractive.utilities.DateUtil;
 import mz.betainteractive.utilities.StringUtil;
 
 /**
@@ -33,6 +35,8 @@ public class FormGroupChildAdapter extends RecyclerView.Adapter<FormGroupChildAd
     private List<FormGroupChildItem> childItems;
     private Context mContext;
     private String filterText;
+
+    private DateUtil dateUtil = Bootstrap.getDateUtil();
 
     public FormGroupChildAdapter(Context context, List<FormGroupChildItem> objects){
         this.childItems = new ArrayList<>();
@@ -131,7 +135,7 @@ public class FormGroupChildAdapter extends RecyclerView.Adapter<FormGroupChildAd
                 txtInstanceName.setText("");
             } else {
 
-                String date = StringUtil.formatYMDHMS(collectedData.getFormLastUpdatedDate());
+                String date = dateUtil.formatYMDHMS(collectedData.getFormLastUpdatedDate()); //agnostic date format - used for display date
                 txtCollected.setText(mContext.getText(R.string.form_group_selector_collected_lbl)+" "+date);
                 txtInstanceName.setText(collectedData.formInstanceName);
                 chkProcessed.setChecked(collectedData.isFormFinalized());

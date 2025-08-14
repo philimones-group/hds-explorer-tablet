@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment;
 import com.google.gson.Gson;
 
 import org.philimone.hds.explorer.R;
+import org.philimone.hds.explorer.database.Bootstrap;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
 import org.philimone.hds.explorer.database.Queries;
 import org.philimone.hds.explorer.fragment.HouseholdFilterDialog;
@@ -47,6 +48,7 @@ import java.util.Map;
 
 import io.objectbox.Box;
 import mz.betainteractive.odk.FormUtilities;
+import mz.betainteractive.utilities.DateUtil;
 import mz.betainteractive.utilities.GeneralUtil;
 import mz.betainteractive.utilities.StringUtil;
 
@@ -68,6 +70,8 @@ public class HouseholdRelocationFormUtil extends FormUtil<HouseholdRelocation> {
     private List<Long> newMembersResidenciesList = new ArrayList<>();
     private List<Long> newMembersRelationshipsList = new ArrayList<>();
     private boolean originHouseholdChanged = false;
+
+    private DateUtil dateUtil = Bootstrap.getDateUtil();
 
     public HouseholdRelocationFormUtil(Fragment fragment, Context context, Visit visit, Household household, FormUtilities odkFormUtilities, FormUtilListener<HouseholdRelocation> listener){
         super(fragment, context, FormUtil.getHouseholdRelocationForm(context), odkFormUtilities, listener);
@@ -323,7 +327,7 @@ public class HouseholdRelocationFormUtil extends FormUtil<HouseholdRelocation> {
         List<Residency> originMembersResidencies = getHouseholdResidencies(originHousehold);
         for (Residency residency : originMembersResidencies) {
             if (residency != null && residency.startDate != null && (eventDate.before(residency.startDate) || eventDate.equals(residency.startDate))){
-                String message = this.context.getString(R.string.household_filter_dialog_event_date_not_before_member_res_startdate_lbl, StringUtil.formatYMD(eventDate), residency.memberCode, residency.startType.code, StringUtil.formatYMD(residency.startDate));
+                String message = this.context.getString(R.string.household_filter_dialog_event_date_not_before_member_res_startdate_lbl, dateUtil.formatYMD(eventDate), residency.memberCode, residency.startType.code, dateUtil.formatYMD(residency.startDate));
                 return new ValidationResult(colEventDate, message);
             }
         }
@@ -332,7 +336,7 @@ public class HouseholdRelocationFormUtil extends FormUtil<HouseholdRelocation> {
         List<HeadRelationship> originMembersRelationships = getHouseholdHeadRelationships(originHousehold);
         for (HeadRelationship relationship : originMembersRelationships) {
             if (relationship != null && relationship.startDate != null && (eventDate.before(relationship.startDate) || eventDate.equals(relationship.startDate))){
-                String message = this.context.getString(R.string.household_filter_dialog_event_date_not_before_member_hr_startdate_lbl, StringUtil.formatYMD(eventDate), relationship.memberCode, relationship.startType.code, StringUtil.formatYMD(relationship.startDate));
+                String message = this.context.getString(R.string.household_filter_dialog_event_date_not_before_member_hr_startdate_lbl, dateUtil.formatYMD(eventDate), relationship.memberCode, relationship.startType.code, dateUtil.formatYMD(relationship.startDate));
                 return new ValidationResult(colEventDate, message);
             }
         }

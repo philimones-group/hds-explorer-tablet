@@ -47,6 +47,7 @@ import java.util.Map;
 import io.objectbox.Box;
 import io.objectbox.query.QueryBuilder;
 import mz.betainteractive.odk.FormUtilities;
+import mz.betainteractive.utilities.DateUtil;
 import mz.betainteractive.utilities.GeneralUtil;
 import mz.betainteractive.utilities.StringUtil;
 
@@ -851,7 +852,7 @@ public class MemberEnumerationFormUtil extends FormUtil<Member> {
 
         if (methodExpression.startsWith("calculateAge")){
 
-            Date dobDate = StringUtil.toDateYMD(args[0]);
+            Date dobDate = DateUtil.toDateYMD(args[0]); //its gregorian data that comes from ColumnView.getValue
             int age = -1;
 
             if (dobDate != null) {

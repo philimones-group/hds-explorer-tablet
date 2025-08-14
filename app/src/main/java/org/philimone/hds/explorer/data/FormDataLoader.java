@@ -32,6 +32,7 @@ import java.util.zip.ZipInputStream;
 
 import io.objectbox.Box;
 import mz.betainteractive.io.readers.CSVReader;
+import mz.betainteractive.utilities.DateUtil;
 import mz.betainteractive.utilities.ReflectionUtils;
 import mz.betainteractive.utilities.StringUtil;
 
@@ -430,7 +431,7 @@ public class FormDataLoader implements Serializable {
                 }
 
                 if (internalVariableName.equals("Timestamp")){ //Member Exists on DSS Database
-                    value = StringUtil.format(new Date(), "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+                    value = DateUtil.formatGregorian(new Date(), "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
                 }
                 Log.d("Timestamp", "value=("+odkVariable+", "+value+")");
                 //get variable format from odkVariable eg. variableName->format => patientName->yes,no
@@ -475,7 +476,7 @@ public class FormDataLoader implements Serializable {
                 //check on constants
 
                 if (internalVariableName.equals("Timestamp")){ //Member Exists on DSS Database
-                    value = StringUtil.format(new Date(), "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+                    value = DateUtil.formatGregorian(new Date(), "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
                     foundTimestampVariable = true;
                 }
 
@@ -546,12 +547,13 @@ public class FormDataLoader implements Serializable {
             Date date = null;
 
             if (isDateField) {
-                date = StringUtil.toPreciseDate(value); //use precise format if is a datefield
+                date = DateUtil.toDatePrecise(value); //use precise format if is a datefield - gregorian dates
             } else {
-                date = StringUtil.toDate(value, "yyyy-MM-dd"); // the default date format if is not a date field is YMD
+                date = DateUtil.toDateYMD(value); // the default date format if is not a date field is YMD - gregorian dates
             }
 
-            String formattedDate = StringUtil.format(date, format); //format using the desired format - next implementation use original format for non-date-fields
+            //Better to not format dates - this wont support correctly to be loaded to ODK
+            String formattedDate = DateUtil.formatGregorian(date, format); //format using the desired format - next implementation use original format for non-date-fields
             value = formattedDate;
         }catch (Exception e){
             e.printStackTrace();
@@ -565,8 +567,8 @@ public class FormDataLoader implements Serializable {
         format = format.replace("]","");
 
         try{
-            Date date = StringUtil.toDate(value, originalFormat); // the original date format must be given
-            String formattedDate = StringUtil.format(date, format); //format using the desired format
+            Date date = DateUtil.toDate(value, originalFormat); // the original date format must be given
+            String formattedDate = DateUtil.formatGregorian(date, format); //format using the desired format
             value = formattedDate;
         }catch (Exception e){
             e.printStackTrace();

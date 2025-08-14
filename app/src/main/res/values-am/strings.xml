@@ -1,0 +1,959 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">HDS Explorer</string>
+    <!-- Mapbox Public Token for HDS-Explorer -->
+    <string name="mapbox_access_token">pk.eyJ1IjoicGF1bHBoaWxpbW9uZSIsImEiOiJjbG1rM3BvcDkwYXMxMm5wbDUyNTA1NGlhIn0.HuorKNYmjgPzGbTDYwDu-Q</string>
+
+    <!-- Copyright    -->
+    <string name="copyright_app_name_lbl">HDS Explorer</string>
+    <string name="copyright_app_company_lbl">© 2025 Philimone\'s Group</string>
+    <string name="copyright_app_developers_lbl">በ Paulo Filimone የተሰራ</string>
+
+    <!-- General buttons and Strings-->
+    <string name="bt_ok_lbl">እሺ</string>
+    <string name="bt_yes_lbl">አዎ</string>
+    <string name="bt_no_lbl">አይ</string>
+    <string name="bt_cancel_lbl">ሰርዝ</string>
+    <string name="bt_confirm_lbl">አረጋግጥ</string>
+    <string name="bt_accept_lbl">ተቀበል</string>
+    <string name="bt_reject_lbl">አትቀበል</string>
+    <string name="bt_delete_lbl">አስወግድ</string>
+    <string name="bt_open_lbl">ክፈት</string>
+    <string name="bt_close_lbl">ዝጋ</string>
+    <string name="bt_enable_lbl">አንቃ</string>
+    <string name="bt_disable_lbl">አሰናክል</string>
+    <string name="bt_try_again_lbl">እንደገና ይሞክሩ</string>
+    <string name="info_lbl">መረጃ</string>
+    <string name="error_lbl">ስህተት</string>
+    <string name="updated_successfully_lbl">በተሳካ ሁኔታ ዘመነ</string>
+
+    <!-- storage access -->
+    <string name="storage_access_title_lbl">የፋይል መዳረሻ አልተፈቀደም</string>
+    <string name="storage_access_odk_error_lbl">ወደ ODK ቅጽ መዳረሻ ከሌለ ምክንያት የተነሳ፣ HDS Explorer ወደ ODK ቅጽ መዳረሻ አያግኝም።</string>
+    <string name="storage_access_odk_error_continue_lbl">ወደ ODK ፋይሎች መዳረሻ ተከልክሏል.\nHDS Explorer ወደ ODK ቅጾች መዳረሻ ከሌለ ፈቃድ ምክንያት የተነሳ አያገኝም።\nመተግበሪያውን ያለ ODK ቅጽ መዳረሻ መጠቀም ይቻላል</string>
+
+    <!-- Strings related to ODK -->
+    <string name="odk_couldnt_open_xform_lbl">የODK ቅጹን መክፈት አልተቻለም</string>
+    <string name="odk_couldnt_reopen_xform_lbl">የODK ቅጹን የተቀመጠውን ቅጽ እንደገና መክፈት አልተቻለም</string>
+    <string name="odk_problem_lbl">የODK ቅጽ ማስከፈት ላይ ችግኝ ተፈጥሯል</string>
+    <string name="odk_form_load_error_odk_not_installed_lbl">ODK Collect መተግበሪያ አልተጫነም። ODK ቅጾችን መጫን አልተቻለም።</string>
+    <string name="odk_form_load_error_provider_lbl">ከODK የይዘት አቅራቢ የODK ቅጾችን ማግኘት ላይ ስህተት ተከስቷል።</string>
+    <string name="odk_form_load_error_form_not_found_lbl">ODK Collect ላይ ቅጽ አልተገኘም። እባክዎ፣ የODK ቅጽ መኖሩን ያረጋግጡ።</string>
+    <string name="odk_form_load_error_folder_permissions_lbl">የODK ቅጽ ፋይሎችን ማግኘት አልተቻለም። ወደ ODK Collect የውሂብ ይዘት መዳረሻ ተከልክሏል።</string>
+    <string name="odk_form_load_permission_storage_denied_lbl">ወደ ODK ቅጾች መዳረሻ አይቻልም። በODK Collect ላይ ማንቀሳቀስ/ማከማት ተፈቃድ የለም።</string>
+    <string name="odk_form_load_permissions_denied_lbl">በODK Collect ውስጥ ቅጽን ለመሙላት እንዲቻል፣ የሲስተሙ ቀደም ተከታታይ ፍቃዶችን ሁሉ መፍቀድ አለብዎ!</string>
+    <string name="odk_form_load_permission_request_manage_all_title_lbl">የODK Collect ቅጽ መዳረሻ</string>
+    <string name="odk_form_load_permission_request_manage_all_info_lbl">ወደ ODK ቅጾች ለመዳረሻ፣ \'ሁሉንም ፋይሎች ማቀናበርን ፍቀድ\' በሚቀጥለው ገፅ ከ‘OK’ ቁልፍ በኋላ መምረጥ አለብዎ።</string>
+    <string name="odk_form_load_permission_request_android_dir_info_lbl">የODK ፎልደር ቅጾች ለመዳረሻ፣ ከ‘OK’ ቁልፍ በኋላ የሚታየው ገፅ ‘ይህን ፎልደር ይጠቀሙ’ በማምረጥ ነው።</string>
+    <string name="odk_form_load_permission_request_readwrite_denied_lbl">ወደ ODK ቅጾች መዳረሻ አይቻልም። በODK Collect ቅጾች ላይ ማንቀሳቀስ/ማከማት ፍቃድ የለም።</string>
+    <string name="odk_form_load_permission_request_readphonestate_denied_lbl">የመሳሪያና የኔትዎርክ መረጃ እርስዎን አልተፈቀደም፣ ስለዚህ ODK ቅጾችን መክፈት አይቻልም።</string>
+    <string name="odk_form_load_error_saving_prefilled_xml_lbl">የቀድሞ የተሞላ የxml ዳታ ፋይልን ማስቀመጥ ሲሞከር ስህተት ተፈጥሯል።</string>
+    <string name="odk_form_load_error_saving_instance_form_lbl">የXML ውሂብ ቅጽ አዲስ እትም ማመንጨት አልተቻለም።</string>
+    <string name="odk_unfinished_dialog_msg">ቅጹ አልተጠናቀቀም። ይህ እትም ይሰረዛል። ቀጣዩን ተግባር ይምረጡ?</string>
+    <string name="odk_unfinished_button_delete">ቅጹን ሰርዝ</string>
+    <string name="odk_unfinished_button_change">ቅጹን ቀይር</string>
+    <string name="odk_unfinished_button_save">ቅጹን አስቀምጥ</string>
+    <string name="odk_unfinished_form_saved">ቅጹ ተቀምጧል፣ ነገር ግን አልተጠናቀቀም። በኋላ ማሻሻል ይቻላል።</string>
+    <string name="odk_unfinished_form_not_found">ODK Collect ላይ ቅጹ አልተገኘም። ቅጹ መኖሩን ያረጋግጡ።</string>
+    <string name="odk_unfinished_extension_msg">የማስፋፋት ቅጹ አልተጠናቀቀም። (%1$s) አይሰቀምም። ምክንያቱም ተመሳሳይ የማስፋፋት ቅጽ ማስጨመር አለበት።\nቀጣዩን ተግባር ይምረጡ?</string>
+    <string name="odk_unfinished_extension_button_edit">ቅጹን አስተካክል</string>
+    <string name="odk_unfinished_extension_button_save">ቅጹን አስቀምጥ</string>
+    <string name="odk_unfinished_extension_notfinalized">አልተጠናቀቀም</string>
+    <string name="odk_unfinished_extension_notfound">አልተገኘም</string>
+
+    <!-- Sync Tasks -->
+    <string name="sync_downloading_lbl">በመውረድ ላይ</string>
+    <string name="sync_saving_lbl">መረጃ በማስቀመጥ ላይ</string>
+    <string name="sync_deleting_lbl">በማጥፋት ላይ</string>
+    <string name="sync_params_lbl">የመተግበሪያ አስተካካይ</string>
+    <string name="sync_modules_lbl">ሞጁሎች</string>
+    <string name="sync_forms_lbl">ODK ቅጾች</string>
+    <string name="sync_coreforms_exts_lbl">የመሠረት ቅጾች ቅጥር</string>
+    <string name="sync_coreformsoptions_lbl">የመሠረት ቅጾች አማራጮች</string>
+    <string name="sync_users_lbl">ተጠቃሚዎች</string>
+    <string name="sync_datasets_lbl">የመረጃ ስብስቦች</string>
+    <string name="sync_datasets_csv_lbl">የመረጃ ፋይሎች CSV/ZIP</string>
+    <string name="sync_tracking_lists_lbl">የመከታተያ ዝርዝሮች</string>
+    <string name="sync_rounds_lbl">ዙሮች</string>
+    <string name="sync_regions_lbl">አካባቢዎች</string>
+    <string name="sync_households_datasets_lbl">የቤተሰብ መረጃ ስብስቦች</string>
+    <string name="sync_households_lbl">ቤተሰቦች</string>
+    <string name="sync_members_lbl">አባላት</string>
+    <string name="sync_residencies_lbl">መኖሪያዎች</string>
+    <string name="sync_demographics_events_lbl">የሕዝብ ዝርዝር ክስተቶች</string>
+    <string name="sync_visits_lbl">ጉብኝቶች</string>
+    <string name="sync_head_relationships_lbl">የቤተሰብ አለት ግንኙነቶች</string>
+    <string name="sync_marital_relationships_lbl">የጋብቻ ግንኙነቶች</string>
+    <string name="sync_inmigrations_lbl">መግቢያዎች</string>
+    <string name="sync_outmigrations_lbl">መውጫዎች</string>
+    <string name="sync_pregnancy_registrations_lbl">እርግዝናዎች</string>
+    <string name="sync_pregnancy_outcomes_lbl">የእርግዝና ውጤቶች</string>
+    <string name="sync_pregnancy_visits_lbl">የእርግዝና ጉብኝቶች</string>
+    <string name="sync_deaths_lbl">ሞት</string>
+    <string name="sync_incomplete_visits_lbl">ያልተጠናቀቁ ጉብኝቶች</string>
+    <string name="sync_regionheads_lbl">የአካባቢ አለቆች</string>
+    <string name="sync_saved_lbl">ተቀምጧል</string>
+    <string name="sync_deleted_lbl">ተሰርዟል</string>
+    <string name="sync_records_lbl">መዝገቦች</string>
+    <string name="sync_successfully_lbl">መረጃው በተሳካ ሁኔታ ተመሳሳይ ተደርጓል።</string>
+    <string name="sync_failure_file_not_found_lbl">ከአገልጋይ ላይ ፋይል አልተገኘም</string>
+    <string name="sync_failure_unknown_lbl">በማመሳሰል ጊዜ ስህተት ተከስቷል</string>
+    <string name="sync_synchronized_msg_lbl">ጠቅላላ %1$s መዝገቦች ተማራሚው ሆነ፡</string>
+    <string name="sync_downloaded_msg_lbl">ጠቅላላ %1$s ዳታ ተወስዷል፡</string>
+
+    <string name="sync_result_dialog_title">የማመሳሰል ዝርዝር</string>
+    <string name="sync_upload_result_dialog_title">የመጫን ዝርዝር</string>
+    <string name="sync_upload_instance_id_lbl">UID:</string>
+    <string name="sync_upload_instance_code_lbl">ኮድ:</string>
+
+    <!-- Sync Activity -->
+    <string name="server_sync_title_lbl">የማመሳሰል ፓነል</string>
+    <string name="server_sync_download_lbl">መውረድ ማመሳሰል</string>
+    <string name="server_sync_upload_lbl">መጫን ማመሳሰል</string>
+    <string name="server_sync_status_notsynced_lbl">አልተመሳሰለም</string>
+    <string name="server_sync_status_synced_lbl">መጨረሻ ማመሳሰል:</string>
+    <string name="server_sync_status_sync_error_lbl">በመጨረሻ ማመሳሰል ላይ ስህተት:</string>
+    <string name="server_sync_bt_upload_all_lbl">የተመረጡትን ቅጾች ያስገቡ</string>
+    <string name="server_sync_bt_sync_all_lbl">ሁሉንም ያመሳስሉ</string>
+    <string name="server_sync_bt_sync_lbl">ማመሳሰል</string>
+    <string name="server_sync_bt_stop_lbl">አቁም</string>
+    <string name="server_sync_bt_settings_lbl">የማውረድ ቅንብሮች</string>
+    <string name="server_sync_bt_datasets_lbl">ውጪ መረጃዎችን ያውርዱ</string>
+    <string name="server_sync_bt_tracking_lists_lbl">የከታተል ዝርዝሮችን ያውርዱ</string>
+    <string name="server_sync_bt_households_datasets_lbl">የቤተሰብ መረጃዎችን ያውርዱ</string>
+    <string name="server_sync_bt_dssevents_lbl">የሕዝብ ክስተቶችን ያውርዱ</string>
+
+    <string name="server_sync_uploaded_date_lbl">የተመረተው ቀን:</string>
+    <string name="server_sync_upload_successfully_lbl">በተሳካ ሁኔታ ተጫኗል:</string>
+    <string name="server_sync_upload_werrors_lbl">ከማረሚያ ስህተት ጋር ያሉ መዝገቦች:</string>
+    <string name="server_sync_upload_notuploaded_lbl">አልተጫኑም:</string>
+    <string name="server_sync_upload_show_not_uploaded_lbl">ያልተጫኑ ቅጾችን አሳይ</string>
+    <string name="server_sync_upload_show_uploaded_forms_lbl">የተጫኑ ቅጾችን አሳይ</string>
+    <string name="server_sync_upload_show_uploaded_werrors_lbl">ከስህተቶች ጋር ያሉ መዝገቦችን አሳይ</string>
+    <string name="server_sync_upload_select_all">ሁሉንም ይምረጡ</string>
+    <string name="server_sync_upload_total_lbl">%1$d ቅጾች</string>
+    <string name="server_sync_uploading_form_lbl">%1$s ቅጽ በመጫን ላይ</string>
+    <string name="server_sync_uploading_finished_lbl">መጫን ተጠናቅቋል</string>
+    <string name="server_sync_upload_errors_result_lbl">ከማረሚያ ስህተት ጋር ያሉ መዝገቦች</string>
+
+    <string name="server_sync_offline_mode_title_lbl">ማመሳሰል አይቻልም</string>
+    <string name="server_sync_offline_mode_msg_lbl">አሁን ኦፍላይን ሁኔታ ላይ ነዎት፣ ማመሳሰል ለማካሄድ እንደገና ይግቡ</string>
+    <string name="server_sync_offline_mode_continue_title_lbl">ከአገልጋይ ጋር መገናኘት አልተቻለም</string>
+    <string name="server_sync_offline_mode_continue_msg_lbl">ከአገልጋይ ጋር ለመግባት በመሞከር ላይ ችግኝ ተከስቷል፣ እንደገና ይሞክሩ ወይም ወደ ኦፍላይን ሁኔታ ይቀጥሉ።\n\nየማመሳሰል ፓነልን በኦፍላይን ሁኔታ መክፈት ይፈልጋሉ?</string>
+    <string name="server_sync_warning_upload_required_lbl">ማስጠንቀቂያ፡ መረጃ መጫን ያስፈልጋል</string>
+    <string name="server_sync_warning_upload_required_msg_lbl">ከአገልጋይ ወደ ተንቀሳቃሽ መሣሪያዎ መረጃ ከማመሳሰልዎ በፊት፣\nአካባቢው ላይ የተሰበሰበው መረጃ ወደ አገልጋይ በተሳካ ሁኔታ መጫኑን ያረጋግጡ።\nካልተሰራ ግን፣ ያልተመሳሰሉ መረጃዎች እንዲጠፉ ይችላሉ።</string>
+    <string name="server_sync_requirements_title_lbl">የአገልጋይ መስፈርቶች</string>
+    <string name="server_sync_requirements_not_valid_error_lbl">የአገልጋይ እትም የተሳሳተ ነው።\n\nእባክዎን አገልጋዩን ወደ እትም [%1$s] ወይም ከዚያ በላይ ያዘምኑ።</string>
+    <string name="server_sync_requirements_min_version_error_lbl">አገልጋዩ የታተመው እትም [%1$s] ነው፣ ይህም ከተፈለገው ዝቅተኛ እትም ያነሰ ነው።\n\nእባክዎን አገልጋዩን ወደ እትም [%2$s] ወይም ከዚያ በላይ ያዘምኑ።</string>
+
+    <string name="core_entity_region_lbl">የክልል ምዝገባ</string>
+    <string name="core_entity_household_lbl">የቤተሰብ ምዝገባ</string>
+    <string name="core_entity_pre_household_lbl">የቤተሰብ ቅድመ-ምዝገባ</string>
+    <string name="core_entity_member_enu_lbl">የአባል ቆጠራ</string>
+    <string name="core_entity_head_relationship_lbl">የቤተሰብ አለት ግንኙነት ምዝገባ</string>
+    <string name="core_entity_marital_relationship_lbl">የጋብቻ ግንኙነት ምዝገባ</string>
+    <string name="core_entity_inmigration_lbl">የመግቢያ ምዝገባ</string>
+    <string name="core_entity_external_inmigration_lbl">የውጭ መግቢያ ምዝገባ</string>
+    <string name="core_entity_outmigration_lbl">የመውጫ ምዝገባ</string>
+    <string name="core_entity_pregnancy_reg_lbl">የእርግዝና ምዝገባ</string>
+    <string name="core_entity_pregnancy_out_lbl">የእርግዝና ውጤት ምዝገባ</string>
+    <string name="core_entity_pregnancy_vis_lbl">የእርግዝና ቅደመ-ክትትል</string>
+    <string name="core_entity_death_lbl">የሞት ምዝገባ</string>
+    <string name="core_entity_changehoh_lbl">የቤተሰብ አለት መቀየር</string>
+    <string name="core_entity_member_not_visited_lbl">አባል ያልተጎበኘ ቅጽ</string>
+    <string name="core_entity_visit_lbl">የጉብኝት ምዝገባ</string>
+    <string name="core_entity_changehor_lbl">የአካባቢ አለት መቀየር</string>
+    <string name="core_entity_household_reloc_lbl">የቤተሰብ መቀየሪያ</string>
+    <string name="core_entity_extra_form_lbl">ሌሎች ቅጾች (ODK)</string>
+    <string name="core_entity_edit_region_lbl">ክልሉን አስተካክል</string>
+    <string name="core_entity_edit_household_lbl">ቤተሰቡን አስተካክል</string>
+    <string name="core_entity_edit_member_lbl">አባሉን አስተካክል</string>
+    <string name="core_entity_collected_date_lbl">የተሰበሰበበት ቀን፡</string>
+    <string name="core_entity_updated_date_lbl">የመጨረሻ ዝመና ቀን፡</string>
+    <string name="core_entity_uploaded_date_lbl">የተጫነበት ቀን፡</string>
+
+    <string name="core_entity_extension_lbl">የቅጽ አስፋፋት</string>
+
+    <string name="core_form_group_item_subtitle">የተሰበሰቡ ቅጾች</string>
+    <string name="core_form_group_item_extension_lbl">አስፋፋት፡</string>
+    <string name="core_form_group_item_extension_not_collected_lbl">አልተሰበሰበም</string>
+    <string name="core_form_group_item_extension_collected_lbl">ተሰብሷል</string>
+    <string name="core_form_group_item_extension_not_required_lbl">አያስፈልግም</string>
+
+    <string name="form_subject_user_lbl">ተጠቃሚ</string>
+    <string name="form_subject_region_lbl">ክልል</string>
+    <string name="form_subject_household_lbl">ቤተሰብ</string>
+    <string name="form_subject_member_lbl">አባል</string>
+    <string name="form_subject_visit_lbl">ጉብኝት</string>
+
+    <string name="form_util_extension_collect_lbl">የቅጽ አስፋፋት</string>
+    <string name="form_util_extension_collect_optional_lbl">በአስፋፋት ቅጽ በመጠቀም ስለ "%1$s" ተጨማሪ መረጃ ማሰባሰብ ይፈልጋሉ?</string>
+    <string name="form_util_extension_collect_required_msg_lbl">አሁን ስለ "%1$s" ተጨማሪ መረጃ ለማሰባሰብ ትልቅ ይደርሳሉ!</string>
+
+    <!-- SplashScreen -->
+    <string name="splashscreen_hds_explorer_name_1">ጤናና የሕዝብ ምርመራ</string>
+    <string name="splashscreen_hds_explorer_name_2">የመረጃ መመልከቻ መተግበሪያ</string>
+
+    <!-- Strings related to login -->
+    <string name="login_welcome_lbl">እንኳን ደህና መጡ</string>
+    <string name="login_signin_msg_lbl">ለመቀጠል ይግቡ</string>
+    <string name="login_username_lbl">የተጠቃሚ ስም</string>
+    <string name="login_password_lbl">የይለፍ ቃል</string>
+    <string name="login_button_lbl">ግባ</string>
+    <string name="login_password_short_lbl">ግባ</string>
+    <string name="login_synchronize_lbl">መዛመስ</string>
+    <string name="login_settings_lbl">ቅንብሮችን ቀይር</string>
+    <string name="error_no_modules_permission">ይህ ተጠቃሚ በስርዓቱ ላይ ምንም ፍቃድ የለውም</string>
+    <string name="error_invalid_email">ይህ ኢሜል አድራሻ ልክ አይደለም</string>
+    <string name="error_user_not_found">መግባት አልተሳካም። ተጠቃሚ አልተገኘም</string>
+    <string name="error_invalid_password">ይህ የይለፍ ቃል እጅግ አጭር ነው</string>
+    <string name="error_incorrect_password">የተጠቃሚ ስምና የይለፍ ቃል አይመሳሰሉም</string>
+    <string name="error_field_required">ይህ መስክ አስፈላጊ ነው</string>
+    <string name="warning_lbl">ማስጠንቀቂያ</string>
+
+    <!-- Rounds -->
+    <string name="round_does_not_exists_lbl">መቀጠል አይቻልም፣ በስርዓቱ ውስጥ ምንም DSS ዙር አልተመዘገበም።\nእባክዎ በአገልጋዩ መተግበሪያ DSS ዙር ይፍጠሩ</string>
+    <string name="round_household_details_does_not_exists_lbl">በስርዓቱ ውስጥ DSS ዙሮች አልተዘጋጀም።\nDSS ጉብኝቶችን መሰብሰብ አይቻልም</string>
+
+    <!-- Strings related to Member Filter -->
+    <string name="member_filter_search_lbl"><u>አባልን በማጣሪያ ይፈልጉ</u></string>
+    <string name="member_filter_list_lbl"><u>የተገኙ አባላት ዝርዝር</u></string>
+    <string name="member_filter_xdata_lbl">ሌሎች መረጃዎች</string>
+    <string name="member_filter_name_lbl">ስም</string>
+    <string name="member_filter_code_lbl">ኮድ</string>
+    <string name="member_filter_name_hint">ስም እዚህ ያስገቡ</string>
+    <string name="member_filter_code_hint">ምሳ. የቦታዎ የግለሰብ ኮድ</string>
+    <string name="member_filter_curr_housename_lbl">የቤተሰብ ስም/ኮድ</string>
+    <string name="member_filter_curr_housename_hint">ምሳ. ACA00001 ወይም LANGA FAMILY</string>
+    <string name="member_filter_gender_lbl">ፆታ</string>
+    <string name="member_filter_gender_male_lbl">ወንድ</string>
+    <string name="member_filter_gender_female_lbl">ሴት</string>
+    <string name="member_filter_age_details_lbl">ዕድሜ መረጃ</string>
+    <string name="member_filter_age_min_lbl">አነስተኛ</string>
+    <string name="member_filter_age_max_lbl">ከፍተኛ</string>
+    <string name="member_filter_current_status_lbl">ያለፉት ሁኔታ</string>
+    <string name="member_filter_choose_current_status_lbl">ያለፉትን ሁኔታ ይምረጡ</string>
+    <string name="member_filter_death_status_lbl">ሞቷል</string>
+    <string name="member_filter_ext_status_lbl">ከአካባቢ ወጥቷል</string>
+    <string name="member_filter_na_status_lbl">መኖሪያ ቦታ ላይ ነው</string>
+    <string name="member_filter_clear_lbl">አጽዳ</string>
+    <string name="member_filter_search_btn_lbl">ፈልግ</string>
+
+    <string name="member_list_bt_clear_lbl">ዝርዝሩን አጽዳ</string>
+    <string name="member_list_bt_show_houses_maps_lbl">የቤቶችን GPS ካርታ አሳይ</string>
+    <string name="member_list_gps_not_available_lbl">የቤተሰቡ GPS አቅጣጫ አይገኝም</string>
+    <string name="member_list_member_gps_not_available_lbl">የተመረጠው አባል ያለበት ቤተሰብ የGPS አቅጣጫ አይገኝም</string>
+    <string name="member_list_household_not_found_lbl">የተመረጠው አባል ቤተሰብ አልተገኘም</string>
+    <string name="member_list_bt_show_household_lbl">የቤተሰቡን ዝርዝር አሳይ</string>
+    <string name="member_list_bt_show_gps_map_lbl">GPS ካርታን አሳይ</string>
+    <string name="member_list_bt_show_houses_lbl">የአባላት ቤቶችን ካርታ አሳይ</string>
+    <string name="member_list_bt_show_nearby_on_map_lbl">በካርታ ላይ ቅርብ ያሉትን ፈልግ</string>
+    <string name="member_list_bt_show_closest_members_lbl">ቅርብ ያሉ አባላትን አሳይ</string>
+    <string name="member_list_bt_new_member_collect_lbl">የጊዜያዊ አባል መረጃ ሰብስብ</string>
+    <string name="member_list_bt_add_new_member_lbl">አዲስ አባል አክል</string>
+    <string name="member_list_bt_edit_new_member_lbl">አባሉን አስተካክል</string>
+    <string name="member_list_bt_show_collected_data_lbl">የተሰበሰበ መረጃ አሳይ</string>
+    <string name="member_list_item_extra_collected_lbl">%1$d ቅጽ(ዎች) ተከሰቱ</string>
+    <string name="member_list_select_distance_title_lbl">በአቅም የቅርብ ቤተሰቦችን ፈልግ</string>
+    <string name="member_list_select_distance_radius_lbl">የፍለጋ ክልልን ይምረጡ</string>
+    <string name="member_list_no_members_lbl">ዝርዝሩ ባዶ ነው።</string>
+    <string name="member_list_member_not_found_lbl">ምንም አባላት በተመረጡት ማጣሪያዎች አልተገኙም</string>
+
+    <string name="member_list_bt_mark_as_supervised_lbl">ሁሉንም እንደተቆጣጠሩ ምልክት አድርግ</string>
+
+    <string name="member_list_new_temp_mem_title_lbl">አዲስ አባል በማከል መረጃ ይሰበስቡ</string>
+    <string name="member_list_newmem_collect_lbl">አስቀምጥና መረጃ ሰብስብ</string>
+    <string name="member_list_newmem_housename_lbl">የቤተሰብ ስም</string>
+    <string name="member_list_newmem_housename_hint">ምሳ. የLANGA ቤተሰብ</string>
+    <string name="member_list_newmem_code_lbl">ኮድ</string>
+    <string name="member_list_newmem_code_hint">ምሳ. ACA000001</string>
+    <string name="member_list_newmem_name_lbl">ሙሉ ስም</string>
+    <string name="member_list_newmem_name_hint">ምሳ. JON SNOW</string>
+    <string name="member_list_newmem_dob_lbl">የትውልድ ቀን</string>
+    <string name="member_list_newmem_dob_hint">ምሳ. 2017–12–25</string>
+
+    <string name="member_list_newmem_code_err_lbl">የኮዱ ቅርፅ ትክክል አይደለም</string>
+    <string name="member_list_newmem_code_exists_lbl">ይህ የግለሰቡ ኮድ አስቀድሞ ተመዝግቧል</string>
+    <string name="member_list_newmem_name_err_lbl">ስሙ ባዶ ሊሆን አይችልም</string>
+    <string name="member_list_newmem_dob_err_lbl">የትውልድ ቀኑ ከዛሬ ቀን አብልጦ ሊሆን አይችልም</string>
+    <string name="member_list_newmem_gender_err1_lbl">እባክዎ አንድ ፆታ ብቻ ይምረጡ!</string>
+    <string name="member_list_newmem_gender_err2_lbl">እባክዎ አንድ ፆታ ይምረጡ!</string>
+
+    <string name="member_details_tab_details_list_lbl">የአባል ዝርዝሮች</string>
+    <string name="member_details_tab_collected_forms_lbl">የተሰበሰቡ ቅጾች</string>
+    <string name="member_details_tab_datasets_lbl">ተጨማሪ መረጃዎች</string>
+    <string name="member_details_tab_edit_lbl">መረጃን አስተካክል</string>
+    <string name="member_details_title_lbl">የአባል ዝርዝሮች</string>
+    <string name="member_details_name_lbl">ስም</string>
+    <string name="member_details_code_lbl">ኮድ</string>
+    <string name="member_details_studycode_lbl">የጥናት ኮድ፡</string>
+    <string name="member_details_gender_lbl">ፆታ፡</string>
+    <string name="member_details_gender_male_lbl">ወንድ</string>
+    <string name="member_details_gender_female_lbl">ሴት</string>
+    <string name="member_details_age_lbl">ዕድሜ፡</string>
+    <string name="member_details_dob_lbl">የትውልድ ቀን፡</string>
+    <string name="member_details_other_info_lbl">የአባል መረጃ</string>
+    <string name="member_details_col_data_info_lbl">የተሰበሰበ መረጃ</string>
+    <string name="member_details_housename_lbl">የቤተሰብ ስም፡</string>
+    <string name="member_details_member_endtype_lbl">የአባሉ ወቅታዊ ሁኔታ፡</string>
+    <string name="member_details_father_lbl">አባት፡</string>
+    <string name="member_details_mother_lbl">እናት፡</string>
+    <string name="member_details_education_lbl">ትምህርት፡</string>
+    <string name="member_details_religion_lbl">ሃይማኖት፡</string>
+    <string name="member_details_forms_spouse_lbl">ባል/ሚስት፡</string>
+    <string name="member_details_phone_primary_lbl">ዋና ስልክ፡</string>
+    <string name="member_details_phone_alternative_lbl">ተጨማሪ ስልክ፡</string>
+    <string name="member_details_bt_openform_lbl">መረጃ ሰብስብ</string>
+    <string name="member_details_bt_back_lbl">ወደኋላ</string>
+    <string name="member_details_forms_selector_lbl">ቅጽ ይምረጡ</string>
+
+    <string name="member_details_unknown_lbl">ያልታወቀ ግለሰብ</string>
+    <string name="member_details_endtype_na_lbl">በአሁኑ ጊዜ እዚህ ተመልሷል</string>
+    <string name="member_details_endtype_ext_lbl">ከአካባቢው ወጥቷል</string>
+    <string name="member_details_endtype_dth_lbl">ሞቷል</string>
+    <string name="member_details_name_unknown_lbl">ያልታወቀ ስም</string>
+    <string name="member_details_member_enddate_lbl">የሁኔታ ቀን</string>
+    <string name="member_details_dialog_del_saved_form_title_lbl">የተቀመጠውን መረጃ ሰርዝ</string>
+    <string name="member_details_dialog_del_saved_form_msg_lbl">ተያያዥ ODK ቅጽ አልተገኘም፣ ስርዓቱ መረጃውን ለመቀጠል ያስወግዳል።\nይህን ተግባር መወሰን ይፈልጋሉ?</string>
+
+    <string name="member_details_edit_member_name_lbl">ስም</string>
+    <string name="member_details_edit_member_dob_lbl">የትውልድ ቀን</string>
+    <string name="member_details_edit_member_father_lbl">አባት</string>
+    <string name="member_details_edit_member_mother_lbl">እናት</string>
+    <string name="member_details_edit_member_parent_code_lbl">ኮድ፡</string>
+    <string name="member_details_edit_member_parent_name_lbl">ስም፡</string>
+    <string name="member_details_edit_phone_numbers_lbl">የስልክ ቁጥሮች</string>
+    <string name="member_details_edit_mother_select_lbl">የአባሉን እናት አዘምን?</string>
+    <string name="member_details_edit_father_select_lbl">የአባሉን አባት አዘምን?</string>
+    <string name="member_details_edit_father_unknown_lbl">አባቱን እንደ ያልታወቀ አድርግ</string>
+    <string name="member_details_edit_mother_unknown_lbl">እናቱን እንደ ያልታወቀ አድርግ</string>
+    <string name="member_details_edit_button_change_lbl">ቀይር</string>
+    <string name="member_details_edit_button_update_details_lbl">ዝርዝሮችን አዘምን</string>
+    <string name="member_details_edit_cant_update_new_record">ይህ አባል አዲስ ስለሆነ መረጃውን ማስተካከል አይቻልም።\nማንኛውንም ለውጥ በቤተሰብ ቅጽ ውስጥ ይፈጽሙት</string>
+    <string name="member_details_edit_father_sex_cant_change_lbl">ይህ አባል ሌሎችን አባቶች ስለሆነ ፆታውን ማቀየር አይቻልም።\nአስቀድሞ የተያያዘ አባትን ቀይር</string>
+    <string name="member_details_edit_mother_sex_cant_change_lbl">ይህ አባል ሌሎችን እናቶች ስለሆነ ፆታዋን ማቀየር አይቻልም።\nአስቀድሞ የተያያዘ እናትን ቀይር</string>
+    <string name="member_details_edit_dob_bir_warning_lbl">ይህ አባል በየትውልድ መመዝገብ ተመዝግቧል!\nየመኖሪያ ጊዜ የመጀመሪያው ቀን ከትውልድ ቀን ጋር ነው!\n\nትውልድ ቀንን ማስተካከል ትፈልጋለህ? (የትውልድ መመዝገብ ይቀየራል)</string>
+    <string name="member_details_edit_member_name_empty_error_lbl">የአባሉ ስም ባዶ ሊሆን አይችልም</string>
+
+    <string name="region_details_edit_region_name_lbl">ስም</string>
+    <string name="region_details_edit_button_update_details_lbl">ዝርዝሮችን አዘምን</string>
+    <string name="region_details_edit_cant_update_new_record">ይህ ክልል አዲስ ስለሆነ መረጃውን ማስተካከል አይቻልም።\nማንኛውንም ለውጥ በክልል ቅጽ ውስጥ ይፈጽሙት</string>
+
+    <string name="household_details_tab_members_list_lbl">የአባላት ዝርዝር</string>
+    <string name="household_details_tab_collected_forms_lbl">የተሰበሰቡ ቅጾች</string>
+    <string name="household_details_tab_datasets_lbl">ተጨማሪ መረጃዎች</string>
+    <string name="household_details_tab_edit_lbl">ዝርዝሮችን አስተካክል</string>
+    <string name="household_details_tab_visit_lbl">የአሁኑ ጉብኝት</string>
+    <string name="household_details_members_list_type_residents_lbl">የቤተሰቡ ወቅታዊ አባላት</string>
+    <string name="household_details_members_list_type_exited_n_residents_lbl">ሁሉም አባላት</string>
+    <string name="household_details_members_item_status_lbl">ሁኔታ፡</string>
+    <string name="household_details_members_item_since_lbl">ጀምሮ፡</string>
+    <string name="household_details_head_name_lbl">አለቃ፡</string>
+    <string name="household_details_head_code_lbl">ኮድ፡</string>
+    <string name="household_details_region_lbl">የሚገኝበት ክልል፡</string>
+    <string name="household_details_last_visit_lbl">የመጨረሻ ጉብኝት ቀን፡</string>
+    <string name="household_details_dialog_del_saved_form_title_lbl">የተቀመጠውን መረጃ ሰርዝ</string>
+    <string name="household_details_dialog_del_saved_form_msg_lbl">ተያያዥ ODK ቅጽ አልተገኘም፣ ስርዓቱ መረጃውን ለመቀጠል ያስወግዳል።\nይህን ተግባር መወሰን ይፈልጋሉ?</string>
+    <string name="household_details_forms_selector_lbl">ቅጽ ይምረጡ</string>
+    <string name="household_details_complete_reg_title_lbl">የቤተሰብ መመዝገቢያን ያሟሉ</string>
+    <string name="household_details_complete_reg_msg_lbl">ይህ ቤተሰብ ቀደም ሲል ተመዝግቧል፣\nየቤተሰቡን መመዝገብ መሟሟት ትፈልጋለህ?</string>
+
+    <string name="household_details_edit_household_name_lbl">የቤተሰብ ስም</string>
+    <string name="household_details_edit_gps_lbl">የGPS ኮርድኔት</string>
+    <string name="household_details_edit_button_gps_lbl">የGPS ቦታን ያግኙ</string>
+    <string name="household_details_edit_gps_lat_lbl">ኬክሮስ፡</string>
+    <string name="household_details_edit_gps_lon_lbl">ኬንትሮስ፡</string>
+    <string name="household_details_edit_gps_alt_lbl">ከፍታ፡</string>
+    <string name="household_details_edit_gps_acc_lbl">ትክክለኛነት፡</string>
+    <string name="household_details_edit_button_update_details_lbl">ዝርዝሮችን አዘምን</string>
+    <string name="household_details_edit_cant_update_new_record">ይህ ቤተሰብ አዲስ ስለሆነ መረጃውን ማስተካከል አይቻልም።\nማንኛውንም ለውጥ በቤተሰብ ቅጽ ውስጥ ይፈጽሙት</string>
+
+    <string name="household_details_bt_create_visit_lbl">ጉብኝት ፍጠር</string>
+    <string name="household_details_bt_finish_visit_lbl">ጉብኝቱን ያቅርቡ</string>
+    <string name="household_details_bt_open_visit_lbl">የመጨረሻውን ጉብኝት ይክፈቱ</string>
+
+    <string name="household_details_visit_panel_lbl">የቤተሰብ ጉብኝት</string>
+    <string name="household_details_visit_not_closed_lbl">የቤተሰብ ዝርዝር መዝጊያን ከመፈጸም በፊት ጉብኝቱን ያቅርቡ</string>
+
+    <string name="household_visit_bt_enum_lbl">አባላት\nመዝግብ</string>
+    <string name="household_visit_bt_birth_lbl">የትውልድ\nመመዝገቢያ</string>
+    <string name="household_visit_bt_pregnancy_lbl">እርግዝና\nመመዝገቢያ</string>
+    <string name="household_visit_bt_pregnancy_visit_lbl">እርግዝና\nመከታተያ</string>
+    <string name="household_visit_bt_extinmig_lbl">ውጭ መግቢያ\nመመዝገቢያ</string>
+    <string name="household_visit_bt_intinmig_lbl">ውስጣዊ መግቢያ\nመመዝገቢያ</string>
+    <string name="household_visit_bt_outmig_lbl">ውጣት\nመመዝገቢያ</string>
+    <string name="household_visit_bt_hhreloc_lbl">ቤተሰብ\nመኖሪያ ለውጥ</string>
+    <string name="household_visit_bt_death_lbl">ሞት\nመመዝገቢያ</string>
+    <string name="household_visit_bt_marital_lbl">የጋብቻ\nትዳር</string>
+    <string name="household_visit_bt_changehoh_lbl">የቤተሰብ\nአለቃን ቀይር</string>
+    <string name="household_visit_bt_incomplete_lbl">ጉብኝት አባል\nአልተቻለም</string>
+    <string name="household_visit_bt_collect_lbl">ሌሎች ቅጾችን\nይሰብስቡ</string>
+    <string name="household_visit_not_finished_title_lbl">ጉብኝት አልተጠናቀቀም</string>
+    <string name="household_visit_not_finished_msg_lbl">በዚህ ጉብኝት ውስጥ ሁሉም አባላት አልተጎበኙም።\nእባክዎ ለከለከለ ጉብኝት ቅጽ መረጃ ይሰብስቡ።\nለሚከተሉት አባላት:\n(%1$s)</string>
+    <string name="household_visit_not_finished_msg_ask_lbl">በዚህ ጉብኝት ውስጥ ሁሉም አባላት አልተጎበኙም፣\nአባላት፡ (%1$s)\nየአባል ጉብኝት አልተቻለም ቅጽን ይሰብስቡ ወይም ሁሉንም እንደማይጎበኙ ያመልክቱ።\n\nሁሉንም አባላት እንደማይጎበኙ መምረጥ ትፈልጋለህ?</string>
+    <string name="household_visit_unfinalized_msg_info_lbl"><p>የሚከተሉት ዋና ቅጾች ላይ የተያያዘ ቅጽ አልተጠናቀቀም፣ ወይም አልተሰበሰበም:</p><ul>%1$s</ul>\n<p>ከዋና ቅጾችን ማውረድ በፊት ከዚህ ቅጾችን ያቅርቡ።</p></string>
+
+
+    <string name="gps_title_lbl">የGPS ቦታ</string>
+    <string name="gps_permissions_error">የGPS ባለስልጣንን ፍቃድ መስጠት አለብዎ እንዲችሉ የቦታ ባህሪውን ይጠቀሙ</string>
+    <string name="gps_loading_lbl">የGPS ቦታን በመጫን ላይ</string>
+    <string name="gps_loading_error">የGPS ቦታ ማቅረብ አልተቻለም</string>
+    <string name="gps_no_provider_available_error">አቅራቢዎች ተሰናክለዋል። መቀጠል የሚቻለው የኔትዎርክ ወይም የቦታ አቅራቢን በማንቃት ነው</string>
+
+    <string name="region_details_tab_details_list_lbl">ንዑስ ዝርዝር</string>
+    <string name="region_details_tab_collected_forms_lbl">የተሰበሰቡ ቅጾች</string>
+    <string name="region_details_tab_datasets_lbl">ተጨማሪ መረጃዎች</string>
+    <string name="region_details_tab_edit_lbl">ዝርዝሮችን አስተካክል</string>
+    <string name="region_details_code_lbl">ኮድ፡</string>
+    <string name="region_details_parent_lbl">የላይኛው ክልል፡</string>
+    <string name="region_details_bt_changehead_lbl">የ%1$s አለቃን ቀይር</string>
+
+    <!-- Household Filter -->
+    <string name="household_filter_code_lbl">የቤተሰብ ኮድ</string>
+    <string name="household_filter_code_hint_lbl">የቤተሰብ ኮድ</string>
+    <string name="household_filter_search_lbl">ቤተሰብ ፈልግ</string>
+    <string name="household_filter_search_region_lbl">ፈልግ</string>
+    <string name="household_filter_gpsmap_lbl">የGPS ካርታን አሳይ</string>
+    <string name="household_filter_gps_not_available_title_lbl">የGPS ካርታን ማሳየት አልተቻለም</string>
+    <string name="household_filter_gps_not_available_lbl">የቤተሰቦች የGPS አካባቢዎች አይገኙም</string>
+    <string name="household_filter_no_houses_lbl">የቤተሰብ ዝርዝር ባዶ ነው</string>
+    <string name="household_filter_add_house_lbl">አዲስ ቤተሰብ አክል</string>
+    <string name="household_filter_edit_house_lbl">ቤተሰብ አስተካክል</string>
+    <string name="household_filter_clear_lbl">አጽዳ</string>
+    <string name="household_filter_show_region_btn_lbl">ክልልን አሳይ</string>
+    <string name="household_filter_show_region_custom_btn_lbl">%1$s አሳይ</string>
+    <string name="household_filter_household_not_found_lbl">ኮዱ እንደ (%1$s) ያሉ ቤተሰቦች አልተገኙም</string>
+    <string name="household_filter_head_label">አለቃ፡</string>
+    <string name="household_filter_new_household_dialog_title_label">የቤተሰብ መመዝገቢያ</string>
+    <string name="household_filter_new_household_dialog_message_label">አዲስ ቤተሰብ እንዴት ማስመዝገብ ትፈልጋለህ?</string>
+    <string name="household_filter_new_household_dialog_yes_label">ቤተሰቡን በቀድሞ ዝግጅት መመዝገብ</string>
+    <string name="household_filter_new_household_dialog_no_label">አዲስ ቤተሰብ አክል</string>
+    <string name="household_filter_dialog_select_household_label">ቤተሰብ ይምረጡ</string>
+    <string name="household_filter_dialog_change_origin_title_lbl">የመነሻ ቤተሰቡን አዘምን</string>
+    <string name="household_filter_dialog_origin_change_lbl">የመነሻ ቤተሰቡን መቀየር ትፈልጋለህ?</string>
+    <string name="household_filter_dialog_select_origin_title_lbl">ለመቀየር ቤተሰብ ይምረጡ</string>
+    <string name="household_filter_dialog_visit_code_empty_lbl">የጉብኝት ኮድ ባዶ ሊሆን አይችልም</string>
+    <string name="household_filter_dialog_origin_code_empty_lbl">የመነሻ ቤተሰብ ኮድ ባዶ ሊሆን አይችልም</string>
+    <string name="household_filter_dialog_dest_code_empty_lbl">የመድረሻ ቤተሰብ ኮድ ባዶ ሊሆን አይችልም</string>
+    <string name="household_filter_dialog_head_code_empty_lbl">የቤተሰብ አለቃ ኮድ ባዶ ሊሆን አይችልም</string>
+    <string name="household_filter_dialog_head_name_empty_lbl">የቤተሰብ አለቃ ስም ባዶ ሊሆን አይችልም</string>
+    <string name="household_filter_dialog_event_date_empty_lbl">የቤተሰቡ መኖሪያ ለውጥ ቀን ባዶ ሊሆን አይችልም</string>
+    <string name="household_filter_dialog_event_date_not_great_today_lbl">የተከሰተው ክስተት ቀን ከዛሬ ቀን በላይ ሊሆን አይችልም</string>
+    <string name="household_filter_dialog_reason_empty_lbl">የቤተሰቡን መኖሪያ ለውጥ ምክንያት መሙላት አለበት</string>
+    <string name="household_filter_dialog_event_date_not_before_dob_lbl">የክስተቱ ቀን ከአባላት የትውልድ ቀን በፊት ሊሆን አይችልም</string>
+    <string name="household_filter_dialog_event_date_not_before_member_res_startdate_lbl">የክስተቱ ቀን [%1$s] ከአባል [%2$s] የመኖሪያ መጀመሪያ ቀን [%3$s -> %4$s] በፊት ሊሆን አይችልም።</string>
+    <string name="household_filter_dialog_event_date_not_before_member_hr_startdate_lbl">የክስተቱ ቀን [%1$s] ከአባል [%2$s] የአለቃነት መጀመሪያ ቀን [%3$s -> %4$s] በፊት ሊሆን አይችልም።</string>
+
+
+    <!-- New Region -->
+    <string name="new_region_code_err_lbl">የ%1$s ኮድ ቅርፀት ትክክል አይደለም</string>
+    <string name="new_region_code_empty_lbl">የ%1$s ኮድ ባዶ ሊሆን አይችልም</string>
+    <string name="new_region_name_empty_lbl">የ%1$s ስም ባዶ ሊሆን አይችልም</string>
+    <string name="new_region_code_exists_lbl">የ%1$s ኮድ አስቀድሞ አለ</string>
+
+    <!-- New Household -->
+    <string name="new_household_main_dialog_lbl">አዲስ ቤተሰብ አክል</string>
+    <string name="new_household_region_code_lbl">የክልል ኮድ</string>
+    <string name="new_household_region_name_lbl">የክልል ስም</string>
+    <string name="new_household_code_lbl">የቤተሰብ ኮድ</string>
+    <string name="new_household_name_lbl">የቤተሰብ ስም</string>
+    <string name="new_household_name_hint">ለምሳሌ፡ 0101–0001</string>
+    <string name="new_household_bt_collect_lbl">መረጃ ይሰብስቡ (ODK)</string>
+    <string name="new_household_bt_cancel_lbl">ይቅር</string>
+    <string name="new_household_code_err_lbl">የቤተሰብ ኮድ ቅርፀት ትክክል አይደለም</string>
+    <string name="new_household_code_empty_lbl">የቤተሰብ ኮድ ባዶ ሊሆን አይችልም</string>
+    <string name="new_household_name_empty_lbl">የቤተሰብ ስም ባዶ ሊሆን አይችልም</string>
+    <string name="new_household_code_region_err_lbl">የቤተሰብ ኮድ ከተመረጠው የጎረቤት ክልል አይደለም</string>
+    <string name="new_household_code_exists_lbl">የቤተሰብ ኮድ አስቀድሞ አለ</string>
+
+    <!-- New Visit -->
+    <string name="new_visit_select_respondent_lbl">አመለካከት አስተያየት ሰጪ ይምረጡ</string>
+    <string name="new_visit_respondent_not_reg_lbl">አስተያየት ሰጪ አልተመዘገበም</string>
+    <string name="new_visit_respondent_not_reg_continue_lbl">አስተያየት ሰጪው በስርዓቱ ውስጥ አልተመዘገበም።\nእባክዎ የጉብኝት ቅጽ መመዝገብ ይቀጥሉ ከዛ አዲሱን አባል ይመዝገቡ፣ እሱ አስተያየት ሰጪ ይሆናል!</string>
+    <string name="new_visit_respondent_not_resident_lbl">እንደ ነዋሪ ያልተመዘገበ አስተያየት ሰጪ</string>
+    <string name="new_visit_code_err_lbl">የጉብኝት ኮድ ቅርፀት ትክክል አይደለም</string>
+    <string name="new_visit_code_household_err_lbl">የጉብኝት ኮድ ከተመረጠው ቤተሰብ ጋር ተዛማጅ አይደለም</string>
+    <string name="new_visit_code_exists_lbl">የጉብኝት ኮድ አስቀድሞ አለ</string>
+    <string name="new_visit_round_number_empty_lbl">የጉብኝት ዙር ቁጥር ባዶ ሊሆን አይችልም</string>
+    <string name="new_visit_date_not_great_today_lbl">የጉብኝት ቀን ከዛሬ ቀን አትበልጥ</string>
+    <string name="new_visit_reason_empty_lbl">የጉብኝት ምክንያት ባዶ ሊሆን አይችልም</string>
+    <string name="new_visit_respondent_empty_lbl">የጉብኝት አስተያየት ኮድ ባዶ ሊሆን አይችልም</string>
+    <string name="new_visit_interpreter_empty_lbl">የትርጓሜ ሰጪ ስም ባዶ ሊሆን አይችልም</string>
+    <string name="new_visit_location_empty_lbl">የጉብኝት ቦታ ባዶ ሊሆን አይችልም</string>
+    <string name="new_visit_location_other_empty_lbl">ጉብኝቱ የሚካሄደውን ቦታ መግለጽ አለብህ</string>
+
+    <!-- New Member -->
+
+    <string name="new_member_code_err_lbl">የአባል ኮድ ቅርፀት ትክክል አይደለም</string>
+    <string name="new_member_code_household_err_lbl">የአባል ኮድ ከተመረጠው ቤተሰብ ጋር አይመሳሰልም</string>
+    <string name="new_member_code_exists_lbl">የአባል ኮድ አስቀድሞ አለ</string>
+    <string name="new_member_mother_empty_lbl">የእናቱ ኮድ ባዶ ሊሆን አይችልም</string>
+    <string name="new_member_father_empty_lbl">የአባቱ ኮድ ባዶ ሊሆን አይችልም</string>
+    <string name="new_member_name_empty_lbl">የአባል ስም ባዶ ሊሆን አይችልም</string>
+    <string name="new_member_gender_empty_lbl">የአባል ፆታ ባዶ ሊሆን አይችልም</string>
+    <string name="new_member_dob_empty_lbl">የትውልድ ቀን ባዶ ሊሆን አይችልም</string>
+    <string name="new_member_dob_not_great_today_lbl">የትውልድ ቀን ከዛሬ ቀን አትበልጥ</string>
+    <string name="new_member_dob_minimum_age_head_lbl">ለቤተሰብ አለቃ መሆን አነስተኛው እድሜ (%1$s) ነው</string>
+    <string name="new_member_head_relattype_empty_lbl">የአለቃ ግንኙነት አይነት ባዶ ሊሆን አይችልም</string>
+    <string name="new_member_migration_type_empty_lbl">የእንቅስቃሴ አይነት ባዶ ሊሆን አይችልም</string>
+    <string name="new_member_residency_startdate_empty_lbl">የመኖሪያ መጀመሪያ ቀን ባዶ ሊሆን አይችልም</string>
+    <string name="new_member_residency_startdate_not_great_today_lbl">የመኖሪያ መጀመሪያ ቀን ከዛሬ ቀን አትበልጥ</string>
+    <string name="new_member_residency_startdate_not_before_dob_lbl">የመኖሪያ መጀመሪያ ቀን ከትውልድ ቀን በፊት ሊሆን አይችልም</string>
+    <string name="new_member_phone_primary_invalid_lbl">ዋና የስልክ ቁጥር ልክ አይደለም</string>
+    <string name="new_member_phone_alternative_invalid_lbl">አማራጭ የስልክ ቁጥር ልክ አይደለም</string>
+    <string name="new_member_title_lbl">ብዛት መቆጣጠሪያ፡ አዲስ አባል ወደ ቤተሰብ አክል</string>
+    <string name="new_member_collect_lbl">አስቀምጥና መረጃ ሰብስብ</string>
+    <string name="new_member_dialog_change_title_lbl">የአባልን መረጃ አዘምን</string>
+    <string name="new_member_dialog_mother_select_lbl">የአባሉን እናት ይምረጡ?</string>
+    <string name="new_member_dialog_mother_exists_lbl">እናቱ የታወቀች ናትና በስርዓቱ ውስጥ ተመዝግቧል?</string>
+    <string name="new_member_dialog_mother_change_lbl">የአባሉን እናት ማዘመን ትፈልጋለህ?</string>
+    <string name="new_member_dialog_father_select_lbl">የአባሉን አባት ይምረጡ?</string>
+    <string name="new_member_dialog_father_exists_lbl">አባቱ የታወቀ ነውና በስርዓቱ ውስጥ ተመዝግቧል?</string>
+    <string name="new_member_dialog_father_change_lbl">የአባሉን አባት ማዘመን ትፈልጋለህ?</string>
+    <string name="new_member_dialog_household_head_warning_lbl">ይህ በዚህ ቤተሰብ ውስጥ ምዝገባው የመጀመሪያው አባል ነው።\nእንደ ቤተሰብ አለቃ በራሱ ሊቀበል ይችላል!</string>
+    <string name="new_member_dialog_household_head_updated_lbl">የቤተሰቡ መረጃ ተዘመነ!</string>
+
+    <string name="relationship_type_title_lbl">የአባል የሙሉ ጋብቻ ሁኔታ</string>
+    <string name="relationship_type_title_abbrv_lbl">ጋብቻ</string>
+    <string name="relationship_type_question_lbl">የጋብቻ ሁኔታ ይምረጡ?</string>
+    <string name="relationship_type_select_btn_lbl">ይምረጡ</string>
+
+    <string name="maritalrelationship_recently_created_error_lbl">ይህ አባል በቅርብ ጊዜ አዲስ የጋብቻ ግንኙነት መመዝገብ አለበት።\nአዲስ መመዝገብ አይቻልም፣ ይህን ቅርብ የተመዘገበውን ብቻ ማስተካከል ይቻላል።\n(በቀኝ ያለውን ዝርዝር ይጠቀሙ)</string>
+    <string name="maritalrelationship_spouse_select_lbl">የአባሉን ባልና ሚስት ይምረጡ?</string>
+    <string name="maritalrelationship_spouse_select_update_lbl">የአባሉን ባልና ሚስት ያዘምኑ?</string>
+    <string name="maritalrelationship_spouse_exists_lbl">ይህ አባል ባልና ሚስት አለውና በስርዓቱ ውስጥ ተመዝግቧል?</string>
+    <string name="maritalrelationship_spouse_change_lbl">የአባሉን ባልና ሚስት ማዘመን ትፈልጋለህ?</string>
+    <string name="maritalrelationship_spouse_type_change_lbl">የጋብቻ ሁኔታን ማዘመን ትፈልጋለህ?</string>
+    <string name="maritalrelationship_visit_code_empty_lbl">የጉብኝት ኮድ ባዶ ሊሆን አይችልም</string>
+    <string name="maritalrelationship_member_a_code_empty_lbl">የአባል A ኮድ ባዶ ሊሆን አይችልም</string>
+    <string name="maritalrelationship_member_b_code_empty_lbl">የአባል B ኮድ ባዶ ሊሆን አይችልም</string>
+    <string name="maritalrelationship_member_a_status_empty_lbl">የአባል A ያለበት ሁኔታ ባዶ ሊሆን አይችልም</string>
+    <string name="maritalrelationship_member_b_status_empty_lbl">የአባል B ያለበት ሁኔታ ባዶ ሊሆን አይችልም</string>
+    <string name="maritalrelationship_relationship_type_empty_lbl">አዲሱ የጋብቻ ሁኔታ ባዶ ሊሆን አይችልም</string>
+    <string name="maritalrelationship_relationship_date_empty_lbl">የክስተት ቀን ባዶ ሊሆን አይችልም</string>
+    <string name="maritalrelationship_same_member_lbl">የአባል A ኮድ እና የአባል B ኮድ አንድ ናቸው፣ ባልና ሚስት ልዩ መሆን አለባቸው</string>
+    <string name="maritalrelationship_spouse_a_not_found_lbl">አባል A በውሂብ ጎታ አልተገኘም</string>
+    <string name="maritalrelationship_spouse_b_not_found_lbl">አባል B በውሂብ ጎታ አልተገኘም</string>
+    <string name="maritalrelationship_eventdate_not_great_today_lbl">የክስተቱ ቀን ከዛሬ ቀን አትበልጥ</string>
+    <string name="maritalrelationship_eventdate_not_before_member_dob_lbl">የክስተቱ ቀን ከአባሉ የትውልድ ቀን በፊት ሊሆን አይችልም</string>
+    <string name="maritalrelationship_dob_minimum_spouse_age_lbl">የጋብቻ ሁኔታን ማስመዝገብ የሚፈቀደው አነስተኛ ዕድሜ (%1$s) ነው</string>
+    <string name="maritalrelationship_gender_must_be_opposite_lbl">የባልና ሚስት ፆታ የተሳሳተ ነው፣ በሚገባ አንዱ ወንድ እና አንዱ ሴት መሆን አለበት</string>
+    <string name="maritalrelationship_dead_members_lbl">ለሞተው አባል አዲስ የጋብቻ ግንኙነት መመዝገብ አይቻልም</string>
+    <string name="maritalrelationship_p1_previous_not_closed_lbl">አዲስ የጋብቻ ግንኙነት መመዝገብ አይቻልም፣ የአባል [%1$s] ቀደም ብሎ ያለው ግንኙነት አልተዘጋም</string>
+    <string name="maritalrelationship_p2_previous_enddate_overlap_lbl">አዲስ የጋብቻ ግንኙነት መመዝገብ አይቻልም፣ የአሁኑ ግንኙነት መጀመሪያ ቀን ከቀደም ብሎ ያለው መጨረሻ ቀን በፊት ወይም እኩል ነው</string>
+    <string name="maritalrelationship_cp1_current_dont_exists_lbl">የአባል A እና B መካከል ያለው የጋብቻ ግንኙነት መረጃ አልተገኘም</string>
+    <string name="maritalrelationship_cp2_already_closed_lbl">የጋብቻ ግንኙነት አስቀድሞ በዓይነት [%1$s] ተዘግቷል</string>
+    <string name="maritalrelationship_cp3_dates_overlap_lbl">የመጨረሻ ቀን ከመጀመሪያ ቀን በፊት ወይም እኩል ሊሆን አይችልም</string>
+    <string name="maritalrelationship_dialog_title_lbl">የጋብቻ ግንኙነት</string>
+    <string name="maritalrelationship_dialog_item_end_relationship_btn_lbl">ግንኙነትን ያቋርጡ</string>
+    <string name="maritalrelationship_dialog_selected_spouse_lbl">የተመረጠው ባልና ሚስት</string>
+    <string name="maritalrelationship_dialog_husband_spouse_lbl">ባል (ባልና ሚስት)</string>
+    <string name="maritalrelationship_dialog_husband_relationships_lbl">የባል ግንኙነቶች</string>
+    <string name="maritalrelationship_dialog_add_wife_lbl">ሌላ ሚስት ያክሉ (ባለባትነት)</string>
+    <string name="maritalrelationship_dialog_new_rel_lbl">አዲስ የጋብቻ ግንኙነት ይመዝግቡ</string>
+
+    <string name="incomplete_visit_visit_code_empty">የጉብኝት ኮድ ባዶ ሊሆን አይችልም</string>
+    <string name="incomplete_visit_member_code_empty">የአባል ኮድ ባዶ ሊሆን አይችልም</string>
+    <string name="incomplete_visit_reason_empty">የማይጎበኙበት ምክንያት ማስገባት አለበት</string>
+    <string name="incomplete_visit_reason_other_empty">ሌላ የማይጎበኙበት ምክንያት ማስገባት አለበት</string>
+    <string name="incomplete_visit_member_not_found_lbl">አባል በመረጃ ቋት ውስጥ አልተገኘም</string>
+
+    <!-- external inmigration -->
+    <string name="external_inmigration_asktype_lbl">አባሉ በDSS ስርዓት ውስጥ ቀድሞ ተመዝግቧል? (ወደ ጥናት አካባቢ ተመልሷል)</string>
+    <string name="external_inmigration_select_return_member_lbl">ወደ DSS የሚመለስን አባል ይምረጡ?</string>
+    <string name="external_inmigration_reentry_lbl">የተመዘገበ አባል ወደ DSS ተመልሷል</string>
+    <string name="external_inmigration_entry_lbl">አዲስ አባል መመዝገቢያ (የመጀመሪያ ግባ)</string>
+    <string name="external_inmigration_migration_type_empty_lbl">የምትኬ አይነት ማስገባት አለበት</string>
+    <string name="external_inmigration_migrationdate_empty_lbl">የምትኬ ቀን ማስገባት አለበት</string>
+    <string name="external_inmigration_migrationdate_not_great_today_lbl">የምትኬ ቀን ከዛሬ ቀን አይበልጥ</string>
+    <string name="external_inmigration_migrationdate_not_before_dob_lbl">የምትኬ ቀን ከትውልድ ቀን በፊት ሊሆን አይችልም</string>
+    <string name="external_inmigration_migrationdate_not_before_residency_enddate_lbl">የምትኬ ቀን [%1$s] ከመጨረሻ መኖሪያ መዝገብ [%2$s -> %3$s] ቀን በፊት ሊሆን አይችልም።</string>
+    <string name="external_inmigration_migrationdate_not_before_hrelationship_enddate_lbl">የምትኬ ቀን [%1$s] ከመጨረሻ የአለቃነት ግንኙነት [%2$s -> %3$s] ቀን በፊት ሊሆን አይችልም።</string>
+    <string name="external_inmigration_death_exists_lbl">ምትኬን መፍጠር አይቻልም። የተመረጠው አባል ሞቷል</string>
+    <string name="external_inmigration_head_relationship_opened_lbl">ምትኬን መፍጠር አይቻልም። የመጨረሻው የአለቃነት ግንኙነት አልተዘጋም</string>
+
+    <string name="internal_inmigration_select_inmig_member_lbl">የሚገባ አባል ይምረጡ?</string>
+    <string name="internal_inmigration_select_inmig_no_residency_lbl">የተመረጠው አባል በማንኛውም ቤተሰብ አልተመዘገበም። እባኮትን ከመረጃ አስተዳደር እንዲሁ ይውደዱ!</string>
+    <string name="internal_inmigration_is_head_of_household_lbl">የተመረጠው አባል አንድ ቤተሰብ አለቃ ነው። በመጀመሪያ አሁን ያለውን አለቃነት ግንኙነት መዝጋት አለበት።</string>
+    <string name="internal_inmigration_migrationdate_not_before_residency_startdate_lbl">የምትኬ ቀን [%1$s] ከመጨረሻ መኖሪያ መጀመሪያ ቀን [%2$s -> %3$s] በፊት ሊሆን አይችልም።</string>
+    <string name="internal_inmigration_migrationdate_not_before_hrelationship_startdate_lbl">የምትኬ ቀን [%1$s] ከመጨረሻ የአለቃነት መጀመሪያ ቀን [%2$s -> %3$s] በፊት ሊሆን አይችልም።</string>
+
+    <string name="outmigration_death_exists_lbl">የመውጫ ምትኬን መፍጠር አይቻልም። የተመረጠው አባል ሞቷል</string>
+    <string name="outmigration_is_head_of_household_lbl">የተመረጠው አባል የዚህ ቤተሰብ አለቃ ነው። በመጀመሪያ አሁኑን ያለውን አለቃነት ግንኙነት መዝጋት አለበት።</string>
+    <string name="outmigration_migrationdate_not_before_residency_startdate_lbl">የመውጫ ቀን [%1$s] ከመጨረሻ መኖሪያ መጀመሪያ ቀን [%2$s -> %3$s] በፊት ሊሆን አይችልም።</string>
+    <string name="outmigration_migrationdate_not_before_hrelationship_startdate_lbl">የመውጫ ቀን [%1$s] ከመጨረሻ የአለቃነት መጀመሪያ ቀን [%2$s -> %3$s] በፊት ሊሆን አይችልም።</string>
+
+    <!-- pregnancy registration -->
+    <string name="pregnancy_registration_code_err_lbl">የእርግዝና ኮድ ቅርጸ ቃል ትክክል አይደለም</string>
+    <string name="pregnancy_registration_code_exists_lbl">ተደጋጋሚ የእርግዝና ምዝገባ፣ \nይህ የእርግዝና ኮድ ቀድሞ አለ</string>
+    <string name="pregnancy_registration_mothercode_empty_lbl">የእናቱ ኮድ ማስገባት አለበት</string>
+    <string name="pregnancy_registration_recordeddate_not_great_today_lbl">የተመዘገበበት ቀን ከዛሬ አይበልጥ</string>
+    <string name="pregnancy_registration_status_empty_lbl">የእርግዝና ሁኔታ ማስገባት አለበት</string>
+    <string name="pregnancy_registration_eddate_empty_lbl">የተጠበቀው የልደት ቀን ማስገባት አለበት</string>
+    <string name="pregnancy_registration_eddate_not_before_dob_lbl">የተጠበቀው የልደት ቀን ከእናቱ የትውልድ ቀን በፊት ሊሆን አይችልም</string>
+    <string name="pregnancy_registration_previous_pending_lbl">የተጠቀመው እናቱ ቀድሞ ያልተዛመደ የእርግዝና ምዝገባ አለው፣\nአዲስ እርግዝና ማመዝገብ ከመጀመሪያ የውጤቱን መመዝገብ በኋላ ነው።</string>
+    <string name="pregnancy_registration_mother_age_err_lbl">የተጠቀመው እናት ከእርግዝና ለመውሰድ የተወሰነው አነስተኛ ዕድሜ በታች ናት።</string>
+    <string name="pregnancy_registration_warning_close_dates_w_previous_lbl">ይህች ሴት በ[%1$s] ቀደም ብላ የእርግዝና ውጤት አላት።\nይህ አዲስ የተለየ የእርግዝና ሁኔታ መሆኑን እርግጠኛ ነህ?</string>
+
+    <!-- pregnancy outcome -->
+    <string name="pregnancy_outcome_code_err_lbl">የእርግዝና ኮድ ቅርጸ ቃል ትክክል አይደለም</string>
+    <string name="pregnancy_outcome_code_exists_lbl">ተደጋጋሚ የእርግዝና ውጤት፣ \nይህ የእርግዝና ኮድ ቀድሞ አለ</string>
+    <string name="pregnancy_outcome_mothercode_empty_lbl">የእናቱ ኮድ ባዶ ሊሆን አይችልም</string>
+    <string name="pregnancy_outcome_nroutcomes_empty_lbl">የውጤቶች ብዛት ባዶ ወይም ዜሮ ሊሆን አይችልም</string>
+    <string name="pregnancy_outcome_outcomedate_empty_lbl">የውጤት ቀን ማስገባት አለበት</string>
+    <string name="pregnancy_outcome_outcomedate_not_great_today_lbl">የውጤት ቀን ከዛሬ ቀን አይበልጥም</string>
+    <string name="pregnancy_outcome_outcdate_not_before_dob_lbl">የውጤት ቀን ከእናቱ የትውልድ ቀን በፊት ሊሆን አይችልም</string>
+    <string name="pregnancy_outcome_previous_pending_lbl">የተመረጠው እናት ቀድሞ ያልተዛመደ የእርግዝና ምዝገባ አላት፣\nአዲስ እርግዝና ማመዝገብ ለመጀመር የውጤቱን መመዝገብ መጀመር አለብህ።</string>
+    <string name="pregnancy_outcome_nroutcomes_title_lbl">የእርግዝና ውጤት</string>
+    <string name="pregnancy_outcome_nroutcomes_lbl">የውጤቶች ብዛት</string>
+    <string name="pregnancy_outcome_create_pregreg_info_lbl">ለዚህ ውጤት ቀደም ብሎ የተያዙት የእርግዝና ምዝገባዎች የሉም፣\nአዲስ የእርግዝና ምዝገባ በ [ተወላጅ] ሁኔታ ይፈጠራል፣\n\nከዚያ በኋላ የውጤት ምዝገባ መቀጠል ይቻላል።</string>
+    <string name="pregnancy_outcome_member_code_err_lbl">የልጅ ኮድ ቅርጸ ቃል ትክክል አይደለም</string>
+    <string name="pregnancy_outcome_member_code_household_err_lbl">የልጅ ኮድ ከተመረጠው ቤተሰብ ጋር አይመሳሰልም</string>
+    <string name="pregnancy_outcome_member_code_exists_lbl">የልጅ ኮድ አስቀድሞ አለ</string>
+    <string name="pregnancy_outcome_member_name_empty_lbl">የልጅ ስም ማስገባት አለበት</string>
+    <string name="pregnancy_outcome_member_gender_empty_lbl">የልጅ ፆታ ማስገባት አለበት</string>
+    <string name="pregnancy_outcome_member_gender_invalid_lbr_lbl">የልጅ ፆታ ያልታወቀ ሊሆን አይችልም ከተወለደ ከሆነ</string>
+    <string name="pregnancy_outcome_member_head_relattype_empty_lbl">የልጅ አለቃነት ግንኙነት አይነት ማስገባት አለበት</string>
+    <string name="pregnancy_outcome_child_father_select_lbl">የልጁን አባት ትመርጣለህ?</string>
+    <string name="pregnancy_outcome_child_father_change_title_lbl">የእርግዝና ውጤትን መረጃ አዘምን?</string>
+    <string name="pregnancy_outcome_child_father_exists_lbl">የዚህ ልጅ አባት ታወቀ እና በስርዓቱ ውስጥ ተመዝግቧል?</string>
+    <string name="pregnancy_outcome_child_father_change_lbl">የዚህ ልጅ አባትን ለማዘምን ትፈልጋለህ?</string>
+
+    <!-- pregnancy visit -->
+    <string name="pregnancy_visit_no_registration_or_outcome_err_lbl">ምንም ተሳክቶ የተመዘገበ የእርግዝና ምዝገባ ወይም ውጤት ከሌለ የእርግዝና ተከታታይ ጉብኝት ማድረግ አይቻልም።</string>
+    <string name="pregnancy_visit_no_pregnancy_registration_err_lbl">የእርግዝና ምዝገባ ኮድ ካልተገኘ የእርግዝና ተከታታይ ጉብኝት ማድረግ አይቻልም።</string>
+    <string name="pregnancy_visit_duplicated_visit_number_err_lbl">ይህ የእርግዝና ጉብኝት በተደጋጋሚ ቁጥር ስለሆነ ማመዝገብ አይቻልም</string>
+    <string name="pregnancy_visit_visitdate_not_before_dob_lbl">የጉብኝት ቀን ከእናቱ የትውልድ ቀን በፊት ሊሆን አይችልም</string>
+    <string name="pregnancy_visit_visitdate_not_before_outcome_date_lbl">የጉብኝት ቀን ከእርግዝና ውጤት የልጅ የትውልድ ቀን በፊት ሊሆን አይችልም።</string>
+    <string name="pregnancy_visit_visitdate_not_before_last_visit_date_lbl">የጉብኝት ቀን ከመጨረሻው የእርግዝና ተከታታይ ጉብኝት ቀን በፊት ሊሆን አይችልም።</string>
+    <string name="pregnancy_visit_status_postpartum_no_outcomes_err_lbl">ይህ የእርግዝና ተከታታይ ጉብኝት የወሊድ በኋላ ነው እና ቢያንስ አንድ ልጅ (በሕይወት ወይም የሞተ) መኖሩ አለበት።</string>
+
+    <!-- death registration -->
+    <string name="death_visit_code_empty_lbl">የጉብኝት ኮድ ባዶ ሊሆን አይችልም</string>
+    <string name="death_member_code_empty_lbl">የአባል ኮድ ባዶ ሊሆን አይችልም</string>
+    <string name="death_member_code_exists_lbl">ይህ አባል ቀድሞ የሞት ምዝገባ አለው</string>
+    <string name="death_deathdate_empty_lbl">የሞት ቀን ማስገባት አለበት</string>
+    <string name="death_deathdate_not_before_dob_lbl">የሞት ቀን ከትውልድ ቀን በፊት ሊሆን አይችልም</string>
+    <string name="death_deathdate_not_great_today_lbl">የሞት ቀን ከዛሬ ቀን አይበልጥም</string>
+    <string name="death_deathdate_not_before_new_head_hrelationship_startdate_lbl">የሞት ቀን [%1$s] ከአዲሱ አለቃ የአለቃነት መጀመሪያ ቀን [%2$s -> %3$s] በፊት ሊሆን አይችልም።</string>
+    <string name="death_deathdate_not_before_member_hrelationship_startdate_lbl">የሞት ቀን [%1$s] ከአባሉ የአለቃነት መጀመሪያ ቀን [%3$s -> %4$s] በፊት ሊሆን አይችልም።</string>
+    <string name="death_new_head_code_empty_lbl">አዲሱ የቤተሰብ አለቃ ኮድ ማስገባት አለበት</string>
+    <string name="death_new_head_select_lbl">አዲሱን የቤተሰብ አለቃ ይምረጡ</string>
+    <string name="death_dialog_change_title_lbl">የሞት መረጃ አዘምን</string>
+    <string name="death_dialog_head_change_lbl">ሞተው የነበሩትን አባል አዲስ አለቃ ማዘምን ትፈልጋለህ?</string>
+
+
+    <!-- change head registration -->
+    <string name="changehead_dialog_change_title_lbl">የአለቃ ለውጥ መረጃ አዘምን</string>
+    <string name="changehead_dialog_head_change_lbl">አዲስ የቤተሰብ አለቃ ማዘምን ትፈልጋለህ?</string>
+    <string name="changehead_visit_code_empty_lbl">የጉብኝት ኮድ ባዶ ሊሆን አይችልም</string>
+    <string name="changehead_oldhead_code_empty_lbl">የድሮው የቤተሰብ አለቃ ኮድ ማስገባት አለበት</string>
+    <string name="changehead_newhead_code_empty_lbl">አዲሱ የቤተሰብ አለቃ ኮድ ባዶ ሊሆን አይችልም</string>
+    <string name="changehead_eventdate_empty_lbl">የክስተቱ ቀን ማስገባት አለበት</string>
+    <string name="changehead_eventdate_not_before_dob_lbl">የክስተቱ ቀን ከአዲሱ የቤተሰብ አለቃ የትውልድ ቀን በፊት ሊሆን አይችልም</string>
+    <string name="changehead_eventdate_not_great_today_lbl">የክስተቱ ቀን ከዛሬ ቀን አይበልጥም</string>
+    <string name="changehead_eventdate_not_before_new_head_hrelationship_startdate_lbl">የክስተቱ ቀን [%1$s] ከአዲሱ የቤተሰብ አለቃ የአለቃነት መጀመሪያ ቀን [%2$s -> %3$s] በፊት ሊሆን አይችልም።</string>
+    <string name="changehead_eventdate_not_before_member_hrelationship_startdate_lbl">የክስተቱ ቀን [%1$s] ከአባል [%2$s] የአለቃነት መጀመሪያ ቀን [%3$s -> %4$s] በፊት ሊሆን አይችልም።</string>
+    <string name="changehead_new_head_select_lbl">አዲሱን የቤተሰብ አለቃ ይምረጡ</string>
+    <string name="changehead_new_head_is_head_of_household_lbl">አዲሱ አለቃ አሁንም የሌላ ቤተሰብ አለቃ ነው። ከሌላ ቤተሰብ የአለቃነቱን ግንኙነት በመጨረሻ መጀመር አለበት።</string>
+    <string name="changehead_head_dont_exists_lbl">ይህ ቤተሰብ በአሁኑ ወቅት ተናዳጅ አለቃ የለውም፣ አዲሱ አለቃ መመረጥ አለበት።</string>
+
+    <!-- change region head -->
+    <string name="changeregionhead_dialog_change_title_lbl">መረጃ አዘምን</string>
+    <string name="changeregionhead_dialog_head_change_lbl">የ [%1$s] አዲስ አለቃን ማዘመን ትፈልጋለህ?</string>
+    <string name="changeregionhead_region_code_empty_lbl">የ [%1$s] ኮድ ባዶ ሊሆን አይችልም</string>
+    <string name="changeregionhead_oldhead_code_empty_lbl">የድሮው የ [%1$s] አለቃ ኮድ ባዶ ሊሆን አይችልም</string>
+    <string name="changeregionhead_newhead_code_empty_lbl">የአዲሱ የ [%1$s] አለቃ ኮድ ባዶ ሊሆን አይችልም</string>
+    <string name="changeregionhead_eventdate_empty_lbl">የክስተቱ ቀን ማስገባት አለበት</string>
+    <string name="changeregionhead_eventdate_not_before_dob_lbl">የክስተቱ ቀን ከ [%1$s] አዲሱ አለቃ የትውልድ ቀን በፊት ሊሆን አይችልም</string>
+    <string name="changeregionhead_eventdate_not_great_today_lbl">የክስተቱ ቀን ከዛሬ ቀን አይበልጥም</string>
+    <string name="changeregionhead_eventdate_not_before_new_head_hrelationship_startdate_lbl">የክስተቱ ቀን [%1$s] ከ [%4$s] አዲሱ አለቃ የአለቃነት መጀመሪያ ቀን [%2$s -> %3$s] በፊት ሊሆን አይችልም።</string>
+    <string name="changeregionhead_eventdate_not_before_lastregion_head_hrelationship_startdate_lbl">የክስተቱ ቀን [%1$s] ከክልሉ [%4$s] የመጨረሻ አለቃ መጀመሪያ ቀን [%2$s -> %3$s] በፊት ሊሆን አይችልም።</string>
+    <string name="changeregionhead_new_head_select_lbl">አዲሱን የ [%1$s] አለቃ ይምረጡ</string>
+    <string name="changeregionhead_new_head_is_head_of_household_lbl">አዲሱ የ [%1$s] አለቃ አሁንም የሌላ [%1$s] አለቃ ነው። በአሁኑ የአለቃነት ግንኙነት መጨረሻ በፊት ማዘመን አለበት።</string>
+    <string name="changeregionhead_head_dont_exists_lbl">ይህ [%1$s] አሁን አንድ ተናዳጅ አለቃ የለውም፣ አዲስ አለቃ መመረጥ አለበት</string>
+    <string name="changeregionhead_set_new_reiong_head_bt_lbl">አዲሱን እንደ %1$s አለቃ ያዘጋጁ</string>
+    <string name="changeregionhead_already_collected_reopen_msg_lbl">ለ [%1$s] = %2$s የተመዘገበ አዲስ የክልል አለቃ ቅጽ አለ።\nመመዝገቡን እንደገና ለመክፈት OK ይምት</string>
+    <string name="changeregionhead_already_collected_reopen_new_visit_msg_lbl">ለ [%1$s] = %2$s የተመዘገበ አዲስ የክልል አለቃ ቅጽ አለ።\nመመዝገቡ በሌላ ቤተሰብ ጉብኝት ተከናውኗል።\nይህንን ቅጽ በዚህ ጉብኝት ላይ ለማዘመን ትፈልጋለህ?</string>
+    <string name="changeregionhead_already_collected_stop_msg_lbl">ለ [%1$s] = %2$s የተመዘገበ አዲስ የክልል አለቃ ቅጽ አለ።\nይህ ቅጽ በክልል ዝርዝር አስተዳደር ውስጥ ተመዘገበ ስለሆነ ማቀናበር አይቻልም።\nለማስተካከል እባኮትን ወደ Region Details ይሂዱ።</string>
+    <string name="changeregionhead_already_collected_stop_notvisit_msg_lbl">ለ [%1$s] = %2$s የተመዘገበ አዲስ የክልል አለቃ ቅጽ አለ።\nይህ ቅጽ በቤተሰብ ጉብኝት ተመዘገበ።\nለማስተካከል ወደ [code = %3$s] ይሂዱ።</string>
+
+    <string name="household_head_dont_exists_lbl">ይህ ቤተሰብ በአሁኑ ወቅት ተናዳጅ አለቃ አላትም፣ ክስተቱን ማከናወን አይቻልም።</string>
+
+    <string-array name="relationship_types_array">
+        <item>ባለጋራ የሌለው</item>
+        <item>ተመሳሳይ</item>
+        <item>ተለያዩ/ተፋትዋዮች</item>
+        <item>ባልንጀራን ያጣ</item>
+        <item>በአንድነት የሚኖሩ</item>
+    </string-array>
+
+    <string name="survey_households_btn_lbl">በቤተሰብ ፍለጋ</string>
+    <string name="survey_members_btn_lbl">በአባል ፍለጋ</string>
+    <string name="survey_tracking_lists_btn_lbl">የተከታታይ ዝርዝሮችን አሳይ</string>
+    <string name="survey_show_collected_data_lists_btn_lbl">የተሰበሰቡ ቅጾችን አሳይ</string>
+    <string name="survey_search_by_datasets_btn_lbl">በዳታ ስብስቦች ፍለጋ</string>
+    <string name="survey_sync_data_sharing_btn_lbl">የመረጃ ማጋራት መደመሪያ</string>
+
+    <string name="show_collected_data_title_lbl">የተሰበሰቡ ቅጾችን አሳይ</string>
+    <string name="show_collected_data_modules_lbl">ሞጁሎች:</string>
+    <string name="show_collected_data_total_cores_lbl">ጠቅላላ የተሰበሰቡ ዋና ቅጾች:</string>
+    <string name="show_collected_data_total_odks_lbl">የተሰበሰቡ ኦዲኬ ቅጾች ድምር፦</string>
+    <string name="show_collected_data_total_lbl">%1s ቅጾች</string>
+    <string name="show_collected_data_tab_visit_forms_lbl">የተጎበኙ ቤተሰቦች</string>
+    <string name="show_collected_data_tab_core_forms_lbl">ዋና ቅጾች</string>
+    <string name="show_collected_data_tab_odk_forms_lbl">ኦዲኬ ቅጾች</string>
+    <string name="show_collected_data_btn_update_lbl">የተሰበሰበውን መረጃ አዘምን</string>
+    <string name="show_collected_data_btn_delete_lbl">መዝገቦችን ሰርዝ</string>
+    <string name="show_collected_data_btn_delete_odk_lbl">ቅጾችን ሰርዝ</string>
+    <string name="show_collected_data_list_filter_hint_lbl">ኮድ/ስም/ማንኛውም ዝርዝር</string>
+    <string name="show_collected_data_odk_item_status_finalized_lbl">ተጠናቅቋል</string>
+    <string name="show_collected_data_odk_item_status_unfinalized_lbl">አልተጠናቀቀም</string>
+    <string name="show_collected_data_deletion_warning_title_lbl">**ማስጠንቀቂያ፦ ማጥፋት አስቸጋሪ ሊሆን ይችላል**</string>
+    <string name="show_collected_data_deletion_warning_msg1_lbl">የዜጎች ባለትክክል መረጃ ሲሰረዝ ጥልቅ አንደበት ይወስዳል። \nይህ መረጃ ሲሰረዝ ከፍተኛ ተጽእኖ ያሳድራል፣ እና በተገናኙ ዳታሴቶች ላይ ያመላከታል።</string>
+    <string name="show_collected_data_deletion_warning_msg2_lbl">ይህ መረጃ ሲሰረዝ ከሚጠበቁት መረጃዎች ጋር ተያያዥ ማንኛውም መረጃ ይጠፋል።\nየማጥፋቱን ሂደት መቀጠል ትፈልጋለህ?</string>
+    <string name="show_collected_data_deletion_warning_odk_msg1_lbl">ኦዲኬ ቅጾችን ሲወጡ በጥንቃቄ ይህሱ። \nየሚወጡት መረጃ በተያያዘ የምርምር ፕሮግራሞች ላይ ተጽእኖ ሊኖረው ይችላል።</string>
+    <string name="show_collected_data_deletion_warning_odk_msg2_lbl">ይህን መረጃ ሲሰረዝ በዚህ ቅጽ ላይ የተሰበሰበው መረጃ ሁሉ ይጠፋል።\nይህን ቅጾች ማጥፋት ትፈልጋለህ?</string>
+    <string name="show_collected_data_deletion_loading_lbl">መረጃ በማጥፋት ላይ...</string>
+
+    <string name="form_group_selector_uuid_lbl">UUID</string>
+    <string name="form_group_selector_code_lbl">ኮድ</string>
+    <string name="form_group_selector_collected_lbl">ተሰብሷል፦</string>
+    <string name="form_group_selector_not_collected_lbl">አልተሰበሰበም</string>
+    <string name="form_group_selector_required_lbl">አስፈላጊ</string>
+    <string name="form_group_selector_optional_lbl">አማራጭ</string>
+    <string name="form_group_selector_conditional_lbl">በመስፈርት</string>
+    <string name="form_group_selector_validation_lbl">የቅጽ ቡድን ማረጋገጫዎች</string>
+    <string name="form_group_selector_validation_prev_must_be_collected_lbl">ይህን ቅጽ አሁን መሙላት አይቻልም፣ ምክንያቱም በፊት ያለው ቅጽ (%1s) መመለከት አለበት</string>
+    <string name="form_group_selector_validation_prev_must_be_finalized_lbl">ይህን ቅጽ አሁን መሙላት አይቻልም፣ ምክንያቱም በፊት ያለው ቅጽ (%1s) አልተጠናቀቀም፣ መመለከት አለበት</string>
+    <string name="form_group_selector_validation_form_collect_condition_error_lbl">ይህን ቅጽ መሙላት አይቻልም፣ ምክንያቱም የአሁኑ እንቅስቃሴ ሁኔታዎች ከቅጹ ውስጥ በተግባር የተሰጡ መመሪያዎች ጋር አይዛመዱም።\n\nመመሪያዎች፦ (%1s)</string>
+    <string name="form_group_selector_validation_form_collect_condition_dependency_not_found_error_lbl">ይህን ቅጽ መሙላት አይቻልም፣ ምክንያቱም በማረጋገጫ ላይ የተጠቀሱት ቅጾች አልተገኙም።</string>
+    <string name="form_group_selector_validation_form_collect_condition_dependency_not_finalized_error_lbl">ይህን ቅጽ መሙላት አይቻልም፣ ምክንያቱም በማረጋገጫ ላይ የተጠቀሰው ቅጽ (%1s) አልተጠናቀቀም።</string>
+
+    <string name="loading_dialog_member_details_lbl">የአባል ዝርዝር በመጫን ላይ...</string>
+    <string name="loading_dialog_household_details_lbl">የቤተሰብ ዝርዝር በመጫን ላይ...</string>
+    <string name="loading_dialog_region_details_lbl">የክልል ዝርዝር በመጫን ላይ...</string>
+    <string name="loading_dialog_form_load_lbl">ቅጽ በመጫን ላይ...</string>
+    <string name="loading_dialog_odk_load_lbl">ኦዲኬ ቅጽ በመጫን ላይ...</string>
+    <string name="loading_dialog_odk_reload_lbl">ኦዲኬ ቅጽ እንደገና በመጫን ላይ...</string>
+    <string name="loading_dialog_extra_forms_load_lbl">ተጨማሪ ቅጾች ዝርዝር በመጫን ላይ...</string>
+    <string name="loading_dialog_filter_name_hint_lbl">የቅጹን ስም እዚህ አስገባ</string>
+    <string name="loading_dialog_load_data_lbl">መረጃ በመጫን ላይ...</string>
+    <string name="loading_dialog_load_lbl">በመጫን ላይ...</string>
+
+    <!-- GPS Maps -->
+    <string name="map_gps_not_available_title_lbl">የጂፒኤስ ካርታ ማየት አይቻልም</string>
+    <string name="map_closest_members">ቀላል የሆኑ የግለሰቦች አካባቢዎች</string>
+    <string name="map_closest_houses_from_lbl">ከዚህ ቤት በአቅራቢያ ያሉ ቤቶች</string>
+    <string name="map_closest_members_from_lbl">ከዚህ አባል ቤት በአቅራቢያ ያሉ ግለሰቦች</string>
+    <string name="map_no_closest_houses_found_lbl">ከተመረጠው ቤት በ %1$s ክልል ውስጥ ምንም ቤት አልተገኘም።</string>
+    <string name="map_no_closest_members_found_lbl">ከተመረጠው አባል ቤት በ %1$s ክልል ውስጥ ምንም ቤት አልተገኘም።</string>
+    <string name="map_members_coordinates">የግለሰቦች ቤቶች አካባቢ</string>
+    <string name="map_households">የቤተሰቦች አካባቢ</string>
+
+    <!-- GPS Searched Result List -->
+    <string name="gps_searched_list_back_lbl">ወደ ኋላ</string>
+    <string name="gps_searched_list_household_lbl">በአቅራቢያ ያሉ ቤተሰቦች፦</string>
+    <string name="gps_searched_list_distance_lbl">የርቀት ክልል፦</string>
+    <string name="gps_searched_list_results_lbl">የፍለጋ ውጤቶች፦</string>
+    <string name="gps_searched_list_results_value">%1$d ቤተሰቦች ተገኝተዋል</string>
+
+    <!-- Member Filter Dialog -->
+    <string-array name="member_current_status">
+        <item>ሁሉም</item>
+        <item>ሞቷል</item>
+        <item>ከአካባቢው ወጥቷል</item>
+        <item>ነው የሚኖር</item>
+    </string-array>
+
+    <!-- Follow-up List - Tracking Lists -->
+    <string name="trackinglist_bt_update_lbl">የተከታታይ ዝርዝሮችን አዘምን</string>
+    <string name="trackinglist_bt_back_lbl">ወደ ኋላ</string>
+    <string name="trackinglist_title_lbl">ለመረጃ መያዝ የተከታታይ ዝርዝሮች</string>
+    <string name="trackinglist_module_lbl">ሞጁል</string>
+    <string name="trackinglist_modules_lbl">ሞጁሎች፦</string>
+    <string name="trackinglist_filter_code_hint_lbl">የቤተሰብ/ግለሰብ/ክልል ኮድ ወይም ስም</string>
+    <string name="trackinglist_filter_name_hint_lbl">የተከታታይ ዝርዝር ስም ወይም ዝርዝሮች</string>
+
+    <!-- settings fragment -->
+    <string name="settings_lbl">ቅንብሮች</string>
+    <string name="settings_server_group_lbl">HDS-Explorer</string>
+    <string name="settings_server_group_url_lbl">የአገልጋይ URL</string>
+    <string name="settings_odk_group_lbl">ODK</string>
+    <string name="settings_odk_group_url_lbl">የአግሪጌት URL</string>
+    <string name="settings_redcap_group_lbl">REDCap</string>
+    <string name="settings_redcap_group_url_lbl">የአገልጋይ URL</string>
+    <string name="settings_special_group_lbl">የዋና ቅጽ ቅንብሮች</string>
+    <string name="settings_execute_on_upload_lbl">ዋና ቅጾችን በመስቀመጥ ላይ አከናውን</string>
+
+    <!-- Modules Selector -->
+    <string name="modules_selector_select_lbl">ሞጁል ይምረጡ</string>
+
+    <!-- Data sharing -->
+    <string name="data_sharing_connection_type_lbl">የግንኙነት አይነት</string>
+    <string name="data_sharing_connection_type_bluetooth_lbl">ብሉቱዝ ግንኙነት</string>
+    <string name="data_sharing_connection_type_wifi_lbl">ዋይፋይ/አይፒ ግንኙነት</string>
+    <string name="data_sharing_bt_start_server_lbl">አገልጋይን ጀምር</string>
+    <string name="data_sharing_bt_connect_to_a_server_lbl">ከአገልጋይ ጋር ያገናኙ</string>
+    <string name="data_sharing_msg_listening_to_devices_lbl">እቃዎችን በመነቃቃት ላይ</string>
+    <string name="data_sharing_records_to_share_lbl">ሊካፈሉ የሚገቡ ዳታ መዝገቦች</string>
+    <string name="data_sharing_shared_records_lbl">የተካፈሉ ዳታ መዝገቦች</string>
+    <string name="data_sharing_connected_devices_lbl">የተገናኙ መሳሪያዎች</string>
+    <string name="data_sharing_bt_start_data_sharing_lbl">ውሂብ ማካፈል ጀምር</string>
+    <string name="data_sharing_btt_devlist_title_lbl">የብሉቱዝ መሳሪያ ፍለጋ</string>
+    <string name="data_sharing_tcp_devlist_title_lbl">የኔትዎርክ መሳሪያ ፍለጋ</string>
+    <string name="data_sharing_msg_conn_not_init_lbl">ግንኙነቱ አልተጀመረም</string>
+    <string name="data_sharing_device_btt_disabled_lbl">የብሉቱዝ መሳሪያ እንቅስቃሴ ተሰናክሏል</string>
+    <string name="data_sharing_device_btt_not_found_lbl">የብሉቱዝ መሳሪያ አልተገኘም</string>
+    <string name="data_sharing_device_tcp_disabled_lbl">የTCP/IP ኔትዎርክ አይገኝም</string>
+    <string name="data_sharing_device_tcp_not_found_lbl">የTCP/IP መሳሪያ አልተገኘም</string>
+    <string name="data_sharing_device_connecting_lbl">ከአገልጋይ መሳሪያ ጋር በመገናኘት ላይ...</string>
+    <string name="data_sharing_device_connected_lbl">መሳሪያ ተገናኝቷል</string>
+    <string name="data_sharing_server_listening_lbl">አገልጋዩ መሳሪያዎችን ማዳመጥ ላይ ነው</string>
+    <string name="data_sharing_server_stopped_listening_lbl">አገልጋዩ ማዳመጥን አቋረጠ</string>
+    <string name="data_sharing_device_connection_failure_lbl">ከርቀት መሳሪያ ጋር መገናኘት አልተቻለም</string>
+    <string name="data_sharing_scan_for_servers_lbl">የአገልጋዮችን መሳሪያዎች በመፈለግ ላይ</string>
+    <string name="data_sharing_scanning_stopped_lbl">የመፈለግ ሂደት ተወቅቷል</string>
+    <string name="data_sharing_transferring_data_lbl">የተካፈሉ ዳታዎችን በማስተላለፍ ላይ</string>
+    <string name="data_sharing_transferring_failure_lbl">ዳታ ማካፈል ሲሞከር ስህተት ተፈጥሯል</string>
+    <string name="data_sharing_data_shared_lbl">ዳታዎች በተሳካ ሁኔታ ተካፍለዋል</string>
+    <string name="data_sharing_permissions_title_lbl">የውሂብ አጋራ ፈቃዶች</string>
+    <string name="data_sharing_permissions_bluetooth_error">የውሂብ ማካፈልን ለመጠቀም የብሉቱዝ መሳሪያ ፍቃድ መስጠት አለብህ</string>
+
+    <!--  Data sharing - Bluetooth Devices List -->
+    <string name="data_sharing_devlist_scanning_lbl">መሳሪያዎችን በመፈለግ ላይ...</string>
+    <string name="data_sharing_devlist_select_device_lbl">ለመገናኘት መሳሪያ ይምረጡ</string>
+    <string name="data_sharing_devlist_none_paired_lbl">ተያይዞ የሚሰራ መሳሪያ የለም</string>
+    <string name="data_sharing_devlist_none_found_lbl">መሳሪያ አልተገኘም</string>
+    <string name="data_sharing_devlist_title_paired_devices_lbl">የተያዙ መሳሪያዎች</string>
+    <string name="data_sharing_devlist_title_other_devices_lbl">ሌሎች ዝግጁ መሳሪያዎች</string>
+    <string name="data_sharing_devlist_title_tcp_detected_devices_lbl">ተገኘው መሳሪያዎች</string>
+    <string name="data_sharing_devlist_button_scan_lbl">መሳሪያዎችን ፍለጋ</string>
+
+    <!-- barcode scanner -->
+    <string name="barcode_dialog_ask_scan_title">የባርኮድ መታወቂያ ስነ</string>
+    <string name="barcode_dialog_txt_scan_barcode_lbl">የ(%1$s) ባርኮድ መሳሪያ ማሰናከያ ይፈልጋሉ?</string>
+    <string name="barcode_dialog_bt_scan_lbl">አሰናክ</string>
+    <string name="barcode_dialog_bt_scan_barcode_lbl">ባርኮዱን አሰናክ</string>
+    <string name="barcode_dialog_bt_cancel_lbl">ይቅር</string>
+    <string name="barcode_menu_bt_paste_lbl">ለጥፍ</string>
+    <string name="barcode_menu_bt_scan_lbl">ባርኮድ አሰናክ</string>
+
+    <!-- Permissions-->
+    <string name="permissions_sync_storage_title_lbl">የመዳረሻ ፍቃድ ተከልክሏል!</string>
+    <string name="permissions_sync_storage_denied_lbl">ከአገልጋዩ ጋር መቀናቀን አይቻልም። ማከማቻውን ለመንቀሳቀስ/ማከማቸት ፍቃድ የለም!</string>
+
+    <!-- Enums -->
+    <string name="invalid_enum_value">!!!ዋጋ ልክ አይደለም!!!</string>
+
+    <string name="default_gender_male">ወንድ</string>
+    <string name="default_gender_female">ሴት</string>
+    <string name="default_gender_unk">ያልታወቀ</string>
+
+    <string name="maritalStatus_single">ብቻ</string>
+    <string name="maritalStatus_married">ተመካች</string>
+    <string name="maritalStatus_divorced">ተፋታ</string>
+    <string name="maritalStatus_separated">ተለይቷል</string>
+    <string name="maritalStatus_widowed">ባል/ሚስት ሞቷል</string>
+    <string name="maritalStatus_living_togheter">በአንድነት በመኖር</string>
+    <string name="maritalStatus_not_applicable">አይተገበምም (አሁን ተመካች ነው)</string>
+
+    <string name="pregnacyStatus_pregnant">እስካሁን እርግዝና አለ</string>
+    <string name="pregnacyStatus_delivered">አሁን ወለደች</string>
+    <string name="pregnacyStatus_lost_track">ሁኔታው ተጠፍቷል</string>
+
+    <string name="eddtype_ultrasound">አልትራሳውንድ</string>
+    <string name="eddtype_last_menstrual_period">የመጨረሻ ወሊድ ጊዜ</string>
+    <string name="eddtype_symphisis_fundal_eight">Symphisis Fundal Height</string>
+    <string name="eddtype_dont_know">አላውቅም</string>
+
+    <string name="pregOutcomeType_livebirth">የተወለደ በሕይወት</string>
+    <string name="pregOutcomeType_stillbirth">ሙታን ልጅ</string>
+    <string name="pregOutcomeType_miscarriage">የተሳነ እርግዝና</string>
+    <string name="pregOutcomeType_abortion">ቀድሞ ተቋረጠ እርግዝና</string>
+
+    <string name="birthPlace_home">ቤት</string>
+    <string name="birthPlace_hospital">ሆስፒታል</string>
+    <string name="birthPlace_traditional_midwife">የባህላዊ ሚድዋይፍ ቤት</string>
+    <string name="birthPlace_health_center_clinic">የጤና ማዕከል ወይም ክሊኒክ</string>
+    <string name="birthPlace_on_the_way">በመንገድ ላይ</string>
+    <string name="birthPlace_private_mat_home">የግል ሚድዋይፍ ቤት</string>
+    <string name="birthPlace_other">ሌላ</string>
+
+    <string name="eventType_enumeration">ቆጠራ</string>
+    <string name="eventType_birth">ልደት</string>
+    <string name="eventType_internal_inmigration">ውስጣዊ መግቢያ</string>
+    <string name="eventType_external_inmigration">ውጫዊ መግቢያ</string>
+    <string name="eventType_not_applicable">አይተገበምም (አሁን እዚህ ነው)</string>
+    <string name="eventType_internal_outmigration">ውስጣዊ መውጣት</string>
+    <string name="eventType_external_outmigration">ውጫዊ መውጣት</string>
+    <string name="eventType_death">ሞት</string>
+    <string name="eventType_new_hoh">አዲስ አለቃ</string>
+    <string name="eventType_death_of_hoh">የአለቃው ሞት</string>
+    <string name="eventType_change_of_hoh">የአለቃው ለውጥ</string>
+    <string name="eventType_new_hor">አዲስ ክልል አለቃ</string>
+    <string name="eventType_death_of_hor">የክልል አለቃ ሞት</string>
+    <string name="eventType_change_of_hor">የክልል አለቃ ለውጥ</string>
+
+    <string name="headRelationshipType_head_of_household">የቤተሰብ አለቃ</string>
+    <string name="headRelationshipType_spouse">ባል/ሚስት</string>
+    <string name="headRelationshipType_son_daughter">ልጅ</string>
+    <string name="headRelationshipType_brother_sister">ወንድም/እህት</string>
+    <string name="headRelationshipType_parent">ወላጅ</string>
+    <string name="headRelationshipType_grandchild">የወላጅ ልጅ</string>
+    <string name="headRelationshipType_not_related">አልተገናኘም</string>
+    <string name="headRelationshipType_other">ሌላ ዘመድ</string>
+    <string name="headRelationshipType_dont_know">አላውቅም</string>
+
+    <string name="region_level1_label">ደረጃ 1</string>
+    <string name="region_level2_label">ደረጃ 2</string>
+    <string name="region_level3_label">ደረጃ 3</string>
+    <string name="region_level4_label">ደረጃ 4</string>
+    <string name="region_level5_label">ደረጃ 5</string>
+    <string name="region_level6_label">ደረጃ 6</string>
+    <string name="region_level7_label">ደረጃ 7</string>
+    <string name="region_level8_label">ደረጃ 8</string>
+    <string name="region_level9_label">ደረጃ 9</string>
+    <string name="region_level10_label">ደረጃ 10</string>
+
+    <string name="visitLocation_home">ቤት ውስጥ</string>
+    <string name="visitLocation_workplace">በመስሪያ ቦታ</string>
+    <string name="visitLocation_healthunit">በጤና እቃ</string>
+    <string name="visitLocation_other">ሌላ ቦታ</string>
+
+    <string name="visitReason_update_round">ዝርዝር አዘምን</string>
+    <string name="visitReason_baseline">መጀመሪያ ምዝገባ</string>
+    <string name="visitReason_newhouse">አዲስ ቤተሰብ ምዝገባ</string>
+    <string name="visitReason_dataclean">የውሂብ ንጽህና</string>
+    <string name="visitReason_other">ሌላ</string>
+
+    <string name="noVisitReason_hh_occupied">ተቀመጠ ቤተሰብ</string>
+    <string name="noVisitReason_hh_notfound">ቤተሰብ አልተገኘም</string>
+    <string name="noVisitReason_hh_destroyed">የተበላሸ ቤተሰብ</string>
+    <string name="noVisitReason_hh_abandoned">የተዘነበለ ቤተሰብ</string>
+    <string name="noVisitReason_hh_vacant">ያልተቀመጠ ቤተሰብ</string>
+    <string name="noVisitReason_no_respondent">አልተገኘ መረጃ ሰጪ</string>
+    <string name="noVisitReason_refuse">መልስ ማስገባት አልፈለገም</string>
+    <string name="noVisitReason_other">ሌላ</string>
+
+    <string name="incompleteVisitReason_unavail_today">ዛሬ አይገኝም</string>
+    <string name="incompleteVisitReason_unavail_round">በዚህ ዙር ውስጥ አይገኝም (ት/ስራ ምክንያት)</string>
+    <string name="incompleteVisitReason_unwilling">በዚህ ዙር ማሳተፍን አልፈለገም</string>
+    <string name="incompleteVisitReason_hospitalized">በሆስፒታል ውስጥ</string>
+    <string name="incompleteVisitReason_relocated">ከዳሰሳ አካባቢ በማይመለስ ተከፋፈለ</string>
+    <string name="incompleteVisitReason_withdrew">እሺ አልቋም</string>
+    <string name="incompleteVisitReason_dead">ሞቷል</string>
+    <string name="incompleteVisitReason_other">ሌላ</string>
+
+    <string name="householdStatus_occupied">ቤተሰቡ ተቀመጠ</string>
+    <string name="householdStatus_notfound">ቤተሰብ አልተገኘም</string>
+    <string name="householdStatus_destroyed">ቤተሰቡ ተበላሸ</string>
+    <string name="householdStatus_abandoned">ቤተሰቡ ተዘነበለ</string>
+    <string name="householdStatus_vacant">ቤተሰቡ ባዶ ነው</string>
+    <string name="householdStatus_other">ሌላ</string>
+
+    <string name="memberStatus_active">ንቁ</string>
+    <string name="memberStatus_inactive">አንደምታገለግል</string>
+    <string name="memberStatus_not_found">አባል አልተገኘም</string>
+
+</resources>

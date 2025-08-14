@@ -3,6 +3,7 @@ package org.philimone.hds.explorer.fragment.showcollected.adapter.model;
 import android.content.Context;
 
 import org.philimone.hds.explorer.R;
+import org.philimone.hds.explorer.database.Bootstrap;
 import org.philimone.hds.explorer.model.CollectedData;
 import org.philimone.hds.explorer.model.CoreFormExtension;
 import org.philimone.hds.explorer.model.Form;
@@ -13,6 +14,7 @@ import org.philimone.hds.explorer.model.Region;
 
 import java.io.Serializable;
 
+import mz.betainteractive.utilities.DateUtil;
 import mz.betainteractive.utilities.StringUtil;
 
 /**
@@ -29,6 +31,8 @@ public class OdkCollectedDataItem implements Serializable {
     private Region region;
     private CollectedData collectedData;
     public boolean selected = false;
+
+    private DateUtil dateUtil = Bootstrap.getDateUtil();
 
     public OdkCollectedDataItem(String formId, FormSubject subject, Form form, CoreFormExtension coreFormExtension, CollectedData collectedData) {
         this.formId = formId;
@@ -123,7 +127,7 @@ public class OdkCollectedDataItem implements Serializable {
         String instanceName = cd.getFormInstanceName();
         String formName = (isFormNull() ? cd.getFormId() : getForm().getFormName());
         String subjectText = getFormText(this);
-        String updatedDate = StringUtil.format(cd.formLastUpdatedDate, "yyyy-MM-dd HH:mm:ss");
+        String updatedDate = dateUtil.formatYMDHMS(cd.formLastUpdatedDate); //we will use agnostic date format due to user input text //, "yyyy-MM-dd HH:mm:ss");
 
         return instanceName.toLowerCase().matches(text) || formName.toLowerCase().matches(text) || subjectText.toLowerCase().matches(text) || updatedDate.matches(text);
     }

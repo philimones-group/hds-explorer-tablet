@@ -43,6 +43,7 @@ import java.util.List;
 import java.util.Map;
 
 import io.objectbox.Box;
+import mz.betainteractive.utilities.DateUtil;
 import mz.betainteractive.utilities.GeneralUtil;
 import mz.betainteractive.utilities.StringUtil;
 
@@ -72,6 +73,8 @@ public class RegionEditFragment extends Fragment {
     private ActivityResultLauncher<String[]> requestPermissions;
 
     private EditListener editListener;
+
+    private DateUtil dateUtil = Bootstrap.getDateUtil();
 
     public RegionEditFragment() {
         // Required empty public constructor
@@ -194,7 +197,7 @@ public class RegionEditFragment extends Fragment {
         mapXml.put("regionCode", this.region.code);
         mapXml.put("regionName", this.txtEditName.getText().toString());
         mapXml.put("collectedBy", this.loggedUser.username);
-        mapXml.put("collectedDate", StringUtil.format(new Date(), "yyyy-MM-dd HH:mm:ss.SSS"));
+        mapXml.put("collectedDate", DateUtil.formatGregorianPrecise(new Date()));
 
 
         //generate xml and create/overwrite a file
@@ -232,7 +235,7 @@ public class RegionEditFragment extends Fragment {
     }
 
     private String generateXmlFilename(CoreFormEntity entity, String code) {
-        String dateTmsp = StringUtil.format(new Date(), "yyyy-MM-dd_HH_mm_ss");
+        String dateTmsp = dateUtil.formatYMDHMS(new Date(), true); //"yyyy-MM-dd_HH_mm_ss");
         return Bootstrap.getInstancesPath(this.getContext()) + entity.code + "_" + code + "_" + dateTmsp + ".xml";
     }
 

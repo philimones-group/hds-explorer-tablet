@@ -43,7 +43,7 @@ import org.philimone.hds.explorer.model.enums.CoreFormRecordType;
 import org.philimone.hds.explorer.model.enums.Gender;
 import org.philimone.hds.explorer.model.enums.temporal.HeadRelationshipStartType;
 import org.philimone.hds.explorer.model.enums.temporal.ResidencyStartType;
-import org.philimone.hds.explorer.widget.DateTimeSelector;
+import org.philimone.hds.forms.widget.dialog.DateTimeSelector;
 import org.philimone.hds.explorer.widget.DialogFactory;
 import org.philimone.hds.explorer.widget.LoadingDialog;
 
@@ -55,6 +55,7 @@ import java.util.Map;
 
 import io.objectbox.Box;
 import io.objectbox.query.QueryBuilder;
+import mz.betainteractive.utilities.DateUtil;
 import mz.betainteractive.utilities.GeneralUtil;
 import mz.betainteractive.utilities.StringUtil;
 
@@ -104,6 +105,8 @@ public class MemberEditFragment extends Fragment {
     private Box<ApplicationParam> boxAppParams;
 
     private EditListener editListener;
+
+    private DateUtil dateUtil = Bootstrap.getDateUtil();
 
     private final String PHONE_NUMBER_REGEX = "^(\\+?\\d{1,3})?[-.\\s]?\\(?\\d{2,4}\\)?[-.\\s]?\\d{3,5}[-.\\s]?\\d{4,6}$";
 
@@ -184,7 +187,7 @@ public class MemberEditFragment extends Fragment {
 
         this.loadingDialog = new LoadingDialog(this.getContext());
 
-        this.datePicker = DateTimeSelector.createDateWidget(this.getContext(), member.dob, (pSelectedDate, selectedDateText) -> {
+        this.datePicker = DateTimeSelector.createDateWidget(this.getContext(), Bootstrap.getSupportedCalendar(), member.dob, (pSelectedDate, selectedDateText) -> {
             txtEditDob.setText(selectedDateText);
             selectedDob = pSelectedDate;
             onFormContentChanges();
@@ -271,7 +274,7 @@ public class MemberEditFragment extends Fragment {
         this.txtEditName.setText(member.name);
         this.chkEditGFemale.setChecked(member.gender == Gender.FEMALE);
         this.chkEditGMale.setChecked(member.gender== Gender.MALE);
-        this.txtEditDob.setText(StringUtil.formatYMD(member.dob));
+        this.txtEditDob.setText(dateUtil.formatYMD(member.dob));
         this.txtEditFatherCode.setText(member.fatherCode);
         this.txtEditFatherName.setText(getParentName(member.fatherName));
         this.txtEditMotherCode.setText(member.motherCode);
@@ -338,7 +341,7 @@ public class MemberEditFragment extends Fragment {
                     public void onNoClicked() {
                         //go back to original state
                         selectedDob = null;
-                        txtEditDob.setText(StringUtil.formatYMD(member.dob));
+                        txtEditDob.setText(dateUtil.formatYMD(member.dob));
                     }
                 }).show();
             }
@@ -399,7 +402,7 @@ public class MemberEditFragment extends Fragment {
         //persist the changes into the database
         this.member.name = this.txtEditName.getText().toString();
         this.member.gender = chkEditGMale.isChecked() ? Gender.MALE : Gender.FEMALE;
-        this.member.dob = StringUtil.toDateYMD(txtEditDob.getText().toString());
+        this.member.dob = selectedDob != null ? selectedDob : this.member.dob; //DateUtil.toDateYMD(txtEditDob.getText().toString());
         this.member.fatherCode = txtEditFatherCode.getText().toString();
         this.member.fatherName = txtEditFatherName.getText().toString();
         this.member.motherCode = txtEditMotherCode.getText().toString();
@@ -415,7 +418,7 @@ public class MemberEditFragment extends Fragment {
         mapXml.put("code", this.member.code);
         mapXml.put("name", this.member.name);
         mapXml.put("gender", this.member.gender.code);
-        mapXml.put("dob", this.txtEditDob.getText().toString());
+        mapXml.put("dob", DateUtil.formatGregorianYMD(this.member.dob)); //this.txtEditDob.getText().toString());
         mapXml.put("motherCode", this.member.motherCode);
         mapXml.put("motherName", this.member.motherName);
         mapXml.put("fatherCode", this.member.fatherCode);
@@ -423,7 +426,7 @@ public class MemberEditFragment extends Fragment {
         mapXml.put("phonePrimary", this.member.phonePrimary);
         mapXml.put("phoneAlternative", this.member.phoneAlternative);
         mapXml.put("collectedBy", this.loggedUser.username);
-        mapXml.put("collectedDate", StringUtil.format(new Date(), "yyyy-MM-dd HH:mm:ss.SSS"));
+        mapXml.put("collectedDate", DateUtil.formatGregorianPrecise(new Date()));
 
         //generate xml and create/overwrite a file
         String xml = XmlCreator.generateXml(CoreFormEntity.EDITED_MEMBER.code, mapXml);
@@ -596,7 +599,7 @@ public class MemberEditFragment extends Fragment {
     }
 
     private String generateXmlFilename(CoreFormEntity entity, String code) {
-        String dateTmsp = StringUtil.format(new Date(), "yyyy-MM-dd_HH_mm_ss");
+        String dateTmsp = dateUtil.formatYMDHMS(new Date(), true); //"yyyy-MM-dd_HH_mm_ss");
         return Bootstrap.getInstancesPath(this.getContext()) + entity.code + "_" + code + "_" + dateTmsp + ".xml";
     }
 

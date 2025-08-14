@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import org.philimone.hds.explorer.R;
 import org.philimone.hds.explorer.adapter.model.VisitCollectedDataItem;
+import org.philimone.hds.explorer.database.Bootstrap;
 import org.philimone.hds.explorer.model.CollectedData;
 import org.philimone.hds.explorer.model.CoreCollectedData;
 import org.philimone.hds.explorer.model.CoreFormExtension;
@@ -27,6 +28,7 @@ import androidx.annotation.DrawableRes;
 import androidx.annotation.StringRes;
 
 import mz.betainteractive.odk.FormUtilities;
+import mz.betainteractive.utilities.DateUtil;
 import mz.betainteractive.utilities.StringUtil;
 
 public class CoreCollectedExpandableAdapter extends BaseExpandableListAdapter implements Serializable {
@@ -34,6 +36,7 @@ public class CoreCollectedExpandableAdapter extends BaseExpandableListAdapter im
     private Context mContext;
     private List<CoreFormEntity> groupItems;
     private List<List<VisitCollectedDataItem>> childItems;
+    private DateUtil dateUtil = Bootstrap.getDateUtil();
 
     public CoreCollectedExpandableAdapter(Context mContext, LinkedHashMap<CoreFormEntity, List<VisitCollectedDataItem>> collectionMap) {
         this.mContext = mContext;
@@ -136,7 +139,7 @@ public class CoreCollectedExpandableAdapter extends BaseExpandableListAdapter im
         txtItem3.setVisibility(formExtension!=null || cd.isOdkCollectedData() ? View.VISIBLE : View.GONE);
         txtItem4.setVisibility(formExtension!=null || cd.isOdkCollectedData() ? View.VISIBLE : View.GONE);
 
-        String createdDate = cd.createdDate==null ? "" : StringUtil.format(cd.createdDate, "yyyy-MM-dd HH:mm:ss");
+        String createdDate = cd.createdDate==null ? "" : dateUtil.formatYMDHMS(cd.createdDate);
         //String updatedDate = cd.updatedDate==null ? "" : StringUtil.format(cd.updatedDate, "yyyy-MM-dd HH:mm:ss");
         //String uploadedDate = cd.uploadedDate==null ? "" : StringUtil.format(cd.uploadedDate, "yyyy-MM-dd HH:mm:ss");
         //String code = StringUtil.isBlank(cd.formEntityCode) ? "" : cd.formEntityCode + " - ";

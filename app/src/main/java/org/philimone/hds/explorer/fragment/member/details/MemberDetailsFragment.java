@@ -15,6 +15,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import org.philimone.hds.explorer.R;
+import org.philimone.hds.explorer.database.Bootstrap;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
 import org.philimone.hds.explorer.model.CoreFormColumnOptions;
 import org.philimone.hds.explorer.model.CoreFormColumnOptions_;
@@ -29,6 +30,7 @@ import org.philimone.hds.explorer.widget.LoadingDialog;
 import java.util.Date;
 
 import io.objectbox.Box;
+import mz.betainteractive.utilities.DateUtil;
 import mz.betainteractive.utilities.StringUtil;
 
 /**
@@ -59,6 +61,8 @@ public class MemberDetailsFragment extends Fragment {
     private Box<Form> boxForms;
     private Box<Dataset> boxDatasets;
     private Box<CoreFormColumnOptions> boxCoreFormColumnOptions;
+
+    private DateUtil dateUtil = Bootstrap.getDateUtil();
 
     public MemberDetailsFragment() {
         // Required empty public constructor
@@ -182,7 +186,7 @@ public class MemberDetailsFragment extends Fragment {
             date = member.getStartDate();
         }
 
-        return StringUtil.formatYMD(date);
+        return dateUtil.formatYMD(date);
     }
 
     private String getParentName(String name){

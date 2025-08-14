@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment;
 import com.google.gson.Gson;
 
 import org.philimone.hds.explorer.R;
+import org.philimone.hds.explorer.database.Bootstrap;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
 import org.philimone.hds.explorer.database.Queries;
 import org.philimone.hds.explorer.fragment.MemberFilterDialog;
@@ -48,6 +49,7 @@ import java.util.stream.Collectors;
 import io.objectbox.Box;
 import io.objectbox.query.QueryBuilder;
 import mz.betainteractive.odk.FormUtilities;
+import mz.betainteractive.utilities.DateUtil;
 import mz.betainteractive.utilities.GeneralUtil;
 import mz.betainteractive.utilities.StringUtil;
 
@@ -69,6 +71,8 @@ public class ChangeHeadFormUtil extends FormUtil<HeadRelationship> {
 
     private List<Member> householdResidents;
     private int minimunHeadAge;
+
+    private DateUtil dateUtil = Bootstrap.getDateUtil();
 
     public ChangeHeadFormUtil(Fragment fragment, Context context, Visit visit, Household household, FormUtilities odkFormUtilities, FormUtilListener<HeadRelationship> listener){
         super(fragment, context, FormUtil.getChangeHeadForm(context), odkFormUtilities, listener);
@@ -377,17 +381,19 @@ public class ChangeHeadFormUtil extends FormUtil<HeadRelationship> {
         HeadRelationship newHeadLastRelationship = getLastHeadRelationship(newHeadCode);
         List<HeadRelationship> lastMembersRelationships = oldHeadMemberRelationships;
 
+        newHeadLastRelationship = currentMode==Mode.EDIT ? getLastHeadRelationship(newHeadCode, newHeadLastRelationship) : newHeadLastRelationship; //when editing the newHeadLastRelationship is the last created by this event
+
         //eventDate vs newHeadLastRelationship.startDate
         if (newHeadLastRelationship != null && newHeadLastRelationship.startDate != null && eventDate.before(newHeadLastRelationship.startDate)){
             //The event date cannot be before the [start date] of the [new Head of Household] last Head Relationship record.
-            String message = this.context.getString(R.string.changehead_eventdate_not_before_new_head_hrelationship_startdate_lbl, StringUtil.formatYMD(eventDate), newHeadLastRelationship.startType.code, StringUtil.formatYMD(newHeadLastRelationship.startDate));
+            String message = this.context.getString(R.string.changehead_eventdate_not_before_new_head_hrelationship_startdate_lbl, dateUtil.formatYMD(eventDate), newHeadLastRelationship.startType.code, dateUtil.formatYMD(newHeadLastRelationship.startDate));
             return new ValidationResult(colEventDate, message);
         }
 
         for (HeadRelationship relationship : lastMembersRelationships) {
             if (relationship != null && relationship.startDate != null && eventDate.before(relationship.startDate)){
                 //The event date cannot be before the [start date] of the Member[??????] last Head Relationship record.
-                String message = this.context.getString(R.string.changehead_eventdate_not_before_member_hrelationship_startdate_lbl, StringUtil.formatYMD(eventDate), relationship.memberCode, relationship.startType.code, StringUtil.formatYMD(relationship.startDate));
+                String message = this.context.getString(R.string.changehead_eventdate_not_before_member_hrelationship_startdate_lbl, dateUtil.formatYMD(eventDate), relationship.memberCode, relationship.startType.code, dateUtil.formatYMD(relationship.startDate));
                 return new ValidationResult(colEventDate, message);
             }
         }
@@ -399,6 +405,16 @@ public class ChangeHeadFormUtil extends FormUtil<HeadRelationship> {
         if (StringUtil.isBlank(memberCode)) return null;
 
         HeadRelationship lastHeadRelationship = this.boxHeadRelationships.query(HeadRelationship_.memberCode.equal(memberCode))
+                .orderDesc(HeadRelationship_.startDate)
+                .build().findFirst();
+
+        return lastHeadRelationship;
+    }
+
+    private HeadRelationship getLastHeadRelationship(String memberCode, HeadRelationship excludeHeadRelationship) {
+        if (StringUtil.isBlank(memberCode)) return null;
+
+        HeadRelationship lastHeadRelationship = this.boxHeadRelationships.query(HeadRelationship_.memberCode.equal(memberCode).and(HeadRelationship_.id.notEqual(excludeHeadRelationship.id)))
                 .orderDesc(HeadRelationship_.startDate)
                 .build().findFirst();
 

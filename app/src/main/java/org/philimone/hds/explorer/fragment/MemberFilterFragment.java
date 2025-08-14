@@ -29,7 +29,7 @@ import android.widget.EditText;
 import org.philimone.hds.explorer.R;
 import org.philimone.hds.explorer.listeners.BarcodeContextMenuClickedListener;
 import org.philimone.hds.explorer.main.BarcodeScannerActivity;
-import org.philimone.hds.explorer.widget.NumberPicker;
+import org.philimone.hds.forms.widget.utilities.NumberPicker;
 
 import java.lang.reflect.Field;
 

@@ -12,6 +12,7 @@ import io.objectbox.annotation.Convert;
 import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Id;
 import io.objectbox.annotation.Unique;
+import mz.betainteractive.utilities.DateUtil;
 import mz.betainteractive.utilities.StringUtil;
 
 /**
@@ -79,7 +80,7 @@ public class SyncReport implements Serializable {
 
     public void setDate(String date) {
         if (date != null && !date.isEmpty()){
-            this.date = StringUtil.toDate(date, "yyyy-MM-dd HH:mm:ss");
+            this.date = DateUtil.toDateYMDHMS(date);
             return;
         }
 

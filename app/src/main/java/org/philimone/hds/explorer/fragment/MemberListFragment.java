@@ -386,15 +386,16 @@ public class MemberListFragment extends Fragment {
             if (!m.isGpsNull()) {
                 double lat = m.getGpsLatitude();
                 double lon = m.getGpsLongitude();
-                points.add(new MapMarker(lat, lon, m.getName(), m.getCode()));
+                MapMarker marker = new MapMarker(lat, lon, m.getName(), m.getCode());
+                points.add(marker);
 
                 //put point on a java map organized by houseNumber
                 if (gpsMapHouseMembers.containsKey(m.getHouseholdName())){
                     List<MapMarker> list = gpsMapHouseMembers.get(m.getHouseholdName());
-                    list.add(points.get(i));
+                    list.add(marker);
                 }else{
                     List<MapMarker> list = new ArrayList<MapMarker>();
-                    list.add(points.get(i));
+                    list.add(marker);
                     gpsMapHouseMembers.put(m.getHouseholdName(), list);
                 }
 

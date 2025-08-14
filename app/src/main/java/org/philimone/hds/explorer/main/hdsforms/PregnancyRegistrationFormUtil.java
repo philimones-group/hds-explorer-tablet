@@ -32,6 +32,7 @@ import java.util.HashMap;
 import io.objectbox.Box;
 import io.objectbox.query.QueryBuilder;
 import mz.betainteractive.odk.FormUtilities;
+import mz.betainteractive.utilities.DateUtil;
 import mz.betainteractive.utilities.GeneralUtil;
 import mz.betainteractive.utilities.StringUtil;
 
@@ -462,9 +463,9 @@ public class PregnancyRegistrationFormUtil extends FormUtil<PregnancyRegistratio
             //calculateEdd('2022-09-28', '2021-11-29','2')
             //calculateEdd('2022-09-28',\\s+'2021-11-29',\\s+'2')
 
-            Date recordedDate = StringUtil.toDateYMD(args[0]);
-            Date eddDate = StringUtil.toDateYMD(args[1]);
-            Date lmpDate = StringUtil.toDateYMD(args[2]);
+            Date recordedDate = DateUtil.toDateYMD(args[0]); //its gregorian date - all arguments are
+            Date eddDate = DateUtil.toDateYMD(args[1]);
+            Date lmpDate = DateUtil.toDateYMD(args[2]);
             Integer pregMonths = StringUtil.toInteger(args[3]);
 
             Log.d("args", args[0]+","+args[1]+","+args[2]+","+args[3]);
@@ -472,18 +473,18 @@ public class PregnancyRegistrationFormUtil extends FormUtil<PregnancyRegistratio
             String result = "'CALC ERROR!!!'";
 
             if (eddDate != null) {
-                result = StringUtil.formatYMD(eddDate);
+                result = DateUtil.formatGregorianYMD(eddDate); //must be gregorian because it will use columnView.setValue
             } else {
                 if (lmpDate != null) {
                     //lmpDate+280days
                     eddDate = GeneralUtil.getDateAdd(lmpDate, 280);
-                    result = StringUtil.formatYMD(eddDate);
+                    result = DateUtil.formatGregorianYMD(eddDate);
                 } else if (pregMonths != null){
                     int pdays = pregMonths*4*7;
                     //Date pdate = GeneralUtil.getDateAdd(recordedDate, -1*pdays);
                     Date pdate = GeneralUtil.getDateAdd(new Date(), -1*pdays); //calculation is done using today's date, recordedDate is a visitDate
                     eddDate = GeneralUtil.getDateAdd(pdate, 280);
-                    result = StringUtil.formatYMD(eddDate);
+                    result = DateUtil.formatGregorianYMD(eddDate);
                 }
             }
 

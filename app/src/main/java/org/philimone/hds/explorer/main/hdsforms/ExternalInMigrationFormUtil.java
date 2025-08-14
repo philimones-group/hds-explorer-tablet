@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment;
 import com.google.gson.Gson;
 
 import org.philimone.hds.explorer.R;
+import org.philimone.hds.explorer.database.Bootstrap;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
 import org.philimone.hds.explorer.database.Queries;
 import org.philimone.hds.explorer.fragment.MemberFilterDialog;
@@ -51,6 +52,7 @@ import java.util.Map;
 import io.objectbox.Box;
 import io.objectbox.query.QueryBuilder;
 import mz.betainteractive.odk.FormUtilities;
+import mz.betainteractive.utilities.DateUtil;
 import mz.betainteractive.utilities.GeneralUtil;
 import mz.betainteractive.utilities.StringUtil;
 
@@ -78,6 +80,8 @@ public class ExternalInMigrationFormUtil extends FormUtil<Inmigration> {
     private Map<String, String> mapSavedStates = new HashMap<>();
     private Residency savedResidency;
     private HeadRelationship savedHeadRelationship;
+
+    private DateUtil dateUtil = Bootstrap.getDateUtil();
 
     private final String PHONE_NUMBER_REGEX = "^(\\+?\\d{1,3})?[-.\\s]?\\(?\\d{2,4}\\)?[-.\\s]?\\d{3,5}[-.\\s]?\\d{4,6}$";
 
@@ -190,7 +194,7 @@ public class ExternalInMigrationFormUtil extends FormUtil<Inmigration> {
             preloadedMap.put("memberCode", returningMember.code);
             preloadedMap.put("memberName", returningMember.name);
             preloadedMap.put("memberGender", returningMember.gender.code);
-            preloadedMap.put("memberDob", StringUtil.formatYMD(returningMember.dob));
+            preloadedMap.put("memberDob", DateUtil.formatGregorianYMD(returningMember.dob)); //must be gregorian date because its dealing with internal dates
             preloadedMap.put("originCode", returningMember.householdCode); //but I dont think we need this since the member is coming from outside the dss
             preloadedMap.put("education", returningMember.education);
             preloadedMap.put("religion", returningMember.religion);
@@ -359,35 +363,6 @@ public class ExternalInMigrationFormUtil extends FormUtil<Inmigration> {
             return new ValidationResult(colMemberCode, message);
         }
 
-        //Validate previous residencies and relationships
-        //XEN-ENTRY - is the first entry there is no check on previous data
-        //XEN-REENTRY - Must check dates
-
-        if (externalInMigrationType == ExternalInMigrationType.REENTRY) {
-            //check Member last closed headtype status - if returning to DSS
-            Residency lastResidency = getLastResidency(memberCode);
-            HeadRelationship lastRelationship = getLastHeadRelationship(memberCode);
-
-            //No need to check the lastResidency endType because we already filtered the member as EXT
-
-            if (lastRelationship != null && lastRelationship.endType == HeadRelationshipEndType.NOT_APPLICABLE) {
-                String message = this.context.getString(R.string.external_inmigration_head_relationship_opened_lbl);
-                return new ValidationResult(colMemberCode, message);
-            }
-
-            //check dates - for new residency and new head_relationship
-            //migrationDate vs lastResidency.endDate
-            if (lastResidency != null && lastResidency.endDate != null && migrationDate.before(lastResidency.endDate)){ //is before dob
-                String message = this.context.getString(R.string.external_inmigration_migrationdate_not_before_residency_enddate_lbl, StringUtil.formatYMD(migrationDate), lastResidency.endType.code, StringUtil.formatYMD(lastResidency.endDate));
-                return new ValidationResult(colMigrationDate, message);
-            }
-            //migrationDate vs lastRelationship.endDate
-            if (lastRelationship != null && lastRelationship.endDate != null && migrationDate.before(lastRelationship.endDate)){ //is before dob
-                String message = this.context.getString(R.string.external_inmigration_migrationdate_not_before_hrelationship_enddate_lbl, StringUtil.formatYMD(migrationDate), lastRelationship.endType.code, StringUtil.formatYMD(lastRelationship.endDate));
-                return new ValidationResult(colMigrationDate, message);
-            }
-        }
-
         //validate phone numbers
         if (hasPhoneNumbers) {
 
@@ -401,6 +376,38 @@ public class ExternalInMigrationFormUtil extends FormUtil<Inmigration> {
                 return new ValidationResult(colPhoneAlternative, message);
             }
         }
+
+        //Validate previous residencies and relationships
+        //XEN-ENTRY - is the first entry there is no check on previous data
+        //XEN-REENTRY - Must check dates
+
+        if (externalInMigrationType == ExternalInMigrationType.REENTRY) {
+            //check Member last closed headtype status - if returning to DSS
+            Residency lastResidency = getLastResidency(memberCode);
+            HeadRelationship lastRelationship = getLastHeadRelationship(memberCode);
+            lastResidency = currentMode==Mode.EDIT ? getLastResidency(memberCode, lastResidency) : lastResidency; //when editing the lastResidency is the last created by this event
+            lastRelationship = currentMode==Mode.EDIT ? getLastHeadRelationship(memberCode, lastRelationship) : lastRelationship; //when editing the lastRelationship is the last created by this event
+
+            //No need to check the lastResidency endType because we already filtered the member as EXT
+
+            if (lastRelationship != null && lastRelationship.endType == HeadRelationshipEndType.NOT_APPLICABLE) {
+                String message = this.context.getString(R.string.external_inmigration_head_relationship_opened_lbl);
+                return new ValidationResult(colMemberCode, message);
+            }
+
+            //check dates - for new residency and new head_relationship
+            //migrationDate vs lastResidency.endDate
+            if (lastResidency != null && lastResidency.endDate != null && migrationDate.before(lastResidency.endDate)){ //is before dob
+                String message = this.context.getString(R.string.external_inmigration_migrationdate_not_before_residency_enddate_lbl, dateUtil.formatYMD(migrationDate), lastResidency.endType.code, dateUtil.formatYMD(lastResidency.endDate));
+                return new ValidationResult(colMigrationDate, message);
+            }
+            //migrationDate vs lastRelationship.endDate
+            if (lastRelationship != null && lastRelationship.endDate != null && migrationDate.before(lastRelationship.endDate)){ //is before dob
+                String message = this.context.getString(R.string.external_inmigration_migrationdate_not_before_hrelationship_enddate_lbl, dateUtil.formatYMD(migrationDate), lastRelationship.endType.code, dateUtil.formatYMD(lastRelationship.endDate));
+                return new ValidationResult(colMigrationDate, message);
+            }
+        }
+
 
         return ValidationResult.noErrors();
     }
@@ -430,6 +437,16 @@ public class ExternalInMigrationFormUtil extends FormUtil<Inmigration> {
         return lastHeadRelationship;
     }
 
+    private HeadRelationship getLastHeadRelationship(String memberCode, HeadRelationship excludeHeadRelationship) {
+        if (StringUtil.isBlank(memberCode)) return null;
+
+        HeadRelationship lastHeadRelationship = this.boxHeadRelationships.query(HeadRelationship_.memberCode.equal(memberCode).and(HeadRelationship_.id.notEqual(excludeHeadRelationship.id)))
+                .orderDesc(HeadRelationship_.startDate)
+                .build().findFirst();
+
+        return lastHeadRelationship;
+    }
+
     private Residency getLastResidency(String memberCode) {
         if (StringUtil.isBlank(memberCode)) return null;
 
@@ -439,7 +456,17 @@ public class ExternalInMigrationFormUtil extends FormUtil<Inmigration> {
 
         return lastResidency;
     }
-    
+
+    private Residency getLastResidency(String memberCode, Residency excludeResidency) {
+        if (StringUtil.isBlank(memberCode)) return null;
+
+        Residency lastResidency = this.boxResidencies.query(Residency_.memberCode.equal(memberCode).and(Residency_.id.notEqual(excludeResidency.id)))
+                .orderDesc(Residency_.startDate)
+                .build().findFirst();
+
+        return lastResidency;
+    }
+
     @Override
     public void onBeforeFormFinished(HForm form, CollectedDataMap collectedValues) {
         //using it to update collectedHouseholdId, collectedMemberId
@@ -1071,7 +1098,7 @@ public class ExternalInMigrationFormUtil extends FormUtil<Inmigration> {
 
         if (methodExpression.startsWith("calculateAge")){
 
-            Date dobDate = StringUtil.toDateYMD(args[0]);
+            Date dobDate = DateUtil.toDateYMD(args[0]); //its gregorian date comes from ColumnView.getValue
             int age = -1;
 
             if (dobDate != null) {

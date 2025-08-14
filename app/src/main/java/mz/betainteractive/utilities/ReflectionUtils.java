@@ -26,7 +26,7 @@ public class ReflectionUtils {
             if (obj instanceof Date) {
                 Date dateValue = (Date) obj;
 
-                return StringUtil.formatPrecise(dateValue);
+                return DateUtil.formatGregorianPrecise(dateValue); //uses gregorian dates internally - so external datasets should use gregorian dates
             }
 
             return obj.toString();

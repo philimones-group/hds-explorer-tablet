@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment;
 import io.objectbox.Box;
 import io.objectbox.query.QueryBuilder;
 import mz.betainteractive.odk.FormUtilities;
+import mz.betainteractive.utilities.DateUtil;
 import mz.betainteractive.utilities.StringUtil;
 
 import android.util.Log;
@@ -21,6 +22,7 @@ import android.widget.TextView;
 import org.philimone.hds.explorer.R;
 import org.philimone.hds.explorer.adapter.UploadCoreCollectedDataAdapter;
 import org.philimone.hds.explorer.adapter.model.UploadCollectedDataItem;
+import org.philimone.hds.explorer.database.Bootstrap;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
 import org.philimone.hds.explorer.io.SyncUploadEntitiesTask;
 import org.philimone.hds.explorer.io.UploadEntityReport;
@@ -75,6 +77,8 @@ public class SyncUploadPanelFragment extends Fragment implements SyncUploadEntit
     private FormUtilities odkFormUtilities;
 
     private SyncPanelActivity.SyncFragmentListener syncFragmentListener;
+
+    private DateUtil dateUtil = Bootstrap.getDateUtil();
 
     public SyncUploadPanelFragment() {
         // Required empty public constructor
@@ -261,7 +265,7 @@ public class SyncUploadPanelFragment extends Fragment implements SyncUploadEntit
         boolean noUploadsYet = this.boxCoreCollectedData.query().equal(CoreCollectedData_.uploaded, true).build().count()==0;
         CoreCollectedData lastCCD = noUploadsYet ? null : this.boxCoreCollectedData.query().orderDesc(CoreCollectedData_.uploadedDate).build().findFirst();
 
-        String date = (lastCCD == null) ? getString(R.string.server_sync_status_notsynced_lbl) : StringUtil.format(lastCCD.uploadedDate, "yyyy-MM-dd HH:mm:ss");
+        String date = (lastCCD == null) ? getString(R.string.server_sync_status_notsynced_lbl) : dateUtil.formatYMDHMS(lastCCD.uploadedDate); //, "yyyy-MM-dd HH:mm:ss");
         long uploaded = this.boxCoreCollectedData.query().equal(CoreCollectedData_.uploaded, true).build().count();;
         long notuploaded = this.boxCoreCollectedData.query().equal(CoreCollectedData_.uploaded, false).build().count();;
         long uploadederror = this.boxCoreCollectedData.query().equal(CoreCollectedData_.uploadedWithError, true).build().count();;

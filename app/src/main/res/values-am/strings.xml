@@ -641,7 +641,8 @@
     <string name="death_new_head_select_lbl">አዲሱን የቤተሰብ አለቃ ይምረጡ</string>
     <string name="death_dialog_change_title_lbl">የሞት መረጃ አዘምን</string>
     <string name="death_dialog_head_change_lbl">ሞተው የነበሩትን አባል አዲስ አለቃ ማዘምን ትፈልጋለህ?</string>
-
+    <string name="death_hoh_removal_info_title_lbl">የቤተሰብ አለቃ ሞት</string>
+    <string name="death_hoh_minors_left_warning_lbl">ይህ ቤተሰብ ብቻ የሚኖሩ አነስተኛ ነዋሪዎች አሉት።\nእንዲቀጥሉ ከመፈለጉ፣ አነስተኛ ጊዜያዊ አለቃ ይሆናል።\nበቶሎ ወኪል ወይም እንክብካቤ አስደኪ እንዲሾሙ እንመክራለን።</string>
 
     <!-- change head registration -->
     <string name="changehead_dialog_change_title_lbl">የአለቃ ለውጥ መረጃ አዘምን</string>
@@ -657,6 +658,8 @@
     <string name="changehead_new_head_select_lbl">አዲሱን የቤተሰብ አለቃ ይምረጡ</string>
     <string name="changehead_new_head_is_head_of_household_lbl">አዲሱ አለቃ አሁንም የሌላ ቤተሰብ አለቃ ነው። ከሌላ ቤተሰብ የአለቃነቱን ግንኙነት በመጨረሻ መጀመር አለበት።</string>
     <string name="changehead_head_dont_exists_lbl">ይህ ቤተሰብ በአሁኑ ወቅት ተናዳጅ አለቃ የለውም፣ አዲሱ አለቃ መመረጥ አለበት።</string>
+    <string name="changehead_hoh_minors_info_title_lbl">የቤተሰብ አለቃ መቀየር</string>
+    <string name="changehead_hoh_minors_left_warning_lbl">ከአሁኑ አለቃ በቀር ይህ ቤተሰብ ብቻ አነስተኛ ነዋሪዎች አሉት።\nእንዲቀጥሉ ከመፈለጉ፣ አነስተኛ ጊዜያዊ አለቃ ይሆናል።\n\nትቀጥላለህ?</string>
 
     <!-- change region head -->
     <string name="changeregionhead_dialog_change_title_lbl">መረጃ አዘምን</string>

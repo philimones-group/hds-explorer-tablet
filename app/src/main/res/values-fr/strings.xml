@@ -641,7 +641,8 @@
     <string name="death_new_head_select_lbl">Sélectionnez le nouveau chef de ménage</string>
     <string name="death_dialog_change_title_lbl">Mise à jour des données</string>
     <string name="death_dialog_head_change_lbl">Voulez-vous mettre à jour/changer le nouveau chef de ménage du membre décédé?</string>
-
+    <string name="death_hoh_removal_info_title_lbl">Décès du Chef de Ménage</string>
+    <string name="death_hoh_minors_left_warning_lbl">Ce ménage ne compte que des mineurs.\nSi vous continuez, un mineur sera désigné comme chef temporaire.\nNous recommandons de nommer un tuteur ou un représentant dès que possible.</string>
 
     <!-- change head registration -->
     <string name="changehead_dialog_change_title_lbl">Mise à jour des données</string>
@@ -657,6 +658,8 @@
     <string name="changehead_new_head_select_lbl">Sélectionnez le nouveau chef de ménage</string>
     <string name="changehead_new_head_is_head_of_household_lbl">Le nouveau chef de ménage est le chef d\'un autre ménage. Vous devez d\'abord cesser d\'être le chef pour devenir le chef de celui-ci!</string>
     <string name="changehead_head_dont_exists_lbl">Ce ménage n\'a pas de chef de ménage actif, un nouveau chef de ménage doit être sélectionné.</string>
+    <string name="changehead_hoh_minors_info_title_lbl">Changement de Chef de Ménage</string>
+    <string name="changehead_hoh_minors_left_warning_lbl">À part le chef actuel, ce ménage ne compte que des mineurs.\nSi vous continuez, un mineur sera désigné comme chef temporaire.\n\nVoulez-vous continuer&nbsp;?</string>
 
     <!-- change region head -->
     <string name="changeregionhead_dialog_change_title_lbl">Mettre à jour les Données</string>

@@ -641,7 +641,8 @@
     <string name="death_new_head_select_lbl">Select the new Head of Household</string>
     <string name="death_dialog_change_title_lbl">Update Death Info</string>
     <string name="death_dialog_head_change_lbl">Do you want to update the new head of the household of the dead member?</string>
-
+    <string name="death_hoh_removal_info_title_lbl">Death of Head of Household</string>
+    <string name="death_hoh_minors_left_warning_lbl">This household has only minors.\nIf you continue, a minor will be set as the temporary head.\nWe recommend appointing a proxy or guardian as soon as possible.</string>
 
     <!-- change head registration -->
     <string name="changehead_dialog_change_title_lbl">Update Change Head Info</string>
@@ -657,6 +658,8 @@
     <string name="changehead_new_head_select_lbl">Select the new Head of Household</string>
     <string name="changehead_new_head_is_head_of_household_lbl">The new Head of Household is a Head of another household. Must first end his current Head Relationship to declare it as head of another!</string>
     <string name="changehead_head_dont_exists_lbl">This Household doesn\'t have an active Head of Household, a new Head of Household must be selected</string>
+    <string name="changehead_hoh_minors_info_title_lbl">Change Head of Household</string>
+    <string name="changehead_hoh_minors_left_warning_lbl">Apart from the current head, this household has only minors.\nIf you continue, a minor will be set as the temporary head.\n\nDo you want to proceed?</string>
 
     <!-- change region head -->
     <string name="changeregionhead_dialog_change_title_lbl">Update Data</string>

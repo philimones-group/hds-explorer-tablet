@@ -578,7 +578,9 @@ public class HouseholdVisitFragment extends Fragment {
     private void setHouseholdMode() {
         this.currentEventMode = VisitEventsMode.HOUSEHOLD_EVENTS;
         boolean isCensusHousehold = this.household.recentlyCreated;
-        boolean isEmptyHousehold = boxResidencies.query(Residency_.householdCode.equal(household.code).and(Residency_.endType.equal(ResidencyEndType.NOT_APPLICABLE.code))).build().count() == 0;
+        long nrResidents = boxResidencies.query(Residency_.householdCode.equal(household.code).and(Residency_.endType.equal(ResidencyEndType.NOT_APPLICABLE.code))).build().count();
+        boolean isEmptyHousehold = nrResidents == 0;
+        boolean hasOneResident = nrResidents == 1;
         clearMemberSelection();
 
         //Row 1
@@ -586,7 +588,7 @@ public class HouseholdVisitFragment extends Fragment {
         this.btnVisitMemberIncomplete.setEnabled(false);
         this.btnVisitBirthReg.setEnabled(false);
         this.btnVisitPregnancyReg.setEnabled(false);
-        this.btnVisitChangeHead.setEnabled(true && !isCensusHousehold);
+        this.btnVisitChangeHead.setEnabled(!hasOneResident && !isCensusHousehold);
         //Row 2
         this.btnVisitExtInmigration.setEnabled(true); // && !isCensusHousehold
         this.btnVisitChangeRegionHead.setEnabled(false);
@@ -622,7 +624,7 @@ public class HouseholdVisitFragment extends Fragment {
         //disable buttons if already collected and ready to edit
         //ChangeHead - must be collected one per visit
         CoreCollectedData ccdataChangeHead = this.boxCoreCollectedData.query(CoreCollectedData_.visitId.equal(visit.id).and(CoreCollectedData_.formEntity.equal(CoreFormEntity.CHANGE_HOUSEHOLD_HEAD.code))).build().findFirst();
-        btnVisitChangeHead.setEnabled(ccdataChangeHead == null && !isCensusHousehold);
+        btnVisitChangeHead.setEnabled(ccdataChangeHead == null && !isCensusHousehold && !hasOneResident);
 
         Log.d("household-visit"+visit.id, "changehead="+ccdataChangeHead);
 
@@ -1410,12 +1412,14 @@ public class HouseholdVisitFragment extends Fragment {
         ChangeHeadFormUtil formUtil = ChangeHeadFormUtil.newInstance(mode, this, this.getContext(), this.visit, this.household, headRelationship, this.odkFormUtilities, new FormUtilListener<HeadRelationship>() {
             @Override
             public void onNewEntityCreated(HeadRelationship headRelationship, Map<String, Object> data) {
+                setHouseholdMode();
                 loadDataToListViews();
                 updateHouseholdDetails();
             }
 
             @Override
             public void onEntityEdited(HeadRelationship headRelationship, Map<String, Object> data) {
+                setHouseholdMode();
                 loadDataToListViews();
                 updateHouseholdDetails();
             }

@@ -48,6 +48,7 @@ import org.philimone.hds.explorer.model.Residency_;
 import org.philimone.hds.explorer.model.Visit;
 import org.philimone.hds.explorer.model.Visit_;
 import org.philimone.hds.explorer.model.enums.CoreFormEntity;
+import org.philimone.hds.explorer.model.enums.HeadRelationshipType;
 import org.philimone.hds.explorer.model.enums.MaritalEndStatus;
 import org.philimone.hds.explorer.model.enums.temporal.ExternalInMigrationType;
 import org.philimone.hds.explorer.model.enums.temporal.HeadRelationshipEndType;
@@ -263,28 +264,94 @@ public class CoreCollectedDataDeletionUtil {
         HeadRelationship currentHeadRel = boxHeadRelationships.get(cdata.formEntityId); //.query(HeadRelationship_.collectedId.equal(cdata.collectedId)).build().findFirst();
 
         if (currentHeadRel != null) {
+
+            Map<String, String> mapSavedStates = new HashMap<>();
+
+            SavedEntityState savedState = this.boxSavedEntityStates.query(SavedEntityState_.formEntity.equal(CoreFormEntity.CHANGE_HOUSEHOLD_HEAD.code)
+                    .and(SavedEntityState_.collectedId.equal(currentHeadRel.id))
+                    .and(SavedEntityState_.objectKey.equal("changeHeadFormUtilState"))).build().findFirst();
+
+            if (savedState != null) {
+                HashMap map = new Gson().fromJson(savedState.objectGsonValue, HashMap.class);
+                for (Object key : map.keySet()) {
+                    mapSavedStates.put(key.toString(), map.get(key).toString());
+                }
+            }
+
+            String oldHeadCode = mapSavedStates.get("oldHeadCode");
+            String oldHeadRelatId = mapSavedStates.get("oldHeadMemberRelationshipId");
+            String oldHeadRelatIdList = mapSavedStates.get("oldHeadMemberRelationshipIdList");
+            String newHeadRelatIdList = mapSavedStates.get("newHeadRelationshipsList");
+            String newHeadPreviousRelType = mapSavedStates.get("newHeadPreviousRelationshipType");
+
             Household household = boxHouseholds.query(Household_.code.equal(currentHeadRel.householdCode)).build().findFirst();
             Member currentHead = boxMembers.query(Member_.code.equal(currentHeadRel.memberCode)).build().findFirst();
-            Date eventDate = GeneralUtil.getDateAdd(currentHeadRel.startDate, -1); //the event date that will be used on endDate to get the previous head of household
+            Member oldHeadMember = null;
+            HeadRelationship oldHeadMemberRelationship = null;
+            List<HeadRelationship> oldHeadMemberRelationships = new ArrayList<>();
+            List<HeadRelationship> newHeadMemberRelationships = new ArrayList<>();
+            HeadRelationshipType newHeadMemberPreviousRelatType = HeadRelationshipType.OTHER_RELATIVE;
 
+            if (oldHeadCode != null) {
+                oldHeadMember = this.boxMembers.query(Member_.code.equal(oldHeadCode)).build().findFirst();
+            }
+            if (oldHeadRelatId != null) {
+                oldHeadMemberRelationship = this.boxHeadRelationships.get(Long.parseLong(oldHeadRelatId));
+            }
+            if (newHeadPreviousRelType != null) {
+                newHeadMemberPreviousRelatType = HeadRelationshipType.getFrom(newHeadPreviousRelType);
+            }
+            if (oldHeadRelatIdList != null) {
+                oldHeadMemberRelationships = new ArrayList<>();
+                for (String strId : oldHeadRelatIdList.split(",")) {
+                    HeadRelationship headRelationship = this.boxHeadRelationships.get(Long.parseLong(strId));
+                    oldHeadMemberRelationships.add(headRelationship);
+                }
+            }
+            if (newHeadRelatIdList != null) {
+                newHeadMemberRelationships = new ArrayList<>();
+                for (String strId : newHeadRelatIdList.split(",")) {
+                    HeadRelationship headRelationship = this.boxHeadRelationships.get(Long.parseLong(strId));
+                    newHeadMemberRelationships.add(headRelationship);
+                }
+            }
 
             if (household != null) {
-                List<HeadRelationship> previousHeadRelationships = boxHeadRelationships.query(HeadRelationship_.householdCode.equal(household.code)
-                                .and(HeadRelationship_.endType.equal(HeadRelationshipEndType.CHANGE_OF_HEAD_OF_HOUSEHOLD.code))
-                                .and(HeadRelationship_.endDate.equal(eventDate)))
-                        .build().find();
-
                 //restore previous head relationships end status
-                if (previousHeadRelationships != null) {
-                    for (HeadRelationship headrel : previousHeadRelationships) {
-                        headrel.endType = HeadRelationshipEndType.NOT_APPLICABLE;
-                        headrel.endDate = null;
-                        this.boxHeadRelationships.put(headrel);
+                if (oldHeadMemberRelationships != null) {
+                    for (HeadRelationship obj : oldHeadMemberRelationships) {
+                        obj.endType = HeadRelationshipEndType.NOT_APPLICABLE;
+                        obj.endDate = null;
+                        this.boxHeadRelationships.put(obj);
+
+                        Member member = Queries.getMemberByCode(boxMembers, obj.memberCode);
+                        member.headRelationshipType = obj.relationshipType;
+                        boxMembers.put(member);
                     }
                 }
 
+                if (currentHead != null) {
+                    currentHead.headRelationshipType = newHeadMemberPreviousRelatType;
+                    boxMembers.put(currentHead);
+                }
+
+                if (oldHeadMemberRelationship != null) {
+                    oldHeadMemberRelationship.endType = HeadRelationshipEndType.NOT_APPLICABLE;
+                    oldHeadMemberRelationship.endDate = null;
+                    boxHeadRelationships.put(oldHeadMemberRelationship);
+                }
+
+                if (oldHeadMember != null) {
+                    household.headCode = oldHeadMember.code;
+                    household.headName = oldHeadMember.name;
+                    boxHouseholds.put(household);
+                }
+
                 //delete all the current head relationships with the currentHead
-                boxHeadRelationships.query(HeadRelationship_.householdCode.equal(household.code).and(HeadRelationship_.headCode.equal(currentHead.code)).and(HeadRelationship_.startDate.equal(currentHead.startDate))).build().remove();
+                for (HeadRelationship obj : newHeadMemberRelationships) {
+                    if (obj != null)
+                        boxHeadRelationships.remove(obj);
+                }
 
             }
 

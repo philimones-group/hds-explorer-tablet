@@ -89,6 +89,7 @@ public class DeathFormUtil extends FormUtil<Death> {
     private int minimunHeadAge;
 
     private DateUtil dateUtil = Bootstrap.getDateUtil();
+    private boolean onlyMinorsLeftInHousehold;
 
     public DeathFormUtil(Fragment fragment, Context context, Visit visit, Household household, Member member, FormUtilities odkFormUtilities, FormUtilListener<Death> listener){
         super(fragment, context, FormUtil.getDeathForm(context), odkFormUtilities, listener);
@@ -143,6 +144,8 @@ public class DeathFormUtil extends FormUtil<Death> {
     protected void initialize(){
         super.initialize();
 
+        this.minimunHeadAge = retrieveMinimumHeadAge();
+
         if (currentMode == Mode.CREATE) {
             this.isHouseholdHead = this.boxHeadRelationships.query(
                             HeadRelationship_.householdCode.equal(this.household.code)
@@ -181,14 +184,14 @@ public class DeathFormUtil extends FormUtil<Death> {
                     .orderDesc(MaritalRelationship_.startDate)
                     .build().find();
 
+            calculateHelperVariables();
+
         } else if (currentMode == Mode.EDIT) {
 
             readSavedEntityState();
 
             //reading isHouseholdHead, memberResidency, memberHeadRelationship, memberMaritalRelationship, headMemberHeadRelationships
         }
-
-        this.minimunHeadAge = retrieveMinimumHeadAge();
 
         //get spouse
         /*if (this.memberMaritalRelationship != null) {
@@ -228,6 +231,7 @@ public class DeathFormUtil extends FormUtil<Death> {
         String newHeadCode = mapSavedStates.get("previousNewHeadCode");
         String headRelationshipType = mapSavedStates.get("previousNewHeadRelationshipType");
         String isHouseholdHeadVar = mapSavedStates.get("isHouseholdHead");
+        String onlyMinorsLeftInHouseholdVar = mapSavedStates.get("onlyMinorsLeftInHousehold");
         String memberResidencyId = mapSavedStates.get("memberResidency");
         String memberHeadRelationshipId = mapSavedStates.get("memberHeadRelationship");
         String memberMaritalRelationshipIdList = mapSavedStates.get("memberMaritalRelationshipIdList");
@@ -241,6 +245,9 @@ public class DeathFormUtil extends FormUtil<Death> {
         }
         if (isHouseholdHeadVar != null) {
             this.isHouseholdHead = Boolean.parseBoolean(isHouseholdHeadVar);
+        }
+        if (onlyMinorsLeftInHouseholdVar != null) {
+            this.onlyMinorsLeftInHousehold = Boolean.parseBoolean(onlyMinorsLeftInHouseholdVar);
         }
         if (memberResidencyId != null) {
             this.memberResidency = this.boxResidencies.get(Long.parseLong(memberResidencyId));
@@ -271,9 +278,10 @@ public class DeathFormUtil extends FormUtil<Death> {
     private List<Member> getHouseholdResidents() {
 
         //order list with new head of household as the first id
-
+        //exclude the recently dead member
         List<Residency> residencies = this.boxResidencies.query(
-                Residency_.householdCode.equal(this.household.code).and(Residency_.endType.equal(ResidencyEndType.NOT_APPLICABLE.code)))
+                Residency_.householdCode.equal(this.household.code).and(Residency_.endType.equal(ResidencyEndType.NOT_APPLICABLE.code))
+                        .and(Residency_.memberCode.notEqual(this.member.code)))
                 .order(Residency_.memberCode)
                 .build().find();
 
@@ -448,8 +456,7 @@ public class DeathFormUtil extends FormUtil<Death> {
             return new ValidationResult(colDeathDate, message);
         }
 
-        boolean isAlone = isTheOnlyHouseholdMember(memberCode, household.code);
-        if (isHouseholdHead && !isAlone && StringUtil.isBlank(newHeadCode)){
+        if (isHouseholdHead && !isLastMemberOfHousehold && StringUtil.isBlank(newHeadCode)){
             String message = this.context.getString(R.string.death_new_head_code_empty_lbl);
             return new ValidationResult(colNewHeadCode, message);
         }
@@ -512,17 +519,6 @@ public class DeathFormUtil extends FormUtil<Death> {
                 .build().findFirst();
 
         return lastResidency;
-    }
-
-    private boolean isTheOnlyHouseholdMember(String memberCode, String householdCode){
-
-        List<Residency> houseResidents = boxResidencies.query(Residency_.householdCode.equal(householdCode).and(Residency_.endType.equal(ResidencyEndType.NOT_APPLICABLE.code))).orderDesc(Residency_.startDate).build().find();
-
-        if (houseResidents.size()==1 && !StringUtil.isBlank(memberCode) && memberCode.equals(houseResidents.get(0).memberCode)) {
-            return true; //the only one living in the household
-        }
-
-        return false;
     }
 
     @Override
@@ -861,6 +857,7 @@ public class DeathFormUtil extends FormUtil<Death> {
         //save states
         HashMap<String,String> saveStateMap = new HashMap<>();
         saveStateMap.put("isHouseholdHead", isHouseholdHead+"");
+        saveStateMap.put("onlyMinorsLeftInHousehold", onlyMinorsLeftInHousehold+"");
         saveStateMap.put("memberResidency", memberResidency == null ? "" : memberResidency.id+"");
         saveStateMap.put("memberHeadRelationship", memberHeadRelationship == null ? "" : memberHeadRelationship.id+"");
         //saveStateMap.put("memberMaritalRelationship", memberMaritalRelationship == null ? "" : memberMaritalRelationship.id+"");
@@ -959,7 +956,6 @@ public class DeathFormUtil extends FormUtil<Death> {
 
     @Override
     public void collect() {
-        this.isLastMemberOfHousehold = isTheOnlyHouseholdMember(member.code, household.code);
         if (currentMode == Mode.CREATE) {
             if (isHouseholdHead && !isLastMemberOfHousehold) {
                 //death of head of household - search for new head of household
@@ -976,6 +972,24 @@ public class DeathFormUtil extends FormUtil<Death> {
             }
         }
 
+    }
+
+    private void calculateHelperVariables(){
+        String memberCode = member.code;
+        String householdCode = household.code;
+
+        List<Residency> houseResidents = boxResidencies.query(Residency_.householdCode.equal(householdCode).and(Residency_.endType.equal(ResidencyEndType.NOT_APPLICABLE.code))).orderDesc(Residency_.startDate).build().find();
+
+        this.isLastMemberOfHousehold = (houseResidents.size()==1 && !StringUtil.isBlank(memberCode) && memberCode.equals(houseResidents.get(0).memberCode));
+
+        this.onlyMinorsLeftInHousehold = !isLastMemberOfHousehold;
+        for (Residency residency : houseResidents) {
+            Member m = boxMembers.query(Member_.code.equal(residency.memberCode)).build().findFirst();
+            if (m != null && !m.code.equals(memberCode)) { //exclude the member who died
+                this.onlyMinorsLeftInHousehold = this.onlyMinorsLeftInHousehold && m.age < minimunHeadAge;
+                if (!this.onlyMinorsLeftInHousehold) return;
+            }
+        }
     }
 
     private void checkChangeNewHouseholdHeadDialog(){
@@ -1011,12 +1025,22 @@ public class DeathFormUtil extends FormUtil<Death> {
             }
         });
 
-        dialog.setFilterMinAge(this.minimunHeadAge, true);
+        dialog.setFilterMinAge(onlyMinorsLeftInHousehold ? 0 : minimunHeadAge, true);
         dialog.setFilterHouseCode(visit.householdCode, true);
         dialog.setFilterStatus(MemberFilterDialog.StatusFilter.RESIDENT, true);
         dialog.addFilterExcludeMember(this.member);
         dialog.setStartSearchOnShow(true);
-        dialog.show();
+
+
+        if (onlyMinorsLeftInHousehold) {
+            DialogFactory.createMessageInfo(context, R.string.death_hoh_removal_info_title_lbl, R.string.death_hoh_minors_left_warning_lbl, clickedButton -> {
+                dialog.show();
+            }).show();
+        } else {
+            dialog.show();
+        }
+
+
     }
 
     private int retrieveMinimumHeadAge() {

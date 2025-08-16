@@ -71,6 +71,7 @@ public class ChangeHeadFormUtil extends FormUtil<HeadRelationship> {
 
     private List<Member> householdResidents;
     private int minimunHeadAge;
+    private boolean onlyMinorsLeftToBeHead;
 
     private DateUtil dateUtil = Bootstrap.getDateUtil();
 
@@ -126,18 +127,12 @@ public class ChangeHeadFormUtil extends FormUtil<HeadRelationship> {
     protected void initialize(){
         super.initialize();
 
-        if (currentMode == Mode.CREATE) {
-            //get current memberHeadRelationship
-            /*this.oldHeadMemberRelationship = this.boxHeadRelationships.query(
-                                         HeadRelationship_.householdCode.equal(this.household.code)
-                                    .and(HeadRelationship_.relationshipType.equal(HeadRelationshipType.HEAD_OF_HOUSEHOLD.code))
-                                    .and(HeadRelationship_.endType.equal(HeadRelationshipEndType.NOT_APPLICABLE.code)))
-                    .orderDesc(HeadRelationship_.startDate)
-                    .build().findFirst();
+        this.minimunHeadAge = retrieveMinimumHeadAge();
 
-            if (this.oldHeadMemberRelationship != null) {
-                this.oldHeadMember = Queries.getMemberByCode(boxMembers, this.oldHeadMemberRelationship.memberCode);
-            }*/
+        if (currentMode == Mode.CREATE) {
+            retrieveHeadOfHousehold();
+
+            calculateHelperVariables();
 
             this.oldHeadMemberRelationships = this.boxHeadRelationships.query(
                                          HeadRelationship_.householdCode.equal(this.household.code)
@@ -154,9 +149,7 @@ public class ChangeHeadFormUtil extends FormUtil<HeadRelationship> {
             //oldHeadMemberRelationships - the relationships of the original head that are closed now
         }
 
-        this.minimunHeadAge = retrieveMinimumHeadAge();
         this.householdResidents = getHouseholdResidents();
-
     }
 
     private void readSavedEntityState() {
@@ -175,6 +168,7 @@ public class ChangeHeadFormUtil extends FormUtil<HeadRelationship> {
         String oldHeadRelatId = mapSavedStates.get("oldHeadMemberRelationshipId");
         String oldHeadRelatIdList = mapSavedStates.get("oldHeadMemberRelationshipIdList");
         String newHeadPreviousRelType = mapSavedStates.get("newHeadPreviousRelationshipType");
+        String onlyMinorsLeftToBeHeadVar = mapSavedStates.get("onlyMinorsLeftToBeHead");
 
         if (oldHeadCode != null) {
             this.oldHeadMember = this.boxMembers.query(Member_.code.equal(oldHeadCode)).build().findFirst();
@@ -191,6 +185,9 @@ public class ChangeHeadFormUtil extends FormUtil<HeadRelationship> {
                 HeadRelationship headRelationship = this.boxHeadRelationships.get(Long.parseLong(strId));
                 this.oldHeadMemberRelationships.add(headRelationship);
             }
+        }
+        if ( onlyMinorsLeftToBeHeadVar != null) {
+            this.onlyMinorsLeftToBeHead = Boolean.parseBoolean( onlyMinorsLeftToBeHeadVar);
         }
 
     }
@@ -380,10 +377,11 @@ public class ChangeHeadFormUtil extends FormUtil<HeadRelationship> {
         //check dates of relationships of new head, old head and members of household - they are the current relationships - endType=NA
         HeadRelationship newHeadLastRelationship = getLastHeadRelationship(newHeadCode);
         List<HeadRelationship> lastMembersRelationships = oldHeadMemberRelationships;
-
+Log.d("firstLast", "id="+newHeadLastRelationship.id);
         newHeadLastRelationship = currentMode==Mode.EDIT ? getLastHeadRelationship(newHeadCode, newHeadLastRelationship) : newHeadLastRelationship; //when editing the newHeadLastRelationship is the last created by this event
-
+        Log.d("secondLast", "id="+newHeadLastRelationship.id+ ", "+currentMode);
         //eventDate vs newHeadLastRelationship.startDate
+        Log.d("dates", "eventdate="+eventDate+", startdate="+newHeadLastRelationship.startDate+", before="+eventDate.before(newHeadLastRelationship.startDate));
         if (newHeadLastRelationship != null && newHeadLastRelationship.startDate != null && eventDate.before(newHeadLastRelationship.startDate)){
             //The event date cannot be before the [start date] of the [new Head of Household] last Head Relationship record.
             String message = this.context.getString(R.string.changehead_eventdate_not_before_new_head_hrelationship_startdate_lbl, dateUtil.formatYMD(eventDate), newHeadLastRelationship.startType.code, dateUtil.formatYMD(newHeadLastRelationship.startDate));
@@ -555,14 +553,19 @@ public class ChangeHeadFormUtil extends FormUtil<HeadRelationship> {
         saveStateMap.put("oldHeadCode", oldHeadMember != null ? oldHeadMember.code : ""); //the head that is being chang
         saveStateMap.put("oldHeadMemberRelationshipIdList", savedOldHeadRelationships);
         saveStateMap.put("oldHeadMemberRelationshipId", oldHeadMemberRelationship != null ? oldHeadMemberRelationship.id+"" : "");
-
         saveStateMap.put("newHeadPreviousRelationshipType", newHeadMember.headRelationshipType.code);
+        saveStateMap.put("onlyMinorsLeftToBeHead", onlyMinorsLeftToBeHead+"");
 
         newHeadMember.headRelationshipType = HeadRelationshipType.HEAD_OF_HOUSEHOLD;
         this.boxMembers.put(newHeadMember);
 
         //create new head relationships
         for (int i = 0; i < colNewMemberCodes.size(); i++) {
+
+            if (newMemberCodes.get(i).equals(newHeadRelationship.memberCode)) {
+                continue;
+            }
+
             HeadRelationship headRelationship = new HeadRelationship();
             headRelationship.householdCode = household.code;
             headRelationship.memberCode = newMemberCodes.get(i);
@@ -721,12 +724,17 @@ public class ChangeHeadFormUtil extends FormUtil<HeadRelationship> {
             saveStateMap.put("oldHeadMemberRelationshipId", oldHeadMemberRelationship != null ? oldHeadMemberRelationship.id+"" : "");
             saveStateMap.put("oldHeadMemberRelationshipIdList", savedOldHeadRelationships);
             saveStateMap.put("newHeadPreviousRelationshipType", newHeadMember.headRelationshipType.code);
+            saveStateMap.put("onlyMinorsLeftToBeHead", onlyMinorsLeftToBeHead+"");
 
             newHeadMember.headRelationshipType = HeadRelationshipType.HEAD_OF_HOUSEHOLD;
             this.boxMembers.put(newHeadMember);
 
             //create new head relationships
             for (int i = 0; i < colNewMemberCodes.size(); i++) {
+                if (newMemberCodes.get(i).equals(newHeadRelationship.memberCode)) {
+                    continue;
+                }
+
                 HeadRelationship headRelationship = new HeadRelationship();
                 headRelationship.householdCode = household.code;
                 headRelationship.memberCode = newMemberCodes.get(i);
@@ -863,8 +871,6 @@ public class ChangeHeadFormUtil extends FormUtil<HeadRelationship> {
     }
 
     private void checkHeadOfHouseholdDialog() {
-        retrieveHeadOfHousehold();
-
         if (this.oldHeadMember == null) {
             DialogFactory.createMessageInfo(this.context, R.string.eventType_change_of_hoh, R.string.changehead_head_dont_exists_lbl, new DialogFactory.OnClickListener() {
                 @Override
@@ -911,14 +917,32 @@ public class ChangeHeadFormUtil extends FormUtil<HeadRelationship> {
             }
         });
 
-        dialog.setFilterMinAge(this.minimunHeadAge, true);
+        dialog.setFilterMinAge(onlyMinorsLeftToBeHead ? 0 : this.minimunHeadAge, true);
         dialog.setFilterHouseCode(visit.householdCode, true);
         dialog.setFilterStatus(MemberFilterDialog.StatusFilter.RESIDENT, true);
         if (this.oldHeadMember != null) {
             dialog.addFilterExcludeMember(this.oldHeadMember);
         }
         dialog.setStartSearchOnShow(true);
-        dialog.show();
+
+
+        //Show
+        if (onlyMinorsLeftToBeHead) {
+            DialogFactory.createMessageYN(context, R.string.changehead_hoh_minors_info_title_lbl, R.string.changehead_hoh_minors_left_warning_lbl, new DialogFactory.OnYesNoClickListener() {
+                @Override
+                public void onYesClicked() {
+                    dialog.show();
+                }
+
+                @Override
+                public void onNoClicked() {
+
+                }
+            }).show();
+        } else {
+            dialog.show();
+        }
+
     }
 
     private int retrieveMinimumHeadAge() {
@@ -933,6 +957,27 @@ public class ChangeHeadFormUtil extends FormUtil<HeadRelationship> {
         }
 
         return 12;
+    }
+
+    private void calculateHelperVariables(){
+        String headCode = oldHeadMember != null ? oldHeadMember.code : null;
+        String householdCode = household.code;
+
+        List<Residency> houseResidents = boxResidencies.query(Residency_.householdCode.equal(householdCode).and(Residency_.endType.equal(ResidencyEndType.NOT_APPLICABLE.code))).orderDesc(Residency_.startDate).build().find();
+
+        this.onlyMinorsLeftToBeHead = houseResidents.size()>0;Log.d("minors", "head="+headCode+", "+onlyMinorsLeftToBeHead+", "+houseResidents.size());
+        for (Residency residency : houseResidents) {
+            Member m = boxMembers.query(Member_.code.equal(residency.memberCode)).build().findFirst();
+            if (m != null) {
+                Log.d("member-test", ""+m.code+", age="+m.age+", minhead="+minimunHeadAge);
+                if (m.code.equals(headCode)) continue; //exclude the member who died
+
+                this.onlyMinorsLeftToBeHead = this.onlyMinorsLeftToBeHead && m.age < minimunHeadAge;
+Log.d("member-tested", ""+onlyMinorsLeftToBeHead);
+                if (!this.onlyMinorsLeftToBeHead) return;
+
+            }
+        }
     }
 
 }

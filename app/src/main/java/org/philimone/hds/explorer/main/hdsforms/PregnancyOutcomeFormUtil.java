@@ -36,6 +36,7 @@ import org.philimone.hds.explorer.model.enums.BirthPlace;
 import org.philimone.hds.explorer.model.enums.CoreFormEntity;
 import org.philimone.hds.explorer.model.enums.Gender;
 import org.philimone.hds.explorer.model.enums.HeadRelationshipType;
+import org.philimone.hds.explorer.model.enums.HouseholdType;
 import org.philimone.hds.explorer.model.enums.MaritalStatus;
 import org.philimone.hds.explorer.model.enums.PregnancyOutcomeType;
 import org.philimone.hds.explorer.model.enums.PregnancyStatus;
@@ -188,6 +189,10 @@ public class PregnancyOutcomeFormUtil extends FormUtil<PregnancyOutcome> {
         }else {
             return member.name;
         }
+    }
+
+    private boolean isInstitutionalHousehold() {
+        return this.household.type == HouseholdType.INSTITUTIONAL;
     }
 
     @Override
@@ -400,7 +405,7 @@ public class PregnancyOutcomeFormUtil extends FormUtil<PregnancyOutcome> {
                 return new ValidationResult(colChildGender, message);
             }
 
-            if (headRelationshipType == null){
+            if (headRelationshipType == null && !isInstitutionalHousehold()){
                 String message = this.context.getString(R.string.pregnancy_outcome_member_head_relattype_empty_lbl);
                 return new ValidationResult(colChildRelationship, message);
             }
@@ -559,16 +564,19 @@ public class PregnancyOutcomeFormUtil extends FormUtil<PregnancyOutcome> {
             this.boxResidencies.put(childResidency);
 
             //HeadRelationship
-            HeadRelationship childHeadRelationship = new HeadRelationship();
-            childHeadRelationship.householdCode = household.code;
-            childHeadRelationship.memberCode = childCode;
-            childHeadRelationship.headCode = currentHead.code;
-            childHeadRelationship.relationshipType = headRelationshipType;
-            childHeadRelationship.startType = HeadRelationshipStartType.BIRTH;
-            childHeadRelationship.startDate = outcomeDate;
-            childHeadRelationship.endType = HeadRelationshipEndType.NOT_APPLICABLE;
-            childHeadRelationship.endDate = null;
-            this.boxHeadRelationships.put(childHeadRelationship);
+            HeadRelationship childHeadRelationship = null;
+            if (!isInstitutionalHousehold()) {
+                childHeadRelationship = new HeadRelationship();
+                childHeadRelationship.householdCode = household.code;
+                childHeadRelationship.memberCode = childCode;
+                childHeadRelationship.headCode = currentHead.code;
+                childHeadRelationship.relationshipType = headRelationshipType;
+                childHeadRelationship.startType = HeadRelationshipStartType.BIRTH;
+                childHeadRelationship.startDate = outcomeDate;
+                childHeadRelationship.endType = HeadRelationshipEndType.NOT_APPLICABLE;
+                childHeadRelationship.endDate = null;
+                this.boxHeadRelationships.put(childHeadRelationship);
+            }
 
             //Child
             PregnancyChild pregnancyChild = new PregnancyChild();
@@ -579,7 +587,9 @@ public class PregnancyOutcomeFormUtil extends FormUtil<PregnancyOutcome> {
             //pregnancyChild.child.setTarget(childMember);
             pregnancyChild.childOrdinalPosition = childOrdPos;
             pregnancyChild.childHeadRelationshipType = headRelationshipType;
-            pregnancyChild.childHeadRelationship.setTarget(childHeadRelationship);
+            if (childHeadRelationship != null) {
+                pregnancyChild.childHeadRelationship.setTarget(childHeadRelationship);
+            }
             pregnancyChild.recentlyCreated = true;
 
             pregnancyOutcome.childs.add(pregnancyChild);
@@ -607,10 +617,12 @@ public class PregnancyOutcomeFormUtil extends FormUtil<PregnancyOutcome> {
                 childResidency.endDate = outcomeDate;
                 this.boxResidencies.put(childResidency);
 
-                childHeadRelationship = boxHeadRelationships.get(childHeadRelationship.id);
-                childHeadRelationship.endType = HeadRelationshipEndType.DEATH;
-                childHeadRelationship.endDate = outcomeDate;
-                this.boxHeadRelationships.put(childHeadRelationship);
+                if (childHeadRelationship != null) {
+                    childHeadRelationship = boxHeadRelationships.get(childHeadRelationship.id);
+                    childHeadRelationship.endType = HeadRelationshipEndType.DEATH;
+                    childHeadRelationship.endDate = outcomeDate;
+                    this.boxHeadRelationships.put(childHeadRelationship);
+                }
             }
         }
 
@@ -767,15 +779,17 @@ public class PregnancyOutcomeFormUtil extends FormUtil<PregnancyOutcome> {
 
             //HeadRelationship
             HeadRelationship childHeadRelationship = this.boxHeadRelationships.query(HeadRelationship_.memberCode.equal(childCode)).build().findFirst();
-            childHeadRelationship.householdCode = household.code;
-            childHeadRelationship.memberCode = childCode;
-            childHeadRelationship.headCode = currentHead.code;
-            childHeadRelationship.relationshipType = headRelationshipType;
-            childHeadRelationship.startType = HeadRelationshipStartType.BIRTH;
-            childHeadRelationship.startDate = outcomeDate;
-            childHeadRelationship.endType = HeadRelationshipEndType.NOT_APPLICABLE;
-            childHeadRelationship.endDate = null;
-            this.boxHeadRelationships.put(childHeadRelationship);
+            if (childHeadRelationship != null) {
+                childHeadRelationship.householdCode = household.code;
+                childHeadRelationship.memberCode = childCode;
+                childHeadRelationship.headCode = currentHead.code;
+                childHeadRelationship.relationshipType = headRelationshipType;
+                childHeadRelationship.startType = HeadRelationshipStartType.BIRTH;
+                childHeadRelationship.startDate = outcomeDate;
+                childHeadRelationship.endType = HeadRelationshipEndType.NOT_APPLICABLE;
+                childHeadRelationship.endDate = null;
+                this.boxHeadRelationships.put(childHeadRelationship);
+            }
 
             //Child
             PregnancyChild pregnancyChild = this.boxPregnancyChilds.query(PregnancyChild_.childCode.equal(childCode)).build().findFirst();
@@ -785,7 +799,9 @@ public class PregnancyOutcomeFormUtil extends FormUtil<PregnancyOutcome> {
             pregnancyChild.childCode = childCode;
             pregnancyChild.childOrdinalPosition = childOrdPos;
             pregnancyChild.childHeadRelationshipType = headRelationshipType;
-            pregnancyChild.childHeadRelationship.setTarget(childHeadRelationship);
+            if (childHeadRelationship != null) {
+                pregnancyChild.childHeadRelationship.setTarget(childHeadRelationship);
+            }
             pregnancyOutcome.childs.add(pregnancyChild);
 
             //generate deaths
@@ -899,7 +915,7 @@ public class PregnancyOutcomeFormUtil extends FormUtil<PregnancyOutcome> {
 
     @Override
     public String onFormCallMethod(String methodExpression, String[] args) {
-        return null;
+        return handleMethodExecution(methodExpression, args);
     }
 
     @Override
@@ -970,7 +986,7 @@ public class PregnancyOutcomeFormUtil extends FormUtil<PregnancyOutcome> {
     private void checkHeadOfHouseholdDialog() {
         retrieveHeadOfHousehold();
 
-        if (this.currentHead != null) {
+        if (this.currentHead != null || isInstitutionalHousehold()) {
             //1. get the father
             checkFatherDialog();
         } else {
@@ -1072,6 +1088,16 @@ public class PregnancyOutcomeFormUtil extends FormUtil<PregnancyOutcome> {
 
             new CoreCollectedDataDeletionUtil(context).deleteRecord(cdata);
         }
+    }
+
+    String handleMethodExecution(String methodExpression, String[] args) {
+        Log.d("methodcall", "" + methodExpression);
+
+        if (methodExpression.startsWith("isInstitutionalHousehold")) {
+            return "'" + (this.household.type == HouseholdType.INSTITUTIONAL) + "'";
+        }
+
+        return "'CALC ERROR!!!'";
     }
 
 }

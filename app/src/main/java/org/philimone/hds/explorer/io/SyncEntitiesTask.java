@@ -42,6 +42,7 @@ import org.philimone.hds.explorer.model.Round;
 import org.philimone.hds.explorer.model.SyncReport;
 import org.philimone.hds.explorer.model.User;
 import org.philimone.hds.explorer.model.Visit;
+import org.philimone.hds.explorer.model.converters.HouseholdTypeConverter;
 import org.philimone.hds.explorer.model.converters.IllnessSymptomsCollectionConverter;
 import org.philimone.hds.explorer.model.converters.MapStringConverter;
 import org.philimone.hds.explorer.model.converters.StringCollectionConverter;
@@ -55,6 +56,8 @@ import org.philimone.hds.explorer.model.enums.FormType;
 import org.philimone.hds.explorer.model.enums.Gender;
 import org.philimone.hds.explorer.model.enums.HeadRelationshipType;
 import org.philimone.hds.explorer.model.enums.HealthcareProviderType;
+import org.philimone.hds.explorer.model.enums.HouseholdInstitutionType;
+import org.philimone.hds.explorer.model.enums.HouseholdType;
 import org.philimone.hds.explorer.model.enums.IllnessSymptoms;
 import org.philimone.hds.explorer.model.enums.ImmunizationStatus;
 import org.philimone.hds.explorer.model.enums.MaritalEndStatus;
@@ -2491,6 +2494,36 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 				parser.nextTag();
 			}
 
+			parser.nextTag(); //process <type>
+			if (!isEmptyTag("type", parser)) {
+				parser.next();
+				table.type = HouseholdType.getFrom(parser.getText());
+				parser.nextTag(); //process </type>
+			}else{
+				table.type = null;
+				parser.nextTag();
+			}
+
+			parser.nextTag(); //process <institutionType>
+			if (!isEmptyTag("institutionType", parser)) {
+				parser.next();
+				table.institutionType = HouseholdInstitutionType.getFrom(parser.getText());
+				parser.nextTag(); //process </institutionType>
+			}else{
+				table.institutionType = null;
+				parser.nextTag();
+			}
+
+			parser.nextTag(); //process <institutionTypeOther>
+			if (!isEmptyTag("institutionTypeOther", parser)) {
+				parser.next();
+				table.institutionTypeOther = parser.getText();
+				parser.nextTag(); //process </institutionTypeOther>
+			}else{
+				table.institutionTypeOther = "";
+				parser.nextTag();
+			}
+
             parser.nextTag(); //process <houseNumber>
             if (!isEmptyTag("name", parser)) {
                 parser.next();
@@ -2521,7 +2554,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 				parser.nextTag();
 			}
 
-            parser.nextTag(); //process <secHeadCode>
+            /*parser.nextTag(); //process <secHeadCode>
             if (!isEmptyTag("secHeadCode", parser)) {
                 parser.next();
                 table.setSecHeadCode(parser.getText());
@@ -2529,7 +2562,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
             }else{
                 table.setSecHeadCode("");
                 parser.nextTag();
-            }
+            }*/
 
             parser.nextTag(); //process <hierarchy1>
             if (!isEmptyTag("hierarchy1", parser)) {

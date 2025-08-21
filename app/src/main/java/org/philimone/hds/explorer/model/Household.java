@@ -1,10 +1,14 @@
 package org.philimone.hds.explorer.model;
 
+import org.philimone.hds.explorer.model.converters.HouseholdInstitutionTypeConverter;
 import org.philimone.hds.explorer.model.converters.HouseholdStatusConverter;
-import org.philimone.hds.explorer.model.converters.MemberStatusConverter;
+import org.philimone.hds.explorer.model.converters.HouseholdTypeConverter;
+import org.philimone.hds.explorer.model.converters.ProxyHeadRoleConverter;
 import org.philimone.hds.explorer.model.converters.StringCollectionConverter;
+import org.philimone.hds.explorer.model.enums.HouseholdInstitutionType;
 import org.philimone.hds.explorer.model.enums.HouseholdStatus;
-import org.philimone.hds.explorer.model.enums.MemberStatus;
+import org.philimone.hds.explorer.model.enums.HouseholdType;
+import org.philimone.hds.explorer.model.enums.ProxyHeadRole;
 import org.philimone.hds.explorer.model.enums.SubjectEntity;
 
 import java.io.Serializable;
@@ -34,11 +38,16 @@ public class Household implements CoreEntity, FormSubject, Serializable {
     public String code;
     @Index
     public String region;
+    @Convert(converter = HouseholdTypeConverter.class, dbType = String.class)
+    public HouseholdType type;
+    @Convert(converter = HouseholdInstitutionTypeConverter.class, dbType = String.class)
+    public HouseholdInstitutionType institutionType;
+    public String institutionTypeOther;
+
     public String name;
     @Index
     public String headCode;
     public String headName;
-    public String secHeadCode;
 
     public String hierarchy1;
     public String hierarchy2;
@@ -181,14 +190,6 @@ public class Household implements CoreEntity, FormSubject, Serializable {
         this.headCode = headCode;
     }
 
-    public String getSecHeadCode() {
-        return secHeadCode;
-    }
-
-    public void setSecHeadCode(String secHeadCode) {
-        this.secHeadCode = secHeadCode;
-    }
-
     public String getHeadName() {
         return headName;
     }
@@ -302,7 +303,6 @@ public class Household implements CoreEntity, FormSubject, Serializable {
         household.region = "";
         household.headCode = "";
         household.headName = "";
-        household.secHeadCode = "";
 
         household.hierarchy1 = "";
         household.hierarchy2 = "";

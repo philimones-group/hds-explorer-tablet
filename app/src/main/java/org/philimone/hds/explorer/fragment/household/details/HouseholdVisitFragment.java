@@ -91,6 +91,7 @@ import org.philimone.hds.explorer.model.Visit;
 import org.philimone.hds.explorer.model.Visit_;
 import org.philimone.hds.explorer.model.enums.CoreFormEntity;
 import org.philimone.hds.explorer.model.enums.Gender;
+import org.philimone.hds.explorer.model.enums.HouseholdType;
 import org.philimone.hds.explorer.model.enums.PregnancyStatus;
 import org.philimone.hds.explorer.model.enums.SubjectEntity;
 import org.philimone.hds.explorer.model.enums.temporal.ResidencyEndType;
@@ -581,6 +582,7 @@ public class HouseholdVisitFragment extends Fragment {
         long nrResidents = boxResidencies.query(Residency_.householdCode.equal(household.code).and(Residency_.endType.equal(ResidencyEndType.NOT_APPLICABLE.code))).build().count();
         boolean isEmptyHousehold = nrResidents == 0;
         boolean hasOneResident = nrResidents == 1;
+        boolean isInstitutionalHousehold = this.household.type == HouseholdType.INSTITUTIONAL;
         clearMemberSelection();
 
         //Row 1
@@ -588,14 +590,14 @@ public class HouseholdVisitFragment extends Fragment {
         this.btnVisitMemberIncomplete.setEnabled(false);
         this.btnVisitBirthReg.setEnabled(false);
         this.btnVisitPregnancyReg.setEnabled(false);
-        this.btnVisitChangeHead.setEnabled(!hasOneResident && !isCensusHousehold);
+        this.btnVisitChangeHead.setEnabled(!hasOneResident && !isCensusHousehold && !isInstitutionalHousehold);
         //Row 2
         this.btnVisitExtInmigration.setEnabled(true); // && !isCensusHousehold
         this.btnVisitChangeRegionHead.setEnabled(false);
         this.btnVisitIntInmigration.setEnabled(true); // && !isCensusHousehold
         this.btnVisitPregnancyVisit.setEnabled(false);
         this.btnVisitOutmigration.setEnabled(false);
-        this.btnVisitHouseholdRelocation.setEnabled(isEmptyHousehold);
+        this.btnVisitHouseholdRelocation.setEnabled(isEmptyHousehold && !isInstitutionalHousehold);
         //Row 3
         this.btnVisitDeath.setEnabled(false);
         this.btnVisitMaritalRelationship.setEnabled(false);
@@ -624,7 +626,7 @@ public class HouseholdVisitFragment extends Fragment {
         //disable buttons if already collected and ready to edit
         //ChangeHead - must be collected one per visit
         CoreCollectedData ccdataChangeHead = this.boxCoreCollectedData.query(CoreCollectedData_.visitId.equal(visit.id).and(CoreCollectedData_.formEntity.equal(CoreFormEntity.CHANGE_HOUSEHOLD_HEAD.code))).build().findFirst();
-        btnVisitChangeHead.setEnabled(ccdataChangeHead == null && !isCensusHousehold && !hasOneResident);
+        btnVisitChangeHead.setEnabled(ccdataChangeHead == null && !isCensusHousehold && !hasOneResident && !isInstitutionalHousehold);
 
         Log.d("household-visit"+visit.id, "changehead="+ccdataChangeHead);
 
@@ -637,6 +639,7 @@ public class HouseholdVisitFragment extends Fragment {
         this.currentEventMode = VisitEventsMode.RESPONDENT_NOT_REG_EVENTS;
         boolean isCensusHousehold = this.household.recentlyCreated;
         boolean isEmptyHousehold = boxResidencies.query(Residency_.householdCode.equal(household.code).and(Residency_.endType.equal(ResidencyEndType.NOT_APPLICABLE.code))).build().count() == 0;
+        boolean isInstitutionalHousehold = this.household.type == HouseholdType.INSTITUTIONAL;
         clearMemberSelection();
 
         //Row 1
@@ -683,6 +686,7 @@ public class HouseholdVisitFragment extends Fragment {
     private void setMemberMode() {
         this.currentEventMode = VisitEventsMode.MEMBER_EVENTS;
         boolean isCensusHousehold = this.household.recentlyCreated;
+        boolean isInstitutionalHousehold = this.household.type == HouseholdType.INSTITUTIONAL;
         boolean notVisited = countCollectedForms(selectedMember)==0;
         int age = GeneralUtil.getAge(this.selectedMember.dob, new Date());
         boolean isAtMotherAge = age >= this.minimunMotherAge;
@@ -691,13 +695,13 @@ public class HouseholdVisitFragment extends Fragment {
 
         //Row 1
         this.btnVisitMemberEnu.setEnabled(false);
-        this.btnVisitMemberIncomplete.setEnabled(notVisited);
+        this.btnVisitMemberIncomplete.setEnabled(notVisited && !isInstitutionalHousehold);
         this.btnVisitBirthReg.setEnabled(false);
         this.btnVisitPregnancyReg.setEnabled(false);
         this.btnVisitChangeHead.setEnabled(false);
         //Row 2
         this.btnVisitExtInmigration.setEnabled(false);
-        this.btnVisitChangeRegionHead.setEnabled(isAtHeadAge);
+        this.btnVisitChangeRegionHead.setEnabled(isAtHeadAge && !isInstitutionalHousehold);
         this.btnVisitIntInmigration.setEnabled(false);
         this.btnVisitPregnancyVisit.setEnabled(false);
         this.btnVisitOutmigration.setEnabled(true); // && !isCensusHousehold
@@ -732,7 +736,7 @@ public class HouseholdVisitFragment extends Fragment {
         //disable buttons if already collected and ready to edit
         //Incomplete, Marital, Pregnancy Reg and Pregnancy Outcome - must be collected one per visit and member
         CoreCollectedData ccdataIncomplete = this.boxCoreCollectedData.query(CoreCollectedData_.visitId.equal(visit.id).and(CoreCollectedData_.formEntity.equal(CoreFormEntity.INCOMPLETE_VISIT.code)).and(CoreCollectedData_.formEntityCode.equal(selectedMember.code))).build().findFirst();
-        btnVisitMemberIncomplete.setEnabled(btnVisitMemberIncomplete.isEnabled() && ccdataIncomplete == null);
+        btnVisitMemberIncomplete.setEnabled(btnVisitMemberIncomplete.isEnabled() && ccdataIncomplete == null && !isInstitutionalHousehold);
 
         PregnancyRegistration pregnancyReg = this.boxPregnancyRegistrations.query(PregnancyRegistration_.motherCode.equal(selectedMember.code)).orderDesc(PregnancyRegistration_.code).build().findFirst();
         boolean femaleAtMothersAge = selectedMember.gender == Gender.FEMALE && isAtMotherAge;

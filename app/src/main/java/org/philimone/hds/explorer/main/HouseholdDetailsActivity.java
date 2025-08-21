@@ -39,6 +39,7 @@ import org.philimone.hds.explorer.model.Round_;
 import org.philimone.hds.explorer.model.User;
 import org.philimone.hds.explorer.model.Visit;
 import org.philimone.hds.explorer.model.Visit_;
+import org.philimone.hds.explorer.model.enums.HouseholdType;
 import org.philimone.hds.explorer.model.followup.TrackingSubjectList;
 import org.philimone.hds.explorer.settings.RequestCodes;
 import org.philimone.hds.explorer.widget.DialogFactory;
@@ -403,13 +404,12 @@ public class HouseholdDetailsActivity extends AppCompatActivity implements House
         hhDetailsRegionLabel.setText(hierarchyName+":");
         hhDetailsRegionValue.setText(region==null ? "" : region.getName());
         hhDetailsVisitDateValue.setText(lastVisit==null ? "None" : dateUtil.formatYMD(lastVisit.visitDate));
-        //if (this.householdMembersFragment == null) {
-        //    this.householdMembersFragment.updateHouseholdMembers();
-        //}
 
-        //if (this.householdFormsFragment == null) {
-        //    this.householdFormsFragment.showCollectedData();
-        //}
+        if (household.type == HouseholdType.INSTITUTIONAL) {
+            iconView.setImageResource(R.mipmap.nui_household_inst_filled_icon);
+        } else {
+            iconView.setImageResource(R.mipmap.nui_household_filled_icon);
+        }
 
         reloadFragmentsData();
     }
@@ -598,6 +598,12 @@ public class HouseholdDetailsActivity extends AppCompatActivity implements House
                 dialog.show();
 
                 //dont finalize visit
+                return;
+            }
+
+            //if is a institutional household - just close the visit - no need to check unvisited members
+            if (this.household.type == HouseholdType.INSTITUTIONAL) {
+                closeVisit();
                 return;
             }
 

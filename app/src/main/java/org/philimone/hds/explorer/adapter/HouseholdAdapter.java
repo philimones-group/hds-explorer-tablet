@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import org.philimone.hds.explorer.R;
 import org.philimone.hds.explorer.model.Household;
+import org.philimone.hds.explorer.model.enums.HouseholdType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -160,15 +161,18 @@ public class HouseholdAdapter extends RecyclerView.Adapter<HouseholdAdapter.Hous
                 chkVBprocessed.setChecked(checkableHouseholds.get(position));
             }
 
+            //set default icon
+            iconView.setImageResource(hh.type == HouseholdType.INSTITUTIONAL ? R.mipmap.nui_household_inst_red_icon : R.mipmap.nui_household_red_icon);
+
             if (supervisedHouseholds != null && position < supervisedHouseholds.size()){
                 if (supervisedHouseholds.get(position)==true){
                     txtName.setTypeface(null, Typeface.BOLD);
-                    iconView.setImageResource(R.mipmap.nui_household_red_chk_icon);
+                    iconView.setImageResource(hh.type == HouseholdType.INSTITUTIONAL ? R.mipmap.nui_household_inst_red_chk_icon : R.mipmap.nui_household_red_chk_icon);
                 }
             }
 
             if (hh.isRecentlyCreated()){
-                iconView.setImageResource(R.mipmap.nui_household_red_new_icon);
+                iconView.setImageResource(hh.type == HouseholdType.INSTITUTIONAL ? R.mipmap.nui_household_inst_red_new_icon : R.mipmap.nui_household_red_new_icon);
             }
 
             if (hh.preRegistered) {

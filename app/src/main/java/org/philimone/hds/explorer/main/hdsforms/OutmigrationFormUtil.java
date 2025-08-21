@@ -374,9 +374,11 @@ public class OutmigrationFormUtil extends FormUtil<Outmigration> {
         this.boxResidencies.put(currentMemberResidency);
 
         //HeadRelationship - close
-        currentMemberHeadRelationship.endDate = migrationDate;
-        currentMemberHeadRelationship.endType = HeadRelationshipEndType.EXTERNAL_OUTMIGRATION;
-        this.boxHeadRelationships.put(currentMemberHeadRelationship);
+        if (currentMemberHeadRelationship != null) {
+            currentMemberHeadRelationship.endDate = migrationDate;
+            currentMemberHeadRelationship.endType = HeadRelationshipEndType.EXTERNAL_OUTMIGRATION;
+            this.boxHeadRelationships.put(currentMemberHeadRelationship);
+        }
 
         //update member
         member = boxMembers.get(member.id);
@@ -401,7 +403,7 @@ public class OutmigrationFormUtil extends FormUtil<Outmigration> {
         //save state for editing
         HashMap<String,String> saveStateMap = new HashMap<>();
         saveStateMap.put("currentResidencyId", currentMemberResidency.id+"");
-        saveStateMap.put("currentHeadRelationshipId", currentMemberHeadRelationship.id+"");
+        saveStateMap.put("currentHeadRelationshipId", currentMemberHeadRelationship == null ? "" : currentMemberHeadRelationship.id+"");
         SavedEntityState entityState = new SavedEntityState(CoreFormEntity.OUTMIGRATION, outmigration.id, "outimgFormUtilState", new Gson().toJson(saveStateMap));
         this.boxSavedEntityStates.put(entityState);
 
@@ -456,10 +458,12 @@ public class OutmigrationFormUtil extends FormUtil<Outmigration> {
         this.boxResidencies.put(currentMemberResidency);
 
         //HeadRelationship - update close
-        currentMemberHeadRelationship = boxHeadRelationships.get(currentMemberHeadRelationship.id);
-        currentMemberHeadRelationship.endDate = migrationDate;
-        currentMemberHeadRelationship.endType = HeadRelationshipEndType.EXTERNAL_OUTMIGRATION;
-        this.boxHeadRelationships.put(currentMemberHeadRelationship);
+        if (currentMemberHeadRelationship != null) {
+            currentMemberHeadRelationship = boxHeadRelationships.get(currentMemberHeadRelationship.id);
+            currentMemberHeadRelationship.endDate = migrationDate;
+            currentMemberHeadRelationship.endType = HeadRelationshipEndType.EXTERNAL_OUTMIGRATION;
+            this.boxHeadRelationships.put(currentMemberHeadRelationship);
+        }
 
         //update member
         member = boxMembers.get(member.id);

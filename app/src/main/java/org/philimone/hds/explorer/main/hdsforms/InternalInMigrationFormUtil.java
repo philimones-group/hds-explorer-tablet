@@ -28,6 +28,7 @@ import org.philimone.hds.explorer.model.Residency_;
 import org.philimone.hds.explorer.model.Visit;
 import org.philimone.hds.explorer.model.enums.CoreFormEntity;
 import org.philimone.hds.explorer.model.enums.HeadRelationshipType;
+import org.philimone.hds.explorer.model.enums.HouseholdType;
 import org.philimone.hds.explorer.model.enums.temporal.HeadRelationshipEndType;
 import org.philimone.hds.explorer.model.enums.temporal.HeadRelationshipStartType;
 import org.philimone.hds.explorer.model.enums.temporal.InMigrationType;
@@ -248,7 +249,7 @@ public class InternalInMigrationFormUtil extends FormUtil<Inmigration> {
             return new ValidationResult(colMemberName, message);
         }
 
-        if (headRelationshipType == null){
+        if (headRelationshipType == null && !isInstitutionalHousehold()){
             String message = this.context.getString(R.string.new_member_head_relattype_empty_lbl);
             return new ValidationResult(colHeadRelationshipType, message);
         }
@@ -398,6 +399,10 @@ public class InternalInMigrationFormUtil extends FormUtil<Inmigration> {
         return false;
     }
 
+    private boolean isInstitutionalHousehold() {
+        return this.household.type == HouseholdType.INSTITUTIONAL;
+    }
+
     @Override
     public void onBeforeFormFinished(HForm form, CollectedDataMap collectedValues) {
         //using it to update collectedHouseholdId, collectedMemberId
@@ -502,22 +507,27 @@ public class InternalInMigrationFormUtil extends FormUtil<Inmigration> {
         this.boxResidencies.put(residency);
 
         //HeadRelationship - close
-        selectedMemberHeadRelationship = boxHeadRelationships.get(selectedMemberHeadRelationship.id);
-        selectedMemberHeadRelationship.endDate = GeneralUtil.getDateAdd(migrationDate, -1);
-        selectedMemberHeadRelationship.endType = HeadRelationshipEndType.INTERNAL_OUTMIGRATION;
-        this.boxHeadRelationships.put(selectedMemberHeadRelationship);
+        if (selectedMemberHeadRelationship != null) {
+            selectedMemberHeadRelationship = boxHeadRelationships.get(selectedMemberHeadRelationship.id);
+            selectedMemberHeadRelationship.endDate = GeneralUtil.getDateAdd(migrationDate, -1);
+            selectedMemberHeadRelationship.endType = HeadRelationshipEndType.INTERNAL_OUTMIGRATION;
+            this.boxHeadRelationships.put(selectedMemberHeadRelationship);
+        }
 
         //HeadRelationship - new
-        HeadRelationship headRelationship = new HeadRelationship();
-        headRelationship.householdCode = household.code;
-        headRelationship.memberCode = memberCode;
-        headRelationship.headCode = (headRelationshipType==HeadRelationshipType.HEAD_OF_HOUSEHOLD) ? memberCode : currentHead.code;
-        headRelationship.relationshipType = headRelationshipType;
-        headRelationship.startType = HeadRelationshipStartType.INTERNAL_INMIGRATION;
-        headRelationship.startDate = migrationDate;
-        headRelationship.endType = HeadRelationshipEndType.NOT_APPLICABLE;
-        headRelationship.endDate = null;
-        this.boxHeadRelationships.put(headRelationship);
+        HeadRelationship headRelationship = null;
+        if (!isInstitutionalHousehold()) {
+            headRelationship = new HeadRelationship();
+            headRelationship.householdCode = household.code;
+            headRelationship.memberCode = memberCode;
+            headRelationship.headCode = (headRelationshipType == HeadRelationshipType.HEAD_OF_HOUSEHOLD) ? memberCode : currentHead.code;
+            headRelationship.relationshipType = headRelationshipType;
+            headRelationship.startType = HeadRelationshipStartType.INTERNAL_INMIGRATION;
+            headRelationship.startDate = migrationDate;
+            headRelationship.endType = HeadRelationshipEndType.NOT_APPLICABLE;
+            headRelationship.endDate = null;
+            this.boxHeadRelationships.put(headRelationship);
+        }
 
         //update member
         //selectedMember = boxMembers.get(selectedMember.id);
@@ -567,7 +577,9 @@ public class InternalInMigrationFormUtil extends FormUtil<Inmigration> {
         //save state for editing
         HashMap<String,String> saveStateMap = new HashMap<>();
         saveStateMap.put("residencyId", residency.id+"");
-        saveStateMap.put("headRelationshipId", headRelationship.id+"");
+        if (headRelationship != null) {
+            saveStateMap.put("headRelationshipId", headRelationship.id + "");
+        }
         saveStateMap.put("outmigrationId", outmigration.id+"");
         SavedEntityState entityState = new SavedEntityState(CoreFormEntity.INMIGRATION, inmigration.id, "intimgFormUtilState", new Gson().toJson(saveStateMap));
         this.boxSavedEntityStates.put(entityState);
@@ -649,22 +661,27 @@ public class InternalInMigrationFormUtil extends FormUtil<Inmigration> {
         this.boxResidencies.put(residency);
 
         //HeadRelationship - update close
-        selectedMemberHeadRelationship = boxHeadRelationships.get(selectedMemberHeadRelationship.id);
-        selectedMemberHeadRelationship.endDate = GeneralUtil.getDateAdd(migrationDate, -1);
-        selectedMemberHeadRelationship.endType = HeadRelationshipEndType.INTERNAL_OUTMIGRATION;
-        this.boxHeadRelationships.put(selectedMemberHeadRelationship);
+        if (selectedMemberHeadRelationship != null) {
+            selectedMemberHeadRelationship = boxHeadRelationships.get(selectedMemberHeadRelationship.id);
+            selectedMemberHeadRelationship.endDate = GeneralUtil.getDateAdd(migrationDate, -1);
+            selectedMemberHeadRelationship.endType = HeadRelationshipEndType.INTERNAL_OUTMIGRATION;
+            this.boxHeadRelationships.put(selectedMemberHeadRelationship);
+        }
 
         //HeadRelationship - update
-        HeadRelationship headRelationship = savedHeadRelationship;
-        headRelationship.householdCode = household.code;
-        headRelationship.memberCode = memberCode;
-        headRelationship.headCode = (headRelationshipType==HeadRelationshipType.HEAD_OF_HOUSEHOLD) ? memberCode : currentHead.code;;
-        headRelationship.relationshipType = headRelationshipType;
-        headRelationship.startType = HeadRelationshipStartType.INTERNAL_INMIGRATION;
-        headRelationship.startDate = migrationDate;
-        headRelationship.endType = HeadRelationshipEndType.NOT_APPLICABLE;
-        headRelationship.endDate = null;
-        this.boxHeadRelationships.put(headRelationship);
+        HeadRelationship headRelationship = null;
+        if (!isInstitutionalHousehold()) {
+            headRelationship = savedHeadRelationship;
+            headRelationship.householdCode = household.code;
+            headRelationship.memberCode = memberCode;
+            headRelationship.headCode = (headRelationshipType == HeadRelationshipType.HEAD_OF_HOUSEHOLD) ? memberCode : currentHead.code;
+            headRelationship.relationshipType = headRelationshipType;
+            headRelationship.startType = HeadRelationshipStartType.INTERNAL_INMIGRATION;
+            headRelationship.startDate = migrationDate;
+            headRelationship.endType = HeadRelationshipEndType.NOT_APPLICABLE;
+            headRelationship.endDate = null;
+            this.boxHeadRelationships.put(headRelationship);
+        }
 
         //update member
         selectedMember.householdCode = household.code;
@@ -769,7 +786,7 @@ public class InternalInMigrationFormUtil extends FormUtil<Inmigration> {
     private void checkHeadOfHouseholdDialog() {
         retrieveHeadOfHousehold();
 
-        if (this.currentHead != null || isFirstHouseholdMember) {
+        if (this.currentHead != null || isFirstHouseholdMember || isInstitutionalHousehold()) {
             openInMigratingMemberFilterDialog();
         } else {
             //display dialog
@@ -820,6 +837,10 @@ public class InternalInMigrationFormUtil extends FormUtil<Inmigration> {
 
     String handleMethodExecution(String methodExpression, String[] args) {
         Log.d("methodcall", ""+methodExpression);
+
+        if (methodExpression.startsWith("isInstitutionalHousehold")){
+            return "'" + (this.household.type == HouseholdType.INSTITUTIONAL) + "'";
+        }
 
         if (methodExpression.startsWith("getMemberAge")){
             //get current member age

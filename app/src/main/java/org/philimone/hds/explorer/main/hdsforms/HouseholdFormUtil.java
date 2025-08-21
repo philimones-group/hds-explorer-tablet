@@ -13,6 +13,8 @@ import org.philimone.hds.explorer.model.Region;
 import org.philimone.hds.explorer.model.Region_;
 import org.philimone.hds.explorer.model.converters.StringCollectionConverter;
 import org.philimone.hds.explorer.model.enums.CoreFormEntity;
+import org.philimone.hds.explorer.model.enums.HouseholdInstitutionType;
+import org.philimone.hds.explorer.model.enums.HouseholdType;
 import org.philimone.hds.forms.model.CollectedDataMap;
 import org.philimone.hds.forms.model.ColumnValue;
 import org.philimone.hds.forms.model.HForm;
@@ -126,10 +128,16 @@ public class HouseholdFormUtil extends FormUtil<Household> {
     public ValidationResult onFormValidate(HForm form, CollectedDataMap collectedValues) {
         ColumnValue columnHouseholdCode = collectedValues.get("householdCode");
         ColumnValue columnHouseholdName = collectedValues.get("householdName");
+        ColumnValue columnHouseholdType = collectedValues.get("householdType");
+        ColumnValue columnInstitutionType = collectedValues.get("institutionType");
+        ColumnValue columnInstitutionTypeOther = collectedValues.get("institutionTypeOther");
 
         String household_code = columnHouseholdCode.getValue();
         String household_name = columnHouseholdName.getValue();
         //String household_gps = collectedValues.get("gps").getValue();
+        HouseholdType householdType = HouseholdType.getFrom(columnHouseholdType.getValue());
+        HouseholdInstitutionType institutionType = HouseholdInstitutionType.getFrom(columnInstitutionType.getValue());
+        String institutionTypeOther = columnInstitutionTypeOther.getValue();
 
         if (StringUtil.isBlank(household_code)){
             String message = this.context.getString(R.string.new_household_code_empty_lbl);
@@ -187,6 +195,9 @@ public class HouseholdFormUtil extends FormUtil<Household> {
 
         ColumnValue colRegionCode = collectedValues.get("regionCode");
         ColumnValue colRegionName = collectedValues.get("regionName");
+        ColumnValue columnHouseholdType = collectedValues.get("householdType");
+        ColumnValue columnInstitutionType = collectedValues.get("institutionType");
+        ColumnValue columnInstitutionTypeOther = collectedValues.get("institutionTypeOther");
         ColumnValue colHouseholdCode = collectedValues.get("householdCode");
         ColumnValue colHouseholdName = collectedValues.get("householdName");
         ColumnValue colHeadCode = collectedValues.get("headCode");
@@ -202,12 +213,19 @@ public class HouseholdFormUtil extends FormUtil<Household> {
         Double gpsAlt = gpsValues.get("gpsAlt");
         Double gpsAcc = gpsValues.get("gpsAcc");
 
+        HouseholdType householdType = HouseholdType.getFrom(columnHouseholdType.getValue());
+        HouseholdInstitutionType institutionType = HouseholdInstitutionType.getFrom(columnInstitutionType.getValue());
+        String institutionTypeOther = columnInstitutionTypeOther.getValue();
+
         boolean wasPreRegistered = (this.household != null && this.household.preRegistered);
 
         Household household = wasPreRegistered ? this.household : new Household();
         household.region = colRegionCode.getValue();
         household.code = colHouseholdCode.getValue();
         household.prefixCode = codeGenerator.getPrefixCode(household);
+        household.type = householdType;
+        household.institutionType = institutionType;
+        household.institutionTypeOther = institutionTypeOther;
         household.name = colHouseholdName.getValue();
         household.headCode = colHeadCode.getValue();
         household.headName = colHeadName.getValue();
@@ -264,6 +282,9 @@ public class HouseholdFormUtil extends FormUtil<Household> {
         //saveNewHousehold();
         ColumnValue colRegionCode = collectedValues.get("regionCode");
         ColumnValue colRegionName = collectedValues.get("regionName");
+        ColumnValue columnHouseholdType = collectedValues.get("householdType");
+        ColumnValue columnInstitutionType = collectedValues.get("institutionType");
+        ColumnValue columnInstitutionTypeOther = collectedValues.get("institutionTypeOther");
         ColumnValue colHouseholdCode = collectedValues.get("householdCode");
         ColumnValue colHouseholdName = collectedValues.get("householdName");
         ColumnValue colHeadCode = collectedValues.get("headCode");
@@ -279,9 +300,16 @@ public class HouseholdFormUtil extends FormUtil<Household> {
         Double gpsAlt = gpsValues.get("gpsAlt");
         Double gpsAcc = gpsValues.get("gpsAcc");
 
+        HouseholdType householdType = HouseholdType.getFrom(columnHouseholdType.getValue());
+        HouseholdInstitutionType institutionType = HouseholdInstitutionType.getFrom(columnInstitutionType.getValue());
+        String institutionTypeOther = columnInstitutionTypeOther.getValue();
+
 
         Household household = this.entity;
         household.region = colRegionCode.getValue();
+        household.type = householdType;
+        household.institutionType = institutionType;
+        household.institutionTypeOther = institutionTypeOther;
         household.code = colHouseholdCode.getValue();
         household.name = colHouseholdName.getValue();
         household.headCode = colHeadCode.getValue();

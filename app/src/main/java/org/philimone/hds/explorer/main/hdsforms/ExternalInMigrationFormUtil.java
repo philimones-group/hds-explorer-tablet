@@ -29,6 +29,7 @@ import org.philimone.hds.explorer.model.converters.StringCollectionConverter;
 import org.philimone.hds.explorer.model.enums.CoreFormEntity;
 import org.philimone.hds.explorer.model.enums.Gender;
 import org.philimone.hds.explorer.model.enums.HeadRelationshipType;
+import org.philimone.hds.explorer.model.enums.HouseholdType;
 import org.philimone.hds.explorer.model.enums.MaritalStatus;
 import org.philimone.hds.explorer.model.enums.temporal.ExternalInMigrationType;
 import org.philimone.hds.explorer.model.enums.temporal.HeadRelationshipEndType;
@@ -321,7 +322,7 @@ public class ExternalInMigrationFormUtil extends FormUtil<Inmigration> {
             return new ValidationResult(colMemberDob, message);
         }
 
-        if (headRelationshipType == null){
+        if (headRelationshipType == null && !isInstitutionalHousehold()){
             String message = this.context.getString(R.string.new_member_head_relattype_empty_lbl);
             return new ValidationResult(colHeadRelationshipType, message);
         }
@@ -465,6 +466,10 @@ public class ExternalInMigrationFormUtil extends FormUtil<Inmigration> {
                 .build().findFirst();
 
         return lastResidency;
+    }
+
+    private boolean isInstitutionalHousehold() {
+        return this.household.type == HouseholdType.INSTITUTIONAL;
     }
 
     @Override
@@ -613,15 +618,20 @@ public class ExternalInMigrationFormUtil extends FormUtil<Inmigration> {
         residency.endDate = null;
 
         //HeadRelationship
-        HeadRelationship headRelationship = new HeadRelationship();
-        headRelationship.householdCode = household.code;
-        headRelationship.memberCode = member.code;
-        headRelationship.headCode = (headRelationshipType==HeadRelationshipType.HEAD_OF_HOUSEHOLD) ? memberCode : currentHead.code;
-        headRelationship.relationshipType = headRelationshipType;
-        headRelationship.startType = HeadRelationshipStartType.ENUMERATION;
-        headRelationship.startDate = migrationDate;
-        headRelationship.endType = HeadRelationshipEndType.NOT_APPLICABLE;
-        headRelationship.endDate = null;
+        HeadRelationship headRelationship = null;
+        if (!isInstitutionalHousehold()) {
+            headRelationship = new HeadRelationship();
+            headRelationship.householdCode = household.code;
+            headRelationship.memberCode = member.code;
+            headRelationship.headCode = (headRelationshipType == HeadRelationshipType.HEAD_OF_HOUSEHOLD) ? memberCode : currentHead.code;
+            headRelationship.relationshipType = headRelationshipType;
+            headRelationship.startType = HeadRelationshipStartType.ENUMERATION;
+            headRelationship.startDate = migrationDate;
+            headRelationship.endType = HeadRelationshipEndType.NOT_APPLICABLE;
+            headRelationship.endDate = null;
+
+            boxHeadRelationships.put(headRelationship);
+        }
 
         Inmigration inmigration = new Inmigration();
         inmigration.visitCode = visitCode;
@@ -640,7 +650,6 @@ public class ExternalInMigrationFormUtil extends FormUtil<Inmigration> {
         boxMembers.put(member);
         boxInmigrations.put(inmigration);
         boxResidencies.put(residency);
-        boxHeadRelationships.put(headRelationship);
 
         //save core collected data
         collectedData = new CoreCollectedData();
@@ -665,7 +674,9 @@ public class ExternalInMigrationFormUtil extends FormUtil<Inmigration> {
         //save state for editing
         HashMap<String,String> saveStateMap = new HashMap<>();
         saveStateMap.put("residencyId", residency.id+"");
-        saveStateMap.put("headRelationshipId", headRelationship.id+"");
+        if (headRelationship != null) {
+            saveStateMap.put("headRelationshipId", headRelationship.id+"");
+        }
         SavedEntityState entityState = new SavedEntityState(CoreFormEntity.EXTERNAL_INMIGRATION, inmigration.id, "extimgFormUtilState", new Gson().toJson(saveStateMap));
         this.boxSavedEntityStates.put(entityState);
 
@@ -773,15 +784,20 @@ public class ExternalInMigrationFormUtil extends FormUtil<Inmigration> {
         residency.endDate = null;
 
         //HeadRelationship
-        HeadRelationship headRelationship = savedHeadRelationship;
-        headRelationship.householdCode = household.code;
-        headRelationship.memberCode = member.code;
-        headRelationship.headCode = (headRelationshipType==HeadRelationshipType.HEAD_OF_HOUSEHOLD) ? memberCode : currentHead.code;;
-        headRelationship.relationshipType = headRelationshipType;
-        headRelationship.startType = HeadRelationshipStartType.ENUMERATION;
-        headRelationship.startDate = migrationDate;
-        headRelationship.endType = HeadRelationshipEndType.NOT_APPLICABLE;
-        headRelationship.endDate = null;
+        HeadRelationship headRelationship = null;
+        if (!isInstitutionalHousehold()) {
+            headRelationship = savedHeadRelationship;
+            headRelationship.householdCode = household.code;
+            headRelationship.memberCode = member.code;
+            headRelationship.headCode = (headRelationshipType == HeadRelationshipType.HEAD_OF_HOUSEHOLD) ? memberCode : currentHead.code;
+            headRelationship.relationshipType = headRelationshipType;
+            headRelationship.startType = HeadRelationshipStartType.ENUMERATION;
+            headRelationship.startDate = migrationDate;
+            headRelationship.endType = HeadRelationshipEndType.NOT_APPLICABLE;
+            headRelationship.endDate = null;
+
+            boxHeadRelationships.put(headRelationship);
+        }
 
         Inmigration inmigration = this.entity;
         inmigration.visitCode = visitCode;
@@ -793,7 +809,6 @@ public class ExternalInMigrationFormUtil extends FormUtil<Inmigration> {
         boxMembers.put(member);
         boxInmigrations.put(inmigration);
         boxResidencies.put(residency);
-        boxHeadRelationships.put(headRelationship);
 
         //save core collected data
         collectedData.formEntityName = member.name;
@@ -912,7 +927,7 @@ public class ExternalInMigrationFormUtil extends FormUtil<Inmigration> {
     private void checkHeadOfHouseholdDialog() {
         retrieveHeadOfHousehold();
 
-        if (this.currentHead != null || isFirstHouseholdMember) {
+        if (this.currentHead != null || isFirstHouseholdMember || isInstitutionalHousehold()) {
             selectExtInMigTypeDialog();
         } else {
             //display dialog
@@ -1095,6 +1110,10 @@ public class ExternalInMigrationFormUtil extends FormUtil<Inmigration> {
 
     String handleMethodExecution(String methodExpression, String[] args) {
         Log.d("methodcall", ""+methodExpression);
+
+        if (methodExpression.startsWith("isInstitutionalHousehold")){
+            return "'" + (this.household.type == HouseholdType.INSTITUTIONAL) + "'";
+        }
 
         if (methodExpression.startsWith("calculateAge")){
 

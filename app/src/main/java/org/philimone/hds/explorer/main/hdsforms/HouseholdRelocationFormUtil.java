@@ -27,6 +27,7 @@ import org.philimone.hds.explorer.model.converters.StringCollectionConverter;
 import org.philimone.hds.explorer.model.enums.CoreFormEntity;
 import org.philimone.hds.explorer.model.enums.HeadRelationshipType;
 import org.philimone.hds.explorer.model.enums.HouseholdRelocationReason;
+import org.philimone.hds.explorer.model.enums.HouseholdType;
 import org.philimone.hds.explorer.model.enums.temporal.HeadRelationshipEndType;
 import org.philimone.hds.explorer.model.enums.temporal.HeadRelationshipStartType;
 import org.philimone.hds.explorer.model.enums.temporal.ResidencyEndType;
@@ -498,24 +499,26 @@ public class HouseholdRelocationFormUtil extends FormUtil<HouseholdRelocation> {
         }
         
         //create new head relationships
-        for (HeadRelationship oldHeadRelationship : originHeadRelationships) {
-            HeadRelationship hrelationship = new HeadRelationship();
-            hrelationship.householdCode = destinationHousehold.code;
-            hrelationship.headCode = headMember.code;
-            hrelationship.memberCode = oldHeadRelationship.memberCode;
-            hrelationship.relationshipType = oldHeadRelationship.relationshipType;
-            hrelationship.startType = HeadRelationshipStartType.INTERNAL_INMIGRATION;
-            hrelationship.startDate = eventDate;
-            hrelationship.endType = HeadRelationshipEndType.NOT_APPLICABLE;
-            hrelationship.endDate = null;
+        if (destinationHousehold.type != HouseholdType.INSTITUTIONAL) {
+            for (HeadRelationship oldHeadRelationship : originHeadRelationships) {
+                HeadRelationship hrelationship = new HeadRelationship();
+                hrelationship.householdCode = destinationHousehold.code;
+                hrelationship.headCode = headMember.code;
+                hrelationship.memberCode = oldHeadRelationship.memberCode;
+                hrelationship.relationshipType = oldHeadRelationship.relationshipType;
+                hrelationship.startType = HeadRelationshipStartType.INTERNAL_INMIGRATION;
+                hrelationship.startDate = eventDate;
+                hrelationship.endType = HeadRelationshipEndType.NOT_APPLICABLE;
+                hrelationship.endDate = null;
 
-            long oid = boxHeadRelationships.put(hrelationship);
-            savedNewResidencies += (savedNewResidencies.isEmpty() ? "" : ",") + oid;
+                long oid = boxHeadRelationships.put(hrelationship);
+                savedNewHeadRelationships += (savedNewHeadRelationships.isEmpty() ? "" : ",") + oid;
 
-            //update member
-            Member member = Queries.getMemberByCode(boxMembers, hrelationship.memberCode);
-            member.headRelationshipType = hrelationship.relationshipType;
-            boxMembers.put(member);
+                //update member
+                Member member = Queries.getMemberByCode(boxMembers, hrelationship.memberCode);
+                member.headRelationshipType = hrelationship.relationshipType;
+                boxMembers.put(member);
+            }
         }
 
         //create household relocation
@@ -701,26 +704,28 @@ public class HouseholdRelocationFormUtil extends FormUtil<HouseholdRelocation> {
         }
 
         //create new head relationships
-        for (HeadRelationship originHeadRelationship : originHeadRelationships) {
-            HeadRelationship recentHeadRelationship = !originHouseholdChanged ? getCurrentHeadRelationship(destinationHousehold.code, originHeadRelationship.memberCode) : null;
+        if (destinationHousehold.type != HouseholdType.INSTITUTIONAL) {
+            for (HeadRelationship originHeadRelationship : originHeadRelationships) {
+                HeadRelationship recentHeadRelationship = !originHouseholdChanged ? getCurrentHeadRelationship(destinationHousehold.code, originHeadRelationship.memberCode) : null;
 
-            HeadRelationship hrelationship = (originHouseholdChanged || recentHeadRelationship == null) ? new HeadRelationship() : recentHeadRelationship;
-            hrelationship.householdCode = destinationHousehold.code;
-            hrelationship.headCode = headMember.code;
-            hrelationship.memberCode = originHeadRelationship.memberCode;
-            hrelationship.relationshipType = originHeadRelationship.relationshipType;
-            hrelationship.startType = HeadRelationshipStartType.INTERNAL_INMIGRATION;
-            hrelationship.startDate = eventDate;
-            hrelationship.endType = HeadRelationshipEndType.NOT_APPLICABLE;
-            hrelationship.endDate = null;
+                HeadRelationship hrelationship = (originHouseholdChanged || recentHeadRelationship == null) ? new HeadRelationship() : recentHeadRelationship;
+                hrelationship.householdCode = destinationHousehold.code;
+                hrelationship.headCode = headMember.code;
+                hrelationship.memberCode = originHeadRelationship.memberCode;
+                hrelationship.relationshipType = originHeadRelationship.relationshipType;
+                hrelationship.startType = HeadRelationshipStartType.INTERNAL_INMIGRATION;
+                hrelationship.startDate = eventDate;
+                hrelationship.endType = HeadRelationshipEndType.NOT_APPLICABLE;
+                hrelationship.endDate = null;
 
-            long oid = boxHeadRelationships.put(hrelationship);
-            savedNewResidencies += (savedNewResidencies.isEmpty() ? "" : ",") + oid;
+                long oid = boxHeadRelationships.put(hrelationship);
+                savedNewHeadRelationships += (savedNewHeadRelationships.isEmpty() ? "" : ",") + oid;
 
-            //update member
-            Member member = Queries.getMemberByCode(boxMembers, hrelationship.memberCode);
-            member.headRelationshipType = hrelationship.relationshipType;
-            boxMembers.put(member);
+                //update member
+                Member member = Queries.getMemberByCode(boxMembers, hrelationship.memberCode);
+                member.headRelationshipType = hrelationship.relationshipType;
+                boxMembers.put(member);
+            }
         }
 
         //save state map

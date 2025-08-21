@@ -26,6 +26,7 @@ import org.philimone.hds.explorer.model.converters.StringCollectionConverter;
 import org.philimone.hds.explorer.model.enums.CoreFormEntity;
 import org.philimone.hds.explorer.model.enums.Gender;
 import org.philimone.hds.explorer.model.enums.HeadRelationshipType;
+import org.philimone.hds.explorer.model.enums.HouseholdType;
 import org.philimone.hds.explorer.model.enums.MaritalStatus;
 import org.philimone.hds.explorer.model.enums.temporal.HeadRelationshipEndType;
 import org.philimone.hds.explorer.model.enums.temporal.HeadRelationshipStartType;
@@ -277,7 +278,7 @@ public class MemberEnumerationFormUtil extends FormUtil<Member> {
             return new ValidationResult(colDob, message);
         }
 
-        if (headRelationshipType == null){
+        if (headRelationshipType == null && !isInstitutionalHousehold()){
             String message = this.context.getString(R.string.new_member_head_relattype_empty_lbl);
             return new ValidationResult(colHeadRelationshipType, message);
         }
@@ -332,6 +333,10 @@ public class MemberEnumerationFormUtil extends FormUtil<Member> {
 
     private boolean isValidPhoneNumber(String phoneNumber) {
         return !StringUtil.isBlank(phoneNumber) && phoneNumber.matches(PHONE_NUMBER_REGEX);
+    }
+
+    private boolean isInstitutionalHousehold() {
+        return this.household.type == HouseholdType.INSTITUTIONAL;
     }
 
     @Override
@@ -454,20 +459,25 @@ public class MemberEnumerationFormUtil extends FormUtil<Member> {
         residency.endDate = null;
 
         //HeadRelationship
-        HeadRelationship headRelationship = new HeadRelationship();
-        headRelationship.householdCode = householdCode;
-        headRelationship.memberCode = member.code;
-        headRelationship.headCode = (headRelationshipType==HeadRelationshipType.HEAD_OF_HOUSEHOLD) ? code : currentHead.code;
-        headRelationship.relationshipType = headRelationshipType;
-        headRelationship.startType = HeadRelationshipStartType.ENUMERATION;
-        headRelationship.startDate = residencyStartDate;
-        headRelationship.endType = HeadRelationshipEndType.NOT_APPLICABLE;
-        headRelationship.endDate = null;
+        HeadRelationship headRelationship = null;
+
+        if (!isInstitutionalHousehold()) {
+            headRelationship = new HeadRelationship();
+            headRelationship.householdCode = householdCode;
+            headRelationship.memberCode = member.code;
+            headRelationship.headCode = (headRelationshipType == HeadRelationshipType.HEAD_OF_HOUSEHOLD) ? code : currentHead.code;
+            headRelationship.relationshipType = headRelationshipType;
+            headRelationship.startType = HeadRelationshipStartType.ENUMERATION;
+            headRelationship.startDate = residencyStartDate;
+            headRelationship.endType = HeadRelationshipEndType.NOT_APPLICABLE;
+            headRelationship.endDate = null;
+
+            boxHeadRelationships.put(headRelationship);
+        }
 
         //save data
         boxMembers.put(member);
         boxResidencies.put(residency);
-        boxHeadRelationships.put(headRelationship);
 
         //save core collected data
         collectedData = new CoreCollectedData();
@@ -494,7 +504,9 @@ public class MemberEnumerationFormUtil extends FormUtil<Member> {
         //save state for editing
         HashMap<String,String> saveStateMap = new HashMap<>();
         saveStateMap.put("residencyId", residency.id+"");
-        saveStateMap.put("headRelationshipId", headRelationship.id+"");
+        if (headRelationship != null) {
+            saveStateMap.put("headRelationshipId", headRelationship.id+"");
+        }
         SavedEntityState entityState = new SavedEntityState(CoreFormEntity.MEMBER_ENU, member.id, "memberEnuFormUtilState", new Gson().toJson(saveStateMap));
         this.boxSavedEntityStates.put(entityState);
 
@@ -582,20 +594,25 @@ public class MemberEnumerationFormUtil extends FormUtil<Member> {
         residency.endDate = null;
 
         //HeadRelationship
-        HeadRelationship headRelationship = boxHeadRelationships.get(savedHeadRelationship.id);
-        headRelationship.householdCode = householdCode;
-        headRelationship.memberCode = member.code;
-        headRelationship.headCode = (headRelationshipType==HeadRelationshipType.HEAD_OF_HOUSEHOLD) ? code : currentHead.code;
-        headRelationship.relationshipType = headRelationshipType;
-        headRelationship.startType = HeadRelationshipStartType.ENUMERATION;
-        headRelationship.startDate = residencyStartDate;
-        headRelationship.endType = HeadRelationshipEndType.NOT_APPLICABLE;
-        headRelationship.endDate = null;
+        HeadRelationship headRelationship = null;
+
+        if (!isInstitutionalHousehold()) {
+            headRelationship = boxHeadRelationships.get(savedHeadRelationship.id);
+            headRelationship.householdCode = householdCode;
+            headRelationship.memberCode = member.code;
+            headRelationship.headCode = (headRelationshipType == HeadRelationshipType.HEAD_OF_HOUSEHOLD) ? code : currentHead.code;
+            headRelationship.relationshipType = headRelationshipType;
+            headRelationship.startType = HeadRelationshipStartType.ENUMERATION;
+            headRelationship.startDate = residencyStartDate;
+            headRelationship.endType = HeadRelationshipEndType.NOT_APPLICABLE;
+            headRelationship.endDate = null;
+
+            boxHeadRelationships.put(headRelationship);
+        }
 
         //save data
         boxMembers.put(member);
         boxResidencies.put(residency);
-        boxHeadRelationships.put(headRelationship);
 
         //save core collected data
 
@@ -717,7 +734,7 @@ public class MemberEnumerationFormUtil extends FormUtil<Member> {
     private void checkHeadOfHouseholdDialog() {
         retrieveHeadOfHousehold();
 
-        if (this.currentHead != null || isFirstHouseholdMember) {
+        if (this.currentHead != null || isFirstHouseholdMember || isInstitutionalHousehold()) {
             checkFatherDialog();
         } else {
             //display dialog
@@ -849,6 +866,10 @@ public class MemberEnumerationFormUtil extends FormUtil<Member> {
 
     String handleMethodExecution(String methodExpression, String[] args) {
         Log.d("methodcall", ""+methodExpression);
+
+        if (methodExpression.startsWith("isInstitutionalHousehold")){
+            return "'" + (this.household.type == HouseholdType.INSTITUTIONAL) + "'";
+        }
 
         if (methodExpression.startsWith("calculateAge")){
 

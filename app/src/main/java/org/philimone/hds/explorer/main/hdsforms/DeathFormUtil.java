@@ -686,7 +686,7 @@ public class DeathFormUtil extends FormUtil<Death> {
             //save the new head member previous headRelationshipType
             HashMap<String,String> saveStateMap = new HashMap<>();
             saveStateMap.put("newHeadCode", newHeadMember.code);
-            saveStateMap.put("headRelationshipType", newHeadMember.headRelationshipType.code);
+            saveStateMap.put("headRelationshipType", newHeadMember.headRelationshipType != null ? newHeadMember.headRelationshipType.code : "");
 
             this.household.headCode = newHeadMember.code;
             this.household.headName = newHeadMember.name;
@@ -870,7 +870,7 @@ public class DeathFormUtil extends FormUtil<Death> {
             this.newHeadMember = this.boxMembers.get(this.newHeadMember.id);
 
             saveStateMap.put("previousNewHeadCode", newHeadMember.code);
-            saveStateMap.put("previousNewHeadRelationshipType", newHeadMember.headRelationshipType.code);
+            saveStateMap.put("previousNewHeadRelationshipType", newHeadMember.headRelationshipType != null ? newHeadMember.headRelationshipType.code : "");
 
             this.household = boxHouseholds.get(household.id);
             this.household.headCode = newHeadMember.code;

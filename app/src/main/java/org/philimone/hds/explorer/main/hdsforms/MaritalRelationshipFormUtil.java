@@ -142,10 +142,10 @@ public class MaritalRelationshipFormUtil extends FormUtil<MaritalRelationship> {
         String strSpouseBId = mapSavedStates.get("spouseB_id");
         String strSpouseBstatus = mapSavedStates.get("spouseB_marital_status");
 
-        if (strSpouseBId != null) {
+        if (!StringUtil.isBlank(strSpouseBId)) {
             this.savedSpouseB = this.boxMembers.get(Long.parseLong(strSpouseBId));
         }
-        if (strSpouseBstatus != null) {
+        if (!StringUtil.isBlank(strSpouseBstatus)) {
             this.savedSpouseBstatus = MaritalStatus.getFrom(strSpouseBstatus);
         }
 

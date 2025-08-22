@@ -292,25 +292,27 @@ public class CoreCollectedDataDeletionUtil {
             List<HeadRelationship> newHeadMemberRelationships = new ArrayList<>();
             HeadRelationshipType newHeadMemberPreviousRelatType = HeadRelationshipType.OTHER_RELATIVE;
 
-            if (oldHeadCode != null) {
+            if (!StringUtil.isBlank(oldHeadCode)) {
                 oldHeadMember = this.boxMembers.query(Member_.code.equal(oldHeadCode)).build().findFirst();
             }
-            if (oldHeadRelatId != null) {
+            if (!StringUtil.isBlank(oldHeadRelatId)) {
                 oldHeadMemberRelationship = this.boxHeadRelationships.get(Long.parseLong(oldHeadRelatId));
             }
-            if (newHeadPreviousRelType != null) {
+            if (!StringUtil.isBlank(newHeadPreviousRelType)) {
                 newHeadMemberPreviousRelatType = HeadRelationshipType.getFrom(newHeadPreviousRelType);
             }
-            if (oldHeadRelatIdList != null) {
+            if (!StringUtil.isBlank(oldHeadRelatIdList)) {
                 oldHeadMemberRelationships = new ArrayList<>();
                 for (String strId : oldHeadRelatIdList.split(",")) {
+                    if (StringUtil.isBlank(strId)) continue;
                     HeadRelationship headRelationship = this.boxHeadRelationships.get(Long.parseLong(strId));
                     oldHeadMemberRelationships.add(headRelationship);
                 }
             }
-            if (newHeadRelatIdList != null) {
+            if (!StringUtil.isBlank(newHeadRelatIdList)) {
                 newHeadMemberRelationships = new ArrayList<>();
                 for (String strId : newHeadRelatIdList.split(",")) {
+                    if (StringUtil.isBlank(strId)) continue;
                     HeadRelationship headRelationship = this.boxHeadRelationships.get(Long.parseLong(strId));
                     newHeadMemberRelationships.add(headRelationship);
                 }

@@ -206,10 +206,10 @@ public class ChangeRegionHeadFormUtil extends FormUtil<RegionHeadRelationship> {
         String oldHeadCode = mapSavedStates.get("oldHeadCode");
         String oldHeadRelatId = mapSavedStates.get("oldHeadMemberId");
 
-        if (oldHeadCode != null) {
+        if (!StringUtil.isBlank(oldHeadCode)) {
             this.oldHeadMember = this.boxMembers.query(Member_.code.equal(oldHeadCode)).build().findFirst();
         }
-        if (oldHeadRelatId != null) {
+        if (!StringUtil.isBlank(oldHeadRelatId)) {
             try {
                 this.oldRegionHeadRelationship = this.boxRegionHeadRelationships.get(Long.parseLong(oldHeadRelatId));
             } catch ( Exception ex) {

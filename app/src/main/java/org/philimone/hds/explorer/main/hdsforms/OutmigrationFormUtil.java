@@ -139,10 +139,10 @@ public class OutmigrationFormUtil extends FormUtil<Outmigration> {
         String strResidencyId = mapSavedStates.get("currentResidencyId");
         String strHeadRelationshipId = mapSavedStates.get("currentHeadRelationshipId");
 
-        if (strResidencyId != null) {
+        if (!StringUtil.isBlank(strResidencyId)) {
             this.currentMemberResidency = this.boxResidencies.get(Long.parseLong(strResidencyId));
         }
-        if (strHeadRelationshipId != null) {
+        if (!StringUtil.isBlank(strHeadRelationshipId)) {
             this.currentMemberHeadRelationship = this.boxHeadRelationships.get(Long.parseLong(strHeadRelationshipId));
         }
 

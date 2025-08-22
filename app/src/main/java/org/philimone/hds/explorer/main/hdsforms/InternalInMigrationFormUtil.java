@@ -158,13 +158,13 @@ public class InternalInMigrationFormUtil extends FormUtil<Inmigration> {
         String strHeadRelationshipId = mapSavedStates.get("headRelationshipId");
         String strOutmigrationId = mapSavedStates.get("outmigrationId");
 
-        if (strResidencyId != null) {
+        if (!StringUtil.isBlank(strResidencyId)) {
             this.savedResidency = this.boxResidencies.get(Long.parseLong(strResidencyId));
         }
-        if (strHeadRelationshipId != null) {
+        if (!StringUtil.isBlank(strHeadRelationshipId)) {
             this.savedHeadRelationship = this.boxHeadRelationships.get(Long.parseLong(strHeadRelationshipId));
         }
-        if (strOutmigrationId != null) {
+        if (!StringUtil.isBlank(strOutmigrationId)) {
             this.savedOutmigration = this.boxOutmigrations.get(Long.parseLong(strOutmigrationId));
         }
 

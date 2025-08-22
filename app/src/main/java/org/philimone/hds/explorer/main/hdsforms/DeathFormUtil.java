@@ -237,22 +237,22 @@ public class DeathFormUtil extends FormUtil<Death> {
         String memberMaritalRelationshipIdList = mapSavedStates.get("memberMaritalRelationshipIdList");
         String headMemberRelationshipIdList = mapSavedStates.get("headMemberRelationshipIdList");
 
-        if (newHeadCode != null) {
+        if (!StringUtil.isBlank(newHeadCode)) {
             this.previousNewHeadMember = this.boxMembers.query(Member_.code.equal(newHeadCode)).build().findFirst();
         }
-        if (headRelationshipType != null) {
+        if (!StringUtil.isBlank(headRelationshipType)) {
             this.previousNewHeadRelationshipType = HeadRelationshipType.getFrom(headRelationshipType);
         }
-        if (isHouseholdHeadVar != null) {
+        if (!StringUtil.isBlank(isHouseholdHeadVar)) {
             this.isHouseholdHead = Boolean.parseBoolean(isHouseholdHeadVar);
         }
-        if (onlyMinorsLeftInHouseholdVar != null) {
+        if (!StringUtil.isBlank(onlyMinorsLeftInHouseholdVar)) {
             this.onlyMinorsLeftInHousehold = Boolean.parseBoolean(onlyMinorsLeftInHouseholdVar);
         }
-        if (memberResidencyId != null) {
+        if (!StringUtil.isBlank(memberResidencyId)) {
             this.memberResidency = this.boxResidencies.get(Long.parseLong(memberResidencyId));
         }
-        if (memberHeadRelationshipId != null) {
+        if (!StringUtil.isBlank(memberHeadRelationshipId)) {
             this.memberHeadRelationship = this.boxHeadRelationships.get(Long.parseLong(memberHeadRelationshipId));
         }
         if (!StringUtil.isBlank(memberMaritalRelationshipIdList)) {

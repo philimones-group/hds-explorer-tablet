@@ -173,13 +173,13 @@ public class ChangeHeadFormUtil extends FormUtil<HeadRelationship> {
         if (oldHeadCode != null) {
             this.oldHeadMember = this.boxMembers.query(Member_.code.equal(oldHeadCode)).build().findFirst();
         }
-        if (oldHeadRelatId != null) {
+        if (!StringUtil.isBlank(oldHeadRelatId)) {
             this.oldHeadMemberRelationship = this.boxHeadRelationships.get(Long.parseLong(oldHeadRelatId));
         }
-        if (newHeadPreviousRelType != null) {
+        if (!StringUtil.isBlank(newHeadPreviousRelType)) {
             this.newHeadMemberPreviousRelatType = HeadRelationshipType.getFrom(newHeadPreviousRelType);
         }
-        if (oldHeadRelatIdList != null) {
+        if (!StringUtil.isBlank(oldHeadRelatIdList)) {
             this.oldHeadMemberRelationships = new ArrayList<>();
             for (String strId : oldHeadRelatIdList.split(",")) {
                 HeadRelationship headRelationship = this.boxHeadRelationships.get(Long.parseLong(strId));
@@ -769,6 +769,8 @@ Log.d("firstLast", "id="+newHeadLastRelationship.id);
             //Update the Head Relationships
             String sidsList = mapSavedStates.get("newHeadRelationshipsList");
             for (String strId: sidsList.split(",")) {
+                if (StringUtil.isBlank(strId)) continue;
+
                 HeadRelationship headRelationship = this.boxHeadRelationships.get(Long.parseLong(strId));
 
                 Integer rindex = mapCodeIndexes.get(headRelationship.memberCode);

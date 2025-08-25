@@ -92,6 +92,7 @@
     <string name="sync_deaths_lbl">ሞት</string>
     <string name="sync_incomplete_visits_lbl">ያልተጠናቀቁ ጉብኝቶች</string>
     <string name="sync_regionheads_lbl">የአካባቢ አለቆች</string>
+    <string name="sync_proxyheads_lbl">ተካታቢ ራሶች</string>
     <string name="sync_saved_lbl">ተቀምጧል</string>
     <string name="sync_deleted_lbl">ተሰርዟል</string>
     <string name="sync_records_lbl">መዝገቦች</string>
@@ -164,6 +165,7 @@
     <string name="core_entity_visit_lbl">የጉብኝት ምዝገባ</string>
     <string name="core_entity_changehor_lbl">የአካባቢ አለት መቀየር</string>
     <string name="core_entity_household_reloc_lbl">የቤተሰብ መቀየሪያ</string>
+    <string name="core_entity_changephd_lbl">የቤተሰብ ተካታቢ ራስ መቀየሪያ</string>
     <string name="core_entity_extra_form_lbl">ሌሎች ቅጾች (ODK)</string>
     <string name="core_entity_edit_region_lbl">ክልሉን አስተካክል</string>
     <string name="core_entity_edit_household_lbl">ቤተሰቡን አስተካክል</string>
@@ -350,6 +352,8 @@
     <string name="household_details_members_item_since_lbl">ጀምሮ፡</string>
     <string name="household_details_head_name_lbl">አለቃ፡</string>
     <string name="household_details_head_code_lbl">ኮድ፡</string>
+    <string name="household_details_proxy_head_name_lbl">ተካታቢ ራስ፡</string>
+    <string name="household_details_proxy_head_role_lbl">ሚና፡</string>
     <string name="household_details_region_lbl">የሚገኝበት ክልል፡</string>
     <string name="household_details_last_visit_lbl">የመጨረሻ ጉብኝት ቀን፡</string>
     <string name="household_details_dialog_del_saved_form_title_lbl">የተቀመጠውን መረጃ ሰርዝ</string>
@@ -386,6 +390,7 @@
     <string name="household_visit_bt_death_lbl">ሞት\nመመዝገቢያ</string>
     <string name="household_visit_bt_marital_lbl">የጋብቻ\nትዳር</string>
     <string name="household_visit_bt_changehoh_lbl">የቤተሰብ\nአለቃን ቀይር</string>
+    <string name="household_visit_bt_changephh_lbl">ተካታቢ\n ራስ ቀይር</string>
     <string name="household_visit_bt_incomplete_lbl">ጉብኝት አባል\nአልተቻለም</string>
     <string name="household_visit_bt_collect_lbl">ሌሎች ቅጾችን\nይሰብስቡ</string>
     <string name="household_visit_not_finished_title_lbl">ጉብኝት አልተጠናቀቀም</string>
@@ -483,7 +488,6 @@
     <string name="new_visit_location_other_empty_lbl">ጉብኝቱ የሚካሄደውን ቦታ መግለጽ አለብህ</string>
 
     <!-- New Member -->
-
     <string name="new_member_code_err_lbl">የአባል ኮድ ቅርፀት ትክክል አይደለም</string>
     <string name="new_member_code_household_err_lbl">የአባል ኮድ ከተመረጠው ቤተሰብ ጋር አይመሳሰልም</string>
     <string name="new_member_code_exists_lbl">የአባል ኮድ አስቀድሞ አለ</string>
@@ -682,6 +686,85 @@
     <string name="changeregionhead_already_collected_stop_notvisit_msg_lbl">ለ [%1$s] = %2$s የተመዘገበ አዲስ የክልል አለቃ ቅጽ አለ።\nይህ ቅጽ በቤተሰብ ጉብኝት ተመዘገበ።\nለማስተካከል ወደ [code = %3$s] ይሂዱ።</string>
 
     <string name="household_head_dont_exists_lbl">ይህ ቤተሰብ በአሁኑ ወቅት ተናዳጅ አለቃ አላትም፣ ክስተቱን ማከናወን አይቻልም።</string>
+
+    <string name="changeproxyhead_dialog_change_title_lbl">ተካታቢ ራስ አዘምን</string>
+    <string name="changeproxyhead_head_exists_lbl">አዲሱ ተካታቢ ራስ በስርዓቱ ውስጥ የታወቀና የተመዘገበ ነው?</string>
+    <string name="changeproxyhead_dialog_head_change_lbl">የዚህ ቤተሰብ አዲሱን ተካታቢ ራስ ማዘመን ትፈልጋለህ?</string>
+    <string name="changeproxyhead_new_head_select_lbl">አዲሱን ተካታቢ ራስ ይምረጡ</string>
+    <string name="changeproxyhead_household_code_empty_lbl">የቤተሰብ ኮድ ባዶ መሆን አይችልም</string>
+    <string name="changeproxyhead_proxy_head_type_empty_lbl">የተካታቢ ራስ አይነት ባዶ መሆን አይችልም</string>
+    <string name="changeproxyhead_proxy_head_code_empty_lbl">የተካታቢ ራስ ኮድ ባዶ መሆን አይችልም</string>
+    <string name="changeproxyhead_proxy_head_name_empty_lbl">የተካታቢ ራስ ስም ባዶ መሆን አይችልም</string>
+    <string name="changeproxyhead_proxy_head_role_empty_lbl">የተካታቢ ራስ ሚና ባዶ መሆን አይችልም</string>
+    <string name="changeproxyhead_eventdate_empty_lbl">የክስተቱ ቀን ባዶ መሆን አይችልም</string>
+    <string name="changeproxyhead_eventdate_not_before_dob_lbl">የክስተቱ ቀን ከአዲሱ ተካታቢ ራስ የትውልድ ቀን በፊት መሆን አይችልም</string>
+    <string name="changeproxyhead_eventdate_not_great_today_lbl">የክስተቱ ቀን ከዛሬ ቀን በላይ መሆን አይችልም</string>
+    <string name="changeproxyhead_eventdate_not_before_new_proxy_head_startdate_lbl">የክስተቱ ቀን [%1$s] ከቀድሞው የ[ተካታቢ ራስ] መጀመሪያ ቀን [%2$s] በፊት መሆን አይችልም።</string>
+
+    <string name="proxy_head_role_administrator_lbl">አስተዳዳሪ</string>
+    <string name="proxy_head_role_warden_lbl">ጠባቂ</string>
+    <string name="proxy_head_role_social_worker_lbl">ማህበራዊ ሰራተኛ</string>
+    <string name="proxy_head_role_caretaker_lbl">እንክብካቤ አድራጊ</string>
+    <string name="proxy_head_role_legal_guardian_lbl">ሕጋዊ እንክብካቤ አሳዳጊ</string>
+    <string name="proxy_head_role_family_representative_lbl">የቤተሰብ ተወካይ</string>
+    <string name="proxy_head_role_community_representative_lbl">የማህበረሰብ ተወካይ</string>
+    <string name="proxy_head_role_religious_leader_lbl">ሃይማኖታዊ መሪ</string>
+    <string name="proxy_head_role_military_commander_lbl">የጦር አዛዥ</string>
+    <string name="proxy_head_role_principal_lbl">ዋና አስተባባሪ</string>
+    <string name="proxy_head_role_director_lbl">ዳይሬክተር</string>
+    <string name="proxy_head_role_other_lbl">ሌላ</string>
+
+    <string name="proxy_head_type_resident_lbl">ተካታቢ ራስ (ተቀመጠ)</string>
+    <string name="proxy_head_type_non_resident_lbl">ተካታቢ ራስ (ያልተቀመጠ፣ በDSS የተመዘገበ፣ በሌላ ቤተሰብ)</string>
+    <string name="proxy_head_type_non_dss_member_lbl">ተካታቢ ራስ (ያልተመዘገበ የDSS አባል፣ ከስርዓቱ ውጭ)</string>
+
+    <string name="proxy_head_change_reason_admin_appointment_lbl">አስተዳደራዊ ተሾመ</string>
+    <string name="proxy_head_change_reason_institution_required_lbl">የተቋም መስፈርት</string>
+    <string name="proxy_head_change_reason_temp_absence_of_head_lbl">የቤተሰብ ራስ ጊዜያዊ አልተገኘም</string>
+    <string name="proxy_head_change_reason_legal_guardianship_lbl">ሕጋዊ እንክብካቤ</string>
+    <string name="proxy_head_change_reason_replacement_lbl">የተካታቢ ራስ ተካተት</string>
+    <string name="proxy_head_change_reason_resignation_lbl">የተካታቢ ራስ ተነሳሽነት</string>
+    <string name="proxy_head_change_reason_deceased_lbl">ተካታቢ ራስ ሞተ</string>
+    <string name="proxy_head_change_reason_other_lbl">ሌላ</string>
+
+    <string name="household_type_regular_lbl">መደበኛ ቤተሰብ</string>
+    <string name="household_type_institutional_lbl">ተቋማዊ ቤተሰብ</string>
+    <string name="household_institution_type_orphanage_lbl">ልጆች ቤት</string>
+    <string name="household_institution_type_mental_health_facility_lbl">የአእምሮ ጤና ተቋም</string>
+    <string name="household_institution_type_elderly_care_home_lbl">የሽማግሌዎች እንክብካቤ ቤት</string>
+    <string name="household_institution_type_boarding_school_lbl">ኢንተርናት</string>
+    <string name="household_institution_type_university_dorm_lbl">የዩኒቨርሲቲ መኝታ ቤት</string>
+    <string name="household_institution_type_hostel_lbl">ሆስቴል</string>
+    <string name="household_institution_type_religious_institution_lbl">ሃይማኖታዊ ተቋም</string>
+    <string name="household_institution_type_refugee_camp_lbl">የስደተኞች ካምፕ</string>
+    <string name="household_institution_type_idp_camp_lbl">የውስጥ ተከራካሪዎች ካምፕ</string>
+    <string name="household_institution_type_prison_lbl">እስር ቤት</string>
+    <string name="household_institution_type_juvenile_detention_lbl">የወጣት ተቀማጭ ቤት</string>
+    <string name="household_institution_type_military_barracks_lbl">የጦር ሰፈር</string>
+    <string name="household_institution_type_rehabilitation_center_lbl">የእንደገና ማስታገሻ ማእከል</string>
+    <string name="household_institution_type_long_stay_hospital_lbl">የረጅም ጊዜ ሆስፒታል</string>
+    <string name="household_institution_type_homeless_shelter_lbl">የቤት የሌላቸው መጠለያ</string>
+    <string name="household_institution_type_work_camp_lbl">የሥራ ካምፕ</string>
+    <string name="household_institution_type_other_lbl">ሌላ</string>
+
+    <string name="household_institution_type_orphanage_desc">የወላጅ ድጋፍ የሌላቸው ልጆች መጠለያ እና ማንከባከብ።</string>
+    <string name="household_institution_type_mental_health_facility_desc">ለአእምሮ ጤና ወይም ማህበራዊ ችግኝ ያላቸው ግለሰቦች የእንክብካቤ ተቋም።</string>
+    <string name="household_institution_type_elderly_care_home_desc">ዕድሜ የገፉ ሰዎች የቀንና የቀን ድጋፍ የሚያስፈልጋቸው መኖሪያ።</string>
+    <string name="household_institution_type_boarding_school_desc">ለተማሪዎች የመኖሪያ መቀመጫ (ኢንተርናት)።</string>
+    <string name="household_institution_type_university_dorm_desc">ለዩኒቨርሲቲ ወይም ኮሌጅ ተማሪዎች መኝታ ቤቶች።</string>
+    <string name="household_institution_type_hostel_desc">ለሠራተኞች፣ ለተማሪዎች ወይም ለተጓዦች ጊዜያዊ ወይም ግማሽ-ቋሚ መኖሪያ።</string>
+    <string name="household_institution_type_religious_institution_desc">በመንፈሳዊ ወይም በአስተዳደር መሪ የሚመራ የሃይማኖት ተቋም።</string>
+    <string name="household_institution_type_refugee_camp_desc">ለተሰደዱ ግለሰቦች ወይም ቤተሰቦች ጊዜያዊ መጠለያ።</string>
+    <string name="household_institution_type_idp_camp_desc">ለውስጣዊ የተዛመዱ (IDP) ሰዎች መጠለያ።</string>
+    <string name="household_institution_type_prison_desc">በእስር ባሉ ግለሰቦች የማስተናገድ እና የማስተካከያ ተቋም።</string>
+    <string name="household_institution_type_juvenile_detention_desc">ለጎልማሶች የመቆያ ማእከል።</string>
+    <string name="household_institution_type_military_barracks_desc">ለአገልግሎት ላይ ያሉ ወታደሮች መኖሪያ።</string>
+    <string name="household_institution_type_rehabilitation_center_desc">ለእጅግ ሱስ ጉዳት ወይም ማህበራዊ እንደገና መዋል የሚረዱ የማስታገሻ ማእከል።</string>
+    <string name="household_institution_type_long_stay_hospital_desc">ለክሮኒክ፣ ለTB ወይም ለታጋይ እንክብካቤ የሚሰጥ የጤና ተቋም።</string>
+    <string name="household_institution_type_homeless_shelter_desc">ለቤት የሌላቸው ግለሰቦች ጊዜያዊ መጠለያ።</string>
+    <string name="household_institution_type_work_camp_desc">ለሠራተኞች የመኖሪያ ካምፕ።</string>
+    <string name="household_institution_type_other_desc">ከላይ ያልተዘረዘሩ ሌሎች ዓይነት ተቋማዊ ቤተሰብ።</string>
+
 
     <string-array name="relationship_types_array">
         <item>ባለጋራ የሌለው</item>
@@ -897,6 +980,7 @@
     <string name="eventType_new_hor">አዲስ ክልል አለቃ</string>
     <string name="eventType_death_of_hor">የክልል አለቃ ሞት</string>
     <string name="eventType_change_of_hor">የክልል አለቃ ለውጥ</string>
+    <string name="eventType_change_proxy">ተካታቢ ራስ ቀይር</string>
 
     <string name="headRelationshipType_head_of_household">የቤተሰብ አለቃ</string>
     <string name="headRelationshipType_spouse">ባል/ሚስት</string>

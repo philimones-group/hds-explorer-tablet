@@ -70,6 +70,8 @@ public class HouseholdDetailsActivity extends AppCompatActivity implements House
     private TextView hhDetailsCode;
     private TextView hhDetailsHeadName;
     private TextView hhDetailsHeadCode;
+    private TextView hhDetailsProxyHeadName;
+    private TextView hhDetailsProxyHeadRole;
     private TextView hhDetailsRegionLabel;
     private TextView hhDetailsRegionValue;
     private TextView hhDetailsVisitDateValue;
@@ -85,6 +87,8 @@ public class HouseholdDetailsActivity extends AppCompatActivity implements House
 
     private RelativeLayout mainPanelTabsLayout;
     private LinearLayout mainPanelVisitLayout;
+    private LinearLayout hhDetailsHeadLayout;
+    private LinearLayout hhDetailsProxyHeadLayout;
 
     private HouseholdVisitFragment householdVisitFragment;
 
@@ -242,6 +246,8 @@ public class HouseholdDetailsActivity extends AppCompatActivity implements House
         hhDetailsCode = (TextView) findViewById(R.id.hhDetailsCode);
         hhDetailsHeadName = (TextView) findViewById(R.id.hhDetailsHeadName);
         hhDetailsHeadCode = (TextView) findViewById(R.id.hhDetailsHeadCode);
+        hhDetailsProxyHeadName = findViewById(R.id.hhDetailsProxyHeadName);
+        hhDetailsProxyHeadRole = findViewById(R.id.hhDetailsProxyHeadRole);
         hhDetailsRegionLabel = (TextView) findViewById(R.id.hhDetailsRegionLabel);
         hhDetailsRegionValue = (TextView) findViewById(R.id.hhDetailsRegionValue);
         hhDetailsVisitDateValue = findViewById(R.id.hhDetailsVisitDateValue);
@@ -255,6 +261,8 @@ public class HouseholdDetailsActivity extends AppCompatActivity implements House
         householdDetailsTabViewPager = findViewById(R.id.householdDetailsTabViewPager);
         mainPanelTabsLayout = findViewById(R.id.mainPanelTabsLayout);
         mainPanelVisitLayout = findViewById(R.id.mainPanelVisitLayout);
+        hhDetailsProxyHeadLayout = findViewById(R.id.hhDetailsProxyHeadLayout);
+        hhDetailsHeadLayout = findViewById(R.id.hhDetailsHeadLayout);
         //visitTabItem = findViewById(R.id.visitTabItem);
 
         this.householdVisitFragment = (HouseholdVisitFragment) (getSupportFragmentManager().findFragmentById(R.id.householdVisitFragment));
@@ -350,6 +358,8 @@ public class HouseholdDetailsActivity extends AppCompatActivity implements House
             if (collectedDataToEdit != null) {
                 this.householdDetailsTabLayout.getTabAt(2).select();
             }
+
+            hhDetailsHeadLayout.setVisibility(household.type == HouseholdType.INSTITUTIONAL ? View.GONE : View.VISIBLE);
         }
 
 
@@ -384,6 +394,8 @@ public class HouseholdDetailsActivity extends AppCompatActivity implements House
         hhDetailsCode.setText("");
         hhDetailsHeadName.setText("");
         hhDetailsHeadCode.setText("");
+        hhDetailsProxyHeadName.setText("");
+        hhDetailsProxyHeadRole.setText("");
         hhDetailsRegionLabel.setText("");
         hhDetailsRegionValue.setText("");
         hhDetailsVisitDateValue.setText("");
@@ -404,6 +416,14 @@ public class HouseholdDetailsActivity extends AppCompatActivity implements House
         hhDetailsRegionLabel.setText(hierarchyName+":");
         hhDetailsRegionValue.setText(region==null ? "" : region.getName());
         hhDetailsVisitDateValue.setText(lastVisit==null ? "None" : dateUtil.formatYMD(lastVisit.visitDate));
+
+        if (household.proxyHeadName != null) {
+            hhDetailsProxyHeadName.setText(household.proxyHeadName);
+        }
+        if (household.proxyHeadRole != null) {
+            //Put stringRes on those enums and use it here
+            hhDetailsProxyHeadRole.setText(household.proxyHeadRole.name);
+        }
 
         if (household.type == HouseholdType.INSTITUTIONAL) {
             iconView.setImageResource(R.mipmap.nui_household_inst_filled_icon);

@@ -147,6 +147,26 @@
                 android:textStyle="bold" />
 
             <Button
+                android:id="@+id/btnVisitChangeProxyHead"
+                android:layout_width="@dimen/household_visit_button_width"
+                android:layout_height="@dimen/household_visit_button_height"
+                android:layout_gravity="center"
+                android:layout_marginLeft="@dimen/household_visit_middle_button_margin_left"
+                android:layout_marginRight="@dimen/household_visit_middle_button_margin_right"
+                android:background="@drawable/nui_btnd_rone_dgbevel"
+                android:drawableTop="@drawable/nui_changeproxy_icon"
+                android:paddingTop="@dimen/household_visit_button_padding_top"
+                android:paddingBottom="@dimen/household_visit_button_padding_bottom"
+                android:paddingStart="@dimen/household_visit_button_padding_start"
+                android:paddingEnd="@dimen/household_visit_button_padding_end"
+                android:maxLines="2"
+                android:text="@string/household_visit_bt_changephh_lbl"
+                android:textSize="@dimen/household_visit_button_text_size"
+                android:textAlignment="center"
+                android:textStyle="bold"
+                android:visibility="gone"/>
+
+            <Button
                 android:id="@+id/btnVisitPregnancyReg"
                 android:layout_width="@dimen/household_visit_button_width"
                 android:layout_height="@dimen/household_visit_button_height"
@@ -170,7 +190,7 @@
                 android:layout_height="@dimen/household_visit_button_height"
                 android:layout_gravity="center"
                 android:background="@drawable/nui_btnd_rone_dgbevel"
-                android:drawableTop="@drawable/nui_changehoh_icon"
+                android:drawableTop="@drawable/nui_changeproxy_icon"
                 android:paddingTop="@dimen/household_visit_button_padding_top"
                 android:paddingBottom="@dimen/household_visit_button_padding_bottom"
                 android:paddingStart="@dimen/household_visit_button_padding_start"

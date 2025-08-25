@@ -39,6 +39,8 @@ import org.philimone.hds.explorer.model.Form_;
 import org.philimone.hds.explorer.model.HeadRelationship;
 import org.philimone.hds.explorer.model.HeadRelationship_;
 import org.philimone.hds.explorer.model.Household;
+import org.philimone.hds.explorer.model.HouseholdProxyHead;
+import org.philimone.hds.explorer.model.HouseholdRelocation;
 import org.philimone.hds.explorer.model.Household_;
 import org.philimone.hds.explorer.model.IncompleteVisit;
 import org.philimone.hds.explorer.model.IncompleteVisit_;
@@ -55,7 +57,9 @@ import org.philimone.hds.explorer.model.PregnancyOutcome;
 import org.philimone.hds.explorer.model.PregnancyOutcome_;
 import org.philimone.hds.explorer.model.PregnancyRegistration;
 import org.philimone.hds.explorer.model.PregnancyRegistration_;
+import org.philimone.hds.explorer.model.PregnancyVisit;
 import org.philimone.hds.explorer.model.Region;
+import org.philimone.hds.explorer.model.RegionHeadRelationship;
 import org.philimone.hds.explorer.model.Region_;
 import org.philimone.hds.explorer.model.User;
 import org.philimone.hds.explorer.model.Visit;
@@ -120,9 +124,13 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
     private Box<Outmigration> boxOutmigrations;
     private Box<PregnancyRegistration> boxPregnancyRegistrations;
     private Box<PregnancyOutcome> boxPregnancyOutcomes;
+    private Box<PregnancyVisit> boxPregnancyVisits;
     private Box<Death> boxDeaths;
     private Box<HeadRelationship> boxHeadRelationships;
     private Box<IncompleteVisit> boxIncompleteVisits;
+    private Box<RegionHeadRelationship> boxRegionHeadRelationships;
+    private Box<HouseholdRelocation> boxHouseholdRelocations;
+    private Box<HouseholdProxyHead> boxHouseholdProxyHeads;
     private Box<Form> boxForms;
     private Box<CoreFormExtension> boxCoreFormExtensions;
     private Box<FormGroupInstance> boxFormGroupInstances;
@@ -202,10 +210,14 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
         this.boxOutmigrations = ObjectBoxDatabase.get().boxFor(Outmigration.class);
         this.boxPregnancyRegistrations = ObjectBoxDatabase.get().boxFor(PregnancyRegistration.class);
         this.boxPregnancyOutcomes = ObjectBoxDatabase.get().boxFor(PregnancyOutcome.class);
+        this.boxPregnancyVisits = ObjectBoxDatabase.get().boxFor(PregnancyVisit.class);
         this.boxDeaths = ObjectBoxDatabase.get().boxFor(Death.class);
         this.boxHeadRelationships = ObjectBoxDatabase.get().boxFor(HeadRelationship.class);
         this.boxMembers = ObjectBoxDatabase.get().boxFor(Member.class);
         this.boxIncompleteVisits = ObjectBoxDatabase.get().boxFor(IncompleteVisit.class);
+        this.boxRegionHeadRelationships = ObjectBoxDatabase.get().boxFor(RegionHeadRelationship.class);
+        this.boxHouseholdRelocations = ObjectBoxDatabase.get().boxFor(HouseholdRelocation.class);
+        this.boxHouseholdProxyHeads = ObjectBoxDatabase.get().boxFor(HouseholdProxyHead.class);
     }
 
     public void setCollectedDataFragmentListener(CollectedDataFragmentListener collectedDataFragmentListener) {
@@ -523,8 +535,12 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
             case OUTMIGRATION: entity = boxOutmigrations.get(coreCollectedData.formEntityId); break;
             case PREGNANCY_REGISTRATION: entity = boxPregnancyRegistrations.get(coreCollectedData.formEntityId); break;
             case PREGNANCY_OUTCOME: entity = boxPregnancyOutcomes.get(coreCollectedData.formEntityId); break;
+            case PREGNANCY_VISIT: entity = boxPregnancyVisits.get(coreCollectedData.formEntityId); break;
             case DEATH: entity = boxDeaths.get(coreCollectedData.formEntityId); break;
             case INCOMPLETE_VISIT: entity = boxIncompleteVisits.get(coreCollectedData.formEntityId); break;
+            case CHANGE_REGION_HEAD: entity = boxRegionHeadRelationships.get(coreCollectedData.formEntityId); break;
+            case HOUSEHOLD_RELOCATION: entity = boxHouseholdRelocations.get(coreCollectedData.formEntityId); break;
+            case CHANGE_PROXY_HEAD: entity = boxHouseholdProxyHeads.get(coreCollectedData.formEntityId); break;
             case VISIT: entity = boxVisits.get(coreCollectedData.formEntityId); break;
             case EXTRA_FORM: break;
             case INVALID_ENUM: break;

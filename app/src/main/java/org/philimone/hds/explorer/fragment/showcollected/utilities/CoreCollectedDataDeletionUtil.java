@@ -20,6 +20,7 @@ import org.philimone.hds.explorer.model.Death_;
 import org.philimone.hds.explorer.model.HeadRelationship;
 import org.philimone.hds.explorer.model.HeadRelationship_;
 import org.philimone.hds.explorer.model.Household;
+import org.philimone.hds.explorer.model.HouseholdProxyHead;
 import org.philimone.hds.explorer.model.HouseholdRelocation;
 import org.philimone.hds.explorer.model.Household_;
 import org.philimone.hds.explorer.model.IncompleteVisit;
@@ -97,6 +98,7 @@ public class CoreCollectedDataDeletionUtil {
     private Box<IncompleteVisit> boxIncompleteVisits;
     private Box<RegionHeadRelationship> boxRegionHeadRelationships;
     private Box<HouseholdRelocation> boxHouseholdRelocations;
+    private Box<HouseholdProxyHead> boxHouseholdProxyHeads;
     private Box<SavedEntityState> boxSavedEntityStates;
 
     public CoreCollectedDataDeletionUtil(Context context) {
@@ -128,6 +130,7 @@ public class CoreCollectedDataDeletionUtil {
         this.boxIncompleteVisits = ObjectBoxDatabase.get().boxFor(IncompleteVisit.class);
         this.boxRegionHeadRelationships = ObjectBoxDatabase.get().boxFor(RegionHeadRelationship.class);
         this.boxHouseholdRelocations = ObjectBoxDatabase.get().boxFor(HouseholdRelocation.class);
+        this.boxHouseholdProxyHeads = ObjectBoxDatabase.get().boxFor(HouseholdProxyHead.class);
         this.boxSavedEntityStates = ObjectBoxDatabase.get().boxFor(SavedEntityState.class);
     }
 
@@ -174,12 +177,13 @@ public class CoreCollectedDataDeletionUtil {
                 case EXTERNAL_INMIGRATION: deleteInmigration(cdata); break;
                 case OUTMIGRATION: deleteOutmigration(cdata); break;
                 case INMIGRATION: deleteInmigration(cdata); break;
-                case HOUSEHOLD_RELOCATION: deleteHouseholdRelocation(cdata);
+                case HOUSEHOLD_RELOCATION: deleteHouseholdRelocation(cdata); break;
                 case DEATH: deleteDeath(cdata); break;
                 case MEMBER_ENU: deleteMemberEnumeration(cdata); break;
                 case CHANGE_HOUSEHOLD_HEAD: deleteChangeHouseholdHead(cdata); break;
                 case INCOMPLETE_VISIT: deleteIncompleteVisit(cdata); break;
-                case CHANGE_REGION_HEAD: deleteChangeRegionHead(cdata);
+                case CHANGE_REGION_HEAD: deleteChangeRegionHead(cdata); break;
+                case CHANGE_PROXY_HEAD: deleteChangeProxyHead(cdata); break;
                 case PRE_HOUSEHOLD: deletePreHousehold(cdata); break;
                 case EDITED_REGION: deleteCoreCollectedData(cdata); break;
                 case EDITED_HOUSEHOLD: deleteCoreCollectedData(cdata); break;
@@ -259,6 +263,38 @@ public class CoreCollectedDataDeletionUtil {
         deleteCoreCollectedData(cdata);
     }
 
+    private void deleteChangeProxyHead(CoreCollectedData cdata) {
+        HouseholdProxyHead householdProxyHead = boxHouseholdProxyHeads.get(cdata.formEntityId);
+
+        if (householdProxyHead != null) {
+            Household household = boxHouseholds.query(Household_.code.equal(householdProxyHead.householdCode)).build().findFirst();
+
+            Map<String, String> mapSavedStates = getSavedStateMap(CoreFormEntity.CHANGE_PROXY_HEAD, householdProxyHead.id, "changeProxyHeadFormUtilState");
+            String oldProxyHeadId = mapSavedStates.get("oldProxyHeadId");
+
+            //restore last household proxy data
+            if (!StringUtil.isBlank(oldProxyHeadId)) {
+                HouseholdProxyHead oldProxyHead = boxHouseholdProxyHeads.get(Long.parseLong(oldProxyHeadId));
+
+                if (oldProxyHead != null) {
+                    oldProxyHead.endDate = null;
+                    boxHouseholdProxyHeads.put(oldProxyHead);
+                }
+
+                if (household != null) {
+                    household.proxyHeadType = oldProxyHead==null ? null : oldProxyHead.proxyHeadType;
+                    household.proxyHeadCode = oldProxyHead==null ? null : oldProxyHead.proxyHeadCode;
+                    household.proxyHeadName = oldProxyHead==null ? null : oldProxyHead.proxyHeadName;
+                    household.proxyHeadRole = oldProxyHead==null ? null : oldProxyHead.proxyHeadRole;
+                    boxHouseholds.put(household);
+                }
+            }
+
+            boxHouseholdProxyHeads.remove(householdProxyHead);
+        }
+
+        deleteCoreCollectedData(cdata);
+    }
     private void deleteChangeHouseholdHead(CoreCollectedData cdata) {
 
         HeadRelationship currentHeadRel = boxHeadRelationships.get(cdata.formEntityId); //.query(HeadRelationship_.collectedId.equal(cdata.collectedId)).build().findFirst();
@@ -812,6 +848,23 @@ public class CoreCollectedDataDeletionUtil {
             }
             boxVisits.remove(item);
         }
+    }
+
+    private Map<String, String> getSavedStateMap(CoreFormEntity formEntity, Long recordId, String mapName) {
+        Map<String, String> mapSavedStates = new HashMap<>();
+
+        SavedEntityState savedState = this.boxSavedEntityStates.query(SavedEntityState_.formEntity.equal(formEntity.code)
+                .and(SavedEntityState_.collectedId.equal(recordId))
+                .and(SavedEntityState_.objectKey.equal(mapName))).build().findFirst();
+
+        if (savedState != null) {
+            HashMap map = new Gson().fromJson(savedState.objectGsonValue, HashMap.class);
+            for (Object key : map.keySet()) {
+                mapSavedStates.put(key.toString(), map.get(key).toString());
+            }
+        }
+
+        return mapSavedStates;
     }
 
     private void deleteCoreCollectedData(CoreCollectedData cdata) {

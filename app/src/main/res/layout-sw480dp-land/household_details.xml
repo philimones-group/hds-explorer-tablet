@@ -28,7 +28,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
             android:paddingTop="5dp"
             android:orientation="vertical">
@@ -59,6 +59,7 @@
                     android:textStyle="bold" />
 
                 <LinearLayout
+                    android:id="@+id/hhDetailsHeadLayout"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="50dp"
@@ -107,6 +108,54 @@
 
                 </LinearLayout>
 
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/hhDetailsProxyHeadLayout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="0dp"
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="1dp"
+                    android:text="@string/household_details_proxy_head_name_lbl"
+                    android:textColor="#c4daca"
+                    android:textSize="@dimen/household_details_land_info_textsize"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/hhDetailsProxyHeadName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="4dp"
+                    android:text="BOB ESPONJA"
+                    android:textColor="#83d34a"
+                    android:textSize="@dimen/household_details_land_info_textsize"
+                    android:textStyle="bold"
+                    />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="1dp"
+                    android:layout_marginLeft="27dp"
+                    android:text="@string/household_details_proxy_head_role_lbl"
+                    android:textColor="#c4daca"
+                    android:textSize="@dimen/household_details_land_info_textsize"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/hhDetailsProxyHeadRole"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="4dp"
+                    android:text="ACA0100123"
+                    android:textColor="#83d34a"
+                    android:textSize="@dimen/household_details_land_info_textsize"
+                    android:textStyle="bold"
+                    />
 
             </LinearLayout>
 

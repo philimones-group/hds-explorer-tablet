@@ -346,7 +346,6 @@ public class ShowCoreCollectedDataFragment extends Fragment {
             case REGION: return boxRegions.get(coreCollectedData.formEntityId); //query(Region_.id.equal(coreCollectedData.formEntityId)).build().findFirst();
             case PRE_HOUSEHOLD:
             case EDITED_HOUSEHOLD:
-            case HOUSEHOLD_RELOCATION:
             case HOUSEHOLD: return boxHouseholds.get(coreCollectedData.formEntityId); //query(Household_.id.equal(coreCollectedData.formEntityId)).build().findFirst();
             case EDITED_MEMBER:
             case MEMBER_ENU: {
@@ -372,6 +371,8 @@ public class ShowCoreCollectedDataFragment extends Fragment {
             case INCOMPLETE_VISIT:
             case INMIGRATION:
             case EXTERNAL_INMIGRATION:
+            case HOUSEHOLD_RELOCATION:
+            case CHANGE_PROXY_HEAD:
             case VISIT: {
                 Visit visit = boxVisits.get(coreCollectedData.visitId); //query(Visit_.id.equal(coreCollectedData.visitId)).build().findFirst();
                 if (visit != null) {

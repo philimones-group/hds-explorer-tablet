@@ -92,6 +92,7 @@
     <string name="sync_deaths_lbl">Décès</string>
     <string name="sync_incomplete_visits_lbl">Visites incomplètes</string>
     <string name="sync_regionheads_lbl">Chefs de Région</string>
+    <string name="sync_proxyheads_lbl">Chefs Suppléants</string>
     <string name="sync_saved_lbl">Sauvé</string>
     <string name="sync_deleted_lbl">Supprimé</string>
     <string name="sync_records_lbl">enregistrements</string>
@@ -164,6 +165,7 @@
     <string name="core_entity_visit_lbl">Enregistrement de la visite</string>
     <string name="core_entity_changehor_lbl">Changer le Chef de Région</string>
     <string name="core_entity_household_reloc_lbl">Relocalisation du Ménage</string>
+    <string name="core_entity_changephd_lbl">Changer le Chef Suppléant du Ménage</string>
     <string name="core_entity_extra_form_lbl">Autres formulaires (ODK)</string>
     <string name="core_entity_edit_region_lbl">Changer la région</string>
     <string name="core_entity_edit_household_lbl">Changer l\'agrégat</string>
@@ -350,6 +352,8 @@
     <string name="household_details_members_item_since_lbl">Depuis:</string>
     <string name="household_details_head_name_lbl">Chef:</string>
     <string name="household_details_head_code_lbl">Code:</string>
+    <string name="household_details_proxy_head_name_lbl">Chef Suppléant:</string>
+    <string name="household_details_proxy_head_role_lbl">Rôle:</string>
     <string name="household_details_region_lbl">Emplacement:</string>
     <string name="household_details_last_visit_lbl">Date de la dernière visite:</string>
     <string name="household_details_dialog_del_saved_form_title_lbl">Supprimer les informations enregistrées</string>
@@ -386,6 +390,7 @@
     <string name="household_visit_bt_death_lbl">Enregistrer le décès</string>
     <string name="household_visit_bt_marital_lbl">Registre de\nUnion conjugale</string>
     <string name="household_visit_bt_changehoh_lbl">Changement de \nchef</string>
+    <string name="household_visit_bt_changephh_lbl">Changer\n Chef Suppléant</string>
     <string name="household_visit_bt_incomplete_lbl">Visite \nIncomplète</string>
     <string name="household_visit_bt_collect_lbl">Recueil \ndes données</string>
     <string name="household_visit_not_finished_title_lbl">Visite inachevée</string>
@@ -483,7 +488,6 @@
     <string name="new_visit_location_other_empty_lbl">Veuillez préciser où la visite a lieu</string>
 
     <!-- New Member -->
-
     <string name="new_member_code_err_lbl">Le code de membre est incorrect!</string>
     <string name="new_member_code_household_err_lbl">Le code de membre saisi ne correspond pas à la maison sélectionnée!</string>
     <string name="new_member_code_exists_lbl">Le code membre saisi existe déjà!</string>
@@ -659,7 +663,7 @@
     <string name="changehead_new_head_is_head_of_household_lbl">Le nouveau chef de ménage est le chef d\'un autre ménage. Vous devez d\'abord cesser d\'être le chef pour devenir le chef de celui-ci!</string>
     <string name="changehead_head_dont_exists_lbl">Ce ménage n\'a pas de chef de ménage actif, un nouveau chef de ménage doit être sélectionné.</string>
     <string name="changehead_hoh_minors_info_title_lbl">Changement de Chef de Ménage</string>
-    <string name="changehead_hoh_minors_left_warning_lbl">À part le chef actuel, ce ménage ne compte que des mineurs.\nSi vous continuez, un mineur sera désigné comme chef temporaire.\n\nVoulez-vous continuer&nbsp;?</string>
+    <string name="changehead_hoh_minors_left_warning_lbl">À part le chef actuel, ce ménage ne compte que des mineurs.\nSi vous continuez, un mineur sera désigné comme chef temporaire.\n\nVoulez-vous continuer?</string>
 
     <!-- change region head -->
     <string name="changeregionhead_dialog_change_title_lbl">Mettre à jour les Données</string>
@@ -682,6 +686,85 @@
     <string name="changeregionhead_already_collected_stop_notvisit_msg_lbl">Un formulaire (Changement de Chef de Région) a déjà été enregistré récemment pour ce [%1$s] = %2$s.\nImpossible de continuer car cet enregistrement a été fait lors d\'une Visite au Ménage.\nPour le modifier, allez au ménage [code = %3$s].</string>
 
     <string name="household_head_dont_exists_lbl">Il ne sera pas possible de procéder à l\'événement, car ce ménage n\'a pas de chef de ménage actif.</string>
+
+    <string name="changeproxyhead_dialog_change_title_lbl">Mettre à jour le Chef Suppléant</string>
+    <string name="changeproxyhead_head_exists_lbl">Le nouveau Chef Suppléant est-il connu et enregistré dans le système ?</string>
+    <string name="changeproxyhead_dialog_head_change_lbl">Voulez-vous mettre à jour le nouveau Chef Suppléant de ce ménage ?</string>
+    <string name="changeproxyhead_new_head_select_lbl">Sélectionnez le nouveau Chef Suppléant</string>
+    <string name="changeproxyhead_household_code_empty_lbl">Le Code du ménage ne peut pas être vide</string>
+    <string name="changeproxyhead_proxy_head_type_empty_lbl">Le Type de Chef Suppléant ne peut pas être vide</string>
+    <string name="changeproxyhead_proxy_head_code_empty_lbl">Le Code du Chef Suppléant ne peut pas être vide</string>
+    <string name="changeproxyhead_proxy_head_name_empty_lbl">Le Nom du Chef Suppléant ne peut pas être vide</string>
+    <string name="changeproxyhead_proxy_head_role_empty_lbl">Le Rôle du Chef Suppléant ne peut pas être vide</string>
+    <string name="changeproxyhead_eventdate_empty_lbl">La Date de l’événement ne peut pas être vide</string>
+    <string name="changeproxyhead_eventdate_not_before_dob_lbl">La date de l’événement ne peut pas être antérieure à la date de naissance du nouveau chef suppléant</string>
+    <string name="changeproxyhead_eventdate_not_great_today_lbl">La date de l’événement ne peut pas être postérieure à aujourd’hui</string>
+    <string name="changeproxyhead_eventdate_not_before_new_proxy_head_startdate_lbl">La date de l’événement [%1$s] ne peut pas être antérieure à la [date de début] du dernier enregistrement de [Chef Suppléant]. [%2$s].</string>
+
+    <string name="proxy_head_role_administrator_lbl">Administrateur</string>
+    <string name="proxy_head_role_warden_lbl">Gardien</string>
+    <string name="proxy_head_role_social_worker_lbl">Travailleur social</string>
+    <string name="proxy_head_role_caretaker_lbl">Soignant</string>
+    <string name="proxy_head_role_legal_guardian_lbl">Tuteur légal</string>
+    <string name="proxy_head_role_family_representative_lbl">Représentant de la famille</string>
+    <string name="proxy_head_role_community_representative_lbl">Représentant de la communauté</string>
+    <string name="proxy_head_role_religious_leader_lbl">Leader religieux</string>
+    <string name="proxy_head_role_military_commander_lbl">Commandant militaire</string>
+    <string name="proxy_head_role_principal_lbl">Directeur d’école</string>
+    <string name="proxy_head_role_director_lbl">Directeur</string>
+    <string name="proxy_head_role_other_lbl">Autre</string>
+
+    <string name="proxy_head_type_resident_lbl">Chef Suppléant Résident</string>
+    <string name="proxy_head_type_non_resident_lbl">Chef Suppléant Non Résident (enregistré dans le DSS, autre ménage)</string>
+    <string name="proxy_head_type_non_dss_member_lbl">Chef Suppléant Non Membre du DSS (externe au système)</string>
+
+    <string name="proxy_head_change_reason_admin_appointment_lbl">Nomination administrative</string>
+    <string name="proxy_head_change_reason_institution_required_lbl">Exigence institutionnelle</string>
+    <string name="proxy_head_change_reason_temp_absence_of_head_lbl">Absence temporaire du chef titulaire</string>
+    <string name="proxy_head_change_reason_legal_guardianship_lbl">Tutelle légale</string>
+    <string name="proxy_head_change_reason_replacement_lbl">Remplacement du chef suppléant</string>
+    <string name="proxy_head_change_reason_resignation_lbl">Démission du chef suppléant</string>
+    <string name="proxy_head_change_reason_deceased_lbl">Chef suppléant décédé</string>
+    <string name="proxy_head_change_reason_other_lbl">Autre</string>
+
+    <string name="household_type_regular_lbl">Ménage Régulier</string>
+    <string name="household_type_institutional_lbl">Ménage Institutionnel</string>
+    <string name="household_institution_type_orphanage_lbl">Orphelinat</string>
+    <string name="household_institution_type_mental_health_facility_lbl">Centre de santé mentale</string>
+    <string name="household_institution_type_elderly_care_home_lbl">Maison de retraite</string>
+    <string name="household_institution_type_boarding_school_lbl">Internat</string>
+    <string name="household_institution_type_university_dorm_lbl">Résidence universitaire</string>
+    <string name="household_institution_type_hostel_lbl">Auberge</string>
+    <string name="household_institution_type_religious_institution_lbl">Institution religieuse</string>
+    <string name="household_institution_type_refugee_camp_lbl">Camp de réfugiés</string>
+    <string name="household_institution_type_idp_camp_lbl">Camp de déplacés internes</string>
+    <string name="household_institution_type_prison_lbl">Prison</string>
+    <string name="household_institution_type_juvenile_detention_lbl">Centre de détention pour mineurs</string>
+    <string name="household_institution_type_military_barracks_lbl">Caserne militaire</string>
+    <string name="household_institution_type_rehabilitation_center_lbl">Centre de réhabilitation</string>
+    <string name="household_institution_type_long_stay_hospital_lbl">Hôpital de long séjour</string>
+    <string name="household_institution_type_homeless_shelter_lbl">Centre d’hébergement pour sans-abri</string>
+    <string name="household_institution_type_work_camp_lbl">Camp de travail</string>
+    <string name="household_institution_type_other_lbl">Autre</string>
+
+    <string name="household_institution_type_orphanage_desc">Abris et soins pour enfants sans soutien parental.</string>
+    <string name="household_institution_type_mental_health_facility_desc">Établissement de soins pour personnes souffrant de troubles mentaux ou de vulnérabilités sociales.</string>
+    <string name="household_institution_type_elderly_care_home_desc">Résidence pour personnes âgées nécessitant un soutien quotidien.</string>
+    <string name="household_institution_type_boarding_school_desc">Hébergement pour élèves en internat.</string>
+    <string name="household_institution_type_university_dorm_desc">Dortoirs pour étudiants universitaires.</string>
+    <string name="household_institution_type_hostel_desc">Logement temporaire ou semi-permanent pour travailleurs, étudiants ou populations de passage.</string>
+    <string name="household_institution_type_religious_institution_desc">Vie communautaire pour ordres religieux avec un responsable spirituel ou administratif.</string>
+    <string name="household_institution_type_refugee_camp_desc">Abris temporaires pour personnes ou familles déplacées.</string>
+    <string name="household_institution_type_idp_camp_desc">Abris pour personnes déplacées internes.</string>
+    <string name="household_institution_type_prison_desc">Établissement correctionnel géré par les autorités pénitentiaires.</string>
+    <string name="household_institution_type_juvenile_detention_desc">Centre de détention pour mineurs sous garde.</string>
+    <string name="household_institution_type_military_barracks_desc">Logement pour soldats en service actif.</string>
+    <string name="household_institution_type_rehabilitation_center_desc">Centre résidentiel de réhabilitation pour toxicomanie ou réintégration sociale.</string>
+    <string name="household_institution_type_long_stay_hospital_desc">Établissement de santé pour patients chroniques, tuberculeux ou palliatifs.</string>
+    <string name="household_institution_type_homeless_shelter_desc">Abris pour sans-abri gérés par des ONG ou des services sociaux.</string>
+    <string name="household_institution_type_work_camp_desc">Camps résidentiels pour travailleurs (construction, mines, agriculture).</string>
+    <string name="household_institution_type_other_desc">Autre type de ménage institutionnel non listé.</string>
+
 
     <string-array name="relationship_types_array">
         <item>Célibataire</item>
@@ -897,6 +980,7 @@
     <string name="eventType_new_hor">Nouveau chef de Région</string>
     <string name="eventType_death_of_hor">Nouveau chef de Région</string>
     <string name="eventType_change_of_hor">Changement du chef de Région</string>
+    <string name="eventType_change_proxy">Changer le Chef Suppléant</string>
 
     <string name="headRelationshipType_head_of_household">Chef de ménage</string>
     <string name="headRelationshipType_spouse">Conjoint</string>

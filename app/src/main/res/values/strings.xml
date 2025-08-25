@@ -92,6 +92,7 @@
     <string name="sync_deaths_lbl">Deaths</string>
     <string name="sync_incomplete_visits_lbl">Incomplete Visits</string>
     <string name="sync_regionheads_lbl">Region Heads</string>
+    <string name="sync_proxyheads_lbl">Proxy Heads</string>
     <string name="sync_saved_lbl">Saved</string>
     <string name="sync_deleted_lbl">Deleted</string>
     <string name="sync_records_lbl">records</string>
@@ -164,6 +165,7 @@
     <string name="core_entity_visit_lbl">Visit Registration</string>
     <string name="core_entity_changehor_lbl">Change Head of Region</string>
     <string name="core_entity_household_reloc_lbl">Household Relocation</string>
+    <string name="core_entity_changephd_lbl">Change Proxy Head of Household</string>
     <string name="core_entity_extra_form_lbl">Other Forms (ODK)</string>
     <string name="core_entity_edit_region_lbl">Edit Region</string>
     <string name="core_entity_edit_household_lbl">Edit Household</string>
@@ -350,6 +352,8 @@
     <string name="household_details_members_item_since_lbl">Since:</string>
     <string name="household_details_head_name_lbl">Head:</string>
     <string name="household_details_head_code_lbl">Code:</string>
+    <string name="household_details_proxy_head_name_lbl">Proxy Head:</string>
+    <string name="household_details_proxy_head_role_lbl">Role:</string>
     <string name="household_details_region_lbl">Located Region:</string>
     <string name="household_details_last_visit_lbl">Last Visit Date:</string>
     <string name="household_details_dialog_del_saved_form_title_lbl">Delete saved info</string>
@@ -386,6 +390,7 @@
     <string name="household_visit_bt_death_lbl">Death\nRegistration</string>
     <string name="household_visit_bt_marital_lbl">Marital\nRelationship</string>
     <string name="household_visit_bt_changehoh_lbl">Change Head\nof Household</string>
+    <string name="household_visit_bt_changephh_lbl">Change\n Proxy Head</string>
     <string name="household_visit_bt_incomplete_lbl">Visit Member\nNot possible</string>
     <string name="household_visit_bt_collect_lbl">Collect\nOther Forms</string>
     <string name="household_visit_not_finished_title_lbl">Visit not Finished</string>
@@ -483,7 +488,6 @@
     <string name="new_visit_location_other_empty_lbl">You must specify where the visit is taking place</string>
 
     <!-- New Member -->
-
     <string name="new_member_code_err_lbl">The format of the Member Code is incorrect</string>
     <string name="new_member_code_household_err_lbl">The Member code doesn\'t reflect the selected household</string>
     <string name="new_member_code_exists_lbl">The Member Code already exists</string>
@@ -682,6 +686,85 @@
     <string name="changeregionhead_already_collected_stop_notvisit_msg_lbl">There is a recently registered (Change Region Head Form) for this [%1$s] = %2$s.\nCannot proceed because this registration was collected using a Household Visit.\nTo edit the form go to Household [code = %3$s].</string>
 
     <string name="household_head_dont_exists_lbl">It will not be possible to proceed with the event, because this Household doesn\'t have an active Head of Household</string>
+
+    <string name="changeproxyhead_dialog_change_title_lbl">Update Proxy Head</string>
+    <string name="changeproxyhead_head_exists_lbl">Is the new Proxy Head known and registered in the system?</string>
+    <string name="changeproxyhead_dialog_head_change_lbl">Do you want to update the new Proxy Head of this Household?</string>
+    <string name="changeproxyhead_new_head_select_lbl">Select the new Proxy Head</string>
+    <string name="changeproxyhead_household_code_empty_lbl">The Household Code cannot be empty</string>
+    <string name="changeproxyhead_proxy_head_type_empty_lbl">The Proxy Head Type cannot be empty</string>
+    <string name="changeproxyhead_proxy_head_code_empty_lbl">The Proxy Head Code cannot be empty</string>
+    <string name="changeproxyhead_proxy_head_name_empty_lbl">The Proxy Head Name cannot be empty</string>
+    <string name="changeproxyhead_proxy_head_role_empty_lbl">The Proxy Head Role cannot be empty</string>
+    <string name="changeproxyhead_eventdate_empty_lbl">The Date of the event cannot be empty</string>
+    <string name="changeproxyhead_eventdate_not_before_dob_lbl">The date of the event cannot be before the date of birth of the new proxy head</string>
+    <string name="changeproxyhead_eventdate_not_great_today_lbl">The date of the event cannot be greater than today</string>
+    <string name="changeproxyhead_eventdate_not_before_new_proxy_head_startdate_lbl">The event date [%1$s] cannot be before the [start date] of the last [Proxy Head] record. [%2$s].</string>
+
+    <string name="proxy_head_role_administrator_lbl">Administrator</string>
+    <string name="proxy_head_role_warden_lbl">Warden</string>
+    <string name="proxy_head_role_social_worker_lbl">Social Worker</string>
+    <string name="proxy_head_role_caretaker_lbl">Caretaker</string>
+    <string name="proxy_head_role_legal_guardian_lbl">Legal Guardian</string>
+    <string name="proxy_head_role_family_representative_lbl">Family Representative</string>
+    <string name="proxy_head_role_community_representative_lbl">Community Representative</string>
+    <string name="proxy_head_role_religious_leader_lbl">Religious Leader</string>
+    <string name="proxy_head_role_military_commander_lbl">Military Commander</string>
+    <string name="proxy_head_role_principal_lbl">Principal</string>
+    <string name="proxy_head_role_director_lbl">Director</string>
+    <string name="proxy_head_role_other_lbl">Other</string>
+
+    <string name="proxy_head_type_resident_lbl">Resident Proxy Head</string>
+    <string name="proxy_head_type_non_resident_lbl">Non-resident Proxy Head (registered in DSS, different household)</string>
+    <string name="proxy_head_type_non_dss_member_lbl">Non-DSS Member Proxy Head (external to the system)</string>
+
+    <string name="proxy_head_change_reason_admin_appointment_lbl">Administrative appointment</string>
+    <string name="proxy_head_change_reason_institution_required_lbl">Institutional requirement</string>
+    <string name="proxy_head_change_reason_temp_absence_of_head_lbl">Temporary absence of proper head</string>
+    <string name="proxy_head_change_reason_legal_guardianship_lbl">Legal guardianship</string>
+    <string name="proxy_head_change_reason_replacement_lbl">Replacement of proxy head</string>
+    <string name="proxy_head_change_reason_resignation_lbl">Resignation of proxy head</string>
+    <string name="proxy_head_change_reason_deceased_lbl">Proxy head deceased</string>
+    <string name="proxy_head_change_reason_other_lbl">Other</string>
+
+    <string name="household_type_regular_lbl">Regular Household</string>
+    <string name="household_type_institutional_lbl">Institutional Household</string>
+    <string name="household_institution_type_orphanage_lbl">Orphanage</string>
+    <string name="household_institution_type_mental_health_facility_lbl">Mental Health Facility</string>
+    <string name="household_institution_type_elderly_care_home_lbl">Elderly Care Home</string>
+    <string name="household_institution_type_boarding_school_lbl">Boarding School</string>
+    <string name="household_institution_type_university_dorm_lbl">University Dorm</string>
+    <string name="household_institution_type_hostel_lbl">Hostel</string>
+    <string name="household_institution_type_religious_institution_lbl">Religious Institution</string>
+    <string name="household_institution_type_refugee_camp_lbl">Refugee Camp</string>
+    <string name="household_institution_type_idp_camp_lbl">IDP Camp</string>
+    <string name="household_institution_type_prison_lbl">Prison</string>
+    <string name="household_institution_type_juvenile_detention_lbl">Juvenile Detention</string>
+    <string name="household_institution_type_military_barracks_lbl">Military Barracks</string>
+    <string name="household_institution_type_rehabilitation_center_lbl">Rehabilitation Center</string>
+    <string name="household_institution_type_long_stay_hospital_lbl">Long-stay Hospital</string>
+    <string name="household_institution_type_homeless_shelter_lbl">Homeless Shelter</string>
+    <string name="household_institution_type_work_camp_lbl">Work Camp</string>
+    <string name="household_institution_type_other_lbl">Other</string>
+
+    <string name="household_institution_type_orphanage_desc">Shelter and care for children without parental support.</string>
+    <string name="household_institution_type_mental_health_facility_desc">Care facility for individuals with mental health or social vulnerabilities.</string>
+    <string name="household_institution_type_elderly_care_home_desc">Residential care for senior citizens requiring daily support.</string>
+    <string name="household_institution_type_boarding_school_desc">Accommodation for students at a boarding school.</string>
+    <string name="household_institution_type_university_dorm_desc">Dormitories for university or college students.</string>
+    <string name="household_institution_type_hostel_desc">Temporary or semi-permanent housing for workers, students, or transient populations.</string>
+    <string name="household_institution_type_religious_institution_desc">Communal living for religious orders with a spiritual or administrative leader.</string>
+    <string name="household_institution_type_refugee_camp_desc">Temporary shelter for displaced individuals or families.</string>
+    <string name="household_institution_type_idp_camp_desc">Shelter for internally displaced persons (IDPs).</string>
+    <string name="household_institution_type_prison_desc">Correctional facility governed by prison authorities.</string>
+    <string name="household_institution_type_juvenile_detention_desc">Detention facility for minors under custody.</string>
+    <string name="household_institution_type_military_barracks_desc">Accommodation for soldiers in active service.</string>
+    <string name="household_institution_type_rehabilitation_center_desc">Residential rehabilitation for substance abuse or social reintegration.</string>
+    <string name="household_institution_type_long_stay_hospital_desc">Healthcare facility for chronic, TB, or palliative patients.</string>
+    <string name="household_institution_type_homeless_shelter_desc">Shelter for homeless individuals managed by NGOs or social services.</string>
+    <string name="household_institution_type_work_camp_desc">Residential camps for workers (construction, mining, agriculture).</string>
+    <string name="household_institution_type_other_desc">Other type of institutional household not listed.</string>
+
 
     <string-array name="relationship_types_array">
         <item>Single</item>
@@ -897,6 +980,7 @@
     <string name="eventType_new_hor">New Head of Region</string>
     <string name="eventType_death_of_hor">Death of Head of Region</string>
     <string name="eventType_change_of_hor">Change of Head of Region</string>
+    <string name="eventType_change_proxy">Change Proxy Head</string>
 
     <string name="headRelationshipType_head_of_household">Head of Household</string>
     <string name="headRelationshipType_spouse">Spouse</string>

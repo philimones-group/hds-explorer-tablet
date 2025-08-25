@@ -61,7 +61,6 @@
     <string name="odk_unfinished_extension_notfinalized">Não finalizado</string>
     <string name="odk_unfinished_extension_notfound">Não encontrado</string>
 
-
     <!-- Sync Tasks -->
     <string name="sync_downloading_lbl">A baixar</string>
     <string name="sync_saving_lbl">A guardar dados</string>
@@ -93,6 +92,7 @@
     <string name="sync_deaths_lbl">Mortes</string>
     <string name="sync_incomplete_visits_lbl">Visitas Incompletas</string>
     <string name="sync_regionheads_lbl">Chefes de Região</string>
+    <string name="sync_proxyheads_lbl">Chefes Substitutos</string>
     <string name="sync_saved_lbl">Guardado</string>
     <string name="sync_deleted_lbl">Apagados</string>
     <string name="sync_records_lbl">registos</string>
@@ -165,6 +165,7 @@
     <string name="core_entity_visit_lbl">Registo de Visita</string>
     <string name="core_entity_changehor_lbl">Alterar o Chefe de Região</string>
     <string name="core_entity_household_reloc_lbl">Transferência do Agregado</string>
+    <string name="core_entity_changephd_lbl">Mudança do chefe do agregado substituto</string>
     <string name="core_entity_extra_form_lbl">Outros Formulários (ODK)</string>
     <string name="core_entity_edit_region_lbl">Alterar Região</string>
     <string name="core_entity_edit_household_lbl">Alterar Agregado</string>
@@ -351,6 +352,8 @@
     <string name="household_details_members_item_since_lbl">Data:</string>
     <string name="household_details_head_name_lbl">Chefe:</string>
     <string name="household_details_head_code_lbl">Código:</string>
+    <string name="household_details_proxy_head_name_lbl">Chefe Substituto:</string>
+    <string name="household_details_proxy_head_role_lbl">Função:</string>
     <string name="household_details_region_lbl">Localização:</string>
     <string name="household_details_last_visit_lbl">Data da Última Visita:</string>
     <string name="household_details_dialog_del_saved_form_title_lbl">Apagar informação salva</string>
@@ -387,6 +390,7 @@
     <string name="household_visit_bt_death_lbl">Registar Morte</string>
     <string name="household_visit_bt_marital_lbl">Registar de\nUnião Marital</string>
     <string name="household_visit_bt_changehoh_lbl">Mudança de\nChefe</string>
+    <string name="household_visit_bt_changephh_lbl">Alterar\n Chefe Substituto</string>
     <string name="household_visit_bt_incomplete_lbl">Visita \nIncompleta</string>
     <string name="household_visit_bt_collect_lbl">Colher Dados</string>
     <string name="household_visit_not_finished_title_lbl">Visita não terminada</string>
@@ -683,6 +687,85 @@
 
     <string name="household_head_dont_exists_lbl">Não será possível prosseguir com o evento, pois este agregado familiar não tem um chefe de família ativo.</string>
 
+    <string name="changeproxyhead_dialog_change_title_lbl">Atualizar Chefe Substituto</string>
+    <string name="changeproxyhead_head_exists_lbl">O novo Chefe Substituto é conhecido e registado no sistema?</string>
+    <string name="changeproxyhead_dialog_head_change_lbl">Deseja atualizar o novo Chefe Substituto deste agregado?</string>
+    <string name="changeproxyhead_new_head_select_lbl">Selecione o novo Chefe Substituto</string>
+    <string name="changeproxyhead_household_code_empty_lbl">O Código do Agregado não pode estar vazio</string>
+    <string name="changeproxyhead_proxy_head_type_empty_lbl">O Tipo de Chefe Substituto não pode estar vazio</string>
+    <string name="changeproxyhead_proxy_head_code_empty_lbl">O Código do Chefe Substituto não pode estar vazio</string>
+    <string name="changeproxyhead_proxy_head_name_empty_lbl">O Nome do Chefe Substituto não pode estar vazio</string>
+    <string name="changeproxyhead_proxy_head_role_empty_lbl">A Função do Chefe Substituto não pode estar vazia</string>
+    <string name="changeproxyhead_eventdate_empty_lbl">A Data do evento não pode estar vazia</string>
+    <string name="changeproxyhead_eventdate_not_before_dob_lbl">A data do evento não pode ser anterior à data de nascimento do novo chefe substituto</string>
+    <string name="changeproxyhead_eventdate_not_great_today_lbl">A data do evento não pode ser posterior à data de hoje</string>
+    <string name="changeproxyhead_eventdate_not_before_new_proxy_head_startdate_lbl">A data do evento [%1$s] não pode ser anterior à [data de início] do último registo de [Chefe Substituto]. [%2$s].</string>
+
+    <string name="proxy_head_role_administrator_lbl">Administrador</string>
+    <string name="proxy_head_role_warden_lbl">Guarda</string>
+    <string name="proxy_head_role_social_worker_lbl">Assistente Social</string>
+    <string name="proxy_head_role_caretaker_lbl">Cuidador</string>
+    <string name="proxy_head_role_legal_guardian_lbl">Tutor Legal</string>
+    <string name="proxy_head_role_family_representative_lbl">Representante da Família</string>
+    <string name="proxy_head_role_community_representative_lbl">Representante da Comunidade</string>
+    <string name="proxy_head_role_religious_leader_lbl">Líder Religioso</string>
+    <string name="proxy_head_role_military_commander_lbl">Comandante Militar</string>
+    <string name="proxy_head_role_principal_lbl">Diretor da Escola</string>
+    <string name="proxy_head_role_director_lbl">Diretor</string>
+    <string name="proxy_head_role_other_lbl">Outro</string>
+
+    <string name="proxy_head_type_resident_lbl">Chefe Substituto Residente</string>
+    <string name="proxy_head_type_non_resident_lbl">Chefe Substituto Não Residente (registado no DSS, agregado diferente)</string>
+    <string name="proxy_head_type_non_dss_member_lbl">Chefe Substituto Não Membro do DSS (externo ao sistema)</string>
+
+    <string name="proxy_head_change_reason_admin_appointment_lbl">Nomeação administrativa</string>
+    <string name="proxy_head_change_reason_institution_required_lbl">Exigência institucional</string>
+    <string name="proxy_head_change_reason_temp_absence_of_head_lbl">Ausência temporária do chefe titular</string>
+    <string name="proxy_head_change_reason_legal_guardianship_lbl">Tutela legal</string>
+    <string name="proxy_head_change_reason_replacement_lbl">Substituição do chefe substituto</string>
+    <string name="proxy_head_change_reason_resignation_lbl">Renúncia do chefe substituto</string>
+    <string name="proxy_head_change_reason_deceased_lbl">Chefe substituto falecido</string>
+    <string name="proxy_head_change_reason_other_lbl">Outro</string>
+
+    <string name="household_type_regular_lbl">Agregado Familiar Regular</string>
+    <string name="household_type_institutional_lbl">Agregado Familiar Institucional</string>
+    <string name="household_institution_type_orphanage_lbl">Orfanato</string>
+    <string name="household_institution_type_mental_health_facility_lbl">Unidade de Saúde Mental</string>
+    <string name="household_institution_type_elderly_care_home_lbl">Lar de Idosos</string>
+    <string name="household_institution_type_boarding_school_lbl">Internato</string>
+    <string name="household_institution_type_university_dorm_lbl">Residência Universitária</string>
+    <string name="household_institution_type_hostel_lbl">Hostel</string>
+    <string name="household_institution_type_religious_institution_lbl">Instituição Religiosa</string>
+    <string name="household_institution_type_refugee_camp_lbl">Campo de Refugiados</string>
+    <string name="household_institution_type_idp_camp_lbl">Campo de Deslocados Internos</string>
+    <string name="household_institution_type_prison_lbl">Prisão</string>
+    <string name="household_institution_type_juvenile_detention_lbl">Centro de Detenção Juvenil</string>
+    <string name="household_institution_type_military_barracks_lbl">Quartel Militar</string>
+    <string name="household_institution_type_rehabilitation_center_lbl">Centro de Reabilitação</string>
+    <string name="household_institution_type_long_stay_hospital_lbl">Hospital de Longa Permanência</string>
+    <string name="household_institution_type_homeless_shelter_lbl">Abrigo para Sem-Abrigo</string>
+    <string name="household_institution_type_work_camp_lbl">Campo de Trabalho</string>
+    <string name="household_institution_type_other_lbl">Outro</string>
+
+    <string name="household_institution_type_orphanage_desc">Abrigo e cuidado para crianças sem apoio parental.</string>
+    <string name="household_institution_type_mental_health_facility_desc">Instalação de cuidados para indivíduos com problemas de saúde mental ou vulnerabilidades sociais.</string>
+    <string name="household_institution_type_elderly_care_home_desc">Residência para idosos que necessitam de apoio diário.</string>
+    <string name="household_institution_type_boarding_school_desc">Alojamento para estudantes num internato.</string>
+    <string name="household_institution_type_university_dorm_desc">Dormitórios para estudantes universitários.</string>
+    <string name="household_institution_type_hostel_desc">Habitação temporária ou semi-permanente para trabalhadores, estudantes ou populações em trânsito.</string>
+    <string name="household_institution_type_religious_institution_desc">Vida comunitária para ordens religiosas, com líder espiritual ou administrativo.</string>
+    <string name="household_institution_type_refugee_camp_desc">Abrigo temporário para indivíduos ou famílias deslocadas.</string>
+    <string name="household_institution_type_idp_camp_desc">Abrigo para pessoas deslocadas internamente.</string>
+    <string name="household_institution_type_prison_desc">Instalação correcional governada por autoridades prisionais.</string>
+    <string name="household_institution_type_juvenile_detention_desc">Centro de detenção para menores sob custódia.</string>
+    <string name="household_institution_type_military_barracks_desc">Alojamento para soldados em serviço ativo.</string>
+    <string name="household_institution_type_rehabilitation_center_desc">Centro residencial de reabilitação para abuso de substâncias ou reintegração social.</string>
+    <string name="household_institution_type_long_stay_hospital_desc">Instalação de saúde para pacientes crónicos, tuberculosos ou paliativos.</string>
+    <string name="household_institution_type_homeless_shelter_desc">Abrigo para sem-abrigo gerido por ONGs ou serviços sociais.</string>
+    <string name="household_institution_type_work_camp_desc">Campos residenciais para trabalhadores (construção, mineração, agricultura).</string>
+    <string name="household_institution_type_other_desc">Outro tipo de agregado institucional não listado.</string>
+
+
     <string-array name="relationship_types_array">
         <item>Solteiro</item>
         <item>Casado(a)</item>
@@ -897,6 +980,7 @@
     <string name="eventType_new_hor">Novo Chefe da Região</string>
     <string name="eventType_death_of_hor">Morte do Chefe da Região</string>
     <string name="eventType_change_of_hor">Alteração do Chefe da Região</string>
+    <string name="eventType_change_proxy">Alterar Chefe Substituto</string>
 
     <string name="headRelationshipType_head_of_household">Chefe do Agregado</string>
     <string name="headRelationshipType_spouse">Esposo/a</string>

@@ -829,6 +829,7 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
         if (this.collectedData.formEntity == CoreFormEntity.VISIT) return this.context.getString(R.string.core_entity_visit_lbl);
         if (this.collectedData.formEntity == CoreFormEntity.CHANGE_REGION_HEAD) return this.context.getString(R.string.core_entity_changehor_lbl);
         if (this.collectedData.formEntity == CoreFormEntity.HOUSEHOLD_RELOCATION) return this.context.getString(R.string.core_entity_household_reloc_lbl);
+        if (this.collectedData.formEntity == CoreFormEntity.CHANGE_PROXY_HEAD) return this.context.getString(R.string.core_entity_changephd_lbl);
 
         return null;
     }
@@ -940,6 +941,12 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
         return form;
     }
 
+    protected static HForm getChangeProxyHeadForm(Context context) {
+        InputStream inputStream = context.getResources().openRawResource(R.raw.change_proxy_head_form);
+        HForm form = retrieveForm(inputStream);
+        return form;
+    }
+
     protected static HForm retrieveForm(InputStream inputStream) {
         HForm form = new ExcelFormParser(inputStream).getForm();
 
@@ -1018,6 +1025,7 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
             case VISIT: return getVisitForm(context);
             case CHANGE_REGION_HEAD: return getChangeRegionHeadForm(context);
             case HOUSEHOLD_RELOCATION: return getHouseholdRelocationForm(context);
+            case CHANGE_PROXY_HEAD: return getChangeHeadForm(context);
             case EXTRA_FORM: break;
             case EDITED_REGION: break;
             case EDITED_HOUSEHOLD: break;

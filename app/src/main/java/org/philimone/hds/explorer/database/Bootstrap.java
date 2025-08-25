@@ -124,6 +124,8 @@ public class Bootstrap {
         newReports.add(new SyncReport(SyncEntity.PREGNANCY_OUTCOMES, null, SyncStatus.STATUS_NOT_SYNCED, "Sync. Pregnancy Outcomes"));
         newReports.add(new SyncReport(SyncEntity.PREGNANCY_VISITS, null, SyncStatus.STATUS_NOT_SYNCED, "Sync. Pregnancy Visits"));
         newReports.add(new SyncReport(SyncEntity.DEATHS, null, SyncStatus.STATUS_NOT_SYNCED, "Sync. Deaths"));
+        newReports.add(new SyncReport(SyncEntity.REGION_HEADS, null, SyncStatus.STATUS_NOT_SYNCED, "Sync. Region Heads"));
+        newReports.add(new SyncReport(SyncEntity.PROXY_HEADS, null, SyncStatus.STATUS_NOT_SYNCED, "Sync. Proxy Heads"));
 
         List<SyncEntity> reportIds = reports.stream().map(SyncReport::getReportId).collect(Collectors.toList());
 

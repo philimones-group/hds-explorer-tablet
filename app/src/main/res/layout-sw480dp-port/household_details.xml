@@ -30,13 +30,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
+            android:layout_marginBottom="5dp"
             android:orientation="vertical">
 
             <TextView
                 android:id="@+id/hhDetailsName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="5dp"
                 android:text="MARGARIDA MOLUSCO MBUTI"
                 android:textColor="#ffffff"
                 android:textSize="@dimen/member_details_info_name_layout_txtsize"
@@ -52,6 +53,7 @@
                 android:textStyle="bold" />
 
             <LinearLayout
+                android:id="@+id/hhDetailsHeadLayout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
@@ -100,6 +102,59 @@
                     android:textSize="@dimen/member_details_info_other_layout_txtsize"
                     android:textStyle="bold"
                      />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/hhDetailsProxyHeadLayout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="0dp"
+                    android:layout_marginRight="1dp"
+                    android:text="@string/household_details_proxy_head_name_lbl"
+                    android:textColor="#c4daca"
+                    android:textSize="@dimen/member_details_info_other_layout_txtsize"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/hhDetailsProxyHeadName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="0dp"
+                    android:layout_marginLeft="4dp"
+                    android:text="EREN YEAGER"
+                    android:textColor="#83d34a"
+                    android:textSize="@dimen/member_details_info_other_layout_txtsize"
+                    android:textStyle="bold"
+                    />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="0dp"
+                    android:layout_marginRight="1dp"
+                    android:layout_marginLeft="20dp"
+                    android:text="@string/household_details_proxy_head_role_lbl"
+                    android:textColor="#c4daca"
+                    android:textSize="@dimen/member_details_info_other_layout_txtsize"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/hhDetailsProxyHeadRole"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="0dp"
+                    android:layout_marginLeft="4dp"
+                    android:text="Warden"
+                    android:textColor="#83d34a"
+                    android:textSize="@dimen/member_details_info_other_layout_txtsize"
+                    android:textStyle="bold"
+                    />
 
             </LinearLayout>
 

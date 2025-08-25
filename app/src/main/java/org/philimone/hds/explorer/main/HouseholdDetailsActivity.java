@@ -410,7 +410,7 @@ public class HouseholdDetailsActivity extends AppCompatActivity implements House
         String hierarchyName = getHierarchyName(region);
 
         hhDetailsName.setText(household.getName());
-        hhDetailsCode.setText(household.getCode());
+        hhDetailsCode.setText(household.getCode()+":");
         hhDetailsHeadName.setText(household.getHeadName());
         hhDetailsHeadCode.setText(household.getHeadCode());
         hhDetailsRegionLabel.setText(hierarchyName+":");

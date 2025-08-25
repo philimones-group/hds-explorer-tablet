@@ -18,8 +18,8 @@ android {
         applicationId "org.philimone.hds.explorer"
         minSdk 21
         targetSdk 35
-        versionCode 404
-        versionName "1.1.2 build ${versionCode} RC1"
+        versionCode 408
+        versionName "1.1.4 build ${versionCode}"
 
         def cleanVersionName = versionName.replaceAll('\\s', '_')
         def buildSite = project.hasProperty("HDS_EXPLORER_SITE") ? "${project.properties["HDS_EXPLORER_SITE"]}" : ""

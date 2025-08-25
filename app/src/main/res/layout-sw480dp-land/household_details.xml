@@ -31,22 +31,12 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
             android:paddingTop="5dp"
+            android:layout_gravity="center_vertical"
             android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/hhDetailsName"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="MARGARIDA MOLUSCO MBUTI"
-                android:textColor="#ffffff"
-                android:textSize="@dimen/household_details_land_info_textsize"
-                android:textStyle="bold"/>
 
             <LinearLayout
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:layout_height="wrap_content">
 
                 <TextView
                     android:id="@+id/hhDetailsCode"
@@ -58,55 +48,70 @@
                     android:textSize="@dimen/household_details_land_info_textsize"
                     android:textStyle="bold" />
 
-                <LinearLayout
-                    android:id="@+id/hhDetailsHeadLayout"
+                <TextView
+                    android:id="@+id/hhDetailsName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:text="MARGARIDA MOLUSCO MBUTI"
+                    android:textColor="#ffffff"
+                    android:textSize="@dimen/household_details_land_info_textsize"
+                    android:textStyle="bold"
+                    android:maxLines="1"
+                    android:singleLine="true"
+                    android:ellipsize="end"
+                    android:scrollHorizontally="true"/>
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:id="@+id/hhDetailsHeadLayout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="0dp"
+                android:orientation="horizontal">
+
+                <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="50dp"
-                    android:layout_marginTop="0dp"
-                    android:orientation="horizontal">
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginRight="1dp"
-                        android:text="@string/household_details_head_name_lbl"
-                        android:textColor="#c4daca"
-                        android:textSize="@dimen/household_details_land_info_textsize"
-                        android:textStyle="bold" />
+                    android:layout_marginRight="1dp"
+                    android:text="@string/household_details_head_name_lbl"
+                    android:textColor="#c4daca"
+                    android:textSize="@dimen/household_details_land_info_textsize"
+                    android:textStyle="bold" />
 
-                    <TextView
-                        android:id="@+id/hhDetailsHeadName"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="4dp"
-                        android:text="BOB ESPONJA"
-                        android:textColor="#83d34a"
-                        android:textSize="@dimen/household_details_land_info_textsize"
-                        android:textStyle="bold"
-                        />
+                <TextView
+                    android:id="@+id/hhDetailsHeadName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="4dp"
+                    android:text="BOB ESPONJA"
+                    android:textColor="#83d34a"
+                    android:textSize="@dimen/household_details_land_info_textsize"
+                    android:textStyle="bold"
+                    />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginRight="1dp"
-                        android:layout_marginLeft="27dp"
-                        android:text="@string/household_details_head_code_lbl"
-                        android:textColor="#c4daca"
-                        android:textSize="@dimen/household_details_land_info_textsize"
-                        android:textStyle="bold" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="1dp"
+                    android:layout_marginLeft="20dp"
+                    android:text="@string/household_details_head_code_lbl"
+                    android:textColor="#c4daca"
+                    android:textSize="@dimen/household_details_land_info_textsize"
+                    android:textStyle="bold" />
 
-                    <TextView
-                        android:id="@+id/hhDetailsHeadCode"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="4dp"
-                        android:text="ACA0100123"
-                        android:textColor="#83d34a"
-                        android:textSize="@dimen/household_details_land_info_textsize"
-                        android:textStyle="bold"
-                        />
-
-                </LinearLayout>
+                <TextView
+                    android:id="@+id/hhDetailsHeadCode"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="4dp"
+                    android:text="ACA0100123"
+                    android:textColor="#83d34a"
+                    android:textSize="@dimen/household_details_land_info_textsize"
+                    android:textStyle="bold"
+                    />
 
             </LinearLayout>
 
@@ -116,6 +121,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="0dp"
                 android:orientation="horizontal">
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -140,7 +146,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="1dp"
-                    android:layout_marginLeft="27dp"
+                    android:layout_marginLeft="20dp"
                     android:text="@string/household_details_proxy_head_role_lbl"
                     android:textColor="#c4daca"
                     android:textSize="@dimen/household_details_land_info_textsize"
@@ -187,7 +193,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginStart="65dp"
+                    android:layout_marginStart="20dp"
                     android:orientation="horizontal">
 
                     <TextView

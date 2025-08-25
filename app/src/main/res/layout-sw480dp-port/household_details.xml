@@ -23,7 +23,7 @@
             android:layout_gravity="left|top"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="5dp"
-            android:layout_marginBottom="10dp"
+            android:layout_marginBottom="5dp"
             android:src="@mipmap/nui_household_filled_icon" />
 
         <LinearLayout
@@ -31,26 +31,37 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
             android:layout_marginBottom="5dp"
+            android:layout_gravity="center_vertical"
             android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/hhDetailsName"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:text="MARGARIDA MOLUSCO MBUTI"
-                android:textColor="#ffffff"
-                android:textSize="@dimen/member_details_info_name_layout_txtsize"
-                android:textStyle="bold"/>
-
-            <TextView
-                android:id="@+id/hhDetailsCode"
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="ACA0000101"
-                android:textColor="#92edb3"
-                android:textSize="@dimen/member_details_info_name_layout_txtsize"
-                android:textStyle="bold" />
+                android:layout_marginTop="5dp">
+
+                <TextView
+                    android:id="@+id/hhDetailsCode"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="ACA0000101"
+                    android:textColor="#92edb3"
+                    android:textSize="@dimen/member_details_info_name_layout_txtsize"
+                    android:textStyle="bold"/>
+
+                <TextView
+                    android:id="@+id/hhDetailsName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:text="MARGARIDA MOLUSCO MBUTI"
+                    android:textColor="#ffffff"
+                    android:textSize="@dimen/member_details_info_name_layout_txtsize"
+                    android:textStyle="bold"
+                    android:maxLines="1"
+                    android:singleLine="true"
+                    android:ellipsize="end"
+                    android:scrollHorizontally="true"/>
+            </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/hhDetailsHeadLayout"

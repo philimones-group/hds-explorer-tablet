@@ -4,11 +4,13 @@ import org.philimone.hds.explorer.model.converters.HouseholdInstitutionTypeConve
 import org.philimone.hds.explorer.model.converters.HouseholdStatusConverter;
 import org.philimone.hds.explorer.model.converters.HouseholdTypeConverter;
 import org.philimone.hds.explorer.model.converters.ProxyHeadRoleConverter;
+import org.philimone.hds.explorer.model.converters.ProxyHeadTypeConverter;
 import org.philimone.hds.explorer.model.converters.StringCollectionConverter;
 import org.philimone.hds.explorer.model.enums.HouseholdInstitutionType;
 import org.philimone.hds.explorer.model.enums.HouseholdStatus;
 import org.philimone.hds.explorer.model.enums.HouseholdType;
 import org.philimone.hds.explorer.model.enums.ProxyHeadRole;
+import org.philimone.hds.explorer.model.enums.ProxyHeadType;
 import org.philimone.hds.explorer.model.enums.SubjectEntity;
 
 import java.io.Serializable;
@@ -48,6 +50,14 @@ public class Household implements CoreEntity, FormSubject, Serializable {
     @Index
     public String headCode;
     public String headName;
+
+    @Convert(converter = ProxyHeadTypeConverter.class, dbType = String.class)
+    public ProxyHeadType proxyHeadType;
+    @Index
+    public String proxyHeadCode;
+    public String proxyHeadName;
+    @Convert(converter = ProxyHeadRoleConverter.class, dbType = String.class)
+    public ProxyHeadRole proxyHeadRole;
 
     public String hierarchy1;
     public String hierarchy2;

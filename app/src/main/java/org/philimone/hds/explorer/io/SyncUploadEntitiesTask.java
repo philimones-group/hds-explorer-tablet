@@ -106,6 +106,7 @@ public class SyncUploadEntitiesTask extends AsyncTask<Void, Integer, UploadRespo
             case INCOMPLETE_VISIT:       return url + "/incompletevisits";
             case CHANGE_REGION_HEAD:     return url + "/changeregionheads";
             case HOUSEHOLD_RELOCATION:   return url + "/householdrelocations";
+            case CHANGE_PROXY_HEAD:      return url + "/changeproxyheads";
             case EDITED_REGION:          return url + "/editregions";
             case EDITED_HOUSEHOLD:       return url + "/edithouseholds";
             case EDITED_MEMBER:          return url + "/editmembers";

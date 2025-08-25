@@ -1,44 +1,43 @@
 package org.philimone.hds.explorer.model.enums;
 
+import androidx.annotation.StringRes;
+
 import org.philimone.hds.explorer.R;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public enum HouseholdInstitutionType {
-    ORPHANAGE             ("ORP", "householdInstitutionType.orphanage", "Provide shelter and care for children without parental support. Managed by an administrator or director."),
-    MENTAL_HEALTH_FACILITY ("MHF", "householdInstitutionType.mental_health_facility", "Care for individuals with mental health or social vulnerabilities. Managed by healthcare professionals or a director."),
-    ELDERLY_CARE_HOME     ("ECH", "householdInstitutionType.elderly_care_home", "Accommodate senior citizens requiring support with daily living. Managed by staff."),
-    BOARDING_SCHOOL       ("BSC", "householdInstitutionType.boarding_school", "Residential accommodation for school students. Managed by a principal or administrative staff."),
-    UNIVERSITY_DORM       ("UDM", "householdInstitutionType.university_dorm", "Dormitories for university or college students. Managed by campus housing administrators."),
-    HOSTEL                ("HST", "householdInstitutionType.hostel", "Temporary or semi-permanent housing for workers, students, or transient populations. Managed by a hostel warden or supervisor."),
-    RELIGIOUS_INSTITUTION ("REL", "householdInstitutionType.religious_institution", "Communal living for members of religious orders. Typically led by a spiritual or administrative head."),
-    REFUGEE_CAMP          ("RFC", "householdInstitutionType.refugee_camp", "Temporary shelter for displaced individuals or families. Managed by camp coordinators or aid organizations."),
-    IDP_CAMP              ("IDC", "householdInstitutionType.idp_camp", "Shelter for internally displaced persons (IDPs). Managed by local or international agencies."),
-    PRISON                ("PRI", "householdInstitutionType.prison", "Correctional facility for incarcerated individuals. Governed by prison authorities or wardens."),
-    JUVENILE_DETENTION    ("JDT", "householdInstitutionType.juvenile_detention", "Facility for minors under custody. Managed by juvenile justice authorities."),
-    MILITARY_BARRACKS     ("MBR", "householdInstitutionType.military_barracks", "Accommodation for soldiers in active service. Managed by military commanders."),
-    REHABILITATION_CENTER ("RHC", "householdInstitutionType.rehabilitation_center", "Residential rehabilitation for substance abuse or social reintegration. Managed by specialized staff."),
-    LONG_STAY_HOSPITAL    ("LSH", "householdInstitutionType.long_stay_hospital", "Healthcare facility for chronic, TB, or palliative patients. Managed by clinical staff."),
-    HOMELESS_SHELTER      ("HMS", "householdInstitutionType.homeless_shelter", "Provide temporary shelter for homeless individuals. Managed by NGOs or social services."),
-    WORK_CAMP             ("WKP", "householdInstitutionType.work_camp", "Residential camps for workers (construction, mining, agriculture). Managed by companies or contractors."),
-    OTHER                 ("OTH", "householdInstitutionType.other", "Other type of institutional household not listed above."),
-    INVALID_ENUM ( "-1", "R.string.invalid_enum_value", "");
+    ORPHANAGE              ("ORP", R.string.household_institution_type_orphanage_lbl, R.string.household_institution_type_orphanage_desc),
+    MENTAL_HEALTH_FACILITY ("MHF", R.string.household_institution_type_mental_health_facility_lbl, R.string.household_institution_type_mental_health_facility_desc),
+    ELDERLY_CARE_HOME("ECH", R.string.household_institution_type_elderly_care_home_lbl, R.string.household_institution_type_elderly_care_home_desc),
+    BOARDING_SCHOOL("BSC", R.string.household_institution_type_boarding_school_lbl, R.string.household_institution_type_boarding_school_desc),
+    UNIVERSITY_DORM("UDM", R.string.household_institution_type_university_dorm_lbl, R.string.household_institution_type_university_dorm_desc),
+    HOSTEL("HST", R.string.household_institution_type_hostel_lbl, R.string.household_institution_type_hostel_desc),
+    RELIGIOUS_INSTITUTION("REL", R.string.household_institution_type_religious_institution_lbl, R.string.household_institution_type_religious_institution_desc),
+    REFUGEE_CAMP("RFC", R.string.household_institution_type_refugee_camp_lbl, R.string.household_institution_type_refugee_camp_desc),
+    IDP_CAMP("IDC", R.string.household_institution_type_idp_camp_lbl, R.string.household_institution_type_idp_camp_desc),
+    PRISON("PRI", R.string.household_institution_type_prison_lbl, R.string.household_institution_type_prison_desc),
+    JUVENILE_DETENTION("JDT", R.string.household_institution_type_juvenile_detention_lbl, R.string.household_institution_type_juvenile_detention_desc),
+    MILITARY_BARRACKS("MBR", R.string.household_institution_type_military_barracks_lbl, R.string.household_institution_type_military_barracks_desc),
+    REHABILITATION_CENTER("RHC", R.string.household_institution_type_rehabilitation_center_lbl, R.string.household_institution_type_rehabilitation_center_desc),
+    LONG_STAY_HOSPITAL("LSH", R.string.household_institution_type_long_stay_hospital_lbl, R.string.household_institution_type_long_stay_hospital_desc),
+    HOMELESS_SHELTER("HMS", R.string.household_institution_type_homeless_shelter_lbl, R.string.household_institution_type_homeless_shelter_desc),
+    WORK_CAMP("WKP", R.string.household_institution_type_work_camp_lbl, R.string.household_institution_type_work_camp_desc),
+    OTHER("OTH", R.string.household_institution_type_other_lbl, R.string.household_institution_type_other_desc),
+    INVALID_ENUM ( "-1", R.string.invalid_enum_value, R.string.invalid_enum_value);
 
     public String code;
-    public String name;   // i18n key
-    public String description;
+    public @StringRes int  name;   // i18n key
+    public @StringRes int  description;
 
-    HouseholdInstitutionType(String code, String name, String description){
+    HouseholdInstitutionType(String code, @StringRes int  name, @StringRes int  description){
         this.code = code;
         this.name = name;
         this.description = description;
     }
 
     public String getId(){ return code; }
-
-    @Override
-    public String toString() { return name; }
 
     private static final Map<String, HouseholdInstitutionType> MAP = new HashMap<>();
     static {

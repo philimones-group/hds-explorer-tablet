@@ -24,6 +24,7 @@ import org.philimone.hds.explorer.model.FormGroupInstance;
 import org.philimone.hds.explorer.model.FormGroupMapping;
 import org.philimone.hds.explorer.model.HeadRelationship;
 import org.philimone.hds.explorer.model.Household;
+import org.philimone.hds.explorer.model.HouseholdProxyHead;
 import org.philimone.hds.explorer.model.Inmigration;
 import org.philimone.hds.explorer.model.IncompleteVisit;
 import org.philimone.hds.explorer.model.MaritalRelationship;
@@ -67,6 +68,9 @@ import org.philimone.hds.explorer.model.enums.NewBornStatus;
 import org.philimone.hds.explorer.model.enums.PregnancyOutcomeType;
 import org.philimone.hds.explorer.model.enums.PregnancyStatus;
 import org.philimone.hds.explorer.model.enums.PregnancyVisitType;
+import org.philimone.hds.explorer.model.enums.ProxyHeadChangeReason;
+import org.philimone.hds.explorer.model.enums.ProxyHeadRole;
+import org.philimone.hds.explorer.model.enums.ProxyHeadType;
 import org.philimone.hds.explorer.model.enums.SyncEntity;
 import org.philimone.hds.explorer.model.enums.SyncState;
 import org.philimone.hds.explorer.model.enums.SyncStatus;
@@ -175,6 +179,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 	private Box<PregnancyChild> boxPregnancyChilds;
 	private Box<PregnancyOutcome> boxPregnancyOutcomes;
 	private Box<RegionHeadRelationship> boxRegionHeadRelationships;
+	private Box<HouseholdProxyHead> boxHouseholdProxyHeads;
 	private Box<SavedEntityState> boxSavedEntityStates;
 
 	private boolean canceled;
@@ -235,6 +240,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 		this.boxPregnancyChilds = ObjectBoxDatabase.get().boxFor(PregnancyChild.class);
 		this.boxPregnancyOutcomes = ObjectBoxDatabase.get().boxFor(PregnancyOutcome.class);
 		this.boxRegionHeadRelationships = ObjectBoxDatabase.get().boxFor(RegionHeadRelationship.class);
+		this.boxHouseholdProxyHeads = ObjectBoxDatabase.get().boxFor(HouseholdProxyHead.class);
 		this.boxSavedEntityStates = ObjectBoxDatabase.get().boxFor(SavedEntityState.class);
 	}
 
@@ -352,6 +358,9 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 				break;
 			case REGION_HEADS:
 				builder.append(" " + mContext.getString(R.string.sync_regionheads_lbl));
+				break;
+			case PROXY_HEADS:
+				builder.append(" " + mContext.getString(R.string.sync_proxyheads_lbl));
 				break;
 		}
 
@@ -513,6 +522,10 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 					case REGION_HEADS:
 						this.boxRegionHeadRelationships.removeAll();
 						processUrl(appUrl + suffixFilePath, "regionheads.zip");
+						break;
+					case PROXY_HEADS:
+						this.boxHouseholdProxyHeads.removeAll();
+						processUrl(appUrl + suffixFilePath, "proxyheads.zip");
 						break;
 				}
 
@@ -1226,6 +1239,8 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 					processDeaths(parser);
 				} else if (name.equalsIgnoreCase("regionheads")) {
 					processRegionHeadRelationships(parser);
+				} else if (name.equalsIgnoreCase("proxyheads")) {
+					processHouseholdProxyHeads(parser);
 				}
 				break;
 			}
@@ -2554,15 +2569,45 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 				parser.nextTag();
 			}
 
-            /*parser.nextTag(); //process <secHeadCode>
-            if (!isEmptyTag("secHeadCode", parser)) {
-                parser.next();
-                table.setSecHeadCode(parser.getText());
-                parser.nextTag(); //process </subsHeadCode>
-            }else{
-                table.setSecHeadCode("");
-                parser.nextTag();
-            }*/
+			parser.nextTag(); //process <proxyHeadType>
+			if (!isEmptyTag("proxyHeadType", parser)) {
+				parser.next();
+				table.proxyHeadType = ProxyHeadType.getFrom(parser.getText());
+				parser.nextTag(); //process </proxyHeadType>
+			}else{
+				table.proxyHeadType = null;
+				parser.nextTag();
+			}
+
+			parser.nextTag(); //process <proxyHeadCode>
+			if (!isEmptyTag("proxyHeadCode", parser)) {
+				parser.next();
+				table.proxyHeadCode = parser.getText();
+				parser.nextTag(); //process </proxyHeadCode>
+			}else{
+				table.proxyHeadCode = "";
+				parser.nextTag();
+			}
+
+			parser.nextTag(); //process <proxyHeadName>
+			if (!isEmptyTag("proxyHeadName", parser)) {
+				parser.next();
+				table.proxyHeadName = parser.getText();
+				parser.nextTag(); //process </proxyHeadName>
+			}else{
+				table.proxyHeadName = "";
+				parser.nextTag();
+			}
+
+			parser.nextTag(); //process <proxyHeadRole>
+			if (!isEmptyTag("proxyHeadRole", parser)) {
+				parser.next();
+				table.proxyHeadRole = ProxyHeadRole.getFrom(parser.getText());
+				parser.nextTag(); //process </proxyHeadRole>
+			}else{
+				table.proxyHeadRole = null;
+				parser.nextTag();
+			}
 
             parser.nextTag(); //process <hierarchy1>
             if (!isEmptyTag("hierarchy1", parser)) {
@@ -4613,6 +4658,158 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 		updateSyncReport(SyncEntity.REGION_HEADS, new Date(), SyncStatus.STATUS_SYNCED);
 	}
 
+	private void processHouseholdProxyHeads(XmlPullParser parser) throws Exception {
+
+		//clear sync_report
+		updateSyncReport(SyncEntity.PROXY_HEADS, null, SyncStatus.STATUS_NOT_SYNCED);
+
+		List<HouseholdProxyHead> values = new ArrayList<>();
+		int count = 0;
+		values.clear();
+
+		parser.nextTag();
+
+		while (notEndOfTag("proxyheads", parser)) {
+			count++;
+
+			HouseholdProxyHead table = new HouseholdProxyHead();
+
+			parser.nextTag(); //visitCode
+			if (!isEmptyTag("visitCode", parser)) {
+				parser.next();
+				table.visitCode = parser.getText();
+				parser.nextTag();
+			}else{
+				table.visitCode = "";
+				parser.nextTag();
+			}
+
+			parser.nextTag(); //householdCode
+			if (!isEmptyTag("householdCode", parser)) {
+				parser.next();
+				table.householdCode = parser.getText();
+				parser.nextTag();
+			}else{
+				table.householdCode = "";
+				parser.nextTag();
+			}
+
+			parser.nextTag(); //proxyHeadType
+			if (!isEmptyTag("proxyHeadType", parser)) {
+				parser.next();
+				table.proxyHeadType = ProxyHeadType.getFrom(parser.getText());
+				parser.nextTag();
+			}else{
+				table.proxyHeadType = null;
+				parser.nextTag();
+			}
+
+			parser.nextTag(); //proxyHeadCode
+			if (!isEmptyTag("proxyHeadCode", parser)) {
+				parser.next();
+				table.proxyHeadCode = parser.getText();
+				parser.nextTag();
+			}else{
+				table.proxyHeadCode = "";
+				parser.nextTag();
+			}
+			
+			parser.nextTag(); //proxyHeadName
+			if (!isEmptyTag("proxyHeadName", parser)) {
+				parser.next();
+				table.proxyHeadName = parser.getText();
+				parser.nextTag();
+			}else{
+				table.proxyHeadName = "";
+				parser.nextTag();
+			}
+
+			parser.nextTag(); //proxyHeadRole
+			if (!isEmptyTag("proxyHeadRole", parser)) {
+				parser.next();
+				table.proxyHeadRole = ProxyHeadRole.getFrom(parser.getText());
+				parser.nextTag();
+			}else{
+				table.proxyHeadRole = null;
+				parser.nextTag();
+			}
+			
+			parser.nextTag(); //startDate
+			if (!isEmptyTag("startDate", parser)) {
+				parser.next();
+				table.startDate = DateUtil.toDateYMD(parser.getText()); //to gregorian date
+				parser.nextTag();
+			}else{
+				//table.startDate = false;
+				parser.nextTag();
+			}		
+
+			parser.nextTag(); //endDate
+			if (!isEmptyTag("endDate", parser)) {
+				parser.next();
+				table.endDate = DateUtil.toDateYMD(parser.getText()); //to gregorian date
+				parser.nextTag();
+			}else{
+				//table.endDate = false;
+				parser.nextTag();
+			}
+			
+			parser.nextTag(); //reason
+			if (!isEmptyTag("reason", parser)) {
+				parser.next();
+				table.reason = ProxyHeadChangeReason.getFrom(parser.getText());
+				parser.nextTag();
+			}else{
+				table.reason = null;
+				parser.nextTag();
+			}
+
+			parser.nextTag(); //reasonOther
+			if (!isEmptyTag("reasonOther", parser)) {
+				parser.next();
+				table.reasonOther = parser.getText();
+				parser.nextTag();
+			}else{
+				table.reasonOther = "";
+				parser.nextTag();
+			}
+
+			parser.nextTag(); //collectedId
+			if (!isEmptyTag("collectedId", parser)) {
+				parser.next();
+				table.collectedId = parser.getText();
+				parser.nextTag();
+			}else{
+				table.collectedId = "";
+				parser.nextTag();
+			}
+
+			parser.nextTag(); //last process tag
+			parser.next();
+
+			values.add(table);
+
+			//database.insert(table);
+
+			if (count % 500 == 0){
+				this.boxHouseholdProxyHeads.put(values); //try with runTx
+				values.clear();
+				savedValues.put(entity, count); //publish progress is a bit slow - its not reporting well the numbers
+				publishProgress(count);
+			}
+
+		}
+
+		if (!values.isEmpty()) {
+			this.boxHouseholdProxyHeads.put(values);
+		}
+
+		savedValues.put(entity, count);
+		publishProgress(count);
+
+		updateSyncReport(SyncEntity.PROXY_HEADS, new Date(), SyncStatus.STATUS_SYNCED);
+	}
+
 	//Helpers
 	private String readText(XmlPullParser parser, String tag) throws Exception {
 		if (!isEmptyTag(tag, parser)) {
@@ -4722,10 +4919,15 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 				case HOUSEHOLDS: 	 downloadedEntity = mContext.getString(R.string.sync_households_lbl);	break;
 				case MEMBERS: 		 downloadedEntity = mContext.getString(R.string.sync_members_lbl); 	  break;
 				case VISITS: 		 downloadedEntity = mContext.getString(R.string.sync_visits_lbl); 	  break;
+				case RESIDENCIES:    downloadedEntity = mContext.getString(R.string.sync_residencies_lbl); 	  break;
 				case HEAD_RELATIONSHIPS: 	 downloadedEntity = mContext.getString(R.string.sync_head_relationships_lbl); 	  break;
 				case MARITAL_RELATIONSHIPS:  downloadedEntity = mContext.getString(R.string.sync_marital_relationships_lbl); 	  break;
 				case PREGNANCY_REGISTRATIONS:downloadedEntity = mContext.getString(R.string.sync_pregnancy_registrations_lbl); 	  break;
-				case DEATHS:         downloadedEntity = mContext.getString(R.string.sync_deaths_lbl); break;
+				case PREGNANCY_OUTCOMES: downloadedEntity = mContext.getString(R.string.sync_pregnancy_outcomes_lbl); 	  break;
+				case PREGNANCY_VISITS: downloadedEntity = mContext.getString(R.string.sync_pregnancy_visits_lbl); 	  break;
+				case DEATHS:           downloadedEntity = mContext.getString(R.string.sync_deaths_lbl); break;
+				case REGION_HEADS:     downloadedEntity = mContext.getString(R.string.sync_regionheads_lbl); break;
+				case PROXY_HEADS:      downloadedEntity = mContext.getString(R.string.sync_proxyheads_lbl); break;
 			}
 
 			boolean error = mapStatuses.get(entity)==SyncStatus.STATUS_SYNC_ERROR;
@@ -4766,10 +4968,15 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 				case HOUSEHOLDS: 	 downloadedEntity = mContext.getString(R.string.sync_households_lbl);	break;
 				case MEMBERS: 		 downloadedEntity = mContext.getString(R.string.sync_members_lbl); 	  break;
 				case VISITS: 		 downloadedEntity = mContext.getString(R.string.sync_visits_lbl); 	  break;
+				case RESIDENCIES:    downloadedEntity = mContext.getString(R.string.sync_residencies_lbl); 	  break;
 				case HEAD_RELATIONSHIPS: 	 downloadedEntity = mContext.getString(R.string.sync_head_relationships_lbl); 	  break;
 				case MARITAL_RELATIONSHIPS:  downloadedEntity = mContext.getString(R.string.sync_marital_relationships_lbl); 	  break;
 				case PREGNANCY_REGISTRATIONS:downloadedEntity = mContext.getString(R.string.sync_pregnancy_registrations_lbl); 	  break;
+				case PREGNANCY_OUTCOMES:     downloadedEntity = mContext.getString(R.string.sync_pregnancy_outcomes_lbl); 	  break;
+				case PREGNANCY_VISITS:       downloadedEntity = mContext.getString(R.string.sync_pregnancy_visits_lbl); 	  break;
 				case DEATHS:         downloadedEntity = mContext.getString(R.string.sync_deaths_lbl); break;
+				case REGION_HEADS:        downloadedEntity = mContext.getString(R.string.sync_regionheads_lbl); break;
+				case PROXY_HEADS:         downloadedEntity = mContext.getString(R.string.sync_proxyheads_lbl); break;
 			}
 
 			boolean error = mapStatuses.get(entity)==SyncStatus.STATUS_SYNC_ERROR;

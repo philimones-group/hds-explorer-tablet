@@ -707,7 +707,7 @@
     },
     {
       "id": "11:1466558823270581169",
-      "lastPropertyId": "33:8454355791971995795",
+      "lastPropertyId": "39:7730652085911202278",
       "name": "Household",
       "properties": [
         {
@@ -745,11 +745,6 @@
         {
           "id": "6:1624772076507935490",
           "name": "headName",
-          "type": 9
-        },
-        {
-          "id": "7:5002581038657501663",
-          "name": "secHeadCode",
           "type": 9
         },
         {
@@ -882,6 +877,38 @@
           "indexId": "118:885249711197137607",
           "type": 9,
           "flags": 2048
+        },
+        {
+          "id": "34:7992975710170571736",
+          "name": "type",
+          "type": 9
+        },
+        {
+          "id": "35:7120932739115985022",
+          "name": "institutionType",
+          "type": 9
+        },
+        {
+          "id": "36:3653914046325095768",
+          "name": "institutionTypeOther",
+          "type": 9
+        },
+        {
+          "id": "37:7392708306945777141",
+          "name": "proxyHeadCode",
+          "indexId": "141:4651139521181483110",
+          "type": 9,
+          "flags": 2048
+        },
+        {
+          "id": "38:175419698058763236",
+          "name": "proxyHeadName",
+          "type": 9
+        },
+        {
+          "id": "39:7730652085911202278",
+          "name": "proxyHeadRole",
+          "type": 9
         }
       ],
       "relations": []
@@ -1825,7 +1852,7 @@
     },
     {
       "id": "21:4385528013949997550",
-      "lastPropertyId": "25:6476242248478211992",
+      "lastPropertyId": "26:6087038116073467639",
       "name": "PregnancyRegistration",
       "properties": [
         {
@@ -1961,6 +1988,11 @@
           "id": "25:6476242248478211992",
           "name": "summary_followup_completed",
           "type": 1
+        },
+        {
+          "id": "26:6087038116073467639",
+          "name": "summary_last_visit_date",
+          "type": 10
         }
       ],
       "relations": []
@@ -2958,10 +2990,97 @@
         }
       ],
       "relations": []
+    },
+    {
+      "id": "36:3224852646740531338",
+      "lastPropertyId": "14:4613379474810259702",
+      "name": "HouseholdProxyHead",
+      "properties": [
+        {
+          "id": "1:5426910839152325930",
+          "name": "id",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:8297983214953418060",
+          "name": "visitCode",
+          "indexId": "142:2156727143269465755",
+          "type": 9,
+          "flags": 2048
+        },
+        {
+          "id": "3:5893447205059323832",
+          "name": "householdCode",
+          "indexId": "143:2615914080166352411",
+          "type": 9,
+          "flags": 2048
+        },
+        {
+          "id": "4:6343889924850955445",
+          "name": "proxyHeadType",
+          "type": 9
+        },
+        {
+          "id": "5:3296784804264375477",
+          "name": "proxyHeadCode",
+          "indexId": "144:5238849972869025843",
+          "type": 9,
+          "flags": 2048
+        },
+        {
+          "id": "6:5722266428182424021",
+          "name": "proxyHeadName",
+          "type": 9
+        },
+        {
+          "id": "7:6108800235399617160",
+          "name": "proxyHeadRole",
+          "type": 9
+        },
+        {
+          "id": "8:8529755548316939191",
+          "name": "startDate",
+          "type": 10
+        },
+        {
+          "id": "9:2636423848147417063",
+          "name": "endDate",
+          "type": 10
+        },
+        {
+          "id": "10:4826583056419760680",
+          "name": "reason",
+          "type": 9
+        },
+        {
+          "id": "11:9027758436443366396",
+          "name": "reasonOther",
+          "type": 9
+        },
+        {
+          "id": "12:2554721153119500239",
+          "name": "collectedId",
+          "indexId": "145:7976523965992945712",
+          "type": 9,
+          "flags": 2080
+        },
+        {
+          "id": "13:6913370473102932547",
+          "name": "recentlyCreated",
+          "type": 1
+        },
+        {
+          "id": "14:4613379474810259702",
+          "name": "recentlyCreatedUri",
+          "type": 9
+        }
+      ],
+      "relations": []
     }
   ],
-  "lastEntityId": "35:4792994646347964930",
-  "lastIndexId": "140:7833866705014035705",
+  "lastEntityId": "36:3224852646740531338",
+  "lastIndexId": "145:7976523965992945712",
   "lastRelationId": "0:0",
   "lastSequenceId": "0:0",
   "modelVersion": 5,
@@ -3003,7 +3122,8 @@
     3556858845354105784,
     1916277854761728089,
     2838658658286222441,
-    3171399490707587928
+    3171399490707587928,
+    5002581038657501663
   ],
   "retiredRelationUids": [],
   "version": 1

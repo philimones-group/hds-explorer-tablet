@@ -155,6 +155,11 @@ public class HouseholdAdapter extends RecyclerView.Adapter<HouseholdAdapter.Hous
 
             if (txtHead != null){
                 txtHead.setText(hh.getHeadName());
+
+                if (hh.type == HouseholdType.INSTITUTIONAL) {
+                    txtHeadLabel.setText(R.string.household_details_proxy_head_name_lbl);
+                    txtHead.setText(hh.proxyHeadName);
+                }
             }
 
             if (chkVBprocessed != null && checkableHouseholds != null){

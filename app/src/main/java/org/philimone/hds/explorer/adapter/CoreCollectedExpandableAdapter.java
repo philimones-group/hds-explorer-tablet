@@ -226,6 +226,8 @@ public class CoreCollectedExpandableAdapter extends BaseExpandableListAdapter im
                 return R.mipmap.nui_changehor_icon_dark;
             case HOUSEHOLD_RELOCATION:
                 return R.mipmap.nui_household_relocation_icon_dark;
+            case CHANGE_PROXY_HEAD:
+                return R.mipmap.nui_changeproxy_icon_dark;
             case EXTRA_FORM:
                 return R.mipmap.nui_form2_white_icon_dark;
 

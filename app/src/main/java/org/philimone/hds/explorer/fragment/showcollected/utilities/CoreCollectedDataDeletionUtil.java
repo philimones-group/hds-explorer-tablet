@@ -288,6 +288,15 @@ public class CoreCollectedDataDeletionUtil {
                     household.proxyHeadRole = oldProxyHead==null ? null : oldProxyHead.proxyHeadRole;
                     boxHouseholds.put(household);
                 }
+            } else {
+                //didnt have a proxy head so we must remove it
+                if (household != null) {
+                    household.proxyHeadType = null;
+                    household.proxyHeadCode = null;
+                    household.proxyHeadName = null;
+                    household.proxyHeadRole = null;
+                    boxHouseholds.put(household);
+                }
             }
 
             boxHouseholdProxyHeads.remove(householdProxyHead);

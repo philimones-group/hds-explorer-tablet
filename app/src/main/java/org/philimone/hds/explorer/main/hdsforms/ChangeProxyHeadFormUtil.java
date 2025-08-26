@@ -165,8 +165,7 @@ public class ChangeProxyHeadFormUtil extends FormUtil<HouseholdProxyHead> {
 
     private boolean newProxyHeadChanged(){
         return (this.editedProxyHead != null && this.selectedProxyHead != null && editedProxyHead.id != selectedProxyHead.id) ||
-                (this.editedProxyHead == null && this.selectedProxyHead != null) ||
-                (this.editedProxyHead != null && this.selectedProxyHead == null) ;
+                (this.currentMode==Mode.EDIT && this.editedProxyHead == null && this.selectedProxyHead != null);
     }
 
     @Override

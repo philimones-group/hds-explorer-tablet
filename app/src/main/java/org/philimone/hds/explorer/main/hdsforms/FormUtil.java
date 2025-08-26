@@ -740,6 +740,7 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
         if (this.entity instanceof Visit) return SubjectEntity.HOUSEHOLD;
         if (this.entity instanceof RegionHeadRelationship) return SubjectEntity.REGION;
         if (this.entity instanceof HouseholdRelocation) return SubjectEntity.HOUSEHOLD;
+        if (this.entity instanceof HouseholdProxyHead) return SubjectEntity.HOUSEHOLD;
 
         return SubjectEntity.INVALID_ENUM;
     }
@@ -793,6 +794,9 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
             subject = SubjectEntity.REGION;
         } else  if (this.entity instanceof HouseholdRelocation) {
             code = ((HouseholdRelocation) this.entity).destinationCode;
+            subject = SubjectEntity.HOUSEHOLD;
+        } else  if (this.entity instanceof HouseholdProxyHead) {
+            code = ((HouseholdProxyHead) this.entity).householdCode;
             subject = SubjectEntity.HOUSEHOLD;
         }
 
@@ -1025,7 +1029,7 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
             case VISIT: return getVisitForm(context);
             case CHANGE_REGION_HEAD: return getChangeRegionHeadForm(context);
             case HOUSEHOLD_RELOCATION: return getHouseholdRelocationForm(context);
-            case CHANGE_PROXY_HEAD: return getChangeHeadForm(context);
+            case CHANGE_PROXY_HEAD: return getChangeProxyHeadForm(context);
             case EXTRA_FORM: break;
             case EDITED_REGION: break;
             case EDITED_HOUSEHOLD: break;

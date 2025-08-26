@@ -1921,6 +1921,8 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 				Map<String, String> map = new MapStringConverter().convertToEntityProperty(parser.getText());
 				table.columnsMapping.putAll(map);
 				//Log.d(count+"-columnsMapping", "value="+ parser.getText());
+				//Log.d("mappingconv", ""+map);
+				//Log.d("mappingconv2", ""+table.columnsMapping);
 				parser.nextTag(); //process </columnsMapping>
 			}else{
 				table.columnsMapping = new LinkedHashMap<>();
@@ -1933,10 +1935,11 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 
 			//Log.d("form ", ""+table.getFormId());
 
-			values.add(table);
+			//values.add(table);
+			boxCoreFormsExts.put(table);
 		}
 
-		boxCoreFormsExts.put(values);
+		//boxCoreFormsExts.put(values); //WHEN I SAVE IN BULK MODE, THE CONTENT OF columnsMapping GET ACUMULATED FOR EACH RECORD
 		savedValues.put(entity, count); //publish progress is a bit slow - its not reporting well the numbers
 		publishProgress(count);
 

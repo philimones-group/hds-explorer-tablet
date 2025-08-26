@@ -49,6 +49,14 @@
                     android:textStyle="bold"/>
 
                 <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=":"
+                    android:textColor="#92edb3"
+                    android:textSize="@dimen/member_details_info_name_layout_txtsize"
+                    android:textStyle="bold" />
+
+                <TextView
                     android:id="@+id/hhDetailsName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

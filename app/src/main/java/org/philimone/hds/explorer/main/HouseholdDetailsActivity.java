@@ -1,5 +1,8 @@
 package org.philimone.hds.explorer.main;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -8,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
@@ -294,6 +298,13 @@ public class HouseholdDetailsActivity extends AppCompatActivity implements House
             onOpenVisitClicked();
         });
 
+        //on long clicks copy to clipboard
+        setCopiableToClipboard(hhDetailsCode);
+        setCopiableToClipboard(hhDetailsName);
+        setCopiableToClipboard(hhDetailsHeadCode);
+        setCopiableToClipboard(hhDetailsHeadName);
+        setCopiableToClipboard(hhDetailsProxyHeadName);
+        setCopiableToClipboard(hhDetailsProxyHeadRole);
     }
 
     private void initFragments() {
@@ -410,7 +421,7 @@ public class HouseholdDetailsActivity extends AppCompatActivity implements House
         String hierarchyName = getHierarchyName(region);
 
         hhDetailsName.setText(household.getName());
-        hhDetailsCode.setText(household.getCode()+":");
+        hhDetailsCode.setText(household.getCode());
         hhDetailsHeadName.setText(household.getHeadName());
         hhDetailsHeadCode.setText(household.getHeadCode());
         hhDetailsRegionLabel.setText(hierarchyName+":");
@@ -444,6 +455,23 @@ public class HouseholdDetailsActivity extends AppCompatActivity implements House
         }
 
         return "";
+    }
+
+    private void setCopiableToClipboard(TextView textView) {
+        textView.setLongClickable(true);
+        textView.setTextIsSelectable(true);
+        textView.setOnLongClickListener(v -> {
+            copyToClipboard(textView.getText().toString());
+            return true;
+        });
+    }
+    private void copyToClipboard(String text) {
+        ClipboardManager cmanager = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+
+        ClipData clip = ClipData.newPlainText("label", text);
+        cmanager.setPrimaryClip(clip);
+
+        Toast.makeText(this, "Text copied to clipboard", Toast.LENGTH_SHORT).show();
     }
 
     private boolean isVisibleForm(Form form){

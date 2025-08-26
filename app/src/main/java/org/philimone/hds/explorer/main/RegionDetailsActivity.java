@@ -1,5 +1,8 @@
 package org.philimone.hds.explorer.main;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -7,6 +10,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.philimone.hds.explorer.R;
 import org.philimone.hds.explorer.data.FormDataLoader;
@@ -180,6 +184,12 @@ public class RegionDetailsActivity extends AppCompatActivity {
 
         this.isRegionHeadSupported = Queries.isRegionHeadSupported(boxAppParams, region);
 
+        setCopiableToClipboard(txtRdRegionCode);
+        setCopiableToClipboard(txtRdRegionName);
+        setCopiableToClipboard(txtRdParent);
+        setCopiableToClipboard(rdDetailsHeadCode);
+        setCopiableToClipboard(rdDetailsHeadName);
+
         setRegionData();
 
     }
@@ -189,6 +199,23 @@ public class RegionDetailsActivity extends AppCompatActivity {
             boolean hasForms = this.fragmentAdapter.getFragmentCollected().getFormDataLoaders().size() > 0;
             this.btRegionDetailsCollectData.setEnabled(hasForms);
         }
+    }
+
+    private void setCopiableToClipboard(TextView textView) {
+        textView.setLongClickable(true);
+        textView.setTextIsSelectable(true);
+        textView.setOnLongClickListener(v -> {
+            copyToClipboard(textView.getText().toString());
+            return true;
+        });
+    }
+    private void copyToClipboard(String text) {
+        ClipboardManager cmanager = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+
+        ClipData clip = ClipData.newPlainText("label", text);
+        cmanager.setPrimaryClip(clip);
+
+        Toast.makeText(this, "Text copied to clipboard", Toast.LENGTH_SHORT).show();
     }
 
     private void setRegionData(){

@@ -1,5 +1,8 @@
 package org.philimone.hds.explorer.main;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -8,6 +11,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.philimone.hds.explorer.R;
 import org.philimone.hds.explorer.data.FormDataLoader;
@@ -193,6 +197,9 @@ public class MemberDetailsActivity extends AppCompatActivity {
 
         isNewTempMember = member!=null && member.getId()==0;
 
+        setCopiableToClipboard(mbDetailsCode);
+        setCopiableToClipboard(mbDetailsName);
+
         clearMemberData();
         setMemberData();
     }
@@ -294,6 +301,23 @@ public class MemberDetailsActivity extends AppCompatActivity {
                 collectedDataFragment.reloadCollectedData();
             }
         }
+    }
+
+    private void setCopiableToClipboard(TextView textView) {
+        textView.setLongClickable(true);
+        textView.setTextIsSelectable(true);
+        textView.setOnLongClickListener(v -> {
+            copyToClipboard(textView.getText().toString());
+            return true;
+        });
+    }
+    private void copyToClipboard(String text) {
+        ClipboardManager cmanager = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+
+        ClipData clip = ClipData.newPlainText("label", text);
+        cmanager.setPrimaryClip(clip);
+
+        Toast.makeText(this, "Text copied to clipboard", Toast.LENGTH_SHORT).show();
     }
 
     private void clearMemberData(){

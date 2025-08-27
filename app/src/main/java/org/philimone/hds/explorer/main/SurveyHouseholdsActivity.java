@@ -98,7 +98,7 @@ public class SurveyHouseholdsActivity extends AppCompatActivity implements House
     @Override
     public void onHouseholdClick(Household household) {
         memberListFragment.showProgress(true);
-        MemberSearchTask task = new MemberSearchTask(household, null, null, null, null /*household.getCode()*/);
+        MemberSearchTask task = new MemberSearchTask(household);
         task.execute();
 
     }
@@ -171,7 +171,7 @@ public class SurveyHouseholdsActivity extends AppCompatActivity implements House
 
                 if (isNewTempMember != null && isNewTempMember==true){
                     Household household = getHousehold(houseCode);
-                    MemberSearchTask task = new MemberSearchTask(household, null, null, null, houseCode);
+                    MemberSearchTask task = new MemberSearchTask(household);
                     task.execute();
                 }
                 //Log.d("request code data1", ""+data.getExtras().getString("household_code"));
@@ -225,7 +225,7 @@ public class SurveyHouseholdsActivity extends AppCompatActivity implements House
         private String houseCode;
         private Household household;
 
-        public MemberSearchTask(Household household, String name, String code, String gender, String houseCode) {
+        public MemberSearchTask(Household household) {
             this.name = name;
             this.code = code;
             this.gender = gender;
@@ -235,7 +235,7 @@ public class SurveyHouseholdsActivity extends AppCompatActivity implements House
 
         @Override
         protected MemberAdapter doInBackground(Void... params) {
-            return memberListFragment.loadMembersByFilters(household, name, code, houseCode, gender, null, null, null, null, true);
+            return memberListFragment.loadResidentsByHousehold(household);
         }
 
         @Override

@@ -35,6 +35,7 @@ import org.philimone.hds.explorer.model.Member;
 import org.philimone.hds.explorer.model.Member_;
 import org.philimone.hds.explorer.model.Region;
 import org.philimone.hds.explorer.model.Region_;
+import org.philimone.hds.explorer.model.Residency;
 import org.philimone.hds.explorer.model.User;
 import org.philimone.hds.explorer.model.enums.temporal.ResidencyEndType;
 import org.philimone.hds.explorer.server.settings.generator.CodeGeneratorService;
@@ -82,6 +83,7 @@ public class MemberListFragment extends Fragment {
     private Box<Region> boxRegions;
     private Box<Household> boxHouseholds;
     private Box<Member> boxMembers;
+    private Box<Residency> boxResidencies;
 
     private User currentUser = Bootstrap.getCurrentUser();
 
@@ -128,6 +130,7 @@ public class MemberListFragment extends Fragment {
         this.boxRegions = ObjectBoxDatabase.get().boxFor(Region.class);
         this.boxHouseholds = ObjectBoxDatabase.get().boxFor(Household.class);
         this.boxMembers = ObjectBoxDatabase.get().boxFor(Member.class);
+        this.boxResidencies = ObjectBoxDatabase.get().boxFor(Residency.class);
     }
 
     public void setButtonVisibilityGone(Buttons... buttons){
@@ -647,6 +650,7 @@ public class MemberListFragment extends Fragment {
             //whereClause += DatabaseHelper.Member.COLUMN_HOUSEHOLD_CODE + " like ?";
 
         } else if (household != null) {
+            //Query resident members of the household
             builder.equal(Member_.householdCode, household.code, QueryBuilder.StringOrder.CASE_SENSITIVE);
         }
         if (!gender.isEmpty()){
@@ -684,6 +688,14 @@ public class MemberListFragment extends Fragment {
         
         return currentAdapter;
 
+    }
+
+    public MemberAdapter loadResidentsByHousehold(Household household) {
+        List<Member> members = Queries.getHouseholdResidents(boxResidencies, boxMembers, household.code);
+        MemberAdapter currentAdapter = new MemberAdapter(this.getActivity(), members);
+        currentAdapter.setShowHouseholdHeadIcon(true);
+
+        return currentAdapter;
     }
 
     public void showProgress(final boolean show) {

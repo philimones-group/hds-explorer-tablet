@@ -18,6 +18,7 @@ import androidx.fragment.app.Fragment;
 import org.philimone.hds.explorer.R;
 import org.philimone.hds.explorer.adapter.MemberAdapter;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
+import org.philimone.hds.explorer.database.Queries;
 import org.philimone.hds.explorer.main.MemberDetailsActivity;
 import org.philimone.hds.explorer.model.Dataset;
 import org.philimone.hds.explorer.model.Form;
@@ -26,6 +27,7 @@ import org.philimone.hds.explorer.model.Member;
 import org.philimone.hds.explorer.model.Member_;
 import org.philimone.hds.explorer.model.Region;
 import org.philimone.hds.explorer.model.Region_;
+import org.philimone.hds.explorer.model.Residency;
 import org.philimone.hds.explorer.model.User;
 import org.philimone.hds.explorer.model.enums.temporal.ResidencyEndType;
 import org.philimone.hds.explorer.widget.LoadingDialog;
@@ -54,6 +56,7 @@ public class HouseholdMembersFragment extends Fragment {
     private Box<Region> boxRegions;
     private Box<Household> boxHouseholds;
     private Box<Member> boxMembers;
+    private Box<Residency> boxResidencies;
     private Box<Form> boxForms;
     private Box<Dataset> boxDatasets;
 
@@ -158,6 +161,7 @@ public class HouseholdMembersFragment extends Fragment {
         this.boxRegions = ObjectBoxDatabase.get().boxFor(Region.class);
         this.boxHouseholds = ObjectBoxDatabase.get().boxFor(Household.class);
         this.boxMembers = ObjectBoxDatabase.get().boxFor(Member.class);
+        this.boxResidencies = ObjectBoxDatabase.get().boxFor(Residency.class);
     }
 
     private void loadSpinners() {
@@ -202,9 +206,11 @@ public class HouseholdMembersFragment extends Fragment {
     }
 
     private void showHouseholdResidents(){
-        List<Member> members = this.boxMembers.query().equal(Member_.householdCode, household.getCode(), QueryBuilder.StringOrder.CASE_SENSITIVE)
+        /*List<Member> members = this.boxMembers.query().equal(Member_.householdCode, household.getCode(), QueryBuilder.StringOrder.CASE_SENSITIVE)
                                                       .equal(Member_.endType, ResidencyEndType.NOT_APPLICABLE.code, QueryBuilder.StringOrder.CASE_SENSITIVE)
-                                                      .build().find();
+                                                      .build().find();*/
+
+        List<Member> members = Queries.getHouseholdResidents(boxResidencies, boxMembers, household.getCode());
 
         MemberAdapter adapter = new MemberAdapter(this.getContext(), members);
         adapter.setShowHouseholdHeadIcon(true);
@@ -214,8 +220,8 @@ public class HouseholdMembersFragment extends Fragment {
     }
 
     private void showHouseholdResidentsAndExited(){
-        List<Member> members = this.boxMembers.query().equal(Member_.householdCode, household.getCode(), QueryBuilder.StringOrder.CASE_SENSITIVE)
-                .build().find();
+        //List<Member> members = this.boxMembers.query().equal(Member_.householdCode, household.getCode(), QueryBuilder.StringOrder.CASE_SENSITIVE).build().find();
+        List<Member> members = Queries.getHouseholdMembers(boxResidencies, boxMembers, household.getCode());
 
         MemberAdapter adapter = new MemberAdapter(this.getContext(), members);
         adapter.setShowHouseholdHeadIcon(true);

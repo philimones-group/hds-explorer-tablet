@@ -42,6 +42,7 @@ import org.philimone.hds.explorer.adapter.RegionExpandableListAdapter;
 import org.philimone.hds.explorer.adapter.model.HierarchyItem;
 import org.philimone.hds.explorer.database.Bootstrap;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
+import org.philimone.hds.explorer.database.Queries;
 import org.philimone.hds.explorer.listeners.BarcodeContextMenuClickedListener;
 import org.philimone.hds.explorer.main.BarcodeScannerActivity;
 import org.philimone.hds.explorer.model.ApplicationParam;
@@ -52,6 +53,7 @@ import org.philimone.hds.explorer.model.Member;
 import org.philimone.hds.explorer.model.Member_;
 import org.philimone.hds.explorer.model.Region;
 import org.philimone.hds.explorer.model.Region_;
+import org.philimone.hds.explorer.model.Residency;
 import org.philimone.hds.explorer.model.Round;
 import org.philimone.hds.explorer.model.User;
 import org.philimone.hds.explorer.model.enums.temporal.ResidencyEndType;
@@ -120,6 +122,7 @@ public class HouseholdFilterDialog extends DialogFragment implements RegionExpan
     private Box<Region> boxRegions;
     private Box<Household> boxHouseholds;
     private Box<Member> boxMembers;
+    private Box<Residency> boxResidencies;
     private Box<Round> boxRounds;
 
     private RegionExpandableListAdapter regionAdapter;
@@ -203,7 +206,7 @@ public class HouseholdFilterDialog extends DialogFragment implements RegionExpan
 
     public void onHouseholdClicked(Household household) {
         showMemberListProgress(true);
-        MemberSearchTask task = new MemberSearchTask(household, null, null, null, null /*household.getCode()*/);
+        MemberSearchTask task = new MemberSearchTask(household);
         task.execute();
     }
 
@@ -285,6 +288,7 @@ public class HouseholdFilterDialog extends DialogFragment implements RegionExpan
         this.boxRegions = ObjectBoxDatabase.get().boxFor(Region.class);
         this.boxHouseholds = ObjectBoxDatabase.get().boxFor(Household.class);
         this.boxMembers = ObjectBoxDatabase.get().boxFor(Member.class);
+        this.boxResidencies = ObjectBoxDatabase.get().boxFor(Residency.class);
         this.boxRounds = ObjectBoxDatabase.get().boxFor(Round.class);
     }
 
@@ -873,6 +877,14 @@ public class HouseholdFilterDialog extends DialogFragment implements RegionExpan
 
     }
 
+    public MemberAdapter loadResidentsByHousehold(Household household) {
+        List<Member> members = Queries.getHouseholdResidents(boxResidencies, boxMembers, household.code);
+        MemberAdapter currentAdapter = new MemberAdapter(this.getActivity(), members);
+        currentAdapter.setShowHouseholdHeadIcon(true);
+
+        return currentAdapter;
+    }
+
     public void setMemberAdapter(MemberAdapter memberAdapter) {
         this.lvMembersList.setAdapter(memberAdapter);
         //if is empty
@@ -954,7 +966,7 @@ public class HouseholdFilterDialog extends DialogFragment implements RegionExpan
         private String houseCode;
         private Household household;
 
-        public MemberSearchTask(Household household, String name, String code, String gender, String houseCode) {
+        public MemberSearchTask(Household household) {
             this.name = name;
             this.code = code;
             this.gender = gender;
@@ -964,7 +976,7 @@ public class HouseholdFilterDialog extends DialogFragment implements RegionExpan
 
         @Override
         protected MemberAdapter doInBackground(Void... params) {
-            return loadMembersByFilters(household, name, code, houseCode, gender, null, null, null, null, true);
+            return loadResidentsByHousehold(household);
         }
 
         @Override

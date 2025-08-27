@@ -13,9 +13,12 @@ import org.philimone.hds.explorer.model.Member_;
 import org.philimone.hds.explorer.model.Module;
 import org.philimone.hds.explorer.model.Module_;
 import org.philimone.hds.explorer.model.Region;
+import org.philimone.hds.explorer.model.Residency;
+import org.philimone.hds.explorer.model.Residency_;
 import org.philimone.hds.explorer.model.SyncReport;
 import org.philimone.hds.explorer.model.SyncReport_;
 import org.philimone.hds.explorer.model.enums.SyncEntity;
+import org.philimone.hds.explorer.model.enums.temporal.ResidencyEndType;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -88,6 +91,28 @@ public class Queries {
 
         Member member = box.get(id);
         return member;
+    }
+
+    public static List<Member> getHouseholdResidents(Box<Residency> residencyBox, Box<Member> memberBox, String householdCode) {
+        List<Member> members = null;
+
+        String[] residentMemberCodes = residencyBox.query(Residency_.householdCode.equal(householdCode)
+                                                          .and(Residency_.endType.equal(ResidencyEndType.NOT_APPLICABLE.code)))
+                                                          .order(Residency_.startDate).build().property(Residency_.memberCode).findStrings();
+
+        members = memberBox.query(Member_.code.oneOf(residentMemberCodes)).build().find();
+
+        return members;
+    }
+
+    public static List<Member> getHouseholdMembers(Box<Residency> residencyBox, Box<Member> memberBox, String householdCode) {
+        List<Member> members = null;
+
+        String[] residentMemberCodes = residencyBox.query(Residency_.householdCode.equal(householdCode)).order(Residency_.startDate).build().property(Residency_.memberCode).findStrings();
+
+        members = memberBox.query(Member_.code.oneOf(residentMemberCodes)).build().find();
+
+        return members;
     }
 
     public static Death getDeathByCode(Box<Death> box, String code){

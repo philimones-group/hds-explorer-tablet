@@ -231,6 +231,7 @@ public class DeathFormUtil extends FormUtil<Death> {
         String newHeadCode = mapSavedStates.get("previousNewHeadCode");
         String headRelationshipType = mapSavedStates.get("previousNewHeadRelationshipType");
         String isHouseholdHeadVar = mapSavedStates.get("isHouseholdHead");
+        String isLastMemberOfHouseholdVar = mapSavedStates.get("isLastMemberOfHousehold");
         String onlyMinorsLeftInHouseholdVar = mapSavedStates.get("onlyMinorsLeftInHousehold");
         String memberResidencyId = mapSavedStates.get("memberResidency");
         String memberHeadRelationshipId = mapSavedStates.get("memberHeadRelationship");
@@ -245,6 +246,9 @@ public class DeathFormUtil extends FormUtil<Death> {
         }
         if (!StringUtil.isBlank(isHouseholdHeadVar)) {
             this.isHouseholdHead = Boolean.parseBoolean(isHouseholdHeadVar);
+        }
+        if (!StringUtil.isBlank(isLastMemberOfHouseholdVar)) {
+            this.isLastMemberOfHousehold = Boolean.parseBoolean(isLastMemberOfHouseholdVar);
         }
         if (!StringUtil.isBlank(onlyMinorsLeftInHouseholdVar)) {
             this.onlyMinorsLeftInHousehold = Boolean.parseBoolean(onlyMinorsLeftInHouseholdVar);
@@ -666,6 +670,8 @@ public class DeathFormUtil extends FormUtil<Death> {
             }
         }
 
+        HashMap<String,String> saveStateMap = new HashMap<>();
+
         //if the head was changed
         if (isHouseholdHead && newHeadChanged()){
 
@@ -684,9 +690,9 @@ public class DeathFormUtil extends FormUtil<Death> {
 
             //create new head relationships
             //save the new head member previous headRelationshipType
-            HashMap<String,String> saveStateMap = new HashMap<>();
-            saveStateMap.put("newHeadCode", newHeadMember.code);
-            saveStateMap.put("headRelationshipType", newHeadMember.headRelationshipType != null ? newHeadMember.headRelationshipType.code : "");
+
+            mapSavedStates.put("newHeadCode", newHeadMember.code);
+            mapSavedStates.put("headRelationshipType", newHeadMember.headRelationshipType != null ? newHeadMember.headRelationshipType.code : "");
 
             this.household.headCode = newHeadMember.code;
             this.household.headName = newHeadMember.name;
@@ -708,16 +714,16 @@ public class DeathFormUtil extends FormUtil<Death> {
                 this.boxHeadRelationships.put(headRelationship);
 
                 String newHeadIds = !saveStateMap.containsKey("newHeadRelationshipsList") ? headRelationship.id+"" : saveStateMap.get("newHeadRelationshipsList") + "," + headRelationship.id;
-                saveStateMap.put("newHeadRelationshipsList", newHeadIds);
+                mapSavedStates.put("newHeadRelationshipsList", newHeadIds);
             }
-
-            //update the saved entity state
-            SavedEntityState entityState = this.boxSavedEntityStates.query(SavedEntityState_.formEntity.equal(CoreFormEntity.DEATH.code).and(SavedEntityState_.collectedId.equal(this.entity.id)).and(SavedEntityState_.objectKey.equal("deathFormUtilState"))).build().findFirst();
-            entityState.objectGsonValue = new Gson().toJson(saveStateMap);
-            this.boxSavedEntityStates.put(entityState);
 
             affectedMembers = addAffectedMembers(affectedMembers, this.newHeadMember.code);
         }
+
+        //update the saved entity state
+        SavedEntityState entityState = this.boxSavedEntityStates.query(SavedEntityState_.formEntity.equal(CoreFormEntity.DEATH.code).and(SavedEntityState_.collectedId.equal(this.entity.id)).and(SavedEntityState_.objectKey.equal("deathFormUtilState"))).build().findFirst();
+        entityState.objectGsonValue = new Gson().toJson(mapSavedStates);
+        this.boxSavedEntityStates.put(entityState);
 
         //save core collected data
         collectedData.visitId = visit.id;
@@ -857,6 +863,7 @@ public class DeathFormUtil extends FormUtil<Death> {
         //save states
         HashMap<String,String> saveStateMap = new HashMap<>();
         saveStateMap.put("isHouseholdHead", isHouseholdHead+"");
+        saveStateMap.put("isLastMemberOfHousehold", isLastMemberOfHousehold+"");
         saveStateMap.put("onlyMinorsLeftInHousehold", onlyMinorsLeftInHousehold+"");
         saveStateMap.put("memberResidency", memberResidency == null ? "" : memberResidency.id+"");
         saveStateMap.put("memberHeadRelationship", memberHeadRelationship == null ? "" : memberHeadRelationship.id+"");
@@ -895,12 +902,13 @@ public class DeathFormUtil extends FormUtil<Death> {
                 String newHeadIds = !saveStateMap.containsKey("newHeadRelationshipsList") ? headRelationship.id+"" : saveStateMap.get("newHeadRelationshipsList") + "," + headRelationship.id;
                 saveStateMap.put("newHeadRelationshipsList", newHeadIds);
             }
-            //save the list of ids of new head relationships
-            SavedEntityState entityState = new SavedEntityState(CoreFormEntity.DEATH, death.id, "deathFormUtilState", new Gson().toJson(saveStateMap));
-            this.boxSavedEntityStates.put(entityState);
 
             affectedMembers = addAffectedMembers(affectedMembers, this.newHeadMember.code);
         }
+
+        //save the list of ids of new head relationships
+        SavedEntityState entityState = new SavedEntityState(CoreFormEntity.DEATH, death.id, "deathFormUtilState", new Gson().toJson(saveStateMap));
+        this.boxSavedEntityStates.put(entityState);
 
         //save core collected data
         collectedData = new CoreCollectedData();

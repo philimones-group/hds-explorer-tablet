@@ -51,6 +51,7 @@ import org.philimone.hds.explorer.model.Visit_;
 import org.philimone.hds.explorer.model.enums.CoreFormEntity;
 import org.philimone.hds.explorer.model.enums.HeadRelationshipType;
 import org.philimone.hds.explorer.model.enums.MaritalEndStatus;
+import org.philimone.hds.explorer.model.enums.MaritalStatus;
 import org.philimone.hds.explorer.model.enums.temporal.ExternalInMigrationType;
 import org.philimone.hds.explorer.model.enums.temporal.HeadRelationshipEndType;
 import org.philimone.hds.explorer.model.enums.temporal.HeadRelationshipStartType;
@@ -529,29 +530,105 @@ public class CoreCollectedDataDeletionUtil {
         Death death = boxDeaths.get(cdata.formEntityId);
 
         if (death != null) {
-            Residency residency = boxResidencies.query(Residency_.memberCode.equal(death.memberCode).and(Residency_.endDate.equal(death.deathDate)).and(Residency_.endType.equal(ResidencyEndType.DEATH.code))).build().findFirst();
-            HeadRelationship headRelationship = boxHeadRelationships.query(HeadRelationship_.memberCode.equal(death.memberCode).and(HeadRelationship_.endDate.equal(death.deathDate)).and(HeadRelationship_.endType.equal(HeadRelationshipEndType.DEATH.code))).build().findFirst();
+            Member member = boxMembers.query(Member_.code.equal(death.memberCode)).build().findFirst();
 
-            MaritalRelationship maritalRelationship = boxMaritalRelationships.query(MaritalRelationship_.endStatus.equal(MaritalEndStatus.WIDOWED.code).and(MaritalRelationship_.endDate.equal(death.deathDate))
-                    .and(MaritalRelationship_.memberA_code.equal(death.memberCode).or(MaritalRelationship_.memberB_code.equal(death.memberCode)))).build().findFirst();
+            Map<String, String> mapSavedStates = getSavedStateMap(CoreFormEntity.DEATH, death.id, "deathFormUtilState");
 
-            if (residency != null) {
-                residency.endType = ResidencyEndType.NOT_APPLICABLE;
-                residency.endDate = null;
-                this.boxResidencies.put(residency);
+            String isHouseholdHeadVar = mapSavedStates.get("isHouseholdHead");
+            mapSavedStates.get("isLastMemberOfHousehold");
+            mapSavedStates.get("onlyMinorsLeftInHousehold");
+            String memberClosedResidencyValue = mapSavedStates.get("memberResidency"); //restore residency but must update member.endtype/date
+            String memberClosedHeadRelationshipValue = mapSavedStates.get("memberHeadRelationship"); //restore as head of household if is head's death
+            String memberClosedMaritalRelationshipValues = mapSavedStates.get("memberMaritalRelationshipIdList"); //restore also previous marital status of both
+            String memberClosedHeadRelationshipValues = mapSavedStates.get("headMemberRelationshipIdList"); //restore also member.headRelationship
+            String memberNewHeadRelationships = mapSavedStates.get("newHeadRelationshipsList"); //delete the records
+
+            Boolean isHouseholdHead = !StringUtil.isBlank(isHouseholdHeadVar) ? Boolean.valueOf(isHouseholdHeadVar) : false;
+            Residency closedResidency = StringUtil.isLong(memberClosedResidencyValue) ? boxResidencies.get(Long.parseLong(memberClosedResidencyValue)) : null;
+            HeadRelationship closedHeadRelationship = StringUtil.isLong(memberClosedHeadRelationshipValue) ? boxHeadRelationships.get(Long.parseLong(memberClosedHeadRelationshipValue)) : null;
+            List<MaritalRelationship> closedMaritalRelationships = new ArrayList<>();
+            List<HeadRelationship> closedHeadRelationships = new ArrayList<>();
+            List<HeadRelationship> newHeadRelationships = new ArrayList<>();
+
+            if (!StringUtil.isBlank(memberClosedMaritalRelationshipValues)) {
+                for (String strId : memberClosedMaritalRelationshipValues.split(",")) {
+                    MaritalRelationship mr = StringUtil.isLong(strId) ? boxMaritalRelationships.get(Long.parseLong(strId)) : null;
+                    if (mr != null) closedMaritalRelationships.add(mr);
+                }
+            }
+            if (!StringUtil.isBlank(memberClosedHeadRelationshipValues)) {
+                for (String strId : memberClosedHeadRelationshipValues.split(",")) {
+                    HeadRelationship hr = StringUtil.isLong(strId) ? boxHeadRelationships.get(Long.parseLong(strId)) : null;
+                    if (hr != null) closedHeadRelationships.add(hr);
+                }
+            }
+            if (!StringUtil.isBlank(memberNewHeadRelationships)) {
+                for (String strId : memberNewHeadRelationships.split(",")) {
+                    HeadRelationship hr = StringUtil.isLong(strId) ? boxHeadRelationships.get(Long.parseLong(strId)) : null;
+                    if (hr != null) newHeadRelationships.add(hr);
+                }
             }
 
-            if (headRelationship != null) {
-                headRelationship.endType = HeadRelationshipEndType.NOT_APPLICABLE;
-                headRelationship.endDate = null;
-                this.boxHeadRelationships.put(headRelationship);
+            if (closedResidency != null) {
+                closedResidency.endType = ResidencyEndType.NOT_APPLICABLE;
+                closedResidency.endDate = null;
+                this.boxResidencies.put(closedResidency);
+
+                member.endType = ResidencyEndType.NOT_APPLICABLE;
+                member.endDate = null;
+                boxMembers.put(member);
             }
 
-            if (maritalRelationship != null) {
+            if (closedHeadRelationship != null) {
+                closedHeadRelationship.endType = HeadRelationshipEndType.NOT_APPLICABLE;
+                closedHeadRelationship.endDate = null;
+                this.boxHeadRelationships.put(closedHeadRelationship);
+
+                if (isHouseholdHead) {
+                    //restore as head
+                    Household household = boxHouseholds.query(Household_.code.equal(closedHeadRelationship.householdCode)).build().findFirst();
+                    if (household != null) {
+                        household.headCode = member.code;
+                        household.headName = member.name;
+                        boxHouseholds.put(household);
+                    }
+                }
+            }
+
+            for (MaritalRelationship maritalRelationship : closedMaritalRelationships) {
                 maritalRelationship.endStatus = MaritalEndStatus.NOT_APPLICABLE;
                 maritalRelationship.endDate = null;
                 this.boxMaritalRelationships.put(maritalRelationship);
+
+                //restore spouses maritalSatuses
+                Member spouseA = boxMembers.query(Member_.code.equal(maritalRelationship.memberA_code)).build().findFirst();
+                Member spouseB = boxMembers.query(Member_.code.equal(maritalRelationship.memberB_code)).build().findFirst();
+
+                if (spouseA != null) {
+                    spouseA.maritalStatus = MaritalStatus.getFrom(maritalRelationship.startStatus.code);
+                    boxMembers.put(spouseA);
+                }
+                if (spouseB != null) {
+                    spouseB.maritalStatus = MaritalStatus.getFrom(maritalRelationship.startStatus.code);
+                    boxMembers.put(spouseB);
+                }
             }
+
+            for (HeadRelationship headRelationship : closedHeadRelationships) {
+                headRelationship.endType = HeadRelationshipEndType.NOT_APPLICABLE;
+                headRelationship.endDate = null;
+                this.boxHeadRelationships.put(headRelationship);
+
+                Member relatedMember = Queries.getMemberByCode(boxMembers, headRelationship.memberCode);
+                if (relatedMember != null) {
+                    relatedMember.headRelationshipType = headRelationship.relationshipType;
+                    boxMembers.put(relatedMember);
+                }
+            }
+
+            this.boxDeaths.remove(death);
+
+            deleteSavedStateMap(CoreFormEntity.DEATH, death.id, "deathFormUtilState");
         }
 
         deleteCoreCollectedData(cdata);
@@ -565,11 +642,18 @@ public class CoreCollectedDataDeletionUtil {
         if (outmigration != null) {
             Residency residency = boxResidencies.query(Residency_.memberCode.equal(outmigration.memberCode).and(Residency_.endDate.equal(outmigration.migrationDate)).and(Residency_.endType.equal(outmigration.migrationType.code))).build().findFirst();
             HeadRelationship headRelationship = boxHeadRelationships.query(HeadRelationship_.memberCode.equal(outmigration.memberCode).and(HeadRelationship_.endDate.equal(outmigration.migrationDate)).and(HeadRelationship_.endType.equal(outmigration.migrationType.code))).build().findFirst();
+            Member member = Queries.getMemberByCode(boxMembers, outmigration.memberCode);
 
             if (residency != null) {
                 residency.endDate = null;
                 residency.endType = ResidencyEndType.NOT_APPLICABLE;
                 this.boxResidencies.put(residency);
+
+                if (member != null) {
+                    member.endType = ResidencyEndType.NOT_APPLICABLE;
+                    member.endDate = null;
+                    boxMembers.put(member);
+                }
             }
 
             if (headRelationship != null) {
@@ -874,6 +958,13 @@ public class CoreCollectedDataDeletionUtil {
         }
 
         return mapSavedStates;
+    }
+
+    private void deleteSavedStateMap(CoreFormEntity formEntity, Long recordId, String mapName) {
+
+        this.boxSavedEntityStates.query(SavedEntityState_.formEntity.equal(formEntity.code)
+                .and(SavedEntityState_.collectedId.equal(recordId))
+                .and(SavedEntityState_.objectKey.equal(mapName))).build().remove();
     }
 
     private void deleteCoreCollectedData(CoreCollectedData cdata) {

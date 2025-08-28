@@ -31,6 +31,7 @@ import androidx.fragment.app.Fragment;
 import org.philimone.hds.explorer.R;
 import org.philimone.hds.explorer.database.Bootstrap;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
+import org.philimone.hds.explorer.database.Queries;
 import org.philimone.hds.explorer.io.xml.XmlCreator;
 import org.philimone.hds.explorer.model.CoreCollectedData;
 import org.philimone.hds.explorer.model.CoreCollectedData_;
@@ -38,6 +39,7 @@ import org.philimone.hds.explorer.model.Household;
 import org.philimone.hds.explorer.model.Member;
 import org.philimone.hds.explorer.model.Member_;
 import org.philimone.hds.explorer.model.Region;
+import org.philimone.hds.explorer.model.Residency;
 import org.philimone.hds.explorer.model.User;
 import org.philimone.hds.explorer.model.enums.CoreFormEntity;
 import org.philimone.hds.explorer.model.enums.CoreFormRecordType;
@@ -82,6 +84,7 @@ public class HouseholdEditFragment extends Fragment implements LocationListener 
     private Box<Region> boxRegions;
     private Box<Household> boxHouseholds;
     private Box<Member> boxMembers;
+    private Box<Residency> boxResidencies;
     private Box<CoreCollectedData> boxCoreCollectedData;
 
     private DateUtil dateUtil = Bootstrap.getDateUtil();
@@ -138,6 +141,7 @@ public class HouseholdEditFragment extends Fragment implements LocationListener 
         this.boxRegions = ObjectBoxDatabase.get().boxFor(Region.class);
         this.boxHouseholds = ObjectBoxDatabase.get().boxFor(Household.class);
         this.boxMembers = ObjectBoxDatabase.get().boxFor(Member.class);
+        this.boxResidencies  = ObjectBoxDatabase.get().boxFor(Residency.class);
         this.boxCoreCollectedData = ObjectBoxDatabase.get().boxFor(CoreCollectedData.class);
     }
 
@@ -296,7 +300,7 @@ public class HouseholdEditFragment extends Fragment implements LocationListener 
 
     private void updateAffectedRecords(Household household) {
         //update household name on Member
-        List<Member> members = this.boxMembers.query(Member_.householdCode.equal(household.code)).build().find();
+        List<Member> members = Queries.getHouseholdResidents(boxResidencies, boxMembers, household.getCode()); //this.boxMembers.query(Member_.householdCode.equal(household.code)).build().find();
         for (Member m : members){
             m.householdName = household.name;
         }

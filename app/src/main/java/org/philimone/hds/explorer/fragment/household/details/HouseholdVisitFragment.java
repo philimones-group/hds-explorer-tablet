@@ -1611,8 +1611,9 @@ public class HouseholdVisitFragment extends Fragment {
 
     public List<Member> getNonVisitedMembers() {
         ///check if all individuals were visited
-        List<Member> members = this.boxMembers.query().equal(Member_.householdCode, household.getCode(), QueryBuilder.StringOrder.CASE_SENSITIVE)
-                                                      .and().equal(Member_.endType, ResidencyEndType.NOT_APPLICABLE.code, QueryBuilder.StringOrder.CASE_SENSITIVE).build().find();
+        /*List<Member> members = this.boxMembers.query().equal(Member_.householdCode, household.getCode(), QueryBuilder.StringOrder.CASE_SENSITIVE)
+                                                      .and().equal(Member_.endType, ResidencyEndType.NOT_APPLICABLE.code, QueryBuilder.StringOrder.CASE_SENSITIVE).build().find();*/
+        List<Member> members = Queries.getHouseholdResidents(boxResidencies, boxMembers, household.getCode());
         List<Member> membersNotVisited = new ArrayList<>();
 
         for (Member member : members) {

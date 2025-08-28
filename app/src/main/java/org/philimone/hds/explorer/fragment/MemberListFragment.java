@@ -500,7 +500,7 @@ public class MemberListFragment extends Fragment {
     private Household getHousehold(Member member){
         if (member == null || member.getHouseholdCode()==null) return null;
 
-        Household household = Queries.getHouseholdByCode(boxHouseholds, member.getHouseholdCode());
+        Household household = Queries.getHouseholdBy(boxHouseholds, boxResidencies, member.code);
 
         return household;
     }

@@ -80,6 +80,18 @@ public class Queries {
         return household;
     }
 
+    public static Household getHouseholdBy(Box<Household> box, Box<Residency> residencyBox, String memberCode){
+        if (memberCode == null) return null;
+
+        String householdCode = residencyBox.query(Residency_.memberCode.equal(memberCode)).orderDesc(Residency_.startDate).build().property(Residency_.householdCode).findString();
+
+        if (!StringUtil.isBlank(householdCode)) {
+            return box.query(Household_.code.equal(householdCode)).build().findFirst();
+        }
+
+        return null;
+    }
+
     public static Member getMemberByCode(Box<Member> box, String code){
         if (code == null) return null;
 

@@ -55,6 +55,7 @@ import org.philimone.hds.explorer.model.enums.MaritalStatus;
 import org.philimone.hds.explorer.model.enums.temporal.ExternalInMigrationType;
 import org.philimone.hds.explorer.model.enums.temporal.HeadRelationshipEndType;
 import org.philimone.hds.explorer.model.enums.temporal.HeadRelationshipStartType;
+import org.philimone.hds.explorer.model.enums.temporal.InMigrationType;
 import org.philimone.hds.explorer.model.enums.temporal.RegionHeadEndType;
 import org.philimone.hds.explorer.model.enums.temporal.ResidencyEndType;
 import org.philimone.hds.explorer.model.enums.temporal.ResidencyStartType;
@@ -626,6 +627,10 @@ public class CoreCollectedDataDeletionUtil {
                 }
             }
 
+            for (HeadRelationship headRelationship : newHeadRelationships) {
+                boxHeadRelationships.remove(headRelationship);
+            }
+
             this.boxDeaths.remove(death);
 
             deleteSavedStateMap(CoreFormEntity.DEATH, death.id, "deathFormUtilState");
@@ -640,8 +645,13 @@ public class CoreCollectedDataDeletionUtil {
         Outmigration outmigration = boxOutmigrations.get(cdata.formEntityId);
 
         if (outmigration != null) {
-            Residency residency = boxResidencies.query(Residency_.memberCode.equal(outmigration.memberCode).and(Residency_.endDate.equal(outmigration.migrationDate)).and(Residency_.endType.equal(outmigration.migrationType.code))).build().findFirst();
-            HeadRelationship headRelationship = boxHeadRelationships.query(HeadRelationship_.memberCode.equal(outmigration.memberCode).and(HeadRelationship_.endDate.equal(outmigration.migrationDate)).and(HeadRelationship_.endType.equal(outmigration.migrationType.code))).build().findFirst();
+
+            Map<String, String> mapSavedStates = getSavedStateMap(CoreFormEntity.OUTMIGRATION, outmigration.id, "outimgFormUtilState");
+            String currentResidencyId = mapSavedStates.get("currentResidencyId");
+            String currentHeadRelationshipId = mapSavedStates.get("currentHeadRelationshipId");
+
+            Residency residency = StringUtil.isLong(currentResidencyId) ? boxResidencies.get(Long.parseLong(currentResidencyId)) : null;
+            HeadRelationship headRelationship = StringUtil.isLong(currentHeadRelationshipId) ? boxHeadRelationships.get(Long.parseLong(currentHeadRelationshipId)) : null;
             Member member = Queries.getMemberByCode(boxMembers, outmigration.memberCode);
 
             if (residency != null) {
@@ -661,6 +671,10 @@ public class CoreCollectedDataDeletionUtil {
                 headRelationship.endType = HeadRelationshipEndType.NOT_APPLICABLE;
                 this.boxHeadRelationships.put(headRelationship);
             }
+
+            deleteSavedStateMap(CoreFormEntity.OUTMIGRATION, outmigration.id, "outimgFormUtilState");
+
+            boxOutmigrations.remove(outmigration);
         }
 
         deleteCoreCollectedData(cdata);
@@ -675,24 +689,110 @@ public class CoreCollectedDataDeletionUtil {
         Inmigration inmigration = boxInmigrations.get(cdata.formEntityId);
 
         if (inmigration != null) {
+            Map<String, String> mapSavedStates = getSavedStateMap(inmigration.type==InMigrationType.INTERNAL ? CoreFormEntity.INMIGRATION : CoreFormEntity.EXTERNAL_INMIGRATION,
+                                                                  inmigration.id,
+                                                                  inmigration.type==InMigrationType.INTERNAL ? "intimgFormUtilState" : "extimgFormUtilState");
 
-            if (inmigration.extMigType != null) { //EXTERNAL IN
+            if (inmigration.extMigType == ExternalInMigrationType.ENTRY) { //EXTERNAL IN
 
-                if (inmigration.extMigType == ExternalInMigrationType.ENTRY) { //first entry or new individual created
-                    Member member = this.boxMembers.query(Member_.code.equal(inmigration.memberCode)).build().findFirst();
-                    removeMember(member); //this will remove the inmigration too
+                //first entry or new individual created
+                Member member = this.boxMembers.query(Member_.code.equal(inmigration.memberCode)).build().findFirst();
+                removeMember(member); //this will remove the inmigration too
+
+            } else { //INTERNAL IN or REENTRY
+                //the member already existed, just remove the most recent data created by this inmigration
+                ///Residency and HeadRelationship
+
+                String strResidencyId = mapSavedStates.get("createdResidencyId"); //delete
+                String strHeadRelationshipId = mapSavedStates.get("createdHeadRelationshipId"); //delete
+                String strOutmigrationId = mapSavedStates.get("createdOutmigrationId"); //delete
+                String strPreviousResidencyId = mapSavedStates.get("previousResidencyId"); //restore state
+                String strPreviousHeadRelationshipId = mapSavedStates.get("previousHeadRelationshipId"); //restore state
+
+                Residency createdResidency = StringUtil.isLong(strResidencyId) ? boxResidencies.get(Long.parseLong(strResidencyId)) : null;
+                HeadRelationship createdHeadRelationship = StringUtil.isLong(strHeadRelationshipId) ? boxHeadRelationships.get(Long.parseLong(strHeadRelationshipId)) : null;
+                Outmigration createdOutmigration = StringUtil.isLong(strOutmigrationId) ? boxOutmigrations.get(Long.parseLong(strOutmigrationId)) : null;
+                Residency previousResidency = StringUtil.isLong(strPreviousResidencyId) ? boxResidencies.get(Long.parseLong(strPreviousResidencyId)) : null;
+                HeadRelationship previousHeadRelationship = StringUtil.isLong(strPreviousHeadRelationshipId) ? boxHeadRelationships.get(Long.parseLong(strPreviousHeadRelationshipId)) : null;
+
+                Member member = Queries.getMemberByCode(boxMembers, inmigration.memberCode);
+
+                if (createdResidency != null) boxResidencies.remove(createdResidency);
+                if (createdHeadRelationship != null) boxHeadRelationships.remove(createdHeadRelationship);
+                if (createdOutmigration != null) boxOutmigrations.remove(createdOutmigration);
+
+
+                //the residency and head_relationship were closed with CHG when we created this event
+                if (inmigration.type == InMigrationType.INTERNAL) {
+                    if (previousResidency != null) {
+                        previousResidency.endType = ResidencyEndType.NOT_APPLICABLE;
+                        previousResidency.endDate = null;
+                        boxResidencies.put(previousResidency);
+                    }
+
+                    if (previousHeadRelationship != null) {
+                        previousHeadRelationship.endType = HeadRelationshipEndType.NOT_APPLICABLE;
+                        previousHeadRelationship.endDate = null;
+                        boxHeadRelationships.put(previousHeadRelationship);
+                    }
                 } else {
-                    //the member already existed, just remove the most recent data created by this inmigration
-                    //Residency and HeadRelationship
-                    this.boxResidencies.query(Residency_.memberCode.equal(inmigration.memberCode).and(Residency_.startDate.equal(inmigration.migrationDate)).and(Residency_.startType.equal(ResidencyStartType.EXTERNAL_INMIGRATION.code))).build().remove();
-                    this.boxHeadRelationships.query(HeadRelationship_.memberCode.equal(inmigration.memberCode).and(HeadRelationship_.startDate.equal(inmigration.migrationDate)).and(HeadRelationship_.startType.equal(HeadRelationshipStartType.EXTERNAL_INMIGRATION.code))).build().remove();
-                    this.boxInmigrations.remove(inmigration);
+                    //external inmig, residency was already closed - we dont touch the previous residency
                 }
-            } else { //INTERNAL IN
-                this.boxResidencies.query(Residency_.memberCode.equal(inmigration.memberCode).and(Residency_.startDate.equal(inmigration.migrationDate)).and(Residency_.startType.equal(ResidencyStartType.EXTERNAL_INMIGRATION.code))).build().remove();
-                this.boxHeadRelationships.query(HeadRelationship_.memberCode.equal(inmigration.memberCode).and(HeadRelationship_.startDate.equal(inmigration.migrationDate)).and(HeadRelationship_.startType.equal(HeadRelationshipStartType.EXTERNAL_INMIGRATION.code))).build().remove();
-                this.boxInmigrations.remove(inmigration);
+
+                if (member != null) {
+                    Household household = boxHouseholds.query(Household_.headCode.equal(member.code).and(Household_.code.equal(inmigration.destinationCode))).build().findFirst();
+                    if (household != null) {
+                        household.headCode = null;
+                        household.headName = null;
+                        boxHouseholds.put(household);
+                    }
+
+                    //restore member previous data
+                    String previousMemberDataJson = mapSavedStates.get("previousMemberDataObj");
+                    if (!StringUtil.isBlank(previousMemberDataJson)) {
+                        try {
+                            Member previousMemberData = new Gson().fromJson(previousMemberDataJson, Member.class);
+
+                            Log.d("previous member", previousMemberData+" *---> "+previousMemberDataJson);
+
+                            if (previousMemberData != null) {
+                                member.householdCode = previousMemberData.householdCode;
+                                member.householdName = previousMemberData.householdName;
+                                member.startType = previousMemberData.startType;
+                                member.startDate = previousMemberData.startDate;
+                                member.endType = previousMemberData.endType;
+                                member.endDate = previousMemberData.endDate;
+                                member.education = previousMemberData.education;
+                                member.religion = previousMemberData.religion;
+                                member.phonePrimary = previousMemberData.phonePrimary;
+                                member.phoneAlternative = previousMemberData.phoneAlternative;
+                                member.headRelationshipType = previousMemberData.headRelationshipType;
+                                member.gpsNull = previousMemberData.gpsNull;
+                                member.gpsAccuracy = previousMemberData.gpsAccuracy;
+                                member.gpsAltitude = previousMemberData.gpsAltitude;
+                                member.gpsLatitude = previousMemberData.gpsLatitude;
+                                member.gpsLongitude = previousMemberData.gpsLongitude;
+                                member.cosLatitude = previousMemberData.cosLatitude;
+                                member.sinLatitude = previousMemberData.sinLatitude;
+                                member.cosLongitude = previousMemberData.cosLongitude;
+                                member.sinLongitude = previousMemberData.sinLongitude;
+
+                                boxMembers.put(member);
+
+                                previousMemberData = null;
+                            }
+
+
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                        }
+                    }
+                }
             }
+
+            boxInmigrations.remove(inmigration);
+
+            deleteSavedStateMap(CoreFormEntity.INMIGRATION, inmigration.id, "intimgFormUtilState");
         }
 
         deleteCoreCollectedData(cdata);

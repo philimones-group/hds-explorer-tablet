@@ -34,14 +34,18 @@ public class MaritalRelationship implements CoreEntity {
 
     public String polygamicId;
 
+    @Index
     @Convert(converter = MaritalStartStatusConverter.class, dbType = String.class)
     public MaritalStartStatus startStatus;
 
+    @Index
     public Date startDate;
 
+    @Index
     @Convert(converter = MaritalEndStatusConverter.class, dbType = String.class)
     public MaritalEndStatus endStatus;
 
+    @Index
     public Date endDate;
 
     @Index

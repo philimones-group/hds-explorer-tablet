@@ -76,9 +76,9 @@ public class InternalInMigrationFormUtil extends FormUtil<Inmigration> {
     private int minimunHeadAge;
 
     private Map<String, String> mapSavedStates = new HashMap<>();
-    private Residency savedResidency;
-    private HeadRelationship savedHeadRelationship;
-    private Outmigration savedOutmigration;
+    private Residency createdResidency;
+    private HeadRelationship createdHeadRelationship;
+    private Outmigration createdOutmigration;
 
     private DateUtil dateUtil = Bootstrap.getDateUtil();
 
@@ -98,11 +98,12 @@ public class InternalInMigrationFormUtil extends FormUtil<Inmigration> {
 
     public InternalInMigrationFormUtil(Fragment fragment, Context context, Visit visit, Household household, Inmigration inmigToEdit, FormUtilities odkFormUtilities, FormUtilListener<Inmigration> listener){
         super(fragment, context, FormUtil.getInMigrationForm(context), inmigToEdit, odkFormUtilities, listener);
+        initBoxes();
 
         this.household = household;
         this.visit = visit;
+        this.selectedMember = this.boxMembers.query(Member_.code.equal(inmigToEdit.memberCode)).build().findFirst();
 
-        initBoxes();
         initialize();
 
         readSavedEntityState();
@@ -140,6 +141,7 @@ public class InternalInMigrationFormUtil extends FormUtil<Inmigration> {
 
         this.isFirstHouseholdMember = boxResidencies.query().equal(Residency_.householdCode, household.code, QueryBuilder.StringOrder.CASE_SENSITIVE).and().equal(Residency_.endType, ResidencyEndType.NOT_APPLICABLE.code, QueryBuilder.StringOrder.CASE_SENSITIVE).build().count()==0; //find any resident
         this.minimunHeadAge = retrieveMinimumHeadAge();
+
     }
 
     private void readSavedEntityState() {
@@ -154,20 +156,27 @@ public class InternalInMigrationFormUtil extends FormUtil<Inmigration> {
             }
         }
 
-        String strResidencyId = mapSavedStates.get("residencyId");
-        String strHeadRelationshipId = mapSavedStates.get("headRelationshipId");
-        String strOutmigrationId = mapSavedStates.get("outmigrationId");
+        String strResidencyId = mapSavedStates.get("createdResidencyId");
+        String strHeadRelationshipId = mapSavedStates.get("createdHeadRelationshipId");
+        String strOutmigrationId = mapSavedStates.get("createdOutmigrationId");
+        String strPreviousResidencyId = mapSavedStates.get("previousResidencyId");
+        String strPreviousHeadRelationshipId = mapSavedStates.get("previousHeadRelationshipId");
 
         if (!StringUtil.isBlank(strResidencyId)) {
-            this.savedResidency = this.boxResidencies.get(Long.parseLong(strResidencyId));
+            this.createdResidency = this.boxResidencies.get(Long.parseLong(strResidencyId));
         }
         if (!StringUtil.isBlank(strHeadRelationshipId)) {
-            this.savedHeadRelationship = this.boxHeadRelationships.get(Long.parseLong(strHeadRelationshipId));
+            this.createdHeadRelationship = this.boxHeadRelationships.get(Long.parseLong(strHeadRelationshipId));
         }
         if (!StringUtil.isBlank(strOutmigrationId)) {
-            this.savedOutmigration = this.boxOutmigrations.get(Long.parseLong(strOutmigrationId));
+            this.createdOutmigration = this.boxOutmigrations.get(Long.parseLong(strOutmigrationId));
         }
-
+        if (StringUtil.isLong(strPreviousResidencyId)) {
+            this.selectedMemberResidency = this.boxResidencies.get(Long.parseLong(strPreviousResidencyId));
+        }
+        if (StringUtil.isLong(strPreviousHeadRelationshipId)) {
+            this.selectedMemberHeadRelationship = this.boxHeadRelationships.get(Long.parseLong(strPreviousHeadRelationshipId));
+        }
     }
 
     @Override
@@ -465,6 +474,8 @@ public class InternalInMigrationFormUtil extends FormUtil<Inmigration> {
 
         //update member, create/update residency, headrelationship, create inmigration
 
+        HashMap<String,String> saveStateMap = new HashMap<>();
+
         Inmigration inmigration = new Inmigration();
         inmigration.visitCode = visitCode;
         inmigration.memberCode = memberCode;
@@ -529,6 +540,8 @@ public class InternalInMigrationFormUtil extends FormUtil<Inmigration> {
             this.boxHeadRelationships.put(headRelationship);
         }
 
+        saveStateMap.put("previousMemberDataObj", new Gson().toJson(selectedMember));
+
         //update member
         //selectedMember = boxMembers.get(selectedMember.id);
         selectedMember.householdCode = household.code;
@@ -575,12 +588,11 @@ public class InternalInMigrationFormUtil extends FormUtil<Inmigration> {
         }
 
         //save state for editing
-        HashMap<String,String> saveStateMap = new HashMap<>();
-        saveStateMap.put("residencyId", residency.id+"");
-        if (headRelationship != null) {
-            saveStateMap.put("headRelationshipId", headRelationship.id + "");
-        }
-        saveStateMap.put("outmigrationId", outmigration.id+"");
+        saveStateMap.put("createdResidencyId", residency.id+"");
+        saveStateMap.put("createHeadRelationshipId", headRelationship != null ? headRelationship.id + "" : "");
+        saveStateMap.put("createdOutmigrationId", outmigration.id+"");
+        saveStateMap.put("previousResidencyId", selectedMemberResidency != null ? selectedMemberResidency.id+"" : "");
+        saveStateMap.put("previousHeadRelationshipId", selectedMemberHeadRelationship != null ? selectedMemberHeadRelationship.id + "" : "");
         SavedEntityState entityState = new SavedEntityState(CoreFormEntity.INMIGRATION, inmigration.id, "intimgFormUtilState", new Gson().toJson(saveStateMap));
         this.boxSavedEntityStates.put(entityState);
 
@@ -640,7 +652,7 @@ public class InternalInMigrationFormUtil extends FormUtil<Inmigration> {
         boxInmigrations.put(inmigration);
 
         //Outmigration - update
-        Outmigration outmigration = boxOutmigrations.get(savedOutmigration.id);
+        Outmigration outmigration = boxOutmigrations.get(createdOutmigration.id);
         outmigration.migrationDate = GeneralUtil.getDateAdd(migrationDate, -1);
         this.boxOutmigrations.put(outmigration);
 
@@ -651,7 +663,7 @@ public class InternalInMigrationFormUtil extends FormUtil<Inmigration> {
         this.boxResidencies.put(selectedMemberResidency);
 
         //Residency - update
-        Residency residency = savedResidency;
+        Residency residency = createdResidency;
         residency.householdCode = household.code;
         residency.memberCode = memberCode;
         residency.startType = ResidencyStartType.INTERNAL_INMIGRATION;
@@ -671,7 +683,7 @@ public class InternalInMigrationFormUtil extends FormUtil<Inmigration> {
         //HeadRelationship - update
         HeadRelationship headRelationship = null;
         if (!isInstitutionalHousehold()) {
-            headRelationship = savedHeadRelationship;
+            headRelationship = createdHeadRelationship;
             headRelationship.householdCode = household.code;
             headRelationship.memberCode = memberCode;
             headRelationship.headCode = (headRelationshipType == HeadRelationshipType.HEAD_OF_HOUSEHOLD) ? memberCode : currentHead.code;
@@ -743,7 +755,6 @@ public class InternalInMigrationFormUtil extends FormUtil<Inmigration> {
         if (currentMode == Mode.CREATE) {
             checkHeadOfHouseholdDialog();
         } else if (currentMode == Mode.EDIT) {
-            selectedMember = this.boxMembers.query(Member_.code.equal(this.entity.memberCode)).build().findFirst();
             retrieveHeadOfHousehold();
             openInmigrationForm();
         }
@@ -801,6 +812,15 @@ public class InternalInMigrationFormUtil extends FormUtil<Inmigration> {
             public void onSelectedMember(Member member) {
                 Log.d("selected-member", ""+member.getCode());
                 selectedMember = member;
+
+                selectedMemberResidency = boxResidencies.query().equal(Residency_.memberCode, selectedMember.code, QueryBuilder.StringOrder.CASE_SENSITIVE)
+                        .and().equal(Residency_.endType, ResidencyEndType.NOT_APPLICABLE.code, QueryBuilder.StringOrder.CASE_SENSITIVE)
+                        .orderDesc(Residency_.startDate).build().findFirst();
+
+                selectedMemberHeadRelationship = boxHeadRelationships.query().equal(HeadRelationship_.memberCode, selectedMember.code, QueryBuilder.StringOrder.CASE_SENSITIVE)
+                        .and().equal(HeadRelationship_.endType, HeadRelationshipEndType.NOT_APPLICABLE.code, QueryBuilder.StringOrder.CASE_SENSITIVE)
+                        .orderDesc(HeadRelationship_.startDate).build().findFirst();
+
                 openInmigrationForm();
             }
 
@@ -819,14 +839,6 @@ public class InternalInMigrationFormUtil extends FormUtil<Inmigration> {
     }
 
     private void openInmigrationForm(){
-        selectedMemberResidency = boxResidencies.query().equal(Residency_.memberCode, this.selectedMember.code, QueryBuilder.StringOrder.CASE_SENSITIVE)
-                .and().equal(Residency_.endType, ResidencyEndType.NOT_APPLICABLE.code, QueryBuilder.StringOrder.CASE_SENSITIVE)
-                .orderDesc(Residency_.startDate).build().findFirst();
-
-        selectedMemberHeadRelationship = boxHeadRelationships.query().equal(HeadRelationship_.memberCode, this.selectedMember.code, QueryBuilder.StringOrder.CASE_SENSITIVE)
-                                                                     .and().equal(HeadRelationship_.endType, HeadRelationshipEndType.NOT_APPLICABLE.code, QueryBuilder.StringOrder.CASE_SENSITIVE)
-                                                                     .orderDesc(HeadRelationship_.startDate).build().findFirst();
-
         if (selectedMemberResidency == null){
             DialogFactory.createMessageInfo(this.context, R.string.error_lbl, R.string.internal_inmigration_select_inmig_no_residency_lbl).show();
             return;

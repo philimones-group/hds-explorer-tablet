@@ -36,12 +36,14 @@ public class Residency {
     @Convert(converter = ResidencyStartTypeConverter.class, dbType = String.class)
     public ResidencyStartType startType;
 
+    @Index
     public Date startDate;
 
     @Index
     @Convert(converter = ResidencyEndTypeConverter.class, dbType = String.class)
     public ResidencyEndType endType;
 
+    @Index
     public Date endDate;
 
 }

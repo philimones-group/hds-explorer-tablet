@@ -28,15 +28,19 @@ public class HouseholdProxyHead implements CoreEntity, Serializable {
     public String visitCode;
     @Index
     public String householdCode;
+    @Index
     @Convert(converter = ProxyHeadTypeConverter.class, dbType = String.class)
     public ProxyHeadType proxyHeadType;
     @Index
     public String proxyHeadCode;
     public String proxyHeadName;
+    @Index
     @Convert(converter = ProxyHeadRoleConverter.class, dbType = String.class)
     public ProxyHeadRole proxyHeadRole;
 
+    @Index
     public Date startDate;
+    @Index
     public Date endDate;
 
     @Convert(converter = ProxyHeadChangeReasonConverter.class, dbType = String.class)

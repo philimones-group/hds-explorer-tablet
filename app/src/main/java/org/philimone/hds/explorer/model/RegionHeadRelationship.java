@@ -35,12 +35,14 @@ public class RegionHeadRelationship implements CoreEntity {
     @Convert(converter = RegionHeadStartTypeConverter.class, dbType = String.class)
     public RegionHeadStartType startType;
 
+    @Index
     public Date startDate;
 
     @Index
     @Convert(converter = RegionHeadEndTypeConverter.class, dbType = String.class)
     public RegionHeadEndType endType;
 
+    @Index
     public Date endDate;
 
     @Unique

@@ -43,12 +43,14 @@ public class HeadRelationship implements CoreEntity {
     @Convert(converter = HeadRelationshipStartTypeConverter.class, dbType = String.class)
     public HeadRelationshipStartType startType;
 
+    @Index
     public Date startDate;
 
     @Index
     @Convert(converter = HeadRelationshipEndTypeConverter.class, dbType = String.class)
     public HeadRelationshipEndType endType;
 
+    @Index
     public Date endDate;
 
     @Unique

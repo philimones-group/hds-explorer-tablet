@@ -22,6 +22,7 @@ import org.philimone.hds.explorer.model.Household;
 import org.philimone.hds.explorer.model.Inmigration;
 import org.philimone.hds.explorer.model.Member;
 import org.philimone.hds.explorer.model.Member_;
+import org.philimone.hds.explorer.model.Outmigration;
 import org.philimone.hds.explorer.model.Residency;
 import org.philimone.hds.explorer.model.Residency_;
 import org.philimone.hds.explorer.model.Visit;
@@ -79,12 +80,14 @@ public class ExternalInMigrationFormUtil extends FormUtil<Inmigration> {
     private int minimunMotherAge;
 
     private Map<String, String> mapSavedStates = new HashMap<>();
-    private Residency savedResidency;
-    private HeadRelationship savedHeadRelationship;
-
+    private Residency createdResidency;
+    private HeadRelationship createdHeadRelationship;
+    private HeadRelationship previousHeadRelationship; //When is reentry
+    private Residency previousResidency; //When is reentry
     private DateUtil dateUtil = Bootstrap.getDateUtil();
 
     private final String PHONE_NUMBER_REGEX = "^(\\+?\\d{1,3})?[-.\\s]?\\(?\\d{2,4}\\)?[-.\\s]?\\d{3,5}[-.\\s]?\\d{4,6}$";
+
 
     public ExternalInMigrationFormUtil(Fragment fragment, Context context, Visit visit, Household household, FormUtilities odkFormUtilities, FormUtilListener<Inmigration> listener){
         super(fragment, context, FormUtil.getExternalInMigrationForm(context), odkFormUtilities, listener);
@@ -161,14 +164,26 @@ public class ExternalInMigrationFormUtil extends FormUtil<Inmigration> {
             }
         }
 
-        String strResidencyId = mapSavedStates.get("residencyId");
-        String strHeadRelationshipId = mapSavedStates.get("headRelationshipId");
+        String strResidencyId = mapSavedStates.get("createdResidencyId");
+        String strHeadRelationshipId = mapSavedStates.get("createdHeadRelationshipId");
+        //String strOutmigrationId = mapSavedStates.get("createdOutmigrationId");
+        String strPreviousResidencyId = mapSavedStates.get("previousResidencyId");
+        String strPreviousHeadRelationshipId = mapSavedStates.get("previousHeadRelationshipId");
 
         if (!StringUtil.isBlank(strResidencyId)) {
-            this.savedResidency = this.boxResidencies.get(Long.parseLong(strResidencyId));
+            this.createdResidency = this.boxResidencies.get(Long.parseLong(strResidencyId));
         }
         if (!StringUtil.isBlank(strHeadRelationshipId)) {
-            this.savedHeadRelationship = this.boxHeadRelationships.get(Long.parseLong(strHeadRelationshipId));
+            this.createdHeadRelationship = this.boxHeadRelationships.get(Long.parseLong(strHeadRelationshipId));
+        }
+        //if (!StringUtil.isBlank(strOutmigrationId)) {
+        //    this.createdOutmigration = this.boxOutmigrations.get(Long.parseLong(strOutmigrationId));
+        //}
+        if (StringUtil.isLong(strPreviousResidencyId)) {
+            this.previousResidency = this.boxResidencies.get(Long.parseLong(strPreviousResidencyId));
+        }
+        if (StringUtil.isLong(strPreviousHeadRelationshipId)) {
+            this.previousHeadRelationship = this.boxHeadRelationships.get(Long.parseLong(strPreviousHeadRelationshipId));
         }
 
     }
@@ -553,6 +568,8 @@ public class ExternalInMigrationFormUtil extends FormUtil<Inmigration> {
 
         //create member, residency, headrelationship, inmigration
 
+        HashMap<String,String> saveStateMap = new HashMap<>();
+
         Member member = null;
 
         if (extMigrationType == ExternalInMigrationType.ENTRY) {
@@ -576,9 +593,12 @@ public class ExternalInMigrationFormUtil extends FormUtil<Inmigration> {
             member.entryType = ResidencyStartType.EXTERNAL_INMIGRATION;
             member.entryDate = migrationDate;
             member.collectedId = collectedValues.get(HForm.COLUMN_ID).getValue(); //only new members receive the collectedId
-
+            member.recentlyCreated = true;
+            member.recentlyCreatedUri = result.getFilename();
+            member.modules.addAll(StringCollectionConverter.getCollectionFrom(colModules.getValue()));
         } else {
             member = returningMember;
+            saveStateMap.put("previousMemberDataObj", new Gson().toJson(returningMember)); //save previous state of the inmigrating member
         }
 
         //residency current status
@@ -604,9 +624,7 @@ public class ExternalInMigrationFormUtil extends FormUtil<Inmigration> {
         member.sinLatitude = household.sinLatitude;
         member.cosLongitude = household.cosLongitude;
         member.sinLongitude = household.sinLongitude;
-        member.recentlyCreated = true;
-        member.recentlyCreatedUri = result.getFilename();
-        member.modules.addAll(StringCollectionConverter.getCollectionFrom(colModules.getValue()));
+
 
         //Residency
         Residency residency = new Residency();
@@ -672,11 +690,11 @@ public class ExternalInMigrationFormUtil extends FormUtil<Inmigration> {
         }
 
         //save state for editing
-        HashMap<String,String> saveStateMap = new HashMap<>();
-        saveStateMap.put("residencyId", residency.id+"");
-        if (headRelationship != null) {
-            saveStateMap.put("headRelationshipId", headRelationship.id+"");
-        }
+
+        saveStateMap.put("createdResidencyId", residency.id+"");
+        saveStateMap.put("createdHeadRelationshipId", headRelationship != null ? headRelationship.id+"" : "");
+        saveStateMap.put("previousResidencyId", previousResidency != null ? previousResidency.id+"" : "");
+        saveStateMap.put("previousHeadRelationshipId", previousHeadRelationship != null ? previousHeadRelationship.id + "" : "");
         SavedEntityState entityState = new SavedEntityState(CoreFormEntity.EXTERNAL_INMIGRATION, inmigration.id, "extimgFormUtilState", new Gson().toJson(saveStateMap));
         this.boxSavedEntityStates.put(entityState);
 
@@ -775,7 +793,7 @@ public class ExternalInMigrationFormUtil extends FormUtil<Inmigration> {
         member.phoneAlternative = phoneAlternative;
 
         //Residency - read last created residency
-        Residency residency = savedResidency;
+        Residency residency = createdResidency;
         residency.householdCode = household.code;
         residency.memberCode = member.code;
         residency.startType = ResidencyStartType.EXTERNAL_INMIGRATION;
@@ -786,7 +804,7 @@ public class ExternalInMigrationFormUtil extends FormUtil<Inmigration> {
         //HeadRelationship
         HeadRelationship headRelationship = null;
         if (!isInstitutionalHousehold()) {
-            headRelationship = savedHeadRelationship;
+            headRelationship = createdHeadRelationship;
             headRelationship.householdCode = household.code;
             headRelationship.memberCode = member.code;
             headRelationship.headCode = (headRelationshipType == HeadRelationshipType.HEAD_OF_HOUSEHOLD) ? memberCode : currentHead.code;
@@ -969,6 +987,8 @@ public class ExternalInMigrationFormUtil extends FormUtil<Inmigration> {
                 returningMember = member;
                 father = Queries.getMemberByCode(boxMembers, member.fatherCode);
                 mother = Queries.getMemberByCode(boxMembers, member.motherCode);
+                previousResidency = boxResidencies.query(Residency_.memberCode.equal(member.code)).orderDesc(Residency_.startDate).build().findFirst();
+                previousHeadRelationship = boxHeadRelationships.query(HeadRelationship_.memberCode.equal(member.code)).orderDesc(HeadRelationship_.startDate).build().findFirst();
 
                 executeCollectForm();
             }

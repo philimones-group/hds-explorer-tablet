@@ -707,7 +707,7 @@
     },
     {
       "id": "11:1466558823270581169",
-      "lastPropertyId": "39:7730652085911202278",
+      "lastPropertyId": "40:9082036484925243625",
       "name": "Household",
       "properties": [
         {
@@ -908,6 +908,11 @@
         {
           "id": "39:7730652085911202278",
           "name": "proxyHeadRole",
+          "type": 9
+        },
+        {
+          "id": "40:9082036484925243625",
+          "name": "proxyHeadType",
           "type": 9
         }
       ],

@@ -58,6 +58,7 @@ public class MaritalRelationshipFormUtil extends FormUtil<MaritalRelationship> {
     private Member spouseB;
     private Member savedSpouseB;
     private MaritalStatus savedSpouseBstatus;
+    private Member previousSpouseBData;
     private MaritalRelationship currentMaritalRelationship; //* if it is a relationship to close *//
     private int minimunSpouseAge;
     private boolean genderChecking;
@@ -139,14 +140,18 @@ public class MaritalRelationshipFormUtil extends FormUtil<MaritalRelationship> {
             }
         }
 
-        String strSpouseBId = mapSavedStates.get("spouseB_id");
-        String strSpouseBstatus = mapSavedStates.get("spouseB_marital_status");
+        String strSpouseBId = mapSavedStates.get("previous_spouseB_id");
+        String strSpouseBstatus = mapSavedStates.get("previous_spouseB_marital_status");
+        String strPreviousSpouseBData = mapSavedStates.get("previous_spouseB_data");
 
         if (!StringUtil.isBlank(strSpouseBId)) {
             this.savedSpouseB = this.boxMembers.get(Long.parseLong(strSpouseBId));
         }
         if (!StringUtil.isBlank(strSpouseBstatus)) {
             this.savedSpouseBstatus = MaritalStatus.getFrom(strSpouseBstatus);
+        }
+        if (!StringUtil.isBlank(strPreviousSpouseBData)) {
+            previousSpouseBData = new Gson().fromJson(strPreviousSpouseBData, Member.class);
         }
 
     }
@@ -478,9 +483,15 @@ public class MaritalRelationshipFormUtil extends FormUtil<MaritalRelationship> {
 
         //save spouseB maritalStatus for restoring in case edit changes the spouseB
         HashMap<String,String> saveStateMap = new HashMap<>();
-        saveStateMap.put("spouseB_id", spouseB.id+"");
-        saveStateMap.put("spouseB_marital_status", spouseB.maritalStatus.code);
+        saveStateMap.put("previous_spouseA_id", spouseA.id+"");
+        saveStateMap.put("previous_spouseA_data", new Gson().toJson(spouseA));
 
+        saveStateMap.put("previous_spouseB_id", spouseB.id+"");
+        saveStateMap.put("previous_spouseB_data", new Gson().toJson(spouseB));
+        saveStateMap.put("previous_spouseB_marital_status", spouseB.maritalStatus.code);
+
+        saveStateMap.put("previousMaritalRelationshipId", currentMaritalRelationship != null ? currentMaritalRelationship.id+"" : "");
+        saveStateMap.put("previousMaritalRelationshipData", currentMaritalRelationship != null ? new Gson().toJson(currentMaritalRelationship) : "");
 
         MaritalRelationship maritalRelationship = null;
 
@@ -531,6 +542,7 @@ public class MaritalRelationshipFormUtil extends FormUtil<MaritalRelationship> {
         boxMaritalRelationships.put(maritalRelationship);
         boxMembers.put(spouseA, spouseB);
 
+        saveStateMap.put("createdMaritalRelationshipId", maritalRelationship.id+"");
 
         //save core collected data
         collectedData = new CoreCollectedData();
@@ -587,15 +599,34 @@ public class MaritalRelationshipFormUtil extends FormUtil<MaritalRelationship> {
 
 
         //save spouseB maritalStatus before updating with new status
-        HashMap<String,String> saveStateMap = new HashMap<>();
-        saveStateMap.put("spouseB_id", spouseB.id+"");
-        saveStateMap.put("spouseB_marital_status", spouseB.maritalStatus.code);
+        SavedEntityState entityState = getEntityState(CoreFormEntity.MARITAL_RELATIONSHIP, this.entity.id, "maritalFormUtilState");
+        Map<String,String> saveStateMap = getSavedStateMap(entityState);
+
+        //saveStateMap.put("previous_spouseA_id", spouseA.id+"");
+        //saveStateMap.put("previous_spouseA_data", new Gson().toJson(spouseA));
 
         if (spouseBChanged()) {
+            saveStateMap.put("previous_spouseB_id", spouseB.id + "");
+            saveStateMap.put("previous_spouseB_data", new Gson().toJson(spouseB));
+            saveStateMap.put("previous_spouseB_marital_status", spouseB.maritalStatus.code);
+        }
+
+        //saveStateMap.put("previousMaritalRelationshipId", currentMaritalRelationship != null ? currentMaritalRelationship.id+"" : "");
+        //saveStateMap.put("previousMaritalRelationshipData", currentMaritalRelationship != null ? new Gson().toJson(currentMaritalRelationship) : "");
+
+        if (spouseBChanged()) {
+            Log.d("restore back", "spb.id="+spouseB.id+", oldspb.id"+savedSpouseB.id + "previous spouse b after updating b on editing formutil");
+
             //restore back the previous status of the old spouseB (the one that was substitued)
             savedSpouseB = boxMembers.get(savedSpouseB.id);
-            savedSpouseB.maritalStatus = savedSpouseBstatus;
-            this.boxMembers.put(savedSpouseB);
+
+            if (previousSpouseBData != null) {
+
+                savedSpouseB.maritalStatus = previousSpouseBData.maritalStatus;
+                savedSpouseB.spouseCode = previousSpouseBData.spouseCode;
+                savedSpouseB.spouseName = previousSpouseBData.spouseName;
+                this.boxMembers.put(savedSpouseB);
+            }
         }
 
         //refresh
@@ -649,8 +680,11 @@ public class MaritalRelationshipFormUtil extends FormUtil<MaritalRelationship> {
         boxCoreCollectedData.put(collectedData);
 
         //save state for editing
-        SavedEntityState entityState = this.boxSavedEntityStates.query(SavedEntityState_.formEntity.equal(CoreFormEntity.MARITAL_RELATIONSHIP.code).and(SavedEntityState_.collectedId.equal(this.entity.id)).and(SavedEntityState_.objectKey.equal("maritalFormUtilState"))).build().findFirst();
-        this.boxSavedEntityStates.put(entityState);
+        //this.boxSavedEntityStates.query(SavedEntityState_.formEntity.equal(CoreFormEntity.MARITAL_RELATIONSHIP.code).and(SavedEntityState_.collectedId.equal(this.entity.id)).and(SavedEntityState_.objectKey.equal("maritalFormUtilState"))).build().findFirst();
+        if (entityState != null) {
+            entityState.objectGsonValue = new Gson().toJson(saveStateMap);
+            this.boxSavedEntityStates.put(entityState);
+        }
 
         onFinishedExtensionCollection();
     }
@@ -898,7 +932,7 @@ public class MaritalRelationshipFormUtil extends FormUtil<MaritalRelationship> {
                         Log.d("selected-spouse", ""+member.getCode());
 
                         spouseB = member;
-                        reOrderSpouse();
+                        //reOrderSpouse();
                         executeCollectForm();
                     }
 

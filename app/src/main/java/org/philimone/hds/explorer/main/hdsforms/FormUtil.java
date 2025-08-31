@@ -54,6 +54,9 @@ import androidx.annotation.StringRes;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+
+import com.google.gson.Gson;
+
 import io.objectbox.Box;
 import io.objectbox.BoxStore;
 import io.objectbox.query.QueryBuilder;
@@ -1043,6 +1046,19 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
 
     public SavedEntityState getEntityState(CoreFormEntity formEntity, Long recordId, String entityObjectKey) {
         return this.boxSavedEntityStates.query(SavedEntityState_.formEntity.equal(formEntity.code).and(SavedEntityState_.collectedId.equal(recordId)).and(SavedEntityState_.objectKey.equal(entityObjectKey))).build().findFirst();
+    }
+
+    protected Map<String, String> getSavedStateMap(SavedEntityState savedState) {
+        Map<String, String> mapSavedStates = new HashMap<>();
+
+        if (savedState != null) {
+            HashMap map = new Gson().fromJson(savedState.objectGsonValue, HashMap.class);
+            for (Object key : map.keySet()) {
+                mapSavedStates.put(key.toString(), map.get(key).toString());
+            }
+        }
+
+        return mapSavedStates;
     }
 
     class LoadFormFragmentTask extends AsyncTask<Void, Void, Void> {

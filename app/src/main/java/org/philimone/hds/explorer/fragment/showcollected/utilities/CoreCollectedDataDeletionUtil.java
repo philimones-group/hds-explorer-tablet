@@ -843,7 +843,56 @@ public class CoreCollectedDataDeletionUtil {
     }
 
     private void deleteMaritalRelationship(CoreCollectedData cdata) {
-        this.boxMaritalRelationships.remove(cdata.formEntityId); //remove marital relationship
+
+        MaritalRelationship createdMaritalRelationship = this.boxMaritalRelationships.get(cdata.formEntityId);
+
+        if (createdMaritalRelationship != null) {
+
+            Map<String, String> mapSavedStates = getSavedStateMap(CoreFormEntity.MARITAL_RELATIONSHIP, createdMaritalRelationship.id, "maritalFormUtilState");
+            String createdMaritalRelationshipId = mapSavedStates.get("createdMaritalRelationshipId");
+            String previousMaritalRelationshipId = mapSavedStates.get("previousMaritalRelationshipId");
+            String previousMaritalRelationshipDataValue = mapSavedStates.get("previousMaritalRelationshipData");
+            String previousSpouseAId = mapSavedStates.get("previous_spouseA_id");
+            String previousSpouseAData = mapSavedStates.get("previous_spouseA_data");
+            String previousSpouseBId = mapSavedStates.get("previous_spouseB_id");
+            String previousSpouseBData = mapSavedStates.get("previous_spouseB_data");
+            
+            MaritalRelationship previousMaritalRelationship = StringUtil.isLong(previousMaritalRelationshipId) ? boxMaritalRelationships.get(Long.parseLong(previousMaritalRelationshipId)) : null;
+            MaritalRelationship previousMaritalRelationshipData = StringUtil.isBlank(previousMaritalRelationshipDataValue) ? null : new Gson().fromJson(previousMaritalRelationshipDataValue, MaritalRelationship.class);
+            Member spouseA = StringUtil.isLong(previousSpouseAId) ? boxMembers.get(Long.parseLong(previousSpouseAId)) : null;
+            Member spouseB = StringUtil.isLong(previousSpouseBId) ? boxMembers.get(Long.parseLong(previousSpouseBId)) : null;
+            Member previousSpouseA = StringUtil.isBlank(previousSpouseAData) ? null : new Gson().fromJson(previousSpouseAData, Member.class);
+            Member previousSpouseB = StringUtil.isBlank(previousSpouseBData) ? null : new Gson().fromJson(previousSpouseBData, Member.class);
+
+            //restore back the previousMaritalRelationship/current before the createdHeadRelationship
+            if (previousMaritalRelationship != null && previousMaritalRelationshipData != null) {
+                previousMaritalRelationship.endStatus = previousMaritalRelationshipData.endStatus;
+                previousMaritalRelationship.endDate = previousMaritalRelationshipData.endDate;
+                boxMaritalRelationships.put(previousMaritalRelationship);
+            }
+            //restore back the spouseA status before the maritalRelationship
+            if (spouseA != null && previousSpouseA != null) {
+                Log.d("restore back", "spA: "+spouseA.code+",spA.ms:"+spouseA.maritalStatus+", Previous " +"spA: "+previousSpouseA.code+",spA.ms:"+previousSpouseA.maritalStatus);
+                spouseA.maritalStatus = previousSpouseA.maritalStatus;
+                spouseA.spouseCode = previousSpouseA.spouseCode;
+                spouseA.spouseName = previousSpouseA.spouseName;
+                boxMembers.put(spouseA);
+            }
+            //restore back the spouseB status before the maritalRelationship
+            if (spouseB != null && previousSpouseA != null) {
+                Log.d("restore back", "spB: "+spouseB.code+",spB.ms:"+spouseB.maritalStatus+", Previous " +"spB: "+previousSpouseB.code+",spB.ms:"+previousSpouseB.maritalStatus);
+                spouseB.maritalStatus = previousSpouseA.maritalStatus;
+                spouseB.spouseCode = previousSpouseA.spouseCode;
+                spouseB.spouseName = previousSpouseA.spouseName;
+                boxMembers.put(spouseB);
+            }
+
+            //delete the createdMaritalRelationship
+            this.boxMaritalRelationships.remove(createdMaritalRelationship); //remove marital relationship
+
+            deleteSavedStateMap(CoreFormEntity.MARITAL_RELATIONSHIP, createdMaritalRelationship.id, "maritalFormUtilState");
+        }
+
         deleteCoreCollectedData(cdata);
     }
 

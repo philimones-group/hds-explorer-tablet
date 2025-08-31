@@ -336,9 +336,9 @@ public class MemberFilterDialog extends DialogFragment {
         this.txtMemFilterName.setText("");
         this.txtMemFilterCode.setText("");
         this.txtMemFilterHouseCode.setText("");
-        this.chkMemFilterGMale.setChecked(false);
-        this.chkMemFilterGFemale.setChecked(false);
-        this.nbpMemFilterMinAge.setValue(0);
+        this.chkMemFilterGMale.setChecked(genderMaleOnly);
+        this.chkMemFilterGFemale.setChecked(genderFemaleOnly);
+        this.nbpMemFilterMinAge.setValue(filterMinAge != null ? filterMinAge : 0);
         this.nbpMemFilterMaxAge.setValue(120);
         //this.spnMemFilterStatus.
     }

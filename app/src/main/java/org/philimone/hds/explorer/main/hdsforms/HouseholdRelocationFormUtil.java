@@ -618,8 +618,9 @@ public class HouseholdRelocationFormUtil extends FormUtil<HouseholdRelocation> {
         householdRelocation.reason = HouseholdRelocationReason.getFrom(reason);
         householdRelocation.reasonOther = reasonOther;
         boxHouseholdRelocations.put(householdRelocation);
-
+        Log.d("origin changed - "+originHouseholdChanged, newMembersResidenciesList+", old res: "+oldMembersResidenciesList);
         if (originHouseholdChanged) {
+
             //delete new residencies and relationships
             boxResidencies.removeByIds(newMembersResidenciesList);
             boxHeadRelationships.removeByIds(newMembersRelationshipsList);
@@ -630,16 +631,17 @@ public class HouseholdRelocationFormUtil extends FormUtil<HouseholdRelocation> {
                 obj.endType = ResidencyEndType.NOT_APPLICABLE;
                 obj.endDate = null;
                 boxResidencies.put(obj);
-
+                Log.d("clearing old residency", obj.id+", "+obj.householdCode);
                 //update member
                 Member member = Queries.getMemberByCode(boxMembers, obj.memberCode);
+                Household previousHousehold = Queries.getHouseholdByCode(boxHouseholds, obj.householdCode);
                 member.householdCode = obj.householdCode;
-                member.householdName = Queries.getHouseholdByCode(boxHouseholds, obj.householdCode).name;
+                member.householdName = previousHousehold.name;
                 member.startType = obj.startType;
                 member.startDate = obj.startDate;
                 member.endType = ResidencyEndType.NOT_APPLICABLE;
                 member.endDate = null;
-                updateGpsCoords(member, destinationHousehold);
+                updateGpsCoords(member, previousHousehold);
                 boxMembers.put(member);
             }
             for (Long id : oldMembersRelationshipsList) {
@@ -676,55 +678,81 @@ public class HouseholdRelocationFormUtil extends FormUtil<HouseholdRelocation> {
         }
 
         //Create New Or Update residencies and relationships
-        for (Residency originResidency : originResidencies) {
-            Residency recentResidency = !originHouseholdChanged ? getCurrentResidency(destinationHousehold.code, originResidency.memberCode) : null;
+        if (originHouseholdChanged) {
+            //Create New Residencies
+            for (Residency originResidency : originResidencies) {
+                Residency residency = new Residency();
+                residency.householdCode = destinationHousehold.code;
+                residency.memberCode = originResidency.memberCode;
+                residency.startType = ResidencyStartType.INTERNAL_INMIGRATION;
+                residency.startDate = eventDate;
+                residency.endType = ResidencyEndType.NOT_APPLICABLE;
+                residency.endDate = null;
 
-            Residency residency = (originHouseholdChanged || recentResidency == null) ? new Residency() : recentResidency; //create new if origin was changed or n
-            residency.householdCode = destinationHousehold.code;
-            residency.memberCode = originResidency.memberCode;
-            residency.startType = ResidencyStartType.INTERNAL_INMIGRATION;
-            residency.startDate = eventDate;
-            residency.endType = ResidencyEndType.NOT_APPLICABLE;
-            residency.endDate = null;
-
-            long oid = boxResidencies.put(residency);
-            savedNewResidencies += (savedNewResidencies.isEmpty() ? "" : ",") + oid;
-
-            //update member
-            Member member = Queries.getMemberByCode(boxMembers, residency.memberCode);
-            member.householdCode = residency.householdCode;
-            member.householdName = destinationHousehold.name;
-            member.startType = residency.startType;
-            member.startDate = residency.startDate;
-            member.endType = residency.endType;
-            member.endDate = residency.endDate;
-            updateGpsCoords(member, destinationHousehold);
-
-            boxMembers.put(member);
-        }
-
-        //create new head relationships
-        if (destinationHousehold.type != HouseholdType.INSTITUTIONAL) {
-            for (HeadRelationship originHeadRelationship : originHeadRelationships) {
-                HeadRelationship recentHeadRelationship = !originHouseholdChanged ? getCurrentHeadRelationship(destinationHousehold.code, originHeadRelationship.memberCode) : null;
-
-                HeadRelationship hrelationship = (originHouseholdChanged || recentHeadRelationship == null) ? new HeadRelationship() : recentHeadRelationship;
-                hrelationship.householdCode = destinationHousehold.code;
-                hrelationship.headCode = headMember.code;
-                hrelationship.memberCode = originHeadRelationship.memberCode;
-                hrelationship.relationshipType = originHeadRelationship.relationshipType;
-                hrelationship.startType = HeadRelationshipStartType.INTERNAL_INMIGRATION;
-                hrelationship.startDate = eventDate;
-                hrelationship.endType = HeadRelationshipEndType.NOT_APPLICABLE;
-                hrelationship.endDate = null;
-
-                long oid = boxHeadRelationships.put(hrelationship);
-                savedNewHeadRelationships += (savedNewHeadRelationships.isEmpty() ? "" : ",") + oid;
+                long oid = boxResidencies.put(residency);
+                savedNewResidencies += (savedNewResidencies.isEmpty() ? "" : ",") + oid;
 
                 //update member
-                Member member = Queries.getMemberByCode(boxMembers, hrelationship.memberCode);
-                member.headRelationshipType = hrelationship.relationshipType;
+                Member member = Queries.getMemberByCode(boxMembers, residency.memberCode);
+                member.householdCode = residency.householdCode;
+                member.householdName = destinationHousehold.name;
+                member.startType = residency.startType;
+                member.startDate = residency.startDate;
+                member.endType = residency.endType;
+                member.endDate = residency.endDate;
+                updateGpsCoords(member, destinationHousehold);
+
                 boxMembers.put(member);
+            }
+
+            //create new head relationships
+            if (destinationHousehold.type != HouseholdType.INSTITUTIONAL) {
+                for (HeadRelationship originHeadRelationship : originHeadRelationships) {
+                    HeadRelationship hrelationship = new HeadRelationship();
+                    hrelationship.householdCode = destinationHousehold.code;
+                    hrelationship.headCode = headMember.code;
+                    hrelationship.memberCode = originHeadRelationship.memberCode;
+                    hrelationship.relationshipType = originHeadRelationship.relationshipType;
+                    hrelationship.startType = HeadRelationshipStartType.INTERNAL_INMIGRATION;
+                    hrelationship.startDate = eventDate;
+                    hrelationship.endType = HeadRelationshipEndType.NOT_APPLICABLE;
+                    hrelationship.endDate = null;
+
+                    long oid = boxHeadRelationships.put(hrelationship);
+                    savedNewHeadRelationships += (savedNewHeadRelationships.isEmpty() ? "" : ",") + oid;
+
+                    //update member
+                    Member member = Queries.getMemberByCode(boxMembers, hrelationship.memberCode);
+                    member.headRelationshipType = hrelationship.relationshipType;
+                    boxMembers.put(member);
+                }
+            }
+
+        } else {
+            //Update Last created residency
+            for (Long resId : newMembersResidenciesList) {
+                Residency residency = boxResidencies.get(resId);
+                residency.startDate = eventDate; //the only thing to update is the startDate
+                boxResidencies.put(residency);
+
+                savedNewResidencies += (savedNewResidencies.isEmpty() ? "" : ",") + resId;
+
+                //update member
+                Member member = Queries.getMemberByCode(boxMembers, residency.memberCode);
+                member.startDate = residency.startDate;
+                boxMembers.put(member);
+            }
+
+            if (destinationHousehold.type != HouseholdType.INSTITUTIONAL) {
+                for (Long headRelId : newMembersRelationshipsList) {
+                    HeadRelationship headRelationship = boxHeadRelationships.get(headRelId);
+                    headRelationship.startDate = eventDate;
+                    boxHeadRelationships.put(headRelationship);
+
+                    savedNewHeadRelationships += (savedNewHeadRelationships.isEmpty() ? "" : ",") + headRelId;
+
+                    //update member - nothing to update (the headRelationshipType doesnt change)
+                }
             }
         }
 

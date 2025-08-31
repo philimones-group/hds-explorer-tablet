@@ -734,8 +734,10 @@ public class HouseholdRelocationFormUtil extends FormUtil<HouseholdRelocation> {
         saveStateMap.put("oldMembersRelationshipsList", savedOldHeadRelationships);
         saveStateMap.put("newMembersResidenciesList", savedNewResidencies);
         saveStateMap.put("newMembersRelationshipsList", savedNewHeadRelationships);
-        //save the list of ids of new head relationships
-        SavedEntityState entityState = new SavedEntityState(CoreFormEntity.HOUSEHOLD_RELOCATION, householdRelocation.id, SAVED_ENTITY_OBJECT_KEY, new Gson().toJson(saveStateMap));
+
+        //update the list of ids of new head relationships
+        SavedEntityState entityState = getEntityState(CoreFormEntity.HOUSEHOLD_RELOCATION, householdRelocation.id, SAVED_ENTITY_OBJECT_KEY);
+        entityState.objectGsonValue = new Gson().toJson(saveStateMap);
         this.boxSavedEntityStates.put(entityState);
 
         //save core collected data

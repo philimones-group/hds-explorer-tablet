@@ -23,6 +23,7 @@ import org.philimone.hds.explorer.model.*;
 import org.philimone.hds.explorer.model.enums.CoreFormEntity;
 import org.philimone.hds.explorer.model.enums.SubjectEntity;
 import org.philimone.hds.explorer.model.oldstate.SavedEntityState;
+import org.philimone.hds.explorer.model.oldstate.SavedEntityState_;
 import org.philimone.hds.explorer.server.settings.generator.CodeGeneratorService;
 import org.philimone.hds.explorer.widget.DialogFactory;
 import org.philimone.hds.explorer.widget.LoadingDialog;
@@ -1038,6 +1039,10 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
         }
 
         return null;
+    }
+
+    public SavedEntityState getEntityState(CoreFormEntity formEntity, Long recordId, String entityObjectKey) {
+        return this.boxSavedEntityStates.query(SavedEntityState_.formEntity.equal(formEntity.code).and(SavedEntityState_.collectedId.equal(recordId)).and(SavedEntityState_.objectKey.equal(entityObjectKey))).build().findFirst();
     }
 
     class LoadFormFragmentTask extends AsyncTask<Void, Void, Void> {

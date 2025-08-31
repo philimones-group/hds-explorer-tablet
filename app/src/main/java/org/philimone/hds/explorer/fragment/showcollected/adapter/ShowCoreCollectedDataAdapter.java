@@ -64,7 +64,7 @@ public class ShowCoreCollectedDataAdapter extends RecyclerView.Adapter<ShowCoreC
 
 
     public void setCheckedOrUnchecked(int position) {
-        CoreCollectedDataItem dataItem = collectedDataList.get(position);
+        CoreCollectedDataItem dataItem = getItem(position);
         if (dataItem.collectedData.uploaded==false || dataItem.collectedData.uploadedWithError) {
             selectedList[position] = !selectedList[position];
             dataItem.selected = selectedList[position];
@@ -80,7 +80,7 @@ public class ShowCoreCollectedDataAdapter extends RecyclerView.Adapter<ShowCoreC
     public void setAllChecked(boolean checked) {
 
         for (int position = 0; position < selectedList.length; position++) {
-            if (!collectedDataList.get(position).collectedData.uploaded || collectedDataList.get(position).collectedData.uploadedWithError) {
+            if (!getItem(position).collectedData.uploaded || getItem(position).collectedData.uploadedWithError) {
                 selectedList[position] = checked;
             }
         }

@@ -663,7 +663,7 @@
     <string name="changehead_new_head_is_head_of_household_lbl">Le nouveau chef de ménage est le chef d\'un autre ménage. Vous devez d\'abord cesser d\'être le chef pour devenir le chef de celui-ci!</string>
     <string name="changehead_head_dont_exists_lbl">Ce ménage n\'a pas de chef de ménage actif, un nouveau chef de ménage doit être sélectionné.</string>
     <string name="changehead_hoh_minors_info_title_lbl">Changement de Chef de Ménage</string>
-    <string name="changehead_hoh_minors_left_warning_lbl">À part le chef actuel, ce ménage ne compte que des mineurs.\nSi vous continuez, un mineur sera désigné comme chef temporaire.\n\nVoulez-vous continuer?</string>
+    <string name="changehead_hoh_minors_left_warning_lbl">Il n’y a que des mineurs disponibles pour être le chef de ce ménage.\nSi vous continuez, un mineur sera désigné comme chef temporaire.\n\nVoulez-vous continuer ?</string>
 
     <!-- change region head -->
     <string name="changeregionhead_dialog_change_title_lbl">Mettre à jour les Données</string>

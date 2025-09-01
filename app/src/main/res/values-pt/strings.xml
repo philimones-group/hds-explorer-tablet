@@ -663,7 +663,7 @@
     <string name="changehead_new_head_is_head_of_household_lbl">O novo chefe do agregado é chefe de um outro agregado. É necessário primeiro deixar de ser o chefe para poder tornar-se chefe neste!</string>
     <string name="changehead_head_dont_exists_lbl">Este Agregado não possui um Chefe do Agregado activo, um novo chefe deve ser selecionado.</string>
     <string name="changehead_hoh_minors_info_title_lbl">Mudança de Chefe do Agregado</string>
-    <string name="changehead_hoh_minors_left_warning_lbl">Além do chefe atual, este agregado tem apenas menores.\nSe continuar, um menor será definido como chefe temporário.\n\nDeseja prosseguir?</string>
+    <string name="changehead_hoh_minors_left_warning_lbl">Só existem menores disponíveis para serem o chefe deste agregado.\nSe continuar, um menor será definido como chefe temporário.\n\nDeseja prosseguir?</string>
 
     <!-- change region head -->
     <string name="changeregionhead_dialog_change_title_lbl">Atualizar Dados</string>

@@ -11,6 +11,8 @@ import org.philimone.hds.explorer.database.Queries;
 import org.philimone.hds.explorer.fragment.showcollected.adapter.model.CoreCollectedDataItem;
 import org.philimone.hds.explorer.fragment.showcollected.adapter.model.OdkCollectedDataItem;
 import org.philimone.hds.explorer.main.hdsforms.HouseholdRelocationFormUtil;
+import org.philimone.hds.explorer.main.hdsforms.PregnancyOutcomeFormUtil;
+import org.philimone.hds.explorer.main.hdsforms.PregnancyVisitFormUtil;
 import org.philimone.hds.explorer.model.CollectedData;
 import org.philimone.hds.explorer.model.CollectedData_;
 import org.philimone.hds.explorer.model.CoreCollectedData;
@@ -52,6 +54,7 @@ import org.philimone.hds.explorer.model.enums.CoreFormEntity;
 import org.philimone.hds.explorer.model.enums.HeadRelationshipType;
 import org.philimone.hds.explorer.model.enums.MaritalEndStatus;
 import org.philimone.hds.explorer.model.enums.MaritalStatus;
+import org.philimone.hds.explorer.model.enums.PregnancyStatus;
 import org.philimone.hds.explorer.model.enums.temporal.ExternalInMigrationType;
 import org.philimone.hds.explorer.model.enums.temporal.HeadRelationshipEndType;
 import org.philimone.hds.explorer.model.enums.temporal.HeadRelationshipStartType;
@@ -804,6 +807,31 @@ public class CoreCollectedDataDeletionUtil {
 
         if (outcome != null) {
 
+            Map<String, String> mapSavedStates = getSavedStateMap(CoreFormEntity.PREGNANCY_OUTCOME, outcome.id, PregnancyOutcomeFormUtil.SAVED_ENTITY_OBJECT_KEY);
+            String pregnancyRegistrationId = mapSavedStates.get("pregnancyRegistrationId");
+            String pregnancyRegistrationObj = mapSavedStates.get("pregnancyRegistrationObj");
+
+            PregnancyRegistration pregReg = StringUtil.isLong(pregnancyRegistrationId) ? boxPregnancyRegistrations.get(Long.parseLong(pregnancyRegistrationId)) : null;
+            PregnancyRegistration previousPregRegData = StringUtil.isBlank(pregnancyRegistrationObj) ? null : new Gson().fromJson(pregnancyRegistrationObj, PregnancyRegistration.class);
+
+            //restore previous data of pregnancy registration
+            Log.d("restore preg on pout", "pr="+pregReg+", prd="+previousPregRegData);
+            if (pregReg != null && previousPregRegData != null) {
+                pregReg.status = previousPregRegData.status;
+                pregReg.summary_antepartum_count = previousPregRegData.summary_antepartum_count;
+                pregReg.summary_postpartum_count = previousPregRegData.summary_postpartum_count;
+                //pregReg.summary_last_visit_status = previousPregRegData.summary_last_visit_status;
+                //pregReg.summary_last_visit_type = previousPregRegData.summary_last_visit_type;
+                //pregReg.summary_last_visit_date = previousPregRegData.summary_last_visit_date;
+                //pregReg.summary_first_visit_date = previousPregRegData.summary_first_visit_date;
+                pregReg.summary_has_pregnancy_outcome = previousPregRegData.summary_has_pregnancy_outcome;
+                pregReg.summary_nr_outcomes = previousPregRegData.summary_nr_outcomes;
+                pregReg.summary_followup_completed = previousPregRegData.summary_followup_completed;
+
+                boxPregnancyRegistrations.put(pregReg);
+            }
+
+            //remove created childs
             for (PregnancyChild child : outcome.childs) {
 
                 //get member and remove member and its dependencies
@@ -814,6 +842,8 @@ public class CoreCollectedDataDeletionUtil {
                 }
 
             }
+
+            deleteSavedStateMap(CoreFormEntity.PREGNANCY_OUTCOME, outcome.id, PregnancyOutcomeFormUtil.SAVED_ENTITY_OBJECT_KEY);
 
             this.boxPregnancyOutcomes.remove(outcome);
         }
@@ -827,11 +857,37 @@ public class CoreCollectedDataDeletionUtil {
 
         if (visit != null) {
 
+            Map<String, String> mapSavedStates = getSavedStateMap(CoreFormEntity.PREGNANCY_VISIT, visit.id, PregnancyVisitFormUtil.SAVED_ENTITY_OBJECT_KEY);
+            String pregnancyRegistrationId = mapSavedStates.get("pregnancyRegistrationId");            
+            String pregnancyRegistrationObj = mapSavedStates.get("pregnancyRegistrationObj");
+            
+            PregnancyRegistration pregReg = StringUtil.isLong(pregnancyRegistrationId) ? boxPregnancyRegistrations.get(Long.parseLong(pregnancyRegistrationId)) : null;
+            PregnancyRegistration previousPregRegData = StringUtil.isBlank(pregnancyRegistrationObj) ? null : new Gson().fromJson(pregnancyRegistrationObj, PregnancyRegistration.class);
+            
+            //restore previous data of pregnancy registration
+            Log.d("restore preg", "pr="+pregReg+", prd="+previousPregRegData);
+            if (pregReg != null && previousPregRegData != null) {
+                pregReg.summary_antepartum_count = previousPregRegData.summary_antepartum_count;
+                pregReg.summary_postpartum_count = previousPregRegData.summary_postpartum_count;
+                pregReg.summary_last_visit_status = previousPregRegData.summary_last_visit_status;
+                pregReg.summary_last_visit_type = previousPregRegData.summary_last_visit_type;
+                pregReg.summary_last_visit_date = previousPregRegData.summary_last_visit_date;
+                pregReg.summary_first_visit_date = previousPregRegData.summary_first_visit_date;
+                pregReg.summary_has_pregnancy_outcome = previousPregRegData.summary_has_pregnancy_outcome;
+                pregReg.summary_nr_outcomes = previousPregRegData.summary_nr_outcomes;
+                pregReg.summary_followup_completed = previousPregRegData.summary_followup_completed;
+
+                boxPregnancyRegistrations.put(pregReg);
+            }
+
+            //remove childs if exists
             for (PregnancyVisitChild child : visit.childs) {
                 boxPregnancyVisitChilds.remove(child);
             }
 
             this.boxPregnancyVisits.remove(visit);
+            
+            deleteSavedStateMap(CoreFormEntity.PREGNANCY_VISIT, visit.id, PregnancyVisitFormUtil.SAVED_ENTITY_OBJECT_KEY);
         }
 
         deleteCoreCollectedData(cdata);

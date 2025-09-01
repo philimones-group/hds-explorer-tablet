@@ -5,6 +5,8 @@ import android.util.Log;
 
 import androidx.fragment.app.Fragment;
 
+import com.google.gson.Gson;
+
 import org.philimone.hds.explorer.R;
 import org.philimone.hds.explorer.database.Bootstrap;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
@@ -42,6 +44,7 @@ import org.philimone.hds.explorer.model.enums.PregnancyOutcomeType;
 import org.philimone.hds.explorer.model.enums.PregnancyStatus;
 import org.philimone.hds.explorer.model.enums.PregnancyVisitType;
 import org.philimone.hds.explorer.model.enums.temporal.ResidencyEndType;
+import org.philimone.hds.explorer.model.oldstate.SavedEntityState;
 import org.philimone.hds.explorer.widget.DialogFactory;
 import org.philimone.hds.forms.model.CollectedDataMap;
 import org.philimone.hds.forms.model.ColumnValue;
@@ -88,6 +91,8 @@ public class PregnancyVisitFormUtil extends FormUtil<PregnancyVisit> {
     private PregnancyVisitType currentVisitType;
     private Integer currentVisitNumber;
     private PregnancyStatus currentPregnancyStatus;
+
+    public static final String SAVED_ENTITY_OBJECT_KEY = "pregnancyVisitFormUtilState";
 
     private DateUtil dateUtil = Bootstrap.getDateUtil();
 
@@ -568,6 +573,11 @@ public class PregnancyVisitFormUtil extends FormUtil<PregnancyVisit> {
 
         long result_id = this.boxPregnancyVisits.put(pregnancyVisit);
 
+
+        HashMap<String,String> saveStateMap = new HashMap<>();
+        saveStateMap.put("pregnancyRegistrationId", ""+this.pregnancyRegistration.id);
+        saveStateMap.put("pregnancyRegistrationObj", new Gson().toJson(this.pregnancyRegistration));
+
         //Update Pregnancy Registrations
         boolean first_visit = this.boxPregnancyVisits.query(PregnancyVisit_.code.equal(pregnancyVisit.code)).build().count() == 1;
         int antepartum_count = (int) boxPregnancyVisits.query(PregnancyVisit_.code.equal(code).and(PregnancyVisit_.visitType.equal(PregnancyVisitType.ANTEPARTUM.code))).build().count();
@@ -585,6 +595,10 @@ public class PregnancyVisitFormUtil extends FormUtil<PregnancyVisit> {
         pregnancyRegistration.summary_followup_completed = (antepartum_count>=MAX_ANTEPARTUM_VISITS && postpartum_count >= MAX_POSTPARTUM_VISITS) || pregnancyVisit.status == PregnancyStatus.LOST_TRACK;
 
         this.boxPregnancyRegistrations.put(pregnancyRegistration);
+
+        //save the list of data
+        SavedEntityState entityState = new SavedEntityState(CoreFormEntity.PREGNANCY_VISIT, pregnancyVisit.id, SAVED_ENTITY_OBJECT_KEY, new Gson().toJson(saveStateMap));
+        this.boxSavedEntityStates.put(entityState);
 
         //save core collected data
         collectedData = new CoreCollectedData();

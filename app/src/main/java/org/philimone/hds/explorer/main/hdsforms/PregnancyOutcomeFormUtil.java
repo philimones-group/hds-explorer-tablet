@@ -5,6 +5,8 @@ import android.util.Log;
 
 import androidx.fragment.app.Fragment;
 
+import com.google.gson.Gson;
+
 import org.philimone.hds.explorer.R;
 import org.philimone.hds.explorer.database.Bootstrap;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
@@ -28,6 +30,8 @@ import org.philimone.hds.explorer.model.PregnancyOutcome;
 import org.philimone.hds.explorer.model.PregnancyOutcome_;
 import org.philimone.hds.explorer.model.PregnancyRegistration;
 import org.philimone.hds.explorer.model.PregnancyRegistration_;
+import org.philimone.hds.explorer.model.PregnancyVisit;
+import org.philimone.hds.explorer.model.PregnancyVisit_;
 import org.philimone.hds.explorer.model.Residency;
 import org.philimone.hds.explorer.model.Residency_;
 import org.philimone.hds.explorer.model.Visit;
@@ -40,10 +44,12 @@ import org.philimone.hds.explorer.model.enums.HouseholdType;
 import org.philimone.hds.explorer.model.enums.MaritalStatus;
 import org.philimone.hds.explorer.model.enums.PregnancyOutcomeType;
 import org.philimone.hds.explorer.model.enums.PregnancyStatus;
+import org.philimone.hds.explorer.model.enums.PregnancyVisitType;
 import org.philimone.hds.explorer.model.enums.temporal.HeadRelationshipEndType;
 import org.philimone.hds.explorer.model.enums.temporal.HeadRelationshipStartType;
 import org.philimone.hds.explorer.model.enums.temporal.ResidencyEndType;
 import org.philimone.hds.explorer.model.enums.temporal.ResidencyStartType;
+import org.philimone.hds.explorer.model.oldstate.SavedEntityState;
 import org.philimone.hds.explorer.widget.DialogFactory;
 import org.philimone.hds.forms.model.CollectedDataMap;
 import org.philimone.hds.forms.model.ColumnValue;
@@ -70,10 +76,12 @@ import mz.betainteractive.utilities.StringUtil;
 
 public class PregnancyOutcomeFormUtil extends FormUtil<PregnancyOutcome> {
 
+    public static final String SAVED_ENTITY_OBJECT_KEY = "pregnancyOutFormUtilState";
     private Box<Member> boxMembers;
     private Box<PregnancyRegistration> boxPregnancyRegistrations;
     private Box<PregnancyOutcome> boxPregnancyOutcomes;
     private Box<PregnancyChild> boxPregnancyChilds;
+    private Box<PregnancyVisit> boxPregnancyVisits;
     private Box<HeadRelationship> boxHeadRelationships;
     private Box<Residency> boxResidencies;
     private Box<Death> boxDeaths;
@@ -141,6 +149,7 @@ public class PregnancyOutcomeFormUtil extends FormUtil<PregnancyOutcome> {
         this.boxPregnancyRegistrations = ObjectBoxDatabase.get().boxFor(PregnancyRegistration.class);
         this.boxPregnancyOutcomes = ObjectBoxDatabase.get().boxFor(PregnancyOutcome.class);
         this.boxPregnancyChilds = ObjectBoxDatabase.get().boxFor(PregnancyChild.class);
+        this.boxPregnancyVisits = ObjectBoxDatabase.get().boxFor(PregnancyVisit.class);
         this.boxHeadRelationships = ObjectBoxDatabase.get().boxFor(HeadRelationship.class);
         this.boxResidencies = ObjectBoxDatabase.get().boxFor(Residency.class);
         this.boxDeaths = ObjectBoxDatabase.get().boxFor(Death.class);
@@ -511,9 +520,6 @@ public class PregnancyOutcomeFormUtil extends FormUtil<PregnancyOutcome> {
         //create child members resisdencies
         //create child members head relationships
 
-        pregnancyRegistration.status = PregnancyStatus.DELIVERED;
-        this.boxPregnancyRegistrations.put(pregnancyRegistration);
-
         PregnancyOutcome pregnancyOutcome = new PregnancyOutcome();
         pregnancyOutcome.code = pregnancyRegistration.code;
         pregnancyOutcome.visitCode = visit.code;
@@ -630,6 +636,27 @@ public class PregnancyOutcomeFormUtil extends FormUtil<PregnancyOutcome> {
 
         this.boxPregnancyOutcomes.put(pregnancyOutcome);
 
+        //save state
+        HashMap<String,String> saveStateMap = new HashMap<>();
+        saveStateMap.put("pregnancyRegistrationId", ""+this.pregnancyRegistration.id);
+        saveStateMap.put("pregnancyRegistrationObj", new Gson().toJson(this.pregnancyRegistration));
+        //save the list of data
+        SavedEntityState entityState = new SavedEntityState(CoreFormEntity.PREGNANCY_OUTCOME, pregnancyOutcome.id, SAVED_ENTITY_OBJECT_KEY, new Gson().toJson(saveStateMap));
+        this.boxSavedEntityStates.put(entityState);
+
+        //Update Pregnancy Registration
+        pregnancyRegistration = boxPregnancyRegistrations.get(pregnancyRegistration.id);
+        pregnancyRegistration.status = PregnancyStatus.DELIVERED;
+        pregnancyRegistration.summary_antepartum_count = (int) (boxPregnancyVisits.query(PregnancyVisit_.code.equal(code).and(PregnancyVisit_.visitType.equal(PregnancyVisitType.ANTEPARTUM.code))).build().count());
+        pregnancyRegistration.summary_postpartum_count = 0;
+        //pregnancyRegistration.summary_last_visit_status = pregnancyVisit.status;
+        //pregnancyRegistration.summary_last_visit_type = pregnancyVisit.visitType;
+        //pregnancyRegistration.summary_last_visit_date = pregnancyVisit.visitDate;
+        //pregnancyRegistration.summary_first_visit_date = first_visit ? pregnancyVisit.visitDate : null;
+        pregnancyRegistration.summary_has_pregnancy_outcome = true;
+        pregnancyRegistration.summary_nr_outcomes = nrOfOutcomes;
+        pregnancyRegistration.summary_followup_completed = false;
+        this.boxPregnancyRegistrations.put(pregnancyRegistration);
 
         //save core collected data
         collectedData = new CoreCollectedData();

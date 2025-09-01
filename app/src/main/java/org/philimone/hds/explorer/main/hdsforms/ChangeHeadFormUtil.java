@@ -40,6 +40,7 @@ import org.philimone.hds.forms.model.ValidationResult;
 import org.philimone.hds.forms.model.XmlFormResult;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -922,14 +923,22 @@ Log.d("firstLast", "id="+newHeadLastRelationship.id);
         dialog.setFilterMinAge(onlyMinorsLeftToBeHead ? 0 : this.minimunHeadAge, true);
         dialog.setFilterHouseCode(visit.householdCode, true);
         dialog.setFilterStatus(MemberFilterDialog.StatusFilter.RESIDENT, true);
+
+        List<Member> excludeMembers = new ArrayList<>();
         if (this.oldHeadMember != null) {
             dialog.addFilterExcludeMember(this.oldHeadMember);
+            excludeMembers.add(this.oldHeadMember);
+        }
+        if (currentMode == Mode.EDIT) {
+            //EXCLUDE BOTH OLD AND NEW HEAD FROM THE SELECTION
+            dialog.addFilterExcludeMember(this.newHeadMember);
+            excludeMembers.add(this.newHeadMember);
         }
         dialog.setStartSearchOnShow(true);
 
 
         //Show
-        if (onlyMinorsLeftToBeHead) {
+        if (hasOnlyMinorsLeft(excludeMembers.toArray(new Member[0]))) {
             DialogFactory.createMessageYN(context, R.string.changehead_hoh_minors_info_title_lbl, R.string.changehead_hoh_minors_left_warning_lbl, new DialogFactory.OnYesNoClickListener() {
                 @Override
                 public void onYesClicked() {
@@ -972,7 +981,7 @@ Log.d("firstLast", "id="+newHeadLastRelationship.id);
             Member m = boxMembers.query(Member_.code.equal(residency.memberCode)).build().findFirst();
             if (m != null) {
                 Log.d("member-test", ""+m.code+", age="+m.age+", minhead="+minimunHeadAge);
-                if (m.code.equals(headCode)) continue; //exclude the member who died
+                if (m.code.equals(headCode)) continue; //exclude the previous head
 
                 this.onlyMinorsLeftToBeHead = this.onlyMinorsLeftToBeHead && m.age < minimunHeadAge;
 Log.d("member-tested", ""+onlyMinorsLeftToBeHead);
@@ -980,6 +989,27 @@ Log.d("member-tested", ""+onlyMinorsLeftToBeHead);
 
             }
         }
+    }
+
+    private boolean hasOnlyMinorsLeft(Member... excludedMember) {
+        List<Residency> houseResidents = boxResidencies.query(Residency_.householdCode.equal(household.code).and(Residency_.endType.equal(ResidencyEndType.NOT_APPLICABLE.code))).orderDesc(Residency_.startDate).build().find();
+
+        List<String> memberCodes = Arrays.stream(excludedMember).map(Member::getCode).collect(Collectors.toList());
+
+        boolean minorsLeft = !houseResidents.isEmpty();
+        for (Residency residency : houseResidents) {
+            Member m = boxMembers.query(Member_.code.equal(residency.memberCode)).build().findFirst();
+            if (m != null) {
+                if (memberCodes.contains(m.code)) continue; //exclude the previous head
+
+                minorsLeft = minorsLeft && m.age < minimunHeadAge;
+
+                if (!minorsLeft) return false;
+
+            }
+        }
+
+        return minorsLeft;
     }
 
 }

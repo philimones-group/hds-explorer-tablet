@@ -18,7 +18,7 @@ android {
         applicationId "org.philimone.hds.explorer"
         minSdk 21
         targetSdk 35
-        versionCode 409
+        versionCode 412
         versionName "1.1.4 build ${versionCode}"
 
         def cleanVersionName = versionName.replaceAll('\\s', '_')

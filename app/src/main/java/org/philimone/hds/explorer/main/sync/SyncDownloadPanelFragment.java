@@ -6,7 +6,6 @@ import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 import io.objectbox.Box;
 import mz.betainteractive.utilities.DateUtil;
-import mz.betainteractive.utilities.StringUtil;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -50,7 +49,7 @@ import static org.philimone.hds.explorer.model.enums.SyncEntity.PARAMETERS;
 import static org.philimone.hds.explorer.model.enums.SyncEntity.PREGNANCY_OUTCOMES;
 import static org.philimone.hds.explorer.model.enums.SyncEntity.PREGNANCY_REGISTRATIONS;
 import static org.philimone.hds.explorer.model.enums.SyncEntity.PREGNANCY_VISITS;
-import static org.philimone.hds.explorer.model.enums.SyncEntity.PROXY_HEADS;
+import static org.philimone.hds.explorer.model.enums.SyncEntity.HOUSEHOLD_PROXY_HEADS;
 import static org.philimone.hds.explorer.model.enums.SyncEntity.REGIONS;
 import static org.philimone.hds.explorer.model.enums.SyncEntity.REGION_HEADS;
 import static org.philimone.hds.explorer.model.enums.SyncEntity.RESIDENCIES;
@@ -239,7 +238,7 @@ public class SyncDownloadPanelFragment extends Fragment implements SyncPanelItem
         SyncReport pregnancyvisits = Queries.getSyncReportBy(boxSyncReports, PREGNANCY_VISITS);
         SyncReport deaths = Queries.getSyncReportBy(boxSyncReports, DEATHS);
         SyncReport regionheads = Queries.getSyncReportBy(boxSyncReports, REGION_HEADS);
-        SyncReport proxyheads = Queries.getSyncReportBy(boxSyncReports, PROXY_HEADS);
+        SyncReport proxyheads = Queries.getSyncReportBy(boxSyncReports, HOUSEHOLD_PROXY_HEADS);
         //setting general status - if one block is bad general is bad
 
         //settings
@@ -350,7 +349,7 @@ public class SyncDownloadPanelFragment extends Fragment implements SyncPanelItem
 
     private void syncHouseholdDatasets() {
         householdsDatasetsSyncFragment.cleanProgress();
-        SyncEntitiesTask syncEntitiesTask = new SyncEntitiesTask(this.getContext(), this.householdsDatasetsSyncFragment, serverUrl, username, password, ROUNDS, REGIONS, HOUSEHOLDS, MEMBERS, RESIDENCIES, REGION_HEADS, PROXY_HEADS);
+        SyncEntitiesTask syncEntitiesTask = new SyncEntitiesTask(this.getContext(), this.householdsDatasetsSyncFragment, serverUrl, username, password, ROUNDS, REGIONS, HOUSEHOLDS, MEMBERS, RESIDENCIES, REGION_HEADS, HOUSEHOLD_PROXY_HEADS);
         syncEntitiesTask.execute();
     }
 

@@ -43,7 +43,6 @@ import org.philimone.hds.explorer.model.Round;
 import org.philimone.hds.explorer.model.SyncReport;
 import org.philimone.hds.explorer.model.User;
 import org.philimone.hds.explorer.model.Visit;
-import org.philimone.hds.explorer.model.converters.HouseholdTypeConverter;
 import org.philimone.hds.explorer.model.converters.IllnessSymptomsCollectionConverter;
 import org.philimone.hds.explorer.model.converters.MapStringConverter;
 import org.philimone.hds.explorer.model.converters.StringCollectionConverter;
@@ -59,7 +58,6 @@ import org.philimone.hds.explorer.model.enums.HeadRelationshipType;
 import org.philimone.hds.explorer.model.enums.HealthcareProviderType;
 import org.philimone.hds.explorer.model.enums.HouseholdInstitutionType;
 import org.philimone.hds.explorer.model.enums.HouseholdType;
-import org.philimone.hds.explorer.model.enums.IllnessSymptoms;
 import org.philimone.hds.explorer.model.enums.ImmunizationStatus;
 import org.philimone.hds.explorer.model.enums.MaritalEndStatus;
 import org.philimone.hds.explorer.model.enums.MaritalStartStatus;
@@ -359,7 +357,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 			case REGION_HEADS:
 				builder.append(" " + mContext.getString(R.string.sync_regionheads_lbl));
 				break;
-			case PROXY_HEADS:
+			case HOUSEHOLD_PROXY_HEADS:
 				builder.append(" " + mContext.getString(R.string.sync_proxyheads_lbl));
 				break;
 		}
@@ -523,7 +521,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 						this.boxRegionHeadRelationships.removeAll();
 						processUrl(appUrl + suffixFilePath, "regionheads.zip");
 						break;
-					case PROXY_HEADS:
+					case HOUSEHOLD_PROXY_HEADS:
 						this.boxHouseholdProxyHeads.removeAll();
 						processUrl(appUrl + suffixFilePath, "proxyheads.zip");
 						break;
@@ -4664,7 +4662,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 	private void processHouseholdProxyHeads(XmlPullParser parser) throws Exception {
 
 		//clear sync_report
-		updateSyncReport(SyncEntity.PROXY_HEADS, null, SyncStatus.STATUS_NOT_SYNCED);
+		updateSyncReport(SyncEntity.HOUSEHOLD_PROXY_HEADS, null, SyncStatus.STATUS_NOT_SYNCED);
 
 		List<HouseholdProxyHead> values = new ArrayList<>();
 		int count = 0;
@@ -4810,7 +4808,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 		savedValues.put(entity, count);
 		publishProgress(count);
 
-		updateSyncReport(SyncEntity.PROXY_HEADS, new Date(), SyncStatus.STATUS_SYNCED);
+		updateSyncReport(SyncEntity.HOUSEHOLD_PROXY_HEADS, new Date(), SyncStatus.STATUS_SYNCED);
 	}
 
 	//Helpers
@@ -4930,7 +4928,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 				case PREGNANCY_VISITS: downloadedEntity = mContext.getString(R.string.sync_pregnancy_visits_lbl); 	  break;
 				case DEATHS:           downloadedEntity = mContext.getString(R.string.sync_deaths_lbl); break;
 				case REGION_HEADS:     downloadedEntity = mContext.getString(R.string.sync_regionheads_lbl); break;
-				case PROXY_HEADS:      downloadedEntity = mContext.getString(R.string.sync_proxyheads_lbl); break;
+				case HOUSEHOLD_PROXY_HEADS:      downloadedEntity = mContext.getString(R.string.sync_proxyheads_lbl); break;
 			}
 
 			boolean error = mapStatuses.get(entity)==SyncStatus.STATUS_SYNC_ERROR;
@@ -4979,7 +4977,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 				case PREGNANCY_VISITS:       downloadedEntity = mContext.getString(R.string.sync_pregnancy_visits_lbl); 	  break;
 				case DEATHS:         downloadedEntity = mContext.getString(R.string.sync_deaths_lbl); break;
 				case REGION_HEADS:        downloadedEntity = mContext.getString(R.string.sync_regionheads_lbl); break;
-				case PROXY_HEADS:         downloadedEntity = mContext.getString(R.string.sync_proxyheads_lbl); break;
+				case HOUSEHOLD_PROXY_HEADS:         downloadedEntity = mContext.getString(R.string.sync_proxyheads_lbl); break;
 			}
 
 			boolean error = mapStatuses.get(entity)==SyncStatus.STATUS_SYNC_ERROR;

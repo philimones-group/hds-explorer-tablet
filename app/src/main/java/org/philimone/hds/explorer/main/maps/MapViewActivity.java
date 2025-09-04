@@ -3,38 +3,33 @@ package org.philimone.hds.explorer.main.maps;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.animation.AnimatorListenerAdapter;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.TextView;
 
+import com.mapbox.common.MapboxOptions;
 import com.mapbox.maps.MapView;
-import com.mapbox.maps.MapboxMap;
-import com.mapbox.maps.ResourceOptionsManager;
 import com.mapbox.maps.Style;
-import com.mapbox.maps.TileStoreUsageMode;
-import com.mapbox.maps.extension.style.StyleExtensionImpl;
-import com.mapbox.maps.extension.style.layers.generated.SymbolLayer;
 import com.mapbox.maps.extension.style.layers.properties.generated.TextAnchor;
+import com.mapbox.maps.plugin.Plugin;
+import com.mapbox.maps.plugin.animation.MapAnimationOptions;
 import com.mapbox.maps.plugin.annotation.AnnotationConfig;
 import com.mapbox.maps.plugin.annotation.AnnotationPlugin;
-import com.mapbox.maps.plugin.annotation.AnnotationPluginImplKt;
 import com.mapbox.maps.plugin.annotation.generated.PointAnnotationManager;
 import com.mapbox.maps.plugin.annotation.generated.PointAnnotationManagerKt;
 import com.mapbox.maps.plugin.annotation.generated.PointAnnotationOptions;
-import com.mapbox.maps.plugin.animation.*;
+import com.mapbox.maps.plugin.animation.CameraAnimationsPlugin;
+import com.mapbox.maps.plugin.animation.CameraAnimationsUtils;
 import com.mapbox.maps.CameraOptions;
 
+import org.philimone.hds.explorer.BuildConfig;
 import org.philimone.hds.explorer.R;
 
-import java.lang.annotation.Annotation;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
 
 public class MapViewActivity extends AppCompatActivity {
 
@@ -45,6 +40,7 @@ public class MapViewActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        MapboxOptions.INSTANCE.setAccessToken(BuildConfig.MAPBOX_HDS_EXPLORER_TOKEN);
 
         setContentView(R.layout.map_view);
         this.txtPageTitle = findViewById(R.id.txtPageTitle);
@@ -52,7 +48,7 @@ public class MapViewActivity extends AppCompatActivity {
 
         initialize();
 
-        this.mapView.getMapboxMap().loadStyleUri(Style.MAPBOX_STREETS, new Style.OnStyleLoaded() {
+        this.mapView.getMapboxMap().loadStyle(Style.MAPBOX_STREETS, new Style.OnStyleLoaded() {
             @Override
             public void onStyleLoaded(@NonNull Style style) {
                 showMarkers();
@@ -105,8 +101,17 @@ public class MapViewActivity extends AppCompatActivity {
         Log.d("bitmap", bitmapHouse+"");
         if (this.markersList != null) {
 
-            AnnotationPlugin annotationApi = AnnotationPluginImplKt.getAnnotations(this.mapView);
-            PointAnnotationManager pointAnnotationManager = PointAnnotationManagerKt.createPointAnnotationManager(annotationApi, new AnnotationConfig());
+            // ✅ v11 way: get AnnotationPlugin from MapView (Java: AnnotationsKt.getAnnotations)
+            AnnotationPlugin annotationPlugin = (AnnotationPlugin) mapView.getPlugin(Plugin.MAPBOX_ANNOTATION_PLUGIN_ID);
+            if (annotationPlugin == null) {
+                Log.e("MapViewActivity", "AnnotationPlugin not available on MapView");
+                return;
+            }
+
+            PointAnnotationManager pointAnnotationManager = PointAnnotationManagerKt.createPointAnnotationManager(annotationPlugin, new AnnotationConfig());
+
+
+            //PointAnnotationManager pointAnnotationManager = PointAnnotationManagerKt.createPointAnnotationManager(mapView, new AnnotationConfig());
 
             for (MapMarker marker : this.markersList) {
 
@@ -146,7 +151,7 @@ public class MapViewActivity extends AppCompatActivity {
                     .build();
 
             final CameraAnimationsPlugin camera = CameraAnimationsUtils.getCamera(mapView);
-            camera.easeTo(cameraPosition, new MapAnimationOptions.Builder().duration(4000).build());
+            camera.easeTo(cameraPosition, new MapAnimationOptions.Builder().duration(4000).build(), null);
 
         }
     }

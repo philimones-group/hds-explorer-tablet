@@ -3,7 +3,7 @@ apply plugin: 'com.android.application'
 //apply plugin: 'io.objectbox'
 
 android {
-    namespace "org.philimone.hds.explorer"
+    namespace = "org.philimone.hds.explorer"
 
     signingConfigs {
         config {
@@ -13,26 +13,36 @@ android {
             storePassword 'android47jks'
         }
     }
-    compileSdk 35
+    compileSdk = 35
     defaultConfig {
         applicationId "org.philimone.hds.explorer"
-        minSdk 21
-        targetSdk 35
-        versionCode 412
+        minSdk = 21
+        targetSdk = 35
+        versionCode 415
         versionName "1.1.4 build ${versionCode}"
-
-        def cleanVersionName = versionName.replaceAll('\\s', '_')
-        def buildSite = project.hasProperty("HDS_EXPLORER_SITE") ? "${project.properties["HDS_EXPLORER_SITE"]}" : ""
-
-        archivesBaseName = "$applicationName-v${cleanVersionName}${buildSite ?: ''}"
 
         // Required when setting minSdkVersion to 20 or lower
         //multiDexEnabled true
+
+        // Ship only 64-bit; this satisfies Play’s 64-bit requirement
+        //comment this when building apk for the github repo, on google play we must have this to ensure 16KB page size compatibility
+        /*ndk {
+            abiFilters "arm64-v8a", "x86_64"
+        }*/
+    }
+
+    ndkVersion "28.2.13676358"
+
+    base {
+        def cleanVersionName = android.defaultConfig.versionName.replaceAll('\\s', '_')
+        def buildSite = project.hasProperty("HDS_EXPLORER_SITE") ? "${project.properties["HDS_EXPLORER_SITE"]}" : ""
+
+        archivesName = "$applicationName-v${cleanVersionName}${buildSite ?: ''}"
     }
     buildTypes {
         release {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.config
+            signingConfig = signingConfigs.config
             //debuggable true
             //get the default app url from global gradle properties
             buildConfigField "String", "HDS_EXPLORER_APP_URL", "\"${project.hasProperty("HDS_EXPLORER_APP_URL") ? project.properties["HDS_EXPLORER_APP_URL"].toString() : ""}\""
@@ -45,9 +55,12 @@ android {
 
             buildConfigField "String",  "MINIMUM_SUPPORTED_SERVER_VERSION", "\"$appServerVersion\""
             buildConfigField "Integer", "MINIMUM_SUPPORTED_SERVER_VERSION_CODE", "$appServerVersionCode"
+
+            buildConfigField "String", "MAPBOX_HDS_EXPLORER_TOKEN", "\"${providers.gradleProperty("MAPBOX_HDS_EXPLORER_TOKEN").orNull ?: System.getenv("MAPBOX_HDS_EXPLORER_TOKEN")}\""
+
         }
         debug {
-            signingConfig signingConfigs.config
+            signingConfig = signingConfigs.config
             debuggable true
 
             buildConfigField "String", "HDS_EXPLORER_APP_URL", "\"${project.hasProperty("HDS_EXPLORER_APP_URL") ? project.properties["HDS_EXPLORER_APP_URL"].toString() : ""}\""
@@ -60,24 +73,26 @@ android {
 
             buildConfigField "String",  "MINIMUM_SUPPORTED_SERVER_VERSION", "\"$appServerVersion\""
             buildConfigField "Integer", "MINIMUM_SUPPORTED_SERVER_VERSION_CODE", "$appServerVersionCode"
+
+            buildConfigField "String", "MAPBOX_HDS_EXPLORER_TOKEN", "\"${providers.gradleProperty("MAPBOX_HDS_EXPLORER_TOKEN").orNull ?: System.getenv("MAPBOX_HDS_EXPLORER_TOKEN")}\""
         }
     }
     productFlavors {
     }
     compileOptions {
         // Flag to enable support for the new language APIs - to enable java 8 new features on android < 24
-        coreLibraryDesugaringEnabled true
+        coreLibraryDesugaringEnabled = true
 
         sourceCompatibility JavaVersion.VERSION_11
         targetCompatibility JavaVersion.VERSION_11
     }
     lint {
-        abortOnError false
-        checkReleaseBuilds false
+        abortOnError = false
+        checkReleaseBuilds = false
     }
-    namespace 'org.philimone.hds.explorer'
+    namespace = 'org.philimone.hds.explorer'
     buildFeatures {
-        buildConfig true
+        buildConfig = true
     }
 }
 
@@ -103,10 +118,9 @@ dependencies {
     implementation 'org.apache.commons:commons-jexl3:3.2.1'
 
     //mapbox
-    implementation ('com.mapbox.maps:android:10.16.1'){
-        exclude group: 'group_name', module: 'module_name'
-    }
-    implementation 'com.mapbox.base:annotations:0.8.0'
+    implementation ('com.mapbox.maps:android-ndk27:11.14.4')
+    //implementation 'com.mapbox.base:annotations:0.8.0'
+    //implementation "com.mapbox.common:mapbox-common-android-ndk27:11.14.4"
 
     //deps that were in another tag
     implementation 'androidx.appcompat:appcompat:1.7.1'

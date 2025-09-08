@@ -40,7 +40,6 @@ public class MapViewActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        MapboxOptions.INSTANCE.setAccessToken(BuildConfig.MAPBOX_HDS_EXPLORER_TOKEN);
 
         setContentView(R.layout.map_view);
         this.txtPageTitle = findViewById(R.id.txtPageTitle);

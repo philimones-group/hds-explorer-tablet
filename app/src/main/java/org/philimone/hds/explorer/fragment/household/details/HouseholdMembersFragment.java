@@ -224,6 +224,7 @@ public class HouseholdMembersFragment extends Fragment {
         List<Member> members = Queries.getHouseholdMembers(boxResidencies, boxMembers, household.getCode());
 
         MemberAdapter adapter = new MemberAdapter(this.getContext(), members);
+        adapter.setCurrentHousehold(household);
         adapter.setShowHouseholdHeadIcon(true);
         adapter.setShowExtraDetails(true);
         adapter.setShowMemberDetails(true);

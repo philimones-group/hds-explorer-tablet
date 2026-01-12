@@ -16,13 +16,18 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import org.philimone.hds.explorer.R;
 import org.philimone.hds.explorer.database.Bootstrap;
+import org.philimone.hds.explorer.database.ObjectBoxDatabase;
+import org.philimone.hds.explorer.model.Household;
 import org.philimone.hds.explorer.model.Member;
+import org.philimone.hds.explorer.model.Residency;
+import org.philimone.hds.explorer.model.Residency_;
 import org.philimone.hds.explorer.model.enums.temporal.ResidencyEndType;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import io.objectbox.Box;
 import mz.betainteractive.utilities.DateUtil;
 import mz.betainteractive.utilities.StringUtil;
 
@@ -34,6 +39,7 @@ public class MemberAdapter extends RecyclerView.Adapter<MemberAdapter.MemberView
     private Context mContext;
     private @LayoutRes int layoutResourceId;
     private int selectedIndex = -1;
+    private Household currentHousehold;
     private boolean showHouseholdHeadIcon = true;
     private boolean showHouseholdAndCode = false;
     private boolean showMemberCodeWithHousehold = false;
@@ -43,8 +49,10 @@ public class MemberAdapter extends RecyclerView.Adapter<MemberAdapter.MemberView
     boolean showEndTypeCode = false; //put as general variable
     boolean showResidencyStatus = false; //put as general variable
     private MemberIcon memberIcon;
+    private Box<Residency> boxResidencies = ObjectBoxDatabase.get().boxFor(Residency.class);
 
     private DateUtil dateUtil = Bootstrap.getDateUtil();
+
 
     public enum MemberIcon {NORMAL_MEMBER_ICON, NORMAL_MEMBER_CHECKED_ICON, NORMAL_HEAD_ICON, NORMAL_SECHEAD_ICON, NORMAL_MEMBER_NEW_ICON, NORMAL_HEAD_NEW_ICON}
 
@@ -135,6 +143,10 @@ public class MemberAdapter extends RecyclerView.Adapter<MemberAdapter.MemberView
 
     private int getPosition(Member member) {
         return members.indexOf(member);
+    }
+
+    public void setCurrentHousehold(Household household) {
+        this.currentHousehold = household;
     }
 
     public List<Member> getMembers(){
@@ -278,8 +290,16 @@ public class MemberAdapter extends RecyclerView.Adapter<MemberAdapter.MemberView
             if (showResidencyStatus) {
                 nameText = mb.getName();
                 codeText = mb.getCode() + "  [" + memberDetailsText + "]";
-                extrasText = mContext.getString(R.string.household_details_members_item_status_lbl) + " "+ getEndTypeMsg(mb) + ", ";
-                extrasText += mContext.getString(R.string.household_details_members_item_since_lbl) + " " + getEndDateMsg(mb);
+
+                if (currentHousehold != null) {
+                    Residency lastRes = getLastResidencyRecord(currentHousehold, mb);
+                    extrasText = mContext.getString(R.string.household_details_members_item_status_lbl) + " " + getEndTypeMsg(lastRes.endType) + ", ";
+                    extrasText += mContext.getString(R.string.household_details_members_item_since_lbl) + " " + getEndDateMsg(lastRes);
+                } else {
+
+                    extrasText = mContext.getString(R.string.household_details_members_item_status_lbl) + " " + getEndTypeMsg(mb.endType) + ", ";
+                    extrasText += mContext.getString(R.string.household_details_members_item_since_lbl) + " " + getEndDateMsg(mb);
+                }
             }
 
             if (showMemberCodeWithHousehold) {
@@ -366,10 +386,13 @@ public class MemberAdapter extends RecyclerView.Adapter<MemberAdapter.MemberView
         }
     }
 
-    private String getEndTypeMsg(Member member){
-        if (member.getEndType() == ResidencyEndType.NOT_APPLICABLE) return mContext.getString(R.string.member_details_endtype_na_lbl);
-        if (member.getEndType() == ResidencyEndType.EXTERNAL_OUTMIGRATION) return mContext.getString(R.string.member_details_endtype_ext_lbl);
-        if (member.getEndType() == ResidencyEndType.DEATH) return mContext.getString(R.string.member_details_endtype_dth_lbl);
+    private Residency getLastResidencyRecord(Household household, Member member) {
+        return boxResidencies.query(Residency_.householdCode.equal(household.code).and(Residency_.memberCode.equal(member.code))).orderDesc(Residency_.startDate).build().findFirst();
+    }
+    private String getEndTypeMsg(ResidencyEndType residencyEndType){
+        if (residencyEndType == ResidencyEndType.NOT_APPLICABLE) return mContext.getString(R.string.member_details_endtype_na_lbl);
+        if (residencyEndType == ResidencyEndType.EXTERNAL_OUTMIGRATION || residencyEndType == ResidencyEndType.INTERNAL_OUTMIGRATION) return mContext.getString(R.string.member_details_endtype_ext_lbl);
+        if (residencyEndType == ResidencyEndType.DEATH) return mContext.getString(R.string.member_details_endtype_dth_lbl);
 
         return mContext.getString(ResidencyEndType.INVALID_ENUM.name);
     }
@@ -380,6 +403,14 @@ public class MemberAdapter extends RecyclerView.Adapter<MemberAdapter.MemberView
             date = member.getStartDate();
         }
 
+        return dateUtil.formatYMD(date);
+    }
+
+    private String getEndDateMsg(Residency memberResidency){
+        Date date = memberResidency.endDate;
+        if (memberResidency.endType == ResidencyEndType.NOT_APPLICABLE) {
+            date = memberResidency.startDate;
+        }
         return dateUtil.formatYMD(date);
     }
 }

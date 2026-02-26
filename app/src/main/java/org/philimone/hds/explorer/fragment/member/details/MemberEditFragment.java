@@ -399,6 +399,16 @@ public class MemberEditFragment extends Fragment {
             return;
         }
 
+        boolean changedName = !this.member.name.equals(this.txtEditName.getText().toString());
+        boolean changedGender = this.member.gender != (chkEditGMale.isChecked() ? Gender.MALE : Gender.FEMALE);
+        boolean changedDob = selectedDob != null && !selectedDob.equals(this.member.dob);
+        boolean changedFatherCode = !this.member.fatherCode.equals(txtEditFatherCode.getText().toString());
+        boolean changedFatherName = !this.member.fatherName.equals(txtEditFatherName.getText().toString());
+        boolean changedMotherCode = !this.member.motherCode.equals(txtEditMotherCode.getText().toString());
+        boolean changedMotherName = !this.member.motherName.equals(txtEditMotherName.getText().toString());
+        boolean changedPhonePrimary = !this.member.phonePrimary.equals(txtEditPhonePrimary.getText().toString());
+        boolean changedPhoneAlternative = !this.member.phoneAlternative.equals(txtEditPhoneAlternative.getText().toString());
+
         //persist the changes into the database
         this.member.name = this.txtEditName.getText().toString();
         this.member.gender = chkEditGMale.isChecked() ? Gender.MALE : Gender.FEMALE;
@@ -411,7 +421,7 @@ public class MemberEditFragment extends Fragment {
         this.member.phoneAlternative = txtEditPhoneAlternative.getText().toString();
         this.boxMembers.put(this.member);
 
-        updateAffectedRecords(member);
+        updateAffectedRecords(member, changedName, changedDob);
 
         //create xml mapped columns
         Map<String,String> mapXml = new LinkedHashMap<>();
@@ -458,40 +468,46 @@ public class MemberEditFragment extends Fragment {
         }).show();
     }
 
-    private void updateAffectedRecords(Member member) {
+    private void updateAffectedRecords(Member member, boolean changedName, boolean changedDob) {
         //Update Household.(headName)
         //Update Member.(fatherName, motherName, spouseName)
 
-        List<Household> households = this.boxHouseholds.query(Household_.headCode.equal(member.code)).build().find();
-        List<Member> members = this.boxMembers.query(Member_.fatherCode.equal(member.code)
-                                                 .or(Member_.motherCode.equal(member.code)
-                                                 .or(Member_.spouseCode.equal(member.code)))).build().find();
+        if (changedName) {
+            List<Household> households = this.boxHouseholds.query(Household_.headCode.equal(member.code)).build().find();
+            if (!households.isEmpty()) {
+                for (Household h : households) {
+                    h.headName = member.name;
+                }
+                this.boxHouseholds.put(households);
+            }
 
-        for (Household h : households) {
-            h.headName = member.name;
+            List<Member> members = this.boxMembers.query(Member_.fatherCode.equal(member.code).or(Member_.motherCode.equal(member.code)
+                    .or(Member_.spouseCode.equal(member.code)))).build().find();
+            if (!members.isEmpty()) {
+                for (Member m : members) {
+                    if (m.fatherCode.equals(member.fatherCode)) m.fatherName = member.name;
+                    if (m.motherCode.equals(member.motherCode)) m.motherName = member.name;
+                    if (m.spouseCode.equals(member.spouseCode)) m.spouseName = member.name;
+                }
+                this.boxMembers.put(members);
+            }
         }
-
-        for (Member m : members){
-            if (m.fatherCode.equals(member.fatherCode)) m.fatherName = member.name;
-            if (m.motherCode.equals(member.motherCode)) m.motherName = member.name;
-            if (m.spouseCode.equals(member.spouseCode)) m.spouseName = member.name;
-        }
-
-        this.boxHouseholds.put(households);
-        this.boxMembers.put(members);
 
         //Update residency startDate / membership start date if necessary
-        Residency residency = this.boxResidencies.query(Residency_.memberCode.equal(member.code).and(Residency_.startType.equal(ResidencyStartType.BIRTH.code))).order(Residency_.startDate).build().findFirst();
-        HeadRelationship headRelationship = this.boxHeadRelationships.query(HeadRelationship_.memberCode.equal(member.code).and(HeadRelationship_.startType.equal(HeadRelationshipStartType.BIRTH.code))).order(HeadRelationship_.startDate).build().findFirst();
+        if (changedDob) {
+            ObjectBoxDatabase.get().runInTx(() -> {
+                Residency residency = this.boxResidencies.query(Residency_.memberCode.equal(member.code).and(Residency_.startType.equal(ResidencyStartType.BIRTH.code))).order(Residency_.startDate).build().findFirst();
+                if (residency != null) {
+                    residency.startDate = member.dob;
+                    this.boxResidencies.put(residency);
+                }
 
-        if (residency != null){
-            residency.startDate = member.dob;
-            this.boxResidencies.put(residency);
-        }
-
-        if (headRelationship != null) {
-            headRelationship.startDate = member.dob;
-            this.boxHeadRelationships.put(headRelationship);
+                HeadRelationship headRelationship = this.boxHeadRelationships.query(HeadRelationship_.memberCode.equal(member.code).and(HeadRelationship_.startType.equal(HeadRelationshipStartType.BIRTH.code))).order(HeadRelationship_.startDate).build().findFirst();
+                if (headRelationship != null) {
+                    headRelationship.startDate = member.dob;
+                    this.boxHeadRelationships.put(headRelationship);
+                }
+            });
         }
     }
 

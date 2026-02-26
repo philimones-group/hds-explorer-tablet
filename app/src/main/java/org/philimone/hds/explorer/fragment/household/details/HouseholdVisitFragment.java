@@ -787,11 +787,12 @@ public class HouseholdVisitFragment extends Fragment {
 
         if (household == null) return;
 
-        /*List<Member> members = this.boxMembers.query().equal(Member_.householdCode, household.getCode(), QueryBuilder.StringOrder.CASE_SENSITIVE)
+        List<Member> members = this.boxMembers.query().equal(Member_.householdCode, household.getCode(), QueryBuilder.StringOrder.CASE_SENSITIVE)
                                                       .equal(Member_.endType, ResidencyEndType.NOT_APPLICABLE.code, QueryBuilder.StringOrder.CASE_SENSITIVE)
-                                                      .build().find();*/
+                                                      .build().find();
 
-        List<Member> members = Queries.getHouseholdResidents(boxResidencies, boxMembers, household.getCode());
+        //TESTING BY REMOVE THIS - BECAUSE I GUARANTEE FROM THE SERVER THAT MEMBER HAS THE MOST RECENT RESIDENCY STATUS
+        //List<Member> members = Queries.getHouseholdResidents(boxResidencies, boxMembers, household.getCode());
 
         MemberAdapter adapter = new MemberAdapter(this.getContext(), R.layout.household_visit_member_item, members);
         adapter.setShowExtraDetails(true);

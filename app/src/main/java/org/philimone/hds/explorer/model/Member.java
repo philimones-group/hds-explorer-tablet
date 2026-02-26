@@ -273,6 +273,7 @@ public class Member implements CoreEntity, FormSubject, Serializable {
 
     public void setGpsAccuracy(Double gpsAccuracy) {
         this.gpsAccuracy = gpsAccuracy;
+        if (gpsAccuracy == null) gpsNull = true;
     }
 
     public Double getGpsAltitude() {
@@ -281,6 +282,7 @@ public class Member implements CoreEntity, FormSubject, Serializable {
 
     public void setGpsAltitude(Double gpsAltitude) {
         this.gpsAltitude = gpsAltitude;
+        if (gpsAltitude == null) gpsNull = true;
     }
 
     public Double getGpsLatitude() {
@@ -289,6 +291,12 @@ public class Member implements CoreEntity, FormSubject, Serializable {
 
     public void setGpsLatitude(Double gpsLatitude) {
         this.gpsLatitude = gpsLatitude;
+        if (gpsLatitude == null) {
+            gpsNull = true;
+        } else {
+            setCosLatitude(Math.cos(getGpsLatitude() * Math.PI / 180.0)); // cos_lat = cos(lat * PI / 180)
+            setSinLatitude(Math.sin(getGpsLatitude() * Math.PI / 180.0)); // sin_lat = sin(lat * PI / 180)
+        }
     }
 
     public Double getGpsLongitude() {
@@ -297,6 +305,12 @@ public class Member implements CoreEntity, FormSubject, Serializable {
 
     public void setGpsLongitude(Double gpsLongitude) {
         this.gpsLongitude = gpsLongitude;
+        if (gpsLongitude == null) {
+            gpsNull = true;
+        } else {
+            setCosLongitude(Math.cos(getGpsLongitude() * Math.PI / 180.0)); // cos_lng = cos(lng * PI / 180)
+            setSinLongitude(Math.sin(getGpsLongitude() * Math.PI / 180.0)); // sin_lng = sin(lng * PI / 180)
+        }
     }
 
     public Double getCosLatitude() {

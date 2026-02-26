@@ -185,10 +185,8 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 	private boolean isRegionHeadSupported;
 	private boolean isDemoDownload;
 	private Map<String, Integer> demoSyncReportMap = new LinkedHashMap<>();
-
-	private StringCollectionConverter stringCollectionConverter = new StringCollectionConverter();
-
-	private CodeGeneratorService codeGeneratorService;
+	
+	private final CodeGeneratorService[] codeGeneratorService = new CodeGeneratorService[]{ null };
 
 	public SyncEntitiesTask(Context context, SyncEntitiesListener listener, String url, String username, String password, SyncEntity... entityToDownload) {
 		this.baseurl = url;
@@ -243,8 +241,8 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 	}
 
 	private void initCodeGeneratorService() {
-		if (this.codeGeneratorService == null) {
-			this.codeGeneratorService = new CodeGeneratorService();
+		if (this.codeGeneratorService[0] == null) {
+			this.codeGeneratorService[0] = new CodeGeneratorService();
 		}
 	}
 
@@ -1650,7 +1648,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 			parser.nextTag(); //process modules
 			if (!isEmptyTag("modules", parser)) {
 				parser.next();
-				table.setModules(stringCollectionConverter.getCollectionFrom(parser.getText()));
+				table.setModules(StringCollectionConverter.getCollectionFrom(parser.getText()));
 				parser.nextTag(); //process </modules>
 				//Log.d(count+"-modules", "value="+ parser.getText());
 			}else{
@@ -2043,7 +2041,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 			parser.nextTag(); //process modules
 			if (!isEmptyTag("modules", parser)) {
 				parser.next();
-				table.setModules(stringCollectionConverter.getCollectionFrom(parser.getText()));
+				table.setModules(StringCollectionConverter.getCollectionFrom(parser.getText()));
 				parser.nextTag(); //process </modules>
 				//Log.d(count+"-modules", "value="+ parser.getText());
 			}else{
@@ -2165,7 +2163,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 				trackingList.setName(trlName);
 				trackingList.setDetails(trlDetails);
 				trackingList.setTitle(trlTitle);
-				trackingList.setModules(stringCollectionConverter.getCollectionFrom(trlModules));
+				trackingList.setModules(StringCollectionConverter.getCollectionFrom(trlModules));
 				trackingList.setCompletionRate(0D);
 
 				trackingId = this.boxTrackingLists.put(trackingList); //insert on db
@@ -2348,7 +2346,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 			parser.nextTag(); //process modules
 			if (!isEmptyTag("modules", parser)) {
 				parser.next();
-				table.setModules(stringCollectionConverter.getCollectionFrom(parser.getText()));
+				table.setModules(StringCollectionConverter.getCollectionFrom(parser.getText()));
 				parser.nextTag(); //process </modules>
 				//Log.d(count+"-modules", "value="+ parser.getText());
 			}else{
@@ -2444,7 +2442,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 			parser.nextTag(); //process modules
 			if (!isEmptyTag("modules", parser)) {
 				parser.next();
-				table.setModules(stringCollectionConverter.getCollectionFrom(parser.getText()));
+				table.setModules(StringCollectionConverter.getCollectionFrom(parser.getText()));
 				parser.nextTag(); //process </modules>
 				//Log.d(count+"-modules", "value="+ parser.getText());
 			}else{
@@ -2480,327 +2478,325 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 		updateSyncReport(SyncEntity.HOUSEHOLDS, null, SyncStatus.STATUS_NOT_SYNCED);
 
 		List<Household> values = new ArrayList<>();
-		int count = 0;
+		int[] count = {0};
 		values.clear();
 
 		parser.nextTag();
 
-		while (notEndOfTag("households", parser)) {
-			count++;
+		ObjectBoxDatabase.get().runInTx(() -> {
+			try {
+				while (notEndOfTag("households", parser)) {
+					count[0]++;
 
-			Household table = new Household();
+					Household table = new Household();
 
-            parser.nextTag(); //process <code>
-            if (!isEmptyTag("code", parser)) {
-                parser.next();
-                table.setCode(parser.getText());
-                parser.nextTag(); //process </code>
-            }else{
-                table.setCode("");
-                parser.nextTag();
-            }
+					parser.nextTag(); //process <code>
+					if (!isEmptyTag("code", parser)) {
+						parser.next();
+						table.setCode(parser.getText());
+						parser.nextTag(); //process </code>
+					} else {
+						table.setCode("");
+						parser.nextTag();
+					}
 
-			parser.nextTag(); //process <region>
-			if (!isEmptyTag("region", parser)) {
-				parser.next();
-				table.setRegion(parser.getText());
-				parser.nextTag(); //process </region>
-			}else{
-				table.setRegion("");
-				parser.nextTag();
-			}
+					parser.nextTag(); //process <region>
+					if (!isEmptyTag("region", parser)) {
+						parser.next();
+						table.setRegion(parser.getText());
+						parser.nextTag(); //process </region>
+					} else {
+						table.setRegion("");
+						parser.nextTag();
+					}
 
-			parser.nextTag(); //process <type>
-			if (!isEmptyTag("type", parser)) {
-				parser.next();
-				table.type = HouseholdType.getFrom(parser.getText());
-				parser.nextTag(); //process </type>
-			}else{
-				table.type = null;
-				parser.nextTag();
-			}
+					parser.nextTag(); //process <type>
+					if (!isEmptyTag("type", parser)) {
+						parser.next();
+						table.type = HouseholdType.getFrom(parser.getText());
+						parser.nextTag(); //process </type>
+					} else {
+						table.type = null;
+						parser.nextTag();
+					}
 
-			parser.nextTag(); //process <institutionType>
-			if (!isEmptyTag("institutionType", parser)) {
-				parser.next();
-				table.institutionType = HouseholdInstitutionType.getFrom(parser.getText());
-				parser.nextTag(); //process </institutionType>
-			}else{
-				table.institutionType = null;
-				parser.nextTag();
-			}
+					parser.nextTag(); //process <institutionType>
+					if (!isEmptyTag("institutionType", parser)) {
+						parser.next();
+						table.institutionType = HouseholdInstitutionType.getFrom(parser.getText());
+						parser.nextTag(); //process </institutionType>
+					} else {
+						table.institutionType = null;
+						parser.nextTag();
+					}
 
-			parser.nextTag(); //process <institutionTypeOther>
-			if (!isEmptyTag("institutionTypeOther", parser)) {
-				parser.next();
-				table.institutionTypeOther = parser.getText();
-				parser.nextTag(); //process </institutionTypeOther>
-			}else{
-				table.institutionTypeOther = "";
-				parser.nextTag();
-			}
+					parser.nextTag(); //process <institutionTypeOther>
+					if (!isEmptyTag("institutionTypeOther", parser)) {
+						parser.next();
+						table.institutionTypeOther = parser.getText();
+						parser.nextTag(); //process </institutionTypeOther>
+					} else {
+						table.institutionTypeOther = "";
+						parser.nextTag();
+					}
 
-            parser.nextTag(); //process <houseNumber>
-            if (!isEmptyTag("name", parser)) {
-                parser.next();
-                table.setName(parser.getText());
-                parser.nextTag(); //process </houseNumber>
-            }else{
-                table.setName("");
-                parser.nextTag();
-            }
+					parser.nextTag(); //process <houseNumber>
+					if (!isEmptyTag("name", parser)) {
+						parser.next();
+						table.setName(parser.getText());
+						parser.nextTag(); //process </houseNumber>
+					} else {
+						table.setName("");
+						parser.nextTag();
+					}
 
-            parser.nextTag(); //process <headCode>
-            if (!isEmptyTag("headCode", parser)) {
-                parser.next();
-                table.setHeadCode(parser.getText());
-                parser.nextTag(); //process </headCode>
-            }else{
-                table.setHeadCode("");
-                parser.nextTag();
-            }
+					parser.nextTag(); //process <headCode>
+					if (!isEmptyTag("headCode", parser)) {
+						parser.next();
+						table.setHeadCode(parser.getText());
+						parser.nextTag(); //process </headCode>
+					} else {
+						table.setHeadCode("");
+						parser.nextTag();
+					}
 
-			parser.nextTag(); //process <headName>
-			if (!isEmptyTag("headName", parser)) {
-				parser.next();
-				table.setHeadName(parser.getText());
-				parser.nextTag(); //process </headName>
-			}else{
-				table.setHeadName("");
-				parser.nextTag();
-			}
+					parser.nextTag(); //process <headName>
+					if (!isEmptyTag("headName", parser)) {
+						parser.next();
+						table.setHeadName(parser.getText());
+						parser.nextTag(); //process </headName>
+					} else {
+						table.setHeadName("");
+						parser.nextTag();
+					}
 
-			parser.nextTag(); //process <proxyHeadType>
-			if (!isEmptyTag("proxyHeadType", parser)) {
-				parser.next();
-				table.proxyHeadType = ProxyHeadType.getFrom(parser.getText());
-				parser.nextTag(); //process </proxyHeadType>
-			}else{
-				table.proxyHeadType = null;
-				parser.nextTag();
-			}
+					parser.nextTag(); //process <proxyHeadType>
+					if (!isEmptyTag("proxyHeadType", parser)) {
+						parser.next();
+						table.proxyHeadType = ProxyHeadType.getFrom(parser.getText());
+						parser.nextTag(); //process </proxyHeadType>
+					} else {
+						table.proxyHeadType = null;
+						parser.nextTag();
+					}
 
-			parser.nextTag(); //process <proxyHeadCode>
-			if (!isEmptyTag("proxyHeadCode", parser)) {
-				parser.next();
-				table.proxyHeadCode = parser.getText();
-				parser.nextTag(); //process </proxyHeadCode>
-			}else{
-				table.proxyHeadCode = "";
-				parser.nextTag();
-			}
+					parser.nextTag(); //process <proxyHeadCode>
+					if (!isEmptyTag("proxyHeadCode", parser)) {
+						parser.next();
+						table.proxyHeadCode = parser.getText();
+						parser.nextTag(); //process </proxyHeadCode>
+					} else {
+						table.proxyHeadCode = "";
+						parser.nextTag();
+					}
 
-			parser.nextTag(); //process <proxyHeadName>
-			if (!isEmptyTag("proxyHeadName", parser)) {
-				parser.next();
-				table.proxyHeadName = parser.getText();
-				parser.nextTag(); //process </proxyHeadName>
-			}else{
-				table.proxyHeadName = "";
-				parser.nextTag();
-			}
+					parser.nextTag(); //process <proxyHeadName>
+					if (!isEmptyTag("proxyHeadName", parser)) {
+						parser.next();
+						table.proxyHeadName = parser.getText();
+						parser.nextTag(); //process </proxyHeadName>
+					} else {
+						table.proxyHeadName = "";
+						parser.nextTag();
+					}
 
-			parser.nextTag(); //process <proxyHeadRole>
-			if (!isEmptyTag("proxyHeadRole", parser)) {
-				parser.next();
-				table.proxyHeadRole = ProxyHeadRole.getFrom(parser.getText());
-				parser.nextTag(); //process </proxyHeadRole>
-			}else{
-				table.proxyHeadRole = null;
-				parser.nextTag();
-			}
+					parser.nextTag(); //process <proxyHeadRole>
+					if (!isEmptyTag("proxyHeadRole", parser)) {
+						parser.next();
+						table.proxyHeadRole = ProxyHeadRole.getFrom(parser.getText());
+						parser.nextTag(); //process </proxyHeadRole>
+					} else {
+						table.proxyHeadRole = null;
+						parser.nextTag();
+					}
 
-            parser.nextTag(); //process <hierarchy1>
-            if (!isEmptyTag("hierarchy1", parser)) {
-                parser.next();
-                table.setHierarchy1(parser.getText());
-                parser.nextTag(); //process </hierarchy1>
-            }else{
-                table.setHierarchy1("");
-                parser.nextTag();
-            }
+					parser.nextTag(); //process <hierarchy1>
+					if (!isEmptyTag("hierarchy1", parser)) {
+						parser.next();
+						table.setHierarchy1(parser.getText());
+						parser.nextTag(); //process </hierarchy1>
+					} else {
+						table.setHierarchy1("");
+						parser.nextTag();
+					}
 
-            parser.nextTag(); //process <hierarchy2>
-            if (!isEmptyTag("hierarchy2", parser)) {
-                parser.next();
-                table.setHierarchy2(parser.getText());
-                parser.nextTag(); //process </hierarchy2>
-            }else{
-                table.setHierarchy2("");
-                parser.nextTag();
-            }
+					parser.nextTag(); //process <hierarchy2>
+					if (!isEmptyTag("hierarchy2", parser)) {
+						parser.next();
+						table.setHierarchy2(parser.getText());
+						parser.nextTag(); //process </hierarchy2>
+					} else {
+						table.setHierarchy2("");
+						parser.nextTag();
+					}
 
-            parser.nextTag(); //process <hierarchy3>
-            if (!isEmptyTag("hierarchy3", parser)) {
-                parser.next();
-                table.setHierarchy3(parser.getText());
-                parser.nextTag(); //process </hierarchy3>
-            }else{
-                table.setHierarchy3("");
-                parser.nextTag();
-            }
+					parser.nextTag(); //process <hierarchy3>
+					if (!isEmptyTag("hierarchy3", parser)) {
+						parser.next();
+						table.setHierarchy3(parser.getText());
+						parser.nextTag(); //process </hierarchy3>
+					} else {
+						table.setHierarchy3("");
+						parser.nextTag();
+					}
 
-            parser.nextTag(); //process <hierarchy4>
-            if (!isEmptyTag("hierarchy4", parser)) {
-                parser.next();
-                table.setHierarchy4(parser.getText());
-                parser.nextTag(); //process </hierarchy4>
-            }else{
-                table.setHierarchy4("");
-                parser.nextTag();
-            }
+					parser.nextTag(); //process <hierarchy4>
+					if (!isEmptyTag("hierarchy4", parser)) {
+						parser.next();
+						table.setHierarchy4(parser.getText());
+						parser.nextTag(); //process </hierarchy4>
+					} else {
+						table.setHierarchy4("");
+						parser.nextTag();
+					}
 
-			parser.nextTag(); //process <hierarchy5>
-			if (!isEmptyTag("hierarchy5", parser)) {
-				parser.next();
-				table.setHierarchy5(parser.getText());
-				parser.nextTag(); //process </hierarchy5>
-			}else{
-				table.setHierarchy5("");
-				parser.nextTag();
-			}
+					parser.nextTag(); //process <hierarchy5>
+					if (!isEmptyTag("hierarchy5", parser)) {
+						parser.next();
+						table.setHierarchy5(parser.getText());
+						parser.nextTag(); //process </hierarchy5>
+					} else {
+						table.setHierarchy5("");
+						parser.nextTag();
+					}
 
-			parser.nextTag(); //process <hierarchy6>
-			if (!isEmptyTag("hierarchy6", parser)) {
-				parser.next();
-				table.setHierarchy6(parser.getText());
-				parser.nextTag(); //process </hierarchy6>
-			}else{
-				table.setHierarchy6("");
-				parser.nextTag();
-			}
+					parser.nextTag(); //process <hierarchy6>
+					if (!isEmptyTag("hierarchy6", parser)) {
+						parser.next();
+						table.setHierarchy6(parser.getText());
+						parser.nextTag(); //process </hierarchy6>
+					} else {
+						table.setHierarchy6("");
+						parser.nextTag();
+					}
 
-			parser.nextTag(); //process <hierarchy7>
-			if (!isEmptyTag("hierarchy7", parser)) {
-				parser.next();
-				table.setHierarchy7(parser.getText());
-				parser.nextTag(); //process </hierarchy7>
-			}else{
-				table.setHierarchy7("");
-				parser.nextTag();
-			}
+					parser.nextTag(); //process <hierarchy7>
+					if (!isEmptyTag("hierarchy7", parser)) {
+						parser.next();
+						table.setHierarchy7(parser.getText());
+						parser.nextTag(); //process </hierarchy7>
+					} else {
+						table.setHierarchy7("");
+						parser.nextTag();
+					}
 
-			parser.nextTag(); //process <hierarchy8>
-			if (!isEmptyTag("hierarchy8", parser)) {
-				parser.next();
-				table.setHierarchy8(parser.getText());
-				parser.nextTag(); //process </hierarchy8>
-			}else{
-				table.setHierarchy8("");
-				parser.nextTag();
-			}
+					parser.nextTag(); //process <hierarchy8>
+					if (!isEmptyTag("hierarchy8", parser)) {
+						parser.next();
+						table.setHierarchy8(parser.getText());
+						parser.nextTag(); //process </hierarchy8>
+					} else {
+						table.setHierarchy8("");
+						parser.nextTag();
+					}
 
-            parser.nextTag(); //process <gpsAccuracy>
-            if (!isEmptyTag("gpsAccuracy", parser)) {
-                parser.next();
-                table.setGpsAccuracy(StringUtil.toDouble(parser.getText()));
-                parser.nextTag(); //process </gpsAccuracy>
-                //Log.d("note gpsacc", table.getGpsAccuracy());
-            }else{
-                table.setGpsAccuracy(null);
-				table.setGpsNull(true);
-                parser.nextTag();
-                //Log.d("e gpsacc", table.getGpsAccuracy());
-            }
+					parser.nextTag(); //process <gpsAccuracy>
+					if (!isEmptyTag("gpsAccuracy", parser)) {
+						parser.next();
+						table.setGpsAccuracy(StringUtil.toDouble(parser.getText()));
+						parser.nextTag(); //process </gpsAccuracy>
+						//Log.d("note gpsacc", table.getGpsAccuracy());
+					} else {
+						table.setGpsAccuracy(null);
+						parser.nextTag();
+						//Log.d("e gpsacc", table.getGpsAccuracy());
+					}
 
-            parser.nextTag(); //process <gpsAltitude>
-            if (!isEmptyTag("gpsAltitude", parser)) {
-                parser.next();
-                table.setGpsAltitude(StringUtil.toDouble(parser.getText()));
-                parser.nextTag(); //process </gpsAltitude>
-            }else{
-                table.setGpsAltitude(null);
-				table.setGpsNull(true);
-                parser.nextTag();
-            }
+					parser.nextTag(); //process <gpsAltitude>
+					if (!isEmptyTag("gpsAltitude", parser)) {
+						parser.next();
+						table.setGpsAltitude(StringUtil.toDouble(parser.getText()));
+						parser.nextTag(); //process </gpsAltitude>
+					} else {
+						table.setGpsAltitude(null);
+						parser.nextTag();
+					}
 
-            parser.nextTag(); //process <gpsLatitude>
-            if (!isEmptyTag("gpsLatitude", parser)) {
-                parser.next();
-                table.setGpsLatitude(StringUtil.toDouble(parser.getText()));
-				table.setCosLatitude(Math.cos(table.getGpsLatitude()*Math.PI / 180.0)); // cos_lat = cos(lat * PI / 180)
-				table.setSinLatitude(Math.sin(table.getGpsLatitude()*Math.PI / 180.0)); // sin_lat = sin(lat * PI / 180)
-                parser.nextTag(); //process </gpsLatitude>
-            }else{
-                table.setGpsLatitude(null);
-				table.setGpsNull(true);
-                parser.nextTag();
-            }
+					parser.nextTag(); //process <gpsLatitude>
+					if (!isEmptyTag("gpsLatitude", parser)) {
+						parser.next();
+						table.setGpsLatitude(StringUtil.toDouble(parser.getText()));
+						parser.nextTag(); //process </gpsLatitude>
+					} else {
+						table.setGpsLatitude(null);
+						parser.nextTag();
+					}
 
-            parser.nextTag(); //process <gpsLongitude>
-            if (!isEmptyTag("gpsLongitude", parser)) {
-                parser.next();
-                table.setGpsLongitude(StringUtil.toDouble(parser.getText()));
-				table.setCosLongitude(Math.cos(table.getGpsLongitude()*Math.PI / 180.0)); // cos_lng = cos(lng * PI / 180)
-				table.setSinLongitude(Math.sin(table.getGpsLongitude()*Math.PI / 180.0)); // sin_lng = sin(lng * PI / 180)
-				parser.nextTag(); //process </gpsLongitude>
-                //Log.d("note gpslng", table.getGpsLongitude());
-            }else{
-                table.setGpsLongitude(null);
-				table.setGpsNull(true);
-                parser.nextTag();
-            }
+					parser.nextTag(); //process <gpsLongitude>
+					if (!isEmptyTag("gpsLongitude", parser)) {
+						parser.next();
+						table.setGpsLongitude(StringUtil.toDouble(parser.getText()));
+						parser.nextTag(); //process </gpsLongitude>
+						//Log.d("note gpslng", table.getGpsLongitude());
+					} else {
+						table.setGpsLongitude(null);
+						parser.nextTag();
+					}
 
-			parser.nextTag(); //process <preRegistered>
-			if (isTag("preRegistered", parser)) { //if this tag doesnt exist jump to <collectedId>
-				if (!isEmptyTag("preRegistered", parser)) {
+					parser.nextTag(); //process <preRegistered>
+					if (isTag("preRegistered", parser)) { //if this tag doesnt exist jump to <collectedId>
+						if (!isEmptyTag("preRegistered", parser)) {
+							parser.next();
+							table.preRegistered = Boolean.parseBoolean(parser.getText());
+							parser.nextTag(); //process </preRegistered>
+						} else {
+							table.preRegistered = false;
+							parser.nextTag();
+						}
+
+						parser.nextTag(); //process <collectedId>
+					}
+
+					if (!isEmptyTag("collectedId", parser)) {
+						parser.next();
+						table.collectedId = parser.getText();
+						parser.nextTag(); //process </collectedId>
+					} else {
+						table.collectedId = "";
+						parser.nextTag();
+					}
+
+					parser.nextTag(); //process modules
+					if (!isEmptyTag("modules", parser)) {
+						parser.next();
+						table.setModules(StringCollectionConverter.getCollectionFrom(parser.getText()));
+						parser.nextTag(); //process </modules>
+						//Log.d(count+"-modules", "value="+ parser.getText());
+					} else {
+						//table.modules.clear();
+						parser.nextTag();
+					}
+
+					//Set Household Prefix code
+					table.prefixCode = codeGeneratorService[0].getPrefixCode(table);
+
+					parser.nextTag(); //last process tag
 					parser.next();
-					table.preRegistered = Boolean.parseBoolean(parser.getText());
-					parser.nextTag(); //process </preRegistered>
-				} else {
-					table.preRegistered = false;
-					parser.nextTag();
+
+					values.add(table);
+
+					//database.insert(table);
+
+					if (count[0] % 1000 == 0) {
+						this.boxHouseholds.put(values); //try with runTx
+						values.clear();
+						savedValues.put(entity, count[0]); //publish progress is a bit slow - its not reporting well the numbers
+						publishProgress(count[0]);
+					}
+
+
 				}
-
-				parser.nextTag(); //process <collectedId>
+			} catch (Exception e) {
+				throw new RuntimeException(e);
 			}
-
-			if (!isEmptyTag("collectedId", parser)) {
-				parser.next();
-				table.collectedId = parser.getText();
-				parser.nextTag(); //process </collectedId>
-			}else{
-				table.collectedId = "";
-				parser.nextTag();
-			}
-
-			parser.nextTag(); //process modules
-			if (!isEmptyTag("modules", parser)) {
-				parser.next();
-				table.setModules(stringCollectionConverter.getCollectionFrom(parser.getText()));
-				parser.nextTag(); //process </modules>
-				//Log.d(count+"-modules", "value="+ parser.getText());
-			}else{
-				//table.modules.clear();
-				parser.nextTag();
-			}
-
-			//Set Household Prefix code
-			table.prefixCode = codeGeneratorService.getPrefixCode(table);
-
-			parser.nextTag(); //last process tag
-			parser.next();
-
-			values.add(table);
-
-			//database.insert(table);
-
-			if (count % 500 == 0){
-				this.boxHouseholds.put(values); //try with runTx
-				values.clear();
-				savedValues.put(entity, count); //publish progress is a bit slow - its not reporting well the numbers
-				publishProgress(count);
-			}
-
-
-		}
+		});
 
 		if (!values.isEmpty()) {
 			this.boxHouseholds.put(values);
 		}
 
-		savedValues.put(entity, count);
-		publishProgress(count);
+		savedValues.put(entity, count[0]);
+		publishProgress(count[0]);
 
 		updateSyncReport(SyncEntity.HOUSEHOLDS, new Date(), SyncStatus.STATUS_SYNCED);
 	}
@@ -2810,433 +2806,426 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 		//clear sync_report
 		updateSyncReport(SyncEntity.MEMBERS, null, SyncStatus.STATUS_NOT_SYNCED);
 
-		List<Member> values = new ArrayList<>();
-		int count = 0;
+		final int BATCH_SIZE = 500;
+		List<Member> values = new ArrayList<>(BATCH_SIZE);
+		final int[] countf = {0};
 		values.clear();
 
 		parser.nextTag();
 
-		while (notEndOfTag("members", parser)) {
-			count++;
+		ObjectBoxDatabase.get().runInTx(() -> {
+			try {
+				int count = 0;
+				while (notEndOfTag("members", parser)) {
+					count++;
 
-			Member table = new Member();
+					Member table = new Member();
 
-            parser.nextTag(); //process <code>
-            //Log.d("TAG2", parser.getPositionDescription());
-            if (!isEmptyTag("code", parser)) {
-                parser.next();
-                table.setCode(parser.getText());
-                parser.nextTag(); //process </code>
-            }else{
-                table.setCode("");
-                parser.nextTag();
-            }
+					parser.nextTag(); //process <code>
+					//Log.d("TAG2", parser.getPositionDescription());
+					if (!isEmptyTag("code", parser)) {
+						parser.next();
+						table.setCode(parser.getText());
+						parser.nextTag(); //process </code>
+					} else {
+						table.setCode("");
+						parser.nextTag();
+					}
 
-            parser.nextTag(); //process <name>
-            if (!isEmptyTag("name", parser)) {
-                parser.next();
-                table.setName(parser.getText());
-                parser.nextTag(); //process </name>
-            }else{
-                table.setName("");
-                parser.nextTag();
-            }
+					parser.nextTag(); //process <name>
+					if (!isEmptyTag("name", parser)) {
+						parser.next();
+						table.setName(parser.getText());
+						parser.nextTag(); //process </name>
+					} else {
+						table.setName("");
+						parser.nextTag();
+					}
 
-            parser.nextTag(); //process <gender>
-            if (!isEmptyTag("gender", parser)) {
-                parser.next();
-                table.setGender(Gender.getFrom(parser.getText()));
-                parser.nextTag(); //process </gender>
-            }else{
-                table.setGender(Gender.INVALID_ENUM);
-                parser.nextTag();
-            }
+					parser.nextTag(); //process <gender>
+					if (!isEmptyTag("gender", parser)) {
+						parser.next();
+						table.setGender(Gender.getFrom(parser.getText()));
+						parser.nextTag(); //process </gender>
+					} else {
+						table.setGender(Gender.INVALID_ENUM);
+						parser.nextTag();
+					}
 
-            parser.nextTag(); //process <dob>
-            if (!isEmptyTag("dob", parser)) {
-                parser.next();
-                table.dob = DateUtil.toDateYMD(parser.getText()); //to gregorian date
-                parser.nextTag(); //process </dob>
-            }else{
-                table.dob = null;
-                parser.nextTag();
-            }
+					parser.nextTag(); //process <dob>
+					if (!isEmptyTag("dob", parser)) {
+						parser.next();
+						table.dob = DateUtil.toDateYMD(parser.getText()); //to gregorian date
+						parser.nextTag(); //process </dob>
+					} else {
+						table.dob = null;
+						parser.nextTag();
+					}
 
-            parser.nextTag(); //process <age>
-            if (!isEmptyTag("age", parser)) {
-                parser.next();
-                table.setAge(Integer.parseInt(parser.getText()));
-                parser.nextTag(); //process </age>
-            }else{
-                table.setAge(-1);
-                parser.nextTag();
-            }
+					parser.nextTag(); //process <age>
+					if (!isEmptyTag("age", parser)) {
+						parser.next();
+						table.setAge(Integer.parseInt(parser.getText()));
+						parser.nextTag(); //process </age>
+					} else {
+						table.setAge(-1);
+						parser.nextTag();
+					}
 
-			parser.nextTag(); //process <ageAtDeath>
-			if (!isEmptyTag("ageAtDeath", parser)) {
-				parser.next();
-				table.setAgeAtDeath(Integer.parseInt(parser.getText()));
-				parser.nextTag(); //process </ageAtDeath>
-			}else{
-				table.setAgeAtDeath(-1);
-				parser.nextTag();
-			}
+					parser.nextTag(); //process <ageAtDeath>
+					if (!isEmptyTag("ageAtDeath", parser)) {
+						parser.next();
+						table.setAgeAtDeath(Integer.parseInt(parser.getText()));
+						parser.nextTag(); //process </ageAtDeath>
+					} else {
+						table.setAgeAtDeath(-1);
+						parser.nextTag();
+					}
 
-            parser.nextTag(); //process <motherCode>
-            if (!isEmptyTag("motherCode", parser)) {
-                parser.next();
-                table.setMotherCode(parser.getText());
-                parser.nextTag(); //process </motherCode>
-            }else{
-                table.setMotherCode("");
-                parser.nextTag();
-            }
+					parser.nextTag(); //process <motherCode>
+					if (!isEmptyTag("motherCode", parser)) {
+						parser.next();
+						table.setMotherCode(parser.getText());
+						parser.nextTag(); //process </motherCode>
+					} else {
+						table.setMotherCode("");
+						parser.nextTag();
+					}
 
-            parser.nextTag(); //process <motherName>
-            if (!isEmptyTag("motherName", parser)) {
-                parser.next();
-                table.setMotherName(parser.getText());
-                parser.nextTag(); //process </motherName>
-            }else{
-                table.setMotherName("");
-                parser.nextTag();
-            }
+					parser.nextTag(); //process <motherName>
+					if (!isEmptyTag("motherName", parser)) {
+						parser.next();
+						table.setMotherName(parser.getText());
+						parser.nextTag(); //process </motherName>
+					} else {
+						table.setMotherName("");
+						parser.nextTag();
+					}
 
-            parser.nextTag(); //process <fatherCode>
-            if (!isEmptyTag("fatherCode", parser)) {
-                parser.next();
-                table.setFatherCode(parser.getText());
-                parser.nextTag(); //process </fatherCode>
-            }else{
-                table.setFatherCode("");
-                parser.nextTag();
-            }
+					parser.nextTag(); //process <fatherCode>
+					if (!isEmptyTag("fatherCode", parser)) {
+						parser.next();
+						table.setFatherCode(parser.getText());
+						parser.nextTag(); //process </fatherCode>
+					} else {
+						table.setFatherCode("");
+						parser.nextTag();
+					}
 
-            parser.nextTag(); //process <fatherName>
-            if (!isEmptyTag("fatherName", parser)) {
-                parser.next();
-                table.setFatherName(parser.getText());
-                parser.nextTag(); //process </fatherName>
-            }else{
-                table.setFatherName("");
-                parser.nextTag();
-            }
+					parser.nextTag(); //process <fatherName>
+					if (!isEmptyTag("fatherName", parser)) {
+						parser.next();
+						table.setFatherName(parser.getText());
+						parser.nextTag(); //process </fatherName>
+					} else {
+						table.setFatherName("");
+						parser.nextTag();
+					}
 
-			parser.nextTag(); //process <maritalStatus>
-			if (!isEmptyTag("maritalStatus", parser)) {
-				parser.next();
-				table.setMaritalStatus(MaritalStatus.getFrom(parser.getText()));
-				parser.nextTag(); //process </maritalStatus>
-			}else{
-				table.setMaritalStatus(null);
-				parser.nextTag();
-			}
+					parser.nextTag(); //process <maritalStatus>
+					if (!isEmptyTag("maritalStatus", parser)) {
+						parser.next();
+						table.setMaritalStatus(MaritalStatus.getFrom(parser.getText()));
+						parser.nextTag(); //process </maritalStatus>
+					} else {
+						table.setMaritalStatus(null);
+						parser.nextTag();
+					}
 
-            parser.nextTag(); //process <spouseCode>
-            if (!isEmptyTag("spouseCode", parser)) {
-                parser.next();
-                table.setSpouseCode(parser.getText());
-                parser.nextTag(); //process </spouseCode>
-            }else{
-                table.setSpouseCode("");
-                parser.nextTag();
-            }
+					parser.nextTag(); //process <spouseCode>
+					if (!isEmptyTag("spouseCode", parser)) {
+						parser.next();
+						table.setSpouseCode(parser.getText());
+						parser.nextTag(); //process </spouseCode>
+					} else {
+						table.setSpouseCode("");
+						parser.nextTag();
+					}
 
-            parser.nextTag(); //process <spouseName>
-            if (!isEmptyTag("spouseName", parser)) {
-                parser.next();
-                table.setSpouseName(parser.getText());
-                parser.nextTag(); //process </spouseName>
-            }else{
-                table.setSpouseName("");
-                parser.nextTag();
-            }
+					parser.nextTag(); //process <spouseName>
+					if (!isEmptyTag("spouseName", parser)) {
+						parser.next();
+						table.setSpouseName(parser.getText());
+						parser.nextTag(); //process </spouseName>
+					} else {
+						table.setSpouseName("");
+						parser.nextTag();
+					}
 
-			parser.nextTag(); //process <education>
-			if (!isEmptyTag("education", parser)) {
-				parser.next();
-				table.education = parser.getText();
-				parser.nextTag(); //process </education>
-			}else{
-				table.education = "";
-				parser.nextTag();
-			}
+					parser.nextTag(); //process <education>
+					if (!isEmptyTag("education", parser)) {
+						parser.next();
+						table.education = parser.getText();
+						parser.nextTag(); //process </education>
+					} else {
+						table.education = "";
+						parser.nextTag();
+					}
 
-			parser.nextTag(); //process <religion>
-			if (!isEmptyTag("religion", parser)) {
-				parser.next();
-				table.religion = parser.getText();
-				parser.nextTag(); //process </religion>
-			}else{
-				table.religion = "";
-				parser.nextTag();
-			}
+					parser.nextTag(); //process <religion>
+					if (!isEmptyTag("religion", parser)) {
+						parser.next();
+						table.religion = parser.getText();
+						parser.nextTag(); //process </religion>
+					} else {
+						table.religion = "";
+						parser.nextTag();
+					}
 
-			parser.nextTag(); //process <phonePrimary>
-			if (!isEmptyTag("phonePrimary", parser)) {
-				parser.next();
-				table.phonePrimary = parser.getText();
-				parser.nextTag(); //process </phonePrimary>
-			}else{
-				table.phonePrimary = "";
-				parser.nextTag();
-			}
+					parser.nextTag(); //process <phonePrimary>
+					if (!isEmptyTag("phonePrimary", parser)) {
+						parser.next();
+						table.phonePrimary = parser.getText();
+						parser.nextTag(); //process </phonePrimary>
+					} else {
+						table.phonePrimary = "";
+						parser.nextTag();
+					}
 
-			parser.nextTag(); //process <phoneAlternative>
-			if (!isEmptyTag("phoneAlternative", parser)) {
-				parser.next();
-				table.phoneAlternative = parser.getText();
-				parser.nextTag(); //process </phoneAlternative>
-			}else{
-				table.phoneAlternative = "";
-				parser.nextTag();
-			}
-			
-            parser.nextTag(); //process <householdCode>
-            if (!isEmptyTag("householdCode", parser)) {
-                parser.next();
-                table.setHouseholdCode(parser.getText());
-                parser.nextTag(); //process </householdCode>
-            }else{
-                table.setHouseholdCode("");
-                parser.nextTag();
-            }
+					parser.nextTag(); //process <phoneAlternative>
+					if (!isEmptyTag("phoneAlternative", parser)) {
+						parser.next();
+						table.phoneAlternative = parser.getText();
+						parser.nextTag(); //process </phoneAlternative>
+					} else {
+						table.phoneAlternative = "";
+						parser.nextTag();
+					}
 
-            parser.nextTag(); //process <householdName>
-            if (!isEmptyTag("householdName", parser)) {
-                parser.next();
-                table.setHouseholdName(parser.getText());
-                parser.nextTag(); //process </houseNumber>
-            }else{
-                table.setHouseholdName("");
-                parser.nextTag();
-            }
+					parser.nextTag(); //process <householdCode>
+					if (!isEmptyTag("householdCode", parser)) {
+						parser.next();
+						table.setHouseholdCode(parser.getText());
+						parser.nextTag(); //process </householdCode>
+					} else {
+						table.setHouseholdCode("");
+						parser.nextTag();
+					}
 
-            parser.nextTag(); //process <startType>
-            if (!isEmptyTag("startType", parser)) {
-                parser.next();
-                table.setStartType(ResidencyStartType.getFrom(parser.getText()));
-                parser.nextTag(); //process </startType>
-            }else{
-                table.setStartType(null);
-                parser.nextTag();
-            }
+					parser.nextTag(); //process <householdName>
+					if (!isEmptyTag("householdName", parser)) {
+						parser.next();
+						table.setHouseholdName(parser.getText());
+						parser.nextTag(); //process </houseNumber>
+					} else {
+						table.setHouseholdName("");
+						parser.nextTag();
+					}
 
-            parser.nextTag(); //process <startDate>
-            if (!isEmptyTag("startDate", parser)) {
-                parser.next();
-                table.startDate = DateUtil.toDateYMD(parser.getText()); //to gregorian date
-                parser.nextTag(); //process </startDate>
-            }else{
-                table.startDate = null;
-                parser.nextTag();
-            }
+					parser.nextTag(); //process <startType>
+					if (!isEmptyTag("startType", parser)) {
+						parser.next();
+						table.setStartType(ResidencyStartType.getFrom(parser.getText()));
+						parser.nextTag(); //process </startType>
+					} else {
+						table.setStartType(null);
+						parser.nextTag();
+					}
 
-            parser.nextTag(); //process <endType>
-            if (!isEmptyTag("endType", parser)) {
-                parser.next();
-                table.setEndType(ResidencyEndType.getFrom(parser.getText()));
-                parser.nextTag(); //process </endType>
-            }else{
-                table.setEndType(null);
-                parser.nextTag();
-            }
+					parser.nextTag(); //process <startDate>
+					if (!isEmptyTag("startDate", parser)) {
+						parser.next();
+						table.startDate = DateUtil.toDateYMD(parser.getText()); //to gregorian date
+						parser.nextTag(); //process </startDate>
+					} else {
+						table.startDate = null;
+						parser.nextTag();
+					}
 
-            parser.nextTag(); //process <endDate>
-            if (!isEmptyTag("endDate", parser)) { //endtag is temp
-                parser.next();
-				//Log.d("note endDate", parser.getText() + ", " +parser.getPositionDescription());
-				if (parser.getText()!=null){
-					table.endDate = DateUtil.toDateYMD(parser.getText()); //to gregorian date
-					parser.nextTag(); //process </endDate>
+					parser.nextTag(); //process <endType>
+					if (!isEmptyTag("endType", parser)) {
+						parser.next();
+						table.setEndType(ResidencyEndType.getFrom(parser.getText()));
+						parser.nextTag(); //process </endType>
+					} else {
+						table.setEndType(null);
+						parser.nextTag();
+					}
+
+					parser.nextTag(); //process <endDate>
+					if (!isEmptyTag("endDate", parser)) { //endtag is temp
+						parser.next();
+						//Log.d("note endDate", parser.getText() + ", " +parser.getPositionDescription());
+						if (parser.getText() != null) {
+							table.endDate = DateUtil.toDateYMD(parser.getText()); //to gregorian date
+							parser.nextTag(); //process </endDate>
+						}
+					} else {
+						table.endDate = null;
+						parser.nextTag();
+						//Log.d("e endDate", table.getEndDate());
+					}
+
+					parser.nextTag(); //process <entryHousehold>
+					if (!isEmptyTag("entryHousehold", parser)) { //endtag is temp
+						parser.next();
+						//Log.d("note entryHousehold", parser.getText() + ", " +parser.getPositionDescription());
+						if (parser.getText() != null) {
+							table.setEntryHousehold(parser.getText());
+							parser.nextTag(); //process </entryHousehold>
+						}
+					} else {
+						table.setEntryHousehold("");
+						parser.nextTag();
+						//Log.d("e entryHousehold", table.getEntryHousehold());
+					}
+
+					parser.nextTag(); //process <entryType>
+					if (!isEmptyTag("entryType", parser)) { //endtag is temp
+						parser.next();
+						//Log.d("note entryType", parser.getText() + ", " +parser.getPositionDescription());
+						if (parser.getText() != null) {
+							table.setEntryType(ResidencyStartType.getFrom(parser.getText()));
+							parser.nextTag(); //process </entryType>
+						}
+					} else {
+						table.setEntryType(null);
+						parser.nextTag();
+						//Log.d("e entryType", table.getEntryType());
+					}
+
+					parser.nextTag(); //process <entryDate>
+					if (!isEmptyTag("entryDate", parser)) { //endtag is temp
+						parser.next();
+						//Log.d("note entryDate", parser.getText() + ", " +parser.getPositionDescription());
+						if (parser.getText() != null) {
+							table.entryDate = DateUtil.toDateYMD(parser.getText()); //to gregorian date
+							parser.nextTag(); //process </entryDate>
+						}
+					} else {
+						table.entryDate = null;
+						parser.nextTag();
+						//Log.d("e entryDate", table.getEntryDate());
+					}
+
+					parser.nextTag(); //process <headRelationshipType>
+					if (!isEmptyTag("headRelationshipType", parser)) { //endtag is temp
+						parser.next();
+						//Log.d("note headRelationshipType", parser.getText() + ", " +parser.getPositionDescription());
+						if (parser.getText() != null) {
+							table.setHeadRelationshipType(HeadRelationshipType.getFrom(parser.getText()));
+							parser.nextTag(); //process </headRelationshipType>
+						}
+					} else {
+						table.setHeadRelationshipType(null);
+						parser.nextTag();
+						//Log.d("e entryType", table.getheadRelationshipType());
+					}
+
+					parser.nextTag(); //process <isHouseholdHead>
+					if (!isEmptyTag("isHouseholdHead", parser)) { //endtag is temp
+						parser.next();
+						//Log.d("note isHouseholdHead", parser.getText() + ", " +parser.getPositionDescription());
+						if (parser.getText() != null) {
+							table.setHouseholdHead(Boolean.parseBoolean(parser.getText()));
+							parser.nextTag(); //process </entryDate>
+						}
+					} else {
+						table.setHouseholdHead(false);
+						parser.nextTag();
+						//Log.d("e isHouseholdHead", table.isHouseholdHead());
+					}
+
+					//CORRECT THE BUG AROUND HERE
+					parser.nextTag(); //process <gpsAccuracy>
+					if (!isEmptyTag("gpsAccuracy", parser)) {
+						parser.next();
+						table.setGpsAccuracy(StringUtil.toDouble(parser.getText()));
+						parser.nextTag(); //process </gpsAccuracy>
+						//Log.d("note gpsacc", table.getGpsAccuracy());
+					} else {
+						table.setGpsAccuracy(null);
+						table.setGpsNull(true);
+						parser.nextTag();
+
+					}
+
+					parser.nextTag(); //process <gpsAltitude>
+					if (!isEmptyTag("gpsAltitude", parser)) {
+						parser.next();
+						table.setGpsAltitude(StringUtil.toDouble(parser.getText()));
+						parser.nextTag(); //process </gpsAltitude>
+					} else {
+						table.setGpsAltitude(null);
+						table.setGpsNull(true);
+						parser.nextTag();
+					}
+
+					parser.nextTag(); //process <gpsLatitude>
+					if (!isEmptyTag("gpsLatitude", parser)) {
+						parser.next();
+						table.setGpsLatitude(StringUtil.toDouble(parser.getText()));
+						table.setCosLatitude(Math.cos(table.getGpsLatitude() * Math.PI / 180.0)); // cos_lat = cos(lat * PI / 180)
+						table.setSinLatitude(Math.sin(table.getGpsLatitude() * Math.PI / 180.0)); // sin_lat = sin(lat * PI / 180)
+						parser.nextTag(); //process </gpsLatitude>
+					} else {
+						table.setGpsLatitude(null);
+						table.setGpsNull(true);
+						parser.nextTag();
+					}
+
+					parser.nextTag(); //process <gpsLongitude>
+					if (!isEmptyTag("gpsLongitude", parser)) {
+						parser.next();
+						table.setGpsLongitude(StringUtil.toDouble(parser.getText()));
+						table.setCosLongitude(Math.cos(table.getGpsLongitude() * Math.PI / 180.0)); // cos_lng = cos(lng * PI / 180)
+						table.setSinLongitude(Math.sin(table.getGpsLongitude() * Math.PI / 180.0)); // sin_lng = sin(lng * PI / 180)
+						parser.nextTag(); //process </gpsLongitude>
+					} else {
+						table.setGpsLongitude(null);
+						table.setGpsNull(true);
+						parser.nextTag();
+					}
+
+					parser.nextTag(); //process <collectedId>
+					if (!isEmptyTag("collectedId", parser)) {
+						parser.next();
+						table.collectedId = parser.getText();
+						parser.nextTag(); //process </collectedId>
+					} else {
+						table.collectedId = "";
+						parser.nextTag();
+					}
+
+					parser.nextTag(); //process modules
+					if (!isEmptyTag("modules", parser)) {
+						parser.next();
+						table.setModules(StringCollectionConverter.getCollectionFrom(parser.getText()));
+						parser.nextTag(); //process </modules>
+						//Log.d(count+"-modules", "value="+ parser.getText());
+					} else {
+						//table.modules.clear();
+						parser.nextTag();
+					}
+
+					//Set Member Prefix code
+					table.prefixCode = codeGeneratorService[0].getPrefixCode(table);
+
+					parser.nextTag(); //process last tag
+					parser.next();
+
+					values.add(table);
+
+					if (count % BATCH_SIZE == 0) {
+						this.boxMembers.put(values); //try with runTx
+						values.clear();
+						savedValues.put(entity, count); //publish progress is a bit slow - its not reporting well the numbers
+						publishProgress(count);
+					}
 				}
-            }else{
-                table.endDate = null;
-                parser.nextTag();
-                //Log.d("e endDate", table.getEndDate());
-            }
-
-			parser.nextTag(); //process <entryHousehold>
-			if (!isEmptyTag("entryHousehold", parser)) { //endtag is temp
-				parser.next();
-				//Log.d("note entryHousehold", parser.getText() + ", " +parser.getPositionDescription());
-				if (parser.getText()!=null){
-					table.setEntryHousehold(parser.getText());
-					parser.nextTag(); //process </entryHousehold>
-				}
-			}else{
-				table.setEntryHousehold("");
-				parser.nextTag();
-				//Log.d("e entryHousehold", table.getEntryHousehold());
+				countf[0] = count;
+			} catch (Exception e) {
+				throw new RuntimeException(e);
 			}
+        });
 
-			parser.nextTag(); //process <entryType>
-			if (!isEmptyTag("entryType", parser)) { //endtag is temp
-				parser.next();
-				//Log.d("note entryType", parser.getText() + ", " +parser.getPositionDescription());
-				if (parser.getText()!=null){
-					table.setEntryType(ResidencyStartType.getFrom(parser.getText()));
-					parser.nextTag(); //process </entryType>
-				}
-			}else{
-				table.setEntryType(null);
-				parser.nextTag();
-				//Log.d("e entryType", table.getEntryType());
-			}
-
-			parser.nextTag(); //process <entryDate>
-			if (!isEmptyTag("entryDate", parser)) { //endtag is temp
-				parser.next();
-				//Log.d("note entryDate", parser.getText() + ", " +parser.getPositionDescription());
-				if (parser.getText()!=null){
-					table.entryDate = DateUtil.toDateYMD(parser.getText()); //to gregorian date
-					parser.nextTag(); //process </entryDate>
-				}
-			}else{
-				table.entryDate = null;
-				parser.nextTag();
-				//Log.d("e entryDate", table.getEntryDate());
-			}
-
-			parser.nextTag(); //process <headRelationshipType>
-			if (!isEmptyTag("headRelationshipType", parser)) { //endtag is temp
-				parser.next();
-				//Log.d("note headRelationshipType", parser.getText() + ", " +parser.getPositionDescription());
-				if (parser.getText()!=null){
-					table.setHeadRelationshipType(HeadRelationshipType.getFrom(parser.getText()));
-					parser.nextTag(); //process </headRelationshipType>
-				}
-			}else{
-				table.setHeadRelationshipType(null);
-				parser.nextTag();
-				//Log.d("e entryType", table.getheadRelationshipType());
-			}
-
-			parser.nextTag(); //process <isHouseholdHead>
-			if (!isEmptyTag("isHouseholdHead", parser)) { //endtag is temp
-				parser.next();
-				//Log.d("note isHouseholdHead", parser.getText() + ", " +parser.getPositionDescription());
-				if (parser.getText()!=null){
-					table.setHouseholdHead(Boolean.parseBoolean(parser.getText()));
-					parser.nextTag(); //process </entryDate>
-				}
-			}else{
-				table.setHouseholdHead(false);
-				parser.nextTag();
-				//Log.d("e isHouseholdHead", table.isHouseholdHead());
-			}
-
-			/*
-			parser.nextTag(); //process <isSecHouseholdHead>
-			if (!isEmptyTag(DatabaseHelper.Member.COLUMN_IS_SEC_HOUSEHOLD_HEAD, parser)) { //endtag is temp
-				parser.next();
-				//Log.d("note isSecHouseholdHead", parser.getText() + ", " +parser.getPositionDescription());
-				if (parser.getText()!=null){
-					table.setSecHouseholdHead(Boolean.parseBoolean(parser.getText()));
-					parser.nextTag(); //process </isSecHouseholdHead>
-				}
-			}else{
-				table.setSecHouseholdHead(false);
-				parser.nextTag();
-				//Log.d("e isSecHouseholdHead", table.isHouseholdHead());
-			}*/
-
-            //CORRECT THE BUG AROUND HERE
-            parser.nextTag(); //process <gpsAccuracy>
-            if (!isEmptyTag("gpsAccuracy", parser)) {
-                parser.next();
-                table.setGpsAccuracy(StringUtil.toDouble(parser.getText()));
-                parser.nextTag(); //process </gpsAccuracy>
-                //Log.d("note gpsacc", table.getGpsAccuracy());
-            }else{
-                table.setGpsAccuracy(null);
-				table.setGpsNull(true);
-                parser.nextTag();
-
-            }
-
-            parser.nextTag(); //process <gpsAltitude>
-            if (!isEmptyTag("gpsAltitude", parser)) {
-                parser.next();
-                table.setGpsAltitude(StringUtil.toDouble(parser.getText()));
-                parser.nextTag(); //process </gpsAltitude>
-            }else{
-                table.setGpsAltitude(null);
-				table.setGpsNull(true);
-                parser.nextTag();
-            }
-
-            parser.nextTag(); //process <gpsLatitude>
-            if (!isEmptyTag("gpsLatitude", parser)) {
-                parser.next();
-                table.setGpsLatitude(StringUtil.toDouble(parser.getText()));
-				table.setCosLatitude(Math.cos(table.getGpsLatitude()*Math.PI / 180.0)); // cos_lat = cos(lat * PI / 180)
-				table.setSinLatitude(Math.sin(table.getGpsLatitude()*Math.PI / 180.0)); // sin_lat = sin(lat * PI / 180)
-                parser.nextTag(); //process </gpsLatitude>
-            }else{
-                table.setGpsLatitude(null);
-				table.setGpsNull(true);
-                parser.nextTag();
-            }
-
-            parser.nextTag(); //process <gpsLongitude>
-            if (!isEmptyTag("gpsLongitude", parser)) {
-                parser.next();
-                table.setGpsLongitude(StringUtil.toDouble(parser.getText()));
-				table.setCosLongitude(Math.cos(table.getGpsLongitude()*Math.PI / 180.0)); // cos_lng = cos(lng * PI / 180)
-				table.setSinLongitude(Math.sin(table.getGpsLongitude()*Math.PI / 180.0)); // sin_lng = sin(lng * PI / 180)
-                parser.nextTag(); //process </gpsLongitude>
-            }else{
-                table.setGpsLongitude(null);
-				table.setGpsNull(true);
-                parser.nextTag();
-            }
-
-			parser.nextTag(); //process <collectedId>
-			if (!isEmptyTag("collectedId", parser)) {
-				parser.next();
-				table.collectedId = parser.getText();
-				parser.nextTag(); //process </collectedId>
-			}else{
-				table.collectedId = "";
-				parser.nextTag();
-			}
-
-			parser.nextTag(); //process modules
-			if (!isEmptyTag("modules", parser)) {
-				parser.next();
-				table.setModules(stringCollectionConverter.getCollectionFrom(parser.getText()));
-				parser.nextTag(); //process </modules>
-				//Log.d(count+"-modules", "value="+ parser.getText());
-			}else{
-				//table.modules.clear();
-				parser.nextTag();
-			}
-
-			//Set Member Prefix code
-			table.prefixCode = codeGeneratorService.getPrefixCode(table);
-
-			parser.nextTag(); //process last tag
-			parser.next();
-
-			values.add(table);
-
-			if (count % 500 == 0){
-				this.boxMembers.put(values); //try with runTx
-				values.clear();
-				savedValues.put(entity, count); //publish progress is a bit slow - its not reporting well the numbers
-				publishProgress(count);
-			}
-
-
-		}
 
 		if (!values.isEmpty()) {
 			this.boxMembers.put(values);
 		}
 
-		savedValues.put(entity, count);
-		publishProgress(count);
+		savedValues.put(entity, countf[0]);
+		publishProgress(countf[0]);
 
 		updateSyncReport(SyncEntity.MEMBERS, new Date(), SyncStatus.STATUS_SYNCED);
 	}
@@ -3601,7 +3590,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 			}
 
 			//Set Household Prefix code
-			table.prefixCode = codeGeneratorService.getPrefixCode(table);
+			table.prefixCode = codeGeneratorService[0].getPrefixCode(table);
 
 			parser.nextTag(); //last process tag
 			parser.next();

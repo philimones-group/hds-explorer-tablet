@@ -40,10 +40,15 @@ For instructions on how to install SDKMAN visit https://sdkman.io/install
 
 1. Also you can fork the hds-explorer-tablet project ([why and how to fork](https://help.github.com/articles/fork-a-repo/))
 
-1. Configure MapBox API Token on a global gradle.properties (under $USER_HOME/.gradle/gradle.properties)   
-   Add the property below change the GENERATED_TOKEN for the real MapBox API Token [[Create MapBox Token]](https://docs.mapbox.com/help/tutorials/get-started-tokens-api/)  
-       
-        MAPBOX_HDS_EXPLORER_TOKEN=GENERATED_TOKEN
+1. Configure MapBox API Tokens in your global `gradle.properties` (located at `$USER_HOME/.gradle/gradle.properties`).
+
+   You will need two tokens: a **Secret Token** (starts with `sk.`) with `DOWNLOADS:READ` scope to download the SDK, and a **Public Token** (starts with `pk.`) to display the maps. [[Create MapBox Tokens]](https://docs.mapbox.com/help/tutorials/get-started-tokens-api/)
+
+   Add the following properties, replacing `GENERATED_TOKEN` with your actual keys:
+
+   ```properties
+   MAPBOX_HDS_EXPLORER_TOKEN=GENERATED_SECRET_TOKEN_HERE
+   MAPBOX_PUBLIC_HDS_EXPLORER_TOKEN=GENERATED_PUBLIC_TOKEN_HERE
 
 1. Use Android Studio to import the *hds-explorer-tablet* project. Then you can run/build the app.  
 

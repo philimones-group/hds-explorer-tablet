@@ -21,6 +21,10 @@ android {
         versionCode 422
         versionName "1.1.5 build ${versionCode}"
 
+
+        // This maps the public mapbox token stored on global gradle.properties to the string resource Mapbox needs
+        resValue "string", "mapbox_access_token", (project.properties["MAPBOX_PUBLIC_HDS_EXPLORER_TOKEN"] ?: "")
+
         // Required when setting minSdkVersion to 20 or lower
         //multiDexEnabled true
     }

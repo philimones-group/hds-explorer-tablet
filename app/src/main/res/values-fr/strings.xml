@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">HDS Explorer</string>
-    <!-- Mapbox Public Token for HDS-Explorer -->
-    <string name="mapbox_access_token">pk.eyJ1IjoicGF1bHBoaWxpbW9uZSIsImEiOiJjbG1rM3BvcDkwYXMxMm5wbDUyNTA1NGlhIn0.HuorKNYmjgPzGbTDYwDu-Q</string>
 
     <!-- Copyright    -->
     <string name="copyright_app_name_lbl">HDS Explorer</string>

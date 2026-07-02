@@ -107,8 +107,7 @@ dependencies {
 
     //my deps
     implementation 'org.jdom:jdom2:2.0.6.1'
-    implementation 'com.google.zxing:core:3.5.3'
-    //implementation 'com.google.zxing:android-core:3.3.0'
+    implementation 'com.google.zxing:core:3.5.4'
     implementation 'com.journeyapps:zxing-android-embedded:4.3.0'
     implementation 'com.google.code.gson:gson:2.13.1'
     implementation group: 'org.mindrot', name: 'jbcrypt', version: '0.4'
@@ -125,8 +124,6 @@ dependencies {
     //implementation "androidx.documentfile:documentfile:1.0.1"
     implementation 'androidx.constraintlayout:constraintlayout:2.2.1'
     implementation "androidx.constraintlayout:constraintlayout-compose:1.1.1"
-    implementation project(path: ':hds-forms-lib')
-    implementation project(path: ':hds-forms-lib')
     implementation project(path: ':hds-forms-lib')
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     debugImplementation "io.objectbox:objectbox-android-objectbrowser:$objectboxVersion"

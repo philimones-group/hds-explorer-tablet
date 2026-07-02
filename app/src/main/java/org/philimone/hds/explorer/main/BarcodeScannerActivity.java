@@ -2,11 +2,15 @@ package org.philimone.hds.explorer.main;
 
 import android.content.Intent;
 import android.os.Bundle;
+
+import androidx.activity.result.ActivityResultLauncher;
 import androidx.appcompat.app.AppCompatActivity;
 import android.util.Log;
 
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
+import com.journeyapps.barcodescanner.ScanContract;
+import com.journeyapps.barcodescanner.ScanOptions;
 
 import org.philimone.hds.explorer.R;
 import org.philimone.hds.explorer.main.barcode.AnyOrientationCaptureActivity;
@@ -21,6 +25,22 @@ public class BarcodeScannerActivity extends AppCompatActivity {
     private boolean returningFromScanning;
     private boolean barcodeWasScanned;
     private DialogFactory askDialog;
+
+    private ActivityResultLauncher<ScanOptions> barcodeLauncher = registerForActivityResult(
+            new ScanContract(),
+            result -> {
+
+                returningFromScanning = true;
+                barcodeWasScanned = false;
+
+                if (result.getContents() != null) {
+                    barcodeWasScanned = true;
+                    scannedContent = result.getContents();
+                }
+
+                finishScanning();
+            }
+    );;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,42 +94,16 @@ public class BarcodeScannerActivity extends AppCompatActivity {
 
     private void onBarcodeScanClicked() {
 
-        IntentIntegrator integrator = new IntentIntegrator(this);
-        integrator.setDesiredBarcodeFormats(IntentIntegrator.ALL_CODE_TYPES);
-        integrator.setPrompt(getString(R.string.barcode_dialog_bt_scan_barcode_lbl));
-        integrator.setCameraId(0);
-        integrator.setBeepEnabled(false);
-        integrator.setBarcodeImageEnabled(false);
+        ScanOptions options = new ScanOptions();
+        options.setDesiredBarcodeFormats(ScanOptions.ALL_CODE_TYPES);
+        options.setPrompt(getString(R.string.barcode_dialog_bt_scan_barcode_lbl));
+        options.setCameraId(0);
+        options.setBeepEnabled(false);
+        options.setBarcodeImageEnabled(false);
+        options.setOrientationLocked(false);
 
-        integrator.setOrientationLocked(false);
-        integrator.setCaptureActivity(AnyOrientationCaptureActivity.class);
-
-        integrator.initiateScan();
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-
-        returningFromScanning = true;
-
-        IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
-        if(result != null) {
-            if(result.getContents() == null) {
-                Log.d("BarcodeScanner", "Cancelled scan");
-            } else {
-                Log.d("BarcodeScanner", "Scanned: "+result.getContents());
-            }
-
-            this.scannedContent = result.getContents();
-            this.barcodeWasScanned = true;
-
-        } else {
-            // This is important, otherwise the result will not be passed to the fragment
-            this.barcodeWasScanned = false;
-            super.onActivityResult(requestCode, resultCode, data);
-        }
-
-        finishScanning();
+        // Fire the camera via the host activity result pipeline
+        barcodeLauncher.launch(options);
     }
 
     private void finishScanning() {

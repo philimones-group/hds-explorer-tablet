@@ -64,6 +64,9 @@ import org.philimone.hds.explorer.model.enums.temporal.ResidencyEndType;
 import org.philimone.hds.explorer.model.enums.temporal.ResidencyStartType;
 import org.philimone.hds.explorer.model.oldstate.SavedEntityState;
 import org.philimone.hds.explorer.model.oldstate.SavedEntityState_;
+import org.philimone.hds.forms.model.HForm;
+import org.philimone.hds.forms.utilities.FormMediaDeletionUtil;
+import org.philimone.hds.explorer.main.hdsforms.FormUtil;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -1180,9 +1183,19 @@ public class CoreCollectedDataDeletionUtil {
         }
     }
     private void deleteXmlFile(CoreCollectedData cdata) {
-        if (cdata != null) {
+        if (cdata != null && cdata.formFilename != null) {
             try {
-                new File(cdata.formFilename).delete();
+                File xmlFile = new File(cdata.formFilename);
+
+                if (xmlFile.exists()) {
+                    // Delete media files first
+                    HForm form = FormUtil.getHFormBy(mContext, cdata.formEntity);
+                    if (form != null && form.hasMediaColumns()) {
+                        FormMediaDeletionUtil.deleteMediaFiles(form, xmlFile);
+                    }
+
+                    xmlFile.delete();
+                }
             } catch (Exception ex) {
                 Log.d("deletion-failed", ""+ex.getLocalizedMessage());
             }

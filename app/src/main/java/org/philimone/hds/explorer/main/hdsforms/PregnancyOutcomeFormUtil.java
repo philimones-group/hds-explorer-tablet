@@ -229,7 +229,7 @@ public class PregnancyOutcomeFormUtil extends FormUtil<PregnancyOutcome> {
 
             obj.put("childCollectedId", this.generateUUID());
             obj.put("childCode", code);
-            obj.put("headRelationshipType", parentsAreHouseholdHead ? "SON" : ""); //Set the head if is one of them
+            obj.put("headRelationshipType", parentsAreHouseholdHead ? HeadRelationshipType.SON_DAUGHTER.code : ""); //Set the head if is one of them
             obj.put("childOrdinalPosition", ""+(i+1));
         }
         Log.d("childs", childsRepObj.getList().size()+"");
@@ -245,13 +245,10 @@ public class PregnancyOutcomeFormUtil extends FormUtil<PregnancyOutcome> {
     }
 
     private boolean areFatherOrMotherHead(){
-        boolean oneOfIsHead = this.boxHeadRelationships.query(
-                             HeadRelationship_.householdCode.equal(this.household.code)
-                        .and(HeadRelationship_.memberCode.equal(this.mother.code).or(HeadRelationship_.memberCode.equal(this.father.code)))
-                        .and(HeadRelationship_.relationshipType.equal(HeadRelationshipType.HEAD_OF_HOUSEHOLD.code))
-                        .and(HeadRelationship_.endType.equal(HeadRelationshipEndType.NOT_APPLICABLE.code)))
-                .orderDesc(HeadRelationship_.startDate)
-                .build().count()>0;
+
+        Member head = getHeadOfHousehold();
+
+        boolean oneOfIsHead = (head != null) && (head.code.equals(mother.code) || head.code.equals(father.code));
 
         return oneOfIsHead;
     }

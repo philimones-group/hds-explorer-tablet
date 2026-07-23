@@ -294,6 +294,9 @@ public class RegionFormUtil extends FormUtil<Region> {
         Log.d("methodcall", ""+methodExpression);
 
         if (methodExpression.startsWith("generateRegionCode")){
+
+            if (args == null || args.length == 0) return "";
+
             String parentCode = args[0];
             String regionName = args[1];
 

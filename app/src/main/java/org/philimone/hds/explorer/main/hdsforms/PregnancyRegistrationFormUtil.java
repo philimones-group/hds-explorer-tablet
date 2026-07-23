@@ -463,6 +463,8 @@ public class PregnancyRegistrationFormUtil extends FormUtil<PregnancyRegistratio
             //calculateEdd('2022-09-28', '2021-11-29','2')
             //calculateEdd('2022-09-28',\\s+'2021-11-29',\\s+'2')
 
+            if (args == null || args.length == 0) return "";
+
             Date recordedDate = DateUtil.toDateYMD(args[0]); //its gregorian date - all arguments are
             Date eddDate = DateUtil.toDateYMD(args[1]);
             Date lmpDate = DateUtil.toDateYMD(args[2]);

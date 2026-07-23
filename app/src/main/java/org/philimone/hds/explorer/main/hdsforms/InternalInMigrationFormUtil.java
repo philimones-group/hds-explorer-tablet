@@ -855,6 +855,9 @@ public class InternalInMigrationFormUtil extends FormUtil<Inmigration> {
         }
 
         if (methodExpression.startsWith("getMemberAge")){
+
+            if (args == null || args.length == 0) return "";
+
             //get current member age
             int age = -1;
             if (this.selectedMember != null) {
@@ -862,7 +865,7 @@ public class InternalInMigrationFormUtil extends FormUtil<Inmigration> {
             }
             Log.d("noargs", "age="+age);
 
-            return "'"+age+"'";
+            return age+"";
 
         }
 

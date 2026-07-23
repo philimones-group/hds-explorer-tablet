@@ -873,6 +873,8 @@ public class MemberEnumerationFormUtil extends FormUtil<Member> {
 
         if (methodExpression.startsWith("calculateAge")){
 
+            if (args == null || args.length == 0) return "";
+
             Date dobDate = DateUtil.toDateYMD(args[0]); //its gregorian data that comes from ColumnView.getValue
             int age = -1;
 
@@ -881,7 +883,7 @@ public class MemberEnumerationFormUtil extends FormUtil<Member> {
             }
             Log.d("args", args[0]+", age="+age);
 
-            return "'"+age+"'";
+            return age+"";
 
         }
 

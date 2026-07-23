@@ -1137,6 +1137,8 @@ public class ExternalInMigrationFormUtil extends FormUtil<Inmigration> {
 
         if (methodExpression.startsWith("calculateAge")){
 
+            if (args == null || args.length == 0) return "";
+
             Date dobDate = DateUtil.toDateYMD(args[0]); //its gregorian date comes from ColumnView.getValue
             int age = -1;
 
@@ -1145,7 +1147,7 @@ public class ExternalInMigrationFormUtil extends FormUtil<Inmigration> {
             }
             Log.d("args", args[0]+", age="+age);
 
-            return "'"+age+"'";
+            return age+"";
 
         }
 

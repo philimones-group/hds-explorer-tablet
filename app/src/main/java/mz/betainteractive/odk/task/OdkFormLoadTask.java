@@ -40,8 +40,9 @@ public class OdkFormLoadTask extends AsyncTask<Void, Void, OdkFormLoadResult> {
     private FormUtilities formUtilities;
     private OdkFormLoadListener listener;
     private ContentResolver resolver;
-    private Uri odkContentUri;
-    private String savedInstanceUri;
+    private Uri formUri;
+    private Uri instanceUri;
+    private String instanceXmlPath;
     private OdkFormLoadData odkFormLoadData;
     private FilledForm filledForm;
     private boolean openingSavedUri;
@@ -62,12 +63,14 @@ public class OdkFormLoadTask extends AsyncTask<Void, Void, OdkFormLoadResult> {
         this.filledForm = loadData.preloadedData;
     }
 
-    public OdkFormLoadTask(FormUtilities formUtilities, OdkFormLoadData loadData, Uri uri, OdkFormLoadListener listener) { //used to open pre-existing collected forms and filling out auto-filled columns
+    //used to open pre-existing collected forms and filling out auto-filled columns
+    public OdkFormLoadTask(FormUtilities formUtilities, OdkFormLoadData loadData, Uri formUri, Uri instanceUri, String instanceXmlPath, OdkFormLoadListener listener) {
         this(formUtilities);
         this.listener = listener;
         this.resolver = mContext.getContentResolver();
-        this.odkContentUri = uri;
-        this.savedInstanceUri = loadData.formInstanceUri;
+        this.formUri = formUri;
+        this.instanceUri = instanceUri;
+        this.instanceXmlPath = instanceXmlPath;
         this.odkFormLoadData = loadData;
         this.filledForm = loadData.preloadedData;
         this.openingSavedUri = true;
@@ -79,6 +82,7 @@ public class OdkFormLoadTask extends AsyncTask<Void, Void, OdkFormLoadResult> {
         Log.d("loading-odk", "starting");
 
         /* finding odk form on odk database */
+        long internalId = -1;
         String jrFormId = null;
         String jrFormName = null;
         String formFilePath = null;
@@ -88,11 +92,10 @@ public class OdkFormLoadTask extends AsyncTask<Void, Void, OdkFormLoadResult> {
         Cursor cursor = null;
 
         if (openingSavedUri) {
-            Log.d("openingsaveduri", "true");
-            return OdkFormLoadResult.newEditSuccessResult(this.odkFormLoadData, this.odkContentUri, this.savedInstanceUri);
+            return OdkFormLoadResult.newEditSuccessResult(this.odkFormLoadData, this.formUri, this.instanceUri);
         }
 
-        Log.d("get cursor for forms", "");
+        Log.d("cursor for blank form", ""+filledForm.getFormId());
 
         int errorCount = 0;
         String messageLike = "AppDependencyComponent.inject(org.odk.collect.android.external.FormsProvider)' on a null object reference";
@@ -101,7 +104,7 @@ public class OdkFormLoadTask extends AsyncTask<Void, Void, OdkFormLoadResult> {
         do {
             errorMessage = null;
             try {
-                cursor = getCursorForFormsProvider(filledForm.getFormName());
+                cursor = getCursorForFormsProvider(filledForm.getFormId());
             } catch (Exception e) {
                 errorCount++;
                 errorMessage = e.getMessage();
@@ -114,9 +117,10 @@ public class OdkFormLoadTask extends AsyncTask<Void, Void, OdkFormLoadResult> {
             return OdkFormLoadResult.newErrorResult(this.odkFormLoadData, OdkFormLoadResult.Status.ERROR_PROVIDER_NA, openMode);
         }
 
-        //After trying to get the cursor
+        //After trying to get the cursor for a blank form
         if (cursor != null) {
             if (cursor.moveToNext()) {
+                internalId = cursor.getLong(cursor.getColumnIndex(FormsProviderAPI.FormsColumns.ID));
                 int formIdIndex = cursor.getColumnIndex(FormsProviderAPI.FormsColumns.JR_FORM_ID);
                 int formNameIndex = cursor.getColumnIndex(FormsProviderAPI.FormsColumns.DISPLAY_NAME);
                 int formPathIndex = cursor.getColumnIndex(FormsProviderAPI.FormsColumns.FORM_FILE_PATH);
@@ -135,15 +139,27 @@ public class OdkFormLoadTask extends AsyncTask<Void, Void, OdkFormLoadResult> {
             return OdkFormLoadResult.newErrorResult(this.odkFormLoadData, OdkFormLoadResult.Status.ERROR_PROVIDER_NA, openMode);
         }
 
-
         if (jrFormId == null || formFilePath == null) {
             return OdkFormLoadResult.newErrorResult(this.odkFormLoadData, OdkFormLoadResult.Status.ERROR_FORM_NOT_FOUND, openMode);
         }
 
-        //ANDROID 11+ - ITS NOT POSSIBLE TO GET PRIVATE DIRECTORY
+        //creating blank form uri
+        this.formUri = Uri.withAppendedPath(FormsProviderAPI.FormsColumns.CONTENT_URI, internalId + "");
 
+        // If we are using ODK_INTENT_LAUNCH, we don't need to create any instance file.
+        // We just return the FormUri of the BLANK FORM.
+        if (formUtilities.getOdkStorageType() == OdkStorageType.ODK_INTENT_LAUNCH) {
+            return OdkFormLoadResult.newSuccessResult(this.odkFormLoadData, OdkFormLoadResult.Status.SUCCESS, openMode, this.formUri, null, null);
+        }
+
+        //-------
+        //DOWN HERE ITS TRYING TO CREATE AN XML INSTANCE OF THE FORM WE GOT FROM THE CURSOR
+        //--------
+
+        //On Android 11+ - its not possible to get private directory
         Log.d("odk storage type", formUtilities.getOdkStorageType()+", ffpath: "+formFilePath+", exists="+new File(formFilePath).exists());
 
+        //Getting Access to directories of ODK Collect
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             //ANDROID 11+ - Accessing Scoped and Shared Folder using SAF
 
@@ -218,16 +234,16 @@ public class OdkFormLoadTask extends AsyncTask<Void, Void, OdkFormLoadResult> {
                 boolean writeFile = false;
 
                 if (targetFile != null) {
-                    writeFile = insertNewOdkFormInstance(targetFile, formAbsoluteFilePath, filledForm.getFormName(), jrFormId, formVersion);
+                    writeFile = insertNewOdkFormInstance(targetFile, formAbsoluteFilePath, filledForm.getFormId(), jrFormId, formVersion);
                     if (!writeFile) {
-                        return OdkFormLoadResult.newScopedDirErrorResult(this.odkFormLoadData, OdkFormLoadResult.Status.ERROR_ODK_INSERT_SAVED_INSTANCE, openMode, targetFile.getInstanceFile(), odkContentUri);
+                        return OdkFormLoadResult.newScopedDirErrorResult(this.odkFormLoadData, OdkFormLoadResult.Status.ERROR_ODK_INSERT_SAVED_INSTANCE, openMode, targetFile.getInstanceFile(), formUri);
                     }
                 } else {
-                    return OdkFormLoadResult.newScopedDirErrorResult(this.odkFormLoadData, OdkFormLoadResult.Status.ERROR_ODK_CREATE_SAVED_INSTANCE_FILE, openMode, targetFile.getInstanceFile(), odkContentUri);
+                    return OdkFormLoadResult.newScopedDirErrorResult(this.odkFormLoadData, OdkFormLoadResult.Status.ERROR_ODK_CREATE_SAVED_INSTANCE_FILE, openMode, targetFile.getInstanceFile(), formUri);
                 }
 
                 Log.d("finished", "creating file, write file: "+writeFile);
-                return OdkFormLoadResult.newScopedDirSuccessResult(this.odkFormLoadData, openMode, targetFile.getInstanceFile(), odkContentUri);
+                return OdkFormLoadResult.newScopedDirSuccessResult(this.odkFormLoadData, openMode, this.formUri, this.instanceUri, targetFile.getInstanceFile());
 
             } else {
 
@@ -238,21 +254,21 @@ public class OdkFormLoadTask extends AsyncTask<Void, Void, OdkFormLoadResult> {
                 boolean writeFile = false;
 
                 if (instanceFile != null) {
-                    writeFile = insertNewOdkFormInstance(instanceFile, filledForm.getFormName(), jrFormId, formVersion);
+                    writeFile = insertNewOdkFormInstance(instanceFile, filledForm.getFormId(), jrFormId, formVersion);
                     if (!writeFile) {
-                        return OdkFormLoadResult.newFileApiErrorResult(this.odkFormLoadData, OdkFormLoadResult.Status.ERROR_ODK_INSERT_SAVED_INSTANCE, openMode, instanceFile, odkContentUri);
+                        return OdkFormLoadResult.newFileApiErrorResult(this.odkFormLoadData, OdkFormLoadResult.Status.ERROR_ODK_INSERT_SAVED_INSTANCE, openMode, instanceFile, formUri);
                     }
                 } else {
-                    return OdkFormLoadResult.newFileApiErrorResult(this.odkFormLoadData, OdkFormLoadResult.Status.ERROR_ODK_CREATE_SAVED_INSTANCE_FILE, openMode, null, odkContentUri);
+                    return OdkFormLoadResult.newFileApiErrorResult(this.odkFormLoadData, OdkFormLoadResult.Status.ERROR_ODK_CREATE_SAVED_INSTANCE_FILE, openMode, null, formUri);
                 }
 
                 Log.d("finished", "creating file");
-                return OdkFormLoadResult.newSuccessResult(this.odkFormLoadData, OdkFormLoadResult.Status.SUCCESS, openMode, instanceFile, this.odkContentUri);
+                return OdkFormLoadResult.newSuccessResult(this.odkFormLoadData, OdkFormLoadResult.Status.SUCCESS, openMode, this.formUri, this.instanceUri, instanceFile);
             }
 
         }
 
-        return OdkFormLoadResult.newEditSuccessResult(this.odkFormLoadData, this.odkContentUri, savedInstanceUri);
+        return OdkFormLoadResult.newEditSuccessResult(this.odkFormLoadData, this.formUri, this.instanceUri);
     }
 
     @Override
@@ -264,10 +280,11 @@ public class OdkFormLoadTask extends AsyncTask<Void, Void, OdkFormLoadResult> {
         }
     }
 
-    private Cursor getCursorForFormsProvider(String name) {
+    /* Gets the Blank Form from Form Id*/
+    private Cursor getCursorForFormsProvider(String formId) {
         return resolver.query(FormsProviderAPI.FormsColumns.CONTENT_URI, new String[]{
-                        FormsProviderAPI.FormsColumns.JR_FORM_ID, FormsProviderAPI.FormsColumns.DISPLAY_NAME, FormsProviderAPI.FormsColumns.FORM_FILE_PATH, FormsProviderAPI.FormsColumns.JR_VERSION},
-                FormsProviderAPI.FormsColumns.JR_FORM_ID + " like ?", new String[]{name + "%"}, null);
+                        FormsProviderAPI.FormsColumns.ID, FormsProviderAPI.FormsColumns.JR_FORM_ID, FormsProviderAPI.FormsColumns.DISPLAY_NAME, FormsProviderAPI.FormsColumns.FORM_FILE_PATH, FormsProviderAPI.FormsColumns.JR_VERSION},
+                FormsProviderAPI.FormsColumns.JR_FORM_ID + " like ?", new String[]{formId + "%"}, null);
     }
 
     private SearchFormResult findOdkFormOnScopedDir(String formFilePath) {
@@ -326,52 +343,6 @@ public class OdkFormLoadTask extends AsyncTask<Void, Void, OdkFormLoadResult> {
         }
 
         return null;
-    }
-
-    private XFormDef findOdkForm(File formsDir, String formId){        
-        //get xml files and read them
-        for (File formFile : formsDir.listFiles()) {
-            if (formFile.getName().toLowerCase().endsWith(".xml")) {
-                //read odk xml
-                XFormDef formDef = XMLFinder.getODKForm(formFile);
-
-                if (formDef != null) {
-                    Log.d("form found", formDef.formFilePath);
-
-                    if (formDef.formId.equals(formId)) {                                              
-
-                        Log.d("form really found", formId);
-
-                        return formDef;
-                    }
-                }
-            }
-        }
-        
-        return null;
-    }
-
-    private String getXmlFilePath(Uri contentUri) {
-        Cursor cursor = resolver.query(contentUri, new String[]{InstanceProviderAPI.InstanceColumns.STATUS, InstanceProviderAPI.InstanceColumns.INSTANCE_FILE_PATH}, null, null, null);
-
-        String xmlFilePath = "";
-        Log.d("Running check form", "");
-
-        if (cursor.moveToNext()) {
-            //Log.d("move next", ""+cursor.getString(0));
-            xmlFilePath = cursor.getString(cursor.getColumnIndex(InstanceProviderAPI.InstanceColumns.INSTANCE_FILE_PATH)); //used to read the xml file
-        } else {
-            Log.d("move next", "couldnt find executed form");
-        }
-
-        try {
-            cursor.close();
-        } catch (Exception e) {
-            System.err.println("Exception while trying to close cursor !");
-            e.printStackTrace();
-        }
-
-        return xmlFilePath;
     }
 
     private File createNewOdkFormInstanceFile(String xml, String jrFormId, File blankFormFilePath) {
@@ -450,9 +421,9 @@ public class OdkFormLoadTask extends AsyncTask<Void, Void, OdkFormLoadResult> {
             values.put(InstanceProviderAPI.InstanceColumns.JR_VERSION, formVersion);
         }
 
-        odkContentUri = resolver.insert(InstanceProviderAPI.InstanceColumns.CONTENT_URI, values);
+        this.instanceUri = resolver.insert(InstanceProviderAPI.InstanceColumns.CONTENT_URI, values);
 
-        if (odkContentUri == null) {
+        if (this.instanceUri == null) {
             return false;
         }
 
@@ -480,11 +451,11 @@ public class OdkFormLoadTask extends AsyncTask<Void, Void, OdkFormLoadResult> {
             values.put(InstanceProviderAPI.InstanceColumns.JR_VERSION, formVersion);
         }
 
-        odkContentUri = resolver.insert(InstanceProviderAPI.InstanceColumns.CONTENT_URI, values);
+        this.instanceUri = resolver.insert(InstanceProviderAPI.InstanceColumns.CONTENT_URI, values);
 
-        Log.d("saving new instance", ""+ odkContentUri);
+        Log.d("saving new instance", ""+ instanceUri);
 
-        if (odkContentUri == null) {
+        if (this.instanceUri == null) {
             return false;
         }
 

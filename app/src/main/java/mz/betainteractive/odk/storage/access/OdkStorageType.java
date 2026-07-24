@@ -12,6 +12,7 @@ public enum OdkStorageType {
     NO_ODK_INSTALLED,
     ODK_SHARED_FOLDER,
     ODK_SCOPED_FOLDER_NO_PROJECTS,
-    ODK_SCOPED_FOLDER_PROJECTS;
+    ODK_SCOPED_FOLDER_PROJECTS, /* NOT USED ANYMORE, means multiple projects inside odk, its hard to figure out which project you are working with */
+    ODK_INTENT_LAUNCH;
 
 }

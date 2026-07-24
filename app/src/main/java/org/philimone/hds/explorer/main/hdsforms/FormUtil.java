@@ -58,7 +58,6 @@ import androidx.fragment.app.FragmentManager;
 import com.google.gson.Gson;
 
 import io.objectbox.Box;
-import io.objectbox.BoxStore;
 import io.objectbox.query.QueryBuilder;
 import mz.betainteractive.odk.FormUtilities;
 import mz.betainteractive.odk.listener.OdkFormResultListener;
@@ -500,7 +499,7 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
     private CollectedData getCollectedData(FilledForm filledForm){
 
         List<CollectedData> cData = this.boxCollectedData.query(
-                CollectedData_.formId.equal(filledForm.getFormName()).and(CollectedData_.collectedId.equal(this.collectedData.collectedId))
+                CollectedData_.formId.equal(filledForm.getFormId()).and(CollectedData_.collectedId.equal(this.collectedData.collectedId))
         ).filter((c) -> StringUtil.containsAny(c.formModules, this.user.getSelectedModules())).build().find();
 
         if (cData != null && cData.size()>0) return cData.get(0);
@@ -517,7 +516,7 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
         if (collectedData == null){
             odkFormUtilities.loadForm(loadData);
         }else{
-            odkFormUtilities.loadForm(loadData, collectedData.getFormUri(), collectedData.formXmlPath, this); //load existent form
+            odkFormUtilities.loadForm(loadData, collectedData.getFormUri(), collectedData.getInstanceUri(), collectedData.formXmlPath, this); //load existent form
         }
 
     }
@@ -529,24 +528,25 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
         if (collectedData == null){
             odkFormUtilities.loadForm(loadData);
         }else{
-            odkFormUtilities.loadForm(loadData, collectedData.getFormUri(), collectedData.formXmlPath, this);
+            odkFormUtilities.loadForm(loadData, collectedData.getFormUri(), collectedData.getInstanceUri(), collectedData.formXmlPath, this);
         }
 
     }
 
     @Override
-    public void onFormFinalized(OdkFormLoadData formLoadData, Uri contentUri, String formId, String instanceFileUri, String metaInstanceName, Date lastUpdatedDate) {
-        Log.d("ext form finalized"," "+contentUri+", file-uri = "+instanceFileUri);
+    public void onFormFinalized(OdkFormLoadData formLoadData, Uri formUri, Uri instanceUri, String formId, String instanceXmlPath, String metaInstanceName, Date lastUpdatedDate) {
+        Log.d("ext form finalized"," "+ formUri +", file-uri = "+instanceXmlPath);
 
         //search existing record
-        CollectedData odkCollectedData = this.boxCollectedData.query().equal(CollectedData_.formUri, contentUri.toString(), QueryBuilder.StringOrder.CASE_SENSITIVE)
+        CollectedData odkCollectedData = this.boxCollectedData.query().equal(CollectedData_.formUri, formUri.toString(), QueryBuilder.StringOrder.CASE_SENSITIVE)
                 .and().equal(CollectedData_.collectedId, this.collectedData.collectedId, QueryBuilder.StringOrder.CASE_SENSITIVE).build().findFirst();
 
         if (odkCollectedData == null){ //insert
             odkCollectedData = new CollectedData();
             odkCollectedData.setFormId(formId);
-            odkCollectedData.setFormUri(contentUri.toString());
-            odkCollectedData.setFormXmlPath(instanceFileUri);
+            odkCollectedData.setFormUri(formUri.toString());
+            odkCollectedData.setInstanceUri(instanceUri.toString());
+            odkCollectedData.setFormXmlPath(instanceXmlPath);
             odkCollectedData.setFormInstanceName(metaInstanceName);
             odkCollectedData.setFormLastUpdatedDate(lastUpdatedDate);
             odkCollectedData.formFinalized = true;
@@ -566,8 +566,9 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
             //Log.d("inserting", "new collected data");
         }else{ //update
             odkCollectedData.setFormId(formId);
-            odkCollectedData.setFormUri(contentUri.toString());
-            //odkCollectedData.setFormXmlPath(instanceFileUri);
+            odkCollectedData.setFormUri(formUri.toString());
+            odkCollectedData.setInstanceUri(instanceUri.toString());
+            //odkCollectedData.setFormXmlPath(instanceXmlPath);
             odkCollectedData.setFormInstanceName(metaInstanceName);
             odkCollectedData.setFormLastUpdatedDate(lastUpdatedDate);
             odkCollectedData.formFinalized = true;
@@ -595,8 +596,8 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
     }
 
     @Override
-    public void onFormUnFinalized(OdkFormLoadData formLoadData, Uri contentUri, String formId, String instanceFileUri, String metaInstanceName, Date lastUpdatedDate) {
-        Log.d("ext form unfinalized"," "+contentUri);
+    public void onFormUnFinalized(OdkFormLoadData formLoadData, Uri formUri, Uri instanceUri, String formId, String instanceXmlPath, String metaInstanceName, Date lastUpdatedDate) {
+        Log.d("ext form unfinalized"," "+ formUri);
 
         buildExtensionFormNotFinalizedDialog(new DialogFactory.OnYesNoClickListener() {
             @Override
@@ -607,7 +608,7 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
             @Override
             public void onNoClicked() {
                 //saving
-                saveUnfinalizedForm(contentUri, formId, instanceFileUri, metaInstanceName, lastUpdatedDate);
+                saveUnfinalizedForm(formUri, formId, instanceXmlPath, metaInstanceName, lastUpdatedDate);
                 onFinishedExtensionCollection();
             }
         });
@@ -616,12 +617,12 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
     }
 
     @Override
-    public void onDeleteForm(OdkFormLoadData formLoadData, Uri contentUri, String instanceFileUri) {
+    public void onDeleteForm(OdkFormLoadData formLoadData, Uri formUri, Uri instanceUri, String instanceXmlPath) {
 
-        this.boxCollectedData.query().equal(CollectedData_.formUri, contentUri.toString(), QueryBuilder.StringOrder.CASE_SENSITIVE).build().remove(); //delete where formUri=contentUri
+        this.boxCollectedData.query().equal(CollectedData_.formUri, instanceUri.toString(), QueryBuilder.StringOrder.CASE_SENSITIVE).build().remove(); //delete where formUri=contentUri
 
         //delete instanceFileUri - already deleted by removing instance
-        if (instanceFileUri != null) {
+        if (instanceXmlPath != null) {
             //odkFormUtilities.deleteInstanceFile(instanceFileUri);
         }
 
@@ -639,8 +640,8 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
     }
 
     @Override
-    public void onFormInstanceNotFound(OdkFormLoadData formLoadData, final Uri contenUri) {
-        buildDeleteFormInstanceNotFoundDialog(formLoadData, contenUri);
+    public void onFormInstanceNotFound(OdkFormLoadData formLoadData, final Uri formUri, final Uri instanceUri) {
+        buildDeleteFormInstanceNotFoundDialog(formLoadData, formUri, instanceUri);
         onFinishedExtensionCollection();
     }
 
@@ -696,12 +697,12 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
         this.boxCoreCollectedData.put(collectedData);
     }
 
-    private void buildDeleteFormInstanceNotFoundDialog(OdkFormLoadData formLoadData, final Uri contenUri){
+    private void buildDeleteFormInstanceNotFoundDialog(OdkFormLoadData formLoadData, final Uri formUri, final Uri instanceUri){
 
         DialogFactory.createMessageYN(this.getContext(), R.string.household_details_dialog_del_saved_form_title_lbl, R.string.household_details_dialog_del_saved_form_msg_lbl, new DialogFactory.OnYesNoClickListener() {
             @Override
             public void onYesClicked() {
-                onDeleteForm(formLoadData, contenUri, null);
+                onDeleteForm(formLoadData, formUri, instanceUri, null);
             }
 
             @Override

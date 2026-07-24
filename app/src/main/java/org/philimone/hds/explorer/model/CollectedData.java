@@ -27,7 +27,8 @@ public class CollectedData implements Serializable {
     public long id;
     public String formId;
 
-    public String formUri; /* odk content uri, its different from file path */
+    public String formUri; /* odk form uri, its different from instance uri and file path - represents the blank form itself*/
+    public String instanceUri; /*odk form instance uri - represents an instance of the form */
     @Unique
     public String formXmlPath;
     public String formInstanceName;
@@ -87,6 +88,14 @@ public class CollectedData implements Serializable {
 
     public void setFormUri(String formUri) {
         this.formUri = formUri;
+    }
+
+    public String getInstanceUri() {
+        return instanceUri;
+    }
+
+    public void setInstanceUri(String instanceUri) {
+        this.instanceUri = instanceUri;
     }
 
     public long getRecordId() {

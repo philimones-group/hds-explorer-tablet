@@ -804,19 +804,20 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
     }
 
     @Override
-    public void onFormFinalized(OdkFormLoadData formLoadData, Uri contentUri, String formId, String instanceFileUri, String metaInstanceName, Date lastUpdatedDate) {
-        Log.d("form finalized"," "+contentUri+", file-uri = "+instanceFileUri);
+    public void onFormFinalized(OdkFormLoadData formLoadData, Uri formUri, Uri instanceUri, String formId, String instanceXmlPath, String metaInstanceName, Date lastUpdatedDate) {
+        Log.d("form finalized"," "+ formUri +", instance-uri = "+instanceUri+", file-uri = "+instanceXmlPath);
 
         //search existing record
-        CollectedData collectedData = this.boxCollectedData.query().equal(CollectedData_.formUri, contentUri.toString(), QueryBuilder.StringOrder.CASE_SENSITIVE)
+        CollectedData collectedData = this.boxCollectedData.query().equal(CollectedData_.formUri, formUri.toString(), QueryBuilder.StringOrder.CASE_SENSITIVE)
                 .and().equal(CollectedData_.recordId, subject.getId())
                 .and().equal(CollectedData_.recordEntity, subject.getTableName().code, QueryBuilder.StringOrder.CASE_SENSITIVE).build().findFirst();
 
         if (collectedData == null){ //insert
             collectedData = new CollectedData();
             collectedData.setFormId(formId);
-            collectedData.setFormUri(contentUri.toString());
-            collectedData.setFormXmlPath(instanceFileUri);
+            collectedData.setFormUri(formUri.toString());
+            collectedData.setInstanceUri(instanceUri.toString());
+            collectedData.setFormXmlPath(instanceXmlPath);
             collectedData.setFormInstanceName(metaInstanceName);
             collectedData.setFormLastUpdatedDate(lastUpdatedDate);
             collectedData.formFinalized = true;
@@ -841,8 +842,9 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
             Log.d("inserting", "new collected data - visit.id = "+collectedData.visitId);
         }else{ //update
             collectedData.setFormId(formId);
-            collectedData.setFormUri(contentUri.toString());
-            //collectedData.setFormXmlPath(instanceFileUri);
+            collectedData.setFormUri(formUri.toString());
+            collectedData.setInstanceUri(instanceUri.toString());
+            //collectedData.setFormXmlPath(instanceXmlPath);
             collectedData.setFormInstanceName(metaInstanceName);
             collectedData.setFormLastUpdatedDate(lastUpdatedDate);
             collectedData.formFinalized = true;
@@ -882,19 +884,20 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
     }
 
     @Override
-    public void onFormUnFinalized(OdkFormLoadData formLoadData, Uri contentUri, String formId, String instanceFileUri, String metaInstanceName, Date lastUpdatedDate) {
-        Log.d("form unfinalized"," "+contentUri);
+    public void onFormUnFinalized(OdkFormLoadData formLoadData, Uri formUri, Uri instanceUri, String formId, String instanceXmlPath, String metaInstanceName, Date lastUpdatedDate) {
+        Log.d("form unfinalized"," "+ formUri);
 
         //search existing record
-        CollectedData collectedData = this.boxCollectedData.query().equal(CollectedData_.formUri, contentUri.toString(), QueryBuilder.StringOrder.CASE_SENSITIVE)
+        CollectedData collectedData = this.boxCollectedData.query().equal(CollectedData_.formUri, formUri.toString(), QueryBuilder.StringOrder.CASE_SENSITIVE)
                 .and().equal(CollectedData_.recordId, subject.getId())
                 .and().equal(CollectedData_.recordEntity, subject.getTableName().code, QueryBuilder.StringOrder.CASE_SENSITIVE).build().findFirst();
 
         if (collectedData == null){ //insert
             collectedData = new CollectedData();
             collectedData.setFormId(formId);
-            collectedData.setFormUri(contentUri.toString());
-            collectedData.setFormXmlPath(instanceFileUri);
+            collectedData.setFormUri(formUri.toString());
+            collectedData.setInstanceUri(instanceUri.toString());
+            collectedData.setFormXmlPath(instanceXmlPath);
             collectedData.setFormInstanceName(metaInstanceName);
             collectedData.setFormLastUpdatedDate(lastUpdatedDate);
             collectedData.formFinalized = false;
@@ -919,8 +922,9 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
             Log.d("inserting", "new collected data");
         }else{ //update
             collectedData.setFormId(formId);
-            collectedData.setFormUri(contentUri.toString());
-            //collectedData.setFormXmlPath(instanceFileUri);
+            collectedData.setFormUri(formUri.toString());
+            collectedData.setInstanceUri(instanceUri.toString());
+            //collectedData.setFormXmlPath(instanceXmlPath);
             collectedData.setFormInstanceName(metaInstanceName);
             collectedData.setFormLastUpdatedDate(lastUpdatedDate);
             collectedData.formFinalized = false;
@@ -959,12 +963,12 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
     }
 
     @Override
-    public void onDeleteForm(OdkFormLoadData formLoadData, Uri contentUri, String instanceFileUri) {
+    public void onDeleteForm(OdkFormLoadData formLoadData, Uri formUri, Uri instanceUri, String instanceXmlPath) {
 
         getActivity().runOnUiThread(()->{
-            this.boxCollectedData.query().equal(CollectedData_.formUri, contentUri.toString(), QueryBuilder.StringOrder.CASE_SENSITIVE).build().remove();
+            this.boxCollectedData.query().equal(CollectedData_.formUri, formUri.toString(), QueryBuilder.StringOrder.CASE_SENSITIVE).build().remove();
             // delete also the formGroupInstanceChild
-            this.boxFormGroupInstanceChilds.query(FormGroupInstanceChild_.formInstanceUri.equal(instanceFileUri)).build().remove();
+            this.boxFormGroupInstanceChilds.query(FormGroupInstanceChild_.formInstanceUri.equal(instanceUri.toString())).build().remove();
         });
 
         getActivity().runOnUiThread(() -> {
@@ -978,8 +982,8 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
     }
 
     @Override
-    public void onFormInstanceNotFound(OdkFormLoadData formLoadData, final Uri contenUri) {
-        buildDeleteFormInstanceNotFoundDialog(formLoadData, contenUri);
+    public void onFormInstanceNotFound(OdkFormLoadData formLoadData, Uri formUri, Uri instanceUri) {
+        buildDeleteFormInstanceNotFoundDialog(formLoadData, formUri, instanceUri);
     }
 
     private void onFinishedOdkDataCollection(OdkFormLoadData formLoadData){
@@ -1013,12 +1017,12 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
         }
     }
 
-    private void buildDeleteFormInstanceNotFoundDialog(OdkFormLoadData formLoadData, final Uri contenUri){
+    private void buildDeleteFormInstanceNotFoundDialog(OdkFormLoadData formLoadData, final Uri formUri, final Uri instanceUri){
 
         DialogFactory.createMessageYN(this.getContext(), R.string.household_details_dialog_del_saved_form_title_lbl, R.string.household_details_dialog_del_saved_form_msg_lbl, new DialogFactory.OnYesNoClickListener() {
             @Override
             public void onYesClicked() {
-                onDeleteForm(formLoadData, contenUri, null);
+                onDeleteForm(formLoadData, formUri, instanceUri, null);
             }
 
             @Override
@@ -1077,9 +1081,10 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
             lastLoadedForm = formDataLoader;
 
             if (result.collectedData == null || result.form.isMultiCollPerSession()){
-                formUtilities.loadForm(result.odkFormLoadData);
+                Log.d("collect dfrag", "new instance");
+                formUtilities.loadForm(result.odkFormLoadData); //new form instance
             }else{
-                formUtilities.loadForm(result.odkFormLoadData, result.collectedData.getFormUri(), result.collectedData.formXmlPath, CollectedDataFragment.this);
+                formUtilities.loadForm(result.odkFormLoadData, result.collectedData.getFormUri(), result.collectedData.getInstanceUri(), result.collectedData.formXmlPath, CollectedDataFragment.this); //reopen form instance
             }
         }
 
@@ -1120,7 +1125,7 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
             lastLoadedForm = formDataLoader;
 
             //we are reopening a saved form
-            formUtilities.loadForm(result.odkFormLoadData, result.collectedData.getFormUri(), result.collectedData.formXmlPath, CollectedDataFragment.this);
+            formUtilities.loadForm(result.odkFormLoadData, result.collectedData.getFormUri(), result.collectedData.instanceUri, result.collectedData.formXmlPath, CollectedDataFragment.this);
         }
     }
 

@@ -103,7 +103,7 @@
     },
     {
       "id": "4:136916130421403055",
-      "lastPropertyId": "23:7006735612378168894",
+      "lastPropertyId": "24:8828041866560250272",
       "name": "CollectedData",
       "properties": [
         {
@@ -225,6 +225,11 @@
           "id": "23:7006735612378168894",
           "name": "formFinalized",
           "type": 1
+        },
+        {
+          "id": "24:8828041866560250272",
+          "name": "instanceUri",
+          "type": 9
         }
       ],
       "relations": []

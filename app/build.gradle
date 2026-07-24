@@ -18,8 +18,8 @@ android {
         applicationId "org.philimone.hds.explorer"
         minSdk = 21
         targetSdk = 35
-        versionCode 422
-        versionName "1.1.5 build ${versionCode}"
+        versionCode 428
+        versionName "1.1.9 build ${versionCode}"
 
 
         // This maps the public mapbox token stored on global gradle.properties to the string resource Mapbox needs

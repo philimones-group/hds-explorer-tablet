@@ -15,8 +15,8 @@ public class OdkFormLoadResult {
     private Status status;
     private OpenMode odkOpenMode;
     private OdkFormLoadData odkFormLoadData;
-    private Uri contentUri;
-    private String instanceUri;
+    private Uri formUri;
+    private Uri instanceUri;
     private File instanceFile;
     private XDocumentFile instanceDocumentFile;
     private @StringRes Integer messageText;
@@ -33,35 +33,37 @@ public class OdkFormLoadResult {
         this.messageText = messageText;
     }
 
-    public static OdkFormLoadResult newScopedDirSuccessResult(OdkFormLoadData odkFormLoadData, OpenMode openMode, XDocumentFile instanceFile, Uri instanceContentUri) {
+    public static OdkFormLoadResult newScopedDirSuccessResult(OdkFormLoadData odkFormLoadData, OpenMode openMode, Uri formUri, Uri instanceUri, XDocumentFile instanceFile) {
         OdkFormLoadResult result = new OdkFormLoadResult();
         result.odkFormLoadData = odkFormLoadData;
         result.status = Status.SUCCESS;
         result.odkOpenMode = openMode;
         result.instanceDocumentFile = instanceFile;
-        result.contentUri = instanceContentUri;
+        result.formUri = formUri;
+        result.instanceUri = instanceUri;
 
         return result;
     }
     
-    public static OdkFormLoadResult newEditSuccessResult(OdkFormLoadData odkFormLoadData, Uri instanceContentUri, String instanceUri) {
+    public static OdkFormLoadResult newEditSuccessResult(OdkFormLoadData odkFormLoadData, Uri formUri, Uri instanceUri) {
         OdkFormLoadResult result = new OdkFormLoadResult();
         result.odkFormLoadData = odkFormLoadData;
         result.status = OdkFormLoadResult.Status.SUCCESS;
         result.odkOpenMode = OpenMode.EDIT_ODK_INSTANCE;
-        result.contentUri = instanceContentUri;
+        result.formUri = formUri;
         result.instanceUri = instanceUri;
 
         return result;
     }
 
-    public static OdkFormLoadResult newSuccessResult(OdkFormLoadData odkFormLoadData, Status status, OpenMode openMode, File instanceFile, Uri instanceContentUri) {
+    public static OdkFormLoadResult newSuccessResult(OdkFormLoadData odkFormLoadData, Status status, OpenMode openMode, Uri formUri, Uri instanceUri, File instanceFile) {
         OdkFormLoadResult result = new OdkFormLoadResult();
         result.odkFormLoadData = odkFormLoadData;
         result.status = status;
         result.odkOpenMode = openMode;
         result.instanceFile = instanceFile;
-        result.contentUri = instanceContentUri;        ;
+        result.formUri = formUri;
+        result.instanceUri = formUri;
         
         return result;
     }
@@ -77,24 +79,24 @@ public class OdkFormLoadResult {
         return result;
     }
 
-    public static OdkFormLoadResult newScopedDirErrorResult(OdkFormLoadData odkFormLoadData, Status status, OpenMode openMode, XDocumentFile instanceFile, Uri instanceContentUri) {
+    public static OdkFormLoadResult newScopedDirErrorResult(OdkFormLoadData odkFormLoadData, Status status, OpenMode openMode, XDocumentFile instanceFile, Uri formUri) {
         OdkFormLoadResult result = new OdkFormLoadResult();
         result.odkFormLoadData = odkFormLoadData;
         result.status = status;
         result.odkOpenMode = openMode;
         result.instanceDocumentFile = instanceFile;
-        result.contentUri = instanceContentUri;
+        result.formUri = formUri;
 
         return result;
     }
 
-    public static OdkFormLoadResult newFileApiErrorResult(OdkFormLoadData odkFormLoadData, Status status, OpenMode openMode, File instanceFile, Uri instanceContentUri) {
+    public static OdkFormLoadResult newFileApiErrorResult(OdkFormLoadData odkFormLoadData, Status status, OpenMode openMode, File instanceFile, Uri formUri) {
         OdkFormLoadResult result = new OdkFormLoadResult();
         result.odkFormLoadData = odkFormLoadData;
         result.status = status;
         result.odkOpenMode = openMode;
         result.instanceFile = instanceFile;
-        result.contentUri = instanceContentUri;
+        result.formUri = formUri;
         
         return result;
     }
@@ -115,8 +117,8 @@ public class OdkFormLoadResult {
         this.odkOpenMode = odkOpenMode;
     }
 
-    public Uri getContentUri() {
-        return contentUri;
+    public Uri getFormUri() {
+        return formUri;
     }
 
     public File getInstanceFile() {
@@ -143,7 +145,9 @@ public class OdkFormLoadResult {
         this.messageText = messageText;
     }
 
-    public String getInstanceUri() {
+    public Uri getInstanceUri() {
+        return instanceUri;
+        /*
         if (instanceUri != null) {
             return instanceUri;
         } else if (instanceDocumentFile != null) {
@@ -152,7 +156,7 @@ public class OdkFormLoadResult {
             return instanceFile.getAbsolutePath();
         }
 
-        return null;
+        return null;*/
     }
 
     public enum Status {

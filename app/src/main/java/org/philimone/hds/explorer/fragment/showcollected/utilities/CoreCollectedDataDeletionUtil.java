@@ -312,6 +312,7 @@ public class CoreCollectedDataDeletionUtil {
 
         deleteCoreCollectedData(cdata);
     }
+
     private void deleteChangeHouseholdHead(CoreCollectedData cdata) {
 
         HeadRelationship currentHeadRel = boxHeadRelationships.get(cdata.formEntityId); //.query(HeadRelationship_.collectedId.equal(cdata.collectedId)).build().findFirst();
@@ -1205,9 +1206,9 @@ public class CoreCollectedDataDeletionUtil {
     public void deleteCollectedData(CollectedData odkCollectedData) {
         if (odkCollectedData != null) {
             try {
-                Uri odkContentUri = Uri.parse(odkCollectedData.formUri);
+                Uri odkInstanceUri = Uri.parse(odkCollectedData.instanceUri);
                 //delete odk xml
-                deleteOdkInstance(odkContentUri);
+                deleteOdkInstance(odkInstanceUri);
 
                 this.boxCollectedData.remove(odkCollectedData);
             } catch (Exception ex) {
@@ -1230,16 +1231,17 @@ public class CoreCollectedDataDeletionUtil {
         }
     }
 
-    private void deleteOdkInstance(Uri odkContentUri) {
+    private void deleteOdkInstance(Uri odkInstanceUri) {
 
+        /*
         if (true) {
             //IT WILL NOT DELETE THE ODK RECORD BECAUSE THIS CREATES APP CRASHES WHEN THROWS REMOTE EXCEPTIONS - AND I CANT CATCH IT
-            Log.d("dataDeletionUtil", "disabled-delete-odk-instance = "+odkContentUri);
+            Log.d("dataDeletionUtil", "disabled-delete-odk-instance = "+odkInstanceUri);
             return;
-        }
+        }*/
 
 
-        if (odkContentUri == null) {
+        if (odkInstanceUri == null) {
             return;
         }
 
@@ -1251,7 +1253,7 @@ public class CoreCollectedDataDeletionUtil {
             errorMessage = null;
 
             try {
-                mContext.getContentResolver().delete(odkContentUri, null, null);
+                mContext.getContentResolver().delete(odkInstanceUri, null, null);
             } catch (Exception ex) {
                 errorCount++;
                 errorMessage = ex.getMessage();

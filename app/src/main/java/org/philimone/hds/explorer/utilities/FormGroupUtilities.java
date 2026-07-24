@@ -97,7 +97,7 @@ public class FormGroupUtilities {
         FormGroupInstanceChild instanceChild = new FormGroupInstanceChild();
         //instanceChild.groupInstance.setTarget(formGroupInstance);
         instanceChild.formId = collectedData.formId;
-        instanceChild.formInstanceUri = collectedData.formXmlPath;
+        instanceChild.formInstanceUri = collectedData.instanceUri;
         instanceChild.collected = true;
         instanceChild.collectedDate = collectedData.formLastUpdatedDate;
         instanceChild.uploaded = false;

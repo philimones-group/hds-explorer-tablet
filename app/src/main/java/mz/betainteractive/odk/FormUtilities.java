@@ -17,7 +17,6 @@ import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Environment;
-import android.os.ParcelUuid;
 import android.os.storage.StorageManager;
 import android.os.storage.StorageVolume;
 import android.provider.DocumentsContract;
@@ -52,6 +51,7 @@ import java.util.concurrent.TimeUnit;
 
 import mz.betainteractive.odk.listener.OdkFormLoadListener;
 import mz.betainteractive.odk.listener.OdkFormResultListener;
+import mz.betainteractive.odk.model.FilledForm;
 import mz.betainteractive.odk.model.OdkFormLoadData;
 import mz.betainteractive.odk.storage.access.OdkScopedDirUtil;
 import mz.betainteractive.odk.storage.access.OdkStorageType;
@@ -66,11 +66,11 @@ public class FormUtilities {
     private Fragment fragment;
     private AppCompatActivity activity;
     private OdkFormLoadData formLoadData;
-	private Uri contentUri; /* odk CONTENT_URI of every instance */
-    private String strContentUri;
-    private String instanceUri; /* odk instance file uri */
+	private Uri formUri; /* odk CONTENT_URI of every instance */
+    private Uri instanceUri; /* odk instance file uri */
+
     private boolean formUnFinished;
-    private String xmlFilePath;
+    private String instanceXmlPath;
     private OdkFormResultListener formResultListener;
 
     private String metaInstanceName;
@@ -147,7 +147,7 @@ public class FormUtilities {
             this.requestPermissionRpState = this.fragment.registerForActivityResult(new ActivityResultContracts.RequestPermission(), permissionResultCallback);
             this.requestPermissionsReadWrite = this.fragment.registerForActivityResult(new ActivityResultContracts.RequestMultiplePermissions(), permissionResults -> {
                 boolean granted = !permissionResults.values().contains(false);
-                Log.d("request result", ""+granted);
+                Log.d("frag request result", ""+granted);
                 if (onPermissionReadWriteRequestListener != null) {
                     onPermissionReadWriteRequestListener.requestFinished(granted);
                 }
@@ -156,6 +156,7 @@ public class FormUtilities {
             this.requestPermissionRpState = this.activity.registerForActivityResult(new ActivityResultContracts.RequestPermission(), permissionResultCallback);
             this.requestPermissionsReadWrite = this.activity.registerForActivityResult(new ActivityResultContracts.RequestMultiplePermissions(), permissionResults -> {
                 boolean granted = !permissionResults.values().contains(false);
+                Log.d("acti request result", ""+granted);
                 if (onPermissionReadWriteRequestListener != null) {
                     onPermissionReadWriteRequestListener.requestFinished(granted);
                 }
@@ -176,52 +177,51 @@ public class FormUtilities {
     }
 
     private void retrieveOdkStorageType() {
-        final int odk_v_1_26_0 = 3713; //scoped storage without projects
-        final int odk_v_1_30_1 = 4094; //last scoped storage with projects
-        final int odk_v_2021_2 = 4242; //scoped storage with projects
-        String versionName = "NONE";
-
-        try {
-            PackageInfo packageInfo = mContext.getPackageManager().getPackageInfo("org.odk.collect.android", 0);
-            versionName = packageInfo.versionName;
-
-            if (packageInfo.versionCode < odk_v_1_26_0) {
-                odkStorageType = OdkStorageType.ODK_SHARED_FOLDER; //Android/data/odk
-            } else if (packageInfo.versionCode < odk_v_2021_2) {
-                odkStorageType = OdkStorageType.ODK_SCOPED_FOLDER_NO_PROJECTS;
-            } else {
-                odkStorageType = OdkStorageType.ODK_SCOPED_FOLDER_PROJECTS;
-            }
-
-        } catch (PackageManager.NameNotFoundException e) {
-            odkStorageType = OdkStorageType.NO_ODK_INSTALLED;
-        }
-
-        Log.d("odk version", odkStorageType+", ODK v"+versionName);
+        odkStorageType = getOdkStorageType(mContext);
     }
 
     public static OdkStorageType getOdkStorageType(Context context) {
-        final int odk_v_1_26_0 = 3713; //scoped storage without projects
-        final int odk_v_1_30_1 = 4094; //last scoped storage with projects
+        final int odk_v_1_26_0 = 3713; //using shared folder /odk
+        final int odk_v_1_28_4 = 3963; //last version using shared folder /odk
+        final int odk_v_1_30_1 = 4094; //last version with scoped storage without projects
         final int odk_v_2021_2 = 4242; //scoped storage with projects
+        final int odk_v_2023_1 = 4616;
         String versionName = "NONE";
+        Integer versionCode = null;
+        OdkStorageType storageType = OdkStorageType.NO_ODK_INSTALLED;
 
         try {
             PackageInfo packageInfo = context.getPackageManager().getPackageInfo("org.odk.collect.android", 0);
             versionName = packageInfo.versionName;
+            versionCode = packageInfo.versionCode;
 
-            if (packageInfo.versionCode < odk_v_1_26_0) {
-                return OdkStorageType.ODK_SHARED_FOLDER; //Android/data/odk
-            } else if (packageInfo.versionCode < odk_v_2021_2) {
-                return OdkStorageType.ODK_SCOPED_FOLDER_NO_PROJECTS;
+            /*
+            From ODK Collect up to version v1.28.4 - Support all android versions so far (15) - XML WRITE   - uses SHARED_FOLDER
+            From ODK Collect up to version v1.30.1 - Support up to Android 13                 - XML WRITE   - uses ODK_SCOPED_FOLDER_NO_PROJECTS
+            From ODK Collect version v2021.2.0     - Supports all android versions            - INTENT CALL - uses ODK_INTENT_LAUNCH
+            */
+
+            if (packageInfo.versionCode <= odk_v_1_28_4) {
+                //tested up to android 15 - virtually supports all versions
+                storageType = OdkStorageType.ODK_SHARED_FOLDER; //odk
+            } else if (packageInfo.versionCode <= odk_v_1_30_1) {
+                if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.TIRAMISU) {
+                    //up to android 13
+                    storageType = OdkStorageType.ODK_SCOPED_FOLDER_NO_PROJECTS; //Android/data/ without projects
+                } else {
+                    storageType = OdkStorageType.ODK_INTENT_LAUNCH;
+                }
             } else {
-                return OdkStorageType.ODK_SCOPED_FOLDER_PROJECTS;
+                storageType = OdkStorageType.ODK_INTENT_LAUNCH; //Will use intents on unsupported ODK Collect
             }
 
         } catch (PackageManager.NameNotFoundException e) {
-            return OdkStorageType.NO_ODK_INSTALLED;
+            storageType = OdkStorageType.NO_ODK_INSTALLED;
         }
 
+        Log.d("odk versionx", storageType+", ODK "+versionName+" - "+versionCode);
+
+        return storageType;
     }
 
     public OdkStorageType getOdkStorageType() {
@@ -231,6 +231,7 @@ public class FormUtilities {
     private void requestPermissionsForReadingPhoneState(OnPermissionRequestListener listener){
 
         if (isPermissionGranted(Manifest.permission.READ_PHONE_STATE)) {
+            Log.d("permissions", "access to READ_PHONE_STATE");
             //GO TO CHECK ODK FOLDER ACCESS
             requestPermissionsForOdkFolders();
         } else {
@@ -246,9 +247,16 @@ public class FormUtilities {
         //Check all cases of storage permissions
         //- < Android 11
         //-   Android 11+
+        // if we are using ODK_INTENT_LAUNCH, we dont need any access request
 
         if (odkStorageType == OdkStorageType.NO_ODK_INSTALLED) {
             DialogFactory.createMessageInfo(mContext, R.string.odk_problem_lbl, R.string.odk_form_load_error_odk_not_installed_lbl).show();
+            return;
+        }
+
+        if (odkStorageType == OdkStorageType.ODK_INTENT_LAUNCH) {
+            //We will use intent call to preload ODK Collect
+            callExecuteCurrentLoadTask();
             return;
         }
 
@@ -256,7 +264,7 @@ public class FormUtilities {
             //On Android 11, the basic permissions dont work, we must grant all access
             Log.d("Android 11", "need all access");
 
-            if (odkStorageType == OdkStorageType.ODK_SCOPED_FOLDER_NO_PROJECTS || odkStorageType == odkStorageType.ODK_SCOPED_FOLDER_PROJECTS) {
+            if (odkStorageType == OdkStorageType.ODK_SCOPED_FOLDER_NO_PROJECTS || odkStorageType == OdkStorageType.ODK_SCOPED_FOLDER_PROJECTS) {
                 //needs to request access to Android/data/org.odk.collect.android/files
                 OdkScopedDirUtil.PRIMARY_ANDROID_DOC_ID = OdkScopedDirUtil.ODK_SCOPED_FOLDER_URI;
 
@@ -285,12 +293,27 @@ public class FormUtilities {
     }
 
     private void requestPermissionsForReadAndWriteFiles(OnPermissionRequestListener listener){
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+            //less than Android 13
+            String[] legacyPermissions = new String[]{
+                    Manifest.permission.READ_EXTERNAL_STORAGE,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE
+            };
 
-        if (isPermissionGranted(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-            callExecuteCurrentLoadTask();
+            if (isLegacyPermissionGranted(legacyPermissions)) {
+                callExecuteCurrentLoadTask();
+            } else {
+                this.onPermissionReadWriteRequestListener = listener;
+                this.requestPermissionsReadWrite.launch(legacyPermissions);
+            }
         } else {
-            this.onPermissionReadWriteRequestListener = listener;
-            this.requestPermissionsReadWrite.launch(new String[] {Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE});
+
+            if (isPermissionGranted(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                callExecuteCurrentLoadTask();
+            } else {
+                this.onPermissionReadWriteRequestListener = listener;
+                this.requestPermissionsReadWrite.launch(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE});
+            }
         }
 
     }
@@ -420,6 +443,15 @@ public class FormUtilities {
         return !denied;
     }
 
+    private boolean isLegacyPermissionGranted(String... permissions) {
+        for (String permission : permissions) {
+            if (ContextCompat.checkSelfPermission(getContext(), permission) != PackageManager.PERMISSION_GRANTED) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     public void setOdkFormResultListener(OdkFormResultListener listener) {
 	    this.formResultListener = listener;
     }
@@ -430,10 +462,20 @@ public class FormUtilities {
 
 		this.currentLoadTask = new OdkFormLoadTask(this, loadData, new OdkFormLoadListener() {
             public void onOdkFormLoadSuccess(OdkFormLoadResult result) {
-                FormUtilities.this.contentUri = result.getContentUri();
-                FormUtilities.this.instanceUri = result.getInstanceUri();
+                formUri = result.getFormUri(); //save formUri
 
-                odkResultLauncher.launch(new Intent(Intent.ACTION_EDIT, result.getContentUri()));
+                Uri contentUri = result.getInstanceUri(); //instance form - from writing xml
+
+                //save FilledForm to be used by another activity (OdkPreloadActivity) - preloading directly to xml instance if used its already executed on OdkFormLoadTask
+                if (odkStorageType == OdkStorageType.ODK_INTENT_LAUNCH) {
+                    contentUri = result.getFormUri(); //blank form - intent launch
+                    FilledForm.saveInstance(mContext, loadData.preloadedData);
+                }
+
+                //Log.d("load-form", "content-uri = "+contentUri+", form-uri="+result.getFormUri());
+                Intent intent = new Intent(Intent.ACTION_EDIT, contentUri);
+                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+                odkResultLauncher.launch(intent);
             }
 
             public void onOdkFormLoadFailure(OdkFormLoadResult result) {
@@ -462,27 +504,29 @@ public class FormUtilities {
         requestPermissionsForReadingPhoneState(readPhoneStateGrantListener);
     }
 
-    public void loadForm(OdkFormLoadData loadData, String contentUriAsString, String instanceXmlUri, final OdkFormResultListener listener){
+    /* load saved instance */
+    public void loadForm(OdkFormLoadData loadData, String formUriStr, String instanceUriStr, String instanceXmlPath, final OdkFormResultListener listener){
         this.formId = loadData.formId;
         this.formLoadData = loadData;
-        this.strContentUri = contentUriAsString;
-	    this.contentUri = Uri.parse(contentUriAsString);        
+	    this.formUri = Uri.parse(formUriStr);
+        this.instanceUri = Uri.parse(instanceUriStr);
+        this.instanceXmlPath = instanceXmlPath;
         this.metaInstanceName = "";
         this.lastUpdatedDate = null;
-        loadData.formInstanceUri = instanceXmlUri;
 
-        this.currentLoadTask = new OdkFormLoadTask(this, loadData, this.contentUri, new OdkFormLoadListener() {
+        this.currentLoadTask = new OdkFormLoadTask(this, loadData, this.formUri, this.instanceUri, this.instanceXmlPath, new OdkFormLoadListener() {
             public void onOdkFormLoadSuccess(OdkFormLoadResult result) {
-                FormUtilities.this.contentUri = result.getContentUri();
-                FormUtilities.this.instanceUri = result.getInstanceUri();
+                formUri = result.getFormUri(); //save formUri
 
-                odkResultLauncher.launch(new Intent(Intent.ACTION_EDIT, result.getContentUri()));
+                Intent intent = new Intent(Intent.ACTION_EDIT, result.getInstanceUri()); //we need to edit the instance and not the blank form
+                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+                odkResultLauncher.launch(intent);
             }
 
             public void onOdkFormLoadFailure(OdkFormLoadResult result) {
                 //createSavedXFormNotFoundDialog();
                 if (listener != null){
-                    listener.onFormInstanceNotFound(formLoadData, contentUri);
+                    listener.onFormInstanceNotFound(formLoadData, formUri, instanceUri);
                 }else{
                     createFormLoadResultErrorDialog(result, loadData, LoadForm.REOPEN, listener);
                 }
@@ -551,7 +595,7 @@ public class FormUtilities {
                     if (loadFormType == LoadForm.OPEN) {
                         loadForm(loadData);
                     } else if (loadFormType == LoadForm.REOPEN) {
-                        loadForm(loadData, strContentUri, loadData.formInstanceUri, listener);
+                        loadForm(loadData, formUri.toString(), instanceUri.toString(), instanceXmlPath, listener);
                     }
                 }
             }).show();
@@ -575,32 +619,44 @@ public class FormUtilities {
 
     private void handleXformResult(ActivityResult result) {
 
-        Log.d("result "+result.getResultCode(), ""+result.toString());
-        //The result code its almost meaningless
-
-        new CheckFormStatus(mContext.getContentResolver(), contentUri).execute();
-
-        /*
         if (result.getResultCode() == Activity.RESULT_OK) {
-            new CheckFormStatus(mContext.getContentResolver(), contentUri).execute();
-        } else {
-            Toast.makeText(mContext, mContext.getString(R.string.odk_problem_lbl), Toast.LENGTH_LONG).show();
-        }*/
+
+            // Instance URI returned from ODK, e.g. content://org.odk.collect.android.provider.odk.instances/instances/1
+            this.instanceUri = result.getData().getData();
+
+
+            Log.d("result " + result.getResultCode(), "form-uri = "+this.formUri+", instance-uri = " + instanceUri + ", " + result.toString());
+            //The result code its almost meaningless
+
+            new CheckFormStatus(mContext.getContentResolver(), instanceUri).execute();
+        }
     }
 
     private void saveUnfinalizedFile(){
+
         ContentResolver resolver = mContext.getContentResolver();
 
-        Cursor cursor = resolver.query(contentUri, new String[] { InstanceProviderAPI.InstanceColumns.STATUS,
-                        InstanceProviderAPI.InstanceColumns.INSTANCE_FILE_PATH, InstanceProviderAPI.InstanceColumns.DISPLAY_NAME, InstanceProviderAPI.InstanceColumns.LAST_STATUS_CHANGE_DATE },
-                InstanceProviderAPI.InstanceColumns.STATUS + "=?",
-                new String[] { InstanceProviderAPI.STATUS_INCOMPLETE }, null);
+        Cursor cursor = resolver.query(
+                this.instanceUri,
+                new String[] {
+                        InstanceProviderAPI.InstanceColumns.STATUS,
+                        InstanceProviderAPI.InstanceColumns.INSTANCE_FILE_PATH,
+                        InstanceProviderAPI.InstanceColumns.DISPLAY_NAME,
+                        InstanceProviderAPI.InstanceColumns.LAST_STATUS_CHANGE_DATE
+                },
+                InstanceProviderAPI.InstanceColumns.STATUS + " IN (?, ?)",
+                new String[] {
+                        InstanceProviderAPI.STATUS_INCOMPLETE,
+                        InstanceProviderAPI.STATUS_VALID
+                },
+                null
+        );
 
         Log.d("Running check form", "");
 
         if (cursor.moveToNext()) {
             Log.d("move next", ""+cursor.getString(0));
-            xmlFilePath = cursor.getString(cursor.getColumnIndex(InstanceProviderAPI.InstanceColumns.INSTANCE_FILE_PATH)); //used to read the xml file
+            instanceXmlPath = cursor.getString(cursor.getColumnIndex(InstanceProviderAPI.InstanceColumns.INSTANCE_FILE_PATH)); //used to read the xml file
 
             String sdate = cursor.getString(cursor.getColumnIndex(InstanceProviderAPI.InstanceColumns.LAST_STATUS_CHANGE_DATE));
             java.util.Date ludate = new java.util.Date(Long.parseLong(sdate)) ;
@@ -614,7 +670,7 @@ public class FormUtilities {
     }
 
     public void editLastOpenedForm(){
-        odkResultLauncher.launch(new Intent(Intent.ACTION_EDIT, contentUri));
+        odkResultLauncher.launch(new Intent(Intent.ACTION_EDIT, instanceUri));
     }
 
     private void createUnfinishedFormDialog() {
@@ -624,17 +680,17 @@ public class FormUtilities {
             @Override
             public void onYesClicked() { //delete
                 formUnFinished = false;
-                mContext.getContentResolver().delete(contentUri, InstanceProviderAPI.InstanceColumns.STATUS + "=?", new String[] { InstanceProviderAPI.STATUS_INCOMPLETE });
+                mContext.getContentResolver().delete(instanceUri, InstanceProviderAPI.InstanceColumns.STATUS + " in (?, ?)", new String[] { InstanceProviderAPI.STATUS_INCOMPLETE, InstanceProviderAPI.STATUS_VALID });
 
                 if (formResultListener != null) {
-                    formResultListener.onDeleteForm(formLoadData, contentUri, instanceUri);
+                    formResultListener.onDeleteForm(formLoadData, formUri, instanceUri, instanceXmlPath);
                 }
             }
 
             @Override
             public void onNoClicked() { //change
                 formUnFinished = false;
-                odkResultLauncher.launch(new Intent(Intent.ACTION_EDIT, contentUri));
+                odkResultLauncher.launch(new Intent(Intent.ACTION_EDIT, instanceUri));
             }
 
             @Override
@@ -644,7 +700,7 @@ public class FormUtilities {
                 saveUnfinalizedFile();
 
                 if (formResultListener != null) {
-                    formResultListener.onFormUnFinalized(formLoadData, contentUri, formId, instanceUri, metaInstanceName, lastUpdatedDate);
+                    formResultListener.onFormUnFinalized(formLoadData, formUri, instanceUri, formId, instanceXmlPath, metaInstanceName, lastUpdatedDate);
                 }
             }
         });
@@ -804,7 +860,6 @@ public class FormUtilities {
         return null;
     }
 
-
     private Cursor getCursorForInstancesProvider(Uri contentUri) {
         ContentResolver resolver = mContext.getContentResolver();
         Cursor cursor = resolver.query(contentUri, new String[] { InstanceProviderAPI.InstanceColumns.STATUS,
@@ -816,12 +871,13 @@ public class FormUtilities {
 
         return cursor;
     }
-    public FormStatus isFormFinalized(String contentUriStr) {
+
+    public FormStatus isFormFinalized(String instanceUriStr) {
         FormStatus formStatus = FormStatus.NOT_FOUND;
 
-        if (contentUriStr == null) return formStatus;
+        if (instanceUriStr == null) return formStatus;
 
-        Uri contentUri = Uri.parse(contentUriStr);
+        Uri contentUri = Uri.parse(instanceUriStr);
         Cursor cursor = null;
         String errorMessage = null;
         int errorRepeatCount = 0;
@@ -872,55 +928,60 @@ public class FormUtilities {
         return formStatus;
     }
 
-
     class CheckFormStatus extends AsyncTask<Void, Void, Boolean> {
 
         private ContentResolver resolver;
-        private Uri contentUri;
+        private Uri instanceUri;
 
-        public CheckFormStatus(ContentResolver resolver, Uri contentUri) {
+        public CheckFormStatus(ContentResolver resolver, Uri instanceUri) {
             this.resolver = resolver;
-            this.contentUri = contentUri;
+            this.instanceUri = instanceUri;
         }
 
         @Override
         protected Boolean doInBackground(Void... arg0) {
 
-            /*
-            Cursor cursorx = resolver.query(contentUri, null, null, null,null);
-            while (cursorx.moveToNext()) {
-                Log.d("started", "record");
-                for (int i = 0; i < cursorx.getColumnCount(); i++) {
-                    String columnName = cursorx.getColumnName(i);
-                    String columnValue = cursorx.getString(i);
-                    Log.d("column(name,value) "+i, columnName+" = "+columnValue);
-                }
+            Cursor cursor = null;
 
-                Log.d("finished", "record");
-            }*/
+            cursor = resolver.query(
+                    this.instanceUri,
+                    new String[] {
+                            InstanceProviderAPI.InstanceColumns.STATUS,
+                            InstanceProviderAPI.InstanceColumns.INSTANCE_FILE_PATH,
+                            InstanceProviderAPI.InstanceColumns.DISPLAY_NAME,
+                            InstanceProviderAPI.InstanceColumns.LAST_STATUS_CHANGE_DATE
+                    },
+                    null, null, null
+            );
 
-
-            Cursor cursor = resolver.query(contentUri, new String[] { InstanceProviderAPI.InstanceColumns.STATUS,
-                            InstanceProviderAPI.InstanceColumns.INSTANCE_FILE_PATH, InstanceProviderAPI.InstanceColumns.DISPLAY_NAME, InstanceProviderAPI.InstanceColumns.LAST_STATUS_CHANGE_DATE },
-                    InstanceProviderAPI.InstanceColumns.STATUS + "=?",
-                    new String[] { InstanceProviderAPI.STATUS_COMPLETE }, null);
 
             boolean resultToReturn = false;
             Log.d("Running check form", "");
 
-            if (cursor.moveToNext()) {
-                Log.d("move next", ""+cursor.getString(0));
+            if (cursor != null && cursor.moveToNext()) {
+
+                Log.d("move next", "" + cursor.getString(0));
+
+                /*
+                for (int i = 0; i < cursor.getColumnCount(); i++) {
+                    String columnName = cursor.getColumnName(i);
+                    String columnValue = cursor.getString(i);
+                    Log.d("column(name,value)x " + i, columnName + " = " + columnValue);
+                }*/
 
                 String status = cursor.getString(cursor.getColumnIndex(InstanceProviderAPI.InstanceColumns.STATUS));
+                Log.d("odk status", status);
 
                 //guarantee that is a imcomplete form
-                if (InstanceProviderAPI.STATUS_INCOMPLETE.equals(status)) {
+                if (InstanceProviderAPI.STATUS_INCOMPLETE.equals(status) || InstanceProviderAPI.STATUS_VALID.equals(status)) {
+                    instanceXmlPath = cursor.getString(cursor.getColumnIndex(InstanceProviderAPI.InstanceColumns.INSTANCE_FILE_PATH)); //used to read the xml file - its a relative path id is using SAF
+                    metaInstanceName = cursor.getString(cursor.getColumnIndex(InstanceProviderAPI.InstanceColumns.DISPLAY_NAME));
                     resultToReturn = false;
                 } else { //its a completed form
                     String statusChangeDate = cursor.getString(cursor.getColumnIndex(InstanceProviderAPI.InstanceColumns.LAST_STATUS_CHANGE_DATE));
-                    xmlFilePath = cursor.getString(cursor.getColumnIndex(InstanceProviderAPI.InstanceColumns.INSTANCE_FILE_PATH)); //used to read the xml file - its a relative path id is using SAF
+                    instanceXmlPath = cursor.getString(cursor.getColumnIndex(InstanceProviderAPI.InstanceColumns.INSTANCE_FILE_PATH)); //used to read the xml file - its a relative path id is using SAF
                     metaInstanceName = cursor.getString(cursor.getColumnIndex(InstanceProviderAPI.InstanceColumns.DISPLAY_NAME));
-                    lastUpdatedDate = new java.util.Date(Long.parseLong(statusChangeDate)) ;
+                    lastUpdatedDate = new java.util.Date(Long.parseLong(statusChangeDate));
                     //Log.d("content-x", "" + metaInstanceName );
                     //Log.d("last-date", "" + lastUpdatedDate );
 
@@ -932,11 +993,13 @@ public class FormUtilities {
                 resultToReturn = false;
             }
 
-            try{
-                cursor.close();
-            }catch(Exception e){
-                System.err.println("Exception while trying to close cursor !");
-                e.printStackTrace();
+            if (cursor != null) {
+                try {
+                    cursor.close();
+                } catch (Exception e) {
+                    System.err.println("Exception while trying to close cursor !");
+                    e.printStackTrace();
+                }
             }
 
             return resultToReturn;
@@ -951,7 +1014,7 @@ public class FormUtilities {
 
                 //pass contentUri and filepath to a listener - onFormFinalized, onFormUnfinalized
                 if (formResultListener != null) {
-                    formResultListener.onFormFinalized(formLoadData, contentUri, formId, instanceUri, metaInstanceName, lastUpdatedDate);
+                    formResultListener.onFormFinalized(formLoadData, formUri, instanceUri, formId, instanceXmlPath, metaInstanceName, lastUpdatedDate);
                 }
             } else {
 
@@ -959,7 +1022,7 @@ public class FormUtilities {
                     //jump to call listener FormUnFinalized
                     if (formResultListener != null) {
                         saveUnfinalizedFile();
-                        formResultListener.onFormUnFinalized(formLoadData, contentUri, formId, instanceUri, metaInstanceName, lastUpdatedDate);
+                        formResultListener.onFormUnFinalized(formLoadData, formUri, instanceUri, formId, instanceXmlPath, metaInstanceName, lastUpdatedDate);
                     }
                 } else {
                     createUnfinishedFormDialog();
@@ -968,7 +1031,6 @@ public class FormUtilities {
 
         }
     }
-
 
 }
 

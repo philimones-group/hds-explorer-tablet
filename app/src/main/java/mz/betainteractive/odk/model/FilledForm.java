@@ -2,6 +2,12 @@ package mz.betainteractive.odk.model;
 
 import static mz.betainteractive.odk.model.RepeatGroupType.RESIDENT_MEMBERS;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -10,7 +16,6 @@ import java.util.Map;
 
 import android.content.ContentValues;
 import android.content.Context;
-import android.util.Log;
 
 import org.philimone.hds.explorer.R;
 import org.philimone.hds.explorer.model.Member;
@@ -20,15 +25,16 @@ import org.philimone.hds.explorer.model.enums.temporal.ResidencyEndType;
  * A filled form represents an ODK form that has been prefilled with values from
  * the OpenHDS application.
  */
-public class FilledForm {
+public class FilledForm implements Serializable {
 
+	public static final String TEMPORARY_FILENAME = "temp_filled_form.dat";
 	public static final String TYPE_RESIDENT_MEMBERS = "HouseholdResidentMembers";
 	public static final String TYPE_DEAD_MEMBERS = "HouseholdDeadMembers";
 	public static final String TYPE_OUTMIGRATED_MEMBERS = "HouseholdExtMembers";
 	public static final String TYPE_ALL_MEMBERS = "HouseholdAllMembers";
+	private static final long serialVersionUID = 1L;
 
-
-    private String formName;
+    private String formId;
 	private String formVersion;
     private Map<String,Object> values;
     private List<Member> householdMembers; /* Only has values if we selected an Household or a Member */
@@ -37,15 +43,15 @@ public class FilledForm {
 	private List<Member> outmigMembers;
 	private Map<String, List<Map<String, String>>> mapRepeatGroup;
 
-	public FilledForm(String formName) {
-        this.formName = formName;
+	public FilledForm(String formId) {
+        this.formId = formId;
         this.values = new HashMap<String, Object>();
         this.mapRepeatGroup = new HashMap<>();
         initMembers();
     }
 
 	public FilledForm(String formName, String formVersion) {
-		this.formName = formName;
+		this.formId = formName;
 		this.formVersion = formVersion;
 		this.values = new HashMap<String, Object>();
 		initMembers();
@@ -129,12 +135,12 @@ public class FilledForm {
 		}
 	}
 
-	public String getFormName() {
-		return formName;
+	public String getFormId() {
+		return formId;
 	}
 
-	public void setFormName(String formName) {
-		this.formName = formName;
+	public void setFormId(String formId) {
+		this.formId = formId;
 	}
 
 	public String getFormVersion() {
@@ -244,6 +250,35 @@ public class FilledForm {
 			case ALL_MEMBERS : return getHouseholdMembers().size();
 			case MAPPED_VALUES: return mapRepeatGroup.get(variableName).size();
 			default: return 0;
+		}
+	}
+
+	public static void saveInstance(Context context, FilledForm filledForm) {
+		try {
+			FileOutputStream fos = context.openFileOutput(TEMPORARY_FILENAME, Context.MODE_PRIVATE);
+			ObjectOutputStream oos = new ObjectOutputStream(fos);
+			oos.writeObject(filledForm);
+			oos.close();
+			fos.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public static FilledForm loadInstance(Context context) {
+		try {
+			FileInputStream fis = context.openFileInput(TEMPORARY_FILENAME);
+			ObjectInputStream ois = new ObjectInputStream(fis);
+			FilledForm filledForm = (FilledForm) ois.readObject();
+			ois.close();
+			fis.close();
+			return filledForm;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		} finally {
+			// Delete the file after reading, whether it succeeded or failed
+			context.deleteFile(TEMPORARY_FILENAME);
 		}
 	}
 }

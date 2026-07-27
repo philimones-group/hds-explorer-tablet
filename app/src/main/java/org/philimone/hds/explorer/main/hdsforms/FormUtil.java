@@ -35,8 +35,8 @@ import org.philimone.hds.forms.model.ColumnValue;
 import org.philimone.hds.forms.model.HForm;
 import org.philimone.hds.forms.model.PreloadMap;
 import org.philimone.hds.forms.model.RepeatColumnValue;
-import org.philimone.hds.forms.parsers.ExcelFormParser;
-import org.philimone.hds.forms.parsers.form.model.FormOptions;
+import org.philimone.hds.forms.model.parsers.ExcelFormParser;
+import org.philimone.hds.forms.model.parsers.form.model.FormOptions;
 
 import java.io.InputStream;
 import java.util.ArrayList;

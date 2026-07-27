@@ -36,3 +36,5 @@ dependencyResolutionManagement {
 include ':app'
 include ':hds-forms-lib'
 project(':hds-forms-lib').projectDir = new File(settingsDir, '../hds-forms-lib')
+include ':hds-forms-model-lib'
+project(':hds-forms-model-lib').projectDir = new File(settingsDir, '../hds-forms-model-lib')

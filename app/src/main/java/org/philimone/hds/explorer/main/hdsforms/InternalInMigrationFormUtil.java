@@ -589,7 +589,7 @@ public class InternalInMigrationFormUtil extends FormUtil<Inmigration> {
 
         //save state for editing
         saveStateMap.put("createdResidencyId", residency.id+"");
-        saveStateMap.put("createHeadRelationshipId", headRelationship != null ? headRelationship.id + "" : "");
+        saveStateMap.put("createdHeadRelationshipId", headRelationship != null ? headRelationship.id + "" : "");
         saveStateMap.put("createdOutmigrationId", outmigration.id+"");
         saveStateMap.put("previousResidencyId", selectedMemberResidency != null ? selectedMemberResidency.id+"" : "");
         saveStateMap.put("previousHeadRelationshipId", selectedMemberHeadRelationship != null ? selectedMemberHeadRelationship.id + "" : "");

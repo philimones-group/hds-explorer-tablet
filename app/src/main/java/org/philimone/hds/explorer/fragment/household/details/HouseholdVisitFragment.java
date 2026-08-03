@@ -8,6 +8,7 @@ import android.os.Bundle;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import io.objectbox.Box;
 import io.objectbox.query.QueryBuilder;
@@ -28,6 +29,7 @@ import org.philimone.hds.explorer.adapter.MemberAdapter;
 import org.philimone.hds.explorer.adapter.model.VisitCollectedDataItem;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
 import org.philimone.hds.explorer.database.Queries;
+import org.philimone.hds.explorer.fragment.PregnancySurveillanceDialog;
 import org.philimone.hds.explorer.listeners.HouseholdDetailsListener;
 import org.philimone.hds.explorer.main.MemberDetailsActivity;
 import org.philimone.hds.explorer.main.hdsforms.ChangeHeadFormUtil;
@@ -58,25 +60,18 @@ import org.philimone.hds.explorer.model.CoreCollectedData_;
 import org.philimone.hds.explorer.model.CoreEntity;
 import org.philimone.hds.explorer.model.CoreFormExtension;
 import org.philimone.hds.explorer.model.Death;
-import org.philimone.hds.explorer.model.Death_;
 import org.philimone.hds.explorer.model.Form;
 import org.philimone.hds.explorer.model.Form_;
 import org.philimone.hds.explorer.model.HeadRelationship;
-import org.philimone.hds.explorer.model.HeadRelationship_;
 import org.philimone.hds.explorer.model.Household;
 import org.philimone.hds.explorer.model.HouseholdProxyHead;
 import org.philimone.hds.explorer.model.HouseholdRelocation;
-import org.philimone.hds.explorer.model.Household_;
 import org.philimone.hds.explorer.model.IncompleteVisit;
-import org.philimone.hds.explorer.model.IncompleteVisit_;
 import org.philimone.hds.explorer.model.Inmigration;
-import org.philimone.hds.explorer.model.Inmigration_;
 import org.philimone.hds.explorer.model.MaritalRelationship;
-import org.philimone.hds.explorer.model.MaritalRelationship_;
 import org.philimone.hds.explorer.model.Member;
 import org.philimone.hds.explorer.model.Member_;
 import org.philimone.hds.explorer.model.Outmigration;
-import org.philimone.hds.explorer.model.Outmigration_;
 import org.philimone.hds.explorer.model.PregnancyOutcome;
 import org.philimone.hds.explorer.model.PregnancyOutcome_;
 import org.philimone.hds.explorer.model.PregnancyRegistration;
@@ -90,11 +85,11 @@ import org.philimone.hds.explorer.model.Residency;
 import org.philimone.hds.explorer.model.Residency_;
 import org.philimone.hds.explorer.model.User;
 import org.philimone.hds.explorer.model.Visit;
-import org.philimone.hds.explorer.model.Visit_;
 import org.philimone.hds.explorer.model.enums.CoreFormEntity;
 import org.philimone.hds.explorer.model.enums.Gender;
 import org.philimone.hds.explorer.model.enums.HouseholdType;
 import org.philimone.hds.explorer.model.enums.PregnancyStatus;
+import org.philimone.hds.explorer.model.enums.PregnancyVisitType;
 import org.philimone.hds.explorer.model.enums.SubjectEntity;
 import org.philimone.hds.explorer.model.enums.temporal.ResidencyEndType;
 import org.philimone.hds.explorer.widget.DialogFactory;
@@ -418,7 +413,7 @@ public class HouseholdVisitFragment extends Fragment {
         });
 
         this.btnVisitPregnancyVisit.setOnClickListener(v -> {
-            onPregnancyVisitClicked(null);
+            openPregnancySurveillanceDialog();
         });
 
         this.btnVisitDeath.setOnClickListener(v -> {
@@ -761,8 +756,8 @@ public class HouseholdVisitFragment extends Fragment {
         boolean femaleAtMothersAge = selectedMember.gender == Gender.FEMALE && isAtMotherAge;
         boolean isPregnant = pregnancyReg != null && pregnancyReg.status == PregnancyStatus.PREGNANT;
         boolean hasDelivered = pregnancyReg != null && pregnancyReg.status == PregnancyStatus.DELIVERED;
-        Log.d("pregnat", ""+isPregnant);
 
+        PregnancyOutcome outcome = hasDelivered ? boxPregnancyOutcomes.query(PregnancyOutcome_.code.equal(pregnancyReg.code)).build().findFirst() : null;
 
         if (femaleAtMothersAge) {
             boolean canPregReg = !isPregnant;
@@ -1295,7 +1290,9 @@ public class HouseholdVisitFragment extends Fragment {
                     }
                 }).show();
             } else {
-                openPregnancyOutcomeForm(pregnancyRegistration, false);
+                //the woman is pregnant - open pregnancy surveillance dialog
+                openPregnancySurveillanceDialog(pregnancyRegistration);
+                //openPregnancyOutcomeForm(pregnancyRegistration, false);
             }
             
         } else {
@@ -1304,6 +1301,106 @@ public class HouseholdVisitFragment extends Fragment {
         }
         
         
+    }
+
+    private void openPregnancySurveillanceDialog() {
+        PregnancyRegistration pregnancyReg = this.boxPregnancyRegistrations.query(PregnancyRegistration_.motherCode.equal(this.selectedMember.code)).orderDesc(PregnancyRegistration_.code).build().findFirst();
+        openPregnancySurveillanceDialog(pregnancyReg);
+    }
+
+    private void openPregnancySurveillanceDialog(PregnancyRegistration pregnancyReg) {
+        if (pregnancyReg != null) {
+
+            final PregnancySurveillanceDialog dialog = PregnancySurveillanceDialog.newInstance(
+                    getParentFragmentManager(),
+                    this.selectedMember,
+                    household,
+                    visit,
+                    pregnancyReg,
+                    null
+            );
+
+            FormUtilListener visitFormUtilListener = new FormUtilListener<PregnancyVisit>() {
+                @Override
+                public void onNewEntityCreated(PregnancyVisit resPregnancyVisit, Map<String, Object> data) {
+                    loadDataToListViews();
+                    updateHouseholdDetails();
+                    dialog.afterCreatingPregnancyVisit();
+                }
+
+                @Override
+                public void onEntityEdited(PregnancyVisit resPregnancyVisit, Map<String, Object> data) {
+                    loadDataToListViews();
+                    updateHouseholdDetails();
+                    dialog.afterCreatingPregnancyVisit();
+                }
+
+                @Override
+                public void onFormCancelled() {
+
+                }
+            };
+
+            PregnancySurveillanceDialog.Listener dialogListener = getPregnancySurveillanceDialogListener(dialog, visitFormUtilListener);
+            dialog.setListener(dialogListener);
+
+            dialog.show();
+        }
+    }
+
+    @NonNull
+    private PregnancySurveillanceDialog.Listener getPregnancySurveillanceDialogListener(PregnancySurveillanceDialog dialog, FormUtilListener<PregnancyVisit> visitFormUtilListener) {
+        FormUtilListener<PregnancyOutcome> birthFormUtilListener = new FormUtilListener<PregnancyOutcome>() {
+            @Override
+            public void onNewEntityCreated(PregnancyOutcome entity, Map<String, Object> data) {
+                loadDataToListViews();
+                updateHouseholdDetails();
+                dialog.afterCreatingBirthRegistration();
+            }
+
+            @Override
+            public void onEntityEdited(PregnancyOutcome entity, Map<String, Object> data) {
+                loadDataToListViews();
+                updateHouseholdDetails();
+                dialog.afterCreatingBirthRegistration();
+            }
+
+            @Override
+            public void onFormCancelled() {
+
+            }
+        };
+
+        PregnancySurveillanceDialog.Listener dialogListener = new PregnancySurveillanceDialog.Listener() {
+            @Override
+            public void onAddPregnancyVisit(PregnancyRegistration registration, PregnancyVisitType type) {
+                createPregnancyVisitForm(registration, type, visitFormUtilListener);
+            }
+
+            @Override
+            public void onAddBirthRegistration(PregnancyRegistration registration) {
+                openPregnancyOutcomeForm(registration, false, birthFormUtilListener);
+            }
+
+            @Override
+            public void onViewMemberDetails(Member member) {
+
+                MemberSelectedTask task = new MemberSelectedTask(member, household, visit, false);
+                task.execute();
+
+                showLoadingDialog(getString(R.string.loading_dialog_member_details_lbl), true);
+            }
+
+            @Override
+            public void onViewCollectedPregnancyVisit(PregnancyVisit pregnancyVisit) {
+                //edit pregnancy visit
+                onPregnancyVisitClicked(pregnancyVisit);
+            }
+
+            @Override
+            public void onCanceled() { }
+        };
+        return dialogListener;
     }
 
     private void onPregnancyVisitClicked(PregnancyVisit pregnancyVisit) {
@@ -1334,12 +1431,43 @@ public class HouseholdVisitFragment extends Fragment {
 
     }
 
+    private void createPregnancyVisitForm(PregnancyRegistration pregnancyRegistration, PregnancyVisitType visitType, FormUtilListener<PregnancyVisit> formUtilListener) {
+        Log.d("on-pregvisit", ""+this.selectedMember);
+
+        FormUtil.Mode mode = FormUtil.Mode.CREATE;
+
+        PregnancyVisitFormUtil formUtil = PregnancyVisitFormUtil.newInstance(mode, this, this.getContext(), this.visit, this.household, this.selectedMember, pregnancyRegistration, visitType, this.odkFormUtilities, formUtilListener);
+
+        formUtil.collect();
+
+    }
+
     private void createPregnancyRegistrationForOutcome() {
         Log.d("started ", "pregnancy outcome - preg registration");
+
+        FormUtilListener birthFormUtilListener = new FormUtilListener<PregnancyOutcome>() {
+            @Override
+            public void onNewEntityCreated(PregnancyOutcome entity, Map<String, Object> data) {
+                loadDataToListViews();
+                updateHouseholdDetails();
+            }
+
+            @Override
+            public void onEntityEdited(PregnancyOutcome entity, Map<String, Object> data) {
+                loadDataToListViews();
+                updateHouseholdDetails();
+            }
+
+            @Override
+            public void onFormCancelled() {
+
+            }
+        };
+
         new PregnancyRegistrationFormUtil(this, this.getContext(), this.visit, this.household, this.selectedMember, PregnancyStatus.DELIVERED, this.odkFormUtilities, new FormUtilListener<PregnancyRegistration>() {
             @Override
             public void onNewEntityCreated(PregnancyRegistration entity, Map<String, Object> data) {
-                openPregnancyOutcomeForm(entity, true);
+                openPregnancyOutcomeForm(entity, true, birthFormUtilListener);
             }
 
             @Override
@@ -1355,26 +1483,8 @@ public class HouseholdVisitFragment extends Fragment {
         }).collect();
     }
 
-    private void openPregnancyOutcomeForm(PregnancyRegistration pregnancyRegistration, boolean createdForOutcome){
-                
-        new PregnancyOutcomeFormUtil(this, this.getContext(), this.visit, this.household, this.selectedMember, pregnancyRegistration, createdForOutcome, this.odkFormUtilities, new FormUtilListener<PregnancyOutcome>() {
-            @Override
-            public void onNewEntityCreated(PregnancyOutcome pregnancyOutcome, Map<String, Object> data) {
-                loadDataToListViews();
-                updateHouseholdDetails();
-            }
-
-            @Override
-            public void onEntityEdited(PregnancyOutcome pregnancyOutcome, Map<String, Object> data) {
-                loadDataToListViews();
-                updateHouseholdDetails();
-            }
-
-            @Override
-            public void onFormCancelled() {
-
-            }
-        }).collect();
+    private void openPregnancyOutcomeForm(PregnancyRegistration pregnancyRegistration, boolean createdForOutcome, FormUtilListener<PregnancyOutcome> birthFormUtilListener){
+        new PregnancyOutcomeFormUtil(this, this.getContext(), this.visit, this.household, this.selectedMember, pregnancyRegistration, createdForOutcome, this.odkFormUtilities, birthFormUtilListener).collect();
     }
 
     private void openPregnancyOutcomeForEdit(PregnancyOutcome pregnancyOutcome){

@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- 1. Bottom Shadow (Darkened base color via black overlay) -->
+    <item
+        android:top="2dp"
+        android:left="1dp"
+        android:right="1dp"
+        android:bottom="0dp">
+        <shape android:shape="rectangle">
+            <solid android:color="@color/nui_color_blackgreen_end"/>
+            <corners android:radius="30dp"/>
+        </shape>
+    </item>
+    <item
+        android:top="2dp"
+        android:left="1dp"
+        android:right="1dp"
+        android:bottom="0dp">
+        <shape android:shape="rectangle">
+            <solid android:color="#000000" android:alpha="0.35"/>
+            <corners android:radius="30dp"/>
+        </shape>
+    </item>
+
+    <!-- 2. Base Background Layer (Your Main Color) -->
+    <item
+        android:top="1dp"
+        android:left="1dp"
+        android:right="1dp"
+        android:bottom="2dp">
+        <shape android:shape="rectangle">
+            <solid android:color="@color/nui_color_blackgreen_end"/>
+            <corners android:radius="30dp"/>
+        </shape>
+    </item>
+
+    <!-- 3. Top Inner Highlight (Brightened base color via white overlay) -->
+    <item
+        android:top="1dp"
+        android:left="2dp"
+        android:right="2dp"
+        android:bottom="5dp">
+        <shape android:shape="rectangle">
+            <solid android:color="@color/nui_color_blackgreen_end"/>
+            <corners android:radius="28dp"/>
+        </shape>
+    </item>
+    <item
+        android:top="1dp"
+        android:left="2dp"
+        android:right="2dp"
+        android:bottom="5dp">
+        <shape android:shape="rectangle">
+            <solid android:color="#FFFFFF" android:alpha="0.25"/>
+            <corners android:radius="28dp"/>
+        </shape>
+    </item>
+
+    <!-- 4. Center Content Mask (Restores Main Color over Highlight) -->
+    <item
+        android:top="3dp"
+        android:left="2dp"
+        android:right="2dp"
+        android:bottom="5dp">
+        <shape android:shape="rectangle">
+            <solid android:color="@color/nui_color_blackgreen_end"/>
+            <corners android:radius="26dp"/>
+        </shape>
+    </item>
+
+    <!-- 5. Global Border Stroke -->
+    <item>
+        <shape android:shape="rectangle">
+            <stroke android:width="1dp" android:color="@color/nui_color_border_lightgray"/>
+            <corners android:radius="30dp"/>
+        </shape>
+    </item>
+
+</layer-list>

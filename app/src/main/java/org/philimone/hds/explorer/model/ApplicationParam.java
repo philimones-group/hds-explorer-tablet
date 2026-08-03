@@ -25,6 +25,8 @@ public class ApplicationParam {
     public static final String PARAMS_MIN_AGE_OF_RESPONDENT   = "hds.explorer.constraints.respondent.age.min";
     public static final String PARAMS_MAX_ANTEPARTUM_VISITS = "hds.explorer.constraints.pregnancy.antepartum.visits.max";
     public static final String PARAMS_MAX_POSTPARTUM_VISITS = "hds.explorer.constraints.pregnancy.postpartum.visits.max";
+    public static final String PARAMS_ANTEPARTUM_SCHEDULE  = "hds.explorer.constraints.pregnancy.antepartum.visits.schedule";
+    public static final String PARAMS_POSTPARTUM_SCHEDULE = "hds.explorer.constraints.pregnancy.postpartum.visits.schedule";
     public static final String PARAMS_SYSTEM_LANGUAGE = "hds.explorer.system.language";
     public static final String PARAMS_SYSTEM_CODE_GENERATOR = "hds.explorer.system.codegenerator";
     public static final String PARAMS_SYSTEM_CODE_GENERATOR_INCREMENTAL_RULE = "hds.explorer.system.codegenerator_rules.incremental";

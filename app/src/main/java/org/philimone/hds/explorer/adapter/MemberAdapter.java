@@ -253,6 +253,7 @@ public class MemberAdapter extends RecyclerView.Adapter<MemberAdapter.MemberView
             String extrasText = "";
             String endTypeText = "";
             String memberDetailsText = "";
+            boolean isDead = mb.endType == ResidencyEndType.DEATH;
 
             if (showEndTypeCode) {
                 switch (mb.endType) {
@@ -344,11 +345,29 @@ public class MemberAdapter extends RecyclerView.Adapter<MemberAdapter.MemberView
 
             if (memberIcon != null){
                 switch (memberIcon){
-                    case NORMAL_MEMBER_ICON:iconView.setImageResource(R.mipmap.nui_member_red_icon); break;
-                    case NORMAL_MEMBER_CHECKED_ICON:iconView.setImageResource(R.mipmap.nui_member_red_chk_icon); break;
+                    case NORMAL_MEMBER_ICON:
+                        if (!isDead) {
+                            iconView.setImageResource(R.mipmap.nui_member_red_icon);
+                        } else {
+                            iconView.setImageResource(R.mipmap.nui_member_dth_icon);
+                        }
+                        break;
+                    case NORMAL_MEMBER_CHECKED_ICON:
+                        if (!isDead) {
+                            iconView.setImageResource(R.mipmap.nui_member_red_chk_icon);
+                        } else {
+                            iconView.setImageResource(R.mipmap.nui_member_dth_chk_icon);
+                        }
+                        break;
                     case NORMAL_HEAD_ICON:iconView.setImageResource(R.mipmap.nui_member_red_filled_icon); break;
                     case NORMAL_SECHEAD_ICON:iconView.setImageResource(R.mipmap.nui_member_red_filled_two_icon); break;
-                    case NORMAL_MEMBER_NEW_ICON:iconView.setImageResource(R.mipmap.nui_member_red_new_icon); break;
+                    case NORMAL_MEMBER_NEW_ICON:
+                        if (!isDead) {
+                            iconView.setImageResource(R.mipmap.nui_member_red_new_icon);
+                        } else {
+                            iconView.setImageResource(R.mipmap.nui_member_dth_new_icon);
+                        }
+                        break;
                     case NORMAL_HEAD_NEW_ICON:iconView.setImageResource(R.mipmap.nui_member_red_filled_new_icon); break;
                 }
             }

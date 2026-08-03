@@ -1041,4 +1041,51 @@
     <string name="memberStatus_inactive">አንደምታገለግል</string>
     <string name="memberStatus_not_found">አባል አልተገኘም</string>
 
+    <!-- Pregnancy Panel -->
+    <string name="pregnancy_panel_title">የእርግዝና ክትትል</string>
+    <string name="pregnancy_panel_mother_lbl">እናትን</string>
+    <string name="pregnancy_panel_mother_name_lbl">ስም</string>
+    <string name="pregnancy_panel_mother_age_lbl">ዕድሜ</string>
+    <string name="pregnancy_panel_mother_preg_status_lbl">የእርግዝና ምዝገባ</string>
+    <string name="pregnancy_panel_tab_visits">ጉብኝቶች</string>
+    <string name="pregnancy_panel_tab_outcomes">ውጤቶች እና ልጆች</string>
+    <string name="pregnancy_panel_antepartum_visits">ከወሊድ በፊት ጉብኝቶች (%1$d)</string>
+    <string name="pregnancy_panel_postpartum_visits">ከወሊድ በኋላ ጉብኝቶች (%1$d)</string>
+    <string name="pregnancy_panel_edd_lbl">የሚጠበቅበት ቀን</string>
+    <string name="pregnancy_panel_gest_weeks_lbl">የእርግዝና ሳምንታት</string>
+    <string name="pregnancy_panel_postpartum_days_lbl">ከወሊድ በኋላ ቀናት</string>
+    <string name="pregnancy_panel_lmp_lbl">የመጨረሻ የወር አበባ</string>
+    <string name="pregnancy_panel_complications_warning">⚠️ ባለፈው ጉብኝት ላይ ችግሮች ሪፖርት ተደርጓል!</string>
+    <string name="pregnancy_panel_outcome_summary_title">የውጤት ማጠቃለያ</string>
+    <string name="pregnancy_panel_outcome_date_lbl">ቀን: %1$s</string>
+    <string name="pregnancy_panel_outcome_place_lbl">ቦታ: %1$s</string>
+    <string name="pregnancy_panel_outcome_livebirths_lbl">በሕይወት የተወለዱ: %1$d</string>
+    <string name="pregnancy_panel_outcome_stillbirths_lbl">የሞቱ የተወለዱ: %1$d</string>
+    <string name="pregnancy_panel_children_born_title">የተወለዱ ልጆች</string>
+    <string name="pregnancy_panel_register_birth_bt_lbl">የልደት ምዝገባ</string>
+    <string name="pregnancy_panel_view_profile_bt_lbl">የልጁን መረጃ አሳይ</string>
+    <string name="pregnancy_panel_visit_add_bt_lbl">አዲስ ጉብኝት አክል</string>
+    <string name="pregnancy_panel_visit_add_antepartum_bt_lbl">አዲስ ከወሊድ በፊት ጉብኝት</string>
+    <string name="pregnancy_panel_visit_add_postpartum_bt_lbl">አዲስ ከወሊድ በኋላ ጉብኝት</string>
+    <string name="pregnancy_panel_visit_code_lbl">ኮድ:</string>
+    <string name="pregnancy_panel_status_lbl">ሁኔታ:</string>
+    <string name="pregnancy_panel_next_visit_lbl">የሚመከር ቀጣይ ጉብኝት: %1$s</string>
+    <string name="pregnancy_panel_no_outcome_lbl">እስካሁን የተመዘገበ ውጤት የለም።</string>
+    <string name="pregnancy_panel_visit_detail_gest_weeks_lbl">የእርግዝና ሳምንታት: %1$d</string>
+    <string name="pregnancy_panel_visit_detail_provider_lbl">አቅራቢ: %1$s</string>
+    <string name="pregnancy_panel_visit_detail_complications_lbl">ችግሮች: %1$s</string>
+    <string name="pregnancy_panel_visit_detail_none_lbl">ምንም</string>
+    <string name="pregnancy_panel_visit_detail_breastfeeding_lbl">ጡት ማጥባት: %1$s</string>
+    <string name="pregnancy_panel_visit_detail_daily_activities_lbl">ዕለታዊ ተግባራት: %1$s</string>
+    <string name="pregnancy_panel_visit_detail_resumed_lbl">የተጀመሩ</string>
+    <string name="pregnancy_panel_visit_detail_not_resumed_lbl">ያልተጀመሩ</string>
+    <string name="pregnancy_panel_gest_days_lbl">%1$d ቀናት</string>
+    <string name="pregnancy_panel_tab_history">ታሪክ</string>
+    <string name="pregnancy_panel_next_visit_overdue_lbl">⚠️ %1$s (ዘግይቷል)</string>
+    <string name="pregnancy_panel_followup_expired_lbl">የክትትል ጊዜ አልቋል</string>
+    <string name="not_applicable_lbl">አልተገኘም</string>
+    <string name="pregnancy_panel_mother_code_subtitle_lbl">እናት: %1$s</string>
+    <string name="pregnancy_panel_child_item_details_lbl">%1$s | %2$s</string>
+    <string name="pregnancy_panel_child_stillborn_name_lbl">[%1$s]</string>
+
 </resources>

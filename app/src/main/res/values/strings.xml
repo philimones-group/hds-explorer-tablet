@@ -380,7 +380,7 @@
     <string name="household_visit_bt_enum_lbl">Member\nEnumeration</string>
     <string name="household_visit_bt_birth_lbl">Birth\nRegistration</string>
     <string name="household_visit_bt_pregnancy_lbl">Pregnancy\nRegistration</string>
-    <string name="household_visit_bt_pregnancy_visit_lbl">Pregnancy\nFollow-up</string>
+    <string name="household_visit_bt_pregnancy_visit_lbl">Pregnancy\nSurveillance</string>
     <string name="household_visit_bt_extinmig_lbl">External\nInMigration</string>
     <string name="household_visit_bt_intinmig_lbl">Internal\nInMigration</string>
     <string name="household_visit_bt_outmig_lbl">OutMigration\nRegistration</string>
@@ -629,6 +629,54 @@
     <string name="pregnancy_visit_visitdate_not_before_outcome_date_lbl">The visit date cannot be before the date of birth of any child from the last pregnancy outcome.</string>
     <string name="pregnancy_visit_visitdate_not_before_last_visit_date_lbl">The visit date cannot be before the date of the last pregnancy follow-up visit.</string>
     <string name="pregnancy_visit_status_postpartum_no_outcomes_err_lbl">This is a PostPartum Pregnancy Visit so it should have at least 1 child (alive or dead).</string>
+
+    <!-- Pregnancy Panel -->
+    <string name="pregnancy_panel_title">Pregnancy Surveillance</string>
+    <string name="pregnancy_panel_mother_lbl">Mother</string>
+    <string name="pregnancy_panel_mother_name_lbl">Name</string>
+    <string name="pregnancy_panel_mother_age_lbl">Age</string>
+    <string name="pregnancy_panel_mother_preg_status_lbl">Pregnancy Registration</string>
+    <string name="pregnancy_panel_tab_visits">Visits</string>
+    <string name="pregnancy_panel_tab_outcomes">Outcomes &amp; Children</string>
+    <string name="pregnancy_panel_antepartum_visits">Antepartum Visits (%1$d)</string>
+    <string name="pregnancy_panel_postpartum_visits">Postpartum Visits (%1$d)</string>
+    <string name="pregnancy_panel_edd_lbl">EDD</string>
+    <string name="pregnancy_panel_gest_weeks_lbl">Gest. Weeks</string>
+    <string name="pregnancy_panel_postpartum_days_lbl">Postpartum Days</string>
+    <string name="pregnancy_panel_lmp_lbl">LMP</string>
+    <string name="pregnancy_panel_complications_warning">⚠️ Complications reported in previous visits!</string>
+    <string name="pregnancy_panel_outcome_summary_title">Outcome Summary</string>
+    <string name="pregnancy_panel_outcome_date_lbl">Date: %1$s</string>
+    <string name="pregnancy_panel_outcome_place_lbl">Place: %1$s</string>
+    <string name="pregnancy_panel_outcome_livebirths_lbl">Live Births: %1$d</string>
+    <string name="pregnancy_panel_outcome_stillbirths_lbl">Still Births: %1$d</string>
+    <string name="pregnancy_panel_children_born_title">Children Born</string>
+    <string name="pregnancy_panel_register_birth_bt_lbl">Birth Registration</string>
+    <string name="pregnancy_panel_view_profile_bt_lbl">View Child Profile</string>
+    <string name="pregnancy_panel_visit_add_bt_lbl">Add New Visit</string>
+    <string name="pregnancy_panel_visit_add_antepartum_bt_lbl">New Antepartum Visit</string>
+    <string name="pregnancy_panel_visit_add_postpartum_bt_lbl">New Postpartum Visit</string>
+    <string name="pregnancy_panel_visit_code_lbl">Code:</string>
+    <string name="pregnancy_panel_status_lbl">Status:</string>
+    <string name="pregnancy_panel_next_visit_lbl">Next Recommended Visit: %1$s</string>
+    <string name="pregnancy_panel_no_outcome_lbl">No outcome registered yet.</string>
+    <string name="pregnancy_panel_visit_detail_gest_weeks_lbl">Gest. Weeks: %1$d</string>
+    <string name="pregnancy_panel_visit_detail_provider_lbl">Provider: %1$s</string>
+    <string name="pregnancy_panel_visit_detail_complications_lbl">Complications: %1$s</string>
+    <string name="pregnancy_panel_visit_detail_none_lbl">None</string>
+    <string name="pregnancy_panel_visit_detail_breastfeeding_lbl">Breastfeeding: %1$s</string>
+    <string name="pregnancy_panel_visit_detail_daily_activities_lbl">Daily Activities: %1$s</string>
+    <string name="pregnancy_panel_visit_detail_resumed_lbl">Resumed</string>
+    <string name="pregnancy_panel_visit_detail_not_resumed_lbl">Not Resumed</string>
+    <string name="pregnancy_panel_gest_days_lbl">%1$d days</string>
+    <string name="pregnancy_panel_tab_history">History</string>
+    <string name="pregnancy_panel_next_visit_overdue_lbl">⚠️ %1$s (OVERDUE)</string>
+    <string name="pregnancy_panel_followup_expired_lbl">Follow-up period expired</string>
+
+    <string name="not_applicable_lbl">N/A</string>
+    <string name="pregnancy_panel_mother_code_subtitle_lbl">Mother: %1$s</string>
+    <string name="pregnancy_panel_child_item_details_lbl">%1$s | %2$s</string>
+    <string name="pregnancy_panel_child_stillborn_name_lbl">[%1$s]</string>
 
     <!-- death registration -->
     <string name="death_visit_code_empty_lbl">The Visit Code cannot be empty</string>

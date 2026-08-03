@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="10dp"
+    android:background="?android:attr/selectableItemBackground">
+
+    <ImageView
+        android:id="@+id/imgVisitStatus"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_gravity="center_vertical"
+        android:src="@mipmap/nui_pregnancy_visit_icon_red" />
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_marginLeft="10dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/txtVisitDate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:text="Visit Date: 2023-10-01"
+            android:textStyle="bold"
+            android:textSize="15sp"
+            android:textColor="#333" />
+
+        <TextView
+            android:id="@+id/txtVisitDetail1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:text="Detail 1"
+            android:textSize="13sp"
+            android:textColor="#666" />
+
+        <TextView
+            android:id="@+id/txtVisitDetail2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:text="Detail 2"
+            android:textSize="13sp"
+            android:textColor="#666" />
+
+        <TextView
+            android:id="@+id/txtVisitComplications"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:text="Complications: None"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            android:textColor="#666" />
+
+    </LinearLayout>
+
+</LinearLayout>

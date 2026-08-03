@@ -109,6 +109,21 @@ public class PregnancyVisitFormUtil extends FormUtil<PregnancyVisit> {
         initialize();
     }
 
+    public PregnancyVisitFormUtil(Fragment fragment, Context context, Visit visit, Household household, Member member, PregnancyRegistration pregnancyRegistration, PregnancyVisitType visitType, FormUtilities odkFormUtilities, FormUtilListener<PregnancyVisit> listener){
+        super(fragment, context, FormUtil.getPregnancyVisitForm(context), odkFormUtilities, listener);
+
+        //Log.d("enu-household", ""+household);
+
+        this.household = household;
+        this.mother = member;
+        this.visit = visit;
+        this.pregnancyRegistration = pregnancyRegistration;
+        this.currentVisitType = visitType;
+
+        initBoxes();
+        initialize();
+    }
+
     public PregnancyVisitFormUtil(Fragment fragment, Context context, Visit visit, Household household, PregnancyVisit pregToEdit, FormUtilities odkFormUtilities, FormUtilListener<PregnancyVisit> listener){
         super(fragment, context, FormUtil.getPregnancyVisitForm(context), pregToEdit, odkFormUtilities, listener);
 
@@ -125,6 +140,14 @@ public class PregnancyVisitFormUtil extends FormUtil<PregnancyVisit> {
             return new PregnancyVisitFormUtil(fragment, context, visit, household, member, odkFormUtilities, listener);
         } else if (openMode == Mode.EDIT) {
             return new PregnancyVisitFormUtil(fragment, context, visit, household, pregToEdit, odkFormUtilities, listener);
+        }
+
+        return null;
+    }
+
+    public static PregnancyVisitFormUtil newInstance(Mode openMode, Fragment fragment, Context context, Visit visit, Household household, Member member, PregnancyRegistration pregnancyRegistration, PregnancyVisitType visitType, FormUtilities odkFormUtilities, FormUtilListener<PregnancyVisit> listener){
+        if (openMode == Mode.CREATE) {
+            return new PregnancyVisitFormUtil(fragment, context, visit, household, member, pregnancyRegistration, visitType, odkFormUtilities, listener);
         }
 
         return null;
@@ -147,24 +170,28 @@ public class PregnancyVisitFormUtil extends FormUtil<PregnancyVisit> {
         super.initialize();
 
         //get a pregnancy registration and also a
-        this.pregnancyRegistration = this.boxPregnancyRegistrations.query(PregnancyRegistration_.motherCode.equal(mother.code)).orderDesc(PregnancyRegistration_.code).build().findFirst();
+        if (this.pregnancyRegistration == null) {
+            this.pregnancyRegistration = this.boxPregnancyRegistrations.query(PregnancyRegistration_.motherCode.equal(mother.code)).orderDesc(PregnancyRegistration_.code).build().findFirst();
+        }
 
         if (this.pregnancyRegistration != null) {
             this.pregnancyOutcome = this.boxPregnancyOutcomes.query(PregnancyOutcome_.code.equal(this.pregnancyRegistration.code)).build().findFirst();
         }
 
-        if (this.pregnancyOutcome != null) {
-
-        }
-
         this.isPossibleToCollectVisit = canCollectPregnancyVisit();
 
         if (this.isPossibleToCollectVisit) {
-            boolean pregnant = this.pregnancyRegistration.status == PregnancyStatus.PREGNANT;
-            boolean noOutcome = this.pregnancyOutcome == null;
-            this.currentVisitType = (pregnant && noOutcome) ? PregnancyVisitType.ANTEPARTUM : PregnancyVisitType.POSTPARTUM;
-            this.currentVisitNumber = (int) (this.boxPregnancyVisits.query(PregnancyVisit_.code.equal(pregnancyRegistration.code)).build().count() + 1);
-            this.currentPregnancyStatus = this.currentVisitType==PregnancyVisitType.ANTEPARTUM ? PregnancyStatus.PREGNANT : PregnancyStatus.DELIVERED;
+            if (this.currentVisitType != null) {
+                //we already know the type of visit to be created coming from the PregnancySurveillanceDialog
+                this.currentVisitNumber = (int) (this.boxPregnancyVisits.query(PregnancyVisit_.code.equal(pregnancyRegistration.code)).build().count() + 1);
+                this.currentPregnancyStatus = this.pregnancyRegistration.status;
+            } else {
+                boolean pregnant = this.pregnancyRegistration.status == PregnancyStatus.PREGNANT;
+                boolean noOutcome = this.pregnancyOutcome == null;
+                this.currentVisitType = (pregnant && noOutcome) ? PregnancyVisitType.ANTEPARTUM : PregnancyVisitType.POSTPARTUM;
+                this.currentVisitNumber = (int) (this.boxPregnancyVisits.query(PregnancyVisit_.code.equal(pregnancyRegistration.code)).build().count() + 1);
+                this.currentPregnancyStatus = this.currentVisitType == PregnancyVisitType.ANTEPARTUM ? PregnancyStatus.PREGNANT : PregnancyStatus.DELIVERED;
+            }
         }
 
         retrieveParameters();

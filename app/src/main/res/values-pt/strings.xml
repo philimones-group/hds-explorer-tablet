@@ -1041,4 +1041,51 @@
     <string name="memberStatus_inactive">Inativo</string>
     <string name="memberStatus_not_found">Membro não encontrado</string>
 
+    <!-- Pregnancy Panel -->
+    <string name="pregnancy_panel_title">Vigilância de Gravidez</string>
+    <string name="pregnancy_panel_mother_lbl">Mãe</string>
+    <string name="pregnancy_panel_mother_name_lbl">Nome</string>
+    <string name="pregnancy_panel_mother_age_lbl">Idade</string>
+    <string name="pregnancy_panel_mother_preg_status_lbl">Registo de Gravidez</string>
+    <string name="pregnancy_panel_tab_visits">Visitas</string>
+    <string name="pregnancy_panel_tab_outcomes">Resultados e Crianças</string>
+    <string name="pregnancy_panel_antepartum_visits">Visitas Anteparto (%1$d)</string>
+    <string name="pregnancy_panel_postpartum_visits">Visitas Pós-parto (%1$d)</string>
+    <string name="pregnancy_panel_edd_lbl">DPP</string>
+    <string name="pregnancy_panel_gest_weeks_lbl">Sem. Gest.</string>
+    <string name="pregnancy_panel_postpartum_days_lbl">Dias Pós-parto</string>
+    <string name="pregnancy_panel_lmp_lbl">DUM</string>
+    <string name="pregnancy_panel_complications_warning">⚠️ Complicações relatadas em visitas anteriores!</string>
+    <string name="pregnancy_panel_outcome_summary_title">Resumo do Resultado</string>
+    <string name="pregnancy_panel_outcome_date_lbl">Data: %1$s</string>
+    <string name="pregnancy_panel_outcome_place_lbl">Local: %1$s</string>
+    <string name="pregnancy_panel_outcome_livebirths_lbl">Nascidos Vivos: %1$d</string>
+    <string name="pregnancy_panel_outcome_stillbirths_lbl">Nados Mortos: %1$d</string>
+    <string name="pregnancy_panel_children_born_title">Crianças Nascidas</string>
+    <string name="pregnancy_panel_register_birth_bt_lbl">Registo de Nascimento</string>
+    <string name="pregnancy_panel_view_profile_bt_lbl">Ver Perfil da Criança</string>
+    <string name="pregnancy_panel_visit_add_bt_lbl">Adicionar Nova Visita</string>
+    <string name="pregnancy_panel_visit_add_antepartum_bt_lbl">Nova Visita Anteparto</string>
+    <string name="pregnancy_panel_visit_add_postpartum_bt_lbl">Nova Visita Pós-parto</string>
+    <string name="pregnancy_panel_visit_code_lbl">Código:</string>
+    <string name="pregnancy_panel_status_lbl">Estado:</string>
+    <string name="pregnancy_panel_next_visit_lbl">Próxima Visita Recomendada: %1$s</string>
+    <string name="pregnancy_panel_no_outcome_lbl">Nenhum resultado registado ainda.</string>
+    <string name="pregnancy_panel_visit_detail_gest_weeks_lbl">Sem. Gest.: %1$d</string>
+    <string name="pregnancy_panel_visit_detail_provider_lbl">Provedor: %1$s</string>
+    <string name="pregnancy_panel_visit_detail_complications_lbl">Complicações: %1$s</string>
+    <string name="pregnancy_panel_visit_detail_none_lbl">Nenhuma</string>
+    <string name="pregnancy_panel_visit_detail_breastfeeding_lbl">Amamentação: %1$s</string>
+    <string name="pregnancy_panel_visit_detail_daily_activities_lbl">Atividades Diárias: %1$s</string>
+    <string name="pregnancy_panel_visit_detail_resumed_lbl">Retomadas</string>
+    <string name="pregnancy_panel_visit_detail_not_resumed_lbl">Não Retomadas</string>
+    <string name="pregnancy_panel_gest_days_lbl">%1$d dias</string>
+    <string name="pregnancy_panel_tab_history">Histórico</string>
+    <string name="pregnancy_panel_next_visit_overdue_lbl">⚠️ %1$s (ATRASADO)</string>
+    <string name="pregnancy_panel_followup_expired_lbl">Período de seguimento expirado</string>
+    <string name="not_applicable_lbl">N/A</string>
+    <string name="pregnancy_panel_mother_code_subtitle_lbl">Mãe: %1$s</string>
+    <string name="pregnancy_panel_child_item_details_lbl">%1$s | %2$s</string>
+    <string name="pregnancy_panel_child_stillborn_name_lbl">[%1$s]</string>
+
 </resources>

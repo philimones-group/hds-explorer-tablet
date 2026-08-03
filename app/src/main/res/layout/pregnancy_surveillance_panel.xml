@@ -1,0 +1,576 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    tools:context=".fragment.PregnancySurveillanceDialog">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <!-- Dialog Header -->
+        <LinearLayout
+            android:id="@+id/dialogHeaderLayout"
+            android:layout_width="match_parent"
+            android:layout_height="57dp"
+            app:layout_constraintTop_toTopOf="parent"
+            android:background="@drawable/nui_dialog_border_thin"
+            android:orientation="horizontal"
+            android:elevation="5dp">
+
+            <ImageView
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginLeft="5dp"
+                android:layout_gravity="center"
+                android:src="@drawable/nui_pregnancy_visit_dark_icon" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:layout_marginLeft="10dp"
+                android:gravity="center_vertical"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/txtDialogTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/pregnancy_panel_title"
+                    android:textSize="18sp"
+                    android:textColor="@color/nui_color_text_red"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/txtDialogSubtitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/pregnancy_panel_title"
+                    android:textSize="14sp"
+                    android:textColor="@color/nui_color_text_red" />
+
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/btDialogClose"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginEnd="10dp"
+                android:layout_gravity="center"
+                android:background="@drawable/nui_btnd_dialog_close" />
+
+        </LinearLayout>
+
+        <!-- Mother / Pregnancy -->
+        <LinearLayout
+            android:id="@+id/dialogMotherLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            app:layout_constraintTop_toBottomOf="@id/dialogHeaderLayout"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            android:orientation="vertical">
+
+            <!-- details -->
+            <!-- Mother 2 -->
+            <LinearLayout
+                android:id="@+id/layoutMother2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/mf_margin_left"
+                android:layout_marginEnd="@dimen/mf_margin_right"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/member_filter_textlabel_margin_left"
+                    android:text="@string/pregnancy_panel_mother_preg_status_lbl"
+                    android:textColor="@color/nui_color_text_red"
+                    android:textSize="@dimen/member_filter_textsize"
+                    android:textStyle="bold"
+                    android:visibility="gone"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/nui_list_rborder_panel"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:id="@+id/layoutMother1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="15dp"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/member_filter_textlabel_margin_left"
+                            android:text="@string/pregnancy_panel_mother_lbl"
+                            android:textColor="@color/nui_color_text_adgray"
+                            android:textSize="@dimen/member_filter_textsize"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="15dp"
+                            android:layout_marginLeft="@dimen/member_filter_textlabel_margin_left"
+                            android:text="@string/pregnancy_panel_visit_code_lbl"
+                            android:textColor="@color/nui_color_text_adgray"
+                            android:textSize="@dimen/member_filter_textsize"
+                            android:textStyle="bold" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:paddingTop="15dp"
+                        android:paddingBottom="15dp"
+                        android:paddingStart="20dp">
+
+                        <TextView
+                            android:id="@+id/txtMotherName"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
+                            tools:text="TANYA MARIAH GEORGE JACOBSON"
+                            android:textColor="@color/nui_color_text_darkgray"
+                            android:textSize="@dimen/member_filter_textsize" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:id="@+id/txtPregnancyCode"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="15dp"
+                                tools:text="ACA001001001-01"
+                                android:textColor="@color/black"
+                                android:textSize="@dimen/member_filter_textsize"
+                                android:textStyle="bold" />
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="15dp"
+                                android:layout_marginEnd="@dimen/member_filter_textlabel_margin_left"
+                                android:layout_weight="1"
+                                android:gravity="end"
+                                android:orientation="horizontal">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginLeft="15dp"
+                                    android:layout_marginTop="0dp"
+                                    android:layout_marginRight="10dp"
+                                    android:text="@string/pregnancy_panel_status_lbl"
+                                    android:textColor="@color/nui_color_text_adgray"
+                                    android:textSize="@dimen/member_filter_textsize"
+                                    android:textStyle="bold" />
+
+                                <LinearLayout
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_alignParentEnd="true"
+                                    android:layout_centerVertical="true"
+                                    android:gravity="center_vertical"
+                                    android:orientation="horizontal">
+
+                                    <TextView
+                                        android:id="@+id/txtStatusPregnant"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:paddingStart="20dp"
+                                        android:paddingEnd="20dp"
+                                        android:paddingTop="2dp"
+                                        android:paddingBottom="2dp"
+                                        android:background="@drawable/nui_border_txt_lblue"
+                                        android:text="@string/pregnacyStatus_pregnant"
+                                        android:textColor="@color/white"
+                                        android:textSize="12sp"
+                                        android:textStyle="bold"
+                                        android:maxLines="1"
+                                        android:ellipsize="end"/>
+
+                                    <TextView
+                                        android:id="@+id/txtStatusDelivered"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:paddingStart="20dp"
+                                        android:paddingEnd="20dp"
+                                        android:paddingTop="2dp"
+                                        android:paddingBottom="2dp"
+                                        android:background="@drawable/nui_border_txt_sgreen"
+                                        android:text="@string/pregnacyStatus_delivered"
+                                        android:textColor="#FFF"
+                                        android:textSize="12sp"
+                                        android:textStyle="bold"
+                                        android:maxLines="1"
+                                        android:ellipsize="end"/>
+
+                                    <TextView
+                                        android:id="@+id/txtStatusLostTrack"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:paddingStart="20dp"
+                                        android:paddingEnd="20dp"
+                                        android:paddingTop="2dp"
+                                        android:paddingBottom="2dp"
+                                        android:background="@drawable/nui_border_txt_sgray"
+                                        android:text="@string/pregnacyStatus_lost_track"
+                                        android:textColor="#FFF"
+                                        android:textSize="12sp"
+                                        android:textStyle="bold"
+                                        android:maxLines="1"
+                                        android:ellipsize="end"/>
+
+                                </LinearLayout>
+
+                            </LinearLayout>
+                        </LinearLayout>
+
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <!-- Pregnancy Dashboard Info -->
+        <LinearLayout
+            android:id="@+id/pregnancyInfoLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/mf_margin_left"
+            android:layout_marginEnd="@dimen/mf_margin_right"
+            android:layout_marginTop="5dp"
+            android:paddingStart="20dp"
+            android:paddingTop="15dp"
+            android:paddingEnd="20dp"
+            android:paddingBottom="15dp"
+            android:background="@drawable/nui_panel_rone_wbevel"
+            android:orientation="vertical"
+            app:layout_constraintTop_toBottomOf="@id/dialogMotherLayout">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/pregnancy_panel_lmp_lbl"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/nui_color_text_darkgray"/>
+                    <TextView
+                        android:id="@+id/txtLMPDate"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        tools:text="--"
+                        android:textColor="@color/nui_color_text_darkgray"/>
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=" ➔ "
+                    android:textColor="@color/nui_color_text_darkgray"/>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:gravity="center_horizontal">
+                    <TextView
+                        android:id="@+id/lblGestWeeks"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/pregnancy_panel_gest_weeks_lbl"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/nui_color_text_darkgray"/>
+                    <TextView
+                        android:id="@+id/txtGestWeeks"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        tools:text="--"
+                        android:textColor="@color/nui_color_text_darkgray"/>
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=" ➔ "
+                    android:textColor="@color/nui_color_text_darkgray"/>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:gravity="right">
+                    <TextView
+                        android:id="@+id/lblEDD"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/pregnancy_panel_edd_lbl"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/nui_color_text_darkgray"/>
+                    <TextView
+                        android:id="@+id/txtEDDDate"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        tools:text="--"
+                        android:textColor="@color/nui_color_text_darkgray"/>
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/txtNextVisit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                tools:text="Next Recommended Visit: --"
+                android:textSize="12sp"
+                android:textStyle="italic"
+                android:visibility="gone"
+                android:textColor="@color/nui_color_text_darkgray"/>
+
+            <TextView
+                android:id="@+id/txtComplicationWarning"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:gravity="center"
+                android:text="@string/pregnancy_panel_complications_warning"
+                android:textColor="@android:color/holo_red_dark"
+                android:textStyle="bold"
+                android:visibility="gone" />
+
+        </LinearLayout>
+
+        <!-- Main Panel Tabs-->
+        <RelativeLayout
+            android:id="@+id/mainPanelTabsLayout"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginStart="@dimen/mf_margin_left"
+            android:layout_marginEnd="@dimen/mf_margin_right"
+            android:layout_marginTop="5dp"
+            app:layout_constraintTop_toBottomOf="@id/pregnancyInfoLayout"
+            app:layout_constraintBottom_toTopOf="@id/bottomActionsLayout">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <!-- Tabs -->
+                <com.google.android.material.tabs.TabLayout
+                    android:id="@+id/tabLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:tabSelectedTextColor="@color/nui_color_text_red"
+                    app:tabIndicatorColor="@color/nui_color_text_red"
+                    app:tabMaxWidth="0dp"
+                    app:tabGravity="fill"
+                    app:tabMode="fixed"
+                    android:elevation="5dp"
+                    app:tabInlineLabel="true"
+                    style="@style/customTabLayout">
+
+                    <com.google.android.material.tabs.TabItem
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/pregnancy_panel_tab_visits" />
+
+                    <com.google.android.material.tabs.TabItem
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/pregnancy_panel_tab_outcomes" />
+
+                </com.google.android.material.tabs.TabLayout>
+
+                <!-- Content Area -->
+                <LinearLayout
+                    android:id="@+id/tabContentArea"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:padding="5dp"
+                    android:orientation="vertical">
+
+                    <!-- Visits Tab Content -->
+                    <RelativeLayout
+                        android:id="@+id/layoutVisitsTab"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:visibility="visible">
+
+                        <ExpandableListView
+                            android:id="@+id/elvPregnancyVisits"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:dividerHeight="0.5dp"
+                            android:groupIndicator="@null"/>
+
+                        <!-- panel border -->
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@drawable/nui_lists_rtwo_border">
+                        </View>
+
+                    </RelativeLayout>
+
+                    <!-- Outcomes Tab Content -->
+                    <LinearLayout
+                        android:id="@+id/layoutOutcomesTab"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:visibility="gone">
+
+                        <!-- outcome box -->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:paddingTop="10dp"
+                            android:paddingBottom="10dp"
+                            android:paddingStart="25dp"
+                            android:paddingEnd="25dp"
+                            android:background="@drawable/nui_lists_rone_border"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/pregnancy_panel_outcome_summary_title"
+                                android:textStyle="bold"
+                                android:textColor="@color/nui_color_text_red" />
+
+                            <TextView
+                                android:id="@+id/txtOutcomeDetails"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                tools:text="Date: --\nPlace: --\nLive Births: --"
+                                android:textColor="@color/nui_color_text_darkgray"
+                                android:layout_marginTop="5dp" />
+
+                        </LinearLayout>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginBottom="5dp"
+                            android:layout_marginStart="25dp"
+                            android:text="@string/pregnancy_panel_children_born_title"
+                            android:textStyle="bold"
+                            android:textColor="@color/nui_color_text_red" />
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent">
+
+                            <org.philimone.hds.explorer.widget.RecyclerListView
+                                android:id="@+id/lvPregnancyChildren"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                                android:paddingStart="10dp"
+                                android:paddingEnd="10dp"
+                                android:paddingTop="15dp"
+                                android:paddingBottom="15dp"/>
+
+                            <!-- panel border -->
+                            <View
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:background="@drawable/nui_lists_rtwo_border">
+                            </View>
+                        </RelativeLayout>
+
+
+                    </LinearLayout>
+
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- border of listview -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/nui_list_rborder_panel">
+            </View>
+
+            <Button
+                android:id="@+id/btPanelBack"
+                android:layout_width="@dimen/show_collected_data_back_button_width"
+                android:layout_height="@dimen/show_collected_data_back_button_height"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentBottom="true"
+                android:background="@drawable/nui_btnd_back_one"
+                android:text="" />
+
+        </RelativeLayout>
+
+
+        <!-- Bottom Actions -->
+        <LinearLayout
+                android:id="@+id/bottomActionsLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                app:layout_constraintTop_toBottomOf="@id/mainPanelTabsLayout"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:orientation="vertical">
+
+                <Button
+                    android:id="@+id/btRegisterBirth"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/nui_btnd_rone_gflat"
+                    android:text="@string/pregnancy_panel_register_birth_bt_lbl"
+                    android:textColor="@color/white"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</RelativeLayout>

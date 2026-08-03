@@ -27,6 +27,7 @@ public class CoreFormExtension {
     public CoreFormEntity formEntity;
 
     public String extFormId;
+    //public String extFormFilePath;
 
     public boolean required = false;
 

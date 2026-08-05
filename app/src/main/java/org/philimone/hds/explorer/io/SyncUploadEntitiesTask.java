@@ -2,34 +2,36 @@ package org.philimone.hds.explorer.io;
 
 import android.content.Context;
 import android.os.AsyncTask;
-import android.util.Base64;
 import android.util.Log;
 
-import org.apache.commons.io.FileUtils;
+import org.philimone.hds.explorer.database.Bootstrap;
 import org.philimone.hds.explorer.model.CoreCollectedData;
 import org.philimone.hds.explorer.model.enums.CoreFormEntity;
 
-import java.io.BufferedInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.DataInputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import java.net.URLConnection;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import mz.betainteractive.io.readers.FileIO;
 import mz.betainteractive.odk.FormUtilities;
 import mz.betainteractive.odk.storage.access.OdkStorageType;
+import okhttp3.Credentials;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 public class SyncUploadEntitiesTask extends AsyncTask<Void, Integer, UploadResponse> {
     private static final String API_PATH = "/api/import";
+    private static final String PARAMS_CORE_XML_NAME = "core_xml";
+    private static final String PARAMS_CORE_MEDIA_FILES_NAME = "core_media_files";
 
     private Context mContext;
-
-    private HttpURLConnection connection;
 
     private String baseurl;
     private String username;
@@ -51,37 +53,6 @@ public class SyncUploadEntitiesTask extends AsyncTask<Void, Integer, UploadRespo
         this.listener = listener;
 
         this.odkStorageType = FormUtilities.getOdkStorageType(context);
-    }
-
-    private HttpURLConnection createPostConnection(CoreCollectedData collectedData) {
-
-        try {
-
-            HttpURLConnection connection = null;
-            String basicAuth = "Basic " + new String(Base64.encode((this.username+":"+this.password).getBytes(),Base64.NO_WRAP ));
-
-            URL url = new URL(getUrl(collectedData.formEntity));
-
-            connection = (HttpURLConnection) url.openConnection();
-
-            connection.setReadTimeout(20000);
-            connection.setConnectTimeout(20000);
-
-            connection.setRequestProperty("Authorization", basicAuth);
-            connection.setDoOutput(true);
-            connection.setUseCaches(true);
-            connection.setRequestMethod("POST");
-
-            connection.setRequestProperty("Accept", "application/xml");
-            connection.setRequestProperty("Content-Type", "application/xml");
-
-            return connection;
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return null;
     }
 
     private String getUrl(CoreFormEntity formEntity){
@@ -116,36 +87,18 @@ public class SyncUploadEntitiesTask extends AsyncTask<Void, Integer, UploadRespo
         return null;
     }
 
-    private byte[] getXmlData(CoreCollectedData collectedData) {
-        File file = new File(collectedData.formFilename);
-        if (file.exists()){
-            try {
-                byte[] data = new byte[(int)file.length()];
-                BufferedInputStream bInputStream = new BufferedInputStream(new FileInputStream(file));
-                DataInputStream reader = new DataInputStream(bInputStream);
-                reader.readFully(data);
-
-                return data;
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-
-        return null;
-    }
-
     /*
     * Create a XML with main tag "data" that has core form xml and odk core extension xml on it
     * This way we upload directly to the server the core and extension form togheter
     * */
     private byte[] getComposedXmlData(CoreCollectedData collectedData) {
         String coreXmlText = new FileIO(collectedData.formFilename).readFile(); //reads from inner storage - can use File
-        String odkXmlText = FileIO.readFile(mContext, this.odkStorageType, collectedData.extensionCollectedFilepath); //can read from different storage types
+        String extXmlText = new FileIO(collectedData.extensionCollectedFilepath).readFile(); //can read from different storage types
 
         coreXmlText = removeMainTag(coreXmlText);
-        odkXmlText = removeMainTag(odkXmlText);
+        extXmlText = removeMainTag(extXmlText);
 
-        String builder = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><xdata>" + coreXmlText + odkXmlText + "</xdata>";
+        String builder = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><xdata>" + coreXmlText + extXmlText + "</xdata>";
         return builder.getBytes();
     }
 
@@ -157,67 +110,81 @@ public class SyncUploadEntitiesTask extends AsyncTask<Void, Integer, UploadRespo
 
     private UploadResponse upload(CoreCollectedData collectedData){
 
-        HttpURLConnection connection = createPostConnection(collectedData);
-        byte[] xmlBytes = getComposedXmlData(collectedData); //getXmlData(collectedData);
+        ComposedUploadableData uploadableData = getDataToUpload(collectedData);
+        String url = getUrl(collectedData.formEntity);
+        String credential = Credentials.basic(this.username, this.password);
+
+        if (url == null) {
+            return UploadResponse.createNotSuccessfullExecution(false, "Invalid Form Entity URL");
+        }
+
+        OkHttpClient client = new OkHttpClient.Builder()
+                .connectTimeout(30, TimeUnit.SECONDS)
+                .writeTimeout(60, TimeUnit.SECONDS)
+                .readTimeout(30, TimeUnit.SECONDS)
+                .build();
+
+        MultipartBody.Builder multipartBuilder = new MultipartBody.Builder().setType(MultipartBody.FORM);
+
+        // 1. Add XML Part
+        if (uploadableData.xmlBytes != null) {
+            multipartBuilder.addFormDataPart(PARAMS_CORE_XML_NAME, "data.xml", RequestBody.create(uploadableData.xmlBytes, MediaType.parse("application/xml")));
+        }
+
+        // 2. Add Media Parts
+        for (String filename : uploadableData.mediaFiles.keySet()) {
+            String absolutePath = uploadableData.mediaFiles.get(filename);
+            File file = new File(absolutePath);
+
+            if (file.exists()) {
+                multipartBuilder.addFormDataPart(PARAMS_CORE_MEDIA_FILES_NAME, filename, RequestBody.create(file, MediaType.parse(getMimeType(absolutePath))));
+            }
+        }
+
+        Request request = new Request.Builder()
+                .url(url)
+                .header("Authorization", credential)
+                .header("Accept", "application/xml")
+                .post(multipartBuilder.build())
+                .build();
+
         boolean uploaded = false;
-        String response = null;
+        String responseText = "";
         int responseCode = 0;
 
-        Log.d("debugg", "conn="+connection+", xml="+xmlBytes);
-        if (connection != null && xmlBytes != null) {
+        try (Response response = client.newCall(request).execute()) {
+            uploaded = true;
+            responseCode = response.code();
+            responseText = response.body() != null ? response.body().string() : "";
 
-            try {
-                //writing to server
-                OutputStream output = connection.getOutputStream();
-                output.write(xmlBytes);
-                output.flush();
-                output.close();
-
-                uploaded = true;
-                responseCode = connection.getResponseCode();
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            //no errors - reading response from server
-            try {
-                InputStream input = responseCode==HttpURLConnection.HTTP_OK ? connection.getInputStream() : connection.getErrorStream();
-                BufferedInputStream bis = new BufferedInputStream(input);
-                ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-                byte[] bytes = new byte[2048];
-                int length = 0;
-
-                while (length != -1) {
-                    length = bis.read(bytes);
-                    if (length != -1){
-                        buffer.write(bytes, 0, length);
-                    }
-                }
-
-                response = buffer.toString("UTF-8");
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            connection.disconnect();
-
-            if (responseCode == HttpURLConnection.HTTP_OK) { //created successfully
+            if (response.isSuccessful()) {
                 return UploadResponse.createSuccessfullExecution();
             }
 
-        } else {
-            response = "Internal Mobile App Error, conn="+connection+", bytes="+xmlBytes;
+        } catch (IOException e) {
+            e.printStackTrace();
+            responseText = e.getMessage();
         }
 
-        if (responseCode != HttpURLConnection.HTTP_BAD_REQUEST) {
-            response = "Internal Mobile App Error, HTTP="+responseCode;
+        if (responseCode != 400) { // Not Bad Request
+            responseText = "Internal Server Error, HTTP=" + responseCode + (responseText != null && !responseText.isEmpty() ? ": " + responseText : "");
         }
 
-        Log.d("response", ""+responseCode+", error: "+response);
+        Log.d("response", "" + responseCode + ", error: " + responseText);
 
-        return UploadResponse.createNotSuccessfullExecution(uploaded, response);
+        return UploadResponse.createNotSuccessfullExecution(uploaded, responseText);
+    }
+
+    private String getMimeType(String path) {
+        String type = URLConnection.guessContentTypeFromName(path);
+        if (type == null) {
+            if (path.endsWith(".amr")) return "audio/amr";
+            if (path.endsWith(".mp4")) return "video/mp4";
+            if (path.endsWith(".3gp")) return "video/3gpp";
+            if (path.endsWith(".jpg") || path.endsWith(".jpeg")) return "image/jpeg";
+            return "application/octet-stream";
+        }
+        return type;
     }
 
 
@@ -236,9 +203,34 @@ public class SyncUploadEntitiesTask extends AsyncTask<Void, Integer, UploadRespo
 
     }
 
+    private ComposedUploadableData getDataToUpload(CoreCollectedData coreCollectedData) {
+        ComposedUploadableData data = new ComposedUploadableData();
+
+        data.xmlBytes = getComposedXmlData(coreCollectedData);
+
+        //discover media files gracefully
+        for (String filename : coreCollectedData.coreMediaFiles) {
+            File file = new File(Bootstrap.getInstancesPath(mContext), filename);
+            String absolutePath = file.getAbsolutePath();
+            data.mediaFiles.put(filename, absolutePath);
+        }
+        for (String filename : coreCollectedData.extensionMediaFiles) {
+            File file = new File(Bootstrap.getInstancesPath(mContext), filename);
+            String absolutePath = file.getAbsolutePath();
+            data.mediaFiles.put(filename, absolutePath);
+        }
+
+        return data;
+    }
+
+    class ComposedUploadableData {
+        /* Byte array with the composed XML Content (Core Form XML + Extension Form XML)*/
+        public byte[] xmlBytes;
+        /* A LinkedHashMap that maps the media filename with its absolute file path */
+        public Map<String, String> mediaFiles = new LinkedHashMap<>();
+    }
+
     public interface Listener {
         void onUploadFinished(UploadResponse uploadResponse, CoreCollectedData collectedData);
     }
 }
-
-

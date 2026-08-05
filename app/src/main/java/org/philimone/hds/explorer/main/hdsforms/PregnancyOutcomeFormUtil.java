@@ -69,7 +69,6 @@ import java.util.stream.Collectors;
 
 import io.objectbox.Box;
 import io.objectbox.query.QueryBuilder;
-import mz.betainteractive.odk.FormUtilities;
 import mz.betainteractive.utilities.DateUtil;
 import mz.betainteractive.utilities.GeneralUtil;
 import mz.betainteractive.utilities.StringUtil;
@@ -100,8 +99,8 @@ public class PregnancyOutcomeFormUtil extends FormUtil<PregnancyOutcome> {
 
     private DateUtil dateUtil = Bootstrap.getDateUtil();
 
-    public PregnancyOutcomeFormUtil(Fragment fragment, Context context, Visit visit, Household household, Member mother, PregnancyRegistration pregnancyRegistration, boolean recentlyCreatedForOutcome, FormUtilities odkFormUtilities, FormUtilListener<PregnancyOutcome> listener){
-        super(fragment, context, FormUtil.getPregnancyOutcomeForm(context), odkFormUtilities, listener);
+    public PregnancyOutcomeFormUtil(Fragment fragment, Context context, Visit visit, Household household, Member mother, PregnancyRegistration pregnancyRegistration, boolean recentlyCreatedForOutcome, FormUtilListener<PregnancyOutcome> listener){
+        super(fragment, context, FormUtil.getPregnancyOutcomeForm(context), listener);
 
         //Log.d("enu-household", ""+household);
 
@@ -115,8 +114,8 @@ public class PregnancyOutcomeFormUtil extends FormUtil<PregnancyOutcome> {
         initialize();
     }
 
-    public PregnancyOutcomeFormUtil(Fragment fragment, Context context, Visit visit, Household household, PregnancyOutcome pregToEdit, FormUtilities odkFormUtilities, FormUtilListener<PregnancyOutcome> listener){
-        super(fragment, context, FormUtil.getPregnancyOutcomeForm(context), pregToEdit, odkFormUtilities, listener);
+    public PregnancyOutcomeFormUtil(Fragment fragment, Context context, Visit visit, Household household, PregnancyOutcome pregToEdit, FormUtilListener<PregnancyOutcome> listener){
+        super(fragment, context, FormUtil.getPregnancyOutcomeForm(context), pregToEdit, listener);
 
         this.household = household;
         this.visit = visit;
@@ -131,11 +130,11 @@ public class PregnancyOutcomeFormUtil extends FormUtil<PregnancyOutcome> {
         this.pregnancyRegistration = this.boxPregnancyRegistrations.query(PregnancyRegistration_.code.equal(pregToEdit.code)).build().findFirst();
     }
 
-    public static PregnancyOutcomeFormUtil newInstance(Mode openMode, Fragment fragment, Context context, Visit visit, Household household, Member mother, PregnancyRegistration pregnancyRegistration, boolean recentlyCreatedForOutcome, PregnancyOutcome pregToEdit, FormUtilities odkFormUtilities, FormUtilListener<PregnancyOutcome> listener){
+    public static PregnancyOutcomeFormUtil newInstance(Mode openMode, Fragment fragment, Context context, Visit visit, Household household, Member mother, PregnancyRegistration pregnancyRegistration, boolean recentlyCreatedForOutcome, PregnancyOutcome pregToEdit, FormUtilListener<PregnancyOutcome> listener){
         if (openMode == Mode.CREATE) {
-            return new PregnancyOutcomeFormUtil(fragment, context, visit, household, mother, pregnancyRegistration, recentlyCreatedForOutcome, odkFormUtilities, listener);
+            return new PregnancyOutcomeFormUtil(fragment, context, visit, household, mother, pregnancyRegistration, recentlyCreatedForOutcome, listener);
         } else if (openMode == Mode.EDIT) {
-            return new PregnancyOutcomeFormUtil(fragment, context, visit, household, pregToEdit, odkFormUtilities, listener);
+            return new PregnancyOutcomeFormUtil(fragment, context, visit, household, pregToEdit, listener);
         }
 
         return null;

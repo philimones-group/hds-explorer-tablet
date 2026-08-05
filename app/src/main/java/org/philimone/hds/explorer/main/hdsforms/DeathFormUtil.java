@@ -54,7 +54,6 @@ import java.util.stream.Collectors;
 
 import io.objectbox.Box;
 import io.objectbox.query.QueryBuilder;
-import mz.betainteractive.odk.FormUtilities;
 import mz.betainteractive.utilities.DateUtil;
 import mz.betainteractive.utilities.GeneralUtil;
 import mz.betainteractive.utilities.StringUtil;
@@ -91,8 +90,8 @@ public class DeathFormUtil extends FormUtil<Death> {
     private DateUtil dateUtil = Bootstrap.getDateUtil();
     private boolean onlyMinorsLeftInHousehold;
 
-    public DeathFormUtil(Fragment fragment, Context context, Visit visit, Household household, Member member, FormUtilities odkFormUtilities, FormUtilListener<Death> listener){
-        super(fragment, context, FormUtil.getDeathForm(context), odkFormUtilities, listener);
+    public DeathFormUtil(Fragment fragment, Context context, Visit visit, Household household, Member member, FormUtilListener<Death> listener){
+        super(fragment, context, FormUtil.getDeathForm(context), listener);
 
         //Log.d("enu-household", ""+household);
 
@@ -104,8 +103,8 @@ public class DeathFormUtil extends FormUtil<Death> {
         initialize();
     }
 
-    public DeathFormUtil(Fragment fragment, Context context, Visit visit, Household household, Death deathToEdit, FormUtilities odkFormUtilities, FormUtilListener<Death> listener){
-        super(fragment, context, FormUtil.getDeathForm(context), deathToEdit, odkFormUtilities, listener);
+    public DeathFormUtil(Fragment fragment, Context context, Visit visit, Household household, Death deathToEdit, FormUtilListener<Death> listener){
+        super(fragment, context, FormUtil.getDeathForm(context), deathToEdit, listener);
 
         this.household = household;
         this.visit = visit;
@@ -117,11 +116,11 @@ public class DeathFormUtil extends FormUtil<Death> {
         initialize();
     }
 
-    public static DeathFormUtil newInstance(Mode openMode, Fragment fragment, Context context, Visit visit, Household household, Member member, Death deathToEdit, FormUtilities odkFormUtilities, FormUtilListener<Death> listener){
+    public static DeathFormUtil newInstance(Mode openMode, Fragment fragment, Context context, Visit visit, Household household, Member member, Death deathToEdit, FormUtilListener<Death> listener){
         if (openMode == Mode.CREATE) {
-            return new DeathFormUtil(fragment, context, visit, household, member, odkFormUtilities, listener);
+            return new DeathFormUtil(fragment, context, visit, household, member, listener);
         } else if (openMode == Mode.EDIT) {
-            return new DeathFormUtil(fragment, context, visit, household, deathToEdit, odkFormUtilities, listener);
+            return new DeathFormUtil(fragment, context, visit, household, deathToEdit, listener);
         }
 
         return null;

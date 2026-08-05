@@ -51,7 +51,6 @@ import java.util.Map;
 
 import io.objectbox.Box;
 import io.objectbox.query.QueryBuilder;
-import mz.betainteractive.odk.FormUtilities;
 import mz.betainteractive.utilities.DateUtil;
 import mz.betainteractive.utilities.GeneralUtil;
 import mz.betainteractive.utilities.StringUtil;
@@ -84,8 +83,8 @@ public class InternalInMigrationFormUtil extends FormUtil<Inmigration> {
 
     private final String PHONE_NUMBER_REGEX = "^(\\+?\\d{1,3})?[-.\\s]?\\(?\\d{2,4}\\)?[-.\\s]?\\d{3,5}[-.\\s]?\\d{4,6}$";
 
-    public InternalInMigrationFormUtil(Fragment fragment, Context context, Visit visit, Household household, FormUtilities odkFormUtilities, FormUtilListener<Inmigration> listener){
-        super(fragment, context, FormUtil.getInMigrationForm(context), odkFormUtilities, listener);
+    public InternalInMigrationFormUtil(Fragment fragment, Context context, Visit visit, Household household, FormUtilListener<Inmigration> listener){
+        super(fragment, context, FormUtil.getInMigrationForm(context), listener);
 
         //Log.d("enu-household", ""+household);
 
@@ -96,8 +95,8 @@ public class InternalInMigrationFormUtil extends FormUtil<Inmigration> {
         initialize();
     }
 
-    public InternalInMigrationFormUtil(Fragment fragment, Context context, Visit visit, Household household, Inmigration inmigToEdit, FormUtilities odkFormUtilities, FormUtilListener<Inmigration> listener){
-        super(fragment, context, FormUtil.getInMigrationForm(context), inmigToEdit, odkFormUtilities, listener);
+    public InternalInMigrationFormUtil(Fragment fragment, Context context, Visit visit, Household household, Inmigration inmigToEdit, FormUtilListener<Inmigration> listener){
+        super(fragment, context, FormUtil.getInMigrationForm(context), inmigToEdit, listener);
         initBoxes();
 
         this.household = household;
@@ -109,11 +108,11 @@ public class InternalInMigrationFormUtil extends FormUtil<Inmigration> {
         readSavedEntityState();
     }
 
-    public static InternalInMigrationFormUtil newInstance(Mode openMode, Fragment fragment, Context context, Visit visit, Household household, Inmigration inmigToEdit, FormUtilities odkFormUtilities, FormUtilListener<Inmigration> listener){
+    public static InternalInMigrationFormUtil newInstance(Mode openMode, Fragment fragment, Context context, Visit visit, Household household, Inmigration inmigToEdit, FormUtilListener<Inmigration> listener){
         if (openMode == Mode.CREATE) {
-            return new InternalInMigrationFormUtil(fragment, context, visit, household, odkFormUtilities, listener);
+            return new InternalInMigrationFormUtil(fragment, context, visit, household, listener);
         } else if (openMode == Mode.EDIT) {
-            return new InternalInMigrationFormUtil(fragment, context, visit, household, inmigToEdit, odkFormUtilities, listener);
+            return new InternalInMigrationFormUtil(fragment, context, visit, household, inmigToEdit, listener);
         }
 
         return null;

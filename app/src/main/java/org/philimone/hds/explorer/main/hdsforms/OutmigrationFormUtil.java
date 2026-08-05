@@ -43,7 +43,6 @@ import java.util.Map;
 
 import io.objectbox.Box;
 import io.objectbox.query.QueryBuilder;
-import mz.betainteractive.odk.FormUtilities;
 import mz.betainteractive.utilities.DateUtil;
 import mz.betainteractive.utilities.StringUtil;
 
@@ -65,8 +64,8 @@ public class OutmigrationFormUtil extends FormUtil<Outmigration> {
 
     private DateUtil dateUtil = Bootstrap.getDateUtil();
 
-    public OutmigrationFormUtil(Fragment fragment, Context context, Visit visit, Household household, Member member, FormUtilities odkFormUtilities, FormUtilListener<Outmigration> listener){
-        super(fragment, context, FormUtil.getOutmigrationForm(context), odkFormUtilities, listener);
+    public OutmigrationFormUtil(Fragment fragment, Context context, Visit visit, Household household, Member member, FormUtilListener<Outmigration> listener){
+        super(fragment, context, FormUtil.getOutmigrationForm(context), listener);
 
         //Log.d("enu-household", ""+household);
 
@@ -78,8 +77,8 @@ public class OutmigrationFormUtil extends FormUtil<Outmigration> {
         initialize();
     }
 
-    public OutmigrationFormUtil(Fragment fragment, Context context, Visit visit, Household household, Outmigration outmigToEdit, FormUtilities odkFormUtilities, FormUtilListener<Outmigration> listener){
-        super(fragment, context, FormUtil.getOutmigrationForm(context), outmigToEdit, odkFormUtilities, listener);
+    public OutmigrationFormUtil(Fragment fragment, Context context, Visit visit, Household household, Outmigration outmigToEdit, FormUtilListener<Outmigration> listener){
+        super(fragment, context, FormUtil.getOutmigrationForm(context), outmigToEdit, listener);
 
         this.household = household;
         this.visit = visit;
@@ -92,11 +91,11 @@ public class OutmigrationFormUtil extends FormUtil<Outmigration> {
         readSavedEntityState();
     }
 
-    public static OutmigrationFormUtil newInstance(Mode openMode, Fragment fragment, Context context, Visit visit, Household household, Member member, Outmigration outmigToEdit, FormUtilities odkFormUtilities, FormUtilListener<Outmigration> listener){
+    public static OutmigrationFormUtil newInstance(Mode openMode, Fragment fragment, Context context, Visit visit, Household household, Member member, Outmigration outmigToEdit, FormUtilListener<Outmigration> listener){
         if (openMode == Mode.CREATE) {
-            return new OutmigrationFormUtil(fragment, context, visit, household, member, odkFormUtilities, listener);
+            return new OutmigrationFormUtil(fragment, context, visit, household, member, listener);
         } else if (openMode == Mode.EDIT) {
-            return new OutmigrationFormUtil(fragment, context, visit, household, outmigToEdit, odkFormUtilities, listener);
+            return new OutmigrationFormUtil(fragment, context, visit, household, outmigToEdit, listener);
         }
 
         return null;

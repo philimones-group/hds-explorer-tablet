@@ -47,7 +47,6 @@ import java.util.Map;
 
 import io.objectbox.Box;
 import io.objectbox.query.QueryBuilder;
-import mz.betainteractive.odk.FormUtilities;
 import mz.betainteractive.utilities.DateUtil;
 import mz.betainteractive.utilities.GeneralUtil;
 import mz.betainteractive.utilities.StringUtil;
@@ -75,8 +74,8 @@ public class MemberEnumerationFormUtil extends FormUtil<Member> {
 
     private final String PHONE_NUMBER_REGEX = "^(\\+?\\d{1,3})?[-.\\s]?\\(?\\d{2,4}\\)?[-.\\s]?\\d{3,5}[-.\\s]?\\d{4,6}$";
 
-    public MemberEnumerationFormUtil(Fragment fragment, Context context, Visit visit, Household household, FormUtilities odkFormUtilities, FormUtilListener<Member> listener){
-        super(fragment, context, FormUtil.getMemberEnuForm(context), odkFormUtilities, listener);
+    public MemberEnumerationFormUtil(Fragment fragment, Context context, Visit visit, Household household, FormUtilListener<Member> listener){
+        super(fragment, context, FormUtil.getMemberEnuForm(context), listener);
 
         //Log.d("enu-household", ""+household);
 
@@ -87,8 +86,8 @@ public class MemberEnumerationFormUtil extends FormUtil<Member> {
         initialize();
     }
 
-    public MemberEnumerationFormUtil(Fragment fragment, Context context, Visit visit, Household household, Member memberToEdit, FormUtilities odkFormUtilities, FormUtilListener<Member> listener){
-        super(fragment, context, FormUtil.getMemberEnuForm(context), memberToEdit, odkFormUtilities, listener);
+    public MemberEnumerationFormUtil(Fragment fragment, Context context, Visit visit, Household household, Member memberToEdit, FormUtilListener<Member> listener){
+        super(fragment, context, FormUtil.getMemberEnuForm(context), memberToEdit, listener);
 
         this.household = household;
         this.visit = visit;
@@ -102,12 +101,12 @@ public class MemberEnumerationFormUtil extends FormUtil<Member> {
         readSavedEntityState();
     }
 
-    public static MemberEnumerationFormUtil newInstance(Mode openMode, Fragment fragment, Context context, Visit visit, Household household, Member memberToEdit, FormUtilities odkFormUtilities, FormUtilListener<Member> listener) {
+    public static MemberEnumerationFormUtil newInstance(Mode openMode, Fragment fragment, Context context, Visit visit, Household household, Member memberToEdit, FormUtilListener<Member> listener) {
 
         if (openMode == Mode.CREATE) {
-            return new MemberEnumerationFormUtil(fragment, context, visit, household, odkFormUtilities, listener);
+            return new MemberEnumerationFormUtil(fragment, context, visit, household, listener);
         } else if (openMode == Mode.EDIT) {
-            return new MemberEnumerationFormUtil(fragment, context, visit, household, memberToEdit, odkFormUtilities, listener);
+            return new MemberEnumerationFormUtil(fragment, context, visit, household, memberToEdit, listener);
         }
 
         return null;

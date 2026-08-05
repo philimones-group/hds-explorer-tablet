@@ -43,7 +43,6 @@ import java.util.Map;
 
 import io.objectbox.Box;
 import io.objectbox.query.QueryBuilder;
-import mz.betainteractive.odk.FormUtilities;
 import mz.betainteractive.utilities.GeneralUtil;
 import mz.betainteractive.utilities.StringUtil;
 
@@ -71,8 +70,8 @@ public class MaritalRelationshipFormUtil extends FormUtil<MaritalRelationship> {
 
     private MaritalRelationshipDialog maritalRelationshipDialog;
 
-    public MaritalRelationshipFormUtil(Fragment fragment, Context context, Visit visit, Member spouseA, FormUtilities odkFormUtilities, FormUtilListener<MaritalRelationship> listener){
-        super(fragment, context, FormUtil.getMaritalRelationshipForm(context), odkFormUtilities, listener);
+    public MaritalRelationshipFormUtil(Fragment fragment, Context context, Visit visit, Member spouseA, FormUtilListener<MaritalRelationship> listener){
+        super(fragment, context, FormUtil.getMaritalRelationshipForm(context), listener);
 
         this.visit = visit;
         this.spouseA = spouseA;
@@ -81,8 +80,8 @@ public class MaritalRelationshipFormUtil extends FormUtil<MaritalRelationship> {
         initialize();
     }
 
-    public MaritalRelationshipFormUtil(Fragment fragment, Context context, Visit visit, MaritalRelationship relationshipToEdit, FormUtilities odkFormUtilities, FormUtilListener<MaritalRelationship> listener){
-        super(fragment, context, FormUtil.getMaritalRelationshipForm(context), relationshipToEdit, odkFormUtilities, listener);
+    public MaritalRelationshipFormUtil(Fragment fragment, Context context, Visit visit, MaritalRelationship relationshipToEdit, FormUtilListener<MaritalRelationship> listener){
+        super(fragment, context, FormUtil.getMaritalRelationshipForm(context), relationshipToEdit, listener);
 
 
         this.visit = visit;
@@ -97,11 +96,11 @@ public class MaritalRelationshipFormUtil extends FormUtil<MaritalRelationship> {
         readSavedEntityState();
     }
 
-    public static MaritalRelationshipFormUtil newInstance(Mode openMode, Fragment fragment, Context context, Visit visit, Member spouseA, MaritalRelationship relationshipToEdit, FormUtilities odkFormUtilities, FormUtilListener<MaritalRelationship> listener){
+    public static MaritalRelationshipFormUtil newInstance(Mode openMode, Fragment fragment, Context context, Visit visit, Member spouseA, MaritalRelationship relationshipToEdit, FormUtilListener<MaritalRelationship> listener){
         if (openMode == Mode.CREATE) {
-            return new MaritalRelationshipFormUtil(fragment, context, visit, spouseA, odkFormUtilities, listener);
+            return new MaritalRelationshipFormUtil(fragment, context, visit, spouseA, listener);
         } else if (openMode == Mode.EDIT) {
-            return new MaritalRelationshipFormUtil(fragment, context, visit, relationshipToEdit, odkFormUtilities, listener);
+            return new MaritalRelationshipFormUtil(fragment, context, visit, relationshipToEdit, listener);
         }
 
         return null;

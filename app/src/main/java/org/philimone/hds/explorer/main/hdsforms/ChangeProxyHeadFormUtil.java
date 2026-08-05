@@ -52,7 +52,6 @@ import java.util.stream.Collectors;
 
 import io.objectbox.Box;
 import io.objectbox.query.QueryBuilder;
-import mz.betainteractive.odk.FormUtilities;
 import mz.betainteractive.utilities.DateUtil;
 import mz.betainteractive.utilities.GeneralUtil;
 import mz.betainteractive.utilities.StringUtil;
@@ -77,8 +76,8 @@ public class ChangeProxyHeadFormUtil extends FormUtil<HouseholdProxyHead> {
     private Member oldProxyHeadMember;
     private Member editedProxyHead;
 
-    public ChangeProxyHeadFormUtil(Fragment fragment, Context context, Visit visit, Household household, FormUtilities odkFormUtilities, FormUtilListener<HouseholdProxyHead> listener){
-        super(fragment, context, FormUtil.getChangeProxyHeadForm(context), odkFormUtilities, listener);
+    public ChangeProxyHeadFormUtil(Fragment fragment, Context context, Visit visit, Household household, FormUtilListener<HouseholdProxyHead> listener){
+        super(fragment, context, FormUtil.getChangeProxyHeadForm(context), listener);
 
         //Log.d("enu-household", ""+household);
 
@@ -91,8 +90,8 @@ public class ChangeProxyHeadFormUtil extends FormUtil<HouseholdProxyHead> {
         initialize();
     }
 
-    public ChangeProxyHeadFormUtil(Fragment fragment, Context context, Visit visit, Household household, HouseholdProxyHead householdProxyHeadToEdit, FormUtilities odkFormUtilities, FormUtilListener<HouseholdProxyHead> listener){
-        super(fragment, context, FormUtil.getChangeProxyHeadForm(context), householdProxyHeadToEdit, odkFormUtilities, listener);
+    public ChangeProxyHeadFormUtil(Fragment fragment, Context context, Visit visit, Household household, HouseholdProxyHead householdProxyHeadToEdit, FormUtilListener<HouseholdProxyHead> listener){
+        super(fragment, context, FormUtil.getChangeProxyHeadForm(context), householdProxyHeadToEdit, listener);
 
         this.household = household;
         this.visit = visit;
@@ -109,11 +108,11 @@ public class ChangeProxyHeadFormUtil extends FormUtil<HouseholdProxyHead> {
         initialize();
     }
 
-    public static ChangeProxyHeadFormUtil newInstance(Mode openMode, Fragment fragment, Context context, Visit visit, Household household, HouseholdProxyHead householdProxyHeadToEdit, FormUtilities odkFormUtilities, FormUtilListener<HouseholdProxyHead> listener){
+    public static ChangeProxyHeadFormUtil newInstance(Mode openMode, Fragment fragment, Context context, Visit visit, Household household, HouseholdProxyHead householdProxyHeadToEdit, FormUtilListener<HouseholdProxyHead> listener){
         if (openMode == Mode.CREATE) {
-            return new ChangeProxyHeadFormUtil(fragment, context, visit, household, odkFormUtilities, listener);
+            return new ChangeProxyHeadFormUtil(fragment, context, visit, household, listener);
         } else if (openMode == Mode.EDIT) {
-            return new ChangeProxyHeadFormUtil(fragment, context, visit, household, householdProxyHeadToEdit, odkFormUtilities, listener);
+            return new ChangeProxyHeadFormUtil(fragment, context, visit, household, householdProxyHeadToEdit, listener);
         }
 
         return null;

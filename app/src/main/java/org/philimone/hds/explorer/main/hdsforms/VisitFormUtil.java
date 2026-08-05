@@ -44,7 +44,6 @@ import androidx.fragment.app.Fragment;
 
 import io.objectbox.Box;
 import io.objectbox.query.QueryBuilder;
-import mz.betainteractive.odk.FormUtilities;
 import mz.betainteractive.utilities.DateUtil;
 import mz.betainteractive.utilities.StringUtil;
 
@@ -66,8 +65,8 @@ public class VisitFormUtil extends FormUtil<Visit> {
 
     private static List<NoVisitReason> householdStatuses = Arrays.asList(NoVisitReason.HOUSE_OCCUPIED, NoVisitReason.HOUSE_VACANT, NoVisitReason.HOUSE_ABANDONED, NoVisitReason.HOUSE_DESTROYED, NoVisitReason.HOUSE_NOT_FOUND);
 
-    public VisitFormUtil(Fragment fragment, Context context, Household household, boolean newHouseholdCreated, FormUtilities odkFormUtilities, FormUtilListener<Visit> listener){
-        super(fragment, context, FormUtil.getVisitForm(context), odkFormUtilities, listener);
+    public VisitFormUtil(Fragment fragment, Context context, Household household, boolean newHouseholdCreated, FormUtilListener<Visit> listener){
+        super(fragment, context, FormUtil.getVisitForm(context), listener);
 
         this.household = household;
         this.newHouseholdCreated = newHouseholdCreated;
@@ -76,8 +75,8 @@ public class VisitFormUtil extends FormUtil<Visit> {
         initialize();
     }
 
-    public VisitFormUtil(Fragment fragment, Context context, Household household, Visit visit, FormUtilities odkFormUtilities, FormUtilListener<Visit> listener){
-        super(fragment, context, FormUtil.getVisitForm(context), visit, odkFormUtilities, listener);
+    public VisitFormUtil(Fragment fragment, Context context, Household household, Visit visit, FormUtilListener<Visit> listener){
+        super(fragment, context, FormUtil.getVisitForm(context), visit, listener);
 
         this.household = household;
 
@@ -85,8 +84,8 @@ public class VisitFormUtil extends FormUtil<Visit> {
         initialize();
     }
 
-    public VisitFormUtil(AppCompatActivity activity, Context context, Household household, boolean newHouseholdCreated, FormUtilities odkFormUtilities, FormUtilListener<Visit> listener){
-        super(activity, context, FormUtil.getVisitForm(context), odkFormUtilities, listener);
+    public VisitFormUtil(AppCompatActivity activity, Context context, Household household, boolean newHouseholdCreated, FormUtilListener<Visit> listener){
+        super(activity, context, FormUtil.getVisitForm(context), listener);
 
         this.household = household;
         this.newHouseholdCreated = newHouseholdCreated;
@@ -95,8 +94,8 @@ public class VisitFormUtil extends FormUtil<Visit> {
         initialize();
     }
 
-    public VisitFormUtil(AppCompatActivity activity, Context context, Household household, Visit visit, FormUtilities odkFormUtilities, FormUtilListener<Visit> listener){
-        super(activity, context, FormUtil.getVisitForm(context), visit, odkFormUtilities, listener);
+    public VisitFormUtil(AppCompatActivity activity, Context context, Household household, Visit visit, FormUtilListener<Visit> listener){
+        super(activity, context, FormUtil.getVisitForm(context), visit, listener);
 
         this.household = household;
 
@@ -104,21 +103,21 @@ public class VisitFormUtil extends FormUtil<Visit> {
         initialize();
     }
 
-    public static VisitFormUtil newInstance(Mode openMode, AppCompatActivity activity, Context context, Household household, boolean newHouseholdCreated, Visit visit, FormUtilities odkFormUtilities, FormUtilListener<Visit> listener){
+    public static VisitFormUtil newInstance(Mode openMode, AppCompatActivity activity, Context context, Household household, boolean newHouseholdCreated, Visit visit, FormUtilListener<Visit> listener){
         if (openMode == Mode.CREATE) {
-            return new VisitFormUtil(activity, context, household, newHouseholdCreated, odkFormUtilities, listener);
+            return new VisitFormUtil(activity, context, household, newHouseholdCreated, listener);
         } else if (openMode == Mode.EDIT) {
-            return new VisitFormUtil(activity, context, household, visit, odkFormUtilities, listener);
+            return new VisitFormUtil(activity, context, household, visit, listener);
         }
 
         return null;
     }
 
-    public static VisitFormUtil newInstance(Mode openMode, Fragment fragment, Context context, Household household, boolean newHouseholdCreated, Visit visit, FormUtilities odkFormUtilities, FormUtilListener<Visit> listener){
+    public static VisitFormUtil newInstance(Mode openMode, Fragment fragment, Context context, Household household, boolean newHouseholdCreated, Visit visit, FormUtilListener<Visit> listener){
         if (openMode == Mode.CREATE) {
-            return new VisitFormUtil(fragment, context, household, newHouseholdCreated, odkFormUtilities, listener);
+            return new VisitFormUtil(fragment, context, household, newHouseholdCreated, listener);
         } else if (openMode == Mode.EDIT) {
-            return new VisitFormUtil(fragment, context, household, visit, odkFormUtilities, listener);
+            return new VisitFormUtil(fragment, context, household, visit, listener);
         }
 
         return null;

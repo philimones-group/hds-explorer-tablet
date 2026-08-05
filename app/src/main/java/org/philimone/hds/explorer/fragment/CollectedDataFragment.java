@@ -483,38 +483,14 @@ public class CollectedDataFragment extends Fragment implements OdkFormResultList
         CollectedDataItem dataItem = adapter.getItem(position);
 
         CollectedData collectedData = dataItem.getCollectedData();
+        FormDataLoader formDataLoader = getFormDataLoader(collectedData);
 
-
-        if (dataItem.isFormExtension()) {
-            CoreCollectedData coreCollectedData = boxCoreCollectedData.query(CoreCollectedData_.collectedId.equal(collectedData.collectedId)).build().findFirst();
-            if (coreCollectedData != null) {
-                HForm hform = FormUtil.getHFormBy(getContext(), coreCollectedData.formEntity);
-                CoreEntity existingEntity = getRecordEntity(coreCollectedData);
-                EditCoreExtensionFormUtil formUtil = new EditCoreExtensionFormUtil(this, this.getContext(), hform, coreCollectedData, existingEntity, this.formUtilities, new EditCoreExtensionFormUtil.Listener() {
-                    @Override
-                    public void onFinishedCollecting() {
-                        showCollectedData();
-                    }
-                });
-
-                formUtil.editExtensionForm(collectedData);
-            } else {
-                //remove because the CoreCollectedData was deleted it doesnt exists
-                boxCollectedData.remove(collectedData);
-            }
-
+        if (collectedData.formGroupCollected) {
+            //Handle Form Group edition correctly
+            handleOnFormGroupCollectedData(collectedData);
         } else {
-            FormDataLoader formDataLoader = getFormDataLoader(collectedData);
-
-            if (collectedData.formGroupCollected) {
-                //Handle Form Group edition correctly
-                handleOnFormGroupCollectedData(collectedData);
-            } else {
-                reOpenOdkForm(formDataLoader, collectedData, false, null);
-            }
+            reOpenOdkForm(formDataLoader, collectedData, false, null);
         }
-
-
     }
 
     private CoreEntity getRecordEntity(CoreCollectedData coreCollectedData) {

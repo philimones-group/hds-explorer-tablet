@@ -27,7 +27,6 @@ import java.util.Date;
 import java.util.HashMap;
 
 import io.objectbox.Box;
-import mz.betainteractive.odk.FormUtilities;
 import mz.betainteractive.utilities.StringUtil;
 
 public class IncompleteVisitFormUtil extends FormUtil<IncompleteVisit> {
@@ -40,8 +39,8 @@ public class IncompleteVisitFormUtil extends FormUtil<IncompleteVisit> {
     private Member member;
     private IncompleteVisit currentIncompleteVisit;
 
-    public IncompleteVisitFormUtil(Fragment fragment, Context context, Visit visit, Member member, FormUtilities odkFormUtilities, FormUtilListener<IncompleteVisit> listener){
-        super(fragment, context, FormUtil.getIncompleteVisitForm(context), odkFormUtilities, listener);
+    public IncompleteVisitFormUtil(Fragment fragment, Context context, Visit visit, Member member, FormUtilListener<IncompleteVisit> listener){
+        super(fragment, context, FormUtil.getIncompleteVisitForm(context), listener);
 
         this.visit = visit;
         this.member = member;
@@ -50,8 +49,8 @@ public class IncompleteVisitFormUtil extends FormUtil<IncompleteVisit> {
         initialize();
     }
 
-    public IncompleteVisitFormUtil(Fragment fragment, Context context, Visit visit, IncompleteVisit incompleteVisitToEdit, FormUtilities odkFormUtilities, FormUtilListener<IncompleteVisit> listener){
-        super(fragment, context, FormUtil.getIncompleteVisitForm(context), incompleteVisitToEdit, odkFormUtilities, listener);
+    public IncompleteVisitFormUtil(Fragment fragment, Context context, Visit visit, IncompleteVisit incompleteVisitToEdit, FormUtilListener<IncompleteVisit> listener){
+        super(fragment, context, FormUtil.getIncompleteVisitForm(context), incompleteVisitToEdit, listener);
 
         this.visit = visit;
 
@@ -62,11 +61,11 @@ public class IncompleteVisitFormUtil extends FormUtil<IncompleteVisit> {
         this.member = this.boxMembers.query(Member_.code.equal(incompleteVisitToEdit.memberCode)).build().findFirst();
     }
 
-    public static IncompleteVisitFormUtil newInstance(Mode openMode, Fragment fragment, Context context, Visit visit, Member member, IncompleteVisit incompleteVisitToEdit, FormUtilities odkFormUtilities, FormUtilListener<IncompleteVisit> listener) {
+    public static IncompleteVisitFormUtil newInstance(Mode openMode, Fragment fragment, Context context, Visit visit, Member member, IncompleteVisit incompleteVisitToEdit, FormUtilListener<IncompleteVisit> listener) {
         if (openMode == Mode.CREATE) {
-            return new IncompleteVisitFormUtil(fragment, context, visit, member, odkFormUtilities, listener);
+            return new IncompleteVisitFormUtil(fragment, context, visit, member, listener);
         } else if (openMode == Mode.EDIT) {
-            return new IncompleteVisitFormUtil(fragment, context, visit, incompleteVisitToEdit, odkFormUtilities, listener);
+            return new IncompleteVisitFormUtil(fragment, context, visit, incompleteVisitToEdit, listener);
         }
 
         return null;

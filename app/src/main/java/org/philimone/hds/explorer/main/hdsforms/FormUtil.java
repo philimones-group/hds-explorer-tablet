@@ -35,9 +35,14 @@ import org.philimone.hds.forms.model.ColumnValue;
 import org.philimone.hds.forms.model.HForm;
 import org.philimone.hds.forms.model.PreloadMap;
 import org.philimone.hds.forms.model.RepeatColumnValue;
+import org.philimone.hds.forms.model.RepeatObject;
+import org.philimone.hds.forms.model.ValidationResult;
+import org.philimone.hds.forms.model.XmlFormResult;
 import org.philimone.hds.forms.model.parsers.ExcelFormParser;
 import org.philimone.hds.forms.model.parsers.form.model.FormOptions;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Date;
@@ -49,6 +54,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 import androidx.annotation.StringRes;
 import androidx.appcompat.app.AppCompatActivity;
@@ -59,16 +66,11 @@ import com.google.gson.Gson;
 
 import io.objectbox.Box;
 import io.objectbox.query.QueryBuilder;
-import mz.betainteractive.odk.FormUtilities;
-import mz.betainteractive.odk.listener.OdkFormResultListener;
-import mz.betainteractive.odk.model.FilledForm;
-import mz.betainteractive.odk.model.OdkFormLoadData;
-import mz.betainteractive.odk.task.OdkFormLoadResult;
 import mz.betainteractive.utilities.DateUtil;
 import mz.betainteractive.utilities.ReflectionUtils;
 import mz.betainteractive.utilities.StringUtil;
 
-public abstract class FormUtil<T extends CoreEntity> implements FormCollectionListener, OdkFormResultListener {
+public abstract class FormUtil<T extends CoreEntity> implements FormCollectionListener {
 
     public enum Mode { CREATE, EDIT }
 
@@ -100,9 +102,6 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
     protected Box<Member> mBoxMembers;
     protected Box<SavedEntityState> boxSavedEntityStates;
 
-    protected FormUtilities odkFormUtilities;
-    private FilledForm lastLoadedForm;
-
     protected Mode currentMode;
     
     protected FormUtilListener<T> listener;
@@ -113,7 +112,7 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
 
     /* Load a Editor */
 
-    protected FormUtil(Fragment fragment, Context context, HForm hform, FormUtilities odkFormUtilities, FormUtilListener<T> listener){
+    protected FormUtil(Fragment fragment, Context context, HForm hform, FormUtilListener<T> listener){
         this.fragment = fragment;
         this.fragmentManager = fragment.getActivity().getSupportFragmentManager();
         this.context = context;
@@ -124,16 +123,12 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
 
         this.currentMode = Mode.CREATE;
 
-        //ODK Form Utilities
-        this.odkFormUtilities = odkFormUtilities;
-        this.odkFormUtilities.setOdkFormResultListener(this);
-
         this.listener = listener;
 
         this.loadingDialog = new LoadingDialog(context);
     }
 
-    protected FormUtil(Fragment fragment, Context context, HForm hform, T existentEntity, FormUtilities odkFormUtilities, FormUtilListener<T> listener){
+    protected FormUtil(Fragment fragment, Context context, HForm hform, T existentEntity, FormUtilListener<T> listener){
         this.fragment = fragment;
         this.fragmentManager = fragment.getActivity().getSupportFragmentManager();
         this.context = context;
@@ -144,10 +139,6 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
 
         this.currentMode = Mode.EDIT;
         this.entity = existentEntity;
-
-        //ODK Form Utilities
-        this.odkFormUtilities = odkFormUtilities;
-        this.odkFormUtilities.setOdkFormResultListener(this);
 
         this.listener = listener;
 
@@ -157,7 +148,7 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
         this.loadingDialog = new LoadingDialog(context);
     }
 
-    protected FormUtil(Fragment fragment, Context context, HForm hform, T existentEntity, CoreCollectedData coreCollectedData, FormUtilities odkFormUtilities, FormUtilListener<T> listener){
+    protected FormUtil(Fragment fragment, Context context, HForm hform, T existentEntity, CoreCollectedData coreCollectedData, FormUtilListener<T> listener){
         this.fragment = fragment;
         this.fragmentManager = fragment.getActivity().getSupportFragmentManager();
         this.context = context;
@@ -168,10 +159,6 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
 
         this.currentMode = Mode.EDIT;
         this.entity = existentEntity;
-
-        //ODK Form Utilities
-        this.odkFormUtilities = odkFormUtilities;
-        this.odkFormUtilities.setOdkFormResultListener(this);
 
         this.listener = listener;
 
@@ -186,7 +173,7 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
         this.loadingDialog = new LoadingDialog(context);
     }
 
-    protected FormUtil(AppCompatActivity activity, Context context, HForm hform, FormUtilities odkFormUtilities, FormUtilListener<T> listener){
+    protected FormUtil(AppCompatActivity activity, Context context, HForm hform, FormUtilListener<T> listener){
         this.activity = activity;
         this.fragmentManager = activity.getSupportFragmentManager();
         this.context = context;
@@ -197,16 +184,12 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
 
         this.currentMode = Mode.CREATE;
 
-        //ODK Form Utilities
-        this.odkFormUtilities = odkFormUtilities;
-        this.odkFormUtilities.setOdkFormResultListener(this);
-
         this.listener = listener;
 
         this.loadingDialog = new LoadingDialog(context);
     }
 
-    protected FormUtil(AppCompatActivity activity, Context context, HForm hform, T existentEntity, FormUtilities odkFormUtilities, FormUtilListener<T> listener){
+    protected FormUtil(AppCompatActivity activity, Context context, HForm hform, T existentEntity, FormUtilListener<T> listener){
         this.activity = activity;
         this.fragmentManager = activity.getSupportFragmentManager();
         this.context = context;
@@ -217,10 +200,6 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
 
         this.currentMode = Mode.EDIT;
         this.entity = existentEntity;
-
-        //ODK Form Utilities
-        this.odkFormUtilities = odkFormUtilities;
-        this.odkFormUtilities.setOdkFormResultListener(this);
 
         this.listener = listener;
 
@@ -313,29 +292,6 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
         showLoadingDialog(R.string.loading_dialog_form_load_lbl, true);
 
         new LoadFormFragmentTask().execute();
-
-        /* //WE MOVED THIS TO A THREAD - TO KEEP THE LOADING DIALOG DISPLAYED
-        if (currentMode == Mode.CREATE) {
-            Log.d("xloading", "creating form");
-            showLoadingDialog(R.string.loading_dialog_form_load_lbl, true);
-            Log.d("xloading", "preloading");
-            preloadValues();
-            this.form.setCustomTitle(this.formTitle);
-            Log.d("xloading", "creating form fragment");
-            FormFragment form = FormFragment.newInstance(this.fragmentManager, this.form, Bootstrap.getInstancesPath(context), user.username, preloadedMap, postExecution, backgroundMode, resumeMode, this);
-            Log.d("xloading", "starting form fragment");
-            form.startCollecting();
-        }
-
-        if (currentMode == Mode.EDIT) {
-            showLoadingDialog(R.string.loading_dialog_form_load_lbl, true);
-            preloadUpdatedValues();
-            this.form.setCustomTitle(this.formTitle);
-            String savedXmlFilename = this.entity.getRecentlyCreatedUri()==null ? this.collectedData.formFilename : this.entity.getRecentlyCreatedUri();
-            FormFragment form = FormFragment.newInstance(this.fragmentManager, this.form, Bootstrap.getInstancesPath(context), user.username, savedXmlFilename, preloadedMap, postExecution, backgroundMode, true, this);
-            form.startCollecting();
-        }
-        */
     }
 
     protected CoreFormExtension getFormExtension(CoreFormEntity formEntity){
@@ -351,10 +307,8 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
             if (formExtension != null && formExtension.enabled) {
                 //is required or optional
                 //read the mapping columns and preload them with collected values
-                // - understand how to preload repeat on ODK
-                //get the odk form
 
-                FilledForm odkFilledForm = createFilledForm(formExtension, collectedValues);
+                PreloadMap extPreloads = createExtensionPreloadMap(formExtension, collectedValues);
                 String title = this.context.getString(R.string.form_util_extension_collect_lbl);
 
                 if (formExtension.required) {
@@ -362,7 +316,7 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
                     String message = this.context.getString(R.string.form_util_extension_collect_required_msg_lbl, getFormName());
                     DialogFactory.createMessageInfo(this.context, title, message, clickedButton -> {
                         //COLLECT EXTENSION FORM
-                        openOdkForm(new OdkFormLoadData(formExtension.extFormId, odkFilledForm, false, true));
+                        new LoadExtFormFragmentTask(formExtension, extPreloads).execute();
                     }).show();
                 } else {
                     //optional message
@@ -371,7 +325,7 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
                         @Override
                         public void onYesClicked() {
                             //COLLECT EXTENSION FORM
-                            openOdkForm(new OdkFormLoadData(formExtension.extFormId, odkFilledForm, false, true));
+                            new LoadExtFormFragmentTask(formExtension, extPreloads).execute();
                         }
 
                         @Override
@@ -388,73 +342,63 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
         }
     }
 
-    public void editExtensionForm(CollectedData odkCollectedData) {
-
+    public void editExtensionForm(CoreCollectedData collectedData) {
         CoreFormExtension formExtension = getFormExtension(collectedData.formEntity);
 
-        if (odkCollectedData != null) {
-            FilledForm filledForm = new FilledForm(formExtension.extFormId);
-            openOdkForm(new OdkFormLoadData(formExtension.extFormId, filledForm, false, true), odkCollectedData);
+        if (formExtension != null && !StringUtil.isBlank(collectedData.extensionCollectedFilepath)) {
+            new LoadExtFormFragmentTask(formExtension, new PreloadMap(), collectedData.extensionCollectedFilepath).execute();
         }
     }
 
-    private FilledForm createFilledForm(CoreFormExtension formExtension, CollectedDataMap collectedValues){
-        FilledForm filledForm = new FilledForm(formExtension.extFormId);
-        Map<String, List<Map<String, String>>> repeatGroups = new LinkedHashMap<>();
+    protected InputStream getZipInputStream(String zipPath) throws Exception {
+        ZipInputStream zin = new ZipInputStream(new FileInputStream(zipPath));
+        ZipEntry entry;
+        while ((entry = zin.getNextEntry()) != null) {
+            if (entry.getName().endsWith(".xlsx") || entry.getName().endsWith(".xls")) {
+                return zin;
+            }
+        }
+        return null;
+    }
+
+    private PreloadMap createExtensionPreloadMap(CoreFormExtension formExtension, CollectedDataMap collectedValues){
+        PreloadMap preloads = new PreloadMap();
         final String householdPrefix = "Household.";
 
         for (String key : formExtension.columnsMapping.keySet()){
             String value = formExtension.columnsMapping.get(key);
-            Log.d("mapkv", key+":"+value);
-            if (key.contains(".")){ //is repeat group variable - maps to load-repeat or constant
 
-                if (value.startsWith("#")){ //from collected values
+            if (key.contains(".")){ //is repeat group variable
 
-                    //LOAD TO A REPEAT GROUP FROM VARIABLES OR CONSTANTS IS NOT SUPPORTED YET
-                    assert 1==0;
-
-                } else if (value.startsWith("$")){ //load collected repeat values
-
-                    //repeatGroupName.variableName -> $childs.outcomeType
+                if (value.startsWith("$")){ //load collected repeat values
                     try {
                         value = value.replace("$", "");
                         int iKeyPoint = key.indexOf(".");
                         int iValPoint = value.indexOf(".");
-                        String odkRepeatGroup = key.substring(0, iKeyPoint);
-                        String odkRepeatInnerColumn = key.substring(iKeyPoint + 1);
+                        String extRepeatGroup = key.substring(0, iKeyPoint);
+                        String extRepeatInnerColumn = key.substring(iKeyPoint + 1);
                         String hdsRepeatGroup = value.substring(0, iValPoint);
                         String hdsRepeatInnerColumn = value.substring(iValPoint + 1);
-                        //Log.d("test", hdsRepeatGroup+":"+hdsRepeatInnerColumn);
-                        if (odkRepeatGroup != null) {
-                            List<Map<String, String>> repeatGroupLists = repeatGroups.get(odkRepeatGroup);
-                            if (repeatGroupLists == null) {
-                                repeatGroupLists = new ArrayList<>();
-                                repeatGroups.put(odkRepeatGroup, repeatGroupLists);
+
+                        RepeatColumnValue hdsRepeatColumnValue = collectedValues.getRepeatColumn(hdsRepeatGroup);
+
+                        if (hdsRepeatColumnValue != null) {
+                            RepeatObject extRepeatObject = preloads.getRepeatObject(extRepeatGroup);
+                            if (extRepeatObject == null) {
+                                extRepeatObject = new RepeatObject();
+                                preloads.put(extRepeatGroup, extRepeatObject);
                             }
 
-                            //Read Values
-                            RepeatColumnValue repeatColumnValue = collectedValues.getRepeatColumn(hdsRepeatGroup);
-
-                            if (repeatColumnValue != null) {
-                                for (int repeatIndex = 0; repeatIndex < repeatColumnValue.getCount(); repeatIndex++) {
-                                    Map<String, String> mapRepeatItem = null;
-
-                                    if (repeatIndex >= 0 && repeatIndex < repeatGroupLists.size()) {
-                                        mapRepeatItem = repeatGroupLists.get(repeatIndex);
-                                    } else {
-                                        mapRepeatItem = new LinkedHashMap<>();
-                                        repeatGroupLists.add(mapRepeatItem);
-                                    }
-
-                                    //map the inner method and its value
-                                    String hdsRepeatInnerValue = repeatColumnValue.get(hdsRepeatInnerColumn, repeatIndex).getValue();
-                                    mapRepeatItem.put(odkRepeatInnerColumn, hdsRepeatInnerValue);
-
-                                    //Log.d("mapkv-"+repeatIndex+"-"+odkRepeatInnerColumn, hdsRepeatInnerValue);
+                            for (int repeatIndex = 0; repeatIndex < hdsRepeatColumnValue.getCount(); repeatIndex++) {
+                                Map<String, String> mapRepeatItem;
+                                if (repeatIndex < extRepeatObject.count()) {
+                                    mapRepeatItem = extRepeatObject.getList().get(repeatIndex);
+                                } else {
+                                    mapRepeatItem = extRepeatObject.createNewObject();
                                 }
 
-                                //save on filled form to be load to odk
-                                filledForm.putRepeatObjects(odkRepeatGroup, repeatGroupLists);
+                                String hdsValue = hdsRepeatColumnValue.get(hdsRepeatInnerColumn, repeatIndex).getValue();
+                                mapRepeatItem.put(extRepeatInnerColumn, hdsValue);
                             }
                         }
                     } catch (Exception ex) {
@@ -462,272 +406,32 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
                     }
                 }
 
-            } else { //root variable -> maps to constant or variable
+            } else { //root variable
 
                 if (value.startsWith("#")){ //variable - from collected values
                     value = value.replace("#", "");
-
                     ColumnValue columnValue = collectedValues.get(value);
-                    Log.d("columnvalue", "get "+value+" is "+(columnValue==null ? "null" : columnValue.getValue()));
                     if (columnValue != null) {
-                        filledForm.put(key, columnValue.getValue());
+                        preloads.put(key, columnValue.getValue());
                     }
-
                 } else if (value.startsWith(householdPrefix)) {
-                    //Load data from Household object
                     String variableName = value.replaceFirst(householdPrefix, "");
                     if (!StringUtil.isBlank(variableName) && this.household != null) {
                         String variableValue = ReflectionUtils.getValueByName(this.household, variableName);
-                        filledForm.put(key, variableValue);
+                        preloads.put(key, variableValue);
                     }
                 } else { //constant
-                    filledForm.put(key, value);
+                    preloads.put(key, value);
                 }
             }
         }
 
-        //load the repeats to filledforms
-        //repeatGroupVar -> List<Objects with many attributes>
-
-        return filledForm;
+        return preloads;
     }
 
     protected abstract void onFinishedExtensionCollection();
 
-    //<editor-fold desc="ODK Form Utility methods">
-
-    private CollectedData getCollectedData(FilledForm filledForm){
-
-        List<CollectedData> cData = this.boxCollectedData.query(
-                CollectedData_.formId.equal(filledForm.getFormId()).and(CollectedData_.collectedId.equal(this.collectedData.collectedId))
-        ).filter((c) -> StringUtil.containsAny(c.formModules, this.user.getSelectedModules())).build().find();
-
-        if (cData != null && cData.size()>0) return cData.get(0);
-
-        return null;
-    }
-
-    private void openOdkForm(OdkFormLoadData loadData) {
-
-        this.lastLoadedForm = loadData.preloadedData;
-
-        CollectedData collectedData = getCollectedData(loadData.preloadedData);
-
-        if (collectedData == null){
-            odkFormUtilities.loadForm(loadData);
-        }else{
-            odkFormUtilities.loadForm(loadData, collectedData.getFormUri(), collectedData.getInstanceUri(), collectedData.formXmlPath, this); //load existent form
-        }
-
-    }
-
-    private void openOdkForm(OdkFormLoadData loadData, CollectedData collectedData) {
-
-        this.lastLoadedForm = loadData.preloadedData;
-
-        if (collectedData == null){
-            odkFormUtilities.loadForm(loadData);
-        }else{
-            odkFormUtilities.loadForm(loadData, collectedData.getFormUri(), collectedData.getInstanceUri(), collectedData.formXmlPath, this);
-        }
-
-    }
-
-    @Override
-    public void onFormFinalized(OdkFormLoadData formLoadData, Uri formUri, Uri instanceUri, String formId, String instanceXmlPath, String metaInstanceName, Date lastUpdatedDate) {
-        Log.d("ext form finalized"," "+ formUri +", file-uri = "+instanceXmlPath);
-
-        //search existing record
-        CollectedData odkCollectedData = this.boxCollectedData.query().equal(CollectedData_.formUri, formUri.toString(), QueryBuilder.StringOrder.CASE_SENSITIVE)
-                .and().equal(CollectedData_.collectedId, this.collectedData.collectedId, QueryBuilder.StringOrder.CASE_SENSITIVE).build().findFirst();
-
-        if (odkCollectedData == null){ //insert
-            odkCollectedData = new CollectedData();
-            odkCollectedData.setFormId(formId);
-            odkCollectedData.setFormUri(formUri.toString());
-            odkCollectedData.setInstanceUri(instanceUri.toString());
-            odkCollectedData.setFormXmlPath(instanceXmlPath);
-            odkCollectedData.setFormInstanceName(metaInstanceName);
-            odkCollectedData.setFormLastUpdatedDate(lastUpdatedDate);
-            odkCollectedData.formFinalized = true;
-
-            odkCollectedData.setFormModules(user.getSelectedModules());
-
-            odkCollectedData.setCollectedBy(user.getUsername());
-            odkCollectedData.setUpdatedBy("");
-            odkCollectedData.setSupervisedBy("");
-
-            odkCollectedData.setRecordId(getCurrentRecordId());
-            odkCollectedData.setRecordEntity(getCurrentTablename());
-            odkCollectedData.collectedId = this.collectedData.collectedId;
-
-            this.boxCollectedData.put(odkCollectedData);
-
-            //Log.d("inserting", "new collected data");
-        }else{ //update
-            odkCollectedData.setFormId(formId);
-            odkCollectedData.setFormUri(formUri.toString());
-            odkCollectedData.setInstanceUri(instanceUri.toString());
-            //odkCollectedData.setFormXmlPath(instanceXmlPath);
-            odkCollectedData.setFormInstanceName(metaInstanceName);
-            odkCollectedData.setFormLastUpdatedDate(lastUpdatedDate);
-            odkCollectedData.formFinalized = true;
-
-            //collectedData.setFormModule(lastLoadedForm.getForm().getModules());
-            //collectedData.setCollectedBy(loggedUser.getUsername());
-            odkCollectedData.setUpdatedBy(user.getUsername());
-            //collectedData.setSupervisedBy("");
-
-            odkCollectedData.setRecordId(getCurrentRecordId());
-            odkCollectedData.setRecordEntity(getCurrentTablename());
-            odkCollectedData.collectedId = this.collectedData.collectedId;
-
-            this.boxCollectedData.put(odkCollectedData);
-            Log.d("updating", "new extension collected data");
-        }
-
-        //save corecollecteddata
-        this.collectedData.extensionCollected = true;
-        this.collectedData.extensionCollectedUri = odkCollectedData.formUri;
-        this.collectedData.extensionCollectedFilepath = odkCollectedData.formXmlPath;
-        this.boxCoreCollectedData.put(collectedData);
-
-        onFinishedExtensionCollection();
-    }
-
-    @Override
-    public void onFormUnFinalized(OdkFormLoadData formLoadData, Uri formUri, Uri instanceUri, String formId, String instanceXmlPath, String metaInstanceName, Date lastUpdatedDate) {
-        Log.d("ext form unfinalized"," "+ formUri);
-
-        buildExtensionFormNotFinalizedDialog(new DialogFactory.OnYesNoClickListener() {
-            @Override
-            public void onYesClicked() {
-                odkFormUtilities.editLastOpenedForm();
-            }
-
-            @Override
-            public void onNoClicked() {
-                //saving
-                saveUnfinalizedForm(formUri, formId, instanceXmlPath, metaInstanceName, lastUpdatedDate);
-                onFinishedExtensionCollection();
-            }
-        });
-
-
-    }
-
-    @Override
-    public void onDeleteForm(OdkFormLoadData formLoadData, Uri formUri, Uri instanceUri, String instanceXmlPath) {
-
-        this.boxCollectedData.query().equal(CollectedData_.formUri, instanceUri.toString(), QueryBuilder.StringOrder.CASE_SENSITIVE).build().remove(); //delete where formUri=contentUri
-
-        //delete instanceFileUri - already deleted by removing instance
-        if (instanceXmlPath != null) {
-            //odkFormUtilities.deleteInstanceFile(instanceFileUri);
-        }
-
-        //save corecollecteddata
-        this.collectedData.extensionCollected = false;
-        this.collectedData.extensionCollectedUri = null;
-        this.boxCoreCollectedData.put(collectedData);
-
-        onFinishedExtensionCollection();
-    }
-
-    @Override
-    public void onFormLoadError(OdkFormLoadData formLoadData, OdkFormLoadResult result) {
-        onFinishedExtensionCollection();
-    }
-
-    @Override
-    public void onFormInstanceNotFound(OdkFormLoadData formLoadData, final Uri formUri, final Uri instanceUri) {
-        buildDeleteFormInstanceNotFoundDialog(formLoadData, formUri, instanceUri);
-        onFinishedExtensionCollection();
-    }
-
-    private void saveUnfinalizedForm(Uri contentUri, String formId, String instanceFileUri, String metaInstanceName, Date lastUpdatedDate) {
-        //search existing record
-        CollectedData odkCollectedData = this.boxCollectedData.query().equal(CollectedData_.formUri, contentUri.toString(), QueryBuilder.StringOrder.CASE_SENSITIVE)
-                .and().equal(CollectedData_.collectedId, this.collectedData.collectedId, QueryBuilder.StringOrder.CASE_SENSITIVE).build().findFirst();
-
-        if (odkCollectedData == null){ //insert
-            odkCollectedData = new CollectedData();
-            odkCollectedData.setFormId(formId);
-            odkCollectedData.setFormUri(contentUri.toString());
-            odkCollectedData.setFormXmlPath(instanceFileUri);
-            odkCollectedData.setFormInstanceName(metaInstanceName);
-            odkCollectedData.setFormLastUpdatedDate(lastUpdatedDate);
-            odkCollectedData.formFinalized = false;
-
-            odkCollectedData.setFormModules(user.getSelectedModules());
-
-            odkCollectedData.setCollectedBy(user.getUsername());
-            odkCollectedData.setUpdatedBy("");
-            odkCollectedData.setSupervisedBy("");
-
-            odkCollectedData.setRecordId(getCurrentRecordId());
-            odkCollectedData.setRecordEntity(getCurrentTablename());
-            odkCollectedData.collectedId = this.collectedData.collectedId;
-
-            this.boxCollectedData.put(odkCollectedData);
-            //Log.d("inserting", "new ext collected data");
-        }else{ //update
-            odkCollectedData.setFormId(formId);
-            odkCollectedData.setFormUri(contentUri.toString());
-            //odkCollectedData.setFormXmlPath(instanceFileUri);
-            odkCollectedData.setFormInstanceName(metaInstanceName);
-            odkCollectedData.setFormLastUpdatedDate(lastUpdatedDate);
-            odkCollectedData.formFinalized = false;
-
-            //collectedData.setFormModule(lastLoadedForm.getForm().getModules());
-            //collectedData.setCollectedBy(loggedUser.getUsername());
-            odkCollectedData.setUpdatedBy(user.getUsername());
-            //collectedData.setSupervisedBy("");
-
-            odkCollectedData.collectedId = this.collectedData.collectedId;
-
-            this.boxCollectedData.put(odkCollectedData);
-            //Log.d("updating", "new ext collected data");
-        }
-
-        //save corecollecteddata
-        this.collectedData.extensionCollected = true;
-        this.collectedData.extensionCollectedUri = odkCollectedData.formUri;
-        this.collectedData.extensionCollectedFilepath = odkCollectedData.formXmlPath;
-        this.boxCoreCollectedData.put(collectedData);
-    }
-
-    private void buildDeleteFormInstanceNotFoundDialog(OdkFormLoadData formLoadData, final Uri formUri, final Uri instanceUri){
-
-        DialogFactory.createMessageYN(this.getContext(), R.string.household_details_dialog_del_saved_form_title_lbl, R.string.household_details_dialog_del_saved_form_msg_lbl, new DialogFactory.OnYesNoClickListener() {
-            @Override
-            public void onYesClicked() {
-                onDeleteForm(formLoadData, formUri, instanceUri, null);
-            }
-
-            @Override
-            public void onNoClicked() {
-                onFinishedExtensionCollection();
-            }
-        }).show();
-    }
-
-    private void buildExtensionFormNotFinalizedDialog(DialogFactory.OnYesNoClickListener yesNoClickListener){
-
-        CoreFormExtension extension = this.collectedData.extension.getTarget();
-
-        String title = getContext().getString(R.string.warning_lbl);
-        String form = getContext().getString(extension.formEntity.name);
-        String message = getContext().getString(R.string.odk_unfinished_extension_msg, form);
-        String yes = getContext().getString(R.string.odk_unfinished_extension_button_edit);
-        String no = getContext().getString(R.string.odk_unfinished_extension_button_save);
-
-        DialogFactory.createMessageYN(this.getContext(), title, message, yes, no, yesNoClickListener).show();
-    }
-
-    //</editor-fold>
-
-    private SubjectEntity getCurrentTablename() {
+    protected SubjectEntity getCurrentTablename() {
 
         if (this.entity instanceof Death) return SubjectEntity.MEMBER;
         if (this.entity instanceof HeadRelationship) return SubjectEntity.HOUSEHOLD;
@@ -1062,6 +766,12 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
         return mapSavedStates;
     }
 
+    /*
+     * Used to call a method or function outside of HDS-Explorer
+     */
+    @Override
+    public abstract String onFormCallMethod(String methodExpression, String[] args);
+
     class LoadFormFragmentTask extends AsyncTask<Void, Void, Void> {
 
         @Override
@@ -1099,6 +809,91 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
                 formFragment.startCollecting();
             }
 
+        }
+    }
+
+    class LoadExtFormFragmentTask extends AsyncTask<Void, Void, HForm> {
+        private CoreFormExtension extension;
+        private PreloadMap preloads;
+        private String savedXmlPath;
+
+        public LoadExtFormFragmentTask(CoreFormExtension extension, PreloadMap preloads) {
+            this.extension = extension;
+            this.preloads = preloads;
+        }
+
+        public LoadExtFormFragmentTask(CoreFormExtension extension, PreloadMap preloads, String savedXmlPath) {
+            this.extension = extension;
+            this.preloads = preloads;
+            this.savedXmlPath = savedXmlPath;
+        }
+
+        @Override
+        protected HForm doInBackground(Void... voids) {
+            try {
+                InputStream is = getZipInputStream(extension.extFormFilePath);
+                if (is != null) {
+                    return retrieveForm(is);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(HForm extForm) {
+            if (extForm == null) {
+                showLoadingDialog("Error loading extension form", false);
+                onFinishedExtensionCollection();
+                return;
+            }
+
+            DateUtil.SupportedCalendar supportedCalendar = Bootstrap.getSupportedCalendar();
+
+            FormFragment formFragment;
+            if (savedXmlPath == null) {
+                formFragment = FormFragment.newInstance(fragmentManager, extForm, supportedCalendar, Bootstrap.getInstancesPath(context), user.username, preloads, postExecution, backgroundMode, resumeMode, new ExtensionFormListener());
+            } else {
+                formFragment = FormFragment.newInstance(fragmentManager, extForm, supportedCalendar, Bootstrap.getInstancesPath(context), user.username, savedXmlPath, preloads, postExecution, backgroundMode, true, new ExtensionFormListener());
+            }
+
+            showLoadingDialog("", false);
+            formFragment.startCollecting();
+        }
+    }
+
+    class ExtensionFormListener implements FormCollectionListener {
+        @Override
+        public void onFormLoaded(Object[] data) {}
+
+        @Override
+        public void onFormCancelled() {
+            onFinishedExtensionCollection();
+        }
+
+        @Override
+        public ValidationResult onFormValidate(HForm form, CollectedDataMap collectedValues) {
+            return ValidationResult.noErrors();
+        }
+
+        @Override
+        public void onBeforeFormFinished(HForm form, CollectedDataMap collectedValues) {}
+
+        @Override
+        public void onFormFinished(HForm form, CollectedDataMap collectedValues, XmlFormResult result) {
+            collectedData.extensionCollected = true;
+            collectedData.extensionCollectedFilepath = result.getFilename();
+            collectedData.extensionCollectedUri = result.getFilename() != null ? Uri.fromFile(new File(result.getFilename())).toString() : null;
+            collectedData.extensionCollectedDate = new Date();
+            boxCoreCollectedData.put(collectedData);
+
+            onFinishedExtensionCollection();
+        }
+
+        @Override
+        public String onFormCallMethod(String methodExpression, String[] args) {
+            return FormUtil.this.onFormCallMethod(methodExpression, args);
         }
     }
 

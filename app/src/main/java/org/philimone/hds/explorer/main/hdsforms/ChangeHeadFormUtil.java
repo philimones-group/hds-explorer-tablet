@@ -49,7 +49,6 @@ import java.util.stream.Collectors;
 
 import io.objectbox.Box;
 import io.objectbox.query.QueryBuilder;
-import mz.betainteractive.odk.FormUtilities;
 import mz.betainteractive.utilities.DateUtil;
 import mz.betainteractive.utilities.GeneralUtil;
 import mz.betainteractive.utilities.StringUtil;
@@ -76,8 +75,8 @@ public class ChangeHeadFormUtil extends FormUtil<HeadRelationship> {
 
     private DateUtil dateUtil = Bootstrap.getDateUtil();
 
-    public ChangeHeadFormUtil(Fragment fragment, Context context, Visit visit, Household household, FormUtilities odkFormUtilities, FormUtilListener<HeadRelationship> listener){
-        super(fragment, context, FormUtil.getChangeHeadForm(context), odkFormUtilities, listener);
+    public ChangeHeadFormUtil(Fragment fragment, Context context, Visit visit, Household household, FormUtilListener<HeadRelationship> listener){
+        super(fragment, context, FormUtil.getChangeHeadForm(context), listener);
 
         //Log.d("enu-household", ""+household);
 
@@ -88,8 +87,8 @@ public class ChangeHeadFormUtil extends FormUtil<HeadRelationship> {
         initialize();
     }
 
-    public ChangeHeadFormUtil(Fragment fragment, Context context, Visit visit, Household household, HeadRelationship headRelationshipToEdit, FormUtilities odkFormUtilities, FormUtilListener<HeadRelationship> listener){
-        super(fragment, context, FormUtil.getChangeHeadForm(context), headRelationshipToEdit, odkFormUtilities, listener);
+    public ChangeHeadFormUtil(Fragment fragment, Context context, Visit visit, Household household, HeadRelationship headRelationshipToEdit, FormUtilListener<HeadRelationship> listener){
+        super(fragment, context, FormUtil.getChangeHeadForm(context), headRelationshipToEdit, listener);
 
         this.household = household;
         this.visit = visit;
@@ -104,11 +103,11 @@ public class ChangeHeadFormUtil extends FormUtil<HeadRelationship> {
         initialize();
     }
 
-    public static ChangeHeadFormUtil newInstance(Mode openMode, Fragment fragment, Context context, Visit visit, Household household, HeadRelationship headRelationshipToEdit, FormUtilities odkFormUtilities, FormUtilListener<HeadRelationship> listener){
+    public static ChangeHeadFormUtil newInstance(Mode openMode, Fragment fragment, Context context, Visit visit, Household household, HeadRelationship headRelationshipToEdit, FormUtilListener<HeadRelationship> listener){
         if (openMode == Mode.CREATE) {
-            return new ChangeHeadFormUtil(fragment, context, visit, household, odkFormUtilities, listener);
+            return new ChangeHeadFormUtil(fragment, context, visit, household, listener);
         } else if (openMode == Mode.EDIT) {
-            return new ChangeHeadFormUtil(fragment, context, visit, household, headRelationshipToEdit, odkFormUtilities, listener);
+            return new ChangeHeadFormUtil(fragment, context, visit, household, headRelationshipToEdit, listener);
         }
 
         return null;

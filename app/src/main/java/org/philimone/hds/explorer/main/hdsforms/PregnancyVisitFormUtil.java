@@ -65,7 +65,6 @@ import java.util.Set;
 
 import io.objectbox.Box;
 import io.objectbox.query.QueryBuilder;
-import mz.betainteractive.odk.FormUtilities;
 import mz.betainteractive.utilities.DateUtil;
 import mz.betainteractive.utilities.GeneralUtil;
 import mz.betainteractive.utilities.StringUtil;
@@ -96,8 +95,8 @@ public class PregnancyVisitFormUtil extends FormUtil<PregnancyVisit> {
 
     private DateUtil dateUtil = Bootstrap.getDateUtil();
 
-    public PregnancyVisitFormUtil(Fragment fragment, Context context, Visit visit, Household household, Member member, FormUtilities odkFormUtilities, FormUtilListener<PregnancyVisit> listener){
-        super(fragment, context, FormUtil.getPregnancyVisitForm(context), odkFormUtilities, listener);
+    public PregnancyVisitFormUtil(Fragment fragment, Context context, Visit visit, Household household, Member member, FormUtilListener<PregnancyVisit> listener){
+        super(fragment, context, FormUtil.getPregnancyVisitForm(context), listener);
 
         //Log.d("enu-household", ""+household);
 
@@ -109,8 +108,8 @@ public class PregnancyVisitFormUtil extends FormUtil<PregnancyVisit> {
         initialize();
     }
 
-    public PregnancyVisitFormUtil(Fragment fragment, Context context, Visit visit, Household household, Member member, PregnancyRegistration pregnancyRegistration, PregnancyVisitType visitType, FormUtilities odkFormUtilities, FormUtilListener<PregnancyVisit> listener){
-        super(fragment, context, FormUtil.getPregnancyVisitForm(context), odkFormUtilities, listener);
+    public PregnancyVisitFormUtil(Fragment fragment, Context context, Visit visit, Household household, Member member, PregnancyRegistration pregnancyRegistration, PregnancyVisitType visitType, FormUtilListener<PregnancyVisit> listener){
+        super(fragment, context, FormUtil.getPregnancyVisitForm(context), listener);
 
         //Log.d("enu-household", ""+household);
 
@@ -124,8 +123,8 @@ public class PregnancyVisitFormUtil extends FormUtil<PregnancyVisit> {
         initialize();
     }
 
-    public PregnancyVisitFormUtil(Fragment fragment, Context context, Visit visit, Household household, PregnancyVisit pregToEdit, FormUtilities odkFormUtilities, FormUtilListener<PregnancyVisit> listener){
-        super(fragment, context, FormUtil.getPregnancyVisitForm(context), pregToEdit, odkFormUtilities, listener);
+    public PregnancyVisitFormUtil(Fragment fragment, Context context, Visit visit, Household household, PregnancyVisit pregToEdit, FormUtilListener<PregnancyVisit> listener){
+        super(fragment, context, FormUtil.getPregnancyVisitForm(context), pregToEdit, listener);
 
         this.household = household;
         this.visit = visit;
@@ -135,19 +134,19 @@ public class PregnancyVisitFormUtil extends FormUtil<PregnancyVisit> {
         initialize();
     }
 
-    public static PregnancyVisitFormUtil newInstance(Mode openMode, Fragment fragment, Context context, Visit visit, Household household, Member member, PregnancyVisit pregToEdit, FormUtilities odkFormUtilities, FormUtilListener<PregnancyVisit> listener){
+    public static PregnancyVisitFormUtil newInstance(Mode openMode, Fragment fragment, Context context, Visit visit, Household household, Member member, PregnancyVisit pregToEdit, FormUtilListener<PregnancyVisit> listener){
         if (openMode == Mode.CREATE) {
-            return new PregnancyVisitFormUtil(fragment, context, visit, household, member, odkFormUtilities, listener);
+            return new PregnancyVisitFormUtil(fragment, context, visit, household, member, listener);
         } else if (openMode == Mode.EDIT) {
-            return new PregnancyVisitFormUtil(fragment, context, visit, household, pregToEdit, odkFormUtilities, listener);
+            return new PregnancyVisitFormUtil(fragment, context, visit, household, pregToEdit, listener);
         }
 
         return null;
     }
 
-    public static PregnancyVisitFormUtil newInstance(Mode openMode, Fragment fragment, Context context, Visit visit, Household household, Member member, PregnancyRegistration pregnancyRegistration, PregnancyVisitType visitType, FormUtilities odkFormUtilities, FormUtilListener<PregnancyVisit> listener){
+    public static PregnancyVisitFormUtil newInstance(Mode openMode, Fragment fragment, Context context, Visit visit, Household household, Member member, PregnancyRegistration pregnancyRegistration, PregnancyVisitType visitType, FormUtilListener<PregnancyVisit> listener){
         if (openMode == Mode.CREATE) {
-            return new PregnancyVisitFormUtil(fragment, context, visit, household, member, pregnancyRegistration, visitType, odkFormUtilities, listener);
+            return new PregnancyVisitFormUtil(fragment, context, visit, household, member, pregnancyRegistration, visitType, listener);
         }
 
         return null;

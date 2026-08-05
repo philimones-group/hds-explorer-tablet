@@ -48,7 +48,6 @@ import java.util.List;
 import java.util.Map;
 
 import io.objectbox.Box;
-import mz.betainteractive.odk.FormUtilities;
 import mz.betainteractive.utilities.DateUtil;
 import mz.betainteractive.utilities.GeneralUtil;
 import mz.betainteractive.utilities.StringUtil;
@@ -74,8 +73,8 @@ public class HouseholdRelocationFormUtil extends FormUtil<HouseholdRelocation> {
 
     private DateUtil dateUtil = Bootstrap.getDateUtil();
 
-    public HouseholdRelocationFormUtil(Fragment fragment, Context context, Visit visit, Household household, FormUtilities odkFormUtilities, FormUtilListener<HouseholdRelocation> listener){
-        super(fragment, context, FormUtil.getHouseholdRelocationForm(context), odkFormUtilities, listener);
+    public HouseholdRelocationFormUtil(Fragment fragment, Context context, Visit visit, Household household, FormUtilListener<HouseholdRelocation> listener){
+        super(fragment, context, FormUtil.getHouseholdRelocationForm(context), listener);
 
         //Log.d("enu-household", ""+household);
 
@@ -86,8 +85,8 @@ public class HouseholdRelocationFormUtil extends FormUtil<HouseholdRelocation> {
         initialize();
     }
 
-    public HouseholdRelocationFormUtil(Fragment fragment, Context context, Visit visit, Household household, HouseholdRelocation householdRelocationToEdit, FormUtilities odkFormUtilities, FormUtilListener<HouseholdRelocation> listener){
-        super(fragment, context, FormUtil.getHouseholdRelocationForm(context), householdRelocationToEdit, odkFormUtilities, listener);
+    public HouseholdRelocationFormUtil(Fragment fragment, Context context, Visit visit, Household household, HouseholdRelocation householdRelocationToEdit, FormUtilListener<HouseholdRelocation> listener){
+        super(fragment, context, FormUtil.getHouseholdRelocationForm(context), householdRelocationToEdit, listener);
 
         this.household = household;
         this.visit = visit;
@@ -99,11 +98,11 @@ public class HouseholdRelocationFormUtil extends FormUtil<HouseholdRelocation> {
         initialize();
     }
 
-    public static HouseholdRelocationFormUtil newInstance(Mode openMode, Fragment fragment, Context context, Visit visit, Household household, HouseholdRelocation householdRelocationToEdit, FormUtilities odkFormUtilities, FormUtilListener<HouseholdRelocation> listener){
+    public static HouseholdRelocationFormUtil newInstance(Mode openMode, Fragment fragment, Context context, Visit visit, Household household, HouseholdRelocation householdRelocationToEdit, FormUtilListener<HouseholdRelocation> listener){
         if (openMode == Mode.CREATE) {
-            return new HouseholdRelocationFormUtil(fragment, context, visit, household, odkFormUtilities, listener);
+            return new HouseholdRelocationFormUtil(fragment, context, visit, household, listener);
         } else if (openMode == Mode.EDIT) {
-            return new HouseholdRelocationFormUtil(fragment, context, visit, household, householdRelocationToEdit, odkFormUtilities, listener);
+            return new HouseholdRelocationFormUtil(fragment, context, visit, household, householdRelocationToEdit, listener);
         }
 
         return null;

@@ -62,6 +62,8 @@ public class CoreCollectedData {
 
     public String extensionCollectedUri;
 
+    public Date extensionCollectedDate;
+
     public String extensionCollectedFilepath;
 
     public CoreCollectedData() {

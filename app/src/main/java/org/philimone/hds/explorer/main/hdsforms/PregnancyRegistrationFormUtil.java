@@ -31,7 +31,6 @@ import java.util.HashMap;
 
 import io.objectbox.Box;
 import io.objectbox.query.QueryBuilder;
-import mz.betainteractive.odk.FormUtilities;
 import mz.betainteractive.utilities.DateUtil;
 import mz.betainteractive.utilities.GeneralUtil;
 import mz.betainteractive.utilities.StringUtil;
@@ -48,8 +47,8 @@ public class PregnancyRegistrationFormUtil extends FormUtil<PregnancyRegistratio
     private PregnancyStatus loadedPregnancyStatus;
     private int minimunMotherAge;
 
-    public PregnancyRegistrationFormUtil(Fragment fragment, Context context, Visit visit, Household household, Member member, FormUtilities odkFormUtilities, FormUtilListener<PregnancyRegistration> listener){
-        super(fragment, context, FormUtil.getPregnancyRegistrationForm(context), odkFormUtilities, listener);
+    public PregnancyRegistrationFormUtil(Fragment fragment, Context context, Visit visit, Household household, Member member, FormUtilListener<PregnancyRegistration> listener){
+        super(fragment, context, FormUtil.getPregnancyRegistrationForm(context), listener);
 
         //Log.d("enu-household", ""+household);
 
@@ -61,8 +60,8 @@ public class PregnancyRegistrationFormUtil extends FormUtil<PregnancyRegistratio
         initialize();
     }
 
-    public PregnancyRegistrationFormUtil(Fragment fragment, Context context, Visit visit, Household household, Member member, PregnancyStatus pregnancyStatus, FormUtilities odkFormUtilities, FormUtilListener<PregnancyRegistration> listener){
-        super(fragment, context, FormUtil.getPregnancyRegistrationForm(context), odkFormUtilities, listener);
+    public PregnancyRegistrationFormUtil(Fragment fragment, Context context, Visit visit, Household household, Member member, PregnancyStatus pregnancyStatus, FormUtilListener<PregnancyRegistration> listener){
+        super(fragment, context, FormUtil.getPregnancyRegistrationForm(context), listener);
 
         //Log.d("enu-household", ""+household);
 
@@ -80,8 +79,8 @@ public class PregnancyRegistrationFormUtil extends FormUtil<PregnancyRegistratio
         }
     }
 
-    public PregnancyRegistrationFormUtil(Fragment fragment, Context context, Visit visit, Household household, PregnancyRegistration pregToEdit, FormUtilities odkFormUtilities, FormUtilListener<PregnancyRegistration> listener){
-        super(fragment, context, FormUtil.getPregnancyRegistrationForm(context), pregToEdit, odkFormUtilities, listener);
+    public PregnancyRegistrationFormUtil(Fragment fragment, Context context, Visit visit, Household household, PregnancyRegistration pregToEdit, FormUtilListener<PregnancyRegistration> listener){
+        super(fragment, context, FormUtil.getPregnancyRegistrationForm(context), pregToEdit, listener);
 
         this.household = household;
         this.visit = visit;
@@ -92,11 +91,11 @@ public class PregnancyRegistrationFormUtil extends FormUtil<PregnancyRegistratio
         this.mother = this.boxMembers.query(Member_.code.equal(pregToEdit.motherCode)).build().findFirst();
     }
 
-    public static PregnancyRegistrationFormUtil newInstance(Mode openMode, Fragment fragment, Context context, Visit visit, Household household, Member member, PregnancyRegistration pregToEdit, FormUtilities odkFormUtilities, FormUtilListener<PregnancyRegistration> listener){
+    public static PregnancyRegistrationFormUtil newInstance(Mode openMode, Fragment fragment, Context context, Visit visit, Household household, Member member, PregnancyRegistration pregToEdit, FormUtilListener<PregnancyRegistration> listener){
         if (openMode == Mode.CREATE) {
-            return new PregnancyRegistrationFormUtil(fragment, context, visit, household, member, odkFormUtilities, listener);
+            return new PregnancyRegistrationFormUtil(fragment, context, visit, household, member, listener);
         } else if (openMode == Mode.EDIT) {
-            return new PregnancyRegistrationFormUtil(fragment, context, visit, household, pregToEdit, odkFormUtilities, listener);
+            return new PregnancyRegistrationFormUtil(fragment, context, visit, household, pregToEdit, listener);
         }
 
         return null;

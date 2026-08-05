@@ -30,7 +30,6 @@ import java.util.Map;
 
 import io.objectbox.Box;
 import io.objectbox.query.QueryBuilder;
-import mz.betainteractive.odk.FormUtilities;
 import mz.betainteractive.utilities.StringUtil;
 
 public class RegionFormUtil extends FormUtil<Region> {
@@ -42,8 +41,8 @@ public class RegionFormUtil extends FormUtil<Region> {
     private String hierarchyName;
     private RegionLevel currentRegionLevel;
 
-    public RegionFormUtil(Fragment fragment, Context context, String parentRegionCode, FormUtilities odkFormUtilities, FormUtilListener<Region> listener){
-        super(fragment, context, FormUtil.getRegionForm(context), odkFormUtilities, listener);
+    public RegionFormUtil(Fragment fragment, Context context, String parentRegionCode, FormUtilListener<Region> listener){
+        super(fragment, context, FormUtil.getRegionForm(context), listener);
 
         initBoxes();
 
@@ -52,8 +51,8 @@ public class RegionFormUtil extends FormUtil<Region> {
         initialize();
     }
 
-    public RegionFormUtil(Fragment fragment, Context context, Region regionToEdit, FormUtilities odkFormUtilities, FormUtilListener<Region> listener){
-        super(fragment, context, FormUtil.getRegionForm(context), regionToEdit, odkFormUtilities, listener);
+    public RegionFormUtil(Fragment fragment, Context context, Region regionToEdit, FormUtilListener<Region> listener){
+        super(fragment, context, FormUtil.getRegionForm(context), regionToEdit, listener);
 
         initBoxes();
 
@@ -63,8 +62,8 @@ public class RegionFormUtil extends FormUtil<Region> {
         initialize();
     }
 
-    public RegionFormUtil(AppCompatActivity activity, Context context, String parentRegionCode, FormUtilities odkFormUtilities, FormUtilListener<Region> listener){
-        super(activity, context, FormUtil.getRegionForm(context), odkFormUtilities, listener);
+    public RegionFormUtil(AppCompatActivity activity, Context context, String parentRegionCode, FormUtilListener<Region> listener){
+        super(activity, context, FormUtil.getRegionForm(context), listener);
 
         initBoxes();
 
@@ -73,8 +72,8 @@ public class RegionFormUtil extends FormUtil<Region> {
         initialize();
     }
 
-    public RegionFormUtil(AppCompatActivity activity, Context context, Region regionToEdit, FormUtilities odkFormUtilities, FormUtilListener<Region> listener){
-        super(activity, context, FormUtil.getRegionForm(context), regionToEdit, odkFormUtilities, listener);
+    public RegionFormUtil(AppCompatActivity activity, Context context, Region regionToEdit, FormUtilListener<Region> listener){
+        super(activity, context, FormUtil.getRegionForm(context), regionToEdit, listener);
 
         initBoxes();
 
@@ -84,11 +83,11 @@ public class RegionFormUtil extends FormUtil<Region> {
         initialize();
     }
 
-    public static RegionFormUtil newInstance(Mode openMode, Fragment fragment, Context context, String parentRegionCode, Region regionToEdit, FormUtilities odkFormUtilities, FormUtilListener<Region> listener){
+    public static RegionFormUtil newInstance(Mode openMode, Fragment fragment, Context context, String parentRegionCode, Region regionToEdit, FormUtilListener<Region> listener){
         if (openMode == Mode.CREATE) {
-            return new RegionFormUtil(fragment, context, parentRegionCode, odkFormUtilities, listener);
+            return new RegionFormUtil(fragment, context, parentRegionCode, listener);
         } else if (openMode == Mode.EDIT) {
-            return new RegionFormUtil(fragment, context, regionToEdit, odkFormUtilities, listener);
+            return new RegionFormUtil(fragment, context, regionToEdit, listener);
         }
 
         return null;

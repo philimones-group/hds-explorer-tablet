@@ -31,7 +31,6 @@ import androidx.fragment.app.Fragment;
 
 import io.objectbox.Box;
 import io.objectbox.query.QueryBuilder;
-import mz.betainteractive.odk.FormUtilities;
 import mz.betainteractive.utilities.StringUtil;
 
 public class HouseholdFormUtil extends FormUtil<Household> {
@@ -41,8 +40,8 @@ public class HouseholdFormUtil extends FormUtil<Household> {
     private Region region;
     //private Household household;
 
-    public HouseholdFormUtil(Fragment fragment, Context context, Region region, FormUtilities odkFormUtilities, FormUtilListener<Household> listener){
-        super(fragment, context, FormUtil.getHouseholdForm(context), odkFormUtilities, listener);
+    public HouseholdFormUtil(Fragment fragment, Context context, Region region, FormUtilListener<Household> listener){
+        super(fragment, context, FormUtil.getHouseholdForm(context), listener);
 
         this.region = region;
 
@@ -50,8 +49,8 @@ public class HouseholdFormUtil extends FormUtil<Household> {
         initialize();
     }
 
-    public HouseholdFormUtil(Fragment fragment, Context context, Household householdToEdit, FormUtilities odkFormUtilities, FormUtilListener<Household> listener){
-        super(fragment, context, FormUtil.getHouseholdForm(context), householdToEdit, odkFormUtilities, listener);
+    public HouseholdFormUtil(Fragment fragment, Context context, Household householdToEdit, FormUtilListener<Household> listener){
+        super(fragment, context, FormUtil.getHouseholdForm(context), householdToEdit, listener);
 
         initBoxes();
 
@@ -61,8 +60,8 @@ public class HouseholdFormUtil extends FormUtil<Household> {
         initialize();
     }
 
-    public HouseholdFormUtil(AppCompatActivity activity, Context context, Region region, FormUtilities odkFormUtilities, FormUtilListener<Household> listener){
-        super(activity, context, FormUtil.getHouseholdForm(context), odkFormUtilities, listener);
+    public HouseholdFormUtil(AppCompatActivity activity, Context context, Region region, FormUtilListener<Household> listener){
+        super(activity, context, FormUtil.getHouseholdForm(context), listener);
 
         this.region = region;
 
@@ -70,8 +69,8 @@ public class HouseholdFormUtil extends FormUtil<Household> {
         initialize();
     }
 
-    public HouseholdFormUtil(AppCompatActivity activity, Context context, Household householdToEdit, FormUtilities odkFormUtilities, FormUtilListener<Household> listener){
-        super(activity, context, FormUtil.getHouseholdForm(context), householdToEdit, odkFormUtilities, listener);
+    public HouseholdFormUtil(AppCompatActivity activity, Context context, Household householdToEdit, FormUtilListener<Household> listener){
+        super(activity, context, FormUtil.getHouseholdForm(context), householdToEdit, listener);
 
         initBoxes();
 
@@ -81,18 +80,18 @@ public class HouseholdFormUtil extends FormUtil<Household> {
         initialize();
     }
 
-    public static HouseholdFormUtil newInstance(Mode openMode, Fragment fragment, Context context, Region region, Household householdToEdit, FormUtilities odkFormUtilities, FormUtilListener<Household> listener){
+    public static HouseholdFormUtil newInstance(Mode openMode, Fragment fragment, Context context, Region region, Household householdToEdit, FormUtilListener<Household> listener){
         if (openMode == Mode.CREATE) {
-            return new HouseholdFormUtil(fragment, context, region, odkFormUtilities, listener);
+            return new HouseholdFormUtil(fragment, context, region, listener);
         } else if (openMode == Mode.EDIT) {
-            return new HouseholdFormUtil(fragment, context, householdToEdit, odkFormUtilities, listener);
+            return new HouseholdFormUtil(fragment, context, householdToEdit, listener);
         }
 
         return null;
     }
 
-    public static HouseholdFormUtil completeRegistration(AppCompatActivity activity, Context context, Region region, Household preRegHousehold, FormUtilities odkFormUtilities, FormUtilListener<Household> listener) {
-        HouseholdFormUtil formUtil = new HouseholdFormUtil(activity, context, region, odkFormUtilities, listener);
+    public static HouseholdFormUtil completeRegistration(AppCompatActivity activity, Context context, Region region, Household preRegHousehold, FormUtilListener<Household> listener) {
+        HouseholdFormUtil formUtil = new HouseholdFormUtil(activity, context, region, listener);
         formUtil.household = preRegHousehold;
         return formUtil;
     }

@@ -55,7 +55,6 @@ import com.google.android.material.tabs.TabLayoutMediator;
 
 import io.objectbox.Box;
 import io.objectbox.query.QueryBuilder;
-import mz.betainteractive.odk.FormUtilities;
 import mz.betainteractive.utilities.StringUtil;
 
 public class RegionDetailsActivity extends AppCompatActivity {
@@ -102,15 +101,12 @@ public class RegionDetailsActivity extends AppCompatActivity {
     private boolean callOnCollectData;
     private boolean isRegionHeadSupported;
 
-    private FormUtilities odkFormUtilities;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.region_details);
 
         this.loggedUser = Bootstrap.getCurrentUser();
-        this.odkFormUtilities = new FormUtilities(this, null);
 
         initBoxes();
         readIntentData();
@@ -405,7 +401,7 @@ public class RegionDetailsActivity extends AppCompatActivity {
     private void openChangeHeadForm(RegionHeadRelationship headRelationship) {
         FormUtil.Mode mode = (headRelationship == null) ? FormUtil.Mode.CREATE : FormUtil.Mode.EDIT;
 
-        ChangeRegionHeadFormUtil formUtil = ChangeRegionHeadFormUtil.newInstance(mode, this, this, this.region, null, null, headRelationship, this.odkFormUtilities, new FormUtilListener<RegionHeadRelationship>() {
+        ChangeRegionHeadFormUtil formUtil = ChangeRegionHeadFormUtil.newInstance(mode, this, this, this.region, null, null, headRelationship, new FormUtilListener<RegionHeadRelationship>() {
             @Override
             public void onNewEntityCreated(RegionHeadRelationship headRelationship, Map<String, Object> data) {
                 setRegionData();

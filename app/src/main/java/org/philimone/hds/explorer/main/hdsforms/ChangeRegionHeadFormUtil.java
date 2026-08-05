@@ -41,7 +41,6 @@ import java.util.Map;
 
 import io.objectbox.Box;
 import io.objectbox.query.QueryBuilder;
-import mz.betainteractive.odk.FormUtilities;
 import mz.betainteractive.utilities.DateUtil;
 import mz.betainteractive.utilities.GeneralUtil;
 import mz.betainteractive.utilities.StringUtil;
@@ -66,8 +65,8 @@ public class ChangeRegionHeadFormUtil extends FormUtil<RegionHeadRelationship> {
 
     private DateUtil dateUtil = Bootstrap.getDateUtil();
 
-    public ChangeRegionHeadFormUtil(Fragment fragment, Context context, Region region, Visit visit, Household household, FormUtilities odkFormUtilities, FormUtilListener<RegionHeadRelationship> listener){
-        super(fragment, context, FormUtil.getChangeRegionHeadForm(context), odkFormUtilities, listener);
+    public ChangeRegionHeadFormUtil(Fragment fragment, Context context, Region region, Visit visit, Household household, FormUtilListener<RegionHeadRelationship> listener){
+        super(fragment, context, FormUtil.getChangeRegionHeadForm(context), listener);
 
         //Log.d("enu-household", ""+household);e
         this.region = region;
@@ -78,8 +77,8 @@ public class ChangeRegionHeadFormUtil extends FormUtil<RegionHeadRelationship> {
         initialize();
     }
 
-    public ChangeRegionHeadFormUtil(Fragment fragment, Context context, Region region, Visit visit, Household household, RegionHeadRelationship headRelationshipToEdit, FormUtilities odkFormUtilities, FormUtilListener<RegionHeadRelationship> listener){
-        super(fragment, context, FormUtil.getChangeRegionHeadForm(context), headRelationshipToEdit, odkFormUtilities, listener);
+    public ChangeRegionHeadFormUtil(Fragment fragment, Context context, Region region, Visit visit, Household household, RegionHeadRelationship headRelationshipToEdit, FormUtilListener<RegionHeadRelationship> listener){
+        super(fragment, context, FormUtil.getChangeRegionHeadForm(context), headRelationshipToEdit, listener);
 
         this.region = region;
         this.household = household;
@@ -95,8 +94,8 @@ public class ChangeRegionHeadFormUtil extends FormUtil<RegionHeadRelationship> {
         initialize();
     }
 
-    public ChangeRegionHeadFormUtil(AppCompatActivity activity, Context context, Region region, Visit visit, Household household, FormUtilities odkFormUtilities, FormUtilListener<RegionHeadRelationship> listener){
-        super(activity, context, FormUtil.getChangeRegionHeadForm(context), odkFormUtilities, listener);
+    public ChangeRegionHeadFormUtil(AppCompatActivity activity, Context context, Region region, Visit visit, Household household, FormUtilListener<RegionHeadRelationship> listener){
+        super(activity, context, FormUtil.getChangeRegionHeadForm(context), listener);
 
         //Log.d("enu-household", ""+household);e
         this.region = region;
@@ -107,8 +106,8 @@ public class ChangeRegionHeadFormUtil extends FormUtil<RegionHeadRelationship> {
         initialize();
     }
 
-    public ChangeRegionHeadFormUtil(AppCompatActivity activity, Context context, Region region, Visit visit, Household household, RegionHeadRelationship headRelationshipToEdit, FormUtilities odkFormUtilities, FormUtilListener<RegionHeadRelationship> listener){
-        super(activity, context, FormUtil.getChangeRegionHeadForm(context), headRelationshipToEdit, odkFormUtilities, listener);
+    public ChangeRegionHeadFormUtil(AppCompatActivity activity, Context context, Region region, Visit visit, Household household, RegionHeadRelationship headRelationshipToEdit, FormUtilListener<RegionHeadRelationship> listener){
+        super(activity, context, FormUtil.getChangeRegionHeadForm(context), headRelationshipToEdit, listener);
 
         this.region = region;
         this.household = household;
@@ -124,21 +123,21 @@ public class ChangeRegionHeadFormUtil extends FormUtil<RegionHeadRelationship> {
         initialize();
     }
 
-    public static ChangeRegionHeadFormUtil newInstance(Mode openMode, Fragment fragment, Context context, Region region, Visit visit, Household household, RegionHeadRelationship headRelationshipToEdit, FormUtilities odkFormUtilities, FormUtilListener<RegionHeadRelationship> listener){
+    public static ChangeRegionHeadFormUtil newInstance(Mode openMode, Fragment fragment, Context context, Region region, Visit visit, Household household, RegionHeadRelationship headRelationshipToEdit, FormUtilListener<RegionHeadRelationship> listener){
         if (openMode == Mode.CREATE) {
-            return new ChangeRegionHeadFormUtil(fragment, context, region, visit, household, odkFormUtilities, listener);
+            return new ChangeRegionHeadFormUtil(fragment, context, region, visit, household, listener);
         } else if (openMode == Mode.EDIT) {
-            return new ChangeRegionHeadFormUtil(fragment, context, region, visit, household, headRelationshipToEdit, odkFormUtilities, listener);
+            return new ChangeRegionHeadFormUtil(fragment, context, region, visit, household, headRelationshipToEdit, listener);
         }
 
         return null;
     }
 
-    public static ChangeRegionHeadFormUtil newInstance(Mode openMode, AppCompatActivity activity, Context context, Region region, Visit visit, Household household, RegionHeadRelationship headRelationshipToEdit, FormUtilities odkFormUtilities, FormUtilListener<RegionHeadRelationship> listener){
+    public static ChangeRegionHeadFormUtil newInstance(Mode openMode, AppCompatActivity activity, Context context, Region region, Visit visit, Household household, RegionHeadRelationship headRelationshipToEdit, FormUtilListener<RegionHeadRelationship> listener){
         if (openMode == Mode.CREATE) {
-            return new ChangeRegionHeadFormUtil(activity, context, region, visit, household, odkFormUtilities, listener);
+            return new ChangeRegionHeadFormUtil(activity, context, region, visit, household, listener);
         } else if (openMode == Mode.EDIT) {
-            return new ChangeRegionHeadFormUtil(activity, context, region, visit, household, headRelationshipToEdit, odkFormUtilities, listener);
+            return new ChangeRegionHeadFormUtil(activity, context, region, visit, household, headRelationshipToEdit, listener);
         }
 
         return null;

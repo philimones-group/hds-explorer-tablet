@@ -164,8 +164,6 @@ public class HouseholdVisitFragment extends Fragment {
     private Box<Form> boxForms;
 
     private HouseholdDetailsListener householdDetailsListener;
-
-    private FormUtilities odkFormUtilities;
     
     private VisitEventsMode currentEventMode = VisitEventsMode.HOUSEHOLD_EVENTS;
 
@@ -253,7 +251,6 @@ public class HouseholdVisitFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        this.odkFormUtilities = new FormUtilities(this, null);
     }
 
     @Override
@@ -502,6 +499,9 @@ public class HouseholdVisitFragment extends Fragment {
     public List<CoreCollectedData> getUnfinalizedExtensionForms() {
         List<CoreCollectedData> list = new ArrayList<>();
 
+        //All HForms Extensions are finalized it doesnt allow drafts
+
+        /*
         CoreCollectedExpandableAdapter adapter = (CoreCollectedExpandableAdapter) this.elvVisitCollected.getExpandableListAdapter();
 
         for (List<VisitCollectedDataItem> items : adapter.getChildItems()) {
@@ -514,6 +514,7 @@ public class HouseholdVisitFragment extends Fragment {
                 }
             }
         }
+        */
 
         return list;
     }
@@ -835,7 +836,7 @@ public class HouseholdVisitFragment extends Fragment {
 
         //group the coreList in Map
         for(CoreCollectedData collectedData : coreList) {
-            FormUtilities.FormStatus collectedDataStatus = odkFormUtilities.isFormFinalized(collectedData.extensionCollectedUri);
+            FormUtilities.FormStatus collectedDataStatus = collectedData.extensionCollected ? FormUtilities.FormStatus.FINALIZED : FormUtilities.FormStatus.NOT_FOUND;
             mapData.get(collectedData.formEntity).add(new VisitCollectedDataItem(collectedData, collectedDataStatus));
         }
         //group the odkList in Map - EXTRA FORMS
@@ -994,12 +995,12 @@ public class HouseholdVisitFragment extends Fragment {
                 HForm hform = FormUtil.getHFormBy(getContext(), coreCollectedData.formEntity);
                 CoreEntity existingEntity = getRecordEntity(coreCollectedData);
 
-                EditCoreExtensionFormUtil formUtil = new EditCoreExtensionFormUtil(this, this.getContext(), hform, coreCollectedData, existingEntity, this.odkFormUtilities, () -> {
+                EditCoreExtensionFormUtil formUtil = new EditCoreExtensionFormUtil(this, this.getContext(), hform, coreCollectedData, existingEntity, () -> {
                     loadDataToListViews();
                     updateHouseholdDetails();
                 });
 
-                formUtil.editExtensionForm(odkCollectedData);
+                formUtil.editExtensionForm(coreCollectedData);
 
             } else if (extension.required){
                 //The form doesnt exists but its required - lets create new form
@@ -1009,7 +1010,7 @@ public class HouseholdVisitFragment extends Fragment {
 
                 Log.d("create new extension", coreCollectedData.formEntity+", extension=" + extension.extFormId +", entity="+existingEntity);
 
-                EditCoreExtensionFormUtil formUtil = new EditCoreExtensionFormUtil(this, this.getContext(), hform, coreCollectedData, existingEntity, this.odkFormUtilities, () -> {
+                EditCoreExtensionFormUtil formUtil = new EditCoreExtensionFormUtil(this, this.getContext(), hform, coreCollectedData, existingEntity, () -> {
                     loadDataToListViews();
                     updateHouseholdDetails();
                 });
@@ -1033,7 +1034,7 @@ public class HouseholdVisitFragment extends Fragment {
     }
 
     private void onEditHousehold(Household household) {
-        HouseholdFormUtil.newInstance(FormUtil.Mode.EDIT, this, this.getContext(), null, household, this.odkFormUtilities, new FormUtilListener<Household>() {
+        HouseholdFormUtil.newInstance(FormUtil.Mode.EDIT, this, this.getContext(), null, household, new FormUtilListener<Household>() {
             @Override
             public void onNewEntityCreated(Household entity, Map<String, Object> data) { }
 
@@ -1051,7 +1052,7 @@ public class HouseholdVisitFragment extends Fragment {
     }
 
     private void onEditVisit(Visit visit) {
-        VisitFormUtil formUtil = new VisitFormUtil(this, this.getContext(), this.household, visit, this.odkFormUtilities, new FormUtilListener<Visit>() {
+        VisitFormUtil formUtil = new VisitFormUtil(this, this.getContext(), this.household, visit, new FormUtilListener<Visit>() {
             @Override
             public void onNewEntityCreated(Visit entity, Map<String, Object> data) { }
 
@@ -1075,7 +1076,7 @@ public class HouseholdVisitFragment extends Fragment {
 
         FormUtil.Mode mode = incompleteVisit == null ? FormUtil.Mode.CREATE : FormUtil.Mode.EDIT;
 
-        IncompleteVisitFormUtil formUtil = IncompleteVisitFormUtil.newInstance(mode,this, this.getContext(), this.visit, this.selectedMember, incompleteVisit, this.odkFormUtilities, new FormUtilListener<IncompleteVisit>() {
+        IncompleteVisitFormUtil formUtil = IncompleteVisitFormUtil.newInstance(mode,this, this.getContext(), this.visit, this.selectedMember, incompleteVisit, new FormUtilListener<IncompleteVisit>() {
             @Override
             public void onNewEntityCreated(IncompleteVisit entity, Map<String, Object> data) {
                 loadDataToListViews();
@@ -1101,7 +1102,7 @@ public class HouseholdVisitFragment extends Fragment {
 
         FormUtil.Mode mode = member == null ? FormUtil.Mode.CREATE : FormUtil.Mode.EDIT;
 
-        MemberEnumerationFormUtil formUtil = MemberEnumerationFormUtil.newInstance(mode, this, this.getContext(), this.visit, this.household, member, this.odkFormUtilities, new FormUtilListener<Member>() {
+        MemberEnumerationFormUtil formUtil = MemberEnumerationFormUtil.newInstance(mode, this, this.getContext(), this.visit, this.household, member, new FormUtilListener<Member>() {
             @Override
             public void onNewEntityCreated(Member member, Map<String, Object> data) {
                 selectedMember = member;
@@ -1131,7 +1132,7 @@ public class HouseholdVisitFragment extends Fragment {
 
         FormUtil.Mode mode = maritalRelationship == null ? FormUtil.Mode.CREATE : FormUtil.Mode.EDIT;
 
-        MaritalRelationshipFormUtil formUtil = MaritalRelationshipFormUtil.newInstance(mode, this, this.getContext(), this.visit, this.selectedMember, maritalRelationship, this.odkFormUtilities, new FormUtilListener<MaritalRelationship>() {
+        MaritalRelationshipFormUtil formUtil = MaritalRelationshipFormUtil.newInstance(mode, this, this.getContext(), this.visit, this.selectedMember, maritalRelationship, new FormUtilListener<MaritalRelationship>() {
             @Override
             public void onNewEntityCreated(MaritalRelationship maritalRelationship, Map<String, Object> data) {
                 loadDataToListViews();
@@ -1156,7 +1157,7 @@ public class HouseholdVisitFragment extends Fragment {
 
         FormUtil.Mode mode = inmigration == null ? FormUtil.Mode.CREATE : FormUtil.Mode.EDIT;
 
-        ExternalInMigrationFormUtil formUtil = ExternalInMigrationFormUtil.newInstance(mode, this, this.getContext(), this.visit, this.household, inmigration, this.odkFormUtilities, new FormUtilListener<Inmigration>() {
+        ExternalInMigrationFormUtil formUtil = ExternalInMigrationFormUtil.newInstance(mode, this, this.getContext(), this.visit, this.household, inmigration, new FormUtilListener<Inmigration>() {
             @Override
             public void onNewEntityCreated(Inmigration inmigration, Map<String, Object> data) {
                 Member member = boxMembers.query(Member_.code.equal(inmigration.memberCode)).build().findFirst();
@@ -1187,7 +1188,7 @@ public class HouseholdVisitFragment extends Fragment {
 
         FormUtil.Mode mode = inmigration == null ? FormUtil.Mode.CREATE : FormUtil.Mode.EDIT;
         
-        InternalInMigrationFormUtil formUtil = InternalInMigrationFormUtil.newInstance(mode, this, this.getContext(), this.visit, this.household, inmigration, this.odkFormUtilities, new FormUtilListener<Inmigration>() {
+        InternalInMigrationFormUtil formUtil = InternalInMigrationFormUtil.newInstance(mode, this, this.getContext(), this.visit, this.household, inmigration, new FormUtilListener<Inmigration>() {
             @Override
             public void onNewEntityCreated(Inmigration inmigration, Map<String, Object> data) {
                 selectedMember = boxMembers.query().equal(Member_.code, inmigration.memberCode, QueryBuilder.StringOrder.CASE_SENSITIVE).build().findFirst();
@@ -1217,7 +1218,7 @@ public class HouseholdVisitFragment extends Fragment {
 
         FormUtil.Mode mode = outmigration == null ? FormUtil.Mode.CREATE : FormUtil.Mode.EDIT;
 
-        OutmigrationFormUtil formUtil = OutmigrationFormUtil.newInstance(mode, this, this.getContext(), this.visit, this.household, this.selectedMember, outmigration, this.odkFormUtilities, new FormUtilListener<Outmigration>() {
+        OutmigrationFormUtil formUtil = OutmigrationFormUtil.newInstance(mode, this, this.getContext(), this.visit, this.household, this.selectedMember, outmigration, new FormUtilListener<Outmigration>() {
             @Override
             public void onNewEntityCreated(Outmigration outmigration, Map<String, Object> data) {
                 selectedMember = null;
@@ -1247,7 +1248,7 @@ public class HouseholdVisitFragment extends Fragment {
 
         FormUtil.Mode mode = pregnancyRegistration == null ? FormUtil.Mode.CREATE : FormUtil.Mode.EDIT;
 
-        PregnancyRegistrationFormUtil formUtil = PregnancyRegistrationFormUtil.newInstance(mode, this, this.getContext(), this.visit, this.household, this.selectedMember, pregnancyRegistration, this.odkFormUtilities, new FormUtilListener<PregnancyRegistration>() {
+        PregnancyRegistrationFormUtil formUtil = PregnancyRegistrationFormUtil.newInstance(mode, this, this.getContext(), this.visit, this.household, this.selectedMember, pregnancyRegistration, new FormUtilListener<PregnancyRegistration>() {
             @Override
             public void onNewEntityCreated(PregnancyRegistration pregnancyRegistration, Map<String, Object> data) {
                 loadDataToListViews();
@@ -1408,7 +1409,7 @@ public class HouseholdVisitFragment extends Fragment {
 
         FormUtil.Mode mode = pregnancyVisit == null ? FormUtil.Mode.CREATE : FormUtil.Mode.EDIT;
 
-        PregnancyVisitFormUtil formUtil = PregnancyVisitFormUtil.newInstance(mode, this, this.getContext(), this.visit, this.household, this.selectedMember, pregnancyVisit, this.odkFormUtilities, new FormUtilListener<PregnancyVisit>() {
+        PregnancyVisitFormUtil formUtil = PregnancyVisitFormUtil.newInstance(mode, this, this.getContext(), this.visit, this.household, this.selectedMember, pregnancyVisit, new FormUtilListener<PregnancyVisit>() {
             @Override
             public void onNewEntityCreated(PregnancyVisit resPregnancyVisit, Map<String, Object> data) {
                 loadDataToListViews();
@@ -1436,7 +1437,7 @@ public class HouseholdVisitFragment extends Fragment {
 
         FormUtil.Mode mode = FormUtil.Mode.CREATE;
 
-        PregnancyVisitFormUtil formUtil = PregnancyVisitFormUtil.newInstance(mode, this, this.getContext(), this.visit, this.household, this.selectedMember, pregnancyRegistration, visitType, this.odkFormUtilities, formUtilListener);
+        PregnancyVisitFormUtil formUtil = PregnancyVisitFormUtil.newInstance(mode, this, this.getContext(), this.visit, this.household, this.selectedMember, pregnancyRegistration, visitType, formUtilListener);
 
         formUtil.collect();
 
@@ -1464,7 +1465,7 @@ public class HouseholdVisitFragment extends Fragment {
             }
         };
 
-        new PregnancyRegistrationFormUtil(this, this.getContext(), this.visit, this.household, this.selectedMember, PregnancyStatus.DELIVERED, this.odkFormUtilities, new FormUtilListener<PregnancyRegistration>() {
+        new PregnancyRegistrationFormUtil(this, this.getContext(), this.visit, this.household, this.selectedMember, PregnancyStatus.DELIVERED, new FormUtilListener<PregnancyRegistration>() {
             @Override
             public void onNewEntityCreated(PregnancyRegistration entity, Map<String, Object> data) {
                 openPregnancyOutcomeForm(entity, true, birthFormUtilListener);
@@ -1484,13 +1485,13 @@ public class HouseholdVisitFragment extends Fragment {
     }
 
     private void openPregnancyOutcomeForm(PregnancyRegistration pregnancyRegistration, boolean createdForOutcome, FormUtilListener<PregnancyOutcome> birthFormUtilListener){
-        new PregnancyOutcomeFormUtil(this, this.getContext(), this.visit, this.household, this.selectedMember, pregnancyRegistration, createdForOutcome, this.odkFormUtilities, birthFormUtilListener).collect();
+        new PregnancyOutcomeFormUtil(this, this.getContext(), this.visit, this.household, this.selectedMember, pregnancyRegistration, createdForOutcome, birthFormUtilListener).collect();
     }
 
     private void openPregnancyOutcomeForEdit(PregnancyOutcome pregnancyOutcome){
 
         //FOR EDITING
-        new PregnancyOutcomeFormUtil(this, this.getContext(), this.visit, this.household, pregnancyOutcome, this.odkFormUtilities, new FormUtilListener<PregnancyOutcome>() {
+        new PregnancyOutcomeFormUtil(this, this.getContext(), this.visit, this.household, pregnancyOutcome, new FormUtilListener<PregnancyOutcome>() {
             @Override
             public void onNewEntityCreated(PregnancyOutcome pregnancyOutcome, Map<String, Object> data) { }
 
@@ -1520,7 +1521,7 @@ public class HouseholdVisitFragment extends Fragment {
 
         FormUtil.Mode mode = death == null ? FormUtil.Mode.CREATE : FormUtil.Mode.EDIT;
 
-        DeathFormUtil formUtil = DeathFormUtil.newInstance(mode, this, this.getContext(), this.visit, this.household, this.selectedMember, death, this.odkFormUtilities, new FormUtilListener<Death>() {
+        DeathFormUtil formUtil = DeathFormUtil.newInstance(mode, this, this.getContext(), this.visit, this.household, this.selectedMember, death, new FormUtilListener<Death>() {
             @Override
             public void onNewEntityCreated(Death death, Map<String, Object> data) {
                 selectedMember = null;
@@ -1550,7 +1551,7 @@ public class HouseholdVisitFragment extends Fragment {
 
         FormUtil.Mode mode = headRelationship == null ? FormUtil.Mode.CREATE : FormUtil.Mode.EDIT;
         
-        ChangeHeadFormUtil formUtil = ChangeHeadFormUtil.newInstance(mode, this, this.getContext(), this.visit, this.household, headRelationship, this.odkFormUtilities, new FormUtilListener<HeadRelationship>() {
+        ChangeHeadFormUtil formUtil = ChangeHeadFormUtil.newInstance(mode, this, this.getContext(), this.visit, this.household, headRelationship, new FormUtilListener<HeadRelationship>() {
             @Override
             public void onNewEntityCreated(HeadRelationship headRelationship, Map<String, Object> data) {
                 setHouseholdMode();
@@ -1628,7 +1629,7 @@ public class HouseholdVisitFragment extends Fragment {
     private void executeChangeRegionHead(RegionHeadRelationship headRelationship) {
         FormUtil.Mode mode = headRelationship == null ? FormUtil.Mode.CREATE : FormUtil.Mode.EDIT;
 
-        ChangeRegionHeadFormUtil formUtil = ChangeRegionHeadFormUtil.newInstance(mode, this, this.getContext(), this.region, this.visit, this.household, headRelationship, this.odkFormUtilities, new FormUtilListener<RegionHeadRelationship>() {
+        ChangeRegionHeadFormUtil formUtil = ChangeRegionHeadFormUtil.newInstance(mode, this, this.getContext(), this.region, this.visit, this.household, headRelationship, new FormUtilListener<RegionHeadRelationship>() {
             @Override
             public void onNewEntityCreated(RegionHeadRelationship headRelationship, Map<String, Object> data) {
                 loadDataToListViews();
@@ -1659,7 +1660,7 @@ public class HouseholdVisitFragment extends Fragment {
 
         FormUtil.Mode mode = householdRelocation == null ? FormUtil.Mode.CREATE : FormUtil.Mode.EDIT;
 
-        HouseholdRelocationFormUtil formUtil = HouseholdRelocationFormUtil.newInstance(mode, this, this.getContext(), this.visit, this.household, householdRelocation, this.odkFormUtilities, new FormUtilListener<HouseholdRelocation>() {
+        HouseholdRelocationFormUtil formUtil = HouseholdRelocationFormUtil.newInstance(mode, this, this.getContext(), this.visit, this.household, householdRelocation, new FormUtilListener<HouseholdRelocation>() {
             @Override
             public void onNewEntityCreated(HouseholdRelocation relocation, Map<String, Object> data) {
                 loadDataToListViews();
@@ -1688,7 +1689,7 @@ public class HouseholdVisitFragment extends Fragment {
 
         FormUtil.Mode mode = householdProxyHead == null ? FormUtil.Mode.CREATE : FormUtil.Mode.EDIT;
 
-        ChangeProxyHeadFormUtil formUtil = ChangeProxyHeadFormUtil.newInstance(mode, this, this.getContext(), this.visit, this.household, householdProxyHead, this.odkFormUtilities, new FormUtilListener<HouseholdProxyHead>() {
+        ChangeProxyHeadFormUtil formUtil = ChangeProxyHeadFormUtil.newInstance(mode, this, this.getContext(), this.visit, this.household, householdProxyHead, new FormUtilListener<HouseholdProxyHead>() {
             @Override
             public void onNewEntityCreated(HouseholdProxyHead proxyHead, Map<String, Object> data) {
                 setHouseholdMode();

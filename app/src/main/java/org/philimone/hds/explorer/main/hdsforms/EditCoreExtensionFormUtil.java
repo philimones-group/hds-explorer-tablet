@@ -20,16 +20,14 @@ import org.philimone.hds.forms.model.HForm;
 import org.philimone.hds.forms.model.ValidationResult;
 import org.philimone.hds.forms.model.XmlFormResult;
 
-import mz.betainteractive.odk.FormUtilities;
-
 public class EditCoreExtensionFormUtil extends FormUtil<CoreEntity> {
 
     private Listener listener;
 
     private boolean reCreateMode = false;
 
-    public EditCoreExtensionFormUtil(Fragment fragment, Context context, HForm hform, CoreCollectedData coreCollectedData, CoreEntity existentEntity, FormUtilities odkFormUtilities, Listener listener) {
-        super(fragment, context, hform, existentEntity, coreCollectedData, odkFormUtilities, null);
+    public EditCoreExtensionFormUtil(Fragment fragment, Context context, HForm hform, CoreCollectedData coreCollectedData, CoreEntity existentEntity, Listener listener) {
+        super(fragment, context, hform, existentEntity, coreCollectedData, null);
 
         this.listener = listener;
 

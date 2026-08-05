@@ -303,6 +303,7 @@ public class ChangeProxyHeadFormUtil extends FormUtil<HouseholdProxyHead> {
             onModeCreate(collectedValues, result);
         }
 
+        afterFormCollected(collectedValues);
     }
 
     private void onModeCreate(CollectedDataMap collectedValues, XmlFormResult result) {
@@ -387,7 +388,6 @@ public class ChangeProxyHeadFormUtil extends FormUtil<HouseholdProxyHead> {
         this.boxCoreCollectedData.put(collectedData);
 
         this.entity = newHouseholdProxyHead;
-        this.collectExtensionForm(collectedValues);
     }
 
     private void onModeEdit(CollectedDataMap collectedValues, XmlFormResult result) {
@@ -455,7 +455,6 @@ public class ChangeProxyHeadFormUtil extends FormUtil<HouseholdProxyHead> {
         collectedData.updatedDate = new Date();
         this.boxCoreCollectedData.put(collectedData);
 
-        onFinishedExtensionCollection();
     }
 
     @Override

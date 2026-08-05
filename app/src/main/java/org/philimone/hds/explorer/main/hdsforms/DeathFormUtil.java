@@ -544,6 +544,8 @@ public class DeathFormUtil extends FormUtil<Death> {
         } else if (currentMode == Mode.CREATE) {
             onModeCreate(collectedValues, result);
         }
+
+        afterFormCollected(collectedValues);
     }
 
     private void onModeEdit(CollectedDataMap collectedValues, XmlFormResult result) {
@@ -730,7 +732,6 @@ public class DeathFormUtil extends FormUtil<Death> {
         collectedData.updatedDate = new Date();
         this.boxCoreCollectedData.put(collectedData);
 
-        onFinishedExtensionCollection();
     }
 
     private void onModeCreate(CollectedDataMap collectedValues, XmlFormResult result) {
@@ -925,7 +926,6 @@ public class DeathFormUtil extends FormUtil<Death> {
         this.boxCoreCollectedData.put(collectedData);
 
         this.entity = death;
-        this.collectExtensionForm(collectedValues);
     }
 
     @Override

@@ -408,6 +408,7 @@ public class ChangeRegionHeadFormUtil extends FormUtil<RegionHeadRelationship> {
             onModeCreate(collectedValues, result);
         }
 
+        afterFormCollected(collectedValues);
     }
 
     private void onModeCreate(CollectedDataMap collectedValues, XmlFormResult result) {
@@ -491,7 +492,6 @@ public class ChangeRegionHeadFormUtil extends FormUtil<RegionHeadRelationship> {
         this.boxCoreCollectedData.put(collectedData);
 
         this.entity = newHeadRelationship;
-        this.collectExtensionForm(collectedValues);
     }
 
     private void onModeEdit(CollectedDataMap collectedValues, XmlFormResult result) {
@@ -577,7 +577,6 @@ public class ChangeRegionHeadFormUtil extends FormUtil<RegionHeadRelationship> {
         collectedData.updatedDate = new Date();
         this.boxCoreCollectedData.put(collectedData);
 
-        onFinishedExtensionCollection();
     }
 
     @Override

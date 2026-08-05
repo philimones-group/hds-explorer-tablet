@@ -188,6 +188,7 @@ public class HouseholdFormUtil extends FormUtil<Household> {
             onModeCreate(collectedValues, result);
         }
 
+        afterFormCollected(collectedValues);
     }
 
     private void onModeCreate(CollectedDataMap collectedValues, XmlFormResult result) {
@@ -274,7 +275,6 @@ public class HouseholdFormUtil extends FormUtil<Household> {
 
         this.entity = household;
         this.household = household;
-        collectExtensionForm(collectedValues);
     }
 
     private void onModeEdit(CollectedDataMap collectedValues, XmlFormResult result) {
@@ -329,10 +329,6 @@ public class HouseholdFormUtil extends FormUtil<Household> {
         collectedData.formEntityName = household.name;
         collectedData.updatedDate = new Date();
         boxCoreCollectedData.put(collectedData);
-
-        //collectExtensionForm(collectedValues);
-
-        onFinishedExtensionCollection();
     }
 
     @Override

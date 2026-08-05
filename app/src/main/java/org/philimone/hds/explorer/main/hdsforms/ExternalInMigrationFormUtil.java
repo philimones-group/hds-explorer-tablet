@@ -509,6 +509,7 @@ public class ExternalInMigrationFormUtil extends FormUtil<Inmigration> {
             onModeCreate(collectedValues, result);
         }
 
+        afterFormCollected(collectedValues);
     }
 
     private void onModeCreate(CollectedDataMap collectedValues, XmlFormResult result) {
@@ -698,7 +699,6 @@ public class ExternalInMigrationFormUtil extends FormUtil<Inmigration> {
         this.boxSavedEntityStates.put(entityState);
 
         this.entity = inmigration;
-        this.collectExtensionForm(collectedValues);
     }
 
     private void onModeEdit(CollectedDataMap collectedValues, XmlFormResult result) {
@@ -840,7 +840,6 @@ public class ExternalInMigrationFormUtil extends FormUtil<Inmigration> {
 
         //save state for editing - no need to (residency and headrelationship are already saved)
 
-        onFinishedExtensionCollection();
     }
 
     @Override

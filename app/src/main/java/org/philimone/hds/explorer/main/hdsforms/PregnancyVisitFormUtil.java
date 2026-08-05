@@ -437,6 +437,7 @@ public class PregnancyVisitFormUtil extends FormUtil<PregnancyVisit> {
             onModeCreate(collectedValues, result);
         }
 
+        afterFormCollected(collectedValues);
     }
 
     private void onModeCreate(CollectedDataMap collectedValues, XmlFormResult result) {
@@ -641,7 +642,6 @@ public class PregnancyVisitFormUtil extends FormUtil<PregnancyVisit> {
         this.boxCoreCollectedData.put(collectedData);
 
         this.entity = pregnancyVisit;
-        this.collectExtensionForm(collectedValues);
     }
 
     private void onModeEdit(CollectedDataMap collectedValues, XmlFormResult result) {
@@ -829,8 +829,6 @@ public class PregnancyVisitFormUtil extends FormUtil<PregnancyVisit> {
         collectedData.formEntityName = mother.name;
         collectedData.updatedDate = new Date();
         this.boxCoreCollectedData.put(collectedData);
-
-        onFinishedExtensionCollection();
     }
 
     @Override

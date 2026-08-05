@@ -320,6 +320,7 @@ public class OutmigrationFormUtil extends FormUtil<Outmigration> {
             onModeCreate(collectedValues, result);
         }
 
+        afterFormCollected(collectedValues);
     }
 
     private void onModeCreate(CollectedDataMap collectedValues, XmlFormResult result) {
@@ -407,7 +408,6 @@ public class OutmigrationFormUtil extends FormUtil<Outmigration> {
         this.boxSavedEntityStates.put(entityState);
 
         this.entity = outmigration;
-        this.collectExtensionForm(collectedValues);
     }
 
     private void onModeEdit(CollectedDataMap collectedValues, XmlFormResult result) {
@@ -478,7 +478,6 @@ public class OutmigrationFormUtil extends FormUtil<Outmigration> {
         this.boxCoreCollectedData.put(collectedData);
 
 
-        onFinishedExtensionCollection();
     }
 
     @Override

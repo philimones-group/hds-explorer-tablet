@@ -404,14 +404,10 @@ public class VisitFormUtil extends FormUtil<Visit> {
 
         this.entity = visit;
 
-        if (currentMode == Mode.CREATE) {
-            if (visit.visitPossible) {
-                this.collectExtensionForm(collectedValues);
-            } else {
-                onFinishedExtensionCollection();
-            }
-        } else {
+        if (currentMode == Mode.CREATE && !visit.visitPossible) {
             onFinishedExtensionCollection();
+        } else {
+            afterFormCollected(collectedValues);
         }
 
     }

@@ -181,6 +181,7 @@ public class IncompleteVisitFormUtil extends FormUtil<IncompleteVisit> {
             onModeCreate(collectedValues, result);
         }
 
+        afterFormCollected(collectedValues);
     }
 
     private void onModeCreate(CollectedDataMap collectedValues, XmlFormResult result) {
@@ -232,7 +233,6 @@ public class IncompleteVisitFormUtil extends FormUtil<IncompleteVisit> {
         boxCoreCollectedData.put(collectedData);
 
         this.entity = incompleteVisit;
-        this.collectExtensionForm(collectedValues);
     }
 
     private void onModeEdit(CollectedDataMap collectedValues, XmlFormResult result) {
@@ -265,7 +265,6 @@ public class IncompleteVisitFormUtil extends FormUtil<IncompleteVisit> {
         collectedData.updatedDate = new Date();
         boxCoreCollectedData.put(collectedData);
 
-        onFinishedExtensionCollection();
     }
 
     @Override

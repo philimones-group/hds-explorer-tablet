@@ -299,6 +299,17 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
         return this.boxCoreFormExtension.query(CoreFormExtension_.formEntity.equal(cformEntity.code)).build().findFirst();
     }
 
+    protected void afterFormCollected(CollectedDataMap collectedValues) {
+        collectMediaFiles(collectedValues, false);
+        this.boxCoreCollectedData.put(this.collectedData); //saves the media files
+
+        if (currentMode == Mode.CREATE) {
+            collectExtensionForm(collectedValues);
+        } else {
+            onFinishedExtensionCollection();
+        }
+    }
+
     protected void collectExtensionForm(CollectedDataMap collectedValues){
         //Log.d("collecting", "extension"+collectedValues.get(HForm.COLUMN_ID));
         if (this.collectedData != null) {
@@ -427,6 +438,43 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
         }
 
         return preloads;
+    }
+
+    /*
+     * This method updates the mediaFiles list of the current CoreCollectedData
+     */
+    protected void collectMediaFiles(CollectedDataMap collectedValues, boolean isExtension) {
+        if (this.collectedData.coreMediaFiles == null) {
+            this.collectedData.coreMediaFiles = new ArrayList<>();
+        }
+        if (this.collectedData.extensionMediaFiles == null) {
+            this.collectedData.extensionMediaFiles = new ArrayList<>();
+        }
+
+        List<String> targetList = isExtension ? this.collectedData.extensionMediaFiles : this.collectedData.coreMediaFiles;
+        targetList.clear();
+
+        // Scan all values in the map
+        for (ColumnValue cv : collectedValues.values()) {
+            if (cv instanceof RepeatColumnValue) {
+                RepeatColumnValue rcv = (RepeatColumnValue) cv;
+                for (int i = 0; i < rcv.getCount(); i++) {
+                    for (ColumnValue rcvInner : rcv.getColumnValues(i)) {
+                        if (rcvInner.getColumn().isMediaColumn() && !StringUtil.isBlank(rcvInner.getValue())) {
+                            String filename = rcvInner.getValue();
+                            if (!targetList.contains(filename)) {
+                                targetList.add(filename);
+                            }
+                        }
+                    }
+                }
+            } else if (cv.getColumn() != null && cv.getColumn().isMediaColumn() && !StringUtil.isBlank(cv.getValue())) {
+                String filename = cv.getValue();
+                if (!targetList.contains(filename)) {
+                    targetList.add(filename);
+                }
+            }
+        }
     }
 
     protected abstract void onFinishedExtensionCollection();
@@ -882,11 +930,13 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
 
         @Override
         public void onFormFinished(HForm form, CollectedDataMap collectedValues, XmlFormResult result) {
+            collectMediaFiles(collectedValues, true);
+
             collectedData.extensionCollected = true;
             collectedData.extensionCollectedFilepath = result.getFilename();
             collectedData.extensionCollectedUri = result.getFilename() != null ? Uri.fromFile(new File(result.getFilename())).toString() : null;
             collectedData.extensionCollectedDate = new Date();
-            boxCoreCollectedData.put(collectedData);
+            boxCoreCollectedData.put(collectedData); //saves also the media files
 
             onFinishedExtensionCollection();
         }

@@ -448,6 +448,7 @@ public class MaritalRelationshipFormUtil extends FormUtil<MaritalRelationship> {
             onModeCreate(collectedValues, result);
         }
 
+        afterFormCollected(collectedValues);
     }
 
     private void onModeCreate(CollectedDataMap collectedValues, XmlFormResult result) {
@@ -563,7 +564,6 @@ public class MaritalRelationshipFormUtil extends FormUtil<MaritalRelationship> {
         this.boxSavedEntityStates.put(entityState);
 
         this.entity = maritalRelationship;
-        this.collectExtensionForm(collectedValues);
     }
 
     private void onModeEdit(CollectedDataMap collectedValues, XmlFormResult result) {
@@ -685,7 +685,6 @@ public class MaritalRelationshipFormUtil extends FormUtil<MaritalRelationship> {
             this.boxSavedEntityStates.put(entityState);
         }
 
-        onFinishedExtensionCollection();
     }
 
     @Override

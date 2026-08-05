@@ -182,6 +182,7 @@ public class RegionFormUtil extends FormUtil<Region> {
             onModeCreate(collectedValues, result);
         }
 
+        afterFormCollected(collectedValues);
     }
 
     private void onModeCreate(CollectedDataMap collectedValues, XmlFormResult result) {
@@ -230,7 +231,6 @@ public class RegionFormUtil extends FormUtil<Region> {
 
         this.entity = region;
         this.region = region;
-        collectExtensionForm(collectedValues);
     }
 
     private void onModeEdit(CollectedDataMap collectedValues, XmlFormResult result) {
@@ -264,10 +264,6 @@ public class RegionFormUtil extends FormUtil<Region> {
         collectedData.formEntityName = region.name;
         collectedData.updatedDate = new Date();
         boxCoreCollectedData.put(collectedData);
-
-        //collectExtensionForm(collectedValues);
-
-        onFinishedExtensionCollection();
     }
 
     @Override

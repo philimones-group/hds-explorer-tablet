@@ -401,6 +401,8 @@ public class HouseholdRelocationFormUtil extends FormUtil<HouseholdRelocation> {
         } else if (currentMode == Mode.CREATE) {
             onModeCreate(collectedValues, result);
         }
+
+        afterFormCollected(collectedValues);
     }
 
     private void updateGpsCoords(Member member, Household household) {
@@ -562,7 +564,6 @@ public class HouseholdRelocationFormUtil extends FormUtil<HouseholdRelocation> {
         this.boxCoreCollectedData.put(collectedData);
 
         this.entity = householdRelocation;
-        this.collectExtensionForm(collectedValues);
     }
 
     private void onModeEdit(CollectedDataMap collectedValues, XmlFormResult result) {
@@ -774,7 +775,6 @@ public class HouseholdRelocationFormUtil extends FormUtil<HouseholdRelocation> {
         collectedData.updatedDate = new Date();
         this.boxCoreCollectedData.put(collectedData);
 
-        onFinishedExtensionCollection();
     }
 
     @Override

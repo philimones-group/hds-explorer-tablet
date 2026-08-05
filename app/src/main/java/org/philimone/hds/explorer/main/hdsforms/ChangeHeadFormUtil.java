@@ -459,6 +459,7 @@ Log.d("firstLast", "id="+newHeadLastRelationship.id);
             onModeCreate(collectedValues, result);
         }
 
+        afterFormCollected(collectedValues);
     }
 
     private void onModeCreate(CollectedDataMap collectedValues, XmlFormResult result) {
@@ -610,7 +611,6 @@ Log.d("firstLast", "id="+newHeadLastRelationship.id);
         this.boxCoreCollectedData.put(collectedData);
 
         this.entity = newHeadRelationship;
-        this.collectExtensionForm(collectedValues);
     }
 
     private void onModeEdit(CollectedDataMap collectedValues, XmlFormResult result) {
@@ -803,7 +803,6 @@ Log.d("firstLast", "id="+newHeadLastRelationship.id);
         collectedData.updatedDate = new Date();
         this.boxCoreCollectedData.put(collectedData);
 
-        onFinishedExtensionCollection();
     }
 
     @Override

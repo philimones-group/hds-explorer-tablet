@@ -2,10 +2,13 @@ package org.philimone.hds.explorer.model;
 
 import org.philimone.hds.explorer.model.converters.CoreFormEntityConverter;
 import org.philimone.hds.explorer.model.converters.CoreFormRecordTypeConverter;
+import org.philimone.hds.explorer.model.converters.StringListConverter;
 import org.philimone.hds.explorer.model.enums.CoreFormEntity;
 import org.philimone.hds.explorer.model.enums.CoreFormRecordType;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import io.objectbox.annotation.Convert;
 import io.objectbox.annotation.Entity;
@@ -55,6 +58,12 @@ public class CoreCollectedData {
 
     @Index
     public String collectedId;
+
+    @Convert(converter = StringListConverter.class, dbType = String.class)
+    public List<String> coreMediaFiles = new ArrayList<>();
+
+    @Convert(converter = StringListConverter.class, dbType = String.class)
+    public List<String> extensionMediaFiles = new ArrayList<>();
 
     public ToOne<CoreFormExtension> extension;
 

@@ -432,6 +432,7 @@ public class InternalInMigrationFormUtil extends FormUtil<Inmigration> {
             onModeCreate(collectedValues, result);
         }
 
+        afterFormCollected(collectedValues);
     }
 
     private void onModeCreate(CollectedDataMap collectedValues, XmlFormResult result) {
@@ -596,7 +597,6 @@ public class InternalInMigrationFormUtil extends FormUtil<Inmigration> {
         this.boxSavedEntityStates.put(entityState);
 
         this.entity = inmigration;
-        this.collectExtensionForm(collectedValues);
     }
 
     private void onModeEdit(CollectedDataMap collectedValues, XmlFormResult result) {
@@ -720,7 +720,6 @@ public class InternalInMigrationFormUtil extends FormUtil<Inmigration> {
             boxHouseholds.put(household);
         }
 
-        onFinishedExtensionCollection();
     }
 
     @Override

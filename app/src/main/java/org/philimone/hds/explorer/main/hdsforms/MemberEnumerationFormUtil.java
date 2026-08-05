@@ -361,6 +361,7 @@ public class MemberEnumerationFormUtil extends FormUtil<Member> {
             onModeCreate(collectedValues, result);
         }
 
+        afterFormCollected(collectedValues);
     }
 
     private void onModeCreate(CollectedDataMap collectedValues, XmlFormResult result) {
@@ -510,7 +511,6 @@ public class MemberEnumerationFormUtil extends FormUtil<Member> {
         this.boxSavedEntityStates.put(entityState);
 
         this.entity = member;
-        this.collectExtensionForm(collectedValues);
     }
 
     private void onModeEdit(CollectedDataMap collectedValues, XmlFormResult result) {
@@ -628,7 +628,6 @@ public class MemberEnumerationFormUtil extends FormUtil<Member> {
 
         //save state for editing - no need to (residency and headrelationship are already saved)
 
-        onFinishedExtensionCollection();
     }
 
     @Override

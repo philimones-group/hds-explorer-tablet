@@ -78,17 +78,11 @@ public class EditCoreExtensionFormUtil extends FormUtil<CoreEntity> {
 
     @Override
     public void onFormFinished(HForm form, CollectedDataMap collectedValues, XmlFormResult result) {
-        if (reCreateMode) {
-            //delete previous CollectedData - because this is about to recreate are not found odk or an required
-            CoreFormExtension extension = collectedData.extension.getTarget();
-            CollectedData odkCollectedData = boxCollectedData.query(CollectedData_.formId.equal(extension.extFormId).and(CollectedData_.collectedId.equal(collectedData.collectedId))).build().findFirst();
-            if (odkCollectedData != null) {
-                boxCollectedData.remove(odkCollectedData);
-            }
 
-            //collect extension form
-            collectExtensionForm(collectedValues);
-        }
+        collectMediaFiles(collectedValues, true);
+        this.boxCoreCollectedData.put(this.collectedData);
+
+        onFinishedExtensionCollection();
     }
 
     @Override

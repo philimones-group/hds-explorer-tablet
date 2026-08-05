@@ -67,6 +67,7 @@
     <string name="sync_modules_lbl">Modules</string>
     <string name="sync_forms_lbl">ODK Forms</string>
     <string name="sync_coreforms_exts_lbl">Core Forms Extensions</string>
+    <string name="sync_coreforms_exts_files_lbl">Core Forms Extensions Files</string>
     <string name="sync_coreformsoptions_lbl">Core Forms Options</string>
     <string name="sync_users_lbl">Users</string>
     <string name="sync_datasets_lbl">Datasets</string>

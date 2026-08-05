@@ -17,6 +17,7 @@ import org.philimone.hds.explorer.model.CollectedData;
 import org.philimone.hds.explorer.model.CoreCollectedData;
 import org.philimone.hds.explorer.model.CoreFormColumnOptions;
 import org.philimone.hds.explorer.model.CoreFormExtension;
+import org.philimone.hds.explorer.model.CoreFormExtension_;
 import org.philimone.hds.explorer.model.Dataset;
 import org.philimone.hds.explorer.model.Death;
 import org.philimone.hds.explorer.model.Form;
@@ -301,6 +302,9 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 			case CORE_FORMS_EXT:
 				builder.append(" " + mContext.getString(R.string.sync_coreforms_exts_lbl));
 				break;
+			case CORE_FORMS_EXT_FILES:
+				builder.append(" " + mContext.getString(R.string.sync_coreforms_exts_files_lbl));
+				break;
 			case CORE_FORMS_OPTIONS:
 				builder.append(" " + mContext.getString(R.string.sync_coreformsoptions_lbl));
 				break;
@@ -428,6 +432,9 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 					case CORE_FORMS_EXT:
 						boxCoreFormsExts.removeAll();
 						processUrl(appUrl + suffixFilePath, "coreforms.zip");
+						break;
+					case CORE_FORMS_EXT_FILES:
+						downloadCoreFormExtensionsFiles();
 						break;
 					case CORE_FORMS_OPTIONS:
 						boxCoreFormsOpts.removeAll();
@@ -1041,6 +1048,32 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 		updateSyncReport(SyncEntity.DATASETS_CSV_FILES, new Date(), SyncStatus.STATUS_SYNCED);
 	}
 
+	private void downloadCoreFormExtensionsFiles() throws Exception {
+
+		if (isDemoDownload) return;
+
+		List<CoreFormExtension> extensions = this.boxCoreFormsExts.query(CoreFormExtension_.enabled.equal(true)).build().find();
+
+		for (CoreFormExtension extension : extensions){
+			String url = baseurl + API_PATH + "/coreform/zip/" + extension.formId;
+			processUrl(url, null, extension);
+		}
+
+		updateSyncReport(SyncEntity.CORE_FORMS_EXT_FILES, new Date(), SyncStatus.STATUS_SYNCED);
+	}
+
+	private void processUrl(String strUrl, String exportedFileName, CoreFormExtension extension) throws Exception {
+		DownloadResponse response = processUrl(strUrl, exportedFileName, false);
+		updateCoreFormExtension(extension, response);
+	}
+
+	private void updateCoreFormExtension(CoreFormExtension extension, DownloadResponse response){
+		String filename = Bootstrap.getFormsPath(this.mContext) + response.getFileName();
+
+		extension.extFormFilePath = filename;
+		this.boxCoreFormsExts.put(extension);
+	}
+
 	private void deleteExternalDatasetFiles() {
 		List<Dataset> datasets = this.boxDatasets.getAll();
 
@@ -1173,7 +1206,16 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 
 		InputStream is = connection.getInputStream();
 
-		return new DownloadResponse(is, connection.getContentType(), exportedFileName, connection.getContentLength());//173916816L);
+		String contentDisposition = connection.getHeaderField("Content-Disposition");
+		String serverFileName = null;
+
+		if (contentDisposition != null && contentDisposition.contains("filename=")) {
+			serverFileName = contentDisposition.substring(contentDisposition.indexOf("filename=") + 9).replace("\"", "");
+		}
+
+		String finalFileName = (serverFileName != null) ? serverFileName : exportedFileName;
+
+		return new DownloadResponse(is, connection.getContentType(), finalFileName, connection.getContentLength());//173916816L);
 	}
 
 	private void processXMLDocument(InputStream content) throws Exception {
@@ -1252,7 +1294,12 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 
 		InputStream content = response.getInputStream();
 
-		FileOutputStream fout = new FileOutputStream(Bootstrap.getBasePath(this.mContext) + response.getFileName());
+		String folder = Bootstrap.getBasePath(this.mContext);
+		if (this.entity == SyncEntity.CORE_FORMS_EXT_FILES) {
+			folder = Bootstrap.getFormsPath(this.mContext);
+		}
+
+		FileOutputStream fout = new FileOutputStream(folder + response.getFileName());
 		byte[] buffer = new byte[10*1024];
 		int len = 0;
 		long total = 0;
@@ -1275,7 +1322,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 		fout.close();
 		content.close();
 
-		return new File(Bootstrap.getBasePath(this.mContext) + response.getFileName());
+		return new File(folder + response.getFileName());
 
 	}
 

@@ -14,6 +14,7 @@ public enum SyncEntity {
     MODULES            (2, R.string.sync_modules_lbl, "modules.zip", "modules/zip"),
     FORMS              (3, R.string.sync_forms_lbl, "forms.zip", "forms/zip"),
     CORE_FORMS_EXT     (4, R.string.sync_coreforms_exts_lbl, "coreforms.zip", "coreforms/zip"),
+    CORE_FORMS_EXT_FILES (29, R.string.sync_coreforms_exts_files_lbl, "", ""),
     CORE_FORMS_OPTIONS (5, R.string.sync_coreformsoptions_lbl, "coreformsoptions.zip", "coreformsoptions/zip"),
     USERS              (6, R.string.sync_users_lbl, "users.zip", "users/zip"),
     DATASETS           (7, R.string.sync_datasets_lbl, "datasets.zip", "datasets/zip"),

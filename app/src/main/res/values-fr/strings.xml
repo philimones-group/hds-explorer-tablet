@@ -67,6 +67,7 @@
     <string name="sync_modules_lbl">Modules</string>
     <string name="sync_forms_lbl">Formulaires ODK</string>
     <string name="sync_coreforms_exts_lbl">Extension de Formulaires HDS</string>
+    <string name="sync_coreforms_exts_files_lbl">Extension de Formulaires HDS XLS/ZIP</string>
     <string name="sync_coreformsoptions_lbl">Options de formulaires HDS</string>
     <string name="sync_users_lbl">Utilisateurs</string>
     <string name="sync_datasets_lbl">Ensembles de données</string>

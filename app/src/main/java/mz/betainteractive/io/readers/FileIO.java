@@ -27,6 +27,7 @@ public class FileIO {
     }
 
     public String readFile() {
+        if (StringUtil.isBlank(this.filename)) return null;
         try {
             return read(Files.newInputStream(Paths.get(this.filename)));
         } catch (IOException e) {

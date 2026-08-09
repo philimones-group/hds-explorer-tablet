@@ -248,7 +248,7 @@ public class SyncUploadPanelFragment extends Fragment implements SyncUploadEntit
         List<UploadCollectedDataItem> dataItemList = new ArrayList<>();
 
         for (CoreCollectedData cd : dataList) {
-            FormUtilities.FormStatus odkStatus = odkFormUtilities.isFormFinalized(cd.extensionCollectedUri);
+            FormUtilities.FormStatus odkStatus = cd.extensionCollected ? FormUtilities.FormStatus.FINALIZED : FormUtilities.FormStatus.NOT_FOUND;
             dataItemList.add(new UploadCollectedDataItem(boxVisits, cd, odkStatus));
         }
 

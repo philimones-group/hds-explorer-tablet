@@ -453,23 +453,22 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
 
         // Scan all values in the map
         for (ColumnValue cv : collectedValues.values()) {
-            if (cv instanceof RepeatColumnValue) {
-                RepeatColumnValue rcv = (RepeatColumnValue) cv;
-                for (int i = 0; i < rcv.getCount(); i++) {
-                    for (ColumnValue rcvInner : rcv.getColumnValues(i)) {
-                        if (rcvInner.getColumn().isMediaColumn() && !StringUtil.isBlank(rcvInner.getValue())) {
-                            String filename = rcvInner.getValue();
-                            if (!targetList.contains(filename)) {
-                                targetList.add(filename);
-                            }
-                        }
-                    }
+            scanMediaFiles(cv, targetList);
+        }
+    }
+
+    private void scanMediaFiles(ColumnValue cv, List<String> targetList) {
+        if (cv instanceof RepeatColumnValue) {
+            RepeatColumnValue rcv = (RepeatColumnValue) cv;
+            for (int i = 0; i < rcv.getCount(); i++) {
+                for (ColumnValue rcvInner : rcv.getColumnValues(i)) {
+                    scanMediaFiles(rcvInner, targetList);
                 }
-            } else if (cv.getColumn() != null && cv.getColumn().isMediaColumn() && !StringUtil.isBlank(cv.getValue())) {
-                String filename = cv.getValue();
-                if (!targetList.contains(filename)) {
-                    targetList.add(filename);
-                }
+            }
+        } else if (cv.getColumn() != null && cv.getColumn().isMediaColumn() && !StringUtil.isBlank(cv.getValue())) {
+            String filename = cv.getValue();
+            if (!targetList.contains(filename)) {
+                targetList.add(filename);
             }
         }
     }

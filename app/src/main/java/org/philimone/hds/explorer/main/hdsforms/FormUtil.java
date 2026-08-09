@@ -288,9 +288,6 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
     public abstract void collect();
 
     protected void executeCollectForm() {
-        Log.d("xloading", "creating form");
-        showLoadingDialog(R.string.loading_dialog_form_load_lbl, true);
-
         new LoadFormFragmentTask().execute();
     }
 
@@ -823,6 +820,12 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
     class LoadFormFragmentTask extends AsyncTask<Void, Void, Void> {
 
         @Override
+        protected void onPreExecute() {
+            Log.d("xloading", "creating form");
+            showLoadingDialog(R.string.loading_dialog_form_load_lbl, true);
+        }
+
+        @Override
         protected Void doInBackground(Void... voids) {
             Log.d("xloading", "preloading");
 
@@ -874,6 +877,11 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
             this.extension = extension;
             this.preloads = preloads;
             this.savedXmlPath = savedXmlPath;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            showLoadingDialog(R.string.loading_dialog_form_load_lbl, true);
         }
 
         @Override

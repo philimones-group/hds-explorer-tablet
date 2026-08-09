@@ -750,7 +750,7 @@ public class HouseholdDetailsActivity extends AppCompatActivity implements House
 
         if (lastVisit != null && lastVisit.recentlyCreated) {
 
-            VisitFormUtil visitFormUtil = new VisitFormUtil(this, this, this.household, lastVisit, this.odkFormUtilities, new FormUtilListener<Visit>() {
+            VisitFormUtil visitFormUtil = new VisitFormUtil(this, this, this.household, lastVisit, new FormUtilListener<Visit>() {
                 @Override
                 public void onNewEntityCreated(Visit entity, Map<String, Object> data) { }
 
@@ -801,7 +801,7 @@ public class HouseholdDetailsActivity extends AppCompatActivity implements House
     }
 
     private void loadNewHouseholdForm() {
-        HouseholdFormUtil householdForm = new HouseholdFormUtil(this, this, this.region, this.odkFormUtilities, new FormUtilListener<Household>() {
+        HouseholdFormUtil householdForm = new HouseholdFormUtil(this, this, this.region, new FormUtilListener<Household>() {
             @Override
             public void onNewEntityCreated(Household household, Map<String, Object> data) {
                 HouseholdDetailsActivity.this.household = household;
@@ -823,7 +823,7 @@ public class HouseholdDetailsActivity extends AppCompatActivity implements House
     }
 
     private void completeHouseholdRegistration() {
-        HouseholdFormUtil householdFormUtil = HouseholdFormUtil.completeRegistration(this, this, this.region, this.household, this.odkFormUtilities, new FormUtilListener<Household>() {
+        HouseholdFormUtil householdFormUtil = HouseholdFormUtil.completeRegistration(this, this, this.region, this.household, new FormUtilListener<Household>() {
             @Override
             public void onNewEntityCreated(Household entity, Map<String, Object> data) {
                 HouseholdDetailsActivity.this.household = household;
@@ -846,7 +846,7 @@ public class HouseholdDetailsActivity extends AppCompatActivity implements House
     /* Visit Form */
     private void loadNewVisitForm(boolean newHouseholdCreated){
 
-        VisitFormUtil visitFormUtil = new VisitFormUtil(this, this, this.household, newHouseholdCreated, this.odkFormUtilities, new FormUtilListener<Visit>() {
+        VisitFormUtil visitFormUtil = new VisitFormUtil(this, this, this.household, newHouseholdCreated, new FormUtilListener<Visit>() {
             @Override
             public void onNewEntityCreated(Visit entity, Map<String, Object> data) {
                 HouseholdDetailsActivity.this.visit = entity;

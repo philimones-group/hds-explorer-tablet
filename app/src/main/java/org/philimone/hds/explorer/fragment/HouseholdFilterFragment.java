@@ -427,7 +427,7 @@ public class HouseholdFilterFragment extends Fragment implements RegionExpandabl
         //call form util
         //reload filters and select new region
 
-        RegionFormUtil regionFormUtil = new RegionFormUtil(this, this.mContext, this.currentRegion, this.odkFormUtilities, new FormUtilListener<Region>() {
+        RegionFormUtil regionFormUtil = new RegionFormUtil(this, this.mContext, this.currentRegion, new FormUtilListener<Region>() {
             @Override
             public void onNewEntityCreated(Region region, Map<String, Object> data) {
             }
@@ -451,7 +451,7 @@ public class HouseholdFilterFragment extends Fragment implements RegionExpandabl
         //call form util
         //reload filters and select new region
 
-        RegionFormUtil regionFormUtil = new RegionFormUtil(this, this.mContext, this.currentRegion.code, this.odkFormUtilities, new FormUtilListener<Region>() {
+        RegionFormUtil regionFormUtil = new RegionFormUtil(this, this.mContext, this.currentRegion.code, new FormUtilListener<Region>() {
             @Override
             public void onNewEntityCreated(Region region, Map<String, Object> data) {
                 //reload filters and select new region
@@ -516,7 +516,7 @@ public class HouseholdFilterFragment extends Fragment implements RegionExpandabl
     }
 
     private void preRegisterNewHousehold() {
-        PreHouseholdFormUtil regionFormUtil = new PreHouseholdFormUtil(this, this.mContext, this.currentRegion, this.odkFormUtilities, new FormUtilListener<Household>() {
+        PreHouseholdFormUtil regionFormUtil = new PreHouseholdFormUtil(this, this.mContext, this.currentRegion, new FormUtilListener<Household>() {
             @Override
             public void onNewEntityCreated(Household household, Map<String, Object> data) {
                 //reload filters and select new region

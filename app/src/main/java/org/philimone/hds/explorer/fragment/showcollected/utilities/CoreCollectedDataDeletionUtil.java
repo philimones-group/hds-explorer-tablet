@@ -6,6 +6,7 @@ import android.util.Log;
 
 import com.google.gson.Gson;
 
+import org.philimone.hds.explorer.database.Bootstrap;
 import org.philimone.hds.explorer.database.ObjectBoxDatabase;
 import org.philimone.hds.explorer.database.Queries;
 import org.philimone.hds.explorer.fragment.showcollected.adapter.model.CoreCollectedDataItem;
@@ -1179,24 +1180,37 @@ public class CoreCollectedDataDeletionUtil {
     private void deleteCoreCollectedData(CoreCollectedData cdata) {
         if (cdata != null) {
             deleteXmlFile(cdata);
-            deleteExtensionXml(cdata);
             this.boxCoreCollectedData.remove(cdata);
         }
     }
+
     private void deleteXmlFile(CoreCollectedData cdata) {
-        if (cdata != null && cdata.formFilename != null) {
+        if (cdata != null) {
+
             try {
-                File xmlFile = new File(cdata.formFilename);
 
-                if (xmlFile.exists()) {
-                    // Delete media files first
-                    HForm form = FormUtil.getHFormBy(mContext, cdata.formEntity);
-                    if (form != null && form.hasMediaColumns()) {
-                        FormMediaDeletionUtil.deleteMediaFiles(form, xmlFile);
-                    }
-
-                    xmlFile.delete();
+                //delete core xml
+                if (cdata.formFilename != null) {
+                    File file = new File(cdata.formFilename);
+                    if (file.exists()) file.delete();
                 }
+
+                //delete extension xml
+                if (cdata.extensionCollectedFilepath != null) {
+                    File file = new File(cdata.extensionCollectedFilepath);
+                    if (file.exists()) file.delete();
+                }
+
+                //delete media files
+                for (String filename : cdata.coreMediaFiles) {
+                    File file = new File(Bootstrap.getInstancesPath(mContext), filename);
+                    if (file.exists()) file.delete();
+                }
+                for (String filename : cdata.extensionMediaFiles) {
+                    File file = new File(Bootstrap.getInstancesPath(mContext), filename);
+                    if (file.exists()) file.delete();
+                }
+
             } catch (Exception ex) {
                 Log.d("deletion-failed", ""+ex.getLocalizedMessage());
             }
@@ -1215,19 +1229,6 @@ public class CoreCollectedDataDeletionUtil {
                 Log.d("something", "wrong: "+ex.getMessage());
                 ex.printStackTrace();
             }
-        }
-    }
-
-    private void deleteExtensionXml(CoreCollectedData cdata) {
-
-        CollectedData odkCollectedData = this.boxCollectedData.query(CollectedData_.collectedId.equal(cdata.collectedId)).build().findFirst();
-
-        if (odkCollectedData != null) {
-            Uri odkContentUri = Uri.parse(odkCollectedData.formUri);
-            //delete odk xml
-            deleteOdkInstance(odkContentUri);
-
-            this.boxCollectedData.remove(odkCollectedData);
         }
     }
 

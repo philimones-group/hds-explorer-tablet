@@ -109,6 +109,7 @@ public class Bootstrap {
         newReports.add(new SyncReport(SyncEntity.FORMS, null, SyncStatus.STATUS_NOT_SYNCED, "Sync. Forms"));
         newReports.add(new SyncReport(SyncEntity.CORE_FORMS_EXT, null, SyncStatus.STATUS_NOT_SYNCED, "Sync. Core Forms Ext."));
         newReports.add(new SyncReport(SyncEntity.CORE_FORMS_EXT_FILES, null, SyncStatus.STATUS_NOT_SYNCED, "Sync. Core Forms Ext. Files"));
+        newReports.add(new SyncReport(SyncEntity.CORE_FORMS_OPTIONS, null, SyncStatus.STATUS_NOT_SYNCED, "Sync. Core Forms Options"));
         newReports.add(new SyncReport(SyncEntity.DATASETS, null, SyncStatus.STATUS_NOT_SYNCED, "Sync. Datasets"));
         newReports.add(new SyncReport(SyncEntity.DATASETS_CSV_FILES, null, SyncStatus.STATUS_NOT_SYNCED, "Sync. Datasets Files"));
         newReports.add(new SyncReport(SyncEntity.USERS, null, SyncStatus.STATUS_NOT_SYNCED, "Sync. Users"));

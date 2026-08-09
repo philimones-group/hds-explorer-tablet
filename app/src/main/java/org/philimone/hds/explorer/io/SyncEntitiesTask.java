@@ -1056,7 +1056,8 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 
 		for (CoreFormExtension extension : extensions){
 			String url = baseurl + API_PATH + "/coreform/zip/" + extension.formId;
-			processUrl(url, null, extension);
+			String name = extension.extFormId+".zip";
+			processUrl(url, name, extension);
 		}
 
 		updateSyncReport(SyncEntity.CORE_FORMS_EXT_FILES, new Date(), SyncStatus.STATUS_SYNCED);

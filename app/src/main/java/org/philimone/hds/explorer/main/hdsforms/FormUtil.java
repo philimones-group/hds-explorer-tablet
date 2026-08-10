@@ -31,6 +31,7 @@ import org.philimone.hds.forms.listeners.FormCollectionListener;
 import org.philimone.hds.forms.main.FormFragment;
 import org.philimone.hds.forms.model.CollectedDataMap;
 import org.philimone.hds.forms.model.Column;
+import org.philimone.hds.forms.model.ColumnGroup;
 import org.philimone.hds.forms.model.ColumnValue;
 import org.philimone.hds.forms.model.HForm;
 import org.philimone.hds.forms.model.PreloadMap;
@@ -705,20 +706,28 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
     }
 
     protected static HForm retrieveForm(InputStream inputStream) {
+        Log.d("RETRIEVING FORM", "FORM "+new Date());
         HForm form = new ExcelFormParser(inputStream).getForm();
 
         importOptions(form);
 
+        Log.d("RETRIEVING FORM ENDS", "FORM "+new Date());
+        Log.d("Loading Form - Ends", new Date()+"");
         return form;
     }
 
     private static void importOptions(HForm form) {
         Box<CoreFormColumnOptions> boxCoreFormOptions = ObjectBoxDatabase.get().boxFor(CoreFormColumnOptions.class);
-        boolean formHasCustomOptions = boxCoreFormOptions.query(CoreFormColumnOptions_.formName.equal(form.getFormId())).build().count() > 0;
+        List<CoreFormColumnOptions> list = boxCoreFormOptions.query(CoreFormColumnOptions_.formName.equal(form.getFormId())).order(CoreFormColumnOptions_.id).build().find();
 
-        if (formHasCustomOptions) {
-            //map options <column, option, label, labelcode>
-            List<CoreFormColumnOptions> list = boxCoreFormOptions.query(CoreFormColumnOptions_.formName.equal(form.getFormId())).order(CoreFormColumnOptions_.id).build().find();
+        if (!list.isEmpty()) {
+            // Map all columns once for fast lookup
+            Map<String, Column> allColumns = new HashMap<>();
+            for (ColumnGroup group : form.getColumns()) {
+                for (Column column : group.getColumns()) {
+                    allColumns.put(column.getName(), column);
+                }
+            }
 
             //clear column options
             Set<String> columnNames = new HashSet<>();
@@ -729,17 +738,17 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
             //save default column options and clear for updating with options from the server
             Map<Column, Map<String, FormOptions.OptionValue>> optionsBak = new HashMap<>();
             for (String columnName : columnNames) {
-                Column column = form.getColumn(columnName);
+                Column column = allColumns.get(columnName);
 
                 //backup options and clear options
-                if (!column.getTypeOptions().isEmpty()) {
+                if (column != null && !column.getTypeOptions().isEmpty()) {
                     optionsBak.put(column, new HashMap<>(column.getTypeOptions()));
                     column.clearTypeOptions();
                 }
             }
 
             for (CoreFormColumnOptions opt : list) {
-                Column column = form.getColumn(opt.columnName);
+                Column column = allColumns.get(opt.columnName);
 
                 if (column != null) {
                     //column.getTypeOptions().put(opt.optionValue, new FormOptions.OptionValue(opt.optionLabel, false, ""));
@@ -885,6 +894,7 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
 
         @Override
         protected HForm doInBackground(Void... voids) {
+            Log.d("Loading Form", new Date()+"");
             try {
                 InputStream is = getZipInputStream(extension.extFormFilePath);
                 if (is != null) {
@@ -893,6 +903,7 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
             } catch (Exception e) {
                 e.printStackTrace();
             }
+
             return null;
         }
 
@@ -906,15 +917,18 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
 
             DateUtil.SupportedCalendar supportedCalendar = Bootstrap.getSupportedCalendar();
 
+            Log.d("CREATING", "FormFragment");
             FormFragment formFragment;
             if (savedXmlPath == null) {
                 formFragment = FormFragment.newInstance(fragmentManager, extForm, supportedCalendar, Bootstrap.getInstancesPath(context), user.username, preloads, postExecution, backgroundMode, resumeMode, new ExtensionFormListener());
             } else {
                 formFragment = FormFragment.newInstance(fragmentManager, extForm, supportedCalendar, Bootstrap.getInstancesPath(context), user.username, savedXmlPath, preloads, postExecution, backgroundMode, true, new ExtensionFormListener());
             }
+            Log.d("CREATING ENDS", "FormFragment");
 
             showLoadingDialog("", false);
             formFragment.startCollecting();
+            Log.d("STARTED COLLECTING", "DATA");
         }
     }
 

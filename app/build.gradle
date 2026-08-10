@@ -18,8 +18,8 @@ android {
         applicationId "org.philimone.hds.explorer"
         minSdk = 21
         targetSdk = 35
-        versionCode 428
-        versionName "1.1.9 build ${versionCode}"
+        versionCode 442
+        versionName "1.2.0 build ${versionCode} RC1"
 
 
         // This maps the public mapbox token stored on global gradle.properties to the string resource Mapbox needs
@@ -137,6 +137,9 @@ dependencies {
 
     //projects
     api project(path: ':hds-forms-lib')
+
+    //okhttp
+    implementation 'com.squareup.okhttp3:okhttp:5.1.0'
 }
 
 // Apply plugin after dependencies block so they are not overwritten.

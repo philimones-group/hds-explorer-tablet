@@ -925,7 +925,7 @@
     },
     {
       "id": "12:5667991198190393360",
-      "lastPropertyId": "43:6814987714033432594",
+      "lastPropertyId": "45:8197414935329605427",
       "name": "Member",
       "properties": [
         {
@@ -1171,6 +1171,16 @@
           "id": "43:6814987714033432594",
           "name": "phoneAlternative",
           "type": 9
+        },
+        {
+          "id": "44:196804165014703982",
+          "name": "pregnancyStatus",
+          "type": 9
+        },
+        {
+          "id": "45:8197414935329605427",
+          "name": "lastPregnancyOutcomeDate",
+          "type": 10
         }
       ],
       "relations": []
@@ -2109,7 +2119,7 @@
     },
     {
       "id": "23:4611124115189785343",
-      "lastPropertyId": "25:6523095298570501568",
+      "lastPropertyId": "28:4807963625635324824",
       "name": "CoreCollectedData",
       "properties": [
         {
@@ -2224,6 +2234,21 @@
           "id": "25:6523095298570501568",
           "name": "extensionCollectedFilepath",
           "type": 9
+        },
+        {
+          "id": "26:5873316468584396994",
+          "name": "coreMediaFiles",
+          "type": 9
+        },
+        {
+          "id": "27:2189946543872861290",
+          "name": "extensionMediaFiles",
+          "type": 9
+        },
+        {
+          "id": "28:4807963625635324824",
+          "name": "extensionCollectedDate",
+          "type": 10
         }
       ],
       "relations": []
@@ -2321,7 +2346,7 @@
     },
     {
       "id": "26:1585784821968195154",
-      "lastPropertyId": "8:1239228672954888224",
+      "lastPropertyId": "9:8368011749838234364",
       "name": "CoreFormExtension",
       "properties": [
         {
@@ -2365,6 +2390,11 @@
         {
           "id": "8:1239228672954888224",
           "name": "columnsMapping",
+          "type": 9
+        },
+        {
+          "id": "9:8368011749838234364",
+          "name": "extFormFilePath",
           "type": 9
         }
       ],

@@ -18,6 +18,7 @@ import org.philimone.hds.explorer.model.PregnancyRegistration_;
 import org.philimone.hds.explorer.model.Visit;
 import org.philimone.hds.explorer.model.enums.CoreFormEntity;
 import org.philimone.hds.explorer.model.enums.EstimatedDateOfDeliveryType;
+import org.philimone.hds.explorer.model.enums.MemberPregnancyStatus;
 import org.philimone.hds.explorer.model.enums.PregnancyStatus;
 import org.philimone.hds.explorer.widget.DialogFactory;
 import org.philimone.hds.forms.model.CollectedDataMap;
@@ -313,6 +314,12 @@ public class PregnancyRegistrationFormUtil extends FormUtil<PregnancyRegistratio
         pregnancy.recentlyCreatedUri = result.getFilename();
         this.boxPregnancyRegistrations.put(pregnancy);
 
+        //update member pregnancy status
+        if (pregnancy.status == PregnancyStatus.PREGNANT) {
+            mother.pregnancyStatus = MemberPregnancyStatus.PREGNANT;
+            this.boxMembers.put(mother);
+        }
+
         //save core collected data
         collectedData = new CoreCollectedData();
         collectedData.visitId = visit.id;
@@ -385,6 +392,14 @@ public class PregnancyRegistrationFormUtil extends FormUtil<PregnancyRegistratio
         //pregnancy.recentlyCreated = true;
         //pregnancy.recentlyCreatedUri = result.getFilename();
         this.boxPregnancyRegistrations.put(pregnancy);
+
+        //update member pregnancy status
+        if (pregnancy.status == PregnancyStatus.PREGNANT) {
+            mother.pregnancyStatus = MemberPregnancyStatus.PREGNANT;
+        } else {
+            mother.pregnancyStatus = MemberPregnancyStatus.NONE;
+        }
+        this.boxMembers.put(mother);
 
         //save core collected data
         collectedData.visitId = visit.id;

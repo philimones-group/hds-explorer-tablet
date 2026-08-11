@@ -42,6 +42,7 @@ import org.philimone.hds.explorer.model.enums.Gender;
 import org.philimone.hds.explorer.model.enums.HeadRelationshipType;
 import org.philimone.hds.explorer.model.enums.HouseholdType;
 import org.philimone.hds.explorer.model.enums.MaritalStatus;
+import org.philimone.hds.explorer.model.enums.MemberPregnancyStatus;
 import org.philimone.hds.explorer.model.enums.PregnancyOutcomeType;
 import org.philimone.hds.explorer.model.enums.PregnancyStatus;
 import org.philimone.hds.explorer.model.enums.PregnancyVisitType;
@@ -655,6 +656,11 @@ public class PregnancyOutcomeFormUtil extends FormUtil<PregnancyOutcome> {
         pregnancyRegistration.summary_followup_completed = false;
         this.boxPregnancyRegistrations.put(pregnancyRegistration);
 
+        //update member pregnancy status
+        int ageDays = GeneralUtil.getAgeInDays(outcomeDate, new java.util.Date());
+        mother.pregnancyStatus =  (ageDays < 42+14) ? MemberPregnancyStatus.POSTPARTUM : MemberPregnancyStatus.NONE;
+        this.boxMembers.put(mother);
+
         //save core collected data
         collectedData = new CoreCollectedData();
         collectedData.visitId = visit.id;
@@ -854,6 +860,11 @@ public class PregnancyOutcomeFormUtil extends FormUtil<PregnancyOutcome> {
         pregnancyOutcome.numberOfLivebirths = livebirths;
 
         this.boxPregnancyOutcomes.put(pregnancyOutcome);
+
+        //update member pregnancy status
+        int ageDays = GeneralUtil.getAgeInDays(outcomeDate, new java.util.Date());
+        mother.pregnancyStatus =  (ageDays < 42+14) ? MemberPregnancyStatus.POSTPARTUM : MemberPregnancyStatus.NONE;
+        this.boxMembers.put(mother);
 
         //save core collected data
         collectedData.visitId = visit.id;

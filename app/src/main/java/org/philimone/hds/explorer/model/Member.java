@@ -3,6 +3,7 @@ package org.philimone.hds.explorer.model;
 import org.philimone.hds.explorer.model.converters.GenderConverter;
 import org.philimone.hds.explorer.model.converters.HeadRelationshipTypeConverter;
 import org.philimone.hds.explorer.model.converters.MaritalStatusConverter;
+import org.philimone.hds.explorer.model.converters.MemberPregnancyStatusConverter;
 import org.philimone.hds.explorer.model.converters.MemberStatusConverter;
 import org.philimone.hds.explorer.model.converters.ResidencyEndTypeConverter;
 import org.philimone.hds.explorer.model.converters.ResidencyStartTypeConverter;
@@ -10,6 +11,7 @@ import org.philimone.hds.explorer.model.converters.StringCollectionConverter;
 import org.philimone.hds.explorer.model.enums.Gender;
 import org.philimone.hds.explorer.model.enums.HeadRelationshipType;
 import org.philimone.hds.explorer.model.enums.MaritalStatus;
+import org.philimone.hds.explorer.model.enums.MemberPregnancyStatus;
 import org.philimone.hds.explorer.model.enums.MemberStatus;
 import org.philimone.hds.explorer.model.enums.SubjectEntity;
 import org.philimone.hds.explorer.model.enums.temporal.ResidencyEndType;
@@ -27,6 +29,7 @@ import io.objectbox.annotation.Id;
 import io.objectbox.annotation.Index;
 import io.objectbox.annotation.Transient;
 import io.objectbox.annotation.Unique;
+import mz.betainteractive.utilities.GeneralUtil;
 import mz.betainteractive.utilities.ReflectionUtils;
 import mz.betainteractive.utilities.StringUtil;
 
@@ -114,6 +117,11 @@ public class Member implements CoreEntity, FormSubject, Serializable {
 
     @Convert(converter = MemberStatusConverter.class, dbType = String.class)
     public MemberStatus status;
+
+    @Convert(converter = MemberPregnancyStatusConverter.class, dbType = String.class)
+    public MemberPregnancyStatus pregnancyStatus = MemberPregnancyStatus.NONE;
+
+    public Date pregnancyOutcomeDate;
 
     @Unique
     public String collectedId;
@@ -522,6 +530,15 @@ public class Member implements CoreEntity, FormSubject, Serializable {
     @Override
     public String getRecentlyCreatedUri() {
         return this.recentlyCreatedUri;
+    }
+
+    public boolean isRecentlyBorn() {
+        if (entryType == ResidencyStartType.BIRTH) {
+            int diff = GeneralUtil.getAgeInDays(dob, new java.util.Date());
+            return diff < 42 + 14; // 42+14 = 56 days is considered postpartum
+        }
+
+        return false;
     }
 
 }

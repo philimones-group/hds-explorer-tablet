@@ -21,6 +21,7 @@ import org.philimone.hds.explorer.model.Household;
 import org.philimone.hds.explorer.model.Member;
 import org.philimone.hds.explorer.model.Residency;
 import org.philimone.hds.explorer.model.Residency_;
+import org.philimone.hds.explorer.model.enums.MemberPregnancyStatus;
 import org.philimone.hds.explorer.model.enums.temporal.ResidencyEndType;
 
 import java.util.ArrayList;
@@ -54,7 +55,7 @@ public class MemberAdapter extends RecyclerView.Adapter<MemberAdapter.MemberView
     private DateUtil dateUtil = Bootstrap.getDateUtil();
 
 
-    public enum MemberIcon {NORMAL_MEMBER_ICON, NORMAL_MEMBER_CHECKED_ICON, NORMAL_HEAD_ICON, NORMAL_SECHEAD_ICON, NORMAL_MEMBER_NEW_ICON, NORMAL_HEAD_NEW_ICON}
+    public enum MemberIcon { NORMAL_MEMBER_ICON, NORMAL_HEAD_ICON, NORMAL_SECHEAD_ICON }
 
     /**
      * Adapter of a List View Item for members (name and code are displayed)
@@ -240,13 +241,13 @@ public class MemberAdapter extends RecyclerView.Adapter<MemberAdapter.MemberView
 
         public void setValues(Member mb) {
             ImageView iconView = mainView.findViewById(R.id.iconView);
+            ImageView iconNewRecordView = mainView.findViewById(R.id.iconNewRecordView);
             TextView txtName = mainView.findViewById(R.id.txtMemberItemName);
             TextView txtCode = mainView.findViewById(R.id.txtMemberItemCode);
             TextView txtMemberItemHousehold = mainView.findViewById(R.id.txtMemberItemHousehold);
             TextView txtExtra = mainView.findViewById(R.id.txtMemberItemExtras);
             CheckBox chkVBprocessed = mainView.findViewById(R.id.chkProcessed);
             int position = MemberAdapter.this.getPosition(mb);
-            memberIcon = MemberIcon.NORMAL_MEMBER_ICON;
 
             String nameText = mb.getName();
             String codeText = mb.getCode();
@@ -317,65 +318,39 @@ public class MemberAdapter extends RecyclerView.Adapter<MemberAdapter.MemberView
                 chkVBprocessed.setChecked(checkableMembers.get(position));
             }
 
+            memberIcon = MemberIcon.NORMAL_MEMBER_ICON;
             if (showHouseholdHeadIcon){
                 if (mb.isHouseholdHead()){
-                    //txtName.setTypeface(null, Typeface.BOLD);
-                    //iconView.setImageResource(R.mipmap.nui_member_red_filled_icon);
                     memberIcon = MemberIcon.NORMAL_HEAD_ICON;
                 } else if (mb.isSecHouseholdHead()){
-                    //txtName.setTypeface(null, Typeface.BOLD);
-                    //iconView.setImageResource(R.mipmap.nui_member_red_filled_two_icon);
                     memberIcon = MemberIcon.NORMAL_SECHEAD_ICON;
                 } else {
-                    //iconView.setImageResource(R.mipmap.nui_member_red_icon);
                     memberIcon = MemberIcon.NORMAL_MEMBER_ICON;
                 }
-
             }
 
-            if (mb.isRecentlyCreated()){
-                //iconView.setImageResource(R.mipmap.nui_member_red_new_icon);
-                memberIcon = MemberIcon.NORMAL_MEMBER_NEW_ICON;
-
-                if (mb.isHouseholdHead() || mb.isSecHouseholdHead()){
-                    //iconView.setImageResource(R.mipmap.nui_member_red_filled_new_icon);
-                    memberIcon = MemberIcon.NORMAL_HEAD_NEW_ICON;
-                }
-            }
+            iconNewRecordView.setVisibility(mb.isRecentlyCreated() ? View.VISIBLE : View.GONE);
 
             if (memberIcon != null){
                 switch (memberIcon){
                     case NORMAL_MEMBER_ICON:
-                        if (!isDead) {
-                            iconView.setImageResource(R.mipmap.nui_member_red_icon);
-                        } else {
+                        if (isDead) {
                             iconView.setImageResource(R.mipmap.nui_member_dth_icon);
-                        }
-                        break;
-                    case NORMAL_MEMBER_CHECKED_ICON:
-                        if (!isDead) {
-                            iconView.setImageResource(R.mipmap.nui_member_red_chk_icon);
+                        } else if (mb.pregnancyStatus == MemberPregnancyStatus.PREGNANT) {
+                            iconView.setImageResource(R.mipmap.nui_member_pregnant_red_icon);
+                        } else if (mb.pregnancyStatus == MemberPregnancyStatus.POSTPARTUM) {
+                            iconView.setImageResource(R.mipmap.nui_member_delivered_red_icon);
                         } else {
-                            iconView.setImageResource(R.mipmap.nui_member_dth_chk_icon);
+                            iconView.setImageResource(R.mipmap.nui_member_red_icon);
                         }
                         break;
                     case NORMAL_HEAD_ICON:iconView.setImageResource(R.mipmap.nui_member_red_filled_icon); break;
                     case NORMAL_SECHEAD_ICON:iconView.setImageResource(R.mipmap.nui_member_red_filled_two_icon); break;
-                    case NORMAL_MEMBER_NEW_ICON:
-                        if (!isDead) {
-                            iconView.setImageResource(R.mipmap.nui_member_red_new_icon);
-                        } else {
-                            iconView.setImageResource(R.mipmap.nui_member_dth_new_icon);
-                        }
-                        break;
-                    case NORMAL_HEAD_NEW_ICON:iconView.setImageResource(R.mipmap.nui_member_red_filled_new_icon); break;
                 }
             }
 
-            if (showEndTypeCode){
-                //paint with a color
-                //txtCode.setTypeface(null, Typeface.BOLD);
-                //mainView.setBackgroundColor(mContext.getResources().getColor(R.color.nui_lists_item_special_textcolor));
+            if (mb.isRecentlyBorn()) {
+                iconView.setImageResource(R.mipmap.nui_member_baby_red_icon);
             }
 
             if (selectedIndex == position){

@@ -63,6 +63,7 @@ import org.philimone.hds.explorer.model.enums.ImmunizationStatus;
 import org.philimone.hds.explorer.model.enums.MaritalEndStatus;
 import org.philimone.hds.explorer.model.enums.MaritalStartStatus;
 import org.philimone.hds.explorer.model.enums.MaritalStatus;
+import org.philimone.hds.explorer.model.enums.MemberPregnancyStatus;
 import org.philimone.hds.explorer.model.enums.NewBornStatus;
 import org.philimone.hds.explorer.model.enums.PregnancyOutcomeType;
 import org.philimone.hds.explorer.model.enums.PregnancyStatus;
@@ -3222,6 +3223,26 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 					} else {
 						table.setGpsLongitude(null);
 						table.setGpsNull(true);
+						parser.nextTag();
+					}
+
+					parser.nextTag(); //process pregnancyStatus
+					if (!isEmptyTag("pregnancyStatus", parser)) {
+						parser.next();
+						table.pregnancyStatus = MemberPregnancyStatus.getFrom(parser.getText());
+						parser.nextTag(); //process </pregnancyStatus>
+					} else {
+						table.pregnancyStatus = MemberPregnancyStatus.NONE;
+						parser.nextTag();
+					}
+
+					parser.nextTag(); //process pregnancyOutcomeDate
+					if (!isEmptyTag("pregnancyOutcomeDate", parser)) {
+						parser.next();
+						table.pregnancyOutcomeDate = DateUtil.toDateYMD(parser.getText());
+						parser.nextTag(); //process </lastPregnancyOutcomeDate>
+					} else {
+						table.pregnancyOutcomeDate = null;
 						parser.nextTag();
 					}
 

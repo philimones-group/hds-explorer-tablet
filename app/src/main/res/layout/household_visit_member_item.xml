@@ -8,14 +8,29 @@
     android:background="?android:attr/selectableItemBackground"
     android:orientation="horizontal" >
 
-    <ImageView
-        android:id="@+id/iconView"
-        android:layout_width="40dp"
-        android:layout_height="50dp"
-        android:layout_gravity="center"
-        android:layout_marginLeft="5dp"
-        android:layout_marginRight="5dp"
-        android:src="@mipmap/nui_member_red_icon" />
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/iconView"
+            android:layout_width="40dp"
+            android:layout_height="50dp"
+            android:layout_gravity="left|center"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:src="@mipmap/nui_member_red_icon" />
+
+        <ImageView
+            android:id="@+id/iconNewRecordView"
+            android:layout_width="40dp"
+            android:layout_height="50dp"
+            android:layout_gravity="left|center"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:src="@mipmap/nui_new_record_icon" />
+
+    </RelativeLayout>
 
     <LinearLayout
         android:layout_width="match_parent"

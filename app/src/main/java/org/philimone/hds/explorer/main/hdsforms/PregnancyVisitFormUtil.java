@@ -39,6 +39,7 @@ import org.philimone.hds.explorer.model.enums.HeadRelationshipType;
 import org.philimone.hds.explorer.model.enums.HealthcareProviderType;
 import org.philimone.hds.explorer.model.enums.IllnessSymptoms;
 import org.philimone.hds.explorer.model.enums.ImmunizationStatus;
+import org.philimone.hds.explorer.model.enums.MemberPregnancyStatus;
 import org.philimone.hds.explorer.model.enums.NewBornStatus;
 import org.philimone.hds.explorer.model.enums.PregnancyOutcomeType;
 import org.philimone.hds.explorer.model.enums.PregnancyStatus;
@@ -623,6 +624,12 @@ public class PregnancyVisitFormUtil extends FormUtil<PregnancyVisit> {
 
         this.boxPregnancyRegistrations.put(pregnancyRegistration);
 
+        //update member pregnancy status
+        if (pregnancyVisit.status == PregnancyStatus.LOST_TRACK) {
+            mother.pregnancyStatus = MemberPregnancyStatus.NONE;
+            this.boxMembers.put(mother);
+        }
+
         //save the list of data
         SavedEntityState entityState = new SavedEntityState(CoreFormEntity.PREGNANCY_VISIT, pregnancyVisit.id, SAVED_ENTITY_OBJECT_KEY, new Gson().toJson(saveStateMap));
         this.boxSavedEntityStates.put(entityState);
@@ -805,6 +812,12 @@ public class PregnancyVisitFormUtil extends FormUtil<PregnancyVisit> {
         //pregnancyVisit.recentlyCreatedUri = result.getFilename();
 
         this.boxPregnancyVisits.put(pregnancyVisit);
+
+        //update member pregnancy status
+        if (pregnancyVisit.status == PregnancyStatus.LOST_TRACK) {
+            mother.pregnancyStatus = MemberPregnancyStatus.NONE;
+            this.boxMembers.put(mother);
+        }
 
         //Update Pregnancy Registration
         boolean first_visit = this.boxPregnancyVisits.query(PregnancyVisit_.code.equal(pregnancyVisit.code)).build().count() == 1;

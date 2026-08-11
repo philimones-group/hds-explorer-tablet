@@ -31,6 +31,7 @@ import org.philimone.hds.explorer.model.enums.CoreFormEntity;
 import org.philimone.hds.explorer.model.enums.HeadRelationshipType;
 import org.philimone.hds.explorer.model.enums.MaritalEndStatus;
 import org.philimone.hds.explorer.model.enums.MaritalStatus;
+import org.philimone.hds.explorer.model.enums.MemberPregnancyStatus;
 import org.philimone.hds.explorer.model.enums.temporal.HeadRelationshipEndType;
 import org.philimone.hds.explorer.model.enums.temporal.HeadRelationshipStartType;
 import org.philimone.hds.explorer.model.enums.temporal.ResidencyEndType;
@@ -619,6 +620,7 @@ public class DeathFormUtil extends FormUtil<Death> {
         this.member.ageAtDeath = death.ageAtDeath;
         this.member.endType = ResidencyEndType.DEATH;
         this.member.endDate = deathDate;
+        this.member.pregnancyStatus = MemberPregnancyStatus.NONE;
         this.boxMembers.put(this.member);
 
         //close memberResidency again
@@ -803,6 +805,7 @@ public class DeathFormUtil extends FormUtil<Death> {
         this.member.ageAtDeath = death.ageAtDeath;
         this.member.endType = ResidencyEndType.DEATH;
         this.member.endDate = deathDate;
+        this.member.pregnancyStatus = MemberPregnancyStatus.NONE;
         this.boxMembers.put(this.member);
 
         //close memberResidency

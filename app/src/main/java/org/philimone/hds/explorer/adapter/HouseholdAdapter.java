@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import org.philimone.hds.explorer.R;
 import org.philimone.hds.explorer.model.Household;
 import org.philimone.hds.explorer.model.enums.HouseholdType;
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,8 +26,6 @@ import java.util.List;
 public class HouseholdAdapter extends RecyclerView.Adapter<HouseholdAdapter.HouseholdViewHolder> {
 
     private List<Household> households;
-    private List<Boolean> checkableHouseholds;
-    private List<Boolean> supervisedHouseholds;
     private List<String> extras;
     private Context mContext;
     private @LayoutRes int layoutResId;
@@ -42,41 +41,6 @@ public class HouseholdAdapter extends RecyclerView.Adapter<HouseholdAdapter.Hous
         this.households.addAll(objects);
         this.mContext = context;
         this.layoutResId = R.layout.household_item;
-    }
-
-    /**
-     * Adapter of a List View Item for households (name, code, and a check box are displayed)
-     * @param context
-     * @param objects
-     * @param checks
-     */
-    public HouseholdAdapter(Context context, List<Household> objects, List<Boolean> checks){
-        this.households = new ArrayList<>();
-        this.households.addAll(objects);
-
-        if (checks != null){
-            this.checkableHouseholds = new ArrayList<>();
-            this.checkableHouseholds.addAll(checks);
-        }
-
-        this.mContext = context;
-        this.layoutResId = R.layout.household_item_chk;
-    }
-
-    /**
-     * Adapter of a List View Item for households (name, code, checkbox and different icon for supervised household are displayed)
-     * @param context
-     * @param objects
-     * @param checks
-     * @param supervisionList
-     */
-    public HouseholdAdapter(Context context, List<Household> objects, List<Boolean> checks, List<Boolean> supervisionList){
-        this(context, objects, checks);
-
-        if (supervisionList != null){
-            this.supervisedHouseholds = new ArrayList<>();
-            this.supervisedHouseholds.addAll(supervisionList);
-        }
     }
 
     /**
@@ -141,11 +105,13 @@ public class HouseholdAdapter extends RecyclerView.Adapter<HouseholdAdapter.Hous
 
         public void setValues(Household hh) {
             ImageView iconView = (ImageView) rowView.findViewById(R.id.iconView);
+            ImageView iconNewRecordView = rowView.findViewById(R.id.iconNewRecordView);
             TextView txtName = (TextView) rowView.findViewById(R.id.txtHousename);
             TextView txtHeadLabel = (TextView) rowView.findViewById(R.id.txtHeadLabel);
             TextView txtCode = (TextView) rowView.findViewById(R.id.txtHouseCode);
             TextView txtHead = (TextView) rowView.findViewById(R.id.txtHead);
             TextView txtExtra = (TextView) rowView.findViewById(R.id.txtExtras);
+            TextView txtHouseStatus = rowView.findViewById(R.id.txtHouseStatus);
             CheckBox chkVBprocessed = (CheckBox) rowView.findViewById(R.id.chkProcessed);
 
             int position = households.indexOf(hh);
@@ -162,23 +128,15 @@ public class HouseholdAdapter extends RecyclerView.Adapter<HouseholdAdapter.Hous
                 }
             }
 
-            if (chkVBprocessed != null && checkableHouseholds != null){
-                chkVBprocessed.setChecked(checkableHouseholds.get(position));
+            if (hh.isDisplayableStatus()) {
+                txtHouseStatus.setText(hh.status.shortName);
+                txtHouseStatus.setVisibility(View.VISIBLE);
             }
+
+            iconNewRecordView.setVisibility(hh.isRecentlyCreated() ? View.VISIBLE : View.GONE);
 
             //set default icon
             iconView.setImageResource(hh.type == HouseholdType.INSTITUTIONAL ? R.mipmap.nui_household_inst_red_icon : R.mipmap.nui_household_red_icon);
-
-            if (supervisedHouseholds != null && position < supervisedHouseholds.size()){
-                if (supervisedHouseholds.get(position)==true){
-                    txtName.setTypeface(null, Typeface.BOLD);
-                    iconView.setImageResource(hh.type == HouseholdType.INSTITUTIONAL ? R.mipmap.nui_household_inst_red_chk_icon : R.mipmap.nui_household_red_chk_icon);
-                }
-            }
-
-            if (hh.isRecentlyCreated()){
-                iconView.setImageResource(hh.type == HouseholdType.INSTITUTIONAL ? R.mipmap.nui_household_inst_red_new_icon : R.mipmap.nui_household_red_new_icon);
-            }
 
             if (hh.preRegistered) {
                 iconView.setImageResource(R.mipmap.nui_household_red_notreg_icon);

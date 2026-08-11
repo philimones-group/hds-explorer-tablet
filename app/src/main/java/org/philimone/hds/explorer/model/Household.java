@@ -288,6 +288,12 @@ public class Household implements CoreEntity, FormSubject, Serializable {
         this.modules.addAll(modules);
     }
 
+    public boolean isDisplayableStatus() {
+        return status == HouseholdStatus.HOUSE_NOT_FOUND ||
+               status == HouseholdStatus.HOUSE_DESTROYED ||
+               status == HouseholdStatus.HOUSE_ABANDONED;
+    }
+
     public void updateGpsCalculations(){
         if (gpsLatitude != null) {
             sinLatitude = Math.sin(gpsLatitude);

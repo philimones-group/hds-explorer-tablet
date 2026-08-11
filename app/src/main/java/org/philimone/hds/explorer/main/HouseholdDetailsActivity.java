@@ -79,6 +79,7 @@ public class HouseholdDetailsActivity extends AppCompatActivity implements House
     private TextView hhDetailsRegionLabel;
     private TextView hhDetailsRegionValue;
     private TextView hhDetailsVisitDateValue;
+    private TextView txtHouseStatus;
     private Button btHouseDetailsCollectData;
     private Button btHouseDetailsCreateVisit;
     private Button btHouseDetailsFinishVisit;
@@ -255,6 +256,7 @@ public class HouseholdDetailsActivity extends AppCompatActivity implements House
         hhDetailsRegionLabel = (TextView) findViewById(R.id.hhDetailsRegionLabel);
         hhDetailsRegionValue = (TextView) findViewById(R.id.hhDetailsRegionValue);
         hhDetailsVisitDateValue = findViewById(R.id.hhDetailsVisitDateValue);
+        txtHouseStatus = findViewById(R.id.txtHouseStatus);
         btHouseDetailsCollectData = (Button) findViewById(R.id.btHouseDetailsCollectData);
         btHouseDetailsCreateVisit = findViewById(R.id.btHouseDetailsCreateVisit);
         btHouseDetailsFinishVisit = findViewById(R.id.btHouseDetailsFinishVisit);
@@ -427,6 +429,13 @@ public class HouseholdDetailsActivity extends AppCompatActivity implements House
         hhDetailsRegionLabel.setText(hierarchyName+":");
         hhDetailsRegionValue.setText(region==null ? "" : region.getName());
         hhDetailsVisitDateValue.setText(lastVisit==null ? "None" : dateUtil.formatYMD(lastVisit.visitDate));
+
+        if (household.isDisplayableStatus()) {
+            txtHouseStatus.setText(household.status.name);
+            txtHouseStatus.setVisibility(View.VISIBLE);
+        } else {
+            txtHouseStatus.setVisibility(View.GONE);
+        }
 
         if (household.proxyHeadName != null) {
             hhDetailsProxyHeadName.setText(household.proxyHeadName);

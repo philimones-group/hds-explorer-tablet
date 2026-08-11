@@ -1086,6 +1086,12 @@
     <string name="householdStatus_vacant">Uninhabited Household</string>
     <string name="householdStatus_other">Other</string>
 
+    <string name="householdStatus_occupied_short">Inhabited</string>
+    <string name="householdStatus_notfound_short">Not found</string>
+    <string name="householdStatus_destroyed_short">Destroyed</string>
+    <string name="householdStatus_abandoned_short">Abandoned</string>
+    <string name="householdStatus_vacant_short">Uninhabited</string>
+
     <string name="memberStatus_active">Active</string>
     <string name="memberStatus_inactive">Inactive</string>
     <string name="memberStatus_not_found">Member not found</string>

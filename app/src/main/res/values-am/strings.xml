@@ -1038,6 +1038,12 @@
     <string name="householdStatus_vacant">ቤተሰቡ ባዶ ነው</string>
     <string name="householdStatus_other">ሌላ</string>
 
+    <string name="householdStatus_occupied_short">ነዋሪ ያለበት</string>
+    <string name="householdStatus_notfound_short">አልተገኘም</string>
+    <string name="householdStatus_destroyed_short">የፈረሰ</string>
+    <string name="householdStatus_abandoned_short">የተተወ</string>
+    <string name="householdStatus_vacant_short">ነዋሪ የሌለበት</string>
+
     <string name="memberStatus_active">ንቁ</string>
     <string name="memberStatus_inactive">አንደምታገለግል</string>
     <string name="memberStatus_not_found">አባል አልተገኘም</string>

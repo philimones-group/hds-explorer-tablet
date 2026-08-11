@@ -1,20 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/MainLinearLayout"
-    android:layout_width="fill_parent"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="2dp"
     android:background="?android:attr/selectableItemBackground"
-    android:orientation="horizontal" >
+    android:orientation="horizontal"
+    android:paddingBottom="3dp"
+    android:paddingTop="3dp">
 
-    <ImageView
-        android:id="@+id/iconView"
-        android:layout_width="@dimen/household_item_icon_width"
-        android:layout_height="@dimen/household_item_icon_height"
-        android:layout_gravity="center"
-        android:layout_marginLeft="5dp"
-        android:layout_marginRight="5dp"
-        android:src="@mipmap/nui_household_red_icon" />
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/iconView"
+            android:layout_width="@dimen/household_item_icon_width"
+            android:layout_height="@dimen/household_item_icon_height"
+            android:layout_marginStart="3dp"
+            android:layout_marginEnd="8dp"
+            android:layout_centerInParent="true"
+            android:src="@mipmap/nui_household_red_icon" />
+
+        <ImageView
+            android:id="@+id/iconNewRecordView"
+            android:layout_width="@dimen/household_item_icon_width"
+            android:layout_height="@dimen/household_item_icon_height"
+            android:layout_centerInParent="true"
+            android:layout_marginStart="3dp"
+            android:layout_marginEnd="8dp"
+            android:src="@mipmap/nui_new_record_icon" />
+
+    </RelativeLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -32,15 +48,41 @@
             android:textColor="@color/nui_household_item_textcolor"
             android:textStyle="bold"
             android:textSize="@dimen/household_item_text_1_size" />
-        
-        <TextView
-            android:id="@+id/txtHouseCode"
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:singleLine="true"
-            android:text="Medium Text"
-            android:textColor="@color/nui_household_item_textcolor"
-            android:textSize="@dimen/household_item_text_2_size" />
+            android:orientation="horizontal"
+            android:paddingEnd="10dp">
+
+            <TextView
+                android:id="@+id/txtHouseCode"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:singleLine="true"
+                android:text="Medium Text"
+                android:textColor="@color/nui_household_item_textcolor"
+                android:textSize="@dimen/household_item_text_2_size" />
+
+            <TextView
+                android:id="@+id/txtHouseStatus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingStart="15dp"
+                android:paddingEnd="15dp"
+                android:paddingTop="2dp"
+                android:paddingBottom="2dp"
+                android:background="@drawable/nui_border_txt_sgreen"
+                android:text="@string/householdStatus_destroyed_short"
+                android:textColor="#FFF"
+                android:textSize="11sp"
+                android:textStyle="bold"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:visibility="gone"/>
+
+        </LinearLayout>
 
         <TextView
             android:id="@+id/txtExtras"

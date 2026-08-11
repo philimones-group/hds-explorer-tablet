@@ -1038,6 +1038,12 @@
     <string name="householdStatus_vacant">Ménage inhabité</string>
     <string name="householdStatus_other">Autre raison</string>
 
+    <string name="householdStatus_occupied_short">Habitée</string>
+    <string name="householdStatus_notfound_short">Non trouvée</string>
+    <string name="householdStatus_destroyed_short">Détruite</string>
+    <string name="householdStatus_abandoned_short">Abandonnée</string>
+    <string name="householdStatus_vacant_short">Inoccupée</string>
+
     <string name="memberStatus_active">Actif</string>
     <string name="memberStatus_inactive">Inactif</string>
     <string name="memberStatus_not_found">Membre non trouvé</string>

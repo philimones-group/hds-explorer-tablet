@@ -21,7 +21,7 @@
             android:layout_width="40dp"
             android:layout_height="50dp"
             android:layout_marginTop="0dp"
-            android:layout_gravity="left|top"
+            android:layout_gravity="center"
             android:layout_marginLeft="15dp"
             android:layout_marginRight="10dp"
             android:src="@mipmap/nui_household_filled_icon" />
@@ -29,7 +29,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="0dp"
+            android:layout_marginStart="0dp"
             android:paddingTop="5dp"
             android:layout_gravity="center_vertical"
             android:orientation="vertical">
@@ -181,7 +181,7 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="wrap_content">
 
                 <TextView
                     android:id="@+id/hhDetailsRegionLabel"
@@ -206,7 +206,7 @@
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_marginStart="20dp"
                     android:orientation="horizontal">
 
@@ -223,8 +223,9 @@
 
                     <TextView
                         android:id="@+id/hhDetailsVisitDateValue"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:layout_weight="1"
                         android:layout_marginTop="0dp"
                         android:layout_marginLeft="4dp"
                         android:text="2021-05-01"
@@ -232,6 +233,25 @@
                         android:textColor="#83d34a"
                         android:textStyle="bold"
                         />
+
+                    <TextView
+                        android:id="@+id/txtHouseStatus"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="15dp"
+                        android:layout_marginBottom="1dp"
+                        android:paddingStart="15dp"
+                        android:paddingEnd="15dp"
+                        android:paddingTop="2dp"
+                        android:paddingBottom="2dp"
+                        android:background="@drawable/nui_border_txt_sgreen"
+                        android:text="@string/householdStatus_destroyed_short"
+                        android:textColor="#FFF"
+                        android:textSize="@dimen/household_details_land_info_textsize"
+                        android:textStyle="bold"
+                        android:maxLines="1"
+                        android:ellipsize="end"
+                        android:visibility="visible"/>
                 </LinearLayout>
 
             </LinearLayout>

@@ -991,7 +991,6 @@ public class HouseholdVisitFragment extends Fragment {
             if (dataItem.isExtensionCollected() && dataItem.odkFormStatus != FormUtilities.FormStatus.NOT_FOUND) {
                 //The form exists - so lets edit it
                 Log.d("edit core odk", coreCollectedData.formEntity.code+"");
-                CollectedData odkCollectedData = boxCollectedData.query(CollectedData_.collectedId.equal(coreCollectedData.collectedId).and(CollectedData_.formUri.equal(coreCollectedData.extensionCollectedUri))).build().findFirst();
                 HForm hform = FormUtil.getHFormBy(getContext(), coreCollectedData.formEntity);
                 CoreEntity existingEntity = getRecordEntity(coreCollectedData);
 
@@ -1018,14 +1017,6 @@ public class HouseholdVisitFragment extends Fragment {
                 formUtil.reCollectExtensionForm();
 
             }
-        }
-
-
-        //edit the odk form
-        if (coreCollectedData != null && coreCollectedData.extensionCollected) {
-            ///edit
-
-
         }
     }
 

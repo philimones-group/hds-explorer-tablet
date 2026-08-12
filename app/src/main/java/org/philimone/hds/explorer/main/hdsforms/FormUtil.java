@@ -308,6 +308,18 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
         }
     }
 
+    protected void reCollectExtensionForm(CollectedDataMap collectedValues) {
+        if (this.collectedData != null) {
+            CoreFormExtension formExtension = getFormExtension(collectedData.formEntity);
+
+            if (formExtension != null && formExtension.enabled) {
+
+                PreloadMap extPreloads = createExtensionPreloadMap(formExtension, collectedValues);
+                new LoadExtFormFragmentTask(formExtension, extPreloads).execute();
+            }
+        }
+    }
+
     protected void collectExtensionForm(CollectedDataMap collectedValues){
         //Log.d("collecting", "extension"+collectedValues.get(HForm.COLUMN_ID));
         if (this.collectedData != null) {

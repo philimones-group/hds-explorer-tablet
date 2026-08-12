@@ -82,7 +82,10 @@ public class EditCoreExtensionFormUtil extends FormUtil<CoreEntity> {
         collectMediaFiles(collectedValues, true);
         this.boxCoreCollectedData.put(this.collectedData);
 
-        onFinishedExtensionCollection();
+        if (reCreateMode) {
+            this.backgroundMode = false;
+            collectExtensionForm(collectedValues);
+        }
     }
 
     @Override

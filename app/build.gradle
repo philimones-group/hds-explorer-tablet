@@ -18,7 +18,7 @@ android {
         applicationId "org.philimone.hds.explorer"
         minSdk = 21
         targetSdk = 35
-        versionCode 445
+        versionCode 446
         versionName "1.2.0 build ${versionCode}"
 
 

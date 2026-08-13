@@ -664,7 +664,7 @@ public class HouseholdFilterFragment extends Fragment implements RegionExpandabl
             Region region = new Region();
             region.id = 0;
             region.code  = "SEARCH";
-            region.parent = list.get(0).getParent();
+            region.parent = list.size() > 0 ? list.get(0).getParent() : null;
 
             list.add(0, region);
 

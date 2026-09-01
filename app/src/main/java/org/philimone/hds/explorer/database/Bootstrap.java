@@ -35,6 +35,7 @@ public class Bootstrap {
     private static final String APP_BASE_PATH = File.separator; //File.separator + "Android" + File.separator + "data" + File.separator + APP_PATH + File.separator + "files"+ File.separator;
     private static final String APP_FORMS_PATH = APP_BASE_PATH + "forms" + File.separator;
     private static final String APP_INSTANCES_PATH = APP_BASE_PATH + "instances" + File.separator;
+    private static final String APP_DOWNLOADS_PATH = APP_BASE_PATH + "downloads" + File.separator;
 
     private static final String ODK_APP_PATH = "org.odk.collect.android";
     private static final String ODK_APP_BASE_PATH = File.separator + "Android" + File.separator + "data" + File.separator + ODK_APP_PATH + File.separator + "files"+ File.separator;
@@ -42,6 +43,7 @@ public class Bootstrap {
     private static String absoluteBasePath;
     private static String absoluteFormsPath;
     private static String absoluteInstancesPath;
+    private static String absoluteDownloadsPath;
 
     public static boolean isEthiopianCalendarEnabled = false;
 
@@ -107,6 +109,7 @@ public class Bootstrap {
         newReports.add(new SyncReport(SyncEntity.PARAMETERS, null, SyncStatus.STATUS_NOT_SYNCED, "Sync. App Parameters"));
         newReports.add(new SyncReport(SyncEntity.MODULES, null, SyncStatus.STATUS_NOT_SYNCED, "Sync. Modules"));
         newReports.add(new SyncReport(SyncEntity.FORMS, null, SyncStatus.STATUS_NOT_SYNCED, "Sync. Forms"));
+        newReports.add(new SyncReport(SyncEntity.CORE_FORMS, null, SyncStatus.STATUS_NOT_SYNCED, "Sync. Core Forms"));
         newReports.add(new SyncReport(SyncEntity.CORE_FORMS_EXT, null, SyncStatus.STATUS_NOT_SYNCED, "Sync. Core Forms Ext."));
         newReports.add(new SyncReport(SyncEntity.CORE_FORMS_EXT_FILES, null, SyncStatus.STATUS_NOT_SYNCED, "Sync. Core Forms Ext. Files"));
         newReports.add(new SyncReport(SyncEntity.CORE_FORMS_OPTIONS, null, SyncStatus.STATUS_NOT_SYNCED, "Sync. Core Forms Options"));
@@ -181,17 +184,20 @@ public class Bootstrap {
         absoluteBasePath = rootPath + APP_BASE_PATH;
         absoluteFormsPath = rootPath + APP_FORMS_PATH;
         absoluteInstancesPath = rootPath + APP_INSTANCES_PATH;
+        absoluteDownloadsPath = rootPath + APP_DOWNLOADS_PATH;
 
         File baseDir = new File(absoluteBasePath);
         File formsDir = new File(absoluteFormsPath);
         File instancesDir = new File(absoluteInstancesPath);
+        File downloadsDir = new File(absoluteDownloadsPath);
 
         boolean createdBaseDir = !baseDir.exists() ? baseDir.mkdirs() : false;
         boolean createdFormsDir = !formsDir.exists() ? formsDir.mkdirs() : false;
         boolean createdInstancesDir = !instancesDir.exists() ? instancesDir.mkdirs() : false;
+        boolean createdDownloadsDir = !downloadsDir.exists() ? downloadsDir.mkdirs() : false;
 
 
-        Log.d("app-dirs", "baseDir-created="+createdBaseDir+", formsDir-created="+createdFormsDir+", instancesDir-created="+createdInstancesDir);
+        Log.d("app-dirs", "baseDir-created="+createdBaseDir+", formsDir-created="+createdFormsDir+", instancesDir-created="+createdInstancesDir+", downloadsDir-created="+createdDownloadsDir);
     }
 
     public static String getBasePath(Context context){
@@ -218,6 +224,14 @@ public class Bootstrap {
         return absoluteInstancesPath;
     }
 
+    public static String getDownloadsPath(Context context){
+        if (!new File(absoluteDownloadsPath).exists()){
+            initializePaths(context); //try to initialize path
+        }
+
+        return absoluteDownloadsPath;
+    }
+
     public static String getOdkScopedStoragePath(Context context) {
         File root = getRealRootFolder(context);
         return root.getAbsolutePath() + ODK_APP_BASE_PATH;
@@ -228,16 +242,20 @@ public class Bootstrap {
         return root.getAbsolutePath() + File.separator + "odk" + File.separator;
     }
 
-    public static File getBasePathFile(String filename, Context context) {
+    public static File getBasePathFile(Context context, String filename) {
         return new File(getBasePath(context) + filename);
     }
 
-    public static File getFormsPathFile(String filename, Context context) {
+    public static File getFormsPathFile(Context context, String filename) {
         return new File(getFormsPath(context) + filename);
     }
 
-    public static File getInstancesPathFile(String filename, Context context) {
+    public static File getInstancesPathFile(Context context, String filename) {
         return new File(getInstancesPath(context) + filename);
+    }
+
+    public static File getDownloadsPathFile(Context context, String filename) {
+        return new File(getDownloadsPath(context) + filename);
     }
 
     public static User getCurrentUser(){

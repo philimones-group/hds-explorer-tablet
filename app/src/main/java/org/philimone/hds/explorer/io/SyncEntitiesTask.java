@@ -300,6 +300,9 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 			case FORMS:
 				builder.append(" " + mContext.getString(R.string.sync_forms_lbl));
 				break;
+			case CORE_FORMS:
+				builder.append(" " + mContext.getString(R.string.sync_coreforms_lbl));
+				break;
 			case CORE_FORMS_EXT:
 				builder.append(" " + mContext.getString(R.string.sync_coreforms_exts_lbl));
 				break;
@@ -430,9 +433,12 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 						deleteFormGroupInstances();
 						processUrl(appUrl + suffixFilePath, "forms.zip");
 						break;
+					case CORE_FORMS:
+						downloadCoreFormFiles(appUrl + suffixFilePath);
+						break;
 					case CORE_FORMS_EXT:
 						boxCoreFormsExts.removeAll();
-						processUrl(appUrl + suffixFilePath, "coreforms.zip");
+						processUrl(appUrl + suffixFilePath, "coreformsext.zip");
 						break;
 					case CORE_FORMS_EXT_FILES:
 						downloadCoreFormExtensionsFiles();
@@ -1049,6 +1055,19 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 		updateSyncReport(SyncEntity.DATASETS_CSV_FILES, new Date(), SyncStatus.STATUS_SYNCED);
 	}
 
+	private void downloadCoreFormFiles(String fileUrl) throws Exception {
+		//file url is either hds-explorer-server api url or demo repository url
+
+		//download zip file containing core forms xls and extract it
+		String exportedFileName = "coreforms.zip";
+		DownloadResponse response = processUrl(fileUrl, exportedFileName, false);
+
+		//ZipMaker zip = new ZipMaker(response.downloadedFile);
+		//zip.extract(); //extract hds core forms xls to forms/ directory
+
+		updateSyncReport(SyncEntity.CORE_FORMS, new Date(), SyncStatus.STATUS_SYNCED);
+	}
+
 	private void downloadCoreFormExtensionsFiles() throws Exception {
 
 		if (isDemoDownload) return;
@@ -1056,7 +1075,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 		List<CoreFormExtension> extensions = this.boxCoreFormsExts.query(CoreFormExtension_.enabled.equal(true)).build().find();
 
 		for (CoreFormExtension extension : extensions){
-			String url = baseurl + API_PATH + "/coreform/zip/" + extension.formId;
+			String url = baseurl + API_PATH + "/coreformext/zip/" + extension.formId;
 			String name = extension.extFormId+".zip";
 			processUrl(url, name, extension);
 		}
@@ -1296,8 +1315,8 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 
 		InputStream content = response.getInputStream();
 
-		String folder = Bootstrap.getBasePath(this.mContext);
-		if (this.entity == SyncEntity.CORE_FORMS_EXT_FILES) {
+		String folder = Bootstrap.getDownloadsPath(this.mContext); //default path
+		if (this.entity == SyncEntity.CORE_FORMS_EXT_FILES || (this.entity == SyncEntity.CORE_FORMS)) {
 			folder = Bootstrap.getFormsPath(this.mContext);
 		}
 
@@ -4967,6 +4986,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 				case PARAMETERS: 	 downloadedEntity = mContext.getString(R.string.sync_params_lbl); break;
 				case MODULES: 		 downloadedEntity = mContext.getString(R.string.sync_modules_lbl);   break;
 				case FORMS: 		 downloadedEntity = mContext.getString(R.string.sync_forms_lbl);     break;
+				case CORE_FORMS:     downloadedEntity = mContext.getString(R.string.sync_coreforms_lbl);     break;
 				case CORE_FORMS_EXT: downloadedEntity = mContext.getString(R.string.sync_coreforms_exts_lbl);     break;
 				case CORE_FORMS_OPTIONS: downloadedEntity = mContext.getString(R.string.sync_coreformsoptions_lbl);     break;
 				case DATASETS: 		 downloadedEntity = mContext.getString(R.string.sync_datasets_lbl); 	break;
@@ -5017,6 +5037,7 @@ public class SyncEntitiesTask extends AsyncTask<Void, Integer, SyncEntitiesTask.
 				case PARAMETERS: 	 downloadedEntity = mContext.getString(R.string.sync_params_lbl); break;
 				case MODULES: 		 downloadedEntity = mContext.getString(R.string.sync_modules_lbl);   break;
 				case FORMS: 		 downloadedEntity = mContext.getString(R.string.sync_forms_lbl);     break;
+				case CORE_FORMS:     downloadedEntity = mContext.getString(R.string.sync_coreforms_lbl);     break;
 				case CORE_FORMS_EXT: downloadedEntity = mContext.getString(R.string.sync_coreforms_exts_lbl);     break;
 				case CORE_FORMS_OPTIONS: downloadedEntity = mContext.getString(R.string.sync_coreformsoptions_lbl);     break;
 				case DATASETS: 		 downloadedEntity = mContext.getString(R.string.sync_datasets_lbl); 	break;

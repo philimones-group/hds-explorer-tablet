@@ -155,4 +155,92 @@ public class ZipMaker {
         return map;
     }
 
+    /**
+     * Extracts the contents of the target zipFile into the same directory where the zip file is located.
+     * Includes security validation against Zip Slip path traversal vulnerabilities.
+     *
+     * @return true if extraction completes successfully, false otherwise.
+     */
+    public boolean extract() {
+        // Get the parent folder of the zip file
+        File targetDir = this.zipFile.getParentFile();
+        if (targetDir == null) {
+            return false;
+        }
+
+        return extract(targetDir);
+    }
+
+    public boolean extract(String targetDir) {
+        return extract(new File(targetDir));
+    }
+
+    /**
+     * Extracts the contents of the target zipFile into the directory specified by targetDir.
+     * Includes security validation against Zip Slip path traversal vulnerabilities.
+     *
+     * @return true if extraction completes successfully, false otherwise.
+     */
+    public boolean extract(File targetDir) {
+        if (this.zipFile == null || !this.zipFile.exists()) {
+            return false;
+        }
+
+        if (targetDir == null) {
+            return false;
+        }
+
+        try {
+            // Get standard canonical path of target directory for exact security checking
+            String targetCanonicalPath = targetDir.getCanonicalPath();
+
+            // Match the existing buffer size used in xmakeZip
+            byte[] buffer = new byte[200 * 1024];
+
+            FileInputStream fin = new FileInputStream(this.zipFile);
+            java.util.zip.ZipInputStream zin = new java.util.zip.ZipInputStream(fin);
+            java.util.zip.ZipEntry entry;
+
+            while ((entry = zin.getNextEntry()) != null) {
+                File resolvedFile = new File(targetDir, entry.getName());
+                String entryCanonicalPath = resolvedFile.getCanonicalPath();
+
+                // ⚠️ SECURITY GUARD: Prevent Zip Slip Vulnerability
+                if (!entryCanonicalPath.startsWith(targetCanonicalPath + File.separator) &&
+                        !entryCanonicalPath.equals(targetCanonicalPath)) {
+                    zin.close();
+                    throw new SecurityException("Malicious ZIP entry blocked: " + entry.getName());
+                }
+
+                if (entry.isDirectory()) {
+                    resolvedFile.mkdirs();
+                } else {
+                    // Create parent folders if nested structures exist inside the ZIP
+                    File parentDir = resolvedFile.getParentFile();
+                    if (parentDir != null) {
+                        parentDir.mkdirs();
+                    }
+
+                    // Write out the file contents
+                    FileOutputStream fout = new FileOutputStream(resolvedFile);
+                    int length;
+                    while ((length = zin.read(buffer)) > 0) {
+                        fout.write(buffer, 0, length);
+                    }
+                    fout.close();
+                }
+                zin.closeEntry();
+            }
+
+            zin.close();
+            return true;
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
+
 }

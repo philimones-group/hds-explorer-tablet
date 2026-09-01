@@ -22,6 +22,7 @@ import org.philimone.hds.explorer.model.CoreFormExtension_;
 import org.philimone.hds.explorer.model.*;
 import org.philimone.hds.explorer.model.enums.CoreFormEntity;
 import org.philimone.hds.explorer.model.enums.SubjectEntity;
+import org.philimone.hds.explorer.model.enums.SyncEntity;
 import org.philimone.hds.explorer.model.oldstate.SavedEntityState;
 import org.philimone.hds.explorer.model.oldstate.SavedEntityState_;
 import org.philimone.hds.explorer.server.settings.generator.CodeGeneratorService;
@@ -382,6 +383,17 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
         return null;
     }
 
+    protected InputStream getZipInputStream(String zipPath, String formFileName) throws Exception {
+        ZipInputStream zin = new ZipInputStream(new FileInputStream(zipPath));
+        ZipEntry entry;
+        while ((entry = zin.getNextEntry()) != null) {
+            if (entry.getName().endsWith(formFileName)) { //entry.getName().endsWith(".xlsx") || entry.getName().endsWith(".xls")) {
+                return zin;
+            }
+        }
+        return null;
+    }
+
     private PreloadMap createExtensionPreloadMap(CoreFormExtension formExtension, CollectedDataMap collectedValues){
         PreloadMap preloads = new PreloadMap();
         final String householdPrefix = "Household.";
@@ -609,110 +621,131 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
     }
 
     /* statics */
+    protected static InputStream getCoreForm(Context context, String coreFormFileName) {
+        File coreFormsZipFile = Bootstrap.getFormsPathFile(context, SyncEntity.CORE_FORMS.getZipFile());
+
+        try {
+            if (coreFormsZipFile == null || !coreFormsZipFile.exists()) return null;
+
+            ZipInputStream zin = new ZipInputStream(new FileInputStream(coreFormsZipFile));
+            ZipEntry entry;
+            while ((entry = zin.getNextEntry()) != null) {
+                if (entry.getName().endsWith(coreFormFileName)) {
+                    return zin;
+                }
+            }
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+
+            return null;
+        }
+    }
+
     protected static HForm getVisitForm(Context context) {
-        InputStream inputStream = context.getResources().openRawResource(R.raw.visit_form);
+        InputStream inputStream = getCoreForm(context, "visit_form.xlsx");
         HForm form = retrieveForm(inputStream);
         return form;
     }
 
     protected static HForm getMemberEnuForm(Context context) {
-        InputStream inputStream = context.getResources().openRawResource(R.raw.member_enu_form);
+        InputStream inputStream = getCoreForm(context, "member_enu_form.xlsx");
         HForm form = retrieveForm(inputStream);
         return form;
     }
 
     protected static HForm getRegionForm(Context context) {
-        InputStream inputStream = context.getResources().openRawResource(R.raw.region_form);
+        InputStream inputStream = getCoreForm(context, "region_form.xlsx");
         HForm form = retrieveForm(inputStream);
         return form;
     }
 
     protected static HForm getHouseholdForm(Context context) {
-        InputStream inputStream = context.getResources().openRawResource(R.raw.household_form);
+        InputStream inputStream = getCoreForm(context, "household_form.xlsx");
         HForm form = retrieveForm(inputStream);
         return form;
     }
 
     protected static HForm getPreHouseholdForm(Context context) {
-        InputStream inputStream = context.getResources().openRawResource(R.raw.pre_registration_household_form);
+        InputStream inputStream = getCoreForm(context, "pre_registration_household_form.xlsx");
         HForm form = retrieveForm(inputStream);
         return form;
     }
 
     protected static HForm getMaritalRelationshipForm(Context context) {
-        InputStream inputStream = context.getResources().openRawResource(R.raw.marital_relationship_form);
+        InputStream inputStream = getCoreForm(context, "marital_relationship_form.xlsx");
         HForm form = retrieveForm(inputStream);
         return form;
     }
 
     protected static HForm getExternalInMigrationForm(Context context) {
-        InputStream inputStream = context.getResources().openRawResource(R.raw.ext_inmigration_form);
+        InputStream inputStream = getCoreForm(context, "ext_inmigration_form.xlsx");
         HForm form = retrieveForm(inputStream);
         return form;
     }
 
     protected static HForm getInMigrationForm(Context context) {
-        InputStream inputStream = context.getResources().openRawResource(R.raw.inmigration_form);
+        InputStream inputStream = getCoreForm(context, "inmigration_form.xlsx");
         HForm form = retrieveForm(inputStream);
         return form;
     }
 
     protected static HForm getOutmigrationForm(Context context) {
-        InputStream inputStream = context.getResources().openRawResource(R.raw.outmigration_form);
+        InputStream inputStream = getCoreForm(context, "outmigration_form.xlsx");
         HForm form = retrieveForm(inputStream);
         return form;
     }
 
     protected static HForm getPregnancyRegistrationForm(Context context) {
-        InputStream inputStream = context.getResources().openRawResource(R.raw.pregnancy_registration_form);
+        InputStream inputStream = getCoreForm(context, "pregnancy_registration_form.xlsx");
         HForm form = retrieveForm(inputStream);
         return form;
     }
 
     protected static HForm getPregnancyOutcomeForm(Context context) {
-        InputStream inputStream = context.getResources().openRawResource(R.raw.pregnancy_outcome_form);
+        InputStream inputStream = getCoreForm(context, "pregnancy_outcome_form.xlsx");
         HForm form = retrieveForm(inputStream);
         return form;
     }
 
     protected static HForm getPregnancyVisitForm(Context context) {
-        InputStream inputStream = context.getResources().openRawResource(R.raw.pregnancy_visit_form);
+        InputStream inputStream = getCoreForm(context, "pregnancy_visit_form.xlsx");
         HForm form = retrieveForm(inputStream);
         return form;
     }
 
     protected static HForm getDeathForm(Context context) {
-        InputStream inputStream = context.getResources().openRawResource(R.raw.death_form);
+        InputStream inputStream = getCoreForm(context, "death_form.xlsx");
         HForm form = retrieveForm(inputStream);
         return form;
     }
 
     protected static HForm getChangeHeadForm(Context context) {
-        InputStream inputStream = context.getResources().openRawResource(R.raw.change_head_form);
+        InputStream inputStream = getCoreForm(context, "change_head_form.xlsx");
         HForm form = retrieveForm(inputStream);
         return form;
     }
 
     protected static HForm getIncompleteVisitForm(Context context) {
-        InputStream inputStream = context.getResources().openRawResource(R.raw.incomplete_form);
+        InputStream inputStream = getCoreForm(context, "incomplete_form.xlsx");
         HForm form = retrieveForm(inputStream);
         return form;
     }
 
     protected static HForm getChangeRegionHeadForm(Context context) {
-        InputStream inputStream = context.getResources().openRawResource(R.raw.change_region_head_form);
+        InputStream inputStream = getCoreForm(context, "change_region_head_form.xlsx");
         HForm form = retrieveForm(inputStream);
         return form;
     }
 
     protected static HForm getHouseholdRelocationForm(Context context) {
-        InputStream inputStream = context.getResources().openRawResource(R.raw.household_relocation_form);
+        InputStream inputStream = getCoreForm(context, "household_relocation_form.xlsx");
         HForm form = retrieveForm(inputStream);
         return form;
     }
 
     protected static HForm getChangeProxyHeadForm(Context context) {
-        InputStream inputStream = context.getResources().openRawResource(R.raw.change_proxy_head_form);
+        InputStream inputStream = getCoreForm(context, "change_proxy_head_form.xlsx");
         HForm form = retrieveForm(inputStream);
         return form;
     }

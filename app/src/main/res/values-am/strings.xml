@@ -66,6 +66,7 @@
     <string name="sync_params_lbl">የመተግበሪያ አስተካካይ</string>
     <string name="sync_modules_lbl">ሞጁሎች</string>
     <string name="sync_forms_lbl">ODK ቅጾች</string>
+    <string name="sync_coreforms_lbl">የHDS ቅጾች</string>
     <string name="sync_coreforms_exts_lbl">የመሠረት ቅጾች ቅጥር</string>
     <string name="sync_coreforms_exts_files_lbl">የመሠረት ቅጾች ቅጥር XLS/ZIP</string>
     <string name="sync_coreformsoptions_lbl">የመሠረት ቅጾች አማራጮች</string>

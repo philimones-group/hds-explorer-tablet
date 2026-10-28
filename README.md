@@ -33,10 +33,9 @@ For instructions on how to install SDKMAN visit https://sdkman.io/install
 
 1. Download and install [Android Studio](https://developer.android.com/studio/index.html)
 
-1. Clone HDS-Explorer mobile and HDS-Forms Library to the same folder. At the command line:
+1. Clone HDS-Explorer mobile app. Use the commands below in a terminal:
 
         git clone https://github.com/philimones-group/hds-explorer-tablet
-        git clone https://github.com/philimones-group/hds-forms-lib
 
 1. Also you can fork the hds-explorer-tablet project ([why and how to fork](https://help.github.com/articles/fork-a-repo/))
 

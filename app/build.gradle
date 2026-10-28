@@ -16,10 +16,10 @@ android {
     compileSdk = 35
     defaultConfig {
         applicationId "org.philimone.hds.explorer"
-        minSdk = 21
+        minSdk = 26
         targetSdk = 35
-        versionCode 446
-        versionName "1.2.0 build ${versionCode}"
+        versionCode 448
+        versionName "1.2.2 build ${versionCode}"
 
 
         // This maps the public mapbox token stored on global gradle.properties to the string resource Mapbox needs
@@ -124,7 +124,7 @@ dependencies {
     //implementation "androidx.documentfile:documentfile:1.0.1"
     implementation 'androidx.constraintlayout:constraintlayout:2.2.1'
     implementation "androidx.constraintlayout:constraintlayout-compose:1.1.1"
-    implementation project(path: ':hds-forms-lib')
+
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     debugImplementation "io.objectbox:objectbox-android-objectbrowser:$objectboxVersion"
     releaseImplementation "io.objectbox:objectbox-android:$objectboxVersion"
@@ -136,7 +136,7 @@ dependencies {
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.1.5'
 
     //projects
-    api project(path: ':hds-forms-lib')
+    api 'org.philimone.hds.forms:hds-forms-lib:1.7.1'
 
     //okhttp
     implementation 'com.squareup.okhttp3:okhttp:5.1.0'

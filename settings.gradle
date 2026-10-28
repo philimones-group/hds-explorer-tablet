@@ -12,6 +12,7 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        mavenLocal()
         maven {
             url = uri('https://api.mapbox.com/downloads/v2/releases/maven')
             authentication {
@@ -34,7 +35,8 @@ dependencyResolutionManagement {
 }
 
 include ':app'
-include ':hds-forms-lib'
-project(':hds-forms-lib').projectDir = new File(settingsDir, '../hds-forms-lib')
-include ':hds-forms-model-lib'
-project(':hds-forms-model-lib').projectDir = new File(settingsDir, '../hds-forms-model-lib')
+
+// Composite builds: Allows viewing/editing library source code in Android Studio
+// while automatically substituting Maven Central dependencies locally.
+includeBuild('../hds-forms-model-lib')
+includeBuild('../hds-forms-lib')

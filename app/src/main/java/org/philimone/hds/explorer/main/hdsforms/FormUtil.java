@@ -630,10 +630,12 @@ public abstract class FormUtil<T extends CoreEntity> implements FormCollectionLi
             ZipInputStream zin = new ZipInputStream(new FileInputStream(coreFormsZipFile));
             ZipEntry entry;
             while ((entry = zin.getNextEntry()) != null) {
-                if (entry.getName().endsWith(coreFormFileName)) {
+                if (entry.getName().equals(coreFormFileName)) { //xlsx form on the root of zip file
                     return zin;
                 }
             }
+
+            return null;
 
         } catch (Exception ex) {
             ex.printStackTrace();

@@ -836,6 +836,9 @@
     <string name="map_no_closest_members_found_lbl">Aucun membre voisin trouvé à moins de %1$s de la maison du membre sélectionné</string>
     <string name="map_members_coordinates">Emplacement des individus/personnes</string>
     <string name="map_households">Emplacement des maisons</string>
+    <string name="map_get_directions_lbl">Obtenir des itinéraires</string>
+    <string name="map_navigate_with_lbl">Naviguer avec :</string>
+    <string name="map_no_navigation_app_found_lbl">Aucune application de navigation trouvée sur cet appareil.</string>
 
     <!-- GPS Searched Result List -->
     <string name="gps_searched_list_back_lbl">Retourner</string>

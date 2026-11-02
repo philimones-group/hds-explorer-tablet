@@ -836,6 +836,9 @@
     <string name="map_no_closest_members_found_lbl">ከተመረጠው አባል ቤት በ %1$s ክልል ውስጥ ምንም ቤት አልተገኘም።</string>
     <string name="map_members_coordinates">የግለሰቦች ቤቶች አካባቢ</string>
     <string name="map_households">የቤተሰቦች አካባቢ</string>
+    <string name="map_get_directions_lbl">አቅጣጫዎችን አግኝ</string>
+    <string name="map_navigate_with_lbl">በመጠቀም ይጓዙ:</string>
+    <string name="map_no_navigation_app_found_lbl">በዚህ መሣሪያ ላይ ምንም የዳሰሳ መተግበሪያ አልተገኘም።</string>
 
     <!-- GPS Searched Result List -->
     <string name="gps_searched_list_back_lbl">ወደ ኋላ</string>

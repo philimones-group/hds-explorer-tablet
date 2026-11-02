@@ -884,6 +884,9 @@
     <string name="map_no_closest_members_found_lbl">No houses were found within a radius of %1$s from the house of the selected member.</string>
     <string name="map_members_coordinates">Localization of Individuals Houses</string>
     <string name="map_households">Localization of Households</string>
+    <string name="map_get_directions_lbl">Get Directions</string>
+    <string name="map_navigate_with_lbl">Navigate using:</string>
+    <string name="map_no_navigation_app_found_lbl">No navigation app found on this device.</string>
 
     <!-- GPS Searched Result List -->
     <string name="gps_searched_list_back_lbl">Back</string>

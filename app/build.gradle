@@ -18,8 +18,8 @@ android {
         applicationId "org.philimone.hds.explorer"
         minSdk = 26
         targetSdk = 35
-        versionCode 448
-        versionName "1.2.2 build ${versionCode}"
+        versionCode 449
+        versionName "1.3.0 build ${versionCode}"
 
 
         // This maps the public mapbox token stored on global gradle.properties to the string resource Mapbox needs
@@ -39,7 +39,7 @@ android {
     }
     buildTypes {
         release {
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             signingConfig = signingConfigs.config
             //debuggable true
             //get the default app url from global gradle properties

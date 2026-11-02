@@ -6,53 +6,128 @@
     android:layout_height="match_parent"
     tools:context=".main.maps.MapViewActivity">
 
+    <!-- Header -->
     <LinearLayout
+        android:id="@+id/headerLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="60dp"
+        android:background="@drawable/nui_dialog_border_thin"
+        android:elevation="5dp"
+        android:orientation="horizontal"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:orientation="vertical">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
 
-        <!-- Header -->
-        <LinearLayout
-            android:id="@+id/headerLayout"
+        <ImageView
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:alpha="0.75"
+            android:background="@mipmap/mapbox_icon_54x54" />
+
+        <TextView
+            android:id="@+id/txtPageTitle"
             android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:background="@drawable/nui_dialog_border_thin"
-            android:elevation="5dp"
+            android:layout_height="match_parent"
+            android:layout_marginStart="10dp"
+            android:gravity="center_vertical"
+            android:text="Title Dialog"
+            android:textColor="@color/nui_color_text_red"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+    <com.mapbox.maps.MapView
+        xmlns:mapbox="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/mapView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        mapbox:mapbox_cameraTargetLat="40.7128"
+        mapbox:mapbox_cameraTargetLng="-74.0060"
+        mapbox:mapbox_cameraZoom="9.0"
+        app:layout_constraintTop_toBottomOf="@id/headerLayout"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- Bottom Info Panel for Marker Details & Directions -->
+    <LinearLayout
+        android:id="@+id/panelMarkerInfo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:background="@drawable/nui_lists_rone_border"
+        android:elevation="6dp"
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:paddingStart="22dp"
+        android:paddingEnd="20dp"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
             android:orientation="horizontal">
 
-            <ImageView
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_gravity="center"
-                android:layout_marginStart="5dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginBottom="5dp"
-                android:alpha="0.75"
-                android:background="@mipmap/mapbox_icon_54x54" />
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/txtPageTitle"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginStart="10dp"
-                android:gravity="center_vertical"
-                android:text="Title Dialog"
-                android:textColor="@color/nui_color_text_red"
-                android:textSize="18sp"
+                <TextView
+                    android:id="@+id/txtMarkerTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/nui_color_text_darkgray"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    tools:text="Household Title" />
+
+                <TextView
+                    android:id="@+id/txtMarkerDescription"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:textColor="@color/nui_color_text_adgray"
+                    android:textSize="14sp"
+                    tools:text="Description details" />
+
+                <TextView
+                    android:id="@+id/txtMarkerCoords"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:textColor="@color/text_gray"
+                    android:textSize="12sp"
+                    tools:text="GPS: -25.96, 32.58" />
+
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/btnGetDirections"
+                android:layout_width="wrap_content"
+                android:layout_height="45dp"
+                android:layout_marginStart="12dp"
+                android:background="@drawable/nui_btnd_rone_gflat"
+                android:drawableStart="@drawable/ic_directions_24"
+                android:drawablePadding="8dp"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:text="@string/map_get_directions_lbl"
+                android:textColor="@color/white"
+                android:textSize="14sp"
                 android:textStyle="bold" />
 
         </LinearLayout>
-
-        <com.mapbox.maps.MapView
-            xmlns:mapbox="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/mapView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            mapbox:mapbox_cameraTargetLat="40.7128"
-            mapbox:mapbox_cameraTargetLng="-74.0060"
-            mapbox:mapbox_cameraZoom="9.0" />
 
     </LinearLayout>
 
